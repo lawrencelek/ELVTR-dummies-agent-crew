@@ -270,8 +270,10 @@ Chromium, real key events):
   deadlocks; he did not ask for that.
 - **A jam breaker can delete cars.** If the oldest car in the hall is stuck
   for 6 s without seeing the dummy, the Builder's code removes the cars
-  blocking it. The checks did not show it firing, but it is a patch, not a
-  traffic model.
+  blocking it. In a separate test of 18 runs with a wandering dummy (150 s
+  each) it never fired on levels 1 and 2, and fired in 4 of the 6 level 3
+  runs, removing 6 cars in total. Level 3 traffic still jams; the jam is
+  cleared by deleting cars, not by the cars resolving it.
 - A car that cannot swerve because of the barrier or another car slows to
   0.55 of its speed; it does not stop.
 - QA's two minor defects are open: a car already in the junction can stop in
