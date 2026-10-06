@@ -38,12 +38,12 @@ flowchart TD
     SPEC[/"spec.json<br/>params, rules, acceptance criteria, simplifications"/]
     B["Agent 2: Game Builder<br/>agents/game_builder.md"]
     BUILD[/"sim.js + index.html"/]
-    C{"Executable checks<br/>checks/run_checks.js (Node, not an agent)"}
+    C[["Executable checks<br/>checks/run_checks.js - Node, not an agent"]]
     CR[/"checks.json"/]
     Q["Agent 3: QA / Repair Reviewer<br/>agents/qa_reviewer.md"]
     QA[/"qa.json<br/>verdict, criteria, defects, repair requests"/]
-    GAll checks pass<br/>AND verdict = release?
-    LFewer than 2<br/>repair cycles used?
+    G{"All checks pass<br/>AND verdict = release?"}
+    L{"Fewer than 2<br/>repair cycles used?"}
     OUT[/"output/<br/>released game, spec, checks, QA report"/]
     FAIL["Stop: NOT RELEASED<br/>nothing copied to output/"]
 
