@@ -43,7 +43,7 @@ flowchart TD
     Q["Agent 3: QA / Repair Reviewer<br/>agents/qa_reviewer.md"]
     QA[/"qa.json<br/>verdict, criteria, defects, repair requests"/]
     GAll checks pass<br/>AND verdict = release?
-    LRepair cycles<br/>used < 2?
+    LFewer than 2<br/>repair cycles used?
     OUT[/"output/<br/>released game, spec, checks, QA report"/]
     FAIL["Stop: NOT RELEASED<br/>nothing copied to output/"]
 
