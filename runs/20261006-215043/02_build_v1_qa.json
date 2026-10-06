@@ -1,0 +1,160 @@
+{
+  "verdict": "repair",
+  "summary": "All 27 automated checks passed, and the sim and renderer have no crash, freeze or frame-rate defect on a read-through. One Testpad system looks regressed. Fleet learning (`contacts`, which drives the dials and file closing) is only credited at a write-off, never per impact, so the learning dials are close to inert. That needs fixing or confirming against the Testpad before release.",
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "pass",
+      "evidence": "Checks load_sim and sim_is_pure passed. sim.js uses an IIFE with module and window exports, and I found no DOM, timer, Date or Math.random in it."
+    },
+    {
+      "id": "AC-02",
+      "status": "pass",
+      "evidence": "params_match_spec passed (233 parameters identical). createSim does clone(PARAMS) into state.params."
+    },
+    {
+      "id": "AC-03",
+      "status": "pass",
+      "evidence": "Checks walk_frame_rate_independent, run_speed_matches_spec and car_speed_real_time passed. PARAMS speeds match the spec."
+    },
+    {
+      "id": "AC-04",
+      "status": "pass",
+      "evidence": "deterministic_and_seeded passed. The spawn RNG is `rnd(s)` on `s.rng`, and the cosmetic line picks use a separate `lineRng`."
+    },
+    {
+      "id": "AC-05",
+      "status": "unverified",
+      "evidence": "attract_then_confirm passed. No check covers autostart, so the first step is only read as play from `createSim` setting mode to play. The 3600-step traffic:false case was not run. `spawnStep` returns early when `traffic` is off, and the level-end test also requires `options.traffic`."
+    },
+    {
+      "id": "AC-06",
+      "status": "pass",
+      "evidence": "lunge_distance_equal_8_directions and lunge_frame_rate_independent passed (164.0 px). `dummyStep` uses the exact per-step ease3 difference."
+    },
+    {
+      "id": "AC-07",
+      "status": "pass",
+      "evidence": "held_lunge_does_not_chain passed. The fresh press comes from `prevLunge`. A second lunge after release was not checked, but the logic permits it."
+    },
+    {
+      "id": "AC-08",
+      "status": "unverified",
+      "evidence": "The lunge_distance check covers facing with no direction held. The case of a held direction differing from facing was not checked. `dummyStep` reads as correct: it uses the held direction if moving, else `facing`."
+    },
+    {
+      "id": "AC-09",
+      "status": "pass",
+      "evidence": "lunge_eases_out passed (87% at half time), and the easing is easeOutCubic."
+    },
+    {
+      "id": "AC-10",
+      "status": "pass",
+      "evidence": "recovery_is_tweened passed (0.35 s, moved 19.6 px). The recovery factor is easeOutQuad."
+    },
+    {
+      "id": "AC-11",
+      "status": "unverified",
+      "evidence": "`dummyStep` clamps x and y to the hall after both lunge and walk. No check covers all four sides."
+    },
+    {
+      "id": "AC-12",
+      "status": "unverified",
+      "evidence": "level1_road_flows_left_to_right passed. The top-left corner exclusion has no automated check. On level 3 a car entering at lateral 200 has a body edge near y=185, which the spec's own bound allows."
+    },
+    {
+      "id": "AC-13",
+      "status": "pass",
+      "evidence": "level1_road_flows_left_to_right passed (14 cars, never stalls)."
+    },
+    {
+      "id": "AC-14",
+      "status": "pass",
+      "evidence": "level2_cross_no_collisions passed (both roads used, 150 s run). `drawEntry` uses only the spec lanes. The 5-minute multi-seed run was not performed."
+    },
+    {
+      "id": "AC-15",
+      "status": "unverified",
+      "evidence": "level2_cross_no_collisions and level3_free_for_all reported no overlap, but only for a limited run with no random dummy inputs over many seeds. The `overlapsAny` backstop in `carsStep` is applied to all cars."
+    },
+    {
+      "id": "AC-16",
+      "status": "unverified",
+      "evidence": "No dedicated give-way check was run. The lower-serial yield logic exists in `carsStep`. The Builder added a skip-yield exception and a sidestep that go beyond the spec."
+    },
+    {
+      "id": "AC-17",
+      "status": "unverified",
+      "evidence": "level3_free_for_all passed for 4 directions and 6 classes. It did not cover 12-unit pool coverage or lateral bounds. `drawEntry` uses the correct ranges."
+    },
+    {
+      "id": "AC-18",
+      "status": "pass",
+      "evidence": "params_match_spec passed. `spawnStep` stops at the allocation and picks units from `k < L.pool`."
+    },
+    {
+      "id": "AC-19",
+      "status": "pass",
+      "evidence": "write_off_card_and_fresh_body and ending_licensed passed. `step` uses the `prevConfirm` edge, so a held confirm does not dismiss a new card."
+    },
+    {
+      "id": "AC-20",
+      "status": "pass",
+      "evidence": "level_progression and ending_decommissioned passed. `levelEnd` order is noncompliant, then decommissioned, then the level card. Over-confirm calls `resetRun`, which returns to attract."
+    },
+    {
+      "id": "AC-21",
+      "status": "pass",
+      "evidence": "ending_licensed passed. `writeOff` calls `finish` with licensed at >= certificationTarget."
+    },
+    {
+      "id": "AC-22",
+      "status": "pass",
+      "evidence": "rear_contact_pays_nothing and front_impact_pays_once passed. Reach is 1 at full health, and `c.hit` limits each car to one impact."
+    },
+    {
+      "id": "AC-23",
+      "status": "pass",
+      "evidence": "html_static passed. I found no http:// or https:// in index.html. It loads sim.js by script tag, steps at fixed 1/60 with an accumulator, and lists the Testpad font names first."
+    },
+    {
+      "id": "AC-24",
+      "status": "unverified",
+      "evidence": "Needs a playtest. `drawRoads` and the HUD level name read as correct. Math.random is used only for shake."
+    },
+    {
+      "id": "AC-25",
+      "status": "unverified",
+      "evidence": "Needs a human playtest."
+    }
+  ],
+  "defects": [
+    {
+      "severity": "major",
+      "file": "sim.js",
+      "problem": "`creditContact`, which increments `fleet[].contacts` and closes files, is called only from `writeOff`, and only for `lastUnit`. `testImpact` never credits the struck unit. Dial adaptation (`dials`), file brief/adapt/closed, the HUD and licence cells therefore advance only on write-offs, at most 11 per run. closeCost of 4 or more per unit can then essentially never be reached, so the unchanged-from-Testpad learning system is effectively dead."
+    },
+    {
+      "severity": "minor",
+      "file": "index.html",
+      "problem": "After a licence-sheet restart through over-confirm, `state.fxSeq` resets to 0 while `lastFx` stays high, so screen shake is suppressed until the sequence catches up. The Restart button resets `lastFx`, but the over-confirm path does not."
+    }
+  ],
+  "scope_violations": [],
+  "missing_testpad_systems": [
+    "Fleet learning is functionally inert because contacts are credited only at write-off (see defects). Hit-stop was knowingly omitted, and the spec does not list it."
+  ],
+  "repair_requests": [
+    {
+      "file": "sim.js",
+      "problem": "Fleet contacts are credited only in `writeOff`, so learning dials and file closing barely progress.",
+      "required_change": "Compare with the Testpad contact-crediting rule. If the Testpad credits per impact, call `creditContact(s, s.fleet[c.unit])` in `testImpact` for each front or side impact, and make `writeOff` stop double-crediting. Keep the one-impact-per-car and rear-pays-nothing behaviour. If the Testpad credits per shift or body, add a comment and a check that makes this explicit."
+    }
+  ],
+  "notes": [
+    "The Builder's deviations are deliberate: touch backstop against all cars, skip-yield when already inside a look-ahead, a 70 px/s head-on sidestep on level 3, and a walk/run ramp held at 0 during lunge and recovery. Each should be covered by a give-way and overlap check across many seeds with random dummy inputs.",
+    "In the render loop, the `acc>STEP` reset after 6 catch-up steps drops simulated time after a long stall. That is acceptable.",
+    "Report-line bands use the level number, which is a reasonable mapping.",
+    "The AC-05 autostart, AC-11 clamp and AC-16 give-way cases have no direct automated checks, so they stay unverified."
+  ]
+}

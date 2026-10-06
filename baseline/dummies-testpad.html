@@ -1,0 +1,851 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DUMMIES Testpad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+  :root{
+    --ink:#16181a; --paper:#e8eaec; --asphalt:#4a4f53; --line:#cfd3d6;
+    --hazard:#e8b400; --orange:#f26a1b; --red:#c0392b; --green:#1f7a57;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#1b1e20;color:var(--paper);font-family:var(--mono);
+       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
+  #wrap{position:relative;width:min(100%,900px)}
+  canvas{display:block;width:100%;height:auto;background:var(--asphalt);border:1px solid #2d3236;touch-action:none}
+  #pad{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;
+       font-size:11px;letter-spacing:.06em;color:#8d969b;text-transform:uppercase}
+  #pad b{color:var(--paper);font-weight:500}
+  button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+         background:#2a2f33;color:var(--paper);border:1px solid #3c4347;padding:6px 12px;cursor:pointer;border-radius:2px}
+  button:hover{background:#343a3f}
+  button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+</style>
+
+<div id="wrap"><canvas id="c" width="900" height="620"></canvas></div>
+<div id="pad">
+  <span>Move <b>WASD / arrows</b></span>
+  <span>Lunge <b>space</b></span>
+  <span>Hold to run — cars slow for you</span>
+  <span>Stand still — you get repaired</span>
+  <button id="restart">Restart</button>
+  <button id="debug">Perception: on</button>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================ 1. CONFIG */
+
+var CFG = {
+  health:2300, bonus:2500,
+  walk:1.35, run:2.70, rampTime:1.0,          // move accelerates walk -> run over ~1s
+  lungeDist:164, lungeTime:0.30, lungeCool:0.55,
+  dummyR:13,
+  maxClosing:13.2, yieldBase:1700, yieldCurve:2.2,
+  wearFloor:0.45,                              // reach floor at full damage
+  cautionMax:0.40,                             // cars lose up to 40% speed when you run
+  serviceDelay:1.5, serviceFull:30.0,          // still 1.5s, then full chassis in 30s
+  hall:{x:40,y:40,w:820,h:540}
+};
+var FACE = {front:1, side:0.25, rear:0};
+
+/* six classes = six answers to the same problem */
+var CLASSES = {
+  sedan:{label:"Sedan", w:34,l:62, sp:2.30, swerve:true,  commitFrac:0.50, flip:false, brakeFirst:false,
+    base:{detect:212, margin:44, predict:0.30, brakeLead:0.45},
+    step:{detect:30,  margin:11, predict:0.07, brakeLead:0.04},
+    cap :{detect:400, margin:190,predict:0.72, brakeLead:0.68}},
+  van:{label:"Van", w:38,l:76, sp:2.00, swerve:true, commitFrac:0.42, flip:false, brakeFirst:true,
+    base:{detect:232, margin:38, predict:0.26, brakeLead:0.74},
+    step:{detect:28,  margin:10, predict:0.06, brakeLead:0.06},
+    cap :{detect:410, margin:188,predict:0.64, brakeLead:0.95}},
+  sports:{label:"Sports", w:30,l:58, sp:3.20, swerve:true, commitFrac:0.30, flip:false, brakeFirst:false,
+    base:{detect:190, margin:31, predict:0.36, brakeLead:0.28},
+    step:{detect:34,  margin:12, predict:0.09, brakeLead:0.03},
+    cap :{detect:400, margin:186,predict:0.86, brakeLead:0.50}},
+  bus:{label:"Bus", w:46,l:108, sp:1.80, swerve:false, commitFrac:0.50, flip:false, brakeFirst:true,
+    base:{detect:258, margin:34, predict:0.22, brakeLead:0.88},
+    step:{detect:26,  margin:9,  predict:0.05, brakeLead:0.07},
+    cap :{detect:420, margin:184,predict:0.56, brakeLead:1.15}},
+  wagon:{label:"Wagon", w:36,l:72, sp:2.40, swerve:true, commitFrac:0.58, flip:false, brakeFirst:false,
+    base:{detect:244, margin:58, predict:0.46, brakeLead:0.50},
+    step:{detect:32,  margin:14, predict:0.10, brakeLead:0.04},
+    cap :{detect:430, margin:200,predict:0.96, brakeLead:0.72}},
+  hatch:{label:"Hatch", w:30,l:54, sp:2.60, swerve:true, commitFrac:0.60, flip:true, brakeFirst:false,
+    base:{detect:204, margin:41, predict:0.28, brakeLead:0.44},
+    step:{detect:30,  margin:11, predict:0.07, brakeLead:0.04},
+    cap :{detect:400, margin:188,predict:0.74, brakeLead:0.66}}
+};
+
+/* twelve units; pool order is the dispatch order on the ladder */
+var FLEET_DEF = [
+  ["SDN-01","sedan"], ["SDN-02","sedan"], ["VAN-07","van"],
+  ["SPT-11","sports"],["BUS-06","bus"],   ["SDN-04","sedan"],
+  ["WGN-05","wagon"], ["HTB-09","hatch"], ["VAN-12","van"],
+  ["SPT-03","sports"],["WGN-08","wagon"], ["HTB-10","hatch"]
+];
+
+/* the fleet briefs itself: the Nth file to close costs fewer contacts */
+var CLOSE_COST = [4,4,3,3,3,2,2,2,2,1,1,1];
+
+/* shift -> quota, vehicles allocated, how many units are in rotation */
+var LADDER = [
+  {q:2,a:34,pool:3}, {q:3,a:38,pool:4}, {q:3,a:38,pool:6}, {q:4,a:42,pool:8},
+  {q:4,a:42,pool:9}, {q:5,a:46,pool:10},{q:5,a:46,pool:12},{q:6,a:48,pool:12}
+];
+function rung(s){ return s <= LADDER.length ? LADDER[s-1] : {q:6,a:48,pool:12}; }
+
+/* ============================================================ 2. REPORT BANK
+   Keyed signature x band. {U} substitutes the unit that filed it.
+   Deliberately flat and bureaucratic: the line does not know it is funny. */
+
+var BANK = {
+  no_contact:{
+    a:["{U}: Subject made no contact this cycle. Chassis returned unused.",
+       "{U}: No logged impact. Subject appears to be avoiding the vehicles.",
+       "{U}: Shift produced no data. Subject reminded of the job description."],
+    b:["{U}: Zero contacts. This unit has filed a note with scheduling.",
+       "{U}: Subject declined every approach offered. Allocation wasted."],
+    c:["{U}: No contact. The fleet no longer requires this subject's cooperation."]
+  },
+  wrong_face:{
+    a:["{U}: Subject struck from behind on three occasions. Rear impacts are not logged.",
+       "{U}: Repeated rear contact. Subject is advised that only the nose pays."],
+    b:["{U}: Subject continues to approach from behind. Unproductive.",
+       "{U}: Rear contacts recorded. No yield. Subject's technique noted."],
+    c:["{U}: Rear contact again. The data set does not include this angle."]
+  },
+  whiff:{
+    a:["{U}: Subject initiated nine approaches. Two logged. This unit will be braking earlier.",
+       "{U}: High approach count, low contact rate. Subject's timing is early.",
+       "{U}: Numerous attempts, few impacts. This unit has adjusted its margin."],
+    b:["{U}: Subject's success rate is below floor average. Briefing circulated.",
+       "{U}: Many lunges, little data. {V} concurs with this assessment."],
+    c:["{U}: Subject still lunging. The fleet has the measurements it needs."]
+  },
+  serviced:{
+    a:["{U}: Subject was serviced twice, unasked. Downtime is deducted from allocation.",
+       "{U}: Maintenance attended the subject mid-shift. Chassis integrity restored.",
+       "{U}: Subject held position long enough for servicing. Yield reduced accordingly."],
+    b:["{U}: Repeated servicing logged. The facility maintains its equipment.",
+       "{U}: Subject idle. Panels reattached. Productivity unchanged."],
+    c:["{U}: Subject serviced. The licence does not require a working body."]
+  },
+  jumpy:{
+    a:["{U}: Subject moved continuously. This unit reduced speed as a precaution.",
+       "{U}: Erratic pedestrian behaviour detected. Approach speed derated.",
+       "{U}: Subject will not hold still. Impacts logged at reduced severity."],
+    b:["{U}: Continuous motion. The fleet is approaching this subject with caution.",
+       "{U}: Subject's unpredictability has been circulated to the floor."],
+    c:["{U}: Subject still moving. This unit maintains a safe approach speed."]
+  },
+  greedy:{
+    a:["{U}: Subject sought high-severity impacts exclusively. Chassis exhausted early.",
+       "{U}: Frontal preference confirmed. This unit now projects further ahead."],
+    b:["{U}: Subject takes only the nose. Margin widened across the floor.",
+       "{U}: Severity-seeking behaviour logged. {V} has been briefed."],
+    c:["{U}: Subject's preference is on file. No unit will present its nose."]
+  },
+  timid:{
+    a:["{U}: Impacts recorded at low severity throughout. Yield below target.",
+       "{U}: Subject accepted only glancing contact. Quota at risk."],
+    b:["{U}: Low-severity pattern continues. Subject is not producing usable data.",
+       "{U}: Flank contacts only. The facility requires frontal measurements."],
+    c:["{U}: Subject's caution noted. It will not affect the outcome."]
+  },
+  early:{
+    a:["{U}: Subject commits before this unit has chosen a lane. Timing is early.",
+       "{U}: Approaches initiated outside the decision window. Adjusted."],
+    b:["{U}: Subject's timing remains early. This unit now commits later.",
+       "{U}: Early commitment logged. {V} concurs."],
+    c:["{U}: Still early. The fleet has stopped compensating."]
+  },
+  late:{
+    a:["{U}: Subject commits after this unit has cleared. Timing is late.",
+       "{U}: Late approaches logged. This unit has widened its margin."],
+    b:["{U}: Subject consistently late. Briefing circulated to the floor.",
+       "{U}: Late commitment again. {V} has adjusted accordingly."],
+    c:["{U}: Late. This unit was already elsewhere."]
+  },
+  left:{
+    a:["{U}: Subject approached from the left on three of four occasions. Adjusted.",
+       "{U}: Left-side bias recorded. This unit now projects to the left."],
+    b:["{U}: Left bias confirmed across contacts. Circulated to the fleet.",
+       "{U}: Subject favours the left. {V} has been briefed."],
+    c:["{U}: Left approach anticipated. Margin held."]
+  },
+  right:{
+    a:["{U}: Subject approached from the right repeatedly. Adjusted.",
+       "{U}: Right-side bias recorded. This unit now projects to the right."],
+    b:["{U}: Right bias confirmed. Circulated to the fleet.",
+       "{U}: Subject favours the right. {V} has been briefed."],
+    c:["{U}: Right approach anticipated. Margin held."]
+  },
+  steady:{
+    a:["{U}: Contact logged. Subject performed within expected parameters.",
+       "{U}: Impact recorded and filed. Nothing further.",
+       "{U}: Measurements obtained. Subject's technique is consistent."],
+    b:["{U}: Consistent performance. This unit's file has been updated.",
+       "{U}: Data obtained. {V} has been briefed on this subject."],
+    c:["{U}: Final measurements taken. This unit's file is complete."]
+  }
+};
+
+/* ============================================================ 3. STATE */
+
+var cv = document.getElementById("c"), ctx = cv.getContext("2d");
+var W = cv.width, H = cv.height;
+var S = null, showPerception = true;
+
+function newFleet(){
+  return FLEET_DEF.map(function(d){
+    return { id:d[0], cls:d[1], contacts:0, closed:false, closeCost:0 };
+  });
+}
+
+function reset(){
+  S = {
+    mode:"attract",                 // attract | play | card
+    t:0,
+    fleet:newFleet(), closedCount:0,
+    shift:1, quota:0, spent:0, passed:0,
+    score:0, dmg:0, wear:0,
+    body:1,
+    cars:[], fx:[], used:[],
+    card:null, cardKind:null,
+    run:{},                         // per-body telemetry
+    shiftLunges:0, shiftHits:0, quotaEverMet:false,
+    px:CFG.hall.x+CFG.hall.w*0.5, py:CFG.hall.y+CFG.hall.h*0.72,
+    pvx:0, pvy:0, speedRamp:0, stillT:0, serviceOn:false,
+    lungeRem:0, lungeT:0, cool:0, lx:0, ly:0,
+    spawnT:0, freeze:0, shake:0
+  };
+  startShift(true);
+  S.mode = "attract";
+}
+
+function freshRun(){
+  return { lunges:0, hits:0, front:0, side:0, rear:0, sevSum:0,
+           distSum:0, distN:0, leftN:0, rightN:0, services:0,
+           speedSum:0, speedN:0, lastUnit:null };
+}
+
+/* ============================================================ 4. INPUT */
+
+var keys = {};
+function clearInput(){ keys = {}; }
+addEventListener("keydown", function(e){
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) >= 0) e.preventDefault();
+  keys[e.key.toLowerCase()] = true;
+  if(S.mode === "attract"){ begin(); return; }
+  if(S.mode === "card" && (e.key === " " || e.key === "Enter")) advance();
+  if(S.mode === "play" && e.key === " ") lunge();
+});
+addEventListener("keyup", function(e){ keys[e.key.toLowerCase()] = false; });
+addEventListener("blur", clearInput);
+addEventListener("visibilitychange", clearInput);
+cv.addEventListener("pointerdown", function(){
+  if(S.mode === "attract") begin(); else if(S.mode === "card") advance(); else lunge();
+});
+document.getElementById("restart").onclick = function(e){ e.target.blur(); reset(); };
+document.getElementById("debug").onclick = function(e){
+  showPerception = !showPerception;
+  e.target.textContent = "Perception: " + (showPerception ? "on" : "off");
+  e.target.blur();
+};
+
+function lunge(){
+  if(S.cool > 0 || S.lungeRem > 0) return;
+  var dx = 0, dy = 0;
+  if(keys["a"] || keys["arrowleft"])  dx -= 1;
+  if(keys["d"] || keys["arrowright"]) dx += 1;
+  if(keys["w"] || keys["arrowup"])    dy -= 1;
+  if(keys["s"] || keys["arrowdown"])  dy += 1;
+  if(!dx && !dy){ dy = -1; }
+  var m = Math.hypot(dx, dy);
+  S.lx = dx/m; S.ly = dy/m;
+  S.lungeRem = CFG.lungeDist * reachMul();
+  S.lungeT = CFG.lungeTime; S.cool = CFG.lungeCool;
+  S.run.lunges++; S.shiftLunges++;
+}
+function reachMul(){ return 1 - (1 - CFG.wearFloor) * Math.min(1, S.wear); }
+
+/* ============================================================ 5. FLEET */
+
+function dials(u){
+  var C = CLASSES[u.cls], n = u.contacts, d = {};
+  for(var k in C.base) d[k] = Math.min(C.cap[k], C.base[k] + C.step[k] * n);
+  if(u.closed){                                    // closed file: it keeps out of your reach
+    d.margin = Math.max(d.margin, CFG.lungeDist * 1.22);
+    d.detect = Math.max(d.detect, 540);            // and it starts avoiding from much further out
+  }
+  return d;
+}
+function fileState(u){
+  if(u.closed) return "closed";
+  if(u.contacts === 0) return "naive";
+  if(u.contacts === 1) return "briefed";
+  return "adapted";
+}
+function band(){ return S.shift <= 3 ? "a" : (S.shift <= 6 ? "b" : "c"); }
+
+function creditContact(u){
+  u.contacts++;
+  if(!u.closed){
+    if(u.closeCost === 0) u.closeCost = CLOSE_COST[Math.min(CLOSE_COST.length-1, S.closedCount)];
+    if(u.contacts >= u.closeCost){
+      u.closed = true; S.closedCount++;
+      S.fx.push({k:"stamp", t:1.2});
+    }
+  }
+}
+
+/* ============================================================ 6. SIMULATION */
+
+function spawnCar(){
+  var pool = rung(S.shift).pool;
+  var live = S.fleet.slice(0, pool);
+  // prefer units whose file is still open, but closed ones still patrol
+  var open = live.filter(function(u){ return !u.closed; });
+  var pick = (open.length && Math.random() < 0.78) ? open : live;
+  var u = pick[(Math.random() * pick.length) | 0];
+  var C = CLASSES[u.cls], h = CFG.hall;
+  var side = (Math.random() * 4) | 0, x, y, dx, dy;
+  if(side === 0){ x = h.x - 90;        y = h.y + 60 + Math.random()*(h.h-120); dx = 1;  dy = 0; }
+  if(side === 1){ x = h.x + h.w + 90;  y = h.y + 60 + Math.random()*(h.h-120); dx = -1; dy = 0; }
+  if(side === 2){ x = h.x + 60 + Math.random()*(h.w-120); y = h.y - 90;        dx = 0;  dy = 1; }
+  if(side === 3){ x = h.x + 60 + Math.random()*(h.w-120); y = h.y + h.h + 90;  dx = 0;  dy = -1; }
+  S.cars.push({ u:u, cls:C, x:x, y:y, dx:dx, dy:dy, sp:C.sp, cur:C.sp,
+                lat:0, lock:0, lockPush:0, flipped:false, brake:1, hit:false, life:0 });
+  S.passed++;
+}
+
+function stepCars(dt){
+  var h = CFG.hall;
+  for(var i = S.cars.length - 1; i >= 0; i--){
+    var c = S.cars[i], D = dials(c.u);
+    c.life += dt;
+
+    // car frame: forward (dx,dy), right (-dy,dx)
+    var pxp = S.px + S.pvx * D.predict * 60, pyp = S.py + S.pvy * D.predict * 60;
+    var rx = pxp - c.x, ry = pyp - c.y;
+    var along = rx*c.dx + ry*c.dy;
+    var lat   = rx*(-c.dy) + ry*(c.dx);
+
+    var conflict = along > 0 && along < D.detect && Math.abs(lat) < D.margin;
+    c.sees = conflict;
+
+    // --- commitment (pillar 1: the lane it takes is the gap it leaves)
+    var canSwerve = c.cls.swerve || c.u.closed;    // a closed unit routes around you even if it is the bus
+    if(canSwerve){
+      var cf = c.u.closed ? Math.min(0.92, c.cls.commitFrac * 1.7) : c.cls.commitFrac;
+      var commitAt = D.detect * cf;
+      if(!c.lock && conflict && along < commitAt){
+        c.lock = lat > 0 ? -1 : 1;
+        c.lockPush = D.margin;
+      }
+      // the hatchback is the only unit that can change its mind inside the ring
+      if(c.lock && c.cls.flip && !c.u.closed && !c.flipped && along < commitAt * 0.52){
+        if((lat > 0 && c.lock === 1) || (lat < 0 && c.lock === -1)){
+          c.lock = -c.lock; c.flipped = true;
+        }
+      }
+      if(c.lock){
+        var want = c.lock * c.lockPush, d = want - c.lat;
+        // open files swing at a flat rate; only a closed file gets the slew it needs
+        // to reach its wide margin (otherwise a growing margin = a faster swing = more yield)
+        var slew = c.u.closed ? (2.6 + D.margin / 46) : 3.0;
+        c.lat += Math.max(-slew, Math.min(slew, d * 0.14));
+      } else if(Math.abs(c.lat) > 0.4){
+        c.lat *= 0.96;
+      }
+    }
+
+    // --- braking is the SECOND avoidance: only the brake-first classes lead with it,
+    //     everyone else brakes only when they failed to pick a lane in time.
+    c.brake = 1;
+    if(conflict){
+      if(c.cls.brakeFirst && along < D.detect * D.brakeLead) c.brake = c.cls.swerve ? 0.55 : 0.34;
+      else if(canSwerve && !c.lock && along < D.detect * 0.22) c.brake = 0.66;
+    }
+    var derate = 1 - CFG.cautionMax * playerSpeedFrac();
+    c.cur = c.sp * c.brake * derate;
+
+    // --- mutual avoidance: do not drive through each other
+    for(var j = 0; j < S.cars.length; j++){
+      if(j === i) continue;
+      var o = S.cars[j];
+      if(o.dx !== c.dx || o.dy !== c.dy) continue;
+      var ax = (o.x - c.x)*c.dx + (o.y - c.y)*c.dy;
+      var ay = (o.x - c.x)*(-c.dy) + (o.y - c.y)*(c.dx);
+      if(ax > 0 && ax < c.cls.l + 34 && Math.abs(ay - (o.lat - c.lat)) < 28) c.cur = Math.min(c.cur, o.cur * 0.84);
+    }
+
+    // --- integrate
+    var px0 = c.x, py0 = c.y;
+    c.x += c.dx * c.cur + (-c.dy) * (c.lat - (c.latPrev || 0));
+    c.y += c.dy * c.cur + ( c.dx) * (c.lat - (c.latPrev || 0));
+    c.latPrev = c.lat;
+    c.vx = c.x - px0; c.vy = c.y - py0;
+
+    if(!c.hit) testImpact(c);
+
+    var out = c.x < h.x - 200 || c.x > h.x + h.w + 200 || c.y < h.y - 200 || c.y > h.y + h.h + 200;
+    if(out && c.life > 0.5) S.cars.splice(i, 1);
+  }
+}
+
+function playerSpeedFrac(){
+  var v = Math.hypot(S.pvx, S.pvy);
+  return Math.min(1, v / CFG.run);
+}
+
+function testImpact(c){
+  // closest point on the car rectangle to the dummy
+  var rx = S.px - c.x, ry = S.py - c.y;
+  var a = rx*c.dx + ry*c.dy, b = rx*(-c.dy) + ry*(c.dx);
+  var ha = c.cls.l/2, hb = c.cls.w/2;
+  var ca = Math.max(-ha, Math.min(ha, a)), cb = Math.max(-hb, Math.min(hb, b));
+  if(Math.hypot(a - ca, b - cb) > CFG.dummyR) return;
+
+  var face = a > ha * 0.42 ? "front" : (a < -ha * 0.42 ? "rear" : "side");
+  if(face === "rear"){ c.hit = true; S.run.rear++; return; }
+
+  var rvx = c.vx - S.pvx, rvy = c.vy - S.pvy;
+  var closing = Math.hypot(rvx, rvy);
+  var sev = Math.max(0, Math.min(1, closing / CFG.maxClosing));
+  var pay = Math.round(Math.pow(sev, CFG.yieldCurve) * CFG.yieldBase * FACE[face]);
+
+  c.hit = true;
+  S.score += pay;
+  S.dmg += pay;
+  S.wear = Math.min(1, S.dmg / CFG.health);
+  S.freeze = face === "front" ? 0.09 : 0.05;
+  S.shake = 6 + 14 * sev;
+
+  var R = S.run;
+  R.hits++; S.shiftHits++; R.sevSum += sev;
+  R[face]++;
+  R.distSum += Math.hypot(S.px - c.x, S.py - c.y); R.distN++;
+  if(b < 0) R.leftN++; else R.rightN++;
+  R.lastUnit = c.u;
+
+  S.fx.push({k:"pay", t:0.95, x:S.px, y:S.py - 18, v:pay, big:face === "front"});
+
+  if(S.dmg >= CFG.health) endLife();
+}
+
+function stepPlayer(dt){
+  var dx = 0, dy = 0;
+  if(keys["a"] || keys["arrowleft"])  dx -= 1;
+  if(keys["d"] || keys["arrowright"]) dx += 1;
+  if(keys["w"] || keys["arrowup"])    dy -= 1;
+  if(keys["s"] || keys["arrowdown"])  dy += 1;
+  var moving = dx || dy;
+
+  // speed is the input: hold a direction and you ramp from walk to run
+  S.speedRamp = moving ? Math.min(1, S.speedRamp + dt / CFG.rampTime)
+                       : Math.max(0, S.speedRamp - dt / (CFG.rampTime * 0.5));
+  var base = (CFG.walk + (CFG.run - CFG.walk) * S.speedRamp) * (1 - 0.30 * S.wear);
+
+  if(S.lungeRem > 0){
+    var stepL = Math.min(S.lungeRem, CFG.lungeDist / (CFG.lungeTime * 60));
+    S.pvx = S.lx * stepL; S.pvy = S.ly * stepL;
+    S.lungeRem -= stepL;
+  } else if(moving){
+    var m = Math.hypot(dx, dy);
+    S.pvx = dx/m * base; S.pvy = dy/m * base;
+  } else {
+    S.pvx = 0; S.pvy = 0;
+  }
+  S.px += S.pvx; S.py += S.pvy;
+
+  var h = CFG.hall, r = CFG.dummyR;
+  S.px = Math.max(h.x + r, Math.min(h.x + h.w - r, S.px));
+  S.py = Math.max(h.y + r, Math.min(h.y + h.h - r, S.py));
+
+  S.run.speedSum += playerSpeedFrac(); S.run.speedN++;
+  if(S.cool > 0) S.cool -= dt;
+
+  // maintenance: stillness is a resource with a fuse
+  if(!moving && S.lungeRem <= 0){
+    S.stillT += dt;
+    if(S.stillT > CFG.serviceDelay && S.dmg > 0){
+      if(!S.serviceOn){ S.serviceOn = true; S.run.services++; }
+      S.dmg = Math.max(0, S.dmg - (CFG.health / CFG.serviceFull) * dt);
+      S.wear = Math.min(1, S.dmg / CFG.health);
+    }
+  } else {
+    S.stillT = 0; S.serviceOn = false;
+  }
+}
+
+/* ============================================================ 7. SIGNATURE */
+
+function signature(){
+  var R = S.run;
+  if(R.hits === 0) return "no_contact";
+  if(R.rear >= 3 && R.front === 0) return "wrong_face";
+  if(R.lunges >= 5 && R.hits / R.lunges < 0.34) return "whiff";
+  if(R.services >= 2) return "serviced";
+  if(R.speedN && R.speedSum / R.speedN > 0.58) return "jumpy";
+  var mean = R.sevSum / R.hits;
+  if(mean >= 0.55) return "greedy";
+  if(mean < 0.18) return "timid";
+  var d = R.distN ? R.distSum / R.distN : 48;
+  if(d > 62) return "early";
+  if(d < 34) return "late";
+  if(R.leftN - R.rightN >= 2) return "left";
+  if(R.rightN - R.leftN >= 2) return "right";
+  return "steady";
+}
+
+function pickLine(sig, unit){
+  var set = (BANK[sig] || BANK.steady)[band()] || BANK[sig].a;
+  var free = set.filter(function(l){ return S.used.indexOf(l) < 0; });
+  var line = (free.length ? free : set)[((free.length ? free : set).length * Math.random()) | 0];
+  S.used.push(line);
+  var other = S.fleet.filter(function(u){ return u !== unit && u.contacts > 0; });
+  var v = other.length ? other[(Math.random() * other.length) | 0].id : "the floor";
+  return line.replace(/\{U\}/g, unit ? unit.id : "FLOOR").replace(/\{V\}/g, v);
+}
+
+/* ============================================================ 8. FLOW */
+
+function startShift(silent){
+  var r = rung(S.shift);
+  S.quota = r.q; S.spent = 0; S.passed = 0;
+  S.shiftLunges = 0; S.shiftHits = 0;
+  S.used = [];
+  S.cars = [];
+  if(!silent) newLife();
+}
+
+function newLife(){
+  S.dmg = 0; S.wear = 0; S.run = freshRun();
+  S.px = CFG.hall.x + CFG.hall.w * 0.5;
+  S.py = CFG.hall.y + CFG.hall.h * 0.72;
+  S.pvx = S.pvy = 0; S.lungeRem = 0; S.cool = 0;
+  S.stillT = 0; S.serviceOn = false; S.speedRamp = 0;
+  S.body++;
+  S.mode = "play";
+}
+
+function endLife(){
+  S.spent++;
+  S.score += CFG.bonus;
+  var sig = signature();
+  var u = S.run.lastUnit || S.fleet[0];
+  creditContact(u);                      // the unit that wrote you off is the one that learns
+  S.card = { title:"UNIT WRITTEN OFF", sub:"QUOTA " + S.spent + " OF " + S.quota,
+             line:pickLine(sig, u), sig:sig, unit:u, pay:CFG.bonus };
+  S.cardKind = "life";
+  S.mode = "card";
+
+  if(S.closedCount >= 12) return finish("licensed");
+  if(S.spent >= S.quota) S.quotaEverMet = true;
+}
+
+function endShiftCheck(){
+  if(S.mode !== "play") return;
+  if(S.passed < rung(S.shift).a) return;
+  // allocation spent
+  if(S.quotaEverMet && S.shiftLunges === 0 && S.shiftHits === 0) return finish("noncompliant");
+  if(S.spent >= S.quota){
+    S.shift++;
+    S.card = { title:"SHIFT COMPLETE", sub:"REASSIGNED — SHIFT " + S.shift,
+               line:"Quota met. Allocation increased. The fleet has been briefed." };
+    S.cardKind = "shift"; S.mode = "card";
+  } else {
+    finish("decommissioned");
+  }
+}
+
+function finish(kind){
+  var last = S.run.lastUnit || S.fleet[0];
+  if(kind === "licensed"){
+    S.card = { title:"OPERATOR LICENCE ISSUED",
+               sub:"ALL TWELVE UNITS REPORT CONTACT",
+               line:last.id + ": All twelve units report contact. Operator licence issued. " +
+                    "Subject is not cleared to operate a vehicle." };
+  } else if(kind === "noncompliant"){
+    S.card = { title:"NON-COMPLIANT", sub:"SHIFT " + S.shift + " — NO CONTACT ATTEMPTED",
+               line:"BUS-06: Subject stood in bay four for the duration. This unit has no comment." };
+  } else {
+    S.card = { title:"DECOMMISSIONED", sub:"QUOTA " + S.spent + " OF " + S.quota + " — SHIFT " + S.shift,
+               line:"Subject did not approach. Recommend reassignment." };
+  }
+  S.card.profile = true;
+  S.cardKind = "over"; S.mode = "card";
+}
+
+function begin(){ S.mode = "play"; newLife(); }
+
+function advance(){
+  if(S.cardKind === "over"){ reset(); S.mode = "attract"; return; }
+  if(S.cardKind === "shift"){ startShift(false); return; }
+  newLife();
+  endShiftCheck();
+}
+
+/* ============================================================ 9. RENDER */
+
+function rr(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+function drawHall(){
+  var h = CFG.hall;
+  ctx.fillStyle = "#3f4448"; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = "#4a4f53"; ctx.fillRect(h.x,h.y,h.w,h.h);
+  ctx.strokeStyle = "#6c7378"; ctx.lineWidth = 2; ctx.strokeRect(h.x,h.y,h.w,h.h);
+  ctx.strokeStyle = "rgba(230,234,236,.22)"; ctx.lineWidth = 2; ctx.setLineDash([16,20]);
+  for(var i = 1; i < 5; i++){
+    ctx.beginPath(); ctx.moveTo(h.x, h.y + h.h*i/5); ctx.lineTo(h.x+h.w, h.y + h.h*i/5); ctx.stroke();
+  }
+  for(var j = 1; j < 6; j++){
+    ctx.beginPath(); ctx.moveTo(h.x + h.w*j/6, h.y); ctx.lineTo(h.x + h.w*j/6, h.y+h.h); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+function drawCar(c){
+  var D = dials(c.u), ang = Math.atan2(c.dy, c.dx);
+  ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(ang);
+
+  if(showPerception && S.mode === "play"){
+    ctx.fillStyle = c.sees ? "rgba(242,106,27,.17)" : "rgba(230,234,236,.07)";
+    ctx.beginPath(); ctx.moveTo(0,0);
+    ctx.lineTo(D.detect,  D.margin); ctx.lineTo(D.detect, -D.margin);
+    ctx.closePath(); ctx.fill();
+    if(c.cls.swerve){
+      ctx.strokeStyle = "rgba(230,234,236,.30)"; ctx.setLineDash([5,5]); ctx.lineWidth = 1;
+      var ca = D.detect * c.cls.commitFrac;
+      ctx.beginPath(); ctx.moveTo(ca, -D.margin); ctx.lineTo(ca, D.margin); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if(c.lock){  // chevron: the choice it can no longer take back
+      ctx.strokeStyle = "#f26a1b"; ctx.lineWidth = 3;
+      var s = -c.lock * (c.cls.w/2 + 13);
+      ctx.beginPath();
+      ctx.moveTo(c.cls.l*0.10, s - c.lock*9);
+      ctx.lineTo(c.cls.l*0.34, s);
+      ctx.lineTo(c.cls.l*0.10, s + c.lock*9);
+      ctx.stroke();
+    }
+  }
+
+  var closed = c.u.closed;
+  ctx.fillStyle = closed ? "#b9c1c6" : "#e8eaec";
+  rr(-c.cls.l/2, -c.cls.w/2, c.cls.l, c.cls.w, 6); ctx.fill();
+  ctx.fillStyle = "#f26a1b";                                  // the nose pays
+  rr(c.cls.l/2 - 9, -c.cls.w/2, 9, c.cls.w, 4); ctx.fill();
+  if(c.brake < 1){ ctx.fillStyle = "#c0392b"; ctx.fillRect(-c.cls.l/2, -c.cls.w/2+2, 4, c.cls.w-4); }
+  ctx.restore();
+
+  // file state: dots, then a ring when the file is closed
+  var fs = fileState(c.u), n = fs === "briefed" ? 1 : fs === "adapted" ? 2 : 0;
+  ctx.save(); ctx.translate(c.x, c.y);
+  for(var i = 0; i < n; i++){
+    ctx.fillStyle = "#16181a";
+    ctx.beginPath(); ctx.arc(-6 + i*12, 0, 2.6, 0, 6.283); ctx.fill();
+  }
+  if(closed){
+    ctx.strokeStyle = "#16181a"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, 7, 0, 6.283); ctx.stroke();
+  }
+  ctx.fillStyle = "rgba(22,24,26,.72)"; ctx.font = "600 9px " + "'IBM Plex Mono',monospace";
+  ctx.textAlign = "center"; ctx.fillText(c.u.id, 0, c.cls.w/2 + 11);
+  ctx.restore();
+}
+
+function drawDummy(){
+  var r = CFG.dummyR, lunging = S.lungeRem > 0;
+  ctx.save(); ctx.translate(S.px, S.py);
+  if(S.serviceOn){
+    ctx.strokeStyle = "rgba(31,122,87,.85)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, r + 8 + Math.sin(S.t*8)*2, 0, 6.283); ctx.stroke();
+  }
+  ctx.fillStyle = "#16181a"; ctx.beginPath(); ctx.arc(0, 0, r + 2, 0, 6.283); ctx.fill();
+  ctx.fillStyle = lunging ? "#f26a1b" : "#e8b400";
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.283); ctx.fill();
+  ctx.fillStyle = "#16181a";
+  for(var i = -1; i <= 1; i += 2) ctx.fillRect(-r, i*3 - 1.5, r*2, 3);
+  ctx.restore();
+}
+
+function drawHud(){
+  var h = CFG.hall, y = 18;
+  // integrity (graphical; no score on screen during play)
+  var bw = 190;
+  ctx.fillStyle = "rgba(22,24,26,.45)"; rr(h.x, y-9, bw, 13, 3); ctx.fill();
+  ctx.fillStyle = S.wear > 0.72 ? "#c0392b" : "#e8b400";
+  rr(h.x, y-9, bw * (1 - S.wear), 13, 3); ctx.fill();
+
+  // quota pips
+  var qx = h.x + bw + 20;
+  for(var i = 0; i < S.quota; i++){
+    ctx.beginPath(); ctx.arc(qx + i*16, y - 2, 5.5, 0, 6.283);
+    ctx.fillStyle = i < S.spent ? "#e8eaec" : "rgba(232,234,236,.26)"; ctx.fill();
+  }
+
+  // licence sheet: twelve cells, stamped as files close
+  var lx = h.x + h.w - 12*15, ly = y - 10;
+  for(var k = 0; k < 12; k++){
+    var u = S.fleet[k], x = lx + k*15;
+    ctx.strokeStyle = "rgba(232,234,236,.34)"; ctx.lineWidth = 1;
+    ctx.strokeRect(x, ly, 12, 14);
+    if(u.closed){
+      ctx.fillStyle = "#1f7a57"; ctx.fillRect(x+1.5, ly+1.5, 9, 11);
+    } else if(u.contacts > 0){
+      ctx.fillStyle = "rgba(232,234,236,.30)"; ctx.fillRect(x+1.5, ly+10.5, 9, 2);
+    }
+  }
+}
+
+function drawFx(dt){
+  for(var i = S.fx.length - 1; i >= 0; i--){
+    var f = S.fx[i]; f.t -= dt;
+    if(f.k === "pay"){
+      ctx.globalAlpha = Math.max(0, Math.min(1, f.t * 1.6));
+      ctx.fillStyle = f.big ? "#f26a1b" : "#e8eaec";
+      ctx.font = (f.big ? "700 26px " : "600 17px ") + "'IBM Plex Sans Condensed',sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("+" + f.v.toLocaleString(), f.x, f.y - (0.95 - f.t) * 34);
+      ctx.globalAlpha = 1;
+    }
+    if(f.k === "stamp"){
+      ctx.globalAlpha = Math.max(0, Math.min(1, f.t));
+      ctx.fillStyle = "#1f7a57"; ctx.font = "700 15px 'IBM Plex Sans Condensed',sans-serif";
+      ctx.textAlign = "right"; ctx.fillText("FILE CLOSED", CFG.hall.x + CFG.hall.w, 48);
+      ctx.globalAlpha = 1;
+    }
+    if(f.t <= 0) S.fx.splice(i, 1);
+  }
+}
+
+function wrapText(s, max){
+  var words = s.split(" "), lines = [], cur = "";
+  for(var i = 0; i < words.length; i++){
+    var t = cur ? cur + " " + words[i] : words[i];
+    if(ctx.measureText(t).width > max && cur){ lines.push(cur); cur = words[i]; }
+    else cur = t;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function drawCard(){
+  var c = S.card, w = 560, h = c.profile ? 290 : 230, x = (W-w)/2, y = (H-h)/2;
+  ctx.fillStyle = "rgba(16,18,20,.80)"; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = "#e8eaec"; rr(x, y, w, h, 4); ctx.fill();
+  ctx.fillStyle = "#16181a";
+
+  ctx.textAlign = "left";
+  ctx.font = "700 27px 'IBM Plex Sans Condensed',sans-serif";
+  ctx.fillText(c.title, x+30, y+48);
+  ctx.font = "500 12px 'IBM Plex Mono',monospace";
+  ctx.fillStyle = "#5a6166"; ctx.fillText(c.sub, x+30, y+70);
+
+  if(S.cardKind === "life"){
+    ctx.fillStyle = "#f26a1b"; ctx.font = "700 21px 'IBM Plex Sans Condensed',sans-serif";
+    ctx.textAlign = "right"; ctx.fillText("+" + c.pay.toLocaleString(), x+w-30, y+48);
+    ctx.textAlign = "left";
+  }
+
+  ctx.fillStyle = "#16181a"; ctx.font = "400 14px 'IBM Plex Mono',monospace";
+  var lines = wrapText(c.line, w - 60);
+  for(var i = 0; i < lines.length; i++) ctx.fillText(lines[i], x+30, y+104 + i*21);
+
+  // licence sheet on the card
+  var ly = y + h - (c.profile ? 92 : 56);
+  ctx.fillStyle = "#5a6166"; ctx.font = "500 10px 'IBM Plex Mono',monospace";
+  ctx.fillText("OPERATOR LICENCE", x+30, ly - 8);
+  for(var k = 0; k < 12; k++){
+    var u = S.fleet[k], cx = x + 30 + k*20;
+    ctx.strokeStyle = "#b9c1c6"; ctx.lineWidth = 1; ctx.strokeRect(cx, ly, 16, 18);
+    if(u.closed){
+      ctx.fillStyle = "#1f7a57"; ctx.fillRect(cx+2, ly+2, 12, 14);
+    } else if(u.contacts > 0){
+      ctx.fillStyle = "#cfd3d6"; ctx.fillRect(cx+2, ly+13, 12, 3);
+    }
+  }
+
+  if(c.profile){
+    var R = S.run, sig = signature();
+    ctx.fillStyle = "#5a6166"; ctx.font = "400 11px 'IBM Plex Mono',monospace";
+    ctx.fillText("Subject DM-7734 · body " + S.body + " · adult male, 50th percentile", x+30, y+h-44);
+    ctx.fillText("Profile: " + sig + " · files closed " + S.closedCount + " of 12 · shift " + S.shift,
+                 x+30, y+h-28);
+  }
+
+  ctx.fillStyle = "#8d969b"; ctx.font = "500 10px 'IBM Plex Mono',monospace";
+  ctx.textAlign = "right";
+  ctx.fillText(S.cardKind === "over" ? "ANY KEY TO RESTART" : "ANY KEY TO CONTINUE", x+w-30, y+h-14);
+  ctx.textAlign = "left";
+}
+
+function drawAttract(){
+  ctx.fillStyle = "rgba(16,18,20,.55)"; ctx.fillRect(0,0,W,H);
+  ctx.textAlign = "center"; ctx.fillStyle = "#e8eaec";
+  ctx.font = "700 30px 'IBM Plex Sans Condensed',sans-serif";
+  ctx.fillText("Your job is to be hit by the cars.", W/2, H/2 - 14);
+  ctx.fillText("The cars are programmed not to hit you.", W/2, H/2 + 24);
+  ctx.font = "500 11px 'IBM Plex Mono',monospace"; ctx.fillStyle = "#8d969b";
+  ctx.fillText("ANY KEY", W/2, H/2 + 64);
+  ctx.textAlign = "left";
+}
+
+/* ============================================================ 10. LOOP */
+
+var last = performance.now();
+function frame(now){
+  var dt = Math.min(0.05, (now - last) / 1000); last = now;
+  try{
+    S.t += dt;
+
+    if(S.mode === "play" || S.mode === "attract"){
+      if(S.freeze > 0) S.freeze -= dt;
+      else {
+        if(S.mode === "play") stepPlayer(dt);
+        S.spawnT -= dt;
+        if(S.spawnT <= 0 && S.passed < rung(S.shift).a + 4){
+          spawnCar();
+          S.spawnT = 1.25 + Math.random() * 1.15;
+        }
+        stepCars(dt);
+        if(S.mode === "play") endShiftCheck();
+      }
+    }
+
+    ctx.save();
+    if(S.shake > 0.3){
+      ctx.translate((Math.random()-0.5)*S.shake, (Math.random()-0.5)*S.shake);
+      S.shake *= 0.86;
+    }
+    drawHall();
+    for(var i = 0; i < S.cars.length; i++) drawCar(S.cars[i]);
+    if(S.mode !== "attract") drawDummy();
+    ctx.restore();
+
+    if(S.mode !== "attract") drawHud();
+    drawFx(dt);
+    if(S.mode === "attract") drawAttract();
+    if(S.mode === "card") drawCard();
+  } catch(e){
+    console.error(e);
+  }
+  requestAnimationFrame(frame);
+}
+
+reset();
+requestAnimationFrame(frame);
+</script>

@@ -1,0 +1,8 @@
+I changed only carsStep in sim.js. I couldn't run the checks here (seed 7 or any other), so none of these changes have been tested.
+
+- **Backstop:** it now applies only against lower-serial cars, so car-to-car logic never slows the lowest-serial car. Cars are sorted by serial each step.
+- **Higher-serial overlap:** if a lower-serial car ends up on top of a higher-serial one, the higher-serial car is pushed clear along the axis of least penetration. Its speed drops to that car's speed.
+- **Head-on side-step:** the side-step offset is now tracked per car (`off`, capped at ±60 px) and eases back to the lane once no lower-serial car is in its sweep. This replaces the old unbounded drift.
+- **Lane-swerve lock:** I left it unchanged. The deadlock came from the backstop holding the lowest-serial car against a higher-serial one, which that fix removes.
+- **Specification:** no problems found. A lower-serial car rear-ending a slower higher-serial car in a crossing (not same-lane) can still squeeze it, which is rare. The push-out handles it, but it is the weakest case for AC-15.
+=== END NOTES ===

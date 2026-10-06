@@ -9,6 +9,7 @@ own system prompt and no shared conversation:
                          +------ repair requests (max 2) -------+
 
 Usage:  python crew.py            (needs: Python 3.9+, Node 18+, Claude Code signed in)
+        python crew.py --from-run runs/<timestamp>   (reuse that run's specification and first build)
 Output: runs/<timestamp>/ (every intermediate artifact) and output/game/ (released build)
 """
 import datetime
@@ -110,10 +111,19 @@ def main():
     run.log(f"DUMMIES crew run -> {run.dir.relative_to(ROOT)}")
     brief = (ROOT / "SLICE_BRIEF.md").read_text(encoding="utf-8")
     contract = brief[brief.index("## Fixed technical contract"):]
+    baseline = (ROOT / "baseline" / "dummies-testpad.html").read_text(encoding="utf-8")
+    baseline_config = baseline[baseline.index("1. CONFIG"):baseline.index("2. REPORT BANK")]
+    reuse = Path(sys.argv[sys.argv.index("--from-run") + 1]) if "--from-run" in sys.argv else None
 
     # --- Agent 1: Rules Designer -------------------------------------------------
-    spec_text = call_agent(run, "Rules Designer", "rules_designer.md",
-                           "Slice brief follows. Produce the slice specification JSON.\n\n" + brief, "01_designer")
+    if reuse and (reuse / "01_spec.json").exists():
+        spec_text = (reuse / "01_spec.json").read_text(encoding="utf-8")
+        run.log(f"Rules Designer: NOT called; specification reused from {reuse.name}")
+    else:
+        spec_text = call_agent(run, "Rules Designer", "rules_designer.md",
+                               "Vertical slice brief follows, then the CONFIG section of the baseline Testpad. "
+                               "Produce the specification JSON.\n\n" + brief
+                               + "\n\n# BASELINE TESTPAD, SECTION 1. CONFIG (per-frame units)\n" + baseline_config, "01_designer")
     spec = parse_json(spec_text)
     spec_json = json.dumps(spec, indent=2)
     spec_path = run.save("01_spec.json", spec_json)
@@ -125,8 +135,10 @@ def main():
     for attempt in range(1, MAX_REPAIRS + 2):
         tag = f"{attempt + 1:02d}_build_v{attempt}"
         if attempt == 1:
-            builder_msg = ("Implement this specification.\n\n# SPECIFICATION (from the Rules Designer)\n" + spec_json
-                           + "\n\n# CONTRACT\n" + contract)
+            builder_msg = ("Port the baseline Testpad to the contract and implement this specification.\n\n"
+                           "# SPECIFICATION (from the Rules Designer)\n" + spec_json
+                           + "\n\n# CONTRACT\n" + contract
+                           + "\n\n# BASELINE TESTPAD (complete source)\n" + baseline)
         else:
             failing = [r for r in checks["results"] if not r["pass"]]
             builder_msg = ("REPAIR PASS. Fix every item below and return both complete files.\n\n"
@@ -134,8 +146,15 @@ def main():
                            + "\n\n# QA REPAIR REQUESTS\n" + json.dumps(qa.get("repair_requests", []), indent=2)
                            + "\n\n# QA DEFECTS\n" + json.dumps(qa.get("defects", []), indent=2)
                            + "\n\n# SPECIFICATION\n" + spec_json + "\n\n# CONTRACT\n" + contract
-                           + "".join(f"\n\n# YOUR PREVIOUS {n}\n{c}" for n, c in files.items()))
-        files, notes = parse_files(call_agent(run, "Game Builder", "game_builder.md", builder_msg, tag))
+                           + "".join(f"\n\n# YOUR PREVIOUS {n}\n{c}" for n, c in files.items())
+                           + "\n\n# BASELINE TESTPAD (reference)\n" + baseline)
+        prior = reuse / "02_build_v1" if reuse else None
+        if attempt == 1 and prior and (prior / "sim.js").exists():
+            files = {n: (prior / n).read_text(encoding="utf-8") for n in ("sim.js", "index.html")}
+            notes = (reuse / "02_build_v1_notes.txt").read_text(encoding="utf-8").strip()
+            run.log(f"Game Builder: NOT called for build 1; files reused from {reuse.name}")
+        else:
+            files, notes = parse_files(call_agent(run, "Game Builder", "game_builder.md", builder_msg, tag))
         build_dir = run.dir / tag
         build_dir.mkdir(exist_ok=True)
         for name, content in files.items():
@@ -147,7 +166,8 @@ def main():
         qa_msg = ("Review this build.\n\n# SPECIFICATION (from the Rules Designer)\n" + spec_json
                   + "\n\n# AUTOMATED CHECK RESULTS (executed by the orchestrator, not by the Builder)\n" + json.dumps(checks, indent=2)
                   + "\n\n# BUILDER NOTES\n" + notes
-                  + "".join(f"\n\n# FILE {n}\n{c}" for n, c in files.items()))
+                  + "".join(f"\n\n# FILE {n}\n{c}" for n, c in files.items())
+                  + "\n\n# BASELINE TESTPAD (reference for unchanged behaviour; not under review)\n" + baseline)
         qa = parse_json(call_agent(run, "QA / Repair Reviewer", "qa_reviewer.md", qa_msg, f"{tag}_qa"))
         run.save(f"{tag}_qa.json", json.dumps(qa, indent=2))
         run.log(f"QA verdict: {qa.get('verdict')} | {len(qa.get('repair_requests', []))} repair request(s) | {qa.get('summary', '')}")

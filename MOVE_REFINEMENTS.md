@@ -8,7 +8,13 @@ Status values: **noted** (Lawrence's playtest observation), **proposed**
 (assistant suggestion, not confirmed), **confirmed** (Lawrence decided),
 **implemented**, **tested**.
 
-## Current build (baseline)
+## Current build
+
+The three-level rebuild (run `20261006-215228`) uses the Testpad's numbers:
+walk 81 px/s, run 162 px/s over a 1.0 s ramp, lunge 164 px in 0.30 s (eased),
+0.55 s before the next lunge, 0.35 s eased recovery.
+
+## First greybox (superseded)
 
 From the crew run `20261006-185615`, values chosen by the Rules Designer agent.
 
@@ -25,7 +31,8 @@ From the crew run `20261006-185615`, values chosen by the Rules Designer agent.
 
 - **Date:** 6 October 2026
 - **Source:** Lawrence, comparing the crew greybox with his earlier Testpad
-- **Status:** noted
+- **Status:** implemented in the three-level rebuild (run `20261006-215228`):
+  all sizes are the Testpad's; roads are 128 px wide in a 540 px hall
 - **Observation (Lawrence's words):** "the road and car are too large as
   well. This is a better scale."
 - **Crew greybox now:** 960 x 540 world, one road 160 px wide, sedan 80 x 40,
@@ -42,7 +49,9 @@ From the crew run `20261006-185615`, values chosen by the Rules Designer agent.
 
 - **Date:** 6 October 2026
 - **Source:** Lawrence
-- **Status:** noted; **which build this refers to is unconfirmed**
+- **Status:** closed. Lawrence: "the testpad has fixed the problem, it was
+  only a problem in this chat's first game pass." The rebuild is checked for
+  equal distance in all eight directions (122.2 px in 1 s each way)
 - **Observation (Lawrence's words):** "the diagonal covers much more ground
   than the simple up or down (it's the 'diagonal' hack problem)."
 - **Measured in the crew greybox:** not present. Holding up, right, or
@@ -57,7 +66,11 @@ From the crew run `20261006-185615`, values chosen by the Rules Designer agent.
 
 - **Date:** 6 October 2026
 - **Source:** Lawrence, first hands-on play of the greybox
-- **Status:** noted
+- **Status:** implemented as proposed below (a, b and c), awaiting Lawrence's
+  verdict at the keyboard. In the rebuild the lunge eases out (87% of the
+  distance in the first half of its 0.30 s) and is followed by a 0.35 s
+  recovery in which movement speed eases back from zero; the dummy is never
+  frozen. Option d (eased stopping) is not implemented
 - **Observation (Lawrence's words):** "I pause for too long after lunging.
   It's not a bad idea, but movement should be tweened."
 - **What is kept:** the idea of a pause after a lunge. The GDD requires it:

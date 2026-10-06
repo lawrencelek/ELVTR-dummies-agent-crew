@@ -1,3 +1,5 @@
+Vertical slice brief follows, then the CONFIG section of the baseline Testpad. Produce the specification JSON.
+
 # DUMMIES — Vertical Slice Brief (input to the crew)
 
 This file is the human-written input to the three-agent crew, together with
@@ -222,3 +224,68 @@ Units: pixels, seconds, pixels per second. Testpad per-frame speeds
 (`walk`, `run`, class `sp`, `maxClosing`) are multiplied by 60. Testpad
 `predict` is already seconds of look-ahead and is unchanged. Distances
 (`detect`, `margin`, sizes, `lungeDist`) and times are unchanged.
+
+
+# BASELINE TESTPAD, SECTION 1. CONFIG (per-frame units)
+1. CONFIG */
+
+var CFG = {
+  health:2300, bonus:2500,
+  walk:1.35, run:2.70, rampTime:1.0,          // move accelerates walk -> run over ~1s
+  lungeDist:164, lungeTime:0.30, lungeCool:0.55,
+  dummyR:13,
+  maxClosing:13.2, yieldBase:1700, yieldCurve:2.2,
+  wearFloor:0.45,                              // reach floor at full damage
+  cautionMax:0.40,                             // cars lose up to 40% speed when you run
+  serviceDelay:1.5, serviceFull:30.0,          // still 1.5s, then full chassis in 30s
+  hall:{x:40,y:40,w:820,h:540}
+};
+var FACE = {front:1, side:0.25, rear:0};
+
+/* six classes = six answers to the same problem */
+var CLASSES = {
+  sedan:{label:"Sedan", w:34,l:62, sp:2.30, swerve:true,  commitFrac:0.50, flip:false, brakeFirst:false,
+    base:{detect:212, margin:44, predict:0.30, brakeLead:0.45},
+    step:{detect:30,  margin:11, predict:0.07, brakeLead:0.04},
+    cap :{detect:400, margin:190,predict:0.72, brakeLead:0.68}},
+  van:{label:"Van", w:38,l:76, sp:2.00, swerve:true, commitFrac:0.42, flip:false, brakeFirst:true,
+    base:{detect:232, margin:38, predict:0.26, brakeLead:0.74},
+    step:{detect:28,  margin:10, predict:0.06, brakeLead:0.06},
+    cap :{detect:410, margin:188,predict:0.64, brakeLead:0.95}},
+  sports:{label:"Sports", w:30,l:58, sp:3.20, swerve:true, commitFrac:0.30, flip:false, brakeFirst:false,
+    base:{detect:190, margin:31, predict:0.36, brakeLead:0.28},
+    step:{detect:34,  margin:12, predict:0.09, brakeLead:0.03},
+    cap :{detect:400, margin:186,predict:0.86, brakeLead:0.50}},
+  bus:{label:"Bus", w:46,l:108, sp:1.80, swerve:false, commitFrac:0.50, flip:false, brakeFirst:true,
+    base:{detect:258, margin:34, predict:0.22, brakeLead:0.88},
+    step:{detect:26,  margin:9,  predict:0.05, brakeLead:0.07},
+    cap :{detect:420, margin:184,predict:0.56, brakeLead:1.15}},
+  wagon:{label:"Wagon", w:36,l:72, sp:2.40, swerve:true, commitFrac:0.58, flip:false, brakeFirst:false,
+    base:{detect:244, margin:58, predict:0.46, brakeLead:0.50},
+    step:{detect:32,  margin:14, predict:0.10, brakeLead:0.04},
+    cap :{detect:430, margin:200,predict:0.96, brakeLead:0.72}},
+  hatch:{label:"Hatch", w:30,l:54, sp:2.60, swerve:true, commitFrac:0.60, flip:true, brakeFirst:false,
+    base:{detect:204, margin:41, predict:0.28, brakeLead:0.44},
+    step:{detect:30,  margin:11, predict:0.07, brakeLead:0.04},
+    cap :{detect:400, margin:188,predict:0.74, brakeLead:0.66}}
+};
+
+/* twelve units; pool order is the dispatch order on the ladder */
+var FLEET_DEF = [
+  ["SDN-01","sedan"], ["SDN-02","sedan"], ["VAN-07","van"],
+  ["SPT-11","sports"],["BUS-06","bus"],   ["SDN-04","sedan"],
+  ["WGN-05","wagon"], ["HTB-09","hatch"], ["VAN-12","van"],
+  ["SPT-03","sports"],["WGN-08","wagon"], ["HTB-10","hatch"]
+];
+
+/* the fleet briefs itself: the Nth file to close costs fewer contacts */
+var CLOSE_COST = [4,4,3,3,3,2,2,2,2,1,1,1];
+
+/* shift -> quota, vehicles allocated, how many units are in rotation */
+var LADDER = [
+  {q:2,a:34,pool:3}, {q:3,a:38,pool:4}, {q:3,a:38,pool:6}, {q:4,a:42,pool:8},
+  {q:4,a:42,pool:9}, {q:5,a:46,pool:10},{q:5,a:46,pool:12},{q:6,a:48,pool:12}
+];
+function rung(s){ return s <= LADDER.length ? LADDER[s-1] : {q:6,a:48,pool:12}; }
+
+/* ============================================================ 

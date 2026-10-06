@@ -1,0 +1,116 @@
+{
+  "total": 18,
+  "passed": 18,
+  "failed": 0,
+  "all_passed": true,
+  "results": [
+    {
+      "id": "load_sim",
+      "description": "sim.js loads in Node and exports createSim, step, PARAMS",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "params_match_spec",
+      "description": "Builder's PARAMS equal the Designer's spec params (Designer output reached the Builder)",
+      "pass": true,
+      "detail": "29 parameters identical"
+    },
+    {
+      "id": "state_shape",
+      "description": "createSim returns the contract state shape and is JSON-serialisable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "move_speed_equal_8_directions",
+      "description": "Distance covered in 1 s is equal in all eight directions (within 1%) and travels the way the input points",
+      "pass": true,
+      "detail": "distances px: 160.83, 160.83, 160.83, 160.83, 160.83, 160.83, 160.83, 160.83"
+    },
+    {
+      "id": "run_speed_matches_spec",
+      "description": "After accelerating, speed equals spec runSpeed in cardinal and diagonal directions (within 2%)",
+      "pass": true,
+      "detail": "measured px/s: 190.00, 190.00"
+    },
+    {
+      "id": "lunge_distance_equal_8_directions",
+      "description": "Lunge distance is equal in all eight directions (within 1%) and equals spec lungeDistance (within 2%)",
+      "pass": true,
+      "detail": "distances px: 130.00, 130.00, 130.00, 130.00, 130.00, 130.00, 130.00, 130.00"
+    },
+    {
+      "id": "no_midair_steering",
+      "description": "Direction input during a lunge does not change its path",
+      "pass": true,
+      "detail": "sideways drift 0.000 px"
+    },
+    {
+      "id": "miss_recovery_delay",
+      "description": "A missed lunge is followed by a recovery period with no movement, then control returns",
+      "pass": true,
+      "detail": "recovery 0.700 s"
+    },
+    {
+      "id": "deterministic",
+      "description": "Same seed and same inputs give an identical state after 30 s",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "traffic_cruises_and_respawns",
+      "description": "An undetected sedan cruises left to right with no route chevron, leaves, and another appears",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "detect_commit_brake_and_avoid",
+      "description": "A dummy standing in the lane is detected (chevron appears), the route locks at commitment, brake lights show while slowing, and the sedan swerves past without contact",
+      "pass": true,
+      "detail": "detected, committed, braked, passed clear"
+    },
+    {
+      "id": "route_locked_against_bait",
+      "description": "After commitment, moving the dummy does not change the locked route (the bait works)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "front_impact_damage_once",
+      "description": "A front impact reduces health and adds score exactly once per contact episode",
+      "pass": true,
+      "detail": "health 100 -> 45.12, score 0 -> 54.88"
+    },
+    {
+      "id": "single_impact_per_episode",
+      "description": "Staying in contact does not apply damage every frame",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "rear_contact_no_damage",
+      "description": "Contact with the rear of the car gives no damage and no score",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "destruction_and_fresh_body",
+      "description": "Repeated front impacts destroy the body once, then a fresh body with full health appears",
+      "pass": true,
+      "detail": "destroyed after 2 cruise-speed front impacts (GDD provisional target: 2)"
+    },
+    {
+      "id": "sim_is_pure",
+      "description": "sim.js uses no Math.random, timers, clock or DOM",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "html_static",
+      "description": "index.html has a canvas, loads sim.js, handles the keyboard and makes no network requests",
+      "pass": true,
+      "detail": "1 inline script(s) parse without syntax errors"
+    }
+  ]
+}

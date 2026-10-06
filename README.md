@@ -9,33 +9,42 @@ self-driving cars and lunge into their path.
 
 ## What the crew produces
 
-A crew of three agents turns a one-page slice brief into a **playable greybox
-of the game's core loop** — one road, one sedan (SED-03-001), one dummy — plus
-the specification it was built from and an independent QA report.
+A crew of three agents takes Lawrence's hand-directed prototype (the
+"Testpad", `baseline/dummies-testpad.html`) and a one-page brief, and produces
+a **playable three-level vertical slice of DUMMIES**, plus the specification
+it was built from and an independent QA report.
+
+| Level | What it is |
+|-------|------------|
+| 1. ROAD | One road, all traffic left to right, nothing makes it stop. The teaching level. |
+| 2. CROSS JUNCTION | Two roads crossing, no traffic lights. Cars give way to each other and never collide. |
+| 3. CRASH TEST CENTRE | The open hall: vehicles from all four edges, the full twelve-unit fleet. |
 
 Released output from the run included in this repository:
 
 | File | Produced by | What it is |
 |------|-------------|------------|
-| `output/spec.json` | Rules Designer | Tuned parameters, behaviour rules, 28 acceptance criteria, 10 labelled simplifications |
+| `output/spec.json` | Rules Designer | All parameters in real-time units, the three level designs, the changed rules, 25 acceptance criteria, 9 listed differences from the GDD and the Testpad |
 | `output/game/index.html`, `output/game/sim.js` | Game Builder | The playable browser game |
-| `output/checks.json` | Orchestrator | Results of 18 executable checks run against the build |
+| `output/checks.json` | Orchestrator | Results of 28 executable checks run against the build |
 | `output/qa_report.json` | QA / Repair Reviewer | Per-criterion verdicts, defects, release decision |
 
-**To play:** open `output/game/index.html` in a browser (double-click it; no
-server needed). Arrow keys or WASD to move, hold to run, Space to lunge. Stand
-near the lane so the car sees you, step out of its way, and when its chevron
-turns orange (route locked) lunge back into its path.
+**To play:** download the repository (green **Code** button, **Download ZIP**),
+unzip, and open `output/game/index.html` in a browser. No server is needed.
+WASD or arrow keys move (hold to run), Space lunges, any key dismisses a card.
+Cars avoid you: stand where a car can't see you, or bait it into committing to
+a side, then lunge across its orange nose. Only the nose pays in full.
 
-![The sedan has committed: orange locked chevron, commit ring, detection wedge](docs/screenshot.png)
+![Level 2, the cross junction](docs/screenshot_level2.png)
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-    BRIEF[/"SLICE_BRIEF.md<br/>human-written: slice scope, GDD rules, technical contract"/]
+    BRIEF[/"SLICE_BRIEF.md<br/>human-written: three levels, changes, technical contract"/]
+    BASE[/"baseline/dummies-testpad.html<br/>Lawrence's prototype: scale, feel, systems"/]
     D["Agent 1: Rules Designer<br/>agents/rules_designer.md"]
-    SPEC[/"spec.json<br/>params, rules, acceptance criteria, simplifications"/]
+    SPEC[/"spec.json<br/>params, level designs, changed rules, acceptance criteria"/]
     B["Agent 2: Game Builder<br/>agents/game_builder.md"]
     BUILD[/"sim.js + index.html"/]
     C[["Executable checks<br/>checks/run_checks.js - Node, not an agent"]]
@@ -47,14 +56,19 @@ flowchart TD
     OUT[/"output/<br/>released game, spec, checks, QA report"/]
     FAIL["Stop: NOT RELEASED<br/>nothing copied to output/"]
 
-    BRIEF --> D --> SPEC
-    SPEC --> B --> BUILD
+    BRIEF --> D
+    BASE -- "config section" --> D
+    D --> SPEC
+    SPEC --> B
+    BASE -- "full source" --> B
+    B --> BUILD
     BUILD --> C
     SPEC --> C
     C --> CR
     SPEC --> Q
     BUILD --> Q
     CR --> Q
+    BASE -- "reference" --> Q
     Q --> QA --> G
     G -- yes --> OUT
     G -- no --> L
@@ -71,40 +85,44 @@ the orchestrator hands it.
 
 | Agent | Input | Output | Why it is needed |
 |-------|-------|--------|------------------|
-| **Rules Designer** | `SLICE_BRIEF.md` | `spec.json`: every number (speeds, lunge distance, wedge, commit distance, damage), dummy and car state machines, cue rules, acceptance criteria, simplifications vs the GDD | The brief says *what* the slice is; nobody else decides *how much*. Without it the Builder invents its own rules and there is nothing to test against. Covers the GDD's Ladder & Economy and Lead Architect roles for this slice. |
-| **Game Builder** | `spec.json` + technical contract; on repair also its previous files, failing checks and QA repair requests | `sim.js` (deterministic logic) and `index.html` (rendering, input) | The only agent that writes game code. It may not change rules or numbers. Covers the GDD's Feel and Vehicle Behaviour roles. |
-| **QA / Repair Reviewer** | `spec.json`, the Builder's files, the check results | `qa.json`: pass / fail / unverified per acceptance criterion with evidence, defects, scope violations, verdict, targeted repair requests | GDD rule: *no agent signs off its own work.* Checks only cover logic; QA reads the code for what checks cannot see (cues computed but not drawn, input bugs, excluded systems creeping in). Its verdict is one half of the release gate. Covers the GDD's QA Harness role. |
+| **Rules Designer** | `SLICE_BRIEF.md` and the Testpad's config section | `spec.json`: every number converted to real-time units, the three level layouts with quota, allocation and unit pool, the certification target, exact rules for everything that changes (eased lunge and recovery, car-to-car give-way, level flow, endings), acceptance criteria | The brief says *what* changes; nobody else decides *how much* or writes it down testably. Without it the Builder would invent levels and rules and there would be nothing to test against. Covers the GDD's Ladder & Economy and Lead Architect roles. |
+| **Game Builder** | `spec.json`, the technical contract and the full Testpad source; on repair also its previous files, the failing checks and QA's repair requests | `sim.js` (all rules, deterministic, no browser needed) and `index.html` (drawing and input) | The only agent that writes game code. It ports the Testpad and may not change rules or numbers. Covers the GDD's Feel and Vehicle Behaviour roles. |
+| **QA / Repair Reviewer** | `spec.json`, the Builder's files, the check results, the Testpad source as reference | `qa.json`: pass / fail / unverified per acceptance criterion with evidence, defects, missing Testpad systems, verdict, targeted repair requests | GDD rule: *no agent signs off its own work.* Checks only cover rules they can measure; QA reads the code for what they cannot see and turns failures into repair requests the Builder can act on. Its verdict is one half of the release gate. Covers the GDD's QA Harness role. |
 
 How the outputs really pass between agents:
 
 - The check `params_match_spec` fails unless the Builder's `PARAMS` are
-  identical to the Designer's numbers.
-- The checks measure movement and lunge against the Designer's values, not
-  against constants in the harness.
+  identical to the Designer's 233 numbers.
+- The checks measure movement, lunge, levels and endings against the
+  Designer's values, not against constants in the harness.
 - A build is released only if every check passes **and** QA says `release`. If
   either says no, the Builder is called again with the reasons (two repair
   cycles at most). If it still fails, the run exits with code 1 and `output/`
   is left untouched.
+- In the submitted run this loop was used: build 1 failed the deadlock check, QA wrote three repair requests, the Builder changed the car-to-car logic, and build 2 passed every check and QA.
 
 ## Connection to the GDD
 
-The GDD describes a much larger game and a fourteen-role production
-architecture. This crew is a deliberately small version of it.
-
 | GDD rule | In this slice |
 |----------|---------------|
-| "Move in eight directions and press one button to lunge" | Yes; equal speed and equal lunge distance in all eight directions |
-| "Lunge travels in the facing direction without midair steering; a miss causes a recovery delay" | Yes |
-| Sedan: "Swerves with moderate clearance" / "Intercept its locked route" | Yes; the only vehicle |
-| Wedge, chevron on detection, commit ring where the route locks, brake lights | Yes |
-| "Rear contact gives no damage, score"; one impact per contact episode | Yes |
-| "Two ordinary head-on hits destroying a fresh body" (provisional target) | Yes, with the Designer's numbers |
-| "Runtime uses seeded code, not language models" | Yes; `sim.js` is deterministic |
-| Damage by class, speed and angle; overkill and write-off bonuses | **Simplified** greybox formula |
-| Other vehicle classes, fleet learning, moods, service, shifts, quotas, certification, endings, barks and reports, art, audio | **Not included** |
+| "Move in eight directions and press one button to lunge" | Yes; equal speed and equal lunge distance in all eight directions, checked |
+| "Lunge travels in the facing direction without midair steering" | Yes; held direction, or facing direction if none is held |
+| "A miss causes a recovery delay" | Yes, as an eased 0.35 s recovery, not a freeze (Move Refinements MR-01) |
+| Vehicle classes with different avoidance | Six of the GDD's eight: sedan, van, sports, bus, wagon, hatchback (no SUV or police car) |
+| Hatchback: "one signalled recommitment" | Yes |
+| "The cars visibly learn" | Yes, as in the Testpad: each write-off briefs the unit that caused it |
+| Detection wedge, commit line, chevron, brake lights | Yes. The chevron appears at commitment, as in the Testpad, not on detection as the GDD says |
+| "Rear contact gives no damage, score" | Yes |
+| Standing still triggers service | Yes, as in the Testpad: unlimited, not once per body |
+| Certification by total write-offs, target above the sum of quotas | Yes: 11 bodies against quotas of 2, 3, 5 |
+| Endings: Licensed, Non-compliant, Decommissioned | Yes |
+| Reports voiced by vehicles, truthful to logged events | Yes: the Testpad's twelve behaviour signatures and authored lines |
+| "Runtime uses seeded code, not language models" | Yes; same seed and inputs give the same run, checked |
+| Environments | Three (road, cross junction, crash test centre) of the GDD's five |
+| Price tiers, moods, shift analysis, art direction, audio | **Not included** |
 
-The full list of simplifications, written by the Designer agent, is in
-`output/spec.json` under `simplifications_vs_gdd`.
+The Designer's own list of differences is in `output/spec.json` under
+`differences`.
 
 ## How to run the crew
 
@@ -120,93 +138,131 @@ Requirements:
 python crew.py
 ```
 
-A run takes roughly five minutes and makes at least three model calls. It
-writes every intermediate artifact to `runs/<timestamp>/` and, if released,
-the final files to `output/`. Optional: set `CREW_MODEL` to choose a model.
-
-To re-run only the checks against the released build:
+A full run makes at least three model calls and takes roughly ten to twenty
+minutes; the Builder's port is the slow step. It writes every intermediate
+artifact to `runs/<timestamp>/` and, if released, the final files to
+`output/`. Optional: set `CREW_MODEL` to choose a model.
 
 ```
-node checks/run_checks.js output/game output/spec.json
+python crew.py --from-run runs/<timestamp>     # reuse that run's specification and first build
+node checks/run_checks.js output/game output/spec.json     # re-run only the checks
+node checks/bot_playthrough.js output/game 1               # automated player, seed 1
 ```
 
 ## Repository layout
 
 ```
 SLICE_BRIEF.md            human-written input to the crew
+baseline/                 the Testpad: Lawrence's prototype, the Builder's starting point
 crew.py                   orchestrator
 agents/                   one system prompt per agent
-checks/run_checks.js      executable checks (Node)
-checks/browser_playtest.js  optional scripted browser playtest (needs Playwright)
-runs/20261006-185615/     complete record of the submitted run
+checks/run_checks.js      executable checks (the release gate, with QA)
+checks/bot_playthrough.js automated player (informational)
+checks/browser_playtest.js  scripted browser playtest (needs Playwright)
+runs/                     complete record of every run, including the stopped ones
 output/                   released game, spec, checks and QA report
+archive/                  the first version: a one-road greybox built from scratch
 DECISIONS.md              decision log
+MOVE_REFINEMENTS.md       log of how movement should feel
 docs/                     screenshots
 ```
 
 ## What was actually tested
 
-**The crew run** (`runs/20261006-185615/`, 6 October 2026): three agent calls,
-all completed; released on the first build with no repair cycle.
+**The crew runs** (6 October 2026). Nothing here was hidden or tidied:
 
-| Step | Result |
-|------|--------|
-| Rules Designer | 146.5 s; specification with 28 acceptance criteria |
-| Game Builder | 70.8 s; `sim.js` (328 lines) and `index.html` (201 lines) |
-| Executable checks | 18 of 18 passed |
-| QA / Repair Reviewer | 55.2 s; verdict `release`; 26 criteria pass, 2 unverified, 3 minor defects, 0 repair requests |
+| Run | What happened |
+|-----|---------------|
+| `20261006-185615` | First version (archived): one-road greybox from scratch. Three agent calls, released on the first build, 18 of 18 checks. |
+| `20261006-214051` | Rebuild from the Testpad. Designer 137 s, Builder 391 s. Build 1 passed 26 of the then 27 checks. The one failure was a **bug in the check harness** (it objected when the dummy's health rose from service repair). Stopped by the operator during QA; the check was corrected. |
+| `20261006-215043` | Specification and build 1 reused. 27 of 27 checks passed. QA said `repair` with one request, about fleet learning only being credited at a write-off, which is how the Testpad behaves. Meanwhile the automated player showed that **level 2 could deadlock** and never end. Stopped by the operator during the repair call; a new check for it was added, and QA and the repair pass were given the Testpad source. |
+| `20261006-215228` | **The submitted run.** Specification and build 1 reused. Build 1 failed the new deadlock check (27 of 28). QA said `repair` with three targeted requests. The Builder's repair took 174 s and changed only the car-to-car logic. Build 2 passed 28 of 28 checks and QA said `release` (22 criteria pass, 3 unverified, 4 minor defects). |
 
-**Executable checks** (run by Node against the generated `sim.js`):
+**Executable checks** on the released build (run by Node against the generated
+`sim.js`): 28 of 28 passed.
 
 | Check | What it verifies | Result |
 |-------|------------------|--------|
 | `load_sim` | sim.js loads in Node and exports createSim, step, PARAMS | pass |
 | `params_match_spec` | Builder's PARAMS equal the Designer's spec params (Designer output reached the Builder) | pass |
-| `state_shape` | createSim returns the contract state shape and is JSON-serialisable | pass |
-| `move_speed_equal_8_directions` | Distance covered in 1 s is equal in all eight directions (within 1%) and travels the way the input points | pass |
-| `run_speed_matches_spec` | After accelerating, speed equals spec runSpeed in cardinal and diagonal directions (within 2%) | pass |
-| `lunge_distance_equal_8_directions` | Lunge distance is equal in all eight directions (within 1%) and equals spec lungeDistance (within 2%) | pass |
+| `state_shape` | createSim returns the contract state shape, JSON-serialisable, for all three levels | pass |
+| `attract_then_confirm` | Default start is the attract screen; a confirm press begins play | pass |
+| `move_speed_equal_8_directions` | Distance covered in 1 s is equal in all eight directions (within 1%) and goes the way the input points | pass |
+| `walk_frame_rate_independent` | Walking covers the same distance at 60 and 120 steps per second (within 2%) | pass |
+| `run_speed_matches_spec` | After the ramp, speed equals spec runSpeed straight and diagonal (within 3%) | pass |
+| `lunge_distance_equal_8_directions` | Lunge distance is equal in all eight directions (within 1%), equals spec lungeDistance (within 2%), and follows the facing direction when no direction is held | pass |
+| `lunge_frame_rate_independent` | A lunge covers the same distance at 120 steps per second (within 2%) | pass |
+| `lunge_eases_out` | The lunge is tweened: more than 60% of the distance is covered in the first half of its duration | pass |
 | `no_midair_steering` | Direction input during a lunge does not change its path | pass |
-| `miss_recovery_delay` | A missed lunge is followed by a recovery period with no movement, then control returns | pass |
-| `deterministic` | Same seed and same inputs give an identical state after 30 s | pass |
-| `traffic_cruises_and_respawns` | An undetected sedan cruises left to right with no route chevron, leaves, and another appears | pass |
-| `detect_commit_brake_and_avoid` | A dummy standing in the lane is detected (chevron appears), the route locks at commitment, brake lights show while slowing, and the sedan swerves past without contact | pass |
-| `route_locked_against_bait` | After commitment, moving the dummy does not change the locked route (the bait works) | pass |
-| `front_impact_damage_once` | A front impact reduces health and adds score exactly once per contact episode | pass |
-| `single_impact_per_episode` | Staying in contact does not apply damage every frame | pass |
-| `rear_contact_no_damage` | Contact with the rear of the car gives no damage and no score | pass |
-| `destruction_and_fresh_body` | Repeated front impacts destroy the body once, then a fresh body with full health appears | pass |
+| `held_lunge_does_not_chain` | Holding the lunge button and a direction for 3 s starts exactly one lunge | pass |
+| `recovery_is_tweened` | After a lunge the dummy is 'recovering' for spec recoveryTime, can move during it, and starts slowly | pass |
+| `deterministic_and_seeded` | Same seed and inputs give an identical state after 40 s; a different seed gives different traffic | pass |
+| `level1_road_flows_left_to_right` | Level 1: every car travels left to right inside the road band, at its class speed, and never stalls (dummy out of the way) | pass |
+| `car_speed_real_time` | An undisturbed car's reported speed equals its class speed and its real displacement per second, at 60 and 120 steps per second | pass |
+| `level2_cross_no_collisions` | Level 2: traffic uses both roads, cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock) | pass |
+| `level3_free_for_all` | Level 3: vehicles enter from at least three of the four edges and several classes appear (car overlap is reported but only enforced on level 2) | pass |
+| `detection_commit_and_brake_flags` | A dummy standing in a lane is seen, the car commits to a side (lock) and the lock does not change afterwards | pass |
+| `front_impact_pays_once` | Front contact reduces health and adds score, once per car | pass |
+| `rear_contact_pays_nothing` | Rear contact changes neither health nor score | pass |
+| `write_off_card_and_fresh_body` | At zero health: one write-off counted, a card appears, confirm gives a fresh body | pass |
+| `level_progression` | Quota met and allocation spent: level 1 -> 2 -> 3 via a card and confirm | pass |
+| `ending_decommissioned` | Allocation spent with the quota missed ends the run as 'decommissioned' | pass |
+| `ending_licensed` | The write-off that reaches certificationTarget ends the run as 'licensed' at once | pass |
+| `levels_always_end_with_dummy_in_traffic` | With a dummy standing on the road (at each road edge, so cars swerve across the road), every level still runs to its end: no stuck or deadlocked traffic | pass |
 | `sim_is_pure` | sim.js uses no Math.random, timers, clock or DOM | pass |
-| `html_static` | index.html has a canvas, loads sim.js, handles the keyboard and makes no network requests | pass |
+| `html_static` | index.html has a canvas, loads sim.js, handles the keyboard, uses a fixed timestep and makes no network requests | pass |
 
-**Scripted browser playtest** (`checks/browser_playtest.js`, headless Chromium,
-real key events): the page loaded with no errors; the script walked the dummy
-to the lane edge, waited for the sedan to commit and lunged. Four lunges, four
-hits: health 100 to 41.2 to 0, two bodies destroyed and replaced, score 200.
+**Automated player** (`checks/bot_playthrough.js`, informational). It only
+ambushes: it stands outside a car's detection zone and lunges across its nose.
 
-![After a hit](docs/screenshot_hit.png)
+| Seed | Level 1 (quota 2 of 14 cars) | Level 2 (quota 3 of 20) | Level 3 (quota 5 of 28) | Result |
+|------|------|------|------|------|
+| 1 | 2 bodies | 4 bodies | 3 bodies | Decommissioned in level 3, 9 of 11 bodies, 237 s |
+| 2 | 2 bodies | 3 bodies | 4 bodies | Decommissioned in level 3, 9 of 11 bodies, 230 s |
+| 3 | 4 bodies | 1 body | not reached | Decommissioned in level 2, 5 of 11 bodies, 151 s |
+
+No run hung. Levels 1 and 2 are passable by ambush alone; this player never
+earned the licence, so level 3 and the certification target are untested as
+winnable.
+
+**Scripted browser playtest** (`checks/browser_playtest.js`, headless
+Chromium, real key events):
+
+- The page loaded with no errors and made no network requests.
+- It opened on the attract screen; a key press started level 1.
+- Holding D for 1 s moved the dummy 122 px; holding W and D for 1 s moved it
+  122 px diagonally.
+- Holding W and Space for 1.5 s moved it 282 px: one lunge plus walking, not
+  a chain of lunges.
+- Each level was opened directly and drew its layout with traffic
+  (`docs/screenshot_level1.png` to `screenshot_level3.png`).
 
 **Not tested:**
 
-- No person has playtested it yet. Whether a fifteen-year-old reads the
-  chevron lock and brake lights is unverified (QA marked AC-28 `unverified`).
-- The repair loop did not trigger in the submitted run, because the first
-  build passed. The loop is implemented in `crew.py` but has not been
-  exercised by a real failing build.
-- Only run on Linux with Chromium. Not tried on other browsers or on
-  exhibition hardware.
+- No person has played this build yet. Feel, difficulty and whether the cues
+  read for a fifteen-year-old are unverified.
+- Level tuning is the Designer agent's first guess. The automated player
+  results above are the only evidence about whether the quotas are fair.
+- Only run on Linux with Chromium. Not tried on other browsers, on a
+  high-refresh display, or on exhibition hardware.
 
 ## Known limitations
 
-- Greybox only: flat shapes, no art direction, no audio.
-- QA's three minor defects are open: the dummy can briefly leave the world
-  rectangle mid-lunge at an edge; a Space tap shorter than one frame can be
-  missed; a hand-built invalid car state could throw.
-- The Designer's spec contradicts itself about edge clamping during a lunge
-  (AC-24, marked `unverified` by QA).
+- **Level 3 cars can overlap each other when the dummy is involved.** One
+  browser screenshot shows a van and a bus overlapping at the dummy. The
+  no-collision rule is only enforced by a check on level 2, with the dummy out
+  of the way.
+- QA's four minor defects are open: a rare car squeeze at crossings; the
+  walk-to-run ramp restarts after a lunge; a Space tap shorter than one frame
+  can be missed; level 3 has no hall border.
+- Not ported from the Testpad: the brief hit-stop pause on impact, and the
+  traffic behind the attract screen.
+- Level 2's roads are two-way. That was the Designer agent's choice, not
+  Lawrence's.
 - Agents are language models, so a re-run will produce a different
   specification and different code. The game itself is deterministic.
 - The checks rely on a hand-written technical contract in the brief; the
   Designer cannot change the file layout or state shape.
-- The crew builds one slice. It does not yet cover the GDD's other eleven
-  production roles.
+- The first version of this assignment (a single-road greybox built from
+  scratch, released first time with 18 of 18 checks) is kept in `archive/`
+  and in `runs/20261006-185615/`.

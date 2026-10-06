@@ -1,0 +1,9 @@
+[21:40:51] DUMMIES crew run -> runs/20261006-214051
+[21:40:51] Rules Designer: calling (15,048 chars in)
+[21:43:09] Rules Designer: done in 136.6 s (21,566 chars out)
+[21:43:09] Specification: 25 acceptance criteria, 0 labelled simplifications
+[21:43:09] Game Builder: calling (67,509 chars in)
+[21:49:42] Game Builder: done in 391.3 s (45,162 chars out)
+[21:49:42] Checks: 26/27 passed | failing: front_impact_pays_once
+[21:49:42] QA / Repair Reviewer: calling (78,100 chars in)
+[stopped by operator] The check front_impact_pays_once had a bug in the harness: it failed when the dummy's health ROSE from service repair while standing still. The run was stopped before QA finished; the check was corrected and the run restarted with --from-run, reusing this specification and build 1.

@@ -1,6 +1,6 @@
 {
-  "total": 28,
-  "passed": 28,
+  "total": 27,
+  "passed": 27,
   "failed": 0,
   "all_passed": true,
   "results": [
@@ -153,12 +153,6 @@
       "description": "The write-off that reaches certificationTarget ends the run as 'licensed' at once",
       "pass": true,
       "detail": ""
-    },
-    {
-      "id": "levels_always_end_with_dummy_in_traffic",
-      "description": "With a dummy standing on the road (at each road edge, so cars swerve across the road), every level still runs to its end: no stuck or deadlocked traffic",
-      "pass": true,
-      "detail": "all ended: L1:64s, L1:61s, L1:64s, L1:61s, L2:81s, L2:78s, L2:81s, L2:78s, L2:81s, L2:78s, L2:81s, L2:78s, L3:88s, L3:90s"
     },
     {
       "id": "sim_is_pure",

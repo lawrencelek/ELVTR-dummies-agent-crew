@@ -313,7 +313,7 @@ function placeCar(s, ps){
   var P = s.params, H = P.hall, f = P.fleet[ps.unit], cl = P.classes[f.cls];
   var c = { serial:0, id:f.id, cls:f.cls, unit:ps.unit, x:0, y:0, dirX:0, dirY:0, length:cl.length, width:cl.width,
             speed:cl.speed, sees:false, lock:0, braking:false, hit:false,
-            lat:0, lockPush:0, flipped:false, latPrev:0, life:0, resuming:false, vx:0, vy:0, off:0 };
+            lat:0, lockPush:0, flipped:false, latPrev:0, life:0, resuming:false, vx:0, vy:0 };
   var e = ps.edge, h = cl.length / 2;
   if(e === 0){ c.x = H.x - h; c.y = ps.v; c.dirX = 1; }
   else if(e === 1){ c.x = H.x + H.w + h; c.y = ps.v; c.dirX = -1; }
@@ -410,10 +410,10 @@ function sweep(c, ext, pad){
   return r;
 }
 function isect(a, b){ return a[0] < b[1] && b[0] < a[1] && a[2] < b[3] && b[2] < a[3]; }
-function overlapsLower(c, x, y, cars){
+function overlapsAny(c, x, y, cars){
   var h = half(c);
   for(var i = 0; i < cars.length; i++){
-    var o = cars[i]; if(o === c || o.serial >= c.serial) continue;
+    var o = cars[i]; if(o === c) continue;
     var ho = half(o);
     if(Math.abs(x - o.x) < h[0] + ho[0] + 1e-6 && Math.abs(y - o.y) < h[1] + ho[1] + 1e-6) return o;
   }
@@ -444,11 +444,9 @@ function testImpact(s, c){
 }
 function carsStep(s, dt){
   var P = s.params, d = s.dummy, cars = s.cars, K = P.carToCar, H = P.hall, i, j;
-  cars.sort(function(a, b){ return a.serial - b.serial; });
   for(i = 0; i < cars.length; i++){
     var c = cars[i], u = s.fleet[c.unit], cl = P.classes[c.cls], D = dials(s, u);
     c.life += dt;
-    if(c.off == null) c.off = 0;
     var rx = d.x + d.vx * D.predict - c.x, ry = d.y + d.vy * D.predict - c.y;
     var along = rx*c.dirX + ry*c.dirY, lat = -rx*c.dirY + ry*c.dirX;
     var conflict = along > 0 && along < D.detect && Math.abs(lat) < D.margin;
@@ -507,43 +505,21 @@ function carsStep(s, dt){
       if(c.speed >= normal) c.resuming = false;
     } else c.speed = normal;
 
-    // integrate; backstop only against lower serials
+    // integrate with overlap backstop
     var dl = c.lat - c.latPrev; c.latPrev = c.lat;
     var mx = c.dirX * c.speed * dt - c.dirY * dl, my = c.dirY * c.speed * dt + c.dirX * dl;
-    var st = 0;
-    if(side){
-      st = side * 70 * dt;
-      if(Math.abs(c.off + st) > 60) st = clamp(c.off + st, -60, 60) - c.off;
-      held = true;
-    } else if(yt === Infinity && c.off){
-      st = -(c.off > 0 ? 1 : -1) * Math.min(Math.abs(c.off), 70 * dt);
-    }
-    c.off += st;
-    if(c.dirX) my += st; else mx += st;
-    var x0 = c.x, y0 = c.y, blk = overlapsLower(c, x0 + mx, y0 + my, cars);
+    if(side){ if(c.dirX) my += side * 70 * dt; else mx += side * 70 * dt; }
+    var x0 = c.x, y0 = c.y, blk = overlapsAny(c, x0 + mx, y0 + my, cars);
     if(blk){
       var lo = 0, hi = 1;
       for(j = 0; j < 16; j++){
         var mid = (lo + hi) / 2;
-        if(overlapsLower(c, x0 + mx * mid, y0 + my * mid, cars)) hi = mid; else lo = mid;
+        if(overlapsAny(c, x0 + mx * mid, y0 + my * mid, cars)) hi = mid; else lo = mid;
       }
       mx *= lo; my *= lo; held = true;
-      c.speed = Math.min(c.speed, blk.speed);
+      if(blk.serial < c.serial) c.speed = Math.min(c.speed, blk.speed);
     }
     c.x += mx; c.y += my;
-    // a lower car may have moved onto this one: this (higher) car gives way
-    for(j = 0; j < 4; j++){
-      var ob = overlapsLower(c, c.x, c.y, cars);
-      if(!ob) break;
-      var h1 = half(c), h2 = half(ob);
-      var pxn = h1[0] + h2[0] - Math.abs(c.x - ob.x), pyn = h1[1] + h2[1] - Math.abs(c.y - ob.y);
-      if(pxn <= pyn){
-        c.x += (c.x > ob.x ? 1 : (c.x < ob.x ? -1 : (c.dirX ? -c.dirX : 1))) * (Math.max(0, pxn) + 1e-4);
-      } else {
-        c.y += (c.y > ob.y ? 1 : (c.y < ob.y ? -1 : (c.dirY ? -c.dirY : 1))) * (Math.max(0, pyn) + 1e-4);
-      }
-      c.speed = Math.min(c.speed, ob.speed); held = true;
-    }
     c.vx = dt > 0 ? (c.x - x0) / dt : 0; c.vy = dt > 0 ? (c.y - y0) / dt : 0;
     c.braking = brake < 1 || held;
 

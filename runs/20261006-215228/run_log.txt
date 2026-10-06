@@ -1,0 +1,16 @@
+[21:52:28] DUMMIES crew run -> runs/20261006-215228
+[21:52:28] Rules Designer: NOT called; specification reused from 20261006-214051
+[21:52:28] Specification: 25 acceptance criteria, 0 labelled simplifications
+[21:52:28] Game Builder: NOT called for build 1; files reused from 20261006-214051
+[21:52:28] Checks: 27/28 passed | failing: levels_always_end_with_dummy_in_traffic
+[21:52:28] QA / Repair Reviewer: calling (113,758 chars in)
+[21:53:32] QA / Repair Reviewer: done in 63.1 s (8,818 chars out)
+[21:53:32] QA verdict: repair | 3 repair request(s) | One automated check failed. 'levels_always_end_with_dummy_in_traffic' deadlocked on level 2 (seed 7): 6 cars were stuck at speed 0 for 210 s, so the level could not end. That breaks play and the spec's 'no deadlock' guarantee. I also found that the overlap backstop lets higher-serial cars hold up the lowest-serial car, which contradicts AC-16. Everything else I could verify from the checks or the code passes.
+[21:53:32] Not released -> repair cycle 1 of 2
+[21:53:32] Game Builder: calling (114,821 chars in)
+[21:56:28] Game Builder: done in 173.8 s (45,897 chars out)
+[21:56:28] Checks: 28/28 passed
+[21:56:28] QA / Repair Reviewer: calling (114,038 chars in)
+[21:58:14] QA / Repair Reviewer: done in 105.1 s (8,216 chars out)
+[21:58:14] QA verdict: release | 0 repair request(s) | All 28 automated checks pass, and I found nothing in sim.js or index.html that throws, freezes, chains a lunge or leaves a level unable to end. The criteria not fully covered by checks are AC-15, which has weak check coverage, and AC-24 and AC-25, which need a human at the keyboard. Release is conditional on a quick human playtest of those, with a Level 3 overlap soak recommended. The remaining findings are notes only.
+[21:58:14] RELEASED after 2 build(s). Open output/game/index.html in a browser.

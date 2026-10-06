@@ -1,0 +1,49 @@
+{
+  "verdict": "release",
+  "summary": "All 28 automated checks pass, and I found nothing in sim.js or index.html that throws, freezes, chains a lunge or leaves a level unable to end. The criteria not fully covered by checks are AC-15, which has weak check coverage, and AC-24 and AC-25, which need a human at the keyboard. Release is conditional on a quick human playtest of those, with a Level 3 overlap soak recommended. The remaining findings are notes only.",
+  "criteria": [
+    {"id":"AC-01","status":"pass","evidence":"Checks load_sim and sim_is_pure pass. sim.js ends with a module.exports / window.DummiesSim export, and its only RNG is mulberry32 via rnd() and rnd2()."},
+    {"id":"AC-02","status":"pass","evidence":"Check params_match_spec: 233 parameters identical. createSim sets params:clone(PARAMS). state_shape passes for all three levels."},
+    {"id":"AC-03","status":"pass","evidence":"PARAMS values match the spec (walk 81, run 162, class speeds, maxClosing 792). walk_frame_rate_independent: 203.2 px at 60 Hz vs 202.8 px at 120 Hz. run_speed_matches_spec passes."},
+    {"id":"AC-04","status":"pass","evidence":"Check deterministic_and_seeded passes: same seed gives the same state after 40 s, and a different seed gives different traffic. The check compares the final state only, not every step. The code is pure and seeded, so this is acceptable."},
+    {"id":"AC-05","status":"pass","evidence":"Check attract_then_confirm passes. createSim sets mode play only when autostart is true. spawnStep returns at once when traffic is false, and the level-end check is guarded by options.traffic."},
+    {"id":"AC-06","status":"pass","evidence":"lunge_distance_equal_8_directions: 164.0 px in every direction. lunge_frame_rate_independent: 164.0 px at 120 Hz. Displacement is p(tn)-p(tp) with the time clamped, so the total is exact."},
+    {"id":"AC-07","status":"pass","evidence":"held_lunge_does_not_chain: 1 lunge in 3 s. step() computes fl = lunge && !prevLunge, and prevLunge is updated on every step."},
+    {"id":"AC-08","status":"pass","evidence":"dummyStep uses the held direction if moving, otherwise d.facing, which is initialised to (0,-1). The lunge_distance check covers the facing case."},
+    {"id":"AC-09","status":"pass","evidence":"lunge_eases_out: 87% at half time. ease3 has a monotonically decreasing derivative."},
+    {"id":"AC-10","status":"pass","evidence":"recovery_is_tweened: recovery 0.35 s, moved 19.6 px during it. dummyStep applies f = easeOutQuad to the speed, and movement is allowed during recovery."},
+    {"id":"AC-11","status":"pass","evidence":"dummyStep clamps x and y to the hall inset by the radius after both lunge and walk movement. No named check covers it, so this rests on reading the code."},
+    {"id":"AC-12","status":"pass","evidence":"Check level1_road_flows_left_to_right passes. drawEntry gives road lanes 284/336 with edge 0, and level 3 entry values start at 200. The road spans y 246 to 374 and the vertical road is at x 386 to 514, so no road geometry touches the top-left corner."},
+    {"id":"AC-13","status":"pass","evidence":"level1_road_flows_left_to_right: 14 cars in 60 s, never stalls. That check puts the dummy out of the way rather than at (60,570), and its stall threshold is not stated."},
+    {"id":"AC-14","status":"pass","evidence":"level2_cross_no_collisions: 39 cars, 17 horizontal and 23 vertical, over 150 s. Spawn lanes come from drawEntry (laneYs[1], laneYs[0], laneXs[0], laneXs[1]). The check ran 150 s, not 5 min, and not over several seeds."},
+    {"id":"AC-15","status":"unverified","evidence":"level2_cross_no_collisions reports no overlap. The level3 check reports overlap but only enforces it on level 2, and no check uses random dummy inputs or many seeds. The push-out logic in carsStep (the 'lower car may have moved onto this one' block) teleports a higher-serial car, so overlap with a third car is possible in rare cases. The Builder flagged this as the weakest case."},
+    {"id":"AC-16","status":"pass","evidence":"carsStep yields only to b.serial < c.serial, and the backstop uses overlapsLower. Check levels_always_end_with_dummy_in_traffic shows no deadlock. braking is set when held. The lowest serial has no lower cars to yield to."},
+    {"id":"AC-17","status":"pass","evidence":"level3_free_for_all: 4 directions, 6 classes. drawEntry draws edge uniformly, lateral in [200,520] for left/right and [200,800] for top/bottom. The unit is drawn uniformly from the free units in the pool of 12."},
+    {"id":"AC-18","status":"pass","evidence":"startLevel reads quota and allocation from params. spawnStep stops at vehiclesSpawned >= allocation and uses pool k < L.pool, so level 1 draws only units 0 to 2. Check level_progression passes."},
+    {"id":"AC-19","status":"pass","evidence":"write_off_card_and_fresh_body passes. writeOff increments both counters and goes to card or licensed. dismiss calls resetDummy. Confirm uses fc = confirm && !prevConfirm, so a held confirm cannot dismiss a card on the step it appears."},
+    {"id":"AC-20","status":"pass","evidence":"levelEnd order is noncompliant, then decommissioned (also if level >= 3), then the level card. Checks level_progression and ending_decommissioned pass. Confirm in over calls resetRun(s,1), which sets attract."},
+    {"id":"AC-21","status":"pass","evidence":"certificationTarget is 11. ending_licensed passes. writeOff calls finish('licensed') as soon as bodiesDestroyed >= target."},
+    {"id":"AC-22","status":"pass","evidence":"rear_contact_pays_nothing and front_impact_pays_once pass. testImpact sets c.hit, returns on rear before any health or score change, and reach is exactly 1 at full health."},
+    {"id":"AC-23","status":"pass","evidence":"Check html_static passes. index.html has no http:// or https://, loads sim.js with a relative script tag, and uses a STEP=1/60 accumulator. The font stacks start with the Testpad names."},
+    {"id":"AC-24","status":"unverified","evidence":"drawRoads, the HUD level name, cards, attract screen, perception overlay and restart button are present in the code. Rendering needs a human playtest."},
+    {"id":"AC-25","status":"unverified","evidence":"Needs a human. levels_always_end_with_dummy_in_traffic shows the levels end in 61 to 90 s with a passive dummy."}
+  ],
+  "defects": [
+    {"severity":"minor","file":"sim.js","problem":"AC-15 coverage is thin. The push-out in carsStep can shove a higher-serial car into a third car in rare crossing cases on levels 2 and 3."},
+    {"severity":"minor","file":"sim.js","problem":"d.ramp is not advanced during recovery, so walking after a lunge restarts the ramp from 0 rather than from the prior ramp. This is within the spec wording and is cosmetic."},
+    {"severity":"minor","file":"index.html","problem":"The lunge is polled from key state once per fixed step. A tap shorter than one step (about 16 ms) is dropped, whereas the Testpad was event-driven. Rare."},
+    {"severity":"minor","file":"index.html","problem":"drawRoads returns early on level 3, and drawHall draws no hall outline, so level 3 has no hall border. The Testpad drew one. Cosmetic."}
+  ],
+  "scope_violations": [],
+  "missing_testpad_systems": [
+    "Hit-stop (S.freeze) on impact is not ported. The brief does not list it as a system to keep, so this is a note only.",
+    "The Testpad attract screen had background traffic. The port's attract mode is static. Cosmetic."
+  ],
+  "repair_requests": [],
+  "notes": [
+    "Learning dials, file brief/adapt/close, closeCost, service repair, caution derate, hatch flip, commit lock, brake-first and the non-swerving bus are all present in sim.js. The report bank is word for word, and the endings use the Testpad text with the 'all twelve units' substitution.",
+    "Recommended follow-up, not a blocker: a soak check of no car overlap on levels 1 to 3 across about 20 seeds with random dummy input, enforced on level 3 as well.",
+    "The Builder said it could not run the checks, but the orchestrator ran all 28 against this sim.js and all passed.",
+    "The HUD adds a 'CARS x/y · BODIES n/11' text line, which is a mild addition beyond the Testpad HUD. It is consistent with the spec and the new rules."
+  ]
+}

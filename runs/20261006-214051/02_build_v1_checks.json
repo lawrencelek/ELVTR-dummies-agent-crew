@@ -1,8 +1,8 @@
 {
-  "total": 28,
-  "passed": 28,
-  "failed": 0,
-  "all_passed": true,
+  "total": 27,
+  "passed": 26,
+  "failed": 1,
+  "all_passed": false,
   "results": [
     {
       "id": "load_sim",
@@ -121,8 +121,8 @@
     {
       "id": "front_impact_pays_once",
       "description": "Front contact reduces health and adds score, once per car",
-      "pass": true,
-      "detail": "health 2300.0 -> 2227.6, score +75.0"
+      "pass": false,
+      "detail": "Error: health kept dropping on the same car (2227.5555555555557 -> 2235.2222222222226) |     at assert (/home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:17:47) |     at /home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:227:5"
     },
     {
       "id": "rear_contact_pays_nothing",
@@ -153,12 +153,6 @@
       "description": "The write-off that reaches certificationTarget ends the run as 'licensed' at once",
       "pass": true,
       "detail": ""
-    },
-    {
-      "id": "levels_always_end_with_dummy_in_traffic",
-      "description": "With a dummy standing on the road (at each road edge, so cars swerve across the road), every level still runs to its end: no stuck or deadlocked traffic",
-      "pass": true,
-      "detail": "all ended: L1:64s, L1:61s, L1:64s, L1:61s, L2:81s, L2:78s, L2:81s, L2:78s, L2:81s, L2:78s, L2:81s, L2:78s, L3:88s, L3:90s"
     },
     {
       "id": "sim_is_pure",

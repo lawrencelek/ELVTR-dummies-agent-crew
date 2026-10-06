@@ -1,0 +1,11 @@
+[21:50:43] DUMMIES crew run -> runs/20261006-215043
+[21:50:43] Rules Designer: NOT called; specification reused from 20261006-214051
+[21:50:43] Specification: 25 acceptance criteria, 0 labelled simplifications
+[21:50:43] Game Builder: NOT called for build 1; files reused from 20261006-214051
+[21:50:43] Checks: 27/27 passed
+[21:50:43] QA / Repair Reviewer: calling (77,891 chars in)
+[21:51:43] QA / Repair Reviewer: done in 58.7 s (7,216 chars out)
+[21:51:43] QA verdict: repair | 1 repair request(s) | All 27 automated checks passed, and the sim and renderer have no crash, freeze or frame-rate defect on a read-through. One Testpad system looks regressed. Fleet learning (`contacts`, which drives the dials and file closing) is only credited at a write-off, never per impact, so the learning dials are close to inert. That needs fixing or confirming against the Testpad before release.
+[21:51:43] Not released -> repair cycle 1 of 2
+[21:51:43] Game Builder: calling (77,704 chars in)
+[stopped by operator during repair cycle 1] An automated player (checks/bot_playthrough.js) found that level 2 can deadlock: a car that swerved into the oncoming lane stays there and blocks head-on traffic, so the level never ends. A new check, levels_always_end_with_dummy_in_traffic, was added to the harness, and the QA Reviewer and the Builder's repair pass were given the Testpad source, because QA's one repair request questioned behaviour that the Testpad already has. Restarted with --from-run, reusing the specification and build 1.
