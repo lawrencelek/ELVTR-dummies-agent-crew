@@ -21,6 +21,38 @@ From the crew run `20261006-185615`, values chosen by the Rules Designer agent.
 
 ## Entries
 
+### MR-03 — Road and car are too large; use the Testpad's scale
+
+- **Date:** 6 October 2026
+- **Source:** Lawrence, comparing the crew greybox with his earlier Testpad
+- **Status:** noted
+- **Observation (Lawrence's words):** "the road and car are too large as
+  well. This is a better scale."
+- **Crew greybox now:** 960 x 540 world, one road 160 px wide, sedan 80 x 40,
+  dummy radius 10. The sedan is about 8% of the world's width and the single
+  road fills 30% of its height.
+- **Testpad (read from a screenshot, not from its code):** a grid of roughly
+  six by five lane cells in the play field, several vehicles on screen at
+  once, vehicles around 7% of the field's width, dummy drawn nearly as wide
+  as a car is tall.
+- **Not yet known:** the Testpad's real numbers. Its code has not been
+  shared with this project yet.
+
+### MR-02 — Diagonal movement covers more ground than straight movement
+
+- **Date:** 6 October 2026
+- **Source:** Lawrence
+- **Status:** noted; **which build this refers to is unconfirmed**
+- **Observation (Lawrence's words):** "the diagonal covers much more ground
+  than the simple up or down (it's the 'diagonal' hack problem)."
+- **Measured in the crew greybox:** not present. Holding up, right, or
+  up-and-right for 1 second each moves the dummy 160.8 px. Lunge distance is
+  also equal in all eight directions. Both are enforced by automated checks.
+- **Likely location:** the Testpad, if it adds the horizontal and vertical
+  speeds without normalising. Unverified until its code is available.
+- **Constraint:** equal speed and equal lunge distance in all eight
+  directions is a confirmed decision (DECISIONS.md, entry 3).
+
 ### MR-01 — Recovery pause after a lunge is too long; movement should be tweened
 
 - **Date:** 6 October 2026
