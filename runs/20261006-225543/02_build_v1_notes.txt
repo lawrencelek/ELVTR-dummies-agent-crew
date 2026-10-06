@@ -1,0 +1,10 @@
+sim.js now has a pure Damage module (contactFace and assess) and a Vehicles module (step, cruiseSpeed, plus dials). Damage is min(maxPay, round(4.6 x car speed x mass x faceFactor x lungeFactor)), and the lunge's speed never enters the formula. The face is judged from the dummy's position at the start of the step against the car's pre-move centre. If that position was inside the car, it is moved just outside along the least-penetration face first. Every contact sets hit and levelContact and records state.lastImpact. Tail and stopped-car contacts do 0 damage. Spawning, give-way, swerving, road limits, removal and the stall breaker are all inside Vehicles, and step order is dummy, Vehicles.step, impacts, push-out. I couldn't run anything here, so none of the acceptance checks have been run.
+
+One behaviour change: car speed now slews toward its target at decel/accel. The Testpad brake factor used to apply instantly, but vehicles_module rule 5 and AC-50 require bounded rates. Cars therefore take about 0.1 s longer to brake. braking is also true on any step where speed fell.
+
+index.html is unchanged because it never read the old impact fields.
+
+Spec observations:
+- A lunge's final step sets lunging to false, so a hit on that exact step scores as standing (lungeFactor 1).
+- A tail contact counts toward the report's "wrong_face" signature. A zero-damage non-tail contact counts as a hit with severity 0.
+=== END NOTES ===

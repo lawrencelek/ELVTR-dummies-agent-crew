@@ -1,0 +1,446 @@
+{
+  "verdict": "repair",
+  "summary": "The Damage module is correct. All 34 checks pass, and every damage figure for the sedan and bus matches my hand calculation (the sedan flank-with-car case is 69 and the head-on nose lunge is 1143). I am sending the build back for two reasons. The AC-54 audit gate is not met: the QA numbers it requires are missing, including the level 3 stall-breaker counts over at least 30 seeds. Also, a hit on the last step of a lunge is scored as a standing hit, which breaks the rule that lunging with the car pays less than standing.",
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "pass",
+      "evidence": "Checks load_sim, sim_is_pure and modules_exist_and_do_the_work pass. The api export has PARAMS, Damage, Vehicles, createSim and step. Reading sim.js, I found no DOM, timers, Date or Math.random."
+    },
+    {
+      "id": "AC-02",
+      "status": "pass",
+      "evidence": "params_match_spec reports 252 parameters identical. The impact block has only perMomentum, maxPay, faceNose, faceCorner, faceFlank, faceTail, lungeBonus, contactEps and pushClearance. createSim uses clone(PARAMS)."
+    },
+    {
+      "id": "AC-03",
+      "status": "pass",
+      "evidence": "run_speed_matches_spec gives 162 px/s. walk_frame_rate_independent gives 203.2 px at 60 Hz and 202.8 px at 120 Hz, within 1 px. Class speeds are 138/120/192/108/144/156 in PARAMS."
+    },
+    {
+      "id": "AC-04",
+      "status": "pass",
+      "evidence": "deterministic_and_seeded passes. rnd() is mulberry32 on s.rng."
+    },
+    {
+      "id": "AC-05",
+      "status": "pass",
+      "evidence": "attract_then_confirm passes. By code, createSim sets mode play only with autostart, and spawnStep returns at once when traffic is false."
+    },
+    {
+      "id": "AC-06",
+      "status": "pass",
+      "evidence": "lunge_distance_equal_8_directions reports 164.0 px in all directions. lunge_frame_rate_independent reports 164.0 px at 120 Hz. dummyStep applies the exact ease3 difference and clamps at t=1."
+    },
+    {
+      "id": "AC-07",
+      "status": "pass",
+      "evidence": "held_lunge_does_not_chain reports 1 lunge. The fresh-press logic is prevLunge in step()."
+    },
+    {
+      "id": "AC-08",
+      "status": "pass",
+      "evidence": "lunge_distance_equal_8_directions covers the facing direction. By code, lungeDx uses moving ? dx : facing, and facing starts at (0,-1)."
+    },
+    {
+      "id": "AC-09",
+      "status": "pass",
+      "evidence": "lunge_eases_out reports 87% at half time. The curve is ease3, so 0.875 at t=0.5."
+    },
+    {
+      "id": "AC-10",
+      "status": "pass",
+      "evidence": "recovery_is_tweened reports 0.35 s of recovery and 19.6 px moved. The code uses easeOutQuad."
+    },
+    {
+      "id": "AC-11",
+      "status": "pass",
+      "evidence": "dummyStep clamps x and y to the hall after the lunge and walk moves."
+    },
+    {
+      "id": "AC-12",
+      "status": "pass",
+      "evidence": "level1_road_flows_left_to_right passes. By code, the lane ys are 284/336 and the barriers at 214/406 are all outside the top-left corner (x<200, y<200). Level 3 lateral spawns start at 200."
+    },
+    {
+      "id": "AC-13",
+      "status": "pass",
+      "evidence": "level1_road_flows_left_to_right reports 14 cars in 60 s and no stalls. The exact (60,570) idle script is not shown."
+    },
+    {
+      "id": "AC-14",
+      "status": "pass",
+      "evidence": "level2_cross_no_collisions reports 18 horizontal and 24 vertical cars. drawEntry spawns only from edge 0 (left) or edge 2 (top), so dir is never -1."
+    },
+    {
+      "id": "AC-15",
+      "status": "unverified",
+      "evidence": "No overlap was seen in level2_cross_no_collisions, level3_free_for_all and solid_cars_and_barriers_under_active_play. Those runs cover only 2 to 3 seeds per level, and not the 'many seeds with parked dummy' script. axisMove truncates against all cars in carsStep."
+    },
+    {
+      "id": "AC-16",
+      "status": "pass",
+      "evidence": "carsStep builds the yield target only from cars with b.serial<c.serial. It skips a same-direction car that is behind and in the same lane band. It uses the sweep intersection test. No scripted crossing case was shown."
+    },
+    {
+      "id": "AC-17",
+      "status": "pass",
+      "evidence": "level3_free_for_all reports 4 directions and 6 classes. drawEntry uses [200,520] and [200,800]. Units are drawn from the free pool."
+    },
+    {
+      "id": "AC-18",
+      "status": "pass",
+      "evidence": "startLevel and spawnStep use allocation, quota and pool from params. Level 1 draws units k<3, which are SDN-01, SDN-02 and VAN-07."
+    },
+    {
+      "id": "AC-19",
+      "status": "pass",
+      "evidence": "write_off_card_and_fresh_body and ending_licensed pass. dismiss() calls resetDummy. Fresh confirm is handled by prevConfirm."
+    },
+    {
+      "id": "AC-20",
+      "status": "pass",
+      "evidence": "level_progression and ending_decommissioned pass. levelEnd order is noncompliant, then decommissioned, then the level card."
+    },
+    {
+      "id": "AC-21",
+      "status": "pass",
+      "evidence": "ending_licensed passes. writeOff calls finish(licensed) at bodiesDestroyed>=11."
+    },
+    {
+      "id": "AC-22",
+      "status": "pass",
+      "evidence": "rear_contact_pays_nothing passes. damage_in_play_matches_module shows tail = 0. judge sets hit and records lastImpact before the tail return. Reach at full health is exactly 1."
+    },
+    {
+      "id": "AC-23",
+      "status": "pass",
+      "evidence": "index.html has no http(s) strings. It uses a script tag for sim.js and a STEP=1/60 accumulator. Font names come first with fallbacks. html_static passes."
+    },
+    {
+      "id": "AC-24",
+      "status": "unverified",
+      "evidence": "Needs a playtest. By code, drawRoads and drawHud show the level name and number, and cards, attract screen, perception overlay and restart are present."
+    },
+    {
+      "id": "AC-25",
+      "status": "unverified",
+      "evidence": "Playtest needed. levels_always_end shows levels ending in 61 to 92 s."
+    },
+    {
+      "id": "AC-26",
+      "status": "pass",
+      "evidence": "By code, Damage.assess uses only the direction of dummyV, so magnitude does not enter. judge applies res.damage to both score and health. damage_in_play_matches_module is consistent: van at 110 px/s gives 759."
+    },
+    {
+      "id": "AC-27",
+      "status": "pass",
+      "evidence": "damage_table: sedan 635/1143, van 828/1490, sports 795/1431, bus 1490/2300, wagon 795/1431, hatch 574/1033. Sedan head-on is 49.7% of a body. Bus head-on is 2300, which writes off."
+    },
+    {
+      "id": "AC-28",
+      "status": "unverified",
+      "evidence": "Passes dummy_cannot_walk_through_a_car and the checks' no-dummy-in-car clauses on limited seeds. pushOut has a nearestClear fallback. Many-seed 1 px reach was not measured."
+    },
+    {
+      "id": "AC-29",
+      "status": "pass",
+      "evidence": "By code, pushOut and judge never write car fields. Vehicles never reads s.dummy solidity, only its position and velocity for perception."
+    },
+    {
+      "id": "AC-30",
+      "status": "unverified",
+      "evidence": "No barrier crossing was seen in solid_cars_and_barriers_under_active_play (2 seeds per level) and levels_always_end. The limits() clamp is applied in latMove and swFeasible. No barrier clearance numbers were reported."
+    },
+    {
+      "id": "AC-31",
+      "status": "pass",
+      "evidence": "By code, dummyStep and pushOut have no barrier or shoulder logic."
+    },
+    {
+      "id": "AC-32",
+      "status": "unverified",
+      "evidence": "No named check measures shoulder use. levels_always_end with the dummy at the road edge passes."
+    },
+    {
+      "id": "AC-33",
+      "status": "unverified",
+      "evidence": "No named check. By code, carsStep sets stuck when no side is feasible, and stuck brakes the car."
+    },
+    {
+      "id": "AC-34",
+      "status": "unverified",
+      "evidence": "No named check. By code, latFree and the L3 oncoming-band rejection in spawnStep and latFree exist."
+    },
+    {
+      "id": "AC-35",
+      "status": "unverified",
+      "evidence": "No check at (60,60). traffic_audit shows 0 s longest stop on L1 and L2. L3 shows a longest stop of 19.4 s (wandering dummy, not enforced)."
+    },
+    {
+      "id": "AC-36",
+      "status": "unverified",
+      "evidence": "Playtest. By code, drawShoulders and drawBarriers draw shoulders and barriers with gaps on L2, and nothing on L3."
+    },
+    {
+      "id": "AC-37",
+      "status": "unverified",
+      "evidence": "Playtest needed."
+    },
+    {
+      "id": "AC-38",
+      "status": "pass",
+      "evidence": "level2_cross_no_collisions passes. drawEntry gives only (1,0) or (0,1). drawRoads draws direction arrows on L2."
+    },
+    {
+      "id": "AC-39",
+      "status": "unverified",
+      "evidence": "No check of the lowest-serial stall over many seeds. By code, the lowest serial never yields and stallStep exists. traffic_audit L3 shows a 19.4 s stop and 4 breaker removals."
+    },
+    {
+      "id": "AC-40",
+      "status": "unverified",
+      "evidence": "levels_always_end_with_dummy_in_traffic passes with a standing dummy. The wandering-dummy 150 s end check and the L2 breaker count are not reported. L2 shows 0 removed inside the hall."
+    },
+    {
+      "id": "AC-41",
+      "status": "unverified",
+      "evidence": "No scripted breaker check was reported. stallStep matches car_to_car 13 (lowest serial, higher serials only, vehiclesSpawned unchanged)."
+    },
+    {
+      "id": "AC-42",
+      "status": "pass",
+      "evidence": "Damage has only contactFace and assess, and both are pure functions of their arguments. perMomentum, faceFactor and lungeBonus are used only in Damage. judge uses I.maxPay only for severity, as damage rule 6 requires."
+    },
+    {
+      "id": "AC-43",
+      "status": "pass",
+      "evidence": "contactFace code gives nose/corner for a>L/2 and flank for |a|<=L/2. (31,0) is flank and (31.01,0) is nose. a<-L/2 is tail. The dirX/dirY rotation is general."
+    },
+    {
+      "id": "AC-44",
+      "status": "pass",
+      "evidence": "damage_table matches the formula for all six classes. Sedan: nose 635/1143/635/127, corner 381/686/381/76, flank 159/286/159/32, tail 0. The with-the-car flank figure of 69 and the against-the-car flank figure of 248 also match."
+    },
+    {
+      "id": "AC-45",
+      "status": "pass",
+      "evidence": "By code, assess is the product of non-decreasing terms and c is clamped, so lf lies in [0.2,1.8]. Nose head-on is the maximum. Flank is at most 0.45 of nose head-on and tail is 0. Non-lunging gives lf 1, and speed<=0 gives 0. No 5-degree sweep was run."
+    },
+    {
+      "id": "AC-46",
+      "status": "pass",
+      "evidence": "damage_module_is_logical and damage_table give 69 for the sedan bug case. Lunge speed is not used. The standing flank value is 159 and the head-on nose value is 1143."
+    },
+    {
+      "id": "AC-47",
+      "status": "pass",
+      "evidence": "judge records all the lastImpact fields, with vehicleSpeed=c.speed after the move. lastImpact is null in resetRun. damage_in_play_matches_module shows a head-on van lunge of 1242 (4.6*100*1.5*1.8). No sedan 1143 integrated run was shown."
+    },
+    {
+      "id": "AC-48",
+      "status": "pass",
+      "evidence": "judge uses snap.px/py and snap.c[serial], plus outsidePoint, never the end position. No dt=1/120 comparison was reported."
+    },
+    {
+      "id": "AC-49",
+      "status": "pass",
+      "evidence": "assess gives 0 for speed<=0. judge sets hit and levelContact and records lastImpact before paying. damage_in_play shows tail = 0, and 317 at speed 69 follows from the formula."
+    },
+    {
+      "id": "AC-50",
+      "status": "unverified",
+      "evidence": "modules_exist_and_do_the_work passes. No per-step speed-change statistics were reported, and truncation and caution steps were not counted. By code, speed is clamped to [0,cruise] with decel/accel slew."
+    },
+    {
+      "id": "AC-51",
+      "status": "unverified",
+      "evidence": "No measured rest-to-cruise or cruise-to-stop numbers. By code, accel=360 gives 0.383 s for the sedan."
+    },
+    {
+      "id": "AC-52",
+      "status": "unverified",
+      "evidence": "No lane-deviation numbers. traffic_audit reports 0 cars removed inside the hall on L1 and L2. By code, with no dummy and no yield, a car's lateral displacement is 0."
+    },
+    {
+      "id": "AC-53",
+      "status": "pass",
+      "evidence": "Car fields are assigned only in placeCar, spawnStep, carsStep, latMove, axisMove and stallStep (all Vehicles). Vehicles writes no dummy, health, score or mode fields. startLevel resets cars. Health is reduced only in judge, by res.damage."
+    },
+    {
+      "id": "AC-54",
+      "status": "fail",
+      "evidence": "The report lacks per-class rest-to-cruise and stop-distance numbers, maximum speed change per step per cause, lane-line deviation, barrier clearances, and stall-breaker firing counts over at least 30 seeds (idle and wandering dummy). The traffic report has only 3 runs per level. The damage table and the 69/1143 case are present."
+    },
+    {
+      "id": "AC-55",
+      "status": "unverified",
+      "evidence": "Playtest needed. The formula supports the intended results."
+    }
+  ],
+  "defects": [
+    {
+      "severity": "major",
+      "file": "sim.js",
+      "problem": "dummyStep sets d.lunging=false on the final step of a lunge, and judge reads d.lunging after dummyStep. A hit on that step is scored as standing (lungeFactor 1). A with-the-car lunge hit therefore pays the standing value (e.g. 159 instead of 69 on a flank). A head-on lunge hit pays 635 instead of 1143. This breaks the 'lunge with the car pays less than standing' rule."
+    },
+    {
+      "severity": "major",
+      "file": "audit report",
+      "problem": "The AC-54 gate is not met. The required per-class start/stop, lane, barrier and 30-seed breaker numbers are absent, and the 3-run traffic audit is not a substitute."
+    },
+    {
+      "severity": "minor",
+      "file": "sim.js",
+      "problem": "On L3, traffic_audit shows 4 cars removed inside the hall by stallStep and a longest stop of 19.4 s. Cars can sit stopped in long contact jams, and the breaker is the only exit. This is to be reported, not fixed, under CR-002."
+    },
+    {
+      "severity": "minor",
+      "file": "index.html",
+      "problem": "readInput samples keys[' '] once per step. A space press and release inside one render frame is lost, because the Testpad handled it on the keydown event."
+    },
+    {
+      "severity": "minor",
+      "file": "sim.js",
+      "problem": "The Testpad hit-stop (S.freeze) was dropped. It is not listed in the brief as kept or removed."
+    }
+  ],
+  "damage_audit": {
+    "cases": [
+      {
+        "case": "sedan standing at nose (138*4.6)",
+        "expected": 635,
+        "build": 635,
+        "match": true
+      },
+      {
+        "case": "sedan head-on lunge into nose (x1.8)",
+        "expected": 1143,
+        "build": 1143,
+        "match": true
+      },
+      {
+        "case": "sedan lunge across nose (x1.0)",
+        "expected": 635,
+        "build": 635,
+        "match": true
+      },
+      {
+        "case": "sedan nose lunge moving with car (x0.2)",
+        "expected": 127,
+        "build": 127,
+        "match": true
+      },
+      {
+        "case": "sedan diagonal lunge into front corner with car (380.9*0.4343)",
+        "expected": 165,
+        "build": 165,
+        "match": true
+      },
+      {
+        "case": "sedan diagonal lunge into flank with car (Lawrence's case)",
+        "expected": 69,
+        "build": 69,
+        "match": true
+      },
+      {
+        "case": "sedan walking into flank (x0.25)",
+        "expected": 159,
+        "build": 159,
+        "match": true
+      },
+      {
+        "case": "sedan any tail contact",
+        "expected": 0,
+        "build": 0,
+        "match": true
+      },
+      {
+        "case": "bus standing at nose (108*3*4.6)",
+        "expected": 1490,
+        "build": 1490,
+        "match": true
+      },
+      {
+        "case": "bus head-on lunge into nose (raw 2683, capped)",
+        "expected": 2300,
+        "build": 2300,
+        "match": true
+      },
+      {
+        "case": "bus lunge across nose",
+        "expected": 1490,
+        "build": 1490,
+        "match": true
+      },
+      {
+        "case": "bus nose lunge moving with car",
+        "expected": 298,
+        "build": 298,
+        "match": true
+      },
+      {
+        "case": "bus diagonal lunge into front corner with car",
+        "expected": 388,
+        "build": 388,
+        "match": true
+      },
+      {
+        "case": "bus diagonal lunge into flank with car",
+        "expected": 162,
+        "build": 162,
+        "match": true
+      },
+      {
+        "case": "bus walking into flank",
+        "expected": 373,
+        "build": 373,
+        "match": true
+      },
+      {
+        "case": "bus any tail contact",
+        "expected": 0,
+        "build": 0,
+        "match": true
+      }
+    ],
+    "ordering_logical": true,
+    "single_code_path": true,
+    "comment": "Every table value matches the formula, and the other four classes also match the calibration. Every hit goes through judge, which calls Damage.contactFace and Damage.assess, so a single code path decides faces and amounts. Health and score change only by res.damage, and the write-off bonus is added only in writeOff. The ordering holds inside the Damage module. In real play, a hit on the final lunge step is mis-scored as standing (see defects), so the ordering is violated in that one edge case."
+  },
+  "vehicle_audit": {
+    "paths": "Cars never change direction. They stay on the lane line when nothing reacts (lat is 0 and there is no lateral move). The only lateral motion is swerve, flip and return to lane, which are gated by swFeasible and latFree (free space and the L3 oncoming band). On L1 and L2 the limits() clamp keeps the rectangle between the barriers (214/406, 354/546). Cars can leave the lane only by swerving, onto the shoulder or the other lane, within those limits. The traffic report shows 0 cars removed inside the hall on L1 and L2.",
+    "stop_start": "A car slows or stops for these reasons: (1) the dummy in its detection zone (brake factor 0.34, 0.55 or 0.66, which never goes to zero); (2) caution derate of up to 40%; (3) give-way to a lower-serial car (target 0, or the leader's speed when following); (4) truncation against any car (speed set to the blocker's speed component); (5) swerve infeasible while the dummy is in front. Speed slews at decel 600 and accel 360, and there is no hysteresis. A car restarts when the yield test is clear. The lowest serial never yields, but it can still be truncated. L1 and L2 longest stop is 0 s. L3 longest stop is 19.4 s, with 11 cars stopped across 3 runs.",
+    "removal": "A car is removed in two ways. The first is when its rectangle is wholly past the hall edge it travels toward (normal exit, e.g. 80 of 87 cars on L1). The second is stallStep, which removes higher-serial cars near or in front of the lowest-serial car after 6 s at speed below 1 px/s while it does not see the dummy. It is a mechanism that deletes cars to clear a jam. In 3 L3 runs, 4 cars were removed this way. None were removed on L1 or L2.",
+    "concerns": [
+      "The 30-seed firing counts for the L3 breaker were not produced, in either the idle-dummy or the wandering-dummy case.",
+      "A higher-serial car that yields can stop against a car that is itself truncated by it. Only the breaker, which handles the lowest serial, resolves that.",
+      "Per-class rest-to-cruise times, stop distances and per-step speed-change figures were not supplied.",
+      "Brake slew adds about 0.1 s to braking. It is declared by the Builder and required by AC-50."
+    ]
+  },
+  "scope_violations": [],
+  "missing_testpad_systems": [
+    "Hit freeze (S.freeze, 0.05 to 0.09 s) is absent. This is not stated as intentionally removed. Learning dials, service, caution, report bank, hatch flip and endings are all present."
+  ],
+  "repair_requests": [
+    {
+      "file": "sim.js",
+      "problem": "A hit on the final step of a lunge is judged with lunging=false, so it scores as standing.",
+      "required_change": "In dummyStep, record whether the dummy was lunging at the start of the step (e.g. d.lungedThisStep). In judge, pass lunging: d.lunging || d.lungedThisStep to Damage.assess and into lastImpact. Make sure the velocity used is the lunge velocity of that step. Add a check of a hit landing on the final lunge step."
+    },
+    {
+      "file": "checks / QA report",
+      "problem": "AC-54 requires numbers that are not in the report.",
+      "required_change": "Extend the checks report with: per class, time from rest to cruise and time and distance from cruise to stop when held; maximum speed change per step, split by cause (truncation, caution, other); lane-line deviation with no dummy on levels 1 to 3; barrier clearances on levels 1 and 2; and L3 stall-breaker firings and runs across at least 30 seeds with an idle dummy and with a wandering dummy, plus the longest hold of the lowest-serial car. Report only, do not change the breaker."
+    }
+  ],
+  "notes": [
+    "The lunge-direction vector is derived from the dummy's position change. A lunge into a wall or after a push-out has a clamped or shifted displacement, but the direction is still the lunge direction, so no change is needed.",
+    "Severity uses damage / maxPay inside judge, as required. A literal text search for maxPay outside Damage will match, so the AC-42 grep should allow it.",
+    "A tail contact is counted as 'rear' in the report signature. A zero-speed non-tail contact counts as a hit with severity 0. These choices are declared by the Builder and are consistent with the spec.",
+    "Lunge-length reports are rounded to 0.1 px. Exactness at 0.01 follows from the ease3 code but was not measured directly.",
+    "Several automated criteria (AC-15, 28, 30, 34, 35, 39, 40) are covered only by 2 to 3 seed runs. Wider seed sweeps are recommended with the repair run.",
+    "Playtest criteria AC-24, 25, 36, 37 and 55 need a human at the keyboard."
+  ]
+}

@@ -1,0 +1,10 @@
+[22:46:18] DUMMIES crew run -> runs/20261006-224618
+[22:46:18] Change mode: revising the released build in output/ for CR-002_logical_damage_and_modules.md
+[22:46:18] Rules Designer: calling (68,483 chars in)
+[22:50:07] Rules Designer: done in 227.7 s (65,027 chars out)
+[22:50:07] Specification: 55 acceptance criteria, 0 labelled simplifications
+[22:50:07] Game Builder: calling (130,863 chars in)
+[22:53:09] Game Builder: done in 180.0 s (55,966 chars out)
+[22:53:09] Checks: 33/34 passed | failing: damage_module_is_logical
+[22:53:09] QA / Repair Reviewer: calling (174,139 chars in)
+[stopped by operator during QA] The new check damage_module_is_logical had a bug in the harness: for a car travelling down the screen it called a lunge in the SAME direction 'head-on'. The build's Damage module was right. The check was fixed and the run restarted with --from-run, reusing this specification and build 1.

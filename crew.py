@@ -175,10 +175,12 @@ def main():
                            + "".join(f"\n\n# YOUR PREVIOUS {n}\n{c}" for n, c in files.items())
                            + "\n\n# BASELINE TESTPAD (reference)\n" + baseline)
         prior = reuse / "02_build_v1" if reuse else None
+        if "--reuse-build" in sys.argv:               # re-check and re-review a specific earlier build without calling the Builder
+            prior = Path(sys.argv[sys.argv.index("--reuse-build") + 1])
         if attempt == 1 and prior and (prior / "sim.js").exists():
             files = {n: (prior / n).read_text(encoding="utf-8") for n in ("sim.js", "index.html")}
-            notes = (reuse / "02_build_v1_notes.txt").read_text(encoding="utf-8").strip()
-            run.log(f"Game Builder: NOT called for build 1; files reused from {reuse.name}")
+            notes = (prior.parent / (prior.name + "_notes.txt")).read_text(encoding="utf-8").strip()
+            run.log(f"Game Builder: NOT called for build 1; files reused from {prior.parent.name}/{prior.name}")
         else:
             files, notes = parse_files(call_agent(run, "Game Builder", "game_builder.md", builder_msg, tag))
         build_dir = run.dir / tag

@@ -1,0 +1,24 @@
+[22:55:43] DUMMIES crew run -> runs/20261006-225543
+[22:55:43] Change mode: revising the released build in output/ for CR-002_logical_damage_and_modules.md
+[22:55:43] Rules Designer: NOT called; specification reused from 20261006-224618
+[22:55:43] Specification: 55 acceptance criteria, 0 labelled simplifications
+[22:55:43] Game Builder: NOT called for build 1; files reused from 20261006-224618
+[22:55:44] Checks: 34/34 passed
+[22:55:44] QA / Repair Reviewer: calling (183,237 chars in)
+[22:58:10] QA / Repair Reviewer: done in 144.8 s (19,111 chars out)
+[22:58:10] QA verdict: repair | 2 repair request(s) | The Damage module is correct. All 34 checks pass, and every damage figure for the sedan and bus matches my hand calculation (the sedan flank-with-car case is 69 and the head-on nose lunge is 1143). I am sending the build back for two reasons. The AC-54 audit gate is not met: the QA numbers it requires are missing, including the level 3 stall-breaker counts over at least 30 seeds. Also, a hit on the last step of a lunge is scored as a standing hit, which breaks the rule that lunging with the car pays less than standing.
+[22:58:10] Not released -> repair cycle 1 of 2
+[22:58:10] Game Builder: calling (167,163 chars in)
+[23:00:32] Game Builder: done in 140.1 s (56,081 chars out)
+[23:00:33] Checks: 36/36 passed
+[23:00:33] QA / Repair Reviewer: calling (190,656 chars in)
+[23:02:45] QA / Repair Reviewer: done in 131.0 s (17,476 chars out)
+[23:02:45] QA verdict: repair | 2 repair request(s) | All 36 automated checks pass. Damage.assess and contactFace match my hand calculation for every case, and every hit goes through one code path in judge(). I found no play-breaking defect. Release is still blocked because AC-54 makes a release invalid unless the report carries measured per-class start/stop numbers and the speed-change figures split by cause. It carries only formula-derived expected values, and the Builder admits the harness lacks them. The Level 3 stall-breaker figures are reported, not fixed: 3/30 runs with an idle dummy and 10/30 runs with a wandering dummy, with a longest hold of 19.2 s.
+[23:02:45] Not released -> repair cycle 2 of 2
+[23:02:45] Game Builder: calling (167,005 chars in)
+[23:05:01] Game Builder: done in 133.8 s (55,751 chars out)
+[23:05:02] Checks: 36/36 passed
+[23:05:02] QA / Repair Reviewer: calling (192,002 chars in)
+[23:07:25] QA / Repair Reviewer: done in 142.2 s (17,388 chars out)
+[23:07:25] QA verdict: release | 0 repair request(s) | All 36 automated checks pass. The Damage module reproduces my hand-computed values for every class and face, and Lawrence's case now scores 69 against 1143 head-on. All hits go through Damage.contactFace and Damage.assess, and the car-movement and module-boundary code is clean. I found no defect that breaks play. The remaining concerns are the level 3 jam breaker (reported, not fixed, as the CR asks) and the Testpad wear speed-loss being dropped by the specification.
+[23:07:25] RELEASED after 3 build(s). Open output/game/index.html in a browser.

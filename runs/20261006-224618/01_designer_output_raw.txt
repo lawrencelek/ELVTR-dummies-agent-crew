@@ -2,16 +2,8 @@
   "game": "DUMMIES",
   "slice": "three-level vertical slice ported from the Testpad",
   "params": {
-    "world": {
-      "width": 900,
-      "height": 620
-    },
-    "hall": {
-      "x": 40,
-      "y": 40,
-      "w": 820,
-      "h": 540
-    },
+    "world": { "width": 900, "height": 620 },
+    "hall": { "x": 40, "y": 40, "w": 820, "h": 540 },
     "dummy": {
       "radius": 13,
       "walkSpeed": 81,
@@ -39,325 +31,83 @@
       "contactEps": 0.5,
       "pushClearance": 0.1
     },
-    "caution": {
-      "max": 0.4
-    },
-    "service": {
-      "delay": 1.5,
-      "fullTime": 30.0
-    },
+    "caution": { "max": 0.4 },
+    "service": { "delay": 1.5, "fullTime": 30.0 },
     "classes": {
       "sedan": {
-        "label": "Sedan",
-        "width": 34,
-        "length": 62,
-        "speed": 138,
-        "mass": 1.0,
-        "swerve": true,
-        "commitFrac": 0.5,
-        "flip": false,
-        "brakeFirst": false,
-        "base": {
-          "detect": 212,
-          "margin": 44,
-          "predict": 0.3,
-          "brakeLead": 0.45
-        },
-        "step": {
-          "detect": 30,
-          "margin": 11,
-          "predict": 0.07,
-          "brakeLead": 0.04
-        },
-        "cap": {
-          "detect": 400,
-          "margin": 190,
-          "predict": 0.72,
-          "brakeLead": 0.68
-        }
+        "label": "Sedan", "width": 34, "length": 62, "speed": 138, "mass": 1.0,
+        "swerve": true, "commitFrac": 0.5, "flip": false, "brakeFirst": false,
+        "base": { "detect": 212, "margin": 44, "predict": 0.3, "brakeLead": 0.45 },
+        "step": { "detect": 30, "margin": 11, "predict": 0.07, "brakeLead": 0.04 },
+        "cap": { "detect": 400, "margin": 190, "predict": 0.72, "brakeLead": 0.68 }
       },
       "van": {
-        "label": "Van",
-        "width": 38,
-        "length": 76,
-        "speed": 120,
-        "mass": 1.5,
-        "swerve": true,
-        "commitFrac": 0.42,
-        "flip": false,
-        "brakeFirst": true,
-        "base": {
-          "detect": 232,
-          "margin": 38,
-          "predict": 0.26,
-          "brakeLead": 0.74
-        },
-        "step": {
-          "detect": 28,
-          "margin": 10,
-          "predict": 0.06,
-          "brakeLead": 0.06
-        },
-        "cap": {
-          "detect": 410,
-          "margin": 188,
-          "predict": 0.64,
-          "brakeLead": 0.95
-        }
+        "label": "Van", "width": 38, "length": 76, "speed": 120, "mass": 1.5,
+        "swerve": true, "commitFrac": 0.42, "flip": false, "brakeFirst": true,
+        "base": { "detect": 232, "margin": 38, "predict": 0.26, "brakeLead": 0.74 },
+        "step": { "detect": 28, "margin": 10, "predict": 0.06, "brakeLead": 0.06 },
+        "cap": { "detect": 410, "margin": 188, "predict": 0.64, "brakeLead": 0.95 }
       },
       "sports": {
-        "label": "Sports",
-        "width": 30,
-        "length": 58,
-        "speed": 192,
-        "mass": 0.9,
-        "swerve": true,
-        "commitFrac": 0.3,
-        "flip": false,
-        "brakeFirst": false,
-        "base": {
-          "detect": 190,
-          "margin": 31,
-          "predict": 0.36,
-          "brakeLead": 0.28
-        },
-        "step": {
-          "detect": 34,
-          "margin": 12,
-          "predict": 0.09,
-          "brakeLead": 0.03
-        },
-        "cap": {
-          "detect": 400,
-          "margin": 186,
-          "predict": 0.86,
-          "brakeLead": 0.5
-        }
+        "label": "Sports", "width": 30, "length": 58, "speed": 192, "mass": 0.9,
+        "swerve": true, "commitFrac": 0.3, "flip": false, "brakeFirst": false,
+        "base": { "detect": 190, "margin": 31, "predict": 0.36, "brakeLead": 0.28 },
+        "step": { "detect": 34, "margin": 12, "predict": 0.09, "brakeLead": 0.03 },
+        "cap": { "detect": 400, "margin": 186, "predict": 0.86, "brakeLead": 0.5 }
       },
       "bus": {
-        "label": "Bus",
-        "width": 46,
-        "length": 108,
-        "speed": 108,
-        "mass": 3.0,
-        "swerve": false,
-        "commitFrac": 0.5,
-        "flip": false,
-        "brakeFirst": true,
-        "base": {
-          "detect": 258,
-          "margin": 34,
-          "predict": 0.22,
-          "brakeLead": 0.88
-        },
-        "step": {
-          "detect": 26,
-          "margin": 9,
-          "predict": 0.05,
-          "brakeLead": 0.07
-        },
-        "cap": {
-          "detect": 420,
-          "margin": 184,
-          "predict": 0.56,
-          "brakeLead": 1.15
-        }
+        "label": "Bus", "width": 46, "length": 108, "speed": 108, "mass": 3.0,
+        "swerve": false, "commitFrac": 0.5, "flip": false, "brakeFirst": true,
+        "base": { "detect": 258, "margin": 34, "predict": 0.22, "brakeLead": 0.88 },
+        "step": { "detect": 26, "margin": 9, "predict": 0.05, "brakeLead": 0.07 },
+        "cap": { "detect": 420, "margin": 184, "predict": 0.56, "brakeLead": 1.15 }
       },
       "wagon": {
-        "label": "Wagon",
-        "width": 36,
-        "length": 72,
-        "speed": 144,
-        "mass": 1.2,
-        "swerve": true,
-        "commitFrac": 0.58,
-        "flip": false,
-        "brakeFirst": false,
-        "base": {
-          "detect": 244,
-          "margin": 58,
-          "predict": 0.46,
-          "brakeLead": 0.5
-        },
-        "step": {
-          "detect": 32,
-          "margin": 14,
-          "predict": 0.1,
-          "brakeLead": 0.04
-        },
-        "cap": {
-          "detect": 430,
-          "margin": 200,
-          "predict": 0.96,
-          "brakeLead": 0.72
-        }
+        "label": "Wagon", "width": 36, "length": 72, "speed": 144, "mass": 1.2,
+        "swerve": true, "commitFrac": 0.58, "flip": false, "brakeFirst": false,
+        "base": { "detect": 244, "margin": 58, "predict": 0.46, "brakeLead": 0.5 },
+        "step": { "detect": 32, "margin": 14, "predict": 0.1, "brakeLead": 0.04 },
+        "cap": { "detect": 430, "margin": 200, "predict": 0.96, "brakeLead": 0.72 }
       },
       "hatch": {
-        "label": "Hatch",
-        "width": 30,
-        "length": 54,
-        "speed": 156,
-        "mass": 0.8,
-        "swerve": true,
-        "commitFrac": 0.6,
-        "flip": true,
-        "brakeFirst": false,
-        "base": {
-          "detect": 204,
-          "margin": 41,
-          "predict": 0.28,
-          "brakeLead": 0.44
-        },
-        "step": {
-          "detect": 30,
-          "margin": 11,
-          "predict": 0.07,
-          "brakeLead": 0.04
-        },
-        "cap": {
-          "detect": 400,
-          "margin": 188,
-          "predict": 0.74,
-          "brakeLead": 0.66
-        }
+        "label": "Hatch", "width": 30, "length": 54, "speed": 156, "mass": 0.8,
+        "swerve": true, "commitFrac": 0.6, "flip": true, "brakeFirst": false,
+        "base": { "detect": 204, "margin": 41, "predict": 0.28, "brakeLead": 0.44 },
+        "step": { "detect": 30, "margin": 11, "predict": 0.07, "brakeLead": 0.04 },
+        "cap": { "detect": 400, "margin": 188, "predict": 0.74, "brakeLead": 0.66 }
       }
     },
     "fleet": [
-      {
-        "id": "SDN-01",
-        "cls": "sedan"
-      },
-      {
-        "id": "SDN-02",
-        "cls": "sedan"
-      },
-      {
-        "id": "VAN-07",
-        "cls": "van"
-      },
-      {
-        "id": "SPT-11",
-        "cls": "sports"
-      },
-      {
-        "id": "BUS-06",
-        "cls": "bus"
-      },
-      {
-        "id": "SDN-04",
-        "cls": "sedan"
-      },
-      {
-        "id": "WGN-05",
-        "cls": "wagon"
-      },
-      {
-        "id": "HTB-09",
-        "cls": "hatch"
-      },
-      {
-        "id": "VAN-12",
-        "cls": "van"
-      },
-      {
-        "id": "SPT-03",
-        "cls": "sports"
-      },
-      {
-        "id": "WGN-08",
-        "cls": "wagon"
-      },
-      {
-        "id": "HTB-10",
-        "cls": "hatch"
-      }
+      { "id": "SDN-01", "cls": "sedan" },
+      { "id": "SDN-02", "cls": "sedan" },
+      { "id": "VAN-07", "cls": "van" },
+      { "id": "SPT-11", "cls": "sports" },
+      { "id": "BUS-06", "cls": "bus" },
+      { "id": "SDN-04", "cls": "sedan" },
+      { "id": "WGN-05", "cls": "wagon" },
+      { "id": "HTB-09", "cls": "hatch" },
+      { "id": "VAN-12", "cls": "van" },
+      { "id": "SPT-03", "cls": "sports" },
+      { "id": "WGN-08", "cls": "wagon" },
+      { "id": "HTB-10", "cls": "hatch" }
     ],
-    "closeCost": [
-      4,
-      4,
-      3,
-      3,
-      3,
-      2,
-      2,
-      2,
-      2,
-      1,
-      1,
-      1
-    ],
+    "closeCost": [4, 4, 3, 3, 3, 2, 2, 2, 2, 1, 1, 1],
     "levels": [
       {
-        "id": 1,
-        "kind": "road",
-        "name": "ROAD",
-        "quota": 2,
-        "allocation": 14,
-        "pool": 3,
-        "spawnInterval": {
-          "min": 3.0,
-          "max": 5.0
-        },
-        "road": {
-          "y": 310,
-          "halfWidth": 64,
-          "shoulder": 32,
-          "laneYs": [
-            284,
-            336
-          ]
-        }
+        "id": 1, "kind": "road", "name": "ROAD", "quota": 2, "allocation": 14, "pool": 3,
+        "spawnInterval": { "min": 3.0, "max": 5.0 },
+        "road": { "y": 310, "halfWidth": 64, "shoulder": 32, "laneYs": [284, 336] }
       },
       {
-        "id": 2,
-        "kind": "cross",
-        "name": "CROSS JUNCTION",
-        "quota": 3,
-        "allocation": 20,
-        "pool": 6,
-        "spawnInterval": {
-          "min": 2.8,
-          "max": 4.5
-        },
-        "roadH": {
-          "y": 310,
-          "halfWidth": 64,
-          "shoulder": 32,
-          "laneYs": [
-            284,
-            336
-          ],
-          "dirX": 1,
-          "dirY": 0,
-          "oneWay": true
-        },
-        "roadV": {
-          "x": 450,
-          "halfWidth": 64,
-          "shoulder": 32,
-          "laneXs": [
-            414,
-            486
-          ],
-          "dirX": 0,
-          "dirY": 1,
-          "oneWay": true
-        }
+        "id": 2, "kind": "cross", "name": "CROSS JUNCTION", "quota": 3, "allocation": 20, "pool": 6,
+        "spawnInterval": { "min": 2.8, "max": 4.5 },
+        "roadH": { "y": 310, "halfWidth": 64, "shoulder": 32, "laneYs": [284, 336], "dirX": 1, "dirY": 0, "oneWay": true },
+        "roadV": { "x": 450, "halfWidth": 64, "shoulder": 32, "laneXs": [414, 486], "dirX": 0, "dirY": 1, "oneWay": true }
       },
       {
-        "id": 3,
-        "kind": "hall",
-        "name": "CRASH TEST CENTRE",
-        "quota": 5,
-        "allocation": 28,
-        "pool": 12,
-        "spawnInterval": {
-          "min": 2.2,
-          "max": 3.8
-        },
-        "entryLaneMin": 200,
-        "entryLaneMaxY": 520,
-        "entryLaneMaxX": 800
+        "id": 3, "kind": "hall", "name": "CRASH TEST CENTRE", "quota": 5, "allocation": 28, "pool": 12,
+        "spawnInterval": { "min": 2.2, "max": 3.8 },
+        "entryLaneMin": 200, "entryLaneMaxY": 520, "entryLaneMaxX": 800
       }
     ],
     "certificationTarget": 11,

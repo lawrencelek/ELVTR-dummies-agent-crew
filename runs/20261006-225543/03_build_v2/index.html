@@ -357,7 +357,6 @@ function frame(now){
       var n = 0;
       while(acc >= STEP && n < 6){
         SIM.step(S, readInput(), STEP); acc -= STEP; n++;
-        if(S.fxSeq < lastFx) lastFx = 0;
         var hit = false;
         for(var q = 0; q < S.fx.length; q++){
           var g = S.fx[q];

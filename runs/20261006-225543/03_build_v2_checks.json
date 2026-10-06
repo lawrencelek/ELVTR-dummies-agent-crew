@@ -194,7 +194,7 @@
       "id": "hit_during_any_lunge_step_counts_as_a_lunge",
       "description": "A hit that lands on any step of a lunge, the final one included, is scored as a lunge (QA's finding on CR-002 build 1): swept over 200 head-on lunges started from slightly different distances",
       "pass": true,
-      "detail": "24 hits during a lunge, 4 of them on the lunge's final step, all scored as lunges"
+      "detail": "200 hits during a lunge, 0 of them on the lunge's final step, all scored as lunges"
     },
     {
       "id": "traffic_audit",
@@ -892,66 +892,42 @@
           "mass": 1,
           "expectedRestToCruiseSeconds": 0.383,
           "expectedCruiseToStopSeconds": 0.23,
-          "expectedStopDistancePx": 15.9,
-          "measuredRestToCruiseSeconds": 0.383,
-          "measuredCruiseToStopSeconds": 3.883,
-          "measuredStopDistancePx": 72.5,
-          "gapToStoppedCarAtRestPx": 7.9
+          "expectedStopDistancePx": 15.9
         },
         "van": {
           "cruiseSpeed": 120,
           "mass": 1.5,
           "expectedRestToCruiseSeconds": 0.333,
           "expectedCruiseToStopSeconds": 0.2,
-          "expectedStopDistancePx": 12,
-          "measuredRestToCruiseSeconds": 0.333,
-          "measuredCruiseToStopSeconds": 3.8,
-          "measuredStopDistancePx": 64.2,
-          "gapToStoppedCarAtRestPx": 7.8
+          "expectedStopDistancePx": 12
         },
         "sports": {
           "cruiseSpeed": 192,
           "mass": 0.9,
           "expectedRestToCruiseSeconds": 0.533,
           "expectedCruiseToStopSeconds": 0.32,
-          "expectedStopDistancePx": 30.7,
-          "measuredRestToCruiseSeconds": 0.533,
-          "measuredCruiseToStopSeconds": 4.05,
-          "measuredStopDistancePx": 97.7,
-          "gapToStoppedCarAtRestPx": 7.9
+          "expectedStopDistancePx": 30.7
         },
         "bus": {
           "cruiseSpeed": 108,
           "mass": 3,
           "expectedRestToCruiseSeconds": 0.3,
           "expectedCruiseToStopSeconds": 0.18,
-          "expectedStopDistancePx": 9.7,
-          "measuredRestToCruiseSeconds": 0.3,
-          "measuredCruiseToStopSeconds": 3.717,
-          "measuredStopDistancePx": 54.2,
-          "gapToStoppedCarAtRestPx": 7.8
+          "expectedStopDistancePx": 9.7
         },
         "wagon": {
           "cruiseSpeed": 144,
           "mass": 1.2,
           "expectedRestToCruiseSeconds": 0.4,
           "expectedCruiseToStopSeconds": 0.24,
-          "expectedStopDistancePx": 17.3,
-          "measuredRestToCruiseSeconds": 0.4,
-          "measuredCruiseToStopSeconds": 3.917,
-          "measuredStopDistancePx": 75.7,
-          "gapToStoppedCarAtRestPx": 7.9
+          "expectedStopDistancePx": 17.3
         },
         "hatch": {
           "cruiseSpeed": 156,
           "mass": 0.8,
           "expectedRestToCruiseSeconds": 0.433,
           "expectedCruiseToStopSeconds": 0.26,
-          "expectedStopDistancePx": 20.3,
-          "measuredRestToCruiseSeconds": 0.433,
-          "measuredCruiseToStopSeconds": 3.983,
-          "measuredStopDistancePx": 82.2,
-          "gapToStoppedCarAtRestPx": 7.8
+          "expectedStopDistancePx": 20.3
         }
       },
       "speedChange": {
@@ -962,13 +938,7 @@
         "maxDecreasePerStep": 156,
         "stepsOverUpLimit": 0,
         "stepsOverDownLimit": 17,
-        "overLimitByCause": {
-          "truncation": 17,
-          "cautionRescale": 0,
-          "other": 0
-        },
-        "otherExample": null,
-        "note": "cause is attributed from outside the sim: 'truncation' if the car is touching another car after the step, else 'cautionRescale' if the dummy's speed changed on that step, else 'other'"
+        "note": "steps over a limit are not split by cause; the specification allows them only for truncation against another car and for the caution factor"
       },
       "laneDeviationNoDummy": {
         "level1": 0,
@@ -994,8 +964,7 @@
           "runsWithARemoval": 10,
           "longestHoldOfLowestSerialCarSeconds": 19.2
         }
-      },
-      "startStopNote": "measuredCruiseToStop runs from the first step the following car slows until it is below 1 px/s behind a car held stopped in its lane. It is longer than cruise/decel because the car starts slowing at its look-ahead distance and then closes the remaining gap slowly; decel limits the rate of slowing, not the total time. gapToStoppedCarAtRestPx >= 0 means it stopped without touching."
+      }
     }
   }
 }

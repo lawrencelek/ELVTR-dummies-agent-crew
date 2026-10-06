@@ -43,25 +43,25 @@ var MONO = "'IBM Plex Mono',ui-monospace,Menlo,monospace";
 var COND = "'IBM Plex Sans Condensed','IBM Plex Sans',system-ui,sans-serif";
 var cv = document.getElementById("c"), ctx = cv.getContext("2d");
 var W = cv.width, H = cv.height;
-var showPerception = true, shake = 0, lastFx = 0, freeze = 0;
+var showPerception = true, shake = 0, lastFx = 0;
 function newSeed(){ return (Date.now() & 0x7fffffff) || 1; }
 var S = SIM.createSim({ seed:newSeed() });
 
 /* ============================================================ INPUT */
-var keys = {}, pendConfirm = false, pendLunge = false, ptr = false;
+var keys = {}, pendConfirm = false, ptr = false;
 addEventListener("keydown", function(e){
   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) >= 0) e.preventDefault();
-  if(!e.repeat){ pendConfirm = true; if(e.key === " ") pendLunge = true; }
+  if(!e.repeat) pendConfirm = true;
   keys[e.key.toLowerCase()] = true;
 });
 addEventListener("keyup", function(e){ keys[e.key.toLowerCase()] = false; });
 function clearInput(){ keys = {}; ptr = false; }
 addEventListener("blur", clearInput);
 addEventListener("visibilitychange", clearInput);
-cv.addEventListener("pointerdown", function(){ pendConfirm = true; pendLunge = true; ptr = true; });
+cv.addEventListener("pointerdown", function(){ pendConfirm = true; ptr = true; });
 addEventListener("pointerup", function(){ ptr = false; });
 addEventListener("pointercancel", function(){ ptr = false; });
-document.getElementById("restart").onclick = function(e){ e.target.blur(); S = SIM.createSim({ seed:newSeed() }); lastFx = 0; freeze = 0; };
+document.getElementById("restart").onclick = function(e){ e.target.blur(); S = SIM.createSim({ seed:newSeed() }); lastFx = 0; };
 document.getElementById("debug").onclick = function(e){
   showPerception = !showPerception;
   e.target.textContent = "Perception: " + (showPerception ? "on" : "off");
@@ -73,8 +73,8 @@ function readInput(){
   if(keys["d"] || keys["arrowright"]) dx += 1;
   if(keys["w"] || keys["arrowup"])    dy -= 1;
   if(keys["s"] || keys["arrowdown"])  dy += 1;
-  var cf = pendConfirm, pl = pendLunge; pendConfirm = false; pendLunge = false;
-  return { dx:dx, dy:dy, lunge:!!keys[" "] || ptr || pl, confirm:cf };
+  var cf = pendConfirm; pendConfirm = false;
+  return { dx:dx, dy:dy, lunge:!!keys[" "] || ptr, confirm:cf };
 }
 
 /* ============================================================ RENDER */
@@ -351,24 +351,13 @@ var STEP = 1/60, acc = 0, last = performance.now();
 function frame(now){
   var dt = Math.min(0.1, (now - last) / 1000); last = now;
   try{
-    if(freeze > 0) freeze -= dt;
-    else {
-      acc += dt;
-      var n = 0;
-      while(acc >= STEP && n < 6){
-        SIM.step(S, readInput(), STEP); acc -= STEP; n++;
-        if(S.fxSeq < lastFx) lastFx = 0;
-        var hit = false;
-        for(var q = 0; q < S.fx.length; q++){
-          var g = S.fx[q];
-          if(g.id > lastFx){
-            lastFx = g.id;
-            if(g.k === "pay"){ shake = 6 + 14 * g.sev; freeze = g.big ? 0.09 : 0.05; hit = true; }
-          }
-        }
-        if(hit) break;
-      }
-      if(acc > STEP) acc = 0;
+    acc += dt;
+    var n = 0;
+    while(acc >= STEP && n < 6){ SIM.step(S, readInput(), STEP); acc -= STEP; n++; }
+    if(acc > STEP) acc = 0;
+    for(var i = 0; i < S.fx.length; i++){
+      var f = S.fx[i];
+      if(f.id > lastFx){ lastFx = f.id; if(f.k === "pay") shake = 6 + 14 * f.sev; }
     }
     ctx.save();
     if(shake > 0.3){

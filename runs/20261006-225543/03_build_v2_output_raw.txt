@@ -1,3 +1,4 @@
+=== FILE: sim.js ===
 (function(){
 "use strict";
 
@@ -755,3 +756,400 @@ var api = { createSim:createSim, step:step, PARAMS:PARAMS, Damage:Damage, Vehicl
 if(typeof module !== "undefined" && module.exports) module.exports = api;
 if(typeof window !== "undefined") window.DummiesSim = api;
 })();
+=== END FILE ===
+=== FILE: index.html ===
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DUMMIES</title>
+<style>
+  :root{
+    --ink:#16181a; --paper:#e8eaec; --asphalt:#4a4f53; --line:#cfd3d6;
+    --hazard:#e8b400; --orange:#f26a1b; --red:#c0392b; --green:#1f7a57;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#1b1e20;color:var(--paper);font-family:var(--mono);
+       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px}
+  #wrap{position:relative;width:min(100%,900px)}
+  canvas{display:block;width:100%;height:auto;background:var(--asphalt);border:1px solid #2d3236;touch-action:none}
+  #pad{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;
+       font-size:11px;letter-spacing:.06em;color:#8d969b;text-transform:uppercase}
+  #pad b{color:var(--paper);font-weight:500}
+  button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+         background:#2a2f33;color:var(--paper);border:1px solid #3c4347;padding:6px 12px;cursor:pointer;border-radius:2px}
+  button:hover{background:#343a3f}
+  button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+</style>
+
+<div id="wrap"><canvas id="c" width="900" height="620"></canvas></div>
+<div id="pad">
+  <span>Move <b>WASD / arrows</b></span>
+  <span>Lunge <b>space</b></span>
+  <span>Hold to run — cars slow for you</span>
+  <span>Stand still — you get repaired</span>
+  <button id="restart">Restart</button>
+  <button id="debug">Perception: on</button>
+</div>
+
+<script src="sim.js"></script>
+<script>
+"use strict";
+
+var SIM = window.DummiesSim, P = SIM.PARAMS, HALL = P.hall;
+var MONO = "'IBM Plex Mono',ui-monospace,Menlo,monospace";
+var COND = "'IBM Plex Sans Condensed','IBM Plex Sans',system-ui,sans-serif";
+var cv = document.getElementById("c"), ctx = cv.getContext("2d");
+var W = cv.width, H = cv.height;
+var showPerception = true, shake = 0, lastFx = 0, freeze = 0;
+function newSeed(){ return (Date.now() & 0x7fffffff) || 1; }
+var S = SIM.createSim({ seed:newSeed() });
+
+/* ============================================================ INPUT */
+var keys = {}, pendConfirm = false, pendLunge = false, ptr = false;
+addEventListener("keydown", function(e){
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) >= 0) e.preventDefault();
+  if(!e.repeat){ pendConfirm = true; if(e.key === " ") pendLunge = true; }
+  keys[e.key.toLowerCase()] = true;
+});
+addEventListener("keyup", function(e){ keys[e.key.toLowerCase()] = false; });
+function clearInput(){ keys = {}; ptr = false; }
+addEventListener("blur", clearInput);
+addEventListener("visibilitychange", clearInput);
+cv.addEventListener("pointerdown", function(){ pendConfirm = true; pendLunge = true; ptr = true; });
+addEventListener("pointerup", function(){ ptr = false; });
+addEventListener("pointercancel", function(){ ptr = false; });
+document.getElementById("restart").onclick = function(e){ e.target.blur(); S = SIM.createSim({ seed:newSeed() }); lastFx = 0; freeze = 0; };
+document.getElementById("debug").onclick = function(e){
+  showPerception = !showPerception;
+  e.target.textContent = "Perception: " + (showPerception ? "on" : "off");
+  e.target.blur();
+};
+function readInput(){
+  var dx = 0, dy = 0;
+  if(keys["a"] || keys["arrowleft"])  dx -= 1;
+  if(keys["d"] || keys["arrowright"]) dx += 1;
+  if(keys["w"] || keys["arrowup"])    dy -= 1;
+  if(keys["s"] || keys["arrowdown"])  dy += 1;
+  var cf = pendConfirm, pl = pendLunge; pendConfirm = false; pendLunge = false;
+  return { dx:dx, dy:dy, lunge:!!keys[" "] || ptr || pl, confirm:cf };
+}
+
+/* ============================================================ RENDER */
+function rr(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+function arrow(x,y,dx,dy){
+  ctx.save(); ctx.translate(x,y); ctx.rotate(Math.atan2(dy,dx));
+  ctx.beginPath(); ctx.moveTo(-7,-7); ctx.lineTo(3,0); ctx.lineTo(-7,7); ctx.stroke();
+  ctx.restore();
+}
+function drawHall(){
+  var h = HALL;
+  ctx.fillStyle = "#3f4448"; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = "#4a4f53"; ctx.fillRect(h.x,h.y,h.w,h.h);
+  ctx.strokeStyle = "rgba(230,234,236,.22)"; ctx.lineWidth = 2; ctx.setLineDash([16,20]);
+  var i;
+  for(i = 1; i < 5; i++){ ctx.beginPath(); ctx.moveTo(h.x, h.y + h.h*i/5); ctx.lineTo(h.x+h.w, h.y + h.h*i/5); ctx.stroke(); }
+  for(i = 1; i < 6; i++){ ctx.beginPath(); ctx.moveTo(h.x + h.w*i/6, h.y); ctx.lineTo(h.x + h.w*i/6, h.y+h.h); ctx.stroke(); }
+  ctx.setLineDash([]);
+}
+function drawShoulders(L){
+  var h = HALL, r;
+  ctx.fillStyle = "#62665a";
+  if(L.kind === "road"){
+    r = L.road;
+    ctx.fillRect(h.x, r.y - r.halfWidth - r.shoulder, h.w, r.shoulder);
+    ctx.fillRect(h.x, r.y + r.halfWidth, h.w, r.shoulder);
+  } else if(L.kind === "cross"){
+    r = L.roadH;
+    ctx.fillRect(h.x, r.y - r.halfWidth - r.shoulder, h.w, r.shoulder);
+    ctx.fillRect(h.x, r.y + r.halfWidth, h.w, r.shoulder);
+    r = L.roadV;
+    ctx.fillRect(r.x - r.halfWidth - r.shoulder, h.y, r.shoulder, h.h);
+    ctx.fillRect(r.x + r.halfWidth, h.y, r.shoulder, h.h);
+  }
+}
+function barrier(x0,y0,x1,y1){
+  ctx.setLineDash([]); ctx.lineWidth = 6; ctx.strokeStyle = "#8a2a20";
+  ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+  ctx.lineWidth = 2; ctx.strokeStyle = "#f4f4f4"; ctx.setLineDash([10,10]);
+  ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+  ctx.setLineDash([]);
+}
+function drawBarriers(L){
+  var h = HALL, r;
+  if(L.kind === "road"){
+    r = L.road; var e = r.halfWidth + r.shoulder;
+    barrier(h.x, r.y - e, h.x + h.w, r.y - e);
+    barrier(h.x, r.y + e, h.x + h.w, r.y + e);
+  } else if(L.kind === "cross"){
+    var a = L.roadH, b = L.roadV, ea = a.halfWidth + a.shoulder, eb = b.halfWidth + b.shoulder;
+    var vx0 = b.x - eb, vx1 = b.x + eb, hy0 = a.y - ea, hy1 = a.y + ea;
+    barrier(h.x, hy0, vx0, hy0); barrier(vx1, hy0, h.x + h.w, hy0);
+    barrier(h.x, hy1, vx0, hy1); barrier(vx1, hy1, h.x + h.w, hy1);
+    barrier(vx0, h.y, vx0, hy0); barrier(vx0, hy1, vx0, h.y + h.h);
+    barrier(vx1, h.y, vx1, hy0); barrier(vx1, hy1, vx1, h.y + h.h);
+  }
+}
+function drawRoads(){
+  var L = P.levels[S.level - 1], h = HALL, x, y, r;
+  if(L.kind === "hall") return;
+  drawShoulders(L);
+  ctx.fillStyle = "#33373b";
+  if(L.kind === "road"){
+    r = L.road;
+    ctx.fillRect(h.x, r.y - r.halfWidth, h.w, r.halfWidth*2);
+  } else {
+    ctx.fillRect(h.x, L.roadH.y - L.roadH.halfWidth, h.w, L.roadH.halfWidth*2);
+    ctx.fillRect(L.roadV.x - L.roadV.halfWidth, h.y, L.roadV.halfWidth*2, h.h);
+  }
+  ctx.lineWidth = 3; ctx.strokeStyle = "rgba(232,234,236,.75)";
+  if(L.kind === "road"){
+    ctx.beginPath(); ctx.moveTo(h.x, r.y - r.halfWidth); ctx.lineTo(h.x+h.w, r.y - r.halfWidth);
+    ctx.moveTo(h.x, r.y + r.halfWidth); ctx.lineTo(h.x+h.w, r.y + r.halfWidth); ctx.stroke();
+    ctx.strokeStyle = "rgba(232,180,0,.7)"; ctx.setLineDash([18,14]);
+    ctx.beginPath(); ctx.moveTo(h.x, r.y); ctx.lineTo(h.x+h.w, r.y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = "rgba(232,234,236,.35)"; ctx.lineWidth = 2;
+    for(x = h.x + 60; x < h.x + h.w - 30; x += 140){ arrow(x, r.laneYs[0], 1, 0); arrow(x + 70, r.laneYs[1], 1, 0); }
+  } else {
+    var rh = L.roadH, rv = L.roadV, jx0 = rv.x - rv.halfWidth, jx1 = rv.x + rv.halfWidth, jy0 = rh.y - rh.halfWidth, jy1 = rh.y + rh.halfWidth;
+    ctx.beginPath();
+    ctx.moveTo(h.x, jy0); ctx.lineTo(jx0, jy0); ctx.lineTo(jx0, h.y);
+    ctx.moveTo(jx1, h.y); ctx.lineTo(jx1, jy0); ctx.lineTo(h.x+h.w, jy0);
+    ctx.moveTo(h.x, jy1); ctx.lineTo(jx0, jy1); ctx.lineTo(jx0, h.y+h.h);
+    ctx.moveTo(jx1, h.y+h.h); ctx.lineTo(jx1, jy1); ctx.lineTo(h.x+h.w, jy1);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(232,234,236,.4)"; ctx.setLineDash([18,14]); ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(h.x, rh.y); ctx.lineTo(jx0, rh.y); ctx.moveTo(jx1, rh.y); ctx.lineTo(h.x+h.w, rh.y);
+    ctx.moveTo(rv.x, h.y); ctx.lineTo(rv.x, jy0); ctx.moveTo(rv.x, jy1); ctx.lineTo(rv.x, h.y+h.h);
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = "rgba(232,234,236,.3)"; ctx.lineWidth = 1; ctx.setLineDash([4,6]);
+    ctx.strokeRect(jx0, jy0, jx1-jx0, jy1-jy0); ctx.setLineDash([]);
+    ctx.strokeStyle = "rgba(232,234,236,.45)"; ctx.lineWidth = 2;
+    for(x = h.x + 60; x < jx0 - 20; x += 110){ arrow(x, rh.laneYs[0], 1, 0); arrow(x + 55, rh.laneYs[1], 1, 0); }
+    for(x = jx1 + 60; x < h.x + h.w - 30; x += 110){ arrow(x, rh.laneYs[0], 1, 0); arrow(x + 55, rh.laneYs[1], 1, 0); }
+    for(y = h.y + 50; y < jy0 - 20; y += 90){ arrow(rv.laneXs[0], y, 0, 1); arrow(rv.laneXs[1], y + 45, 0, 1); }
+    for(y = jy1 + 50; y < h.y + h.h - 20; y += 90){ arrow(rv.laneXs[0], y, 0, 1); arrow(rv.laneXs[1], y + 45, 0, 1); }
+  }
+  drawBarriers(L);
+  ctx.strokeStyle = "#6c7378"; ctx.lineWidth = 2; ctx.strokeRect(h.x,h.y,h.w,h.h);
+}
+function fileState(u){
+  if(u.closed) return "closed";
+  if(u.contacts === 0) return "naive";
+  if(u.contacts === 1) return "briefed";
+  return "adapted";
+}
+function drawCar(c){
+  var u = S.fleet[c.unit], cl = P.classes[c.cls], D = SIM.dials(S, u), ang = Math.atan2(c.dirY, c.dirX);
+  ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(ang);
+  if(showPerception && S.mode === "play"){
+    ctx.fillStyle = c.sees ? "rgba(242,106,27,.17)" : "rgba(230,234,236,.07)";
+    ctx.beginPath(); ctx.moveTo(0,0);
+    ctx.lineTo(D.detect, D.margin); ctx.lineTo(D.detect, -D.margin);
+    ctx.closePath(); ctx.fill();
+    if(cl.swerve){
+      ctx.strokeStyle = "rgba(230,234,236,.30)"; ctx.setLineDash([5,5]); ctx.lineWidth = 1;
+      var ca = D.detect * cl.commitFrac;
+      ctx.beginPath(); ctx.moveTo(ca, -D.margin); ctx.lineTo(ca, D.margin); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if(c.lock){
+      ctx.strokeStyle = "#f26a1b"; ctx.lineWidth = 3;
+      var s = -c.lock * (c.width/2 + 13);
+      ctx.beginPath();
+      ctx.moveTo(c.length*0.10, s - c.lock*9);
+      ctx.lineTo(c.length*0.34, s);
+      ctx.lineTo(c.length*0.10, s + c.lock*9);
+      ctx.stroke();
+    }
+  }
+  ctx.fillStyle = u.closed ? "#b9c1c6" : "#e8eaec";
+  rr(-c.length/2, -c.width/2, c.length, c.width, 6); ctx.fill();
+  ctx.fillStyle = "#f26a1b";
+  rr(c.length/2 - 9, -c.width/2, 9, c.width, 4); ctx.fill();
+  if(c.braking){ ctx.fillStyle = "#c0392b"; ctx.fillRect(-c.length/2, -c.width/2+2, 4, c.width-4); }
+  ctx.restore();
+
+  var fs = fileState(u), n = fs === "briefed" ? 1 : fs === "adapted" ? 2 : 0;
+  ctx.save(); ctx.translate(c.x, c.y);
+  for(var i = 0; i < n; i++){
+    ctx.fillStyle = "#16181a";
+    ctx.beginPath(); ctx.arc(-6 + i*12, 0, 2.6, 0, 6.283); ctx.fill();
+  }
+  if(u.closed){
+    ctx.strokeStyle = "#16181a"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, 7, 0, 6.283); ctx.stroke();
+  }
+  ctx.fillStyle = "rgba(22,24,26,.72)"; ctx.font = "600 9px " + MONO;
+  ctx.textAlign = "center"; ctx.fillText(c.id, 0, c.width/2 + 11);
+  ctx.restore();
+}
+function drawDummy(){
+  var d = S.dummy, r = P.dummy.radius;
+  ctx.save(); ctx.translate(d.x, d.y);
+  if(d.serviceOn){
+    ctx.strokeStyle = "rgba(31,122,87,.85)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, r + 8 + Math.sin(S.time*8)*2, 0, 6.283); ctx.stroke();
+  }
+  ctx.fillStyle = "#16181a"; ctx.beginPath(); ctx.arc(0, 0, r + 2, 0, 6.283); ctx.fill();
+  ctx.fillStyle = d.lunging ? "#f26a1b" : (d.recovering ? "#b89c3a" : "#e8b400");
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.283); ctx.fill();
+  ctx.fillStyle = "#16181a";
+  for(var i = -1; i <= 1; i += 2) ctx.fillRect(-r, i*3 - 1.5, r*2, 3);
+  if(d.recovering){
+    var u = Math.min(1, d.recT / P.dummy.recoveryTime);
+    ctx.strokeStyle = "rgba(127,211,255,.9)"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(0, 0, r + 6, -Math.PI/2, -Math.PI/2 + 6.283 * (1 - u)); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawHud(){
+  var h = HALL, y = 18, d = S.dummy, wear = 1 - d.health / P.dummy.maxHealth, i;
+  var bw = 190;
+  ctx.fillStyle = "rgba(22,24,26,.45)"; rr(h.x, y-9, bw, 13, 3); ctx.fill();
+  ctx.fillStyle = wear > 0.72 ? "#c0392b" : "#e8b400";
+  rr(h.x, y-9, Math.max(0.01, bw * (1 - wear)), 13, 3); ctx.fill();
+  var qx = h.x + bw + 20;
+  for(i = 0; i < S.quota; i++){
+    ctx.beginPath(); ctx.arc(qx + i*16, y - 2, 5.5, 0, 6.283);
+    ctx.fillStyle = i < S.levelWriteOffs ? "#e8eaec" : "rgba(232,234,236,.26)"; ctx.fill();
+  }
+  ctx.textAlign = "center"; ctx.fillStyle = "#e8eaec"; ctx.font = "700 14px " + COND;
+  ctx.fillText("LEVEL " + S.level + " \u00b7 " + P.levels[S.level-1].name, W/2 + 40, y + 2);
+  var lx = h.x + h.w - 12*15, ly = y - 10;
+  for(var k = 0; k < 12; k++){
+    var u = S.fleet[k], x = lx + k*15;
+    ctx.strokeStyle = "rgba(232,234,236,.34)"; ctx.lineWidth = 1; ctx.strokeRect(x, ly, 12, 14);
+    if(u.closed){ ctx.fillStyle = "#1f7a57"; ctx.fillRect(x+1.5, ly+1.5, 9, 11); }
+    else if(u.contacts > 0){ ctx.fillStyle = "rgba(232,234,236,.30)"; ctx.fillRect(x+1.5, ly+10.5, 9, 2); }
+  }
+  ctx.textAlign = "left"; ctx.fillStyle = "rgba(232,234,236,.6)"; ctx.font = "500 10px " + MONO;
+  ctx.fillText("CARS " + S.vehiclesSpawned + "/" + S.allocation + " \u00b7 BODIES " + S.bodiesDestroyed + "/" + P.certificationTarget, h.x, H - 16);
+}
+function drawFx(){
+  for(var i = 0; i < S.fx.length; i++){
+    var f = S.fx[i];
+    if(f.k === "pay"){
+      ctx.globalAlpha = Math.max(0, Math.min(1, f.t * 1.6));
+      ctx.fillStyle = f.big ? "#f26a1b" : "#e8eaec";
+      ctx.font = (f.big ? "700 26px " : "600 17px ") + COND;
+      ctx.textAlign = "center";
+      ctx.fillText("+" + f.v.toLocaleString(), f.x, f.y - (0.95 - f.t) * 34);
+      ctx.globalAlpha = 1;
+    }
+    if(f.k === "stamp"){
+      ctx.globalAlpha = Math.max(0, Math.min(1, f.t));
+      ctx.fillStyle = "#1f7a57"; ctx.font = "700 15px " + COND;
+      ctx.textAlign = "right"; ctx.fillText("FILE CLOSED", HALL.x + HALL.w, 48);
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+function wrapText(s, max){
+  var words = s.split(" "), lines = [], cur = "";
+  for(var i = 0; i < words.length; i++){
+    var t = cur ? cur + " " + words[i] : words[i];
+    if(ctx.measureText(t).width > max && cur){ lines.push(cur); cur = words[i]; }
+    else cur = t;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+function drawCard(){
+  var c = S.card, w = 560, h = c.profile ? 290 : 230, x = (W-w)/2, y = (H-h)/2, i;
+  ctx.fillStyle = "rgba(16,18,20,.80)"; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = "#e8eaec"; rr(x, y, w, h, 4); ctx.fill();
+  ctx.fillStyle = "#16181a"; ctx.textAlign = "left";
+  ctx.font = "700 27px " + COND; ctx.fillText(c.title, x+30, y+48);
+  ctx.font = "500 12px " + MONO; ctx.fillStyle = "#5a6166"; ctx.fillText(c.sub, x+30, y+70);
+  if(c.kind === "writeoff"){
+    ctx.fillStyle = "#f26a1b"; ctx.font = "700 21px " + COND;
+    ctx.textAlign = "right"; ctx.fillText("+" + c.pay.toLocaleString(), x+w-30, y+48);
+    ctx.textAlign = "left";
+  }
+  ctx.fillStyle = "#16181a"; ctx.font = "400 14px " + MONO;
+  var lines = wrapText(c.line, w - 60);
+  for(i = 0; i < lines.length; i++) ctx.fillText(lines[i], x+30, y+104 + i*21);
+  var ly = y + h - (c.profile ? 92 : 56);
+  ctx.fillStyle = "#5a6166"; ctx.font = "500 10px " + MONO;
+  ctx.fillText("OPERATOR LICENCE", x+30, ly - 8);
+  for(var k = 0; k < 12; k++){
+    var u = S.fleet[k], cx = x + 30 + k*20;
+    ctx.strokeStyle = "#b9c1c6"; ctx.lineWidth = 1; ctx.strokeRect(cx, ly, 16, 18);
+    if(u.closed){ ctx.fillStyle = "#1f7a57"; ctx.fillRect(cx+2, ly+2, 12, 14); }
+    else if(u.contacts > 0){ ctx.fillStyle = "#cfd3d6"; ctx.fillRect(cx+2, ly+13, 12, 3); }
+  }
+  if(c.profile && c.stats){
+    ctx.fillStyle = "#5a6166"; ctx.font = "400 11px " + MONO;
+    ctx.fillText(c.stats[0], x+30, y+h-44);
+    ctx.fillText(c.stats[1], x+30, y+h-28);
+  }
+  ctx.fillStyle = "#8d969b"; ctx.font = "500 10px " + MONO; ctx.textAlign = "right";
+  ctx.fillText(S.mode === "over" ? "ANY KEY TO RESTART" : "ANY KEY TO CONTINUE", x+w-30, y+h-14);
+  ctx.textAlign = "left";
+}
+function drawAttract(){
+  ctx.fillStyle = "rgba(16,18,20,.55)"; ctx.fillRect(0,0,W,H);
+  ctx.textAlign = "center"; ctx.fillStyle = "#e8eaec";
+  ctx.font = "700 30px " + COND;
+  ctx.fillText("Your job is to be hit by the cars.", W/2, H/2 - 14);
+  ctx.fillText("The cars are programmed not to hit you.", W/2, H/2 + 24);
+  ctx.font = "500 11px " + MONO; ctx.fillStyle = "#8d969b";
+  ctx.fillText("ANY KEY", W/2, H/2 + 64);
+  ctx.textAlign = "left";
+}
+
+/* ============================================================ LOOP */
+var STEP = 1/60, acc = 0, last = performance.now();
+function frame(now){
+  var dt = Math.min(0.1, (now - last) / 1000); last = now;
+  try{
+    if(freeze > 0) freeze -= dt;
+    else {
+      acc += dt;
+      var n = 0;
+      while(acc >= STEP && n < 6){
+        SIM.step(S, readInput(), STEP); acc -= STEP; n++;
+        var hit = false;
+        for(var q = 0; q < S.fx.length; q++){
+          var g = S.fx[q];
+          if(g.id > lastFx){
+            lastFx = g.id;
+            if(g.k === "pay"){ shake = 6 + 14 * g.sev; freeze = g.big ? 0.09 : 0.05; hit = true; }
+          }
+        }
+        if(hit) break;
+      }
+      if(acc > STEP) acc = 0;
+    }
+    ctx.save();
+    if(shake > 0.3){
+      ctx.translate((Math.random()-0.5)*shake, (Math.random()-0.5)*shake);
+      shake *= 0.86;
+    }
+    drawHall(); drawRoads();
+    for(var j = 0; j < S.cars.length; j++) drawCar(S.cars[j]);
+    if(S.mode !== "attract") drawDummy();
+    ctx.restore();
+    if(S.mode !== "attract") drawHud();
+    drawFx();
+    if(S.mode === "attract") drawAttract();
+    if((S.mode === "card" || S.mode === "over") && S.card) drawCard();
+  } catch(e){
+    console.error(e);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+=== END FILE ===
+=== NOTES ===
+Fixed the final-step lunge scoring bug: dummyStep now records d.lungedThisStep (true for any step in which the dummy was lunging, including the step that ends the lunge), and judge passes lunging = d.lunging || d.lungedThisStep into Damage.assess and lastImpact, with the velocity being that step's lunge displacement/dt. index.html now latches Space and pointer presses on the keydown/pointerdown event, so a press and release inside one render frame still reaches the sim as one fresh press. I restored the Testpad hit-stop as a render-only freeze (0.09 s for a nose hit, 0.05 s otherwise). It pauses stepping and never touches sim state, so determinism is unaffected. I did not extend the QA checks report: that is not one of my two files, so the per-class start/stop, speed-change-by-cause, lane-deviation, barrier-clearance and 30-seed L3 breaker numbers still need to be added to the QA harness. I did not change the stall breaker, as instructed. A new automated check for a hit landing on the final lunge step also still has to be added to the QA harness. No specification problems found.
+=== END NOTES ===

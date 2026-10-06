@@ -101,15 +101,31 @@ is a barrier: no part of a car may ever cross it. A car that cannot swerve far
 enough to clear the dummy, because of the barrier or another car, brakes
 instead. The dummy crosses shoulders and barriers freely. Both are drawn.
 
-**Damage from momentum (CR-001).** Each class has a mass. For a paying impact,
-damage = round(impact.perMomentum x closing speed x class mass x face factor),
-capped at impact.maxPay. Closing speed is the size of the car's velocity
-minus the dummy's velocity, in px/s. Score for the impact equals the damage.
-This replaces the Testpad's severity curve; where the Testpad uses severity
-(report signatures, shake) use damage / maxPay. Tune perMomentum and the
-masses so that a full-speed lunge across a sedan's nose takes roughly half of
-a fresh body, a bus hits hardest per unit of speed, and a stationary dummy
-struck by a cruising sedan loses only a little.
+**Damage (CR-001, corrected by CR-002).** Damage comes from the vehicle, not
+from the dummy's speed. Each class has a mass. For every contact:
+
+`damage = min(maxPay, round(perMomentum x vehicleSpeed x mass x faceFactor x lungeFactor))`
+
+- `vehicleSpeed`: the car's own forward speed at that moment (`car.speed`).
+  A braking car hits more softly; a stopped car does no damage.
+- `faceFactor`: which face of the car's rectangle the dummy reached, judged by
+  geometry from where the dummy came from. Nose (front edge) `faceNose`;
+  front corner `faceCorner`; flank (either long side, anywhere along it)
+  `faceFlank`; tail and rear corners `faceTail` (zero).
+- `lungeFactor`: 1 if the dummy is not lunging. If it is,
+  `1 + lungeBonus x c`, with `c = -(d . h)`, where `d` is the unit direction
+  of the dummy's velocity and `h` the car's direction of travel. `c` is +1
+  for a lunge straight against the car (head-on), 0 across it, -1 with it.
+  The speed of the lunge does not enter the formula.
+- Score for the hit equals the damage. Where the Testpad uses severity
+  (report signatures, shake) use damage / maxPay.
+- Must hold: for a given car a head-on lunge into the nose is the
+  highest-paying hit; lunging the way the car is travelling pays less than
+  standing still on the same face; the tail pays nothing.
+- Calibrate so a head-on lunge into a cruising sedan's nose takes roughly half
+  of a fresh body, and `0 < lungeBonus < 1`.
+- A fast lunge must not tunnel: the face is judged from the dummy's position
+  relative to the car before contact.
 
 **Car-to-car rule (all levels).** Every car has a serial number that
 increases with each spawn. A car gives way only to cars with a lower serial
@@ -138,6 +154,23 @@ Loadable in a browser (`window.DummiesSim`) and in Node (`module.exports`).
 Exports:
 
 - `PARAMS` — a literal copy of the Designer's specification `params`.
+- `Damage` — the damage-assessment module (CR-002). Two pure functions with no
+  state and no side effects; every hit in the game is scored by them and
+  nowhere else:
+  - `Damage.contactFace(car, px, py)` -> `"nose" | "corner" | "flank" | "tail"`.
+    `car` has `x, y, dirX, dirY, length, width`; `(px, py)` is the dummy's
+    centre at the last moment it was outside the car's rectangle. With `a`
+    the offset along the car's direction and `b` across it: nose if
+    `a > length/2` and `|b| <= width/2`; corner if `a > length/2` and
+    `|b| > width/2`; flank if `|a| <= length/2`; tail otherwise.
+  - `Damage.assess(params, contact)` ->
+    `{ mass, faceFactor, lungeFactor, damage }`, where `contact` is
+    `{ cls, vehicleSpeed, dirX, dirY, face, dummyVx, dummyVy, lunging }`.
+- `Vehicles` — the vehicle-behaviour module (CR-002). All spawning, speeds,
+  perception, commitment and swerving, braking, give-way, road limits and
+  removal live in it. It exposes at least `Vehicles.step(state, dt)` (advance
+  every car one step) and `Vehicles.cruiseSpeed(params, cls)` (a class's
+  undisturbed speed). `step` calls it; nothing outside it moves a car.
 - `createSim(options)` -> `state`. Options, all optional:
   `seed` (number, default 1), `level` (1, 2 or 3, default 1),
   `traffic` (boolean, default true; false means no car is ever spawned),
@@ -183,6 +216,11 @@ state.cars = [ {
   lock: -1 | 0 | 1,     committed side, 0 = not committed
   braking: boolean,     true on every step in which it is slowing or held
   hit: boolean } ]      this car has already had its impact
+state.lastImpact = null | {   how the most recent contact was scored (CR-002)
+  time, serial, id, cls,
+  face,                 "nose" | "corner" | "flank" | "tail"
+  vehicleSpeed, dirX, dirY, dummyVx, dummyVy, lunging,
+  mass, faceFactor, lungeFactor, damage }
 ```
 
 Rules the checks rely on:
@@ -197,10 +235,12 @@ Rules the checks rely on:
   "over" restarts the run at level 1 in "attract".
 - Level end is evaluated in "play" whenever
   `vehiclesSpawned >= allocation` and `cars` is empty.
-- An impact needs the dummy's circle to touch the car's rectangle; face is
-  judged as in the Testpad. Rear contact changes neither health nor score.
-  Each car has at most one impact (`hit`). The impact is judged before the
-  dummy is pushed out of the car.
+- An impact needs the dummy's circle to touch the car's rectangle. Its face
+  comes from `Damage.contactFace` and its damage from `Damage.assess`; the
+  result is stored in `state.lastImpact`, health falls by exactly
+  `lastImpact.damage` and score rises by the same. Tail contact changes
+  neither. Each car has at most one impact (`hit`). The impact is judged
+  before the dummy is pushed out of the car.
 - After every step the dummy's circle does not reach more than 1 px into any
   car's rectangle, and (inside the canvas) no two cars' rectangles overlap.
 - Dummy at full health: reach multiplier is exactly 1, so a lunge covers
@@ -226,7 +266,8 @@ hall:    { x: 40, y: 40, w: 820, h: 540 }
 dummy:   { radius, walkSpeed, runSpeed, rampTime, lungeDistance,
            lungeDuration, lungeCooldown, recoveryTime, wearFloor,
            wearSpeedLoss, maxHealth, writeOffBonus, startX, startY }
-impact:  { perMomentum, maxPay, faceFront, faceSide, faceRear }
+impact:  { perMomentum, maxPay, faceNose, faceCorner, faceFlank, faceTail,
+           lungeBonus }
 caution: { max }
 service: { delay, fullTime }
 classes: { sedan: { label, width, length, speed, mass, swerve, commitFrac, flip,

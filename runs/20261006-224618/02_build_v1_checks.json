@@ -1,0 +1,322 @@
+{
+  "total": 34,
+  "passed": 33,
+  "failed": 1,
+  "all_passed": false,
+  "results": [
+    {
+      "id": "load_sim",
+      "description": "sim.js loads in Node and exports createSim, step, PARAMS",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "params_match_spec",
+      "description": "Builder's PARAMS equal the Designer's spec params (Designer output reached the Builder)",
+      "pass": true,
+      "detail": "252 parameters identical"
+    },
+    {
+      "id": "state_shape",
+      "description": "createSim returns the contract state shape, JSON-serialisable, for all three levels",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "attract_then_confirm",
+      "description": "Default start is the attract screen; a confirm press begins play",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "move_speed_equal_8_directions",
+      "description": "Distance covered in 1 s is equal in all eight directions (within 1%) and goes the way the input points",
+      "pass": true,
+      "detail": "px in 1 s: 122.2, 122.2, 122.2, 122.2, 122.2, 122.2, 122.2, 122.2"
+    },
+    {
+      "id": "walk_frame_rate_independent",
+      "description": "Walking covers the same distance at 60 and 120 steps per second (within 2%)",
+      "pass": true,
+      "detail": "60 Hz 203.2 px, 120 Hz 202.8 px"
+    },
+    {
+      "id": "run_speed_matches_spec",
+      "description": "After the ramp, speed equals spec runSpeed straight and diagonal (within 3%)",
+      "pass": true,
+      "detail": "px/s: 162.0, 162.0"
+    },
+    {
+      "id": "lunge_distance_equal_8_directions",
+      "description": "Lunge distance is equal in all eight directions (within 1%), equals spec lungeDistance (within 2%), and follows the facing direction when no direction is held",
+      "pass": true,
+      "detail": "px: 164.0, 164.0, 164.0, 164.0, 164.0, 164.0, 164.0, 164.0"
+    },
+    {
+      "id": "lunge_frame_rate_independent",
+      "description": "A lunge covers the same distance at 120 steps per second (within 2%)",
+      "pass": true,
+      "detail": "164.0 px"
+    },
+    {
+      "id": "lunge_eases_out",
+      "description": "The lunge is tweened: more than 60% of the distance is covered in the first half of its duration",
+      "pass": true,
+      "detail": "87% at half time"
+    },
+    {
+      "id": "no_midair_steering",
+      "description": "Direction input during a lunge does not change its path",
+      "pass": true,
+      "detail": "drift 0.000 px"
+    },
+    {
+      "id": "held_lunge_does_not_chain",
+      "description": "Holding the lunge button and a direction for 3 s starts exactly one lunge",
+      "pass": true,
+      "detail": "1 lunge"
+    },
+    {
+      "id": "recovery_is_tweened",
+      "description": "After a lunge the dummy is 'recovering' for spec recoveryTime, can move during it, and starts slowly",
+      "pass": true,
+      "detail": "recovery 0.35 s, moved 19.6 px during it"
+    },
+    {
+      "id": "deterministic_and_seeded",
+      "description": "Same seed and inputs give an identical state after 40 s; a different seed gives different traffic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "level1_road_flows_left_to_right",
+      "description": "Level 1: every car travels left to right inside the road band, at its class speed, and never stalls (dummy out of the way)",
+      "pass": true,
+      "detail": "14 cars in 60 s"
+    },
+    {
+      "id": "car_speed_real_time",
+      "description": "An undisturbed car's reported speed equals its class speed and its real displacement per second, at 60 and 120 steps per second",
+      "pass": true,
+      "detail": "px in 1 s at 60 / 120 Hz: 120.0 / 120.0"
+    },
+    {
+      "id": "level2_cross_no_collisions",
+      "description": "Level 2: traffic uses both one-way roads (left to right, top to bottom), cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock)",
+      "pass": true,
+      "detail": "39 cars through, 18 horizontal, 24 vertical, no overlap"
+    },
+    {
+      "id": "level3_free_for_all",
+      "description": "Level 3: vehicles enter from at least three of the four edges, several classes appear, and cars never overlap inside the canvas",
+      "pass": true,
+      "detail": "4 directions, 6 classes, no overlap"
+    },
+    {
+      "id": "detection_commit_and_brake_flags",
+      "description": "A dummy standing in a lane is seen, the car commits to a side (lock) and the lock does not change afterwards",
+      "pass": true,
+      "detail": "VAN-07: seen, lock 1"
+    },
+    {
+      "id": "front_impact_pays_once",
+      "description": "Front contact reduces health and adds score, once per car",
+      "pass": true,
+      "detail": "health 2300.0 -> 1543.6, score +759.0"
+    },
+    {
+      "id": "rear_contact_pays_nothing",
+      "description": "Rear contact changes neither health nor score",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "write_off_card_and_fresh_body",
+      "description": "At zero health: one write-off counted, a card appears, confirm gives a fresh body",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "level_progression",
+      "description": "Quota met and allocation spent: level 1 -> 2 -> 3 via a card and confirm",
+      "pass": true,
+      "detail": "1 -> 2 -> 3"
+    },
+    {
+      "id": "ending_decommissioned",
+      "description": "Allocation spent with the quota missed ends the run as 'decommissioned'",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "ending_licensed",
+      "description": "The write-off that reaches certificationTarget ends the run as 'licensed' at once",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "levels_always_end_with_dummy_in_traffic",
+      "description": "With a dummy standing on the road (at each road edge, so cars must swerve), every level still runs to its end, cars never overlap, never cross a barrier, and the dummy is never left inside a car",
+      "pass": true,
+      "detail": "all ended: L1:64s, L1:61s, L1:64s, L1:61s, L2:78s, L2:80s, L2:78s, L2:80s, L2:78s, L2:83s, L2:78s, L2:80s, L3:88s, L3:92s"
+    },
+    {
+      "id": "solid_cars_and_barriers_under_active_play",
+      "description": "With the dummy wandering across the roads and lunging for 90 s per level: cars never overlap each other, never cross a road barrier, and the dummy is never left inside a car",
+      "pass": true,
+      "detail": "L1/s5: 72 lunges, 0 bodies; L1/s9: 72 lunges, 0 bodies; L2/s5: 72 lunges, 1 bodies; L2/s9: 72 lunges, 0 bodies; L3/s5: 72 lunges, 0 bodies; L3/s9: 72 lunges, 0 bodies"
+    },
+    {
+      "id": "dummy_cannot_walk_through_a_car",
+      "description": "Cars are solid on every side: a dummy placed against a car's side, or walking into it, is pushed out and never ends up inside",
+      "pass": true,
+      "detail": "pushed out and kept out"
+    },
+    {
+      "id": "modules_exist_and_do_the_work",
+      "description": "sim.js exports a Vehicles module and a Damage module; Vehicles.step alone moves the cars; Vehicles.cruiseSpeed returns the class speed",
+      "pass": true,
+      "detail": "Vehicles.step moves cars on its own; Damage has both functions"
+    },
+    {
+      "id": "damage_module_is_logical",
+      "description": "Damage.assess follows perMomentum x vehicle speed x mass x face x lunge direction for every class, and the ordering is logical: head-on lunge pays most, lunging with the car pays less than standing still, the tail pays nothing, lunge speed does not matter",
+      "pass": false,
+      "detail": "Error: sedan: head-on lunge against a car travelling down the screen is not scored as head-on |     at assert (/home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:18:47) |     at /home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:367:7"
+    },
+    {
+      "id": "damage_in_play_matches_module",
+      "description": "In real play, each hit is scored by the Damage module and logged in state.lastImpact: standing at the nose, a head-on lunge, a diagonal lunge into the flank travelling with the car (Lawrence's bug case), and the tail",
+      "pass": true,
+      "detail": "standing at the nose: van at 110.0 px/s, face nose, x1 x1.00 = 759 | head-on lunge: van at 100.0 px/s, face nose, x1 x1.80 = 1242 | diagonal lunge into the flank, with the car: van at 100.0 px/s, face flank, x0.25 x0.43 = 75 | touching the tail: van at 120.0 px/s, face tail, x0 x1.00 = 0"
+    },
+    {
+      "id": "traffic_audit",
+      "description": "Vehicle paths and stop/start, measured over 120 s per level with a wandering dummy: on levels 1 and 2 no car is removed while still inside the hall and no car stays stopped for more than 15 s (level 3 is measured and reported to QA, not enforced)",
+      "pass": true,
+      "detail": "L1: 87 cars, 80 exited, 0 removed inside the hall, longest stop 0 s | L2: 96 cars, 91 exited, 0 removed inside the hall, longest stop 0 s | L3: 98 cars, 89 exited, 4 removed inside the hall, longest stop 19.4 s"
+    },
+    {
+      "id": "sim_is_pure",
+      "description": "sim.js uses no Math.random, timers, clock or DOM",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "html_static",
+      "description": "index.html has a canvas, loads sim.js, handles the keyboard, uses a fixed timestep and makes no network requests",
+      "pass": true,
+      "detail": "1 inline script(s) parse without syntax errors"
+    }
+  ],
+  "reports": {
+    "damage_table": [
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "standing still at the nose",
+        "damage": 635
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "head-on lunge into the nose",
+        "damage": 1143
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "lunge across the nose",
+        "damage": 635
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "lunge into the nose while moving away with the car",
+        "damage": 127
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "standing at a front corner",
+        "damage": 381
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "diagonal lunge into a front corner, travelling with the car",
+        "damage": 165
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "walking into a flank",
+        "damage": 159
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "lunge straight into a flank",
+        "damage": 159
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "diagonal lunge into a flank, travelling with the car (Lawrence's bug case)",
+        "damage": 69
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "diagonal lunge into a flank, against the car",
+        "damage": 248
+      },
+      {
+        "cls": "sedan",
+        "vehicleSpeed": 138,
+        "mass": 1,
+        "case": "head-on lunge into the tail",
+        "damage": 0
+      }
+    ],
+    "traffic": [
+      {
+        "level": 1,
+        "runs": 3,
+        "carsSeen": 87,
+        "leftByExiting": 80,
+        "removedInsideHall": 0,
+        "longestStopSeconds": 0,
+        "carsThatStopped": 0
+      },
+      {
+        "level": 2,
+        "runs": 3,
+        "carsSeen": 96,
+        "leftByExiting": 91,
+        "removedInsideHall": 0,
+        "longestStopSeconds": 0,
+        "carsThatStopped": 0
+      },
+      {
+        "level": 3,
+        "runs": 3,
+        "carsSeen": 98,
+        "leftByExiting": 89,
+        "removedInsideHall": 4,
+        "longestStopSeconds": 19.4,
+        "carsThatStopped": 11
+      }
+    ]
+  }
+}

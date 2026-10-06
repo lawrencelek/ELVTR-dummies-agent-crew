@@ -197,7 +197,7 @@ function resetDummy(d, P){
   d.x = P.dummy.startX; d.y = P.dummy.startY; d.vx = 0; d.vy = 0;
   d.health = P.dummy.maxHealth; d.lunging = false; d.recovering = false; d.serviceOn = false;
   d.lungeT = 0; d.lungeDx = 0; d.lungeDy = 0; d.lungeReach = 1; d.cooldown = 0;
-  d.recT = 0; d.ramp = 0; d.stillT = 0; d.lungedThisStep = false;
+  d.recT = 0; d.ramp = 0; d.stillT = 0;
 }
 function freshRun(){
   return { lunges:0, hits:0, front:0, side:0, rear:0, sevSum:0, distSum:0, distN:0,
@@ -598,7 +598,6 @@ function dummyStep(s, input, dt, fl){
     d.lungeReach = 1 - (1 - D.wearFloor) * (1 - d.health / D.maxHealth);
     d.cooldown = D.lungeCooldown; s.levelLunged = true; s.run.lunges++;
   }
-  d.lungedThisStep = d.lunging;
   if(d.lunging){
     var tp = d.lungeT / D.lungeDuration;
     d.lungeT += dt;
@@ -706,7 +705,7 @@ function judge(s, c, snap){
   var o = outsidePoint(before, snap.px, snap.py);
   var face = Damage.contactFace(before, o[0], o[1]);
   var con = { cls:c.cls, vehicleSpeed:c.speed, dirX:c.dirX, dirY:c.dirY, face:face,
-              dummyVx:d.vx, dummyVy:d.vy, lunging:!!(d.lunging || d.lungedThisStep) };
+              dummyVx:d.vx, dummyVy:d.vy, lunging:d.lunging };
   var res = Damage.assess(P, con);
   s.lastImpact = { time:s.time, serial:c.serial, id:c.id, cls:c.cls, face:face, vehicleSpeed:con.vehicleSpeed,
                    dirX:c.dirX, dirY:c.dirY, dummyVx:con.dummyVx, dummyVy:con.dummyVy, lunging:con.lunging,
