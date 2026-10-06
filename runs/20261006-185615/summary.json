@@ -1,0 +1,40 @@
+{
+  "released": true,
+  "build_attempts": 1,
+  "repair_cycles_used": 0,
+  "checks_passed": 18,
+  "checks_total": 18,
+  "qa_verdict": "release",
+  "agent_calls": [
+    {
+      "label": "01_designer",
+      "role": "Rules Designer",
+      "seconds": 146.5,
+      "output_tokens": 17429,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "02_build_v1",
+      "role": "Game Builder",
+      "seconds": 70.8,
+      "output_tokens": 12440,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "02_build_v1_qa",
+      "role": "QA / Repair Reviewer",
+      "seconds": 55.2,
+      "output_tokens": 7199,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

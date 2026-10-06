@@ -1,0 +1,11 @@
+[18:56:15] DUMMIES crew run -> runs/20261006-185615
+[18:56:15] Rules Designer: calling (5,405 chars in)
+[18:58:43] Rules Designer: done in 146.5 s (21,162 chars out)
+[18:58:43] Specification: 28 acceptance criteria, 10 labelled simplifications
+[18:58:43] Game Builder: calling (25,373 chars in)
+[18:59:56] Game Builder: done in 70.8 s (17,554 chars out)
+[18:59:56] Checks: 18/18 passed
+[18:59:56] QA / Repair Reviewer: calling (44,525 chars in)
+[19:00:53] QA / Repair Reviewer: done in 55.2 s (7,284 chars out)
+[19:00:53] QA verdict: release | 0 repair request(s) | All 18 automated checks passed. I read sim.js and index.html against the specification and found no blocker or major defect and no excluded systems. Several criteria had no direct automated check, so I verified them from the code. AC-24 is unverified because of a conflict inside the spec, and AC-28 needs a human playtest.
+[19:00:53] RELEASED after 1 build(s). Open output/game/index.html in a browser.

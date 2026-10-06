@@ -1,0 +1,333 @@
+Implement this specification.
+
+# SPECIFICATION (from the Rules Designer)
+{
+  "game": "DUMMIES",
+  "slice": "one road, one sedan, one dummy",
+  "params": {
+    "world": {
+      "width": 960,
+      "height": 540
+    },
+    "road": {
+      "y": 270,
+      "halfWidth": 80
+    },
+    "dummy": {
+      "radius": 10,
+      "walkSpeed": 90,
+      "runSpeed": 190,
+      "accelTime": 0.6,
+      "lungeDistance": 130,
+      "lungeDuration": 0.2,
+      "recoveryTime": 0.7,
+      "maxHealth": 100,
+      "startX": 480,
+      "startY": 430
+    },
+    "car": {
+      "length": 80,
+      "width": 40,
+      "cruiseSpeed": 220,
+      "minSpeed": 120,
+      "detectRange": 300,
+      "detectHalfAngleDeg": 35,
+      "commitDistance": 150,
+      "swerveClearance": 30,
+      "maxSteerRateDeg": 100,
+      "brakeDecel": 120,
+      "respawnDelay": 1.5
+    },
+    "damage": {
+      "base": 20,
+      "perSpeed": 0.16,
+      "lungeMultiplier": 1.5
+    },
+    "reset": {
+      "delay": 1.5
+    }
+  },
+  "colours": {
+    "background": "#1c1e21",
+    "road": "#3a3d42",
+    "roadEdge": "#8a8d92",
+    "dummy": "#f2c94c",
+    "dummyLunging": "#ffe58a",
+    "dummyRecovering": "#9a7d1f",
+    "dummyDestroyed": "#6b2a2a",
+    "car": "#d9534f",
+    "wedge": "#fff7a8",
+    "wedgeAlpha": 0.22,
+    "chevronUpdating": "#4fc3f7",
+    "chevronLocked": "#ff8a00",
+    "commitRing": "#ffffff",
+    "commitRingAlpha": 0.5,
+    "brakeLightsOn": "#ff1744",
+    "brakeLightsOff": "#5a1a1a",
+    "labelText": "#e6e6e6"
+  },
+  "dummy_rules": [
+    "Coordinates: pixels, origin top-left, +y down. Input dx/dy in {-1,0,1}; dy=-1 is up the screen.",
+    "Movement is allowed only in mode 'idle'. Desired direction = (dx,dy) normalised to unit length, so diagonals have the same speed as cardinals. If (dx,dy)=(0,0), speed=0 and dummy.holdTime=0.",
+    "While a direction is held in idle: holdTime += dt; speed = walkSpeed + (runSpeed-walkSpeed)*min(1, holdTime/accelTime). Changing direction while keys stay held does not reset holdTime. Releasing all keys resets it. holdTime is stored on state.dummy as an extra field.",
+    "Position += unit direction * speed * dt. Clamp to the world rectangle inset by radius. facing is set to the normalised input direction whenever the input is non-zero. Initial facing is (0,-1).",
+    "Lunge start: in mode 'idle' on a rising edge of input.lunge (false->true; the previous value is stored in state, e.g. state.prevLunge). Facing is locked at that moment: mode='lunging', lungeTimer=0, speed=lungeDistance/lungeDuration (650 px/s). A lunge ignores dx/dy and lunge input while lunging, so there is no midair steering.",
+    "While lunging: position += facing * (lungeDistance/lungeDuration) * dt. After lungeDuration seconds the total travel equals lungeDistance in every direction (to within one step). The last step must be clipped so the total is exactly lungeDistance, ignoring world-edge clamping.",
+    "Lunge ending without a car impact (a miss): mode='recovering', speed=0, recoveryTimer=recoveryTime (0.7 s). In recovering, movement and lunge input are ignored and the dummy does not move. At 0 it returns to 'idle' with holdTime=0.",
+    "Lunge that causes an impact: the impact is resolved (see collision_rules), the lunge ends at once, and the dummy returns directly to 'idle' with speed 0 and no recovery delay. The recovery delay applies only to misses.",
+    "Health starts at maxHealth (100). When health <= 0: health=0, mode='destroyed', bodiesDestroyed += 1, speed=0, resetTimer=reset.delay (1.5 s). A destroyed dummy cannot move or lunge, is not detected by the car and has no collision.",
+    "When resetTimer reaches 0 a fresh body appears: x=startX, y=startY, facing=(0,-1), speed=0, health=maxHealth, mode='idle', holdTime=0. Score and bodiesDestroyed persist across resets.",
+    "The dummy start position (480,430) is below the road (road band y from 190 to 350), so a new body never spawns inside the lane."
+  ],
+  "car_rules": [
+    "Road lane: the car travels left to right at lane centre y=270. Allowed car centre y range is [road.y - (halfWidth - width/2), road.y + (halfWidth - width/2)] = [210, 330].",
+    "Spawn: when state.car is null, traffic is true, and the despawn/start timer has reached respawnDelay (1.5 s), spawn x=-length, y=270, heading=0, speed=cruiseSpeed, mode 'cruising', braking=false, route=null. The first car spawns at time = respawnDelay. With traffic:false no car is ever created. The car despawns (state.car=null) when x - length/2 > world.width, and the respawnDelay timer starts then.",
+    "Detection (mode 'cruising' -> 'detected'): the dummy is not destroyed, is within detectRange (300) of the car centre, is ahead of the car centre along its heading, and the angle between the heading and the vector car->dummy is <= detectHalfAngleDeg (35). This is the same wedge that is drawn.",
+    "Route computation (while 'detected'; recomputed every step, and the car never looks at anything except the dummy): corridor = width/2 + dummy.radius + swerveClearance = 60. If the dummy is ahead of the car's rear (dummy.x > car.x - length/2) and |dummy.y - 270| < corridor, then targetY = dummy.y - corridor if dummy.y >= 270, otherwise dummy.y + corridor (swerve away from the dummy). Otherwise targetY = 270. Clamp targetY to [210,330]. route = normalise(commitDistance, targetY - car.y), so it is a unit vector (x>0).",
+    "Steering: heading rotates toward atan2(route.y, route.x) at no more than maxSteerRateDeg (100 deg/s) per second. Position += (cos h, sin h) * speed * dt. y is clamped to [210,330].",
+    "Braking: on entering 'detected' the target speed is minSpeed (120). While speed > minSpeed, speed -= brakeDecel*dt (120 px/s^2), floored at minSpeed, and braking=true. braking=true on every step in which speed actually decreased, and false otherwise. Detected sticky: once detected the car stays detected until it commits, passes the dummy, or the dummy is destroyed. It does not drop back to cruising because the dummy left the wedge or range.",
+    "Commitment ('detected' -> 'committed'): when the car-centre to dummy-centre distance <= commitDistance (150) (the commit ring). At that step route is copied, frozen as the locked route, and also stored with the locked targetY in extra fields (e.g. car.lockedTargetY). The route is never recomputed again while committed, so state.car.route is bit-identical on every later step.",
+    "Committed steering: the car rotates its heading toward the locked route's angle at maxSteerRateDeg and holds it. Once |car.y - lockedTargetY| <= 1.5 px its steering target becomes heading 0 (straighten), which is treated as the end of the locked plan. The route vector itself still does not change. Speed keeps changing (continues braking to minSpeed). Steering is never re-aimed at the dummy.",
+    "Pass reset: if mode is 'detected' or 'committed' and (car.x - dummy.x > length) or the dummy is destroyed, then mode='cruising', route=null. Cruising speeds up at +brakeDecel*dt (braking=false) up to cruiseSpeed. In cruising, heading steers toward lane centre y=270 using the same route law with targetY=270, so a car that has passed the dummy drifts back to the lane.",
+    "A car with no dummy in its wedge (for example a dummy standing at the start position) stays 'cruising' at cruiseSpeed, braking=false, route=null. A car that detects a dummy off to the side detects and brakes, shows a straight chevron (targetY=270), and may commit if the dummy is within 150 px.",
+    "The car is not affected by the dummy (no mass or knockback), and its speed is unchanged by an impact. Checks may overwrite car.x,y,heading,speed,mode,braking,route, so step must derive everything from state."
+  ],
+  "collision_rules": [
+    "Shape test: the dummy is a circle (radius 10). The car is an oriented rectangle (length 80 along heading, width 40) centred at (x,y). Overlap = circle-vs-OBB intersection. Dummies in mode 'destroyed' never collide.",
+    "Contact episode: state.contactActive (stored in state). When overlap is true and contactActive is false, a contact episode begins: set contactActive=true and resolve exactly one impact. While overlap stays true, no further impacts occur. When overlap is false, contactActive=false (re-armed). One impact per dummy-vehicle contact episode.",
+    "Rear contact: express the dummy centre in the car frame (local x along heading, 0 at the car centre). If local x < -length/4 (-20), the contact is REAR contact: no damage, no score. It still counts as a contact episode.",
+    "Non-rear contact (front or side): damage = (damage.base + damage.perSpeed * car.speed), multiplied by damage.lungeMultiplier if dummy.mode=='lunging' at that moment. Applied loss = min(health, damage); health -= loss; score += loss. Example at cruise 220 non-lunging: 55.2; lunging: 82.8. A single hit never destroys a fresh body (<100), two hits at cruise always do. At minSpeed 120 a lunging hit does 58.8 and two still destroy.",
+    "After any contact (including rear) the dummy is pushed out of the rectangle along the contact normal (nearest point on the OBB to the circle centre) so it no longer overlaps and cannot be run over repeatedly. A lunging dummy ends its lunge (mode='idle', speed=0).",
+    "Dummy standing still in the lane: the car must swerve and pass with centre-to-centre separation >= width/2 + radius = 30 px. In the worst case, a dummy at (480,270), the car passes at y=210 (separation 60), so no contact occurs.",
+    "Health check after damage: if health <= 0, run the destruction rule in dummy_rules."
+  ],
+  "cue_rules": [
+    "Detection wedge: drawn only while the car exists, as a filled circular sector centred on the car centre, along its heading, with radius detectRange and half-angle detectHalfAngleDeg, in colours.wedge at alpha 0.22. It is always visible while the car is cruising, detected or committed, so the player can see where they will be seen.",
+    "Route chevron: shown only when car.mode is 'detected' or 'committed' (car.route non-null). It is a '>' chevron drawn at the point car + route*commitDistance, pointing along route. Updating (detected): colours.chevronUpdating, thin 3 px outline, and it visibly moves/rotates each frame as the route is recomputed. Locked (committed): colours.chevronLocked, solid fill, 6 px, and it does not move at all relative to the locked route direction. It disappears when the car goes back to cruising or despawns.",
+    "Commit ring: a circle of radius commitDistance (150) centred on the car centre, in colours.commitRing at alpha 0.5, 2 px line. Drawn while the car is cruising or detected (it shows where lock will happen). In committed mode it is hidden or drawn filled at 0.15 alpha (builder's choice, but it must differ from the pre-commit look).",
+    "Brake lights: two small rectangles at the rear corners of the car. colours.brakeLightsOn (#ff1744) whenever car.braking is true, otherwise colours.brakeLightsOff. They are driven only by car.braking, which is true exactly on steps where speed decreased due to braking. Every detected encounter shows them lit, because the car brakes from cruiseSpeed to minSpeed over about 0.83 s.",
+    "Dummy: filled circle radius 10 in colours.dummy, with a short facing tick line (length 14). Lunging uses colours.dummyLunging, recovering uses colours.dummyRecovering, destroyed is drawn as a small colours.dummyDestroyed X or circle at the position it was destroyed, until the reset.",
+    "Plain-text HUD labels: 'Health: N' (rounded) and 'Score: N' (rounded), plus 'Bodies destroyed: N'. One-line control prompt below or above the canvas. No other UI."
+  ],
+  "controls": {
+    "move": "Arrow keys or WASD move in 8 directions; diagonals are normalised; hold to go from a walk to a run. Opposing keys cancel to 0 on that axis.",
+    "lunge": "Space: lunge in the facing direction (rising-edge triggered; holding Space does not repeat the lunge).",
+    "prompt_text": "Arrows/WASD to move (hold to run) - SPACE to lunge - lure the car, step away, then lunge into its locked path"
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-01",
+      "text": "sim.js loads in Node via require and in a browser as window.DummiesSim. It exports createSim, step and PARAMS, uses no DOM, timers or Math.random, and PARAMS deep-equals the params block of this specification.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-02",
+      "text": "createSim({seed:1,traffic:false}) returns a JSON-serialisable state with params, time, score=0, bodiesDestroyed=0, dummy at (startX,startY) with facing a unit vector, mode 'idle', health=maxHealth, and car=null. After 20 s of stepping at dt=1/60 with traffic:false, car is still null.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-03",
+      "text": "With traffic:true the first car appears at time respawnDelay with x=-length, y=270, heading 0, speed cruiseSpeed, mode 'cruising', braking=false, route=null. After it leaves (x - length/2 > 960) the next appears respawnDelay seconds later.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-04",
+      "text": "Speed is identical in every direction: holding each of the 8 directions for 2 s from the same start (placed in open space) gives the same speed value (<=1e-6) and the same travelled distance (<=1e-6, with no wall clamping). The diagonal speed is not sqrt(2) times faster.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-05",
+      "text": "Acceleration: on the first held step the speed is about walkSpeed (within one step of acceleration), after accelTime it equals runSpeed and never exceeds it. Releasing all keys sets speed 0 at once.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-06",
+      "text": "Lunge distance is identical in every direction: a lunge in each of the 8 directions from an open-space start (no car) moves the dummy exactly lungeDistance (130 px, within 0.5 px) over lungeDuration (0.2 s), regardless of speed or holdTime.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-07",
+      "text": "No midair steering: changing dx/dy during a lunge does not change the lunge displacement. Pressing lunge again mid-lunge has no effect, and the facing at the end equals the facing at the start.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-08",
+      "text": "Recovery: after a lunge that misses, dummy.mode is 'recovering' for recoveryTime (0.7 s +/- 1 step). During that time the position does not change under any input and a new lunge cannot be started. It then returns to 'idle'.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-09",
+      "text": "Holding lunge (without releasing) does not trigger a second lunge after recovery. Releasing and pressing again does.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-10",
+      "text": "Detection: place the dummy inside the wedge (distance<=300, angle<=35 deg) ahead of a cruising car and step once. The car becomes 'detected', route is a non-null unit vector, and braking is true. A dummy outside the range or angle, or one behind the car, leaves the car 'cruising' with route null.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-11",
+      "text": "Route updating: while 'detected', moving the dummy in or out of the corridor changes car.route between steps (the swerve side or targetY changes). The route is always a unit vector within 1e-6.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-12",
+      "text": "Commitment: the car becomes 'committed' on the step when centre distance to the dummy <= commitDistance (150). From then on car.route stays exactly equal in x and y to its value at the commit step for all later steps, even when the dummy moves, until the car returns to 'cruising'.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-13",
+      "text": "Speed after commitment: speed may still decrease to minSpeed while committed. It never falls below minSpeed (120) and never exceeds cruiseSpeed (220) in any mode.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-14",
+      "text": "Brake lights: in every encounter in which the car becomes 'detected', braking is true on at least 30 steps (the car goes from cruiseSpeed to minSpeed at 120 px/s^2, about 50 steps). braking is false when the car holds cruiseSpeed or minSpeed with no change, and true if and only if speed decreased in that step.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-15",
+      "text": "Steering rate: the change in car.heading between consecutive steps never exceeds maxSteerRateDeg*dt (100 deg/s) plus 1e-6 in rad.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-16",
+      "text": "Standing dummy in lane: with the dummy fixed at (480,270) and a car spawned normally, the car passes with no contact episode (no health loss, no score change) and the minimum centre-to-centre separation is >= 30 px. The same holds for dummies fixed at y=240, 270 and 300 at x=480.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-17",
+      "text": "Rear contact gives no damage and no score: place the car so that the dummy overlaps its rear (local x < -20) and step. Health and score are unchanged, contactActive becomes true, and the dummy is pushed out of the car.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-18",
+      "text": "Front or side contact applies exactly (20 + 0.16*car.speed), times 1.5 if the dummy is lunging. Score increases by the same amount (capped at remaining health). Verified at car.speed 220 non-lunging (55.2) and lunging (82.8).",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-19",
+      "text": "One impact per contact episode: while the dummy overlaps the car for many consecutive steps, health drops only once. After separation (no overlap for a step) a new overlap applies a new impact.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-20",
+      "text": "Balance: two non-lunging front hits with car.speed=cruiseSpeed destroy a fresh body (health 100 -> <=0), and one such hit does not. A single lunging hit at cruise (82.8) does not destroy a fresh body, and two do.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-21",
+      "text": "Destruction and reset: when health reaches 0, mode is 'destroyed', bodiesDestroyed increases by 1, and the dummy neither moves nor collides. After reset.delay (1.5 s +/- 1 step) the dummy is at (startX,startY) with health=maxHealth, mode 'idle', facing (0,-1), speed 0. Score is kept.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-22",
+      "text": "Bait scenario (scripted): a dummy in the lane triggers detection, then walks perpendicular out of the corridor before commit. The chevron changes to a straight route (targetY=270), the car commits, a lunge back into the lane (about 110 px) then produces a non-rear impact. This must be achievable with the shipped parameters.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-23",
+      "text": "Determinism: two sims created with the same seed and fed the same input sequence give identical JSON state at every step. State survives JSON.stringify/parse with no loss, and step reads only from state, so overwriting state.dummy.x/y and car fields between steps works.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-24",
+      "text": "The dummy never leaves [radius, width-radius] x [radius, height-radius], and the car's y never leaves [210,330] while it exists.",
+      "verify_by": "automated_check"
+    },
+    {
+      "id": "AC-25",
+      "text": "index.html loads sim.js through a plain <script src='sim.js'>, uses one <canvas>, makes no network requests, works over file://, reads arrows+WASD+Space, and calls DummiesSim.step with a fixed dt of 1/60 (an accumulator is allowed).",
+      "verify_by": "code_review"
+    },
+    {
+      "id": "AC-26",
+      "text": "Rendering follows the cue_rules: wedge, chevron (different colour and fill for updating and locked), commit ring, and brake lights lit exactly when car.braking is true, all using the specified hex colours. HUD shows plain labels for health and score and the one-line control prompt text.",
+      "verify_by": "code_review"
+    },
+    {
+      "id": "AC-27",
+      "text": "Excluded systems are absent: no extra vehicle classes, moods, learning, quotas, service, endings, audio, art or decorative assets, and no language-model or network calls. The view is a pure top-down greybox.",
+      "verify_by": "code_review"
+    },
+    {
+      "id": "AC-28",
+      "text": "Playtest: a first-time player understands the controls without help, can swerve-bait the car and land a lunge hit within a few attempts, and sees brake lights and the chevron lock in each encounter.",
+      "verify_by": "playtest"
+    }
+  ],
+  "simplifications_vs_gdd": [
+    "SIMPLIFICATION: damage is a greybox formula, base + perSpeed*car speed, times a lunge multiplier. It ignores the impact angle, body part and relative velocity. Score equals health lost.",
+    "SIMPLIFICATION: a single sedan with one lane and a straight left-to-right route. There is no fleet, no other vehicle class and no learning, so the car never adapts to the player.",
+    "SIMPLIFICATION: the car sees only the dummy. It uses a pure wedge-and-range test with no occlusion, no memory, and a sticky detected state until it passes or commits.",
+    "SIMPLIFICATION: the 'locked route' is a single heading target computed at commitment. After the car reaches the locked target y it straightens to heading 0 as part of the same plan, while the chevron stays locked. The car cannot re-aim at the dummy after commitment.",
+    "SIMPLIFICATION: the commit ring is a circle around the car centre. The car only commits if the dummy is within commitDistance at some time while it is detected, so a dummy far off the lane may see the chevron but never lock it.",
+    "SIMPLIFICATION: the car does not brake to a stop or change its speed in response to an impact. Hits give it no mass or knockback, and the dummy is only pushed out of the car body.",
+    "SIMPLIFICATION: the dummy has a single health value and no body parts or injuries. A fresh body spawns at a fixed point after a fixed delay, with no shifts, quotas, certification or endings.",
+    "SIMPLIFICATION: recovery delay applies only to lunges that miss. A lunge that hits ends immediately, with the dummy back in idle.",
+    "SIMPLIFICATION: car-dummy collision is a circle against an oriented rectangle. Rear contact means the dummy centre is in the rear quarter of the car's length (local x < -length/4).",
+    "SIMPLIFICATION: there is no audio, narrative, mood, art, facades or perspective. All visuals are flat greybox shapes with a plain-label HUD."
+  ]
+}
+
+# CONTRACT
+## Fixed technical contract (so automated checks can run)
+
+The Builder must output exactly two files.
+
+### `sim.js` — pure game logic, no DOM, no timers, no Math.random
+
+Loadable both in a browser (`window.DummiesSim`) and in Node
+(`module.exports`). It exports:
+
+- `createSim(options)` -> `state`. `options = { seed: number, traffic: boolean }`
+  (`traffic: false` means no car is ever spawned; default true).
+- `step(state, input, dt)` -> mutates and returns `state`.
+  `input = { dx: -1|0|1, dy: -1|0|1, lunge: boolean }`, `dt` in seconds
+  (checks use dt = 1/60). `dy = -1` is up the screen.
+- `PARAMS` — the parameter object, copied exactly from the Designer's
+  specification `params`.
+
+`state` is a plain JSON-serialisable object with at least:
+
+```
+state.params            // same values as PARAMS
+state.time              // seconds
+state.score             // number
+state.bodiesDestroyed   // integer
+state.dummy = { x, y, facing: {x, y} /* unit vector */, speed,
+                mode: "idle" | "lunging" | "recovering" | "destroyed",
+                health }
+state.car = null | { x, y, heading /* radians, 0 = +x */, speed,
+                mode: "cruising" | "detected" | "committed",
+                braking: boolean,
+                route: null | { x, y } /* unit vector of intended heading */ }
+```
+
+Checks may directly overwrite `state.dummy.x`, `state.dummy.y` and
+`state.car` fields between steps, so `step` must derive everything from
+`state` and not from hidden closures.
+
+### `index.html` — rendering and input only
+
+Loads `sim.js` with a plain `<script src="sim.js">`, draws on one `<canvas>`,
+reads the keyboard (arrow keys and WASD to move, Space to lunge), and calls
+`DummiesSim.step` at a fixed timestep. Must work when opened directly from
+disk (file://) with no server and no network requests. Shows health and score
+as plain labels and a one-line control prompt.
+
+### Parameter schema the Designer must fill (`params`)
+
+```
+world:  { width: 960, height: 540 }
+road:   { y: 270, halfWidth }
+dummy:  { radius, walkSpeed, runSpeed, accelTime, lungeDistance,
+          lungeDuration, recoveryTime, maxHealth, startX, startY }
+car:    { length, width, cruiseSpeed, minSpeed, detectRange,
+          detectHalfAngleDeg, commitDistance, swerveClearance,
+          maxSteerRateDeg, brakeDecel, respawnDelay }
+damage: { base, perSpeed, lungeMultiplier }
+reset:  { delay }
+```
+
+Units: pixels, seconds, pixels per second, degrees where named.

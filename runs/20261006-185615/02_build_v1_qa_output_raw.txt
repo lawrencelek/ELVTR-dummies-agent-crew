@@ -1,0 +1,39 @@
+{"verdict":"release","summary":"All 18 automated checks passed. I read sim.js and index.html against the specification and found no blocker or major defect and no excluded systems. Several criteria had no direct automated check, so I verified them from the code. AC-24 is unverified because of a conflict inside the spec, and AC-28 needs a human playtest.","criteria":[
+{"id":"AC-01","status":"pass","evidence":"Checks load_sim, params_match_spec (29 parameters identical) and sim_is_pure passed. sim.js exports createSim, step and PARAMS through the UMD wrapper, and I found no DOM, timers or Math.random in it."},
+{"id":"AC-02","status":"pass","evidence":"Check state_shape passed. createSim returns the required fields with car:null. updateCar returns early when !s.traffic, so no car is ever created."},
+{"id":"AC-03","status":"pass","evidence":"Check traffic_cruises_and_respawns passed. updateCar spawns at x=-length, y=270, heading 0, cruise speed, mode cruising, braking false, route null once spawnTimer reaches 1.5 (1e-9 tolerance). The timer resets at despawn."},
+{"id":"AC-04","status":"pass","evidence":"Check move_speed_equal_8_directions passed (160.83 px in all eight directions). updateDummy normalises (dx,dy) before moving."},
+{"id":"AC-05","status":"pass","evidence":"Check run_speed_matches_spec passed (190.00). The speed formula is correct and min(1,...) caps it at runSpeed. len===0 sets speed to 0 and holdTime to 0 immediately."},
+{"id":"AC-06","status":"pass","evidence":"Check lunge_distance_equal_8_directions passed (130.00 in all eight directions). The step is clipped by `remaining`."},
+{"id":"AC-07","status":"pass","evidence":"Check no_midair_steering passed (0.000 px drift). The lunging branch uses the locked facing and ignores dx/dy and lunge input."},
+{"id":"AC-08","status":"pass","evidence":"Check miss_recovery_delay passed (0.700 s). The recovering branch sets speed 0 and ignores input."},
+{"id":"AC-09","status":"pass","evidence":"Code: prevLunge is updated every step in step(). Holding Space through recovery leaves prevLunge true, so there is no rising edge. Releasing and pressing again triggers one."},
+{"id":"AC-10","status":"pass","evidence":"Code: detects() tests destroyed state, range, lx>0 and atan2(|ly|,lx)<=35 degrees. Entering detected computes the route as a unit vector in the same step, and braking starts in the speed block. No dedicated automated check."},
+{"id":"AC-11","status":"pass","evidence":"Code: computeRoute is recomputed every step while detected, with corridor = 60 and the swerve side chosen by dummy.y >= 270. It returns a normalised vector. Check detect_commit_brake_and_avoid supports this."},
+{"id":"AC-12","status":"pass","evidence":"Check route_locked_against_bait passed. Code: commit at distance <= 150 freezes lockedRoute, and the mode is no longer 'detected', so computeRoute is never called again. car.route keeps its value."},
+{"id":"AC-13","status":"pass","evidence":"Code: speed is floored at minSpeed while braking and capped at cruiseSpeed with Math.min while cruising. Nothing else changes speed."},
+{"id":"AC-14","status":"pass","evidence":"Code: c.braking = c.speed < prev, so it is true only when speed decreased. Braking runs from 220 to 120 at 2 px/step, about 50 steps. Check detect_commit_brake_and_avoid confirms brake lights show."},
+{"id":"AC-15","status":"pass","evidence":"Code: heading += clamp(diff, -maxd, maxd) with maxd = 100 degrees * dt, and no other heading writes."},
+{"id":"AC-16","status":"pass","evidence":"Check detect_commit_brake_and_avoid passed (swerves past, no contact). Code: for a dummy at y=240, 270 or 300 the targetY is 300, 210 or 240, giving 60 px separation, within the 30 px minimum."},
+{"id":"AC-17","status":"pass","evidence":"Check rear_contact_no_damage passed. Code: the rear test is lx < -L/4, the dummy is pushed out, and no damage branch runs."},
+{"id":"AC-18","status":"pass","evidence":"Check front_impact_damage_once passed. Code: dmg = 20 + 0.16*speed, times 1.5 when wasLunging, and loss = min(health, dmg) is added to score."},
+{"id":"AC-19","status":"pass","evidence":"Check single_impact_per_episode passed. Code: contactActive gates impacts and is cleared when there is no overlap."},
+{"id":"AC-20","status":"pass","evidence":"Check destruction_and_fresh_body passed: 2 cruise hits destroy the body. By arithmetic, 55.2 per hit is not lethal once and lethal twice; 82.8 is not lethal once and lethal twice."},
+{"id":"AC-21","status":"pass","evidence":"Check destruction_and_fresh_body passed. Code: collide sets mode destroyed, bodiesDestroyed+=1 and resetTimer. updateDummy respawns at start with facing (0,-1), and score is untouched."},
+{"id":"AC-22","status":"pass","evidence":"Checks route_locked_against_bait and detect_commit_brake_and_avoid passed. By reasoning, a dummy outside the corridor gives targetY=270 and a straight lock, and a lunge of about 110 px reaches the car body. Not directly scripted."},
+{"id":"AC-23","status":"pass","evidence":"Check deterministic passed. All state is plain JSON and step reads only from state. A hand-overwritten car in 'committed' mode with no route would throw, which is a minor edge case."},
+{"id":"AC-24","status":"unverified","evidence":"The car y clamp is correct. The dummy is clamped only at the end of a lunge, because the spec says to ignore world-edge clamping during a lunge. Mid-lunge it can briefly leave the world rectangle, and the spec contradicts itself here. No check covers it."},
+{"id":"AC-25","status":"pass","evidence":"Code: index.html has a plain <script src='sim.js'>, one canvas, no fetch or XHR, Arrows/WASD/Space via e.code, and a fixed DT=1/60 accumulator. Check html_static passed."},
+{"id":"AC-26","status":"pass","evidence":"Code: draw() draws the wedge at alpha 0.22 and the commit ring (stroked before commit, 0.15 fill when committed). The chevron is 3 px outline in #4fc3f7 when updating and a 6 px filled #ff8a00 when locked. Brake lights follow car.braking. The HUD labels and prompt text match the spec."},
+{"id":"AC-27","status":"pass","evidence":"Code review: no extra vehicles, audio, art, learning or network calls. Everything is flat shapes."},
+{"id":"AC-28","status":"unverified","evidence":"Needs a human playtest."}
+],"defects":[
+{"severity":"minor","file":"sim.js","problem":"During a lunge near a world edge the dummy can be outside the world rectangle until the lunge ends. The spec asks both for this and for AC-24."},
+{"severity":"minor","file":"sim.js","problem":"A committed car whose state is overwritten with route:null and no lockedRoute would throw at c.route.x. This only affects hand-built test states."},
+{"severity":"minor","file":"index.html","problem":"The Space edge is sampled once per 1/60 step. A tap shorter than a frame could be missed."}
+],"scope_violations":[],"repair_requests":[],"notes":[
+"The builder did not run the checks, but the orchestrator ran them and all 18 passed.",
+"The dead line `if (c.speed < prev) c.speed = prev;` in the cruising branch is harmless.",
+"Consider a short-lived 'hit' flash in a later slice. It is not needed now.",
+"Playtest focus for AC-28: whether the chevron colour change and the brake lights are noticeable, and whether the 1.5 s car cadence leaves enough time to bait."
+]}
