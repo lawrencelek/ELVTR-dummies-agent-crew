@@ -52,6 +52,27 @@ if (Sim) {
     throw new Error("no suitable car appeared within " + (maxSeconds || 60) + " s");
   };
   const fresh = (c) => !c.hit && inHall(c, 90) && c.speed > 1;
+  const WW = P.world.width, WH = P.world.height;
+  const half = (c) => ({ x: (c.dirY === 0 ? c.length : c.width) / 2, y: (c.dirY === 0 ? c.width : c.length) / 2 });
+  // first pair of cars whose rectangles overlap inside the canvas, or null
+  const carOverlap = (s) => { const cs = s.cars;
+    for (let a = 0; a < cs.length; a++) for (let b = a + 1; b < cs.length; b++) { const A = cs[a], B = cs[b];
+      if (!(A.x > 0 && A.x < WW && A.y > 0 && A.y < WH && B.x > 0 && B.x < WW && B.y > 0 && B.y < WH)) continue;
+      const ha = half(A), hb = half(B), ox = ha.x + hb.x - Math.abs(A.x - B.x), oy = ha.y + hb.y - Math.abs(A.y - B.y);
+      if (ox > 1.5 && oy > 1.5) return `t=${f1(s.time)} s: ${A.id}#${A.serial} (${f1(A.x)},${f1(A.y)}) dir(${A.dirX},${A.dirY}) overlaps ${B.id}#${B.serial} (${f1(B.x)},${f1(B.y)}) dir(${B.dirX},${B.dirY}) by ${f1(ox)} x ${f1(oy)} px`; }
+    return null; };
+  // a car that has crossed a road barrier on levels 1 and 2, or null
+  const offRoad = (s) => { const L = P.levels[s.level - 1];
+    for (const c of s.cars) { const h = half(c);
+      if (L.kind === "road" && Math.abs(c.y - L.road.y) + h.y > L.road.halfWidth + L.road.shoulder + 0.75) return `t=${f1(s.time)} s: ${c.id}#${c.serial} at y=${f1(c.y)} is across the barrier (road y=${L.road.y}, limit ${L.road.halfWidth + L.road.shoulder})`;
+      if (L.kind === "cross") { if (c.dirY === 0 && Math.abs(c.y - L.roadH.y) + h.y > L.roadH.halfWidth + L.roadH.shoulder + 0.75) return `t=${f1(s.time)} s: ${c.id}#${c.serial} at y=${f1(c.y)} is across the horizontal road's barrier`;
+        if (c.dirX === 0 && Math.abs(c.x - L.roadV.x) + h.x > L.roadV.halfWidth + L.roadV.shoulder + 0.75) return `t=${f1(s.time)} s: ${c.id}#${c.serial} at x=${f1(c.x)} is across the vertical road's barrier`; } }
+    return null; };
+  // how far the dummy's circle reaches into a car (px), with the car, or null; ignored at the hall edge where it has nowhere to go
+  const insideCar = (s) => { const d = s.dummy; if (d.x < H.x + R + 4 || d.x > H.x + H.w - R - 4 || d.y < H.y + R + 4 || d.y > H.y + H.h - R - 4) return null;
+    for (const c of s.cars) { const h = half(c), qx = Math.max(-h.x, Math.min(h.x, d.x - c.x)), qy = Math.max(-h.y, Math.min(h.y, d.y - c.y));
+      const dist = Math.hypot(d.x - c.x - qx, d.y - c.y - qy); if (R - dist > 1.5) return `t=${f1(s.time)} s: dummy at (${f1(d.x)},${f1(d.y)}) reaches ${f1(R - dist)} px into ${c.id}#${c.serial} at (${f1(c.x)},${f1(c.y)}) dir(${c.dirX},${c.dirY})`; }
+    return null; };
   const touch = (s, c, sign) => { const d = c.length / 2 + R * 0.5;
     s.dummy.x = c.x + sign * c.dirX * d; s.dummy.y = c.y + sign * c.dirY * d; s.dummy.vx = 0; s.dummy.vy = 0; };
 
@@ -177,35 +198,28 @@ if (Sim) {
     return "px in 1 s at 60 / 120 Hz: " + out.join(" / ");
   });
 
-  check("level2_cross_no_collisions", "Level 2: traffic uses both roads, cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock)", () => {
+  check("level2_cross_no_collisions", "Level 2: traffic uses both one-way roads (left to right, top to bottom), cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock)", () => {
     const s = mk({ level: 2 }), L = P.levels[1]; assert(L.kind === "cross" && L.roadH && L.roadV, "spec level 2 is not a cross level");
     const seen = new Set(), gone = new Set(); let horiz = 0, vert = 0, worst = null; const W = P.world.width, HH = P.world.height;
     for (let i = 0; i < 150 * 60; i++) { park(s); keepAlive(s); Sim.step(s, NONE, DT); assert(s.mode === "play", "mode left play: " + s.mode);
       const now = new Set(); const cs = s.cars;
       for (const c of cs) { now.add(c.serial); if (!seen.has(c.serial)) { seen.add(c.serial); if (c.dirY === 0) horiz++; else vert++; }
+        assert((c.dirX === 1 && c.dirY === 0) || (c.dirX === 0 && c.dirY === 1), `car ${c.id} travels (${c.dirX},${c.dirY}); level 2 roads are one-way, left to right and top to bottom`);
         if (c.dirY === 0) assert(Math.abs(c.y - L.roadH.y) <= L.roadH.halfWidth, `horizontal car ${c.id} off its road (y=${f1(c.y)})`);
         else assert(Math.abs(c.x - L.roadV.x) <= L.roadV.halfWidth, `vertical car ${c.id} off its road (x=${f1(c.x)})`); }
       for (const q of seen) if (!now.has(q)) gone.add(q);
-      for (let a = 0; a < cs.length; a++) for (let b = a + 1; b < cs.length; b++) { const A = cs[a], B = cs[b];
-        if (!(A.x > 0 && A.x < W && A.y > 0 && A.y < HH && B.x > 0 && B.x < W && B.y > 0 && B.y < HH)) continue;
-        const ax = (A.dirY === 0 ? A.length : A.width) / 2, ay = (A.dirY === 0 ? A.width : A.length) / 2, bx = (B.dirY === 0 ? B.length : B.width) / 2, by = (B.dirY === 0 ? B.width : B.length) / 2;
-        const ox = ax + bx - Math.abs(A.x - B.x), oy = ay + by - Math.abs(A.y - B.y);
-        if (ox > 1.5 && oy > 1.5 && !worst) worst = `t=${f1(s.time)} s: ${A.id} (${f1(A.x)},${f1(A.y)}) dir(${A.dirX},${A.dirY}) overlaps ${B.id} (${f1(B.x)},${f1(B.y)}) dir(${B.dirX},${B.dirY}) by ${f1(ox)} x ${f1(oy)} px`; } }
+      if (!worst) worst = carOverlap(s); }
     assert(!worst, "cars overlapped: " + worst); assert(horiz >= 5 && vert >= 5, `traffic not on both roads: ${horiz} horizontal, ${vert} vertical`);
     assert(gone.size >= 25, `only ${gone.size} cars got through in 150 s (deadlock or starvation)`); return `${gone.size} cars through, ${horiz} horizontal, ${vert} vertical, no overlap`;
   });
 
-  check("level3_free_for_all", "Level 3: vehicles enter from at least three of the four edges and several classes appear (car overlap is reported but only enforced on level 2)", () => {
+  check("level3_free_for_all", "Level 3: vehicles enter from at least three of the four edges, several classes appear, and cars never overlap inside the canvas", () => {
     const s = mk({ level: 3 }); const dirs = new Set(), classes = new Set(); let worst = null; const W = P.world.width, HH = P.world.height;
     for (let i = 0; i < 120 * 60; i++) { park(s); keepAlive(s); Sim.step(s, NONE, DT); assert(s.mode === "play", "mode left play: " + s.mode); const cs = s.cars;
       for (const c of cs) { dirs.add(c.dirX + "," + c.dirY); classes.add(c.cls); }
-      for (let a = 0; a < cs.length; a++) for (let b = a + 1; b < cs.length; b++) { const A = cs[a], B = cs[b];
-        if (!(A.x > 0 && A.x < W && A.y > 0 && A.y < HH && B.x > 0 && B.x < W && B.y > 0 && B.y < HH)) continue;
-        const ax = (A.dirY === 0 ? A.length : A.width) / 2, ay = (A.dirY === 0 ? A.width : A.length) / 2, bx = (B.dirY === 0 ? B.length : B.width) / 2, by = (B.dirY === 0 ? B.width : B.length) / 2;
-        const ox = ax + bx - Math.abs(A.x - B.x), oy = ay + by - Math.abs(A.y - B.y);
-        if (ox > 1.5 && oy > 1.5 && !worst) worst = `t=${f1(s.time)} s: ${A.id} overlaps ${B.id} by ${f1(ox)} x ${f1(oy)} px`; } }
-    assert(dirs.size >= 3, "cars came from only " + dirs.size + " directions"); assert(classes.size >= 4, "only " + classes.size + " classes appeared");
-    return dirs.size + " directions, " + classes.size + " classes; " + (worst ? "first overlap (reported, not required on this level): " + worst : "no overlap");
+      if (!worst) worst = carOverlap(s); }
+    assert(dirs.size >= 3, "cars came from only " + dirs.size + " directions"); assert(classes.size >= 4, "only " + classes.size + " classes appeared"); assert(!worst, "cars overlapped: " + worst);
+    return dirs.size + " directions, " + classes.size + " classes, no overlap";
   });
 
   check("detection_commit_and_brake_flags", "A dummy standing in a lane is seen, the car commits to a side (lock) and the lock does not change afterwards", () => {
@@ -266,7 +280,7 @@ if (Sim) {
     const sum = P.levels.reduce((a, l) => a + l.quota, 0); assert(P.certificationTarget > sum, `certificationTarget ${P.certificationTarget} must exceed quota sum ${sum}`);
   });
 
-  check("levels_always_end_with_dummy_in_traffic", "With a dummy standing on the road (at each road edge, so cars swerve across the road), every level still runs to its end: no stuck or deadlocked traffic", () => {
+  check("levels_always_end_with_dummy_in_traffic", "With a dummy standing on the road (at each road edge, so cars must swerve), every level still runs to its end, cars never overlap, never cross a barrier, and the dummy is never left inside a car", () => {
     const spots = [];
     const L1 = P.levels[0], L2 = P.levels[1];
     spots.push({ level: 1, x: H.x + H.w * 0.55, y: L1.road.y + L1.road.halfWidth - 5 }, { level: 1, x: H.x + H.w * 0.55, y: L1.road.y - L1.road.halfWidth + 5 });
@@ -277,13 +291,53 @@ if (Sim) {
     for (const sp of spots) for (const seed of [7, 11]) {
       const s = mk({ level: sp.level, seed }); const L = P.levels[sp.level - 1]; const limit = L.allocation * L.spawnInterval.max + 120; let tick = 0;
       while (s.time < limit && s.mode !== "over" && s.level === sp.level) {
-        if (s.mode === "play") { s.dummy.x = sp.x; s.dummy.y = sp.y; Sim.step(s, NONE, DT); }
+        if (s.mode === "play") { s.dummy.x = sp.x; s.dummy.y = sp.y; Sim.step(s, NONE, DT);
+          const bad = carOverlap(s) || offRoad(s) || insideCar(s); if (bad) throw new Error(`level ${sp.level} (seed ${seed}), dummy standing at (${Math.round(sp.x)},${Math.round(sp.y)}): ${bad}`); }
         else { tick++; Sim.step(s, inp({ confirm: tick % 20 < 2 }), DT); } }
       if (!(s.mode === "over" || s.level !== sp.level)) {
         const cars = s.cars.map(c => `${c.id}#${c.serial} at (${Math.round(c.x)},${Math.round(c.y)}) dir(${c.dirX},${c.dirY}) speed ${Math.round(c.speed)} lock ${c.lock}`).join("; ");
         throw new Error(`level ${sp.level} (seed ${seed}) had not ended after ${Math.round(limit)} s with the dummy standing at (${Math.round(sp.x)},${Math.round(sp.y)}): spawned ${s.vehiclesSpawned}/${s.allocation}, ${s.cars.length} cars still in play: ${cars}`); }
       done.push(`L${sp.level}:${Math.round(s.time)}s`); }
     return "all ended: " + done.join(", ");
+  });
+
+  check("solid_cars_and_barriers_under_active_play", "With the dummy wandering across the roads and lunging for 90 s per level: cars never overlap each other, never cross a road barrier, and the dummy is never left inside a car", () => {
+    const out = [];
+    for (const level of [1, 2, 3]) for (const seed of [5, 9]) { const s = mk({ level, seed }); let r = seed * 7919 + level, tick = 0, input = NONE, lunges = 0;
+      const rnd = () => { r = (r * 1103515245 + 12345) & 0x7fffffff; return r / 0x7fffffff; };
+      for (let i = 0; i < 90 * 60; i++) { keepAlive(s);
+        if (s.mode !== "play") { tick++; Sim.step(s, inp({ confirm: tick % 20 < 2 }), DT); if (s.mode === "over") break; continue; }
+        if (i % 30 === 0) { const L = P.levels[level - 1], cy = L.kind === "road" ? L.road.y : L.kind === "cross" ? L.roadH.y : H.y + H.h / 2;
+          // drift back toward the traffic when far from it, otherwise move at random
+          const dy = Math.abs(s.dummy.y - cy) > 140 ? Math.sign(cy - s.dummy.y) : Math.floor(rnd() * 3) - 1, dx = Math.abs(s.dummy.x - (H.x + H.w / 2)) > 300 ? Math.sign(H.x + H.w / 2 - s.dummy.x) : Math.floor(rnd() * 3) - 1;
+          input = inp({ dx, dy }); }
+        const press = i % 75 < 3; if (press && i % 75 === 0) lunges++;
+        Sim.step(s, Object.assign({}, input, { lunge: press }), DT);
+        const bad = carOverlap(s) || offRoad(s) || insideCar(s); if (bad) throw new Error(`level ${level} (seed ${seed}), active dummy: ${bad}`); }
+      out.push(`L${level}/s${seed}: ${lunges} lunges, ${s.bodiesDestroyed} bodies`); }
+    return out.join("; ");
+  });
+
+  check("dummy_cannot_walk_through_a_car", "Cars are solid on every side: a dummy placed against a car's side, or walking into it, is pushed out and never ends up inside", () => {
+    const s = mk({ level: 1 }); const c = waitForCar(s, fresh, 60); const serial = c.serial;
+    s.dummy.x = c.x + (-c.dirY) * (c.width / 2 + R - 6); s.dummy.y = c.y + c.dirX * (c.width / 2 + R - 6);
+    for (let i = 0; i < 40; i++) { const k = s.cars.find(q => q.serial === serial); if (!k || s.mode !== "play") break;
+      Sim.step(s, inp({ dx: 0, dy: -1 }), DT); const bad = insideCar(s); assert(!bad, bad); }
+    return "pushed out and kept out";
+  });
+
+  check("damage_follows_momentum", "Damage from a front impact equals perMomentum x closing speed x class mass (within 15%), for a sedan and a van; the bus is the heaviest class", () => {
+    const I = P.impact; assert(I.perMomentum > 0 && I.maxPay > 0, "spec impact.perMomentum / maxPay missing");
+    const masses = Object.keys(P.classes).map(k => P.classes[k].mass); assert(masses.every(m => m > 0), "every class needs a mass");
+    assert(P.classes.bus.mass === Math.max(...masses), "bus is not the heaviest class"); const out = [];
+    for (const cls of ["sedan", "van"]) { const s = mk({ level: 1, seed: cls === "sedan" ? 7 : 8 }); const c = waitForCar(s, k => fresh(k) && k.cls === cls, 180);
+      const h0 = s.dummy.health, x0 = c.x, y0 = c.y; touch(s, c, +1); Sim.step(s, NONE, DT); const k = s.cars.find(q => q.serial === c.serial); assert(k && k.hit, "no impact registered on the first step of contact");
+      // the dummy is standing still, so closing speed is the car's real velocity on that step, sideways swerve included
+      const closing = Math.hypot(k.x - x0, k.y - y0) / DT, drop = h0 - s.dummy.health, expected = I.perMomentum * closing * P.classes[cls].mass * I.faceFront;
+      assert(drop > 0, cls + ": no damage"); assert(expected < I.maxPay, cls + ": a cruising impact already hits the cap, so momentum cannot matter");
+      assert(Math.abs(drop - expected) <= 0.15 * expected + 1, `${cls}: damage ${f1(drop)} vs perMomentum x closing x mass = ${f1(expected)} (closing ${f1(closing)} px/s, mass ${P.classes[cls].mass})`);
+      out.push(`${cls}: ${f1(drop)} (expected ${f1(expected)})`); }
+    return out.join("; ");
   });
 
   check("sim_is_pure", "sim.js uses no Math.random, timers, clock or DOM", () => {

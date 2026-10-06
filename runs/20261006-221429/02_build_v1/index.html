@@ -99,7 +99,7 @@ function drawHall(){
   ctx.setLineDash([]);
 }
 function drawShoulders(L){
-  var h = HALL, r;
+  var h = HALL, r, e;
   ctx.fillStyle = "#62665a";
   if(L.kind === "road"){
     r = L.road;
@@ -122,9 +122,9 @@ function barrier(x0,y0,x1,y1){
   ctx.setLineDash([]);
 }
 function drawBarriers(L){
-  var h = HALL, r;
+  var h = HALL, r, e;
   if(L.kind === "road"){
-    r = L.road; var e = r.halfWidth + r.shoulder;
+    r = L.road; e = r.halfWidth + r.shoulder;
     barrier(h.x, r.y - e, h.x + h.w, r.y - e);
     barrier(h.x, r.y + e, h.x + h.w, r.y + e);
   } else if(L.kind === "cross"){
@@ -137,7 +137,7 @@ function drawBarriers(L){
   }
 }
 function drawRoads(){
-  var L = P.levels[S.level - 1], h = HALL, x, y, r;
+  var L = P.levels[S.level - 1], h = HALL, i, x, y, r;
   if(L.kind === "hall") return;
   drawShoulders(L);
   ctx.fillStyle = "#33373b";
@@ -164,18 +164,22 @@ function drawRoads(){
     ctx.moveTo(h.x, jy1); ctx.lineTo(jx0, jy1); ctx.lineTo(jx0, h.y+h.h);
     ctx.moveTo(jx1, h.y+h.h); ctx.lineTo(jx1, jy1); ctx.lineTo(h.x+h.w, jy1);
     ctx.stroke();
-    ctx.strokeStyle = "rgba(232,234,236,.4)"; ctx.setLineDash([18,14]); ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(232,180,0,.7)"; ctx.setLineDash([18,14]);
     ctx.beginPath();
     ctx.moveTo(h.x, rh.y); ctx.lineTo(jx0, rh.y); ctx.moveTo(jx1, rh.y); ctx.lineTo(h.x+h.w, rh.y);
     ctx.moveTo(rv.x, h.y); ctx.lineTo(rv.x, jy0); ctx.moveTo(rv.x, jy1); ctx.lineTo(rv.x, h.y+h.h);
     ctx.stroke(); ctx.setLineDash([]);
     ctx.strokeStyle = "rgba(232,234,236,.3)"; ctx.lineWidth = 1; ctx.setLineDash([4,6]);
     ctx.strokeRect(jx0, jy0, jx1-jx0, jy1-jy0); ctx.setLineDash([]);
-    ctx.strokeStyle = "rgba(232,234,236,.45)"; ctx.lineWidth = 2;
-    for(x = h.x + 60; x < jx0 - 20; x += 110){ arrow(x, rh.laneYs[0], 1, 0); arrow(x + 55, rh.laneYs[1], 1, 0); }
-    for(x = jx1 + 60; x < h.x + h.w - 30; x += 110){ arrow(x, rh.laneYs[0], 1, 0); arrow(x + 55, rh.laneYs[1], 1, 0); }
-    for(y = h.y + 50; y < jy0 - 20; y += 90){ arrow(rv.laneXs[0], y, 0, 1); arrow(rv.laneXs[1], y + 45, 0, 1); }
-    for(y = jy1 + 50; y < h.y + h.h - 20; y += 90){ arrow(rv.laneXs[0], y, 0, 1); arrow(rv.laneXs[1], y + 45, 0, 1); }
+    ctx.strokeStyle = "rgba(232,234,236,.35)"; ctx.lineWidth = 2;
+    for(x = h.x + 60; x < jx0 - 20; x += 110){ arrow(x, rh.laneYs[1], 1, 0); }
+    for(x = jx1 + 60; x < h.x + h.w - 30; x += 110){ arrow(x, rh.laneYs[1], 1, 0); }
+    for(x = h.x + 110; x < jx0 - 20; x += 110){ arrow(x, rh.laneYs[0], -1, 0); }
+    for(x = jx1 + 110; x < h.x + h.w - 30; x += 110){ arrow(x, rh.laneYs[0], -1, 0); }
+    for(y = h.y + 50; y < jy0 - 20; y += 90){ arrow(rv.laneXs[0], y, 0, 1); }
+    for(y = jy1 + 50; y < h.y + h.h - 20; y += 90){ arrow(rv.laneXs[0], y, 0, 1); }
+    for(y = h.y + 90; y < jy0 - 20; y += 90){ arrow(rv.laneXs[1], y, 0, -1); }
+    for(y = jy1 + 90; y < h.y + h.h - 20; y += 90){ arrow(rv.laneXs[1], y, 0, -1); }
   }
   drawBarriers(L);
   ctx.strokeStyle = "#6c7378"; ctx.lineWidth = 2; ctx.strokeRect(h.x,h.y,h.w,h.h);

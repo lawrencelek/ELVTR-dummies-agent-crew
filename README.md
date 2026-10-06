@@ -12,21 +12,22 @@ self-driving cars and lunge into their path.
 A crew of three agents takes Lawrence's hand-directed prototype (the
 "Testpad", `baseline/dummies-testpad.html`) and a one-page brief, and produces
 a **playable three-level vertical slice of DUMMIES**, plus the specification
-it was built from and an independent QA report.
+it was built from and an independent QA report. Cars are solid on every side, and impact damage
+is closing speed times the vehicle's mass.
 
 | Level | What it is |
 |-------|------------|
-| 1. ROAD | One road, all traffic left to right, nothing makes it stop. The teaching level. |
-| 2. CROSS JUNCTION | Two roads crossing, no traffic lights. Cars give way to each other and never collide. |
+| 1. ROAD | One road, all traffic left to right, nothing makes it stop. Lanes, a hard shoulder cars may swerve onto, and a barrier they cannot cross. The teaching level. |
+| 2. CROSS JUNCTION | Two one-way roads crossing, no traffic lights, same shoulders and barriers. Cars give way to each other and never collide. |
 | 3. CRASH TEST CENTRE | The open hall: vehicles from all four edges, the full twelve-unit fleet. |
 
 Released output from the run included in this repository:
 
 | File | Produced by | What it is |
 |------|-------------|------------|
-| `output/spec.json` | Rules Designer | All parameters in real-time units, the three level designs, the changed rules, 25 acceptance criteria, 9 listed differences from the GDD and the Testpad |
+| `output/spec.json` | Rules Designer | All parameters in real-time units, the three level designs, the changed rules, 41 acceptance criteria, 17 listed differences from the GDD and the Testpad |
 | `output/game/index.html`, `output/game/sim.js` | Game Builder | The playable browser game |
-| `output/checks.json` | Orchestrator | Results of 28 executable checks run against the build |
+| `output/checks.json` | Orchestrator | Results of 31 executable checks run against the build |
 | `output/qa_report.json` | QA / Repair Reviewer | Per-criterion verdicts, defects, release decision |
 
 **To play:** download the repository (green **Code** button, **Download ZIP**),
@@ -92,14 +93,20 @@ the orchestrator hands it.
 How the outputs really pass between agents:
 
 - The check `params_match_spec` fails unless the Builder's `PARAMS` are
-  identical to the Designer's 233 numbers.
+  identical to the Designer's 250 numbers.
 - The checks measure movement, lunge, levels and endings against the
   Designer's values, not against constants in the harness.
 - A build is released only if every check passes **and** QA says `release`. If
   either says no, the Builder is called again with the reasons (two repair
   cycles at most). If it still fails, the run exits with code 1 and `output/`
   is left untouched.
-- In the submitted run this loop was used: build 1 failed the deadlock check, QA wrote three repair requests, the Builder changed the car-to-car logic, and build 2 passed every check and QA.
+- This loop has run for real. In run `20261006-215228`, build 1 failed the
+  deadlock check, QA wrote three repair requests, the Builder changed the
+  car-to-car logic, and build 2 passed every check and QA.
+- After a release, the crew takes **change requests** against the released
+  build (`python crew.py --change changes/CR-xxx.md`): the Designer revises
+  the specification, the Builder patches its own files, and the same checks
+  and QA gate the result. `changes/CR-001_...md` is Lawrence's first one.
 
 ## Connection to the GDD
 
@@ -113,6 +120,7 @@ How the outputs really pass between agents:
 | "The cars visibly learn" | Yes, as in the Testpad: each write-off briefs the unit that caused it |
 | Detection wedge, commit line, chevron, brake lights | Yes. The chevron appears at commitment, as in the Testpad, not on detection as the GDD says |
 | "Rear contact gives no damage, score" | Yes |
+| "Impact value depends on class, speed and angle" | Damage = closing speed x class mass x face factor (front 1, side 0.25, rear 0). The bus is heaviest (CR-001) |
 | Standing still triggers service | Yes, as in the Testpad: unlimited, not once per body |
 | Certification by total write-offs, target above the sum of quotas | Yes: 11 bodies against quotas of 2, 3, 5 |
 | Endings: Licensed, Non-compliant, Decommissioned | Yes |
@@ -145,6 +153,7 @@ artifact to `runs/<timestamp>/` and, if released, the final files to
 
 ```
 python crew.py --from-run runs/<timestamp>     # reuse that run's specification and first build
+python crew.py --change changes/CR-001_solid_cars_momentum_barriers.md   # revise the released build for one change request
 node checks/run_checks.js output/game output/spec.json     # re-run only the checks
 node checks/bot_playthrough.js output/game 1               # automated player, seed 1
 ```
@@ -154,6 +163,7 @@ node checks/bot_playthrough.js output/game 1               # automated player, s
 ```
 SLICE_BRIEF.md            human-written input to the crew
 baseline/                 the Testpad: Lawrence's prototype, the Builder's starting point
+changes/                  change requests from Lawrence, applied by the crew to the released build
 crew.py                   orchestrator
 agents/                   one system prompt per agent
 checks/run_checks.js      executable checks (the release gate, with QA)
@@ -176,10 +186,13 @@ docs/                     screenshots
 | `20261006-185615` | First version (archived): one-road greybox from scratch. Three agent calls, released on the first build, 18 of 18 checks. |
 | `20261006-214051` | Rebuild from the Testpad. Designer 137 s, Builder 391 s. Build 1 passed 26 of the then 27 checks. The one failure was a **bug in the check harness** (it objected when the dummy's health rose from service repair). Stopped by the operator during QA; the check was corrected. |
 | `20261006-215043` | Specification and build 1 reused. 27 of 27 checks passed. QA said `repair` with one request, about fleet learning only being credited at a write-off, which is how the Testpad behaves. Meanwhile the automated player showed that **level 2 could deadlock** and never end. Stopped by the operator during the repair call; a new check for it was added, and QA and the repair pass were given the Testpad source. |
-| `20261006-215228` | **The submitted run.** Specification and build 1 reused. Build 1 failed the new deadlock check (27 of 28). QA said `repair` with three targeted requests. The Builder's repair took 174 s and changed only the car-to-car logic. Build 2 passed 28 of 28 checks and QA said `release` (22 criteria pass, 3 unverified, 4 minor defects). |
+| `20261006-215228` | **First release of the three-level build.** Specification and build 1 reused. Build 1 failed the new deadlock check (27 of 28). QA said `repair` with three targeted requests. The Builder's repair took 174 s and changed only the car-to-car logic. Build 2 passed 28 of 28 checks and QA said `release` (22 criteria pass, 3 unverified, 4 minor defects). |
+| `20261006-221109` | **Change request CR-001** (solid cars, momentum damage, shoulder and barrier). The Designer revised the specification in 2 minutes; then an **orchestrator bug** in the new change mode crashed the run before the Builder was called. Fixed. |
+| `20261006-221429` | Specification reused. The Builder's change pass passed 29 of 31 checks. One failure was a **bug in the check harness** (the damage check ignored a car's sideways swerve speed; the build was right). The other was real: level 2 froze again, head-on, in the oncoming lane. QA said `repair`. Stopped by the operator, who fixed the check and added an addendum to CR-001 making level 2's roads one-way. |
+| `20261006-222229` | **The current release.** The Designer revised the specification for the addendum (113 s), the Builder patched the previous build (135 s), 31 of 31 checks passed on the first build and QA said `release` (31 criteria pass, 10 unverified, 2 minor defects). |
 
 **Executable checks** on the released build (run by Node against the generated
-`sim.js`): 28 of 28 passed.
+`sim.js`): 31 of 31 passed.
 
 | Check | What it verifies | Result |
 |-------|------------------|--------|
@@ -199,8 +212,8 @@ docs/                     screenshots
 | `deterministic_and_seeded` | Same seed and inputs give an identical state after 40 s; a different seed gives different traffic | pass |
 | `level1_road_flows_left_to_right` | Level 1: every car travels left to right inside the road band, at its class speed, and never stalls (dummy out of the way) | pass |
 | `car_speed_real_time` | An undisturbed car's reported speed equals its class speed and its real displacement per second, at 60 and 120 steps per second | pass |
-| `level2_cross_no_collisions` | Level 2: traffic uses both roads, cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock) | pass |
-| `level3_free_for_all` | Level 3: vehicles enter from at least three of the four edges and several classes appear (car overlap is reported but only enforced on level 2) | pass |
+| `level2_cross_no_collisions` | Level 2: traffic uses both one-way roads (left to right, top to bottom), cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock) | pass |
+| `level3_free_for_all` | Level 3: vehicles enter from at least three of the four edges, several classes appear, and cars never overlap inside the canvas | pass |
 | `detection_commit_and_brake_flags` | A dummy standing in a lane is seen, the car commits to a side (lock) and the lock does not change afterwards | pass |
 | `front_impact_pays_once` | Front contact reduces health and adds score, once per car | pass |
 | `rear_contact_pays_nothing` | Rear contact changes neither health nor score | pass |
@@ -208,7 +221,10 @@ docs/                     screenshots
 | `level_progression` | Quota met and allocation spent: level 1 -> 2 -> 3 via a card and confirm | pass |
 | `ending_decommissioned` | Allocation spent with the quota missed ends the run as 'decommissioned' | pass |
 | `ending_licensed` | The write-off that reaches certificationTarget ends the run as 'licensed' at once | pass |
-| `levels_always_end_with_dummy_in_traffic` | With a dummy standing on the road (at each road edge, so cars swerve across the road), every level still runs to its end: no stuck or deadlocked traffic | pass |
+| `levels_always_end_with_dummy_in_traffic` | With a dummy standing on the road (at each road edge, so cars must swerve), every level still runs to its end, cars never overlap, never cross a barrier, and the dummy is never left inside a car | pass |
+| `solid_cars_and_barriers_under_active_play` | With the dummy wandering across the roads and lunging for 90 s per level: cars never overlap each other, never cross a road barrier, and the dummy is never left inside a car | pass |
+| `dummy_cannot_walk_through_a_car` | Cars are solid on every side: a dummy placed against a car's side, or walking into it, is pushed out and never ends up inside | pass |
+| `damage_follows_momentum` | Damage from a front impact equals perMomentum x closing speed x class mass (within 15%), for a sedan and a van; the bus is the heaviest class | pass |
 | `sim_is_pure` | sim.js uses no Math.random, timers, clock or DOM | pass |
 | `html_static` | index.html has a canvas, loads sim.js, handles the keyboard, uses a fixed timestep and makes no network requests | pass |
 
@@ -217,21 +233,21 @@ ambushes: it stands outside a car's detection zone and lunges across its nose.
 
 | Seed | Level 1 (quota 2 of 14 cars) | Level 2 (quota 3 of 20) | Level 3 (quota 5 of 28) | Result |
 |------|------|------|------|------|
-| 1 | 2 bodies | 4 bodies | 3 bodies | Decommissioned in level 3, 9 of 11 bodies, 237 s |
-| 2 | 2 bodies | 3 bodies | 4 bodies | Decommissioned in level 3, 9 of 11 bodies, 230 s |
-| 3 | 4 bodies | 1 body | not reached | Decommissioned in level 2, 5 of 11 bodies, 151 s |
+| 1 | 4 bodies | 1 body | not reached | Decommissioned in level 2, 5 of 11 bodies, 142 s |
+| 2 | 2 bodies | 4 bodies | 3 bodies | Decommissioned in level 3, 9 of 11 bodies, 225 s |
+| 3 | 5 bodies | 2 bodies | not reached | Decommissioned in level 2, 7 of 11 bodies, 146 s |
 
-No run hung. Levels 1 and 2 are passable by ambush alone; this player never
-earned the licence, so level 3 and the certification target are untested as
-winnable.
+No run hung. Level 1 is passable by ambush alone on every seed; level 2 on
+one seed in three. This player never earned the licence, so level 3 and the
+certification target are untested as winnable.
 
 **Scripted browser playtest** (`checks/browser_playtest.js`, headless
 Chromium, real key events):
 
 - The page loaded with no errors and made no network requests.
 - It opened on the attract screen; a key press started level 1.
-- Holding D for 1 s moved the dummy 122 px; holding W and D for 1 s moved it
-  122 px diagonally.
+- Holding D for 1 s moved the dummy 125 px; holding W and D for 1 s moved it
+  124 px diagonally.
 - Holding W and Space for 1.5 s moved it 282 px: one lunge plus walking, not
   a chain of lunges.
 - Each level was opened directly and drew its layout with traffic
@@ -248,17 +264,20 @@ Chromium, real key events):
 
 ## Known limitations
 
-- **Level 3 cars can overlap each other when the dummy is involved.** One
-  browser screenshot shows a van and a bus overlapping at the dummy. The
-  no-collision rule is only enforced by a check on level 2, with the dummy out
-  of the way.
-- QA's four minor defects are open: a rare car squeeze at crossings; the
-  walk-to-run ramp restarts after a lunge; a Space tap shorter than one frame
-  can be missed; level 3 has no hall border.
+- **Two of Lawrence's instructions were interpreted, and need his
+  confirmation.** "Inversely proportional to speed x mass" was built as
+  directly proportional. Level 2's roads were made one-way to stop head-on
+  deadlocks; he did not ask for that.
+- **A jam breaker can delete cars.** If the oldest car in the hall is stuck
+  for 6 s without seeing the dummy, the Builder's code removes the cars
+  blocking it. The checks did not show it firing, but it is a patch, not a
+  traffic model.
+- A car that cannot swerve because of the barrier or another car slows to
+  0.55 of its speed; it does not stop.
+- QA's two minor defects are open: a car already in the junction can stop in
+  the path of an older car; a Space tap shorter than one frame can be missed.
 - Not ported from the Testpad: the brief hit-stop pause on impact, and the
   traffic behind the attract screen.
-- Level 2's roads are two-way. That was the Designer agent's choice, not
-  Lawrence's.
 - Agents are language models, so a re-run will produce a different
   specification and different code. The game itself is deterministic.
 - The checks rely on a hand-written technical contract in the brief; the

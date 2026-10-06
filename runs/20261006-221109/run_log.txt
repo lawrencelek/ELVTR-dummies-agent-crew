@@ -1,0 +1,6 @@
+[22:11:09] DUMMIES crew run -> runs/20261006-221109
+[22:11:09] Change mode: revising the released build in output/ for CR-001_solid_cars_momentum_barriers.md
+[22:11:09] Rules Designer: calling (42,771 chars in)
+[22:14:09] Rules Designer: done in 178.6 s (35,745 chars out)
+[22:14:09] Specification: 37 acceptance criteria, 0 labelled simplifications
+[crashed] Orchestrator bug: a variable name clash in the new change mode (crew.py) raised an error after the Designer finished and before the Builder was called. Fixed; restarted with --from-run, reusing this run's specification.

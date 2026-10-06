@@ -1,0 +1,13 @@
+[22:14:29] DUMMIES crew run -> runs/20261006-221429
+[22:14:29] Change mode: revising the released build in output/ for CR-001_solid_cars_momentum_barriers.md
+[22:14:29] Rules Designer: NOT called; specification reused from 20261006-221109
+[22:14:29] Specification: 37 acceptance criteria, 0 labelled simplifications
+[22:14:29] Game Builder: calling (95,095 chars in)
+[22:19:51] Game Builder: done in 320.9 s (52,376 chars out)
+[22:19:52] Checks: 29/31 passed | failing: levels_always_end_with_dummy_in_traffic, damage_follows_momentum
+[22:19:52] QA / Repair Reviewer: calling (139,432 chars in)
+[22:20:45] QA / Repair Reviewer: done in 51.7 s (10,195 chars out)
+[22:20:45] QA verdict: repair | 3 repair request(s) | Two automated checks failed: a level 2 head-on deadlock that stops the level from ending, and a front impact on a sedan that pays 374 when the spec says 228. I confirmed the deadlock from the source: a locked car stays displaced in the oncoming lane, and a stalled lower-serial car that never yields blocks the car it is facing. The damage formula in testImpact matches the spec, so the 374 figure needs reproducing. Solid cars, barriers, push-out and drawing look broadly in place.
+[22:20:45] Not released -> repair cycle 1 of 2
+[22:20:45] Game Builder: calling (138,476 chars in)
+[stopped by operator during repair cycle 1] The new check damage_follows_momentum had a bug in the harness: it compared damage with the car's forward speed and ignored its sideways swerve speed, which the specification counts in closing speed. The build's damage was correct. The check was fixed and the run restarted with --from-run, reusing this specification and build 1. The other failure (a level 2 deadlock) was real.

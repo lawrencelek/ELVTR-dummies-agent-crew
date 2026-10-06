@@ -1,0 +1,14 @@
+[22:22:29] DUMMIES crew run -> runs/20261006-222229
+[22:22:29] Change mode: the Designer revises the specification from 20261006-221109 (not released) instead of output/spec.json
+[22:22:29] Change mode: the Builder starts from 20261006-221429/02_build_v1 (not released) instead of output/game
+[22:22:29] Change mode: revising the released build in output/ for CR-001_solid_cars_momentum_barriers.md
+[22:22:29] Rules Designer: calling (58,871 chars in)
+[22:24:24] Rules Designer: done in 113.1 s (41,854 chars out)
+[22:24:24] Specification: 41 acceptance criteria, 0 labelled simplifications
+[22:24:24] Game Builder: calling (108,732 chars in)
+[22:26:40] Game Builder: done in 135.2 s (52,434 chars out)
+[22:26:41] Checks: 31/31 passed
+[22:26:41] QA / Repair Reviewer: calling (146,444 chars in)
+[22:28:08] QA / Repair Reviewer: done in 85.5 s (9,703 chars out)
+[22:28:08] QA verdict: release | 0 repair request(s) | All 31 automated checks passed. I read sim.js against the Testpad and the specification and found no throw, freeze or unreachable-state defect in normal play. The Builder's notes say none of this was run by the Builder, so the playtest criteria and several emergent-behaviour criteria stay unverified for a human.
+[22:28:08] RELEASED after 1 build(s). Open output/game/index.html in a browser.

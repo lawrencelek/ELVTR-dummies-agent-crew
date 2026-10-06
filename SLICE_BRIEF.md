@@ -79,12 +79,37 @@ and a pool (how many fleet units are in rotation, in fleet order).
    and no cross traffic, so undisturbed cars flow continuously. Cars react
    only to the dummy. This is the teaching level: small pool, low quota.
 2. **CROSS JUNCTION.** A horizontal road and a vertical road crossing in the
-   middle of the hall. No traffic lights. Traffic arrives on both roads. Cars
-   must never collide with or pass through each other: they give way at the
-   junction and queue behind a waiting car.
+   middle of the hall. No traffic lights. Both roads are one-way with two
+   lanes each: the horizontal road runs left to right, the vertical road top
+   to bottom. There is no oncoming traffic on levels 1 and 2. Cars must never
+   collide with or pass through each other: they give way at the junction and
+   queue behind a waiting car.
 3. **CRASH TEST CENTRE.** The Testpad's open hall: a free-for-all with
    vehicles entering from all four edges at any position, the full
    twelve-unit pool, highest quota.
+
+**Solid cars (all levels; change request CR-001).** Every car is a solid
+rectangle on all four sides. The dummy can never be inside a car: if they
+overlap, the dummy is pushed out along the shortest way, and a moving car
+pushes the dummy ahead of it or aside. The dummy never blocks or slows a car
+by being solid. Cars never overlap each other, on any level, whatever the
+dummy does. A car only moves sideways into space that is free of other cars.
+
+**Road limits (levels 1 and 2; CR-001).** Outside the lanes on each side of a
+road is a hard shoulder that cars may use when swerving. Beyond the shoulder
+is a barrier: no part of a car may ever cross it. A car that cannot swerve far
+enough to clear the dummy, because of the barrier or another car, brakes
+instead. The dummy crosses shoulders and barriers freely. Both are drawn.
+
+**Damage from momentum (CR-001).** Each class has a mass. For a paying impact,
+damage = round(impact.perMomentum x closing speed x class mass x face factor),
+capped at impact.maxPay. Closing speed is the size of the car's velocity
+minus the dummy's velocity, in px/s. Score for the impact equals the damage.
+This replaces the Testpad's severity curve; where the Testpad uses severity
+(report signatures, shake) use damage / maxPay. Tune perMomentum and the
+masses so that a full-speed lunge across a sedan's nose takes roughly half of
+a fresh body, a bus hits hardest per unit of speed, and a stationary dummy
+struck by a cruising sedan loses only a little.
 
 **Car-to-car rule (all levels).** Every car has a serial number that
 increases with each spawn. A car gives way only to cars with a lower serial
@@ -174,7 +199,10 @@ Rules the checks rely on:
   `vehiclesSpawned >= allocation` and `cars` is empty.
 - An impact needs the dummy's circle to touch the car's rectangle; face is
   judged as in the Testpad. Rear contact changes neither health nor score.
-  Each car has at most one impact (`hit`).
+  Each car has at most one impact (`hit`). The impact is judged before the
+  dummy is pushed out of the car.
+- After every step the dummy's circle does not reach more than 1 px into any
+  car's rectangle, and (inside the canvas) no two cars' rectangles overlap.
 - Dummy at full health: reach multiplier is exactly 1, so a lunge covers
   exactly `dummy.lungeDistance` while `lunging` is true, in any direction,
   at any `dt`. The dummy is clamped to the hall.
@@ -198,10 +226,10 @@ hall:    { x: 40, y: 40, w: 820, h: 540 }
 dummy:   { radius, walkSpeed, runSpeed, rampTime, lungeDistance,
            lungeDuration, lungeCooldown, recoveryTime, wearFloor,
            wearSpeedLoss, maxHealth, writeOffBonus, startX, startY }
-impact:  { maxClosing, yieldBase, yieldCurve, faceFront, faceSide, faceRear }
+impact:  { perMomentum, maxPay, faceFront, faceSide, faceRear }
 caution: { max }
 service: { delay, fullTime }
-classes: { sedan: { label, width, length, speed, swerve, commitFrac, flip,
+classes: { sedan: { label, width, length, speed, mass, swerve, commitFrac, flip,
                     brakeFirst, base: {detect, margin, predict, brakeLead},
                     step: {...}, cap: {...} },
            van, sports, bus, wagon, hatch }
@@ -209,14 +237,18 @@ fleet:   [ { id, cls } x 12 ]
 closeCost: [ 12 integers ]
 levels:  [ { id: 1, kind: "road",  name, quota, allocation, pool,
              spawnInterval: { min, max },
-             road:  { y, halfWidth, laneYs: [ ... ] } },
+             road:  { y, halfWidth, shoulder, laneYs: [ ... ] } },
            { id: 2, kind: "cross", name, quota, allocation, pool,
              spawnInterval: { min, max },
-             roadH: { y, halfWidth }, roadV: { x, halfWidth } },
+             roadH: { y, halfWidth, shoulder }, roadV: { x, halfWidth, shoulder } },
            { id: 3, kind: "hall",  name, quota, allocation, pool,
              spawnInterval: { min, max } } ]
 certificationTarget: integer
 ```
+
+`halfWidth` covers the lanes; `shoulder` is the width of the hard shoulder on
+each side; the barriers are at the road centre line plus and minus
+(`halfWidth` + `shoulder`).
 
 Units: pixels, seconds, pixels per second. Testpad per-frame speeds
 (`walk`, `run`, class `sp`, `maxClosing`) are multiplied by 60. Testpad

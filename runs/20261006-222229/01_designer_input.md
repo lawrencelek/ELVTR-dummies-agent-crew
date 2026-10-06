@@ -1,3 +1,327 @@
+CHANGE REQUEST. Revise the current specification below so that it implements the change request and the updated brief. Return the complete specification in the same JSON shape. Keep every value, rule and acceptance criterion that the change does not touch exactly as it is; rewrite or remove the ones it replaces; add numbered rules under changed_rules and new acceptance criteria for everything new, and list the change under differences.
+
+# CHANGE REQUEST
+# CR-001 — Solid cars, damage from momentum, road shoulder and barrier
+
+**From:** Lawrence, after playing the three-level build, 6 October 2026.
+
+**In his words:**
+
+> the cars should have collision box all around them. damage taken should be
+> inversely proportional to speed x mass of vehicle.
+>
+> for the road, the cars have to avoid each other. they must also NOT go off
+> the road. there should be a hard shoulder (they can go on this), and then a
+> barrier that they cannot go beyond.
+
+**How the request is read** (the assistant's interpretation; marked where it
+goes beyond his words):
+
+1. **Solid cars.** Every car is a solid rectangle on all four sides.
+   - The dummy can never be inside a car. If they overlap, the dummy is pushed
+     out along the shortest way; a moving car pushes the dummy ahead of it or
+     aside. The dummy never blocks or slows a car by being solid.
+   - Cars can never overlap each other, on any level, whatever the dummy does.
+     This now applies to level 3 as well.
+   - Scoring is unchanged in kind: each car still pays for at most one impact,
+     front pays in full, side a quarter, rear nothing. After its impact a car
+     stays solid.
+2. **Damage from momentum.** *Interpretation: "inversely" is read as
+   "directly"; a faster, heavier vehicle does more damage. To be confirmed by
+   Lawrence.* Each vehicle class gets a mass. Damage = closing speed x mass x
+   a constant x the face factor, up to a cap. This replaces the Testpad's
+   severity curve. Score for an impact still equals the damage done.
+3. **Road limits (levels 1 and 2).** *Interpretation: applied to both road
+   levels; the barrier stops cars, not the dummy.*
+   - Outside the lanes on each side of a road is a hard shoulder. Cars may use
+     it when swerving.
+   - Beyond the shoulder is a barrier. No part of a car may ever cross it.
+   - A car that cannot swerve far enough to clear the dummy, because of the
+     barrier or because another car is in the way, brakes instead.
+   - Cars avoid each other sideways as well as lengthways: a car only moves
+     sideways into space that is free of other cars.
+   - The dummy can cross shoulders and barriers freely.
+   - Shoulders and barriers are drawn.
+
+## Addendum, added during the run: level 2 roads become one-way
+
+**Decided by the assistant under the deadline; for Lawrence to confirm.**
+
+The first build of this change (run `20261006-221429`) failed the check
+`levels_always_end_with_dummy_in_traffic` on level 2. With solid cars, a car
+that had swerved into the oncoming lane met traffic head-on, neither could
+pass, and the level froze. The same thing happened before this change (run
+`20261006-215228`, build 1). The cause is the two-way roads the Designer chose
+for level 2, which Lawrence never asked for.
+
+4. **Level 2 roads are one-way.** The horizontal road runs left to right and
+   the vertical road runs top to bottom, each with two lanes. There is no
+   oncoming traffic on levels 1 and 2; the only conflict on level 2 is the
+   crossing in the junction. Level 3 is unchanged.
+5. Whatever happens, the car with the lowest serial number must never be held
+   up for good by another car.
+
+
+# UPDATED BRIEF
+# DUMMIES — Vertical Slice Brief (input to the crew)
+
+This file is the human-written input to the three-agent crew, together with
+`baseline/dummies-testpad.html`. Everything downstream (specification, game
+code, QA report) is produced by the agents.
+
+## The game
+
+DUMMIES is a single-player, top-down 2D browser game for an exhibition, by
+Lawrence Lek. You are a FARSIGHT crash-test dummy in SHENZHEN SMART CITY, NEW
+ECONOMIC ZONE, CHINA, 20XX. "You are buying your freedom by destroying your
+body." Bait self-driving cars and lunge into their path. Damage earns score;
+destroyed bodies fulfil quotas and advance certification toward release.
+
+Intended player: a fifteen-year-old at an exhibition with a friend shouting
+suggestions over their shoulder. Move in eight directions, one button to
+lunge.
+
+## The baseline: the Testpad
+
+`baseline/dummies-testpad.html` is Lawrence's earlier hand-directed prototype.
+It is the reference for scale, feel, look and systems. **Port it; do not
+redesign it.** Keep, with the same behaviour and numbers unless this brief
+says otherwise:
+
+- The 900 x 620 canvas, the 820 x 540 hall, dummy size, vehicle sizes, lunge
+  distance. Lawrence has confirmed this scale.
+- Six vehicle classes (sedan, van, sports, bus, wagon, hatch) with their
+  detect / margin / predict / brakeLead dials, and the twelve-unit fleet.
+- Fleet learning: contacts raise a unit's dials; files brief, adapt and close.
+- Commitment: the car locks a side at its commit line and cannot take it back
+  (the hatchback may flip once).
+- Braking rules, including brake-first classes and the bus that cannot swerve.
+- Caution: cars lose speed when the dummy runs.
+- Service: stand still and the body is repaired.
+- Severity by closing speed and face: front pays, side pays a quarter, rear
+  pays nothing.
+- Report cards: behaviour signatures and the authored report bank, word for
+  word.
+- The look: colours, HUD (integrity bar, quota pips), cards, attract screen,
+  perception overlay with its toggle, restart button.
+
+## What changes from the Testpad
+
+1. **Three levels replace the eight-shift ladder** (see below).
+2. **Real-time units.** The Testpad moves a fixed number of pixels per frame,
+   so it runs faster on high-refresh screens. All speeds become pixels per
+   second (Testpad per-frame values x 60) and every update is scaled by `dt`.
+3. **Seeded randomness.** No `Math.random()`. The same seed and the same
+   inputs must give the same run.
+4. **No lunge chaining.** A lunge starts only on a fresh press. Holding the
+   lunge button down must not start another lunge.
+5. **Lunge direction.** The direction held at the moment of the press; if no
+   direction is held, the dummy's last facing direction (not always "up").
+6. **Tweened lunge and recovery** (Move Refinements MR-01). The lunge eases
+   out: fast at the start, slowing into the landing, same total distance.
+   After a lunge there is a short recovery (between 0.2 and 0.5 s) in which
+   the dummy can already move, but its movement speed is multiplied by an
+   eased factor that rises from 0 to 1. No hard freeze.
+7. **Certification follows the GDD.** The run is won by cumulative write-offs
+   across the run reaching a certification target that is larger than the sum
+   of the three level quotas, and attainable within the vehicles allocated.
+   The twelve-cell licence sheet stays as a display of fleet learning.
+8. **Cars never drive through each other** (see car-to-car rule below).
+9. **No network.** Remove the Google Fonts link; keep the font names as the
+   first choice in the font stack with system monospace fallbacks.
+
+Out of scope (do not add): price tiers, moods, new vehicle classes, audio,
+new art, extra levels.
+
+## The three levels
+
+All three use the same hall. The dummy can walk anywhere in the hall on every
+level. Each level has a quota of bodies to destroy, an allocation of vehicles
+and a pool (how many fleet units are in rotation, in fleet order).
+
+1. **ROAD.** One horizontal road across the hall. All traffic travels left
+   to right. Nothing on this level makes traffic stop: there is no junction
+   and no cross traffic, so undisturbed cars flow continuously. Cars react
+   only to the dummy. This is the teaching level: small pool, low quota.
+2. **CROSS JUNCTION.** A horizontal road and a vertical road crossing in the
+   middle of the hall. No traffic lights. Both roads are one-way with two
+   lanes each: the horizontal road runs left to right, the vertical road top
+   to bottom. There is no oncoming traffic on levels 1 and 2. Cars must never
+   collide with or pass through each other: they give way at the junction and
+   queue behind a waiting car.
+3. **CRASH TEST CENTRE.** The Testpad's open hall: a free-for-all with
+   vehicles entering from all four edges at any position, the full
+   twelve-unit pool, highest quota.
+
+**Solid cars (all levels; change request CR-001).** Every car is a solid
+rectangle on all four sides. The dummy can never be inside a car: if they
+overlap, the dummy is pushed out along the shortest way, and a moving car
+pushes the dummy ahead of it or aside. The dummy never blocks or slows a car
+by being solid. Cars never overlap each other, on any level, whatever the
+dummy does. A car only moves sideways into space that is free of other cars.
+
+**Road limits (levels 1 and 2; CR-001).** Outside the lanes on each side of a
+road is a hard shoulder that cars may use when swerving. Beyond the shoulder
+is a barrier: no part of a car may ever cross it. A car that cannot swerve far
+enough to clear the dummy, because of the barrier or another car, brakes
+instead. The dummy crosses shoulders and barriers freely. Both are drawn.
+
+**Damage from momentum (CR-001).** Each class has a mass. For a paying impact,
+damage = round(impact.perMomentum x closing speed x class mass x face factor),
+capped at impact.maxPay. Closing speed is the size of the car's velocity
+minus the dummy's velocity, in px/s. Score for the impact equals the damage.
+This replaces the Testpad's severity curve; where the Testpad uses severity
+(report signatures, shake) use damage / maxPay. Tune perMomentum and the
+masses so that a full-speed lunge across a sedan's nose takes roughly half of
+a fresh body, a bus hits hardest per unit of speed, and a stationary dummy
+struck by a cruising sedan loses only a little.
+
+**Car-to-car rule (all levels).** Every car has a serial number that
+increases with each spawn. A car gives way only to cars with a lower serial
+number: if continuing would bring it into contact with such a car, it slows
+or stops until the way is clear. The car with the lowest serial number never
+waits for another car, so traffic can never deadlock. Giving way to another
+car does not light the brake lights' "braking for the dummy" logic
+differently: any slowing shows brake lights.
+
+**Level flow.** A level ends when its allocation has been spawned and no cars
+remain in the hall. Then, in this order: Non-compliant (quota was met in an
+earlier level, and this whole level had no lunge and no contact); then
+Decommissioned (level quota missed, or level 3 finished without reaching the
+certification target); otherwise a "level complete" card and the next level.
+Licensed: the write-off that reaches the certification target wins at once.
+Ending texts stay as in the Testpad, adjusted only where they mention "all
+twelve units".
+
+## Fixed technical contract (so automated checks can run)
+
+The Builder must output exactly two files.
+
+### `sim.js` — all game rules, no DOM, no timers, no clock, no Math.random
+
+Loadable in a browser (`window.DummiesSim`) and in Node (`module.exports`).
+Exports:
+
+- `PARAMS` — a literal copy of the Designer's specification `params`.
+- `createSim(options)` -> `state`. Options, all optional:
+  `seed` (number, default 1), `level` (1, 2 or 3, default 1),
+  `traffic` (boolean, default true; false means no car is ever spawned),
+  `autostart` (boolean, default false; true starts directly in mode "play",
+  false starts in mode "attract").
+- `step(state, input, dt)` -> mutates and returns `state`.
+  `input = { dx: -1|0|1, dy: -1|0|1, lunge: boolean, confirm: boolean }`.
+  `lunge` and `confirm` are "button is down" flags; `step` detects the fresh
+  press itself. `confirm` starts the game from "attract" and dismisses cards.
+  `dt` is seconds; checks use 1/60 and 1/120. `dy = -1` is up the screen.
+
+`state` is one plain JSON-serialisable object. `step` must derive everything
+from it (checks overwrite fields between steps). Required fields:
+
+```
+state.params            same values as PARAMS
+state.seed, state.time
+state.mode              "attract" | "play" | "card" | "over"
+state.ending            null | "licensed" | "decommissioned" | "noncompliant"
+state.card              null | { kind, title, sub, line }
+state.level             1 | 2 | 3
+state.quota             this level's quota
+state.allocation        this level's vehicle allocation
+state.vehiclesSpawned   vehicles spawned so far this level
+state.levelWriteOffs    bodies destroyed this level
+state.bodiesDestroyed   bodies destroyed this run (certification count)
+state.score
+state.dummy = {
+  x, y, vx, vy,         position px, velocity px/s
+  facing: { x, y },     unit vector
+  health,               maxHealth down to 0; the only record of damage
+  lunging: boolean,
+  recovering: boolean,  true for dummy.recoveryTime after a lunge ends
+  serviceOn: boolean }
+state.cars = [ {
+  serial,               integer, increases with every spawn in the run
+  id, cls,              fleet unit id and class key
+  x, y,                 centre of the car's rectangle as drawn
+  dirX, dirY,           travel direction, one of (1,0) (-1,0) (0,1) (0,-1)
+  length, width,        length is along the travel direction
+  speed,                current speed, px/s
+  sees: boolean,        dummy is inside its detection zone
+  lock: -1 | 0 | 1,     committed side, 0 = not committed
+  braking: boolean,     true on every step in which it is slowing or held
+  hit: boolean } ]      this car has already had its impact
+```
+
+Rules the checks rely on:
+
+- With `autostart: true` the first step is already normal play.
+- `mode "play"` is the only mode in which the dummy and cars move.
+- A body destroyed: `bodiesDestroyed` and `levelWriteOffs` each rise by one,
+  then `mode` becomes "card" (or "over" with `ending: "licensed"` if the
+  certification target is reached). A fresh `confirm` press dismisses the
+  card and play resumes with `dummy.health === maxHealth`.
+- An ending sets `state.ending` and `mode "over"`. A fresh `confirm` press in
+  "over" restarts the run at level 1 in "attract".
+- Level end is evaluated in "play" whenever
+  `vehiclesSpawned >= allocation` and `cars` is empty.
+- An impact needs the dummy's circle to touch the car's rectangle; face is
+  judged as in the Testpad. Rear contact changes neither health nor score.
+  Each car has at most one impact (`hit`). The impact is judged before the
+  dummy is pushed out of the car.
+- After every step the dummy's circle does not reach more than 1 px into any
+  car's rectangle, and (inside the canvas) no two cars' rectangles overlap.
+- Dummy at full health: reach multiplier is exactly 1, so a lunge covers
+  exactly `dummy.lungeDistance` while `lunging` is true, in any direction,
+  at any `dt`. The dummy is clamped to the hall.
+
+### `index.html` — rendering and input only
+
+Loads `sim.js` with `<script src="sim.js"></script>`, keeps the Testpad's
+page layout and drawing, reads the keyboard (WASD and arrows move, Space
+lunges, any key or a click/tap confirms), calls `DummiesSim.step` with a
+fixed 1/60 s timestep and an accumulator, and draws from `state`. Screen
+shake and floating score numbers are drawing effects and may use
+`Math.random()`. Must work opened directly from disk with no network
+requests: no `http://` or `https://` anywhere in the file. Draw each level's
+roads so the layout is readable; show the level name and number.
+
+### Parameter schema the Designer must fill (`params`)
+
+```
+world:   { width: 900, height: 620 }
+hall:    { x: 40, y: 40, w: 820, h: 540 }
+dummy:   { radius, walkSpeed, runSpeed, rampTime, lungeDistance,
+           lungeDuration, lungeCooldown, recoveryTime, wearFloor,
+           wearSpeedLoss, maxHealth, writeOffBonus, startX, startY }
+impact:  { perMomentum, maxPay, faceFront, faceSide, faceRear }
+caution: { max }
+service: { delay, fullTime }
+classes: { sedan: { label, width, length, speed, mass, swerve, commitFrac, flip,
+                    brakeFirst, base: {detect, margin, predict, brakeLead},
+                    step: {...}, cap: {...} },
+           van, sports, bus, wagon, hatch }
+fleet:   [ { id, cls } x 12 ]
+closeCost: [ 12 integers ]
+levels:  [ { id: 1, kind: "road",  name, quota, allocation, pool,
+             spawnInterval: { min, max },
+             road:  { y, halfWidth, shoulder, laneYs: [ ... ] } },
+           { id: 2, kind: "cross", name, quota, allocation, pool,
+             spawnInterval: { min, max },
+             roadH: { y, halfWidth, shoulder }, roadV: { x, halfWidth, shoulder } },
+           { id: 3, kind: "hall",  name, quota, allocation, pool,
+             spawnInterval: { min, max } } ]
+certificationTarget: integer
+```
+
+`halfWidth` covers the lanes; `shoulder` is the width of the hard shoulder on
+each side; the barriers are at the road centre line plus and minus
+(`halfWidth` + `shoulder`).
+
+Units: pixels, seconds, pixels per second. Testpad per-frame speeds
+(`walk`, `run`, class `sp`, `maxClosing`) are multiplied by 60. Testpad
+`predict` is already seconds of look-ahead and is unchanged. Distances
+(`detect`, `margin`, sizes, `lungeDist`) and times are unchanged.
+
+
+# CURRENT SPECIFICATION
 {
   "game": "DUMMIES",
   "slice": "three-level vertical slice ported from the Testpad",
@@ -324,10 +648,7 @@
           "laneYs": [
             284,
             336
-          ],
-          "dirX": 1,
-          "dirY": 0,
-          "oneWay": true
+          ]
         },
         "roadV": {
           "x": 450,
@@ -336,10 +657,7 @@
           "laneXs": [
             414,
             486
-          ],
-          "dirX": 0,
-          "dirY": 1,
-          "oneWay": true
+          ]
         }
       },
       {
@@ -367,8 +685,7 @@
       "decel": 600,
       "accel": 360,
       "holdGap": 8,
-      "spawnClearPad": 20,
-      "stallLimit": 6
+      "spawnClearPad": 20
     }
   },
   "level_design": [
@@ -380,9 +697,9 @@
     },
     {
       "id": 2,
-      "intent": "Junction level (CR-001 addendum: one-way roads): give-way at the crossing and queuing, six units, quota 3 of 20 cars. No oncoming traffic; the only conflict is the crossing in the junction. Expected duration about 80 to 110 s.",
-      "layout": "Horizontal road y=310 (halfWidth 64), one-way left to right, two eastbound lanes y=284 and y=336. Vertical road x=450 (halfWidth 64), one-way top to bottom, two southbound lanes x=414 and x=486. Junction box is x 386 to 514, y 246 to 374. Each road has 32 px shoulders. Horizontal barriers at y=214 and y=406, vertical barriers at x=354 and x=546. Each barrier line is drawn only outside the other road's barrier span (gap where the crossing road opens), so the central square x 354 to 546, y 214 to 406 is open. Horizontal-travelling cars stay within y 214 to 406 along their whole path, vertical-travelling cars within x 354 to 546. No lights. Ground beside the roads is walkable. Top-left corner is clear of roads, shoulders and barriers. Nothing travels west or north on this level.",
-      "spawning": "Each spawn picks one of two approaches uniformly: eastbound from the left edge (dirX=1, lane y 284 or 336 chosen uniformly) or southbound from the top edge (dirY=1, lane x 414 or 486 chosen uniformly). The car is placed fully outside the hall on its lane. Interval is uniform in [2.8, 4.5] s. Unit comes from the first 6 fleet units not currently in the hall. Give-way and queuing come only from the car-to-car rule."
+      "intent": "Junction level: give-way and queuing, six units, quota 3 of 20 cars. Expected duration about 80 to 110 s.",
+      "layout": "Horizontal road y=310 (halfWidth 64) with eastbound lane y=336 and westbound lane y=284. Vertical road x=450 (halfWidth 64) with southbound lane x=414 and northbound lane x=486. Junction box is x 386 to 514, y 246 to 374. Each road has 32 px shoulders. Horizontal barriers at y=214 and y=406, vertical barriers at x=354 and x=546. Each barrier line is drawn only outside the other road's barrier span (a barrier has a gap where the crossing road opens), so the central square x 354 to 546, y 214 to 406 is open. Horizontal-travelling cars stay within y 214 to 406 along their whole path, vertical-travelling cars within x 354 to 546. No lights. Ground beside the roads is walkable. Top-left corner is clear of roads, shoulders and barriers.",
+      "spawning": "Each spawn picks one of four approaches uniformly: eastbound from left edge, westbound from right edge, southbound from top edge, northbound from bottom edge. The car is placed fully outside the hall on its lane. Interval is uniform in [2.8, 4.5] s. Unit comes from the first 6 fleet units not currently in the hall. Give-way and queuing come only from the car-to-car rule."
     },
     {
       "id": 3,
@@ -400,8 +717,8 @@
     ],
     "randomness": [
       "1. No Math.random in sim.js. Use mulberry32 on a uint32 stored in state.rng (extra field). It is initialised from seed on createSim and on restart.",
-      "2. Draw order is fixed: spawn interval, then the pending-spawn entry choice (approach or edge, then lane or lateral position), then unit. Each draw is made once and no more than needed. Level 2 draws approach among 2 options (0 = left, 1 = top), then lane among 2.",
-      "3. Draws are made only in mode play. Same seed and same input sequence must give a byte-identical state sequence. Solidity, push-out, damage, barrier and stall-breaker logic use no random draws.",
+      "2. Draw order is fixed: spawn interval, then the pending-spawn entry choice (approach or edge, then lane or lateral position), then unit. Each draw is made once and no more than needed.",
+      "3. Draws are made only in mode play. Same seed and same input sequence must give a byte-identical state sequence. Solidity, push-out, damage and barrier logic use no random draws.",
       "4. A restart from mode over re-seeds state.rng from state.seed and resets fleet learning, score and counters, so a restarted run repeats the original."
     ],
     "lunge": [
@@ -421,8 +738,8 @@
     ],
     "car_to_car": [
       "1. Every spawn takes serial = ++state.serialCounter (extra field, never reset within a run, reset on restart). Cars keep their serial for life.",
-      "2. Car A yields only to cars B with B.serial < A.serial. The car with the lowest serial in the hall never yields, so no yield-deadlock is possible.",
-      "3. (CR-001 addendum, replaces earlier rule 3) Look-ahead test, evaluated every play step for each B with B.serial < A.serial that is NOT behind A: let D = lookAheadBase + lookAheadTime * A.speed. Sweep rectangle S_A is A's rectangle extended by D in A's travel direction and widened by sidePad on each lateral side. Sweep rectangle S_B is B's rectangle extended by otherLookTime * B.speed in B's travel direction. A must yield to B if S_A intersects S_B. B is 'behind A' when B has the same travel direction as A, B's lateral band (width inflated by sidePad) overlaps A's lateral band, and B's centre is behind A's centre along the travel direction. A car never yields to a car that is behind it.",
+      "2. Car A yields only to cars B with B.serial < A.serial. The car with the lowest serial in the hall never yields, so no deadlock is possible.",
+      "3. Look-ahead test, evaluated every play step for each B: let D = lookAheadBase + lookAheadTime * A.speed. Sweep rectangle S_A is A's rectangle extended by D in A's travel direction and widened by sidePad on each lateral side. Sweep rectangle S_B is B's rectangle extended by otherLookTime * B.speed in B's travel direction. A must yield to B if S_A intersects S_B.",
       "4. While yielding, A's target speed is 0. Exception: if B has the same direction as A, is ahead in the same lane band and the gap between rectangles is greater than holdGap, the target is B.speed (follow, do not stop). A's speed moves toward the target at decel, and never exceeds the car's normal target from the Testpad logic.",
       "5. Resume: when the test is clear for all lower-serial cars on a step, A's yield target is removed. Its speed rises toward the normal Testpad target at accel px/s^2. There is no timer or hysteresis.",
       "6. (replaces released backstop) Cars are processed in ascending serial order. After computing a car's intended displacement for the step (longitudinal then lateral), it is truncated at the first contact with the current rectangle of ANY other car (any serial), so that the rectangles just touch (gap 0). If the truncation was longitudinal, the car's speed is set to min(speed, speed component of that car along A's direction, floored at 0). Because all cars start a step non-overlapping and each move is truncated against all others, rectangles never overlap, on every level. The dummy is never an obstacle in this truncation.",
@@ -430,9 +747,7 @@
       "8. A spawn is delayed while a spawn rectangle inflated by spawnClearPad overlaps any car. vehiclesSpawned and the serial increment only when the car actually appears.",
       "9. (CR-001) Sideways moves (swerve, hatch flip, and any lateral displacement) are made only into free space: the lateral sweep rectangle, from the car's current rectangle to its target lateral position, inflated by sidePad on all sides and extended by D in the travel direction, must not intersect any other car's rectangle (any serial). Each step the lateral displacement is also truncated by rule 6. If the check fails the lateral move for that step is not made.",
       "10. (CR-001) Swerve feasibility, used both at the commit line and every step while locked: the Testpad target lateral centre T must keep the car's whole rectangle inside the road's barrier limits (road_limits rule 3) and pass the free-space check of rule 9. At the commit line, if the preferred side is infeasible the other side is tried (the hatch may still flip once, only to a feasible side); if neither is feasible the car does not lock and brakes (stops short of the dummy using the Testpad braking rule of brake-first classes). If a locked car becomes infeasible, it keeps its lock, stops moving laterally and brakes the same way. The lock is released as in the Testpad when the dummy leaves detection.",
-      "11. (CR-001, addendum) Level 3 only: a car's lateral move is also rejected if its new lateral band (rectangle width inflated by sidePad) would overlap the band of any oncoming car (opposite travel direction), and a spawn waits while its band overlaps an oncoming car's band. This prevents head-on collinear traffic. Perpendicular traffic is handled by rule 3. Levels 1 and 2 have no oncoming cars (one-way), so no oncoming-band test applies there.",
-      "12. (CR-001 addendum) Lowest serial never held for good. The car with the lowest serial in the hall must not be held up indefinitely by another car. This is ensured by: rule 2 (it never yields), rule 3 (cars behind it do not make it wait and it does not wait for cars behind), and the stall breaker of rule 13.",
-      "13. (CR-001 addendum) Stall breaker (backstop). Track for the lowest-serial car L the continuous time it has speed < 1 px/s while the dummy is NOT inside its detection zone (sees false). When this time reaches carToCar.stallLimit (6 s), every car with a higher serial whose rectangle is within holdGap + 1 px of L's rectangle or inside L's look-ahead sweep S_L is removed from the hall without score and without write-off; it still counts as spawned. The timer resets whenever L moves at >= 1 px/s, sees the dummy, or leaves the hall. If no such car exists the timer simply keeps running. The breaker uses no random draws and is not expected to fire in normal play."
+      "11. (CR-001) Level 3 only: a car's lateral move is also rejected if its new lateral band (rectangle width inflated by sidePad) would overlap the band of any oncoming car (opposite travel direction), and a spawn waits while its band overlaps an oncoming car's band. This prevents head-on collinear traffic. Perpendicular traffic is handled by rule 3. On levels 1 and 2 oncoming cars can be in the other lane only, and a lateral move into a lane band occupied by an oncoming car is rejected by the same band test."
     ],
     "solid_cars": [
       "1. Every car is a solid rectangle (length x width, centre x,y, axis-aligned to its travel direction) on all four sides, on every level, and stays solid after its impact.",
@@ -457,17 +772,11 @@
       "6. Barriers have gaps where a crossing road opens (level 2). Cars never leave the road corridor, so no car reaches the gap squares except the central open square.",
       "7. Level 3 has no shoulders or barriers."
     ],
-    "one_way_level_2": [
-      "1. (CR-001 addendum) Level 2 roads are one-way. The horizontal road runs left to right: lanes y=284 and y=336, every car on it has dirX=1, dirY=0. The vertical road runs top to bottom: lanes x=414 and x=486, every car on it has dirX=0, dirY=1.",
-      "2. No car on level 2 ever has dirX=-1 or dirY=-1. Spawns come only from the left edge (horizontal) and the top edge (vertical). The right and bottom approaches of the previous design are removed.",
-      "3. Level 2 has no oncoming traffic; conflicts occur only between a horizontal car and a vertical car at the junction, resolved by car_to_car rules 2 to 5 (the lower serial has priority). Same-direction conflicts (queues, swerving into the other lane or the shoulder) are resolved by rules 4, 6 and 9.",
-      "4. Level 3 is unchanged (all four directions). Level 1 is unchanged."
-    ],
     "level_flow": [
       "1. Level N starts with: level, quota, allocation from params.levels[N-1]. vehiclesSpawned=0, levelWriteOffs=0, cars=[], dummy at start with full health, velocity 0, lunge and recovery cleared, levelLunged=false, levelContact=false. A new spawn interval is drawn. Fleet learning, score, bodiesDestroyed and serial persist.",
       "2. Spawn timer: nextSpawn is drawn uniformly in [spawnInterval.min, max] and decreases by dt in play. At <=0, if vehiclesSpawned<allocation, a pendingSpawn (entry and unit) is drawn once and held. It spawns as soon as it is clear and the unit is not in the hall. The next interval is then drawn. If every pool unit is in the hall, the spawn waits.",
       "3. traffic:false means no spawn timer, no spawns and no level-end check. Allocation spent is never reached.",
-      "4. A car is removed when its rectangle lies wholly outside the hall beyond the edge it is travelling toward (or by the stall breaker, car_to_car 13).",
+      "4. A car is removed when its rectangle lies wholly outside the hall beyond the edge it is travelling toward.",
       "5. Write-off: bodiesDestroyed++, levelWriteOffs++, score += writeOffBonus (as Testpad), then if bodiesDestroyed >= certificationTarget go to mode over with ending licensed. Otherwise mode card with kind writeoff. A fresh confirm dismisses it: dummy.health=maxHealth, dummy to (startX,startY), velocity 0, lunge and recovery cleared. Cars stay and play resumes. If a car overlaps the start position, solid_cars rule 3 pushes the dummy out on the next step.",
       "6. Level end is evaluated at the start of each play step: vehiclesSpawned >= allocation and cars empty. It is not evaluated during card or over.",
       "7. Order at level end: (a) if some earlier level had levelWriteOffs >= quota, and levelLunged is false and levelContact is false for this level, ending noncompliant. (b) else if levelWriteOffs < quota, or level is 3, ending decommissioned. (c) else card kind level with title 'LEVEL COMPLETE' and next level. A fresh confirm starts level N+1 in play. levelLunged is set on any lunge start. levelContact is set on any impact, including a rear impact.",
@@ -556,7 +865,7 @@
     },
     {
       "id": "AC-14",
-      "text": "Level 2 (one-way): over a 5 minute simulated run across several seeds, every car spawns either on a horizontal lane (y 284 or 336, entering from the left edge, dirX=1, dirY=0) or on a vertical lane (x 414 or 486, entering from the top edge, dirX=0, dirY=1). Both kinds occur. No level 2 car ever has dirX=-1 or dirY=-1 at any step, and none spawns at the right or bottom edge.",
+      "text": "Level 2: cars spawn only on lanes y 284/336 (horizontal) and x 414/486 (vertical), approaching from all four sides, over a 5 minute simulated run across several seeds.",
       "verify_by": "automated_check"
     },
     {
@@ -566,7 +875,7 @@
     },
     {
       "id": "AC-16",
-      "text": "Give-way: a higher-serial car with a lower-serial car crossing its path sets braking true and stops short without contact. It resumes once the sweep test is clear. The lowest-serial car in the hall never has its speed reduced by car-to-car logic. A higher-serial car does not yield to a lower-serial car that is behind it in its own lane band.",
+      "text": "Give-way: a higher-serial car with a lower-serial car crossing its path sets braking true and stops short without contact. It resumes once the sweep test is clear. The lowest-serial car in the hall never has its speed reduced by car-to-car logic.",
       "verify_by": "automated_check"
     },
     {
@@ -673,26 +982,6 @@
       "id": "AC-37",
       "text": "Playtest: cars feel solid on all four sides; the dummy is never seen inside a car; cars visibly use the shoulder to dodge, brake when boxed in, and never cross the barrier.",
       "verify_by": "playtest"
-    },
-    {
-      "id": "AC-38",
-      "text": "Level 2 one-way: every level 2 car has (dirX,dirY) = (1,0) or (0,1) at every step; horizontal cars stay on y 214 to 406 and vertical cars on x 354 to 546; no spawn at the right or bottom edge. index.html draws level 2 with direction arrows or equivalent so one-way travel is readable.",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-39",
-      "text": "Lowest serial never held for good: over many seeds on levels 1 to 3 with random dummy inputs (dummy not parked within the lowest-serial car's detection zone), at every step the lowest-serial car in the hall is not at speed < 1 px/s for more than carToCar.stallLimit + 1 s consecutively, and it leaves the hall eventually. In level 2 scripted junction cases (a higher-serial car stopped at the crossing, a lower-serial car approaching the other road) the lower-serial car crosses without being blocked.",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-40",
-      "text": "Levels always end with the dummy in traffic (the failed check levels_always_end_with_dummy_in_traffic): on each of levels 1 to 3 over many seeds, with a scripted dummy that wanders in and across the roads and lunges at cars, every level reaches its end condition (all allocation spawned and no cars) within 150 s of simulated time, including after write-offs and card dismissals, with no frozen cars (no position change of any car for 10 s while the dummy is outside its detection zone) and no stall breaker needed on level 2 in normal runs (breaker count reported).",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-41",
-      "text": "Stall breaker: in a scripted state where the lowest-serial car L is held at speed 0 by a higher-serial car adjacent to it, with the dummy outside L's detection zone, after stallLimit (6 s) the blocking car is removed, vehiclesSpawned is unchanged, score and bodiesDestroyed are unchanged, and L moves again. The breaker never removes lower-serial cars and never fires while L moves.",
-      "verify_by": "automated_check"
     }
   ],
   "differences": [
@@ -714,7 +1003,7 @@
     },
     {
       "kind": "change_vs_testpad",
-      "text": "Added a top-level params.carToCar group (look-ahead, accel and stall constants) and extra level layout fields (laneXs, dirX/dirY/oneWay on level 2 roads, entryLane*). These are additions only; no schema field is renamed or removed. Extra state fields: rng, serialCounter, prevLunge, prevConfirm, levelLunged, levelContact, pendingSpawn, nextSpawn, plus a stall timer for the lowest-serial car."
+      "text": "Added a top-level params.carToCar group (look-ahead and accel constants) and extra level layout fields (laneXs, entryLane*). These are additions only; no schema field is renamed or removed. Extra state fields: rng, serialCounter, prevLunge, prevConfirm, levelLunged, levelContact, pendingSpawn, nextSpawn."
     },
     {
       "kind": "change_vs_testpad",
@@ -751,18 +1040,6 @@
     {
       "kind": "simplification_vs_gdd",
       "text": "CR-001: dummy squeezed between a moving car and a hall edge is relocated to the nearest clear point (fixed search) rather than blocking the car or being crushed, so the car is never slowed by the dummy. Contact for impacts uses a 0.5 px tolerance."
-    },
-    {
-      "kind": "change_vs_testpad",
-      "text": "CR-001 addendum, TO BE CONFIRMED BY LAWRENCE: level 2 roads are one-way (horizontal left to right, vertical top to bottom, two lanes each, no oncoming traffic). This replaces the earlier two-way design, whose head-on freezes caused the failed check levels_always_end_with_dummy_in_traffic. Quota 3, allocation 20, pool 6 and spawn interval are unchanged; spawns now pick between 2 approaches (left, top) instead of 4. The two-way design had not been requested. Level 3 is unchanged."
-    },
-    {
-      "kind": "change_vs_testpad",
-      "text": "CR-001 addendum: give-way rule refined so a car never yields to a lower-serial car that is behind it in its own lane band (previously this could hold two same-lane cars against each other). Added the guarantee that the lowest-serial car is never held for good by another car (car_to_car 12)."
-    },
-    {
-      "kind": "simplification_vs_gdd",
-      "text": "CR-001 addendum: stall breaker (car_to_car 13, params.carToCar.stallLimit 6 s) is a backstop, not a GDD feature. If the lowest-serial car is held at speed 0 for 6 s while not seeing the dummy, the adjacent higher-serial blocking cars are removed without score or write-off. It is a safety net against freezes and is not expected to fire in normal play."
     }
   ]
 }

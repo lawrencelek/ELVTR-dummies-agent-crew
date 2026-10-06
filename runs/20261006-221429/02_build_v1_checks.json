@@ -1,8 +1,8 @@
 {
   "total": 31,
-  "passed": 31,
-  "failed": 0,
-  "all_passed": true,
+  "passed": 29,
+  "failed": 2,
+  "all_passed": false,
   "results": [
     {
       "id": "load_sim",
@@ -14,7 +14,7 @@
       "id": "params_match_spec",
       "description": "Builder's PARAMS equal the Designer's spec params (Designer output reached the Builder)",
       "pass": true,
-      "detail": "250 parameters identical"
+      "detail": "243 parameters identical"
     },
     {
       "id": "state_shape",
@@ -102,9 +102,9 @@
     },
     {
       "id": "level2_cross_no_collisions",
-      "description": "Level 2: traffic uses both one-way roads (left to right, top to bottom), cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock)",
+      "description": "Level 2: traffic uses both roads, cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock)",
       "pass": true,
-      "detail": "39 cars through, 18 horizontal, 24 vertical, no overlap"
+      "detail": "39 cars through, 17 horizontal, 23 vertical, no overlap"
     },
     {
       "id": "level3_free_for_all",
@@ -157,14 +157,14 @@
     {
       "id": "levels_always_end_with_dummy_in_traffic",
       "description": "With a dummy standing on the road (at each road edge, so cars must swerve), every level still runs to its end, cars never overlap, never cross a barrier, and the dummy is never left inside a car",
-      "pass": true,
-      "detail": "all ended: L1:64s, L1:61s, L1:64s, L1:61s, L2:78s, L2:80s, L2:78s, L2:80s, L2:78s, L2:83s, L2:78s, L2:80s, L3:88s, L3:92s"
+      "pass": false,
+      "detail": "Error: level 2 (seed 7) had not ended after 210 s with the dummy standing at (245,369): spawned 15/20, 3 cars still in play: SDN-01#8 at (660,292) dir(1,0) speed 0 lock -1; SPT-11#9 at (720,284) dir(-1,0) speed 0 lock 0; VAN-07#14 at (807,284) dir(-1,0) speed 0 lock 0 |     at /home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:298:15 |     at check (/home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:14:24)"
     },
     {
       "id": "solid_cars_and_barriers_under_active_play",
       "description": "With the dummy wandering across the roads and lunging for 90 s per level: cars never overlap each other, never cross a road barrier, and the dummy is never left inside a car",
       "pass": true,
-      "detail": "L1/s5: 72 lunges, 1 bodies; L1/s9: 72 lunges, 3 bodies; L2/s5: 72 lunges, 4 bodies; L2/s9: 72 lunges, 0 bodies; L3/s5: 72 lunges, 0 bodies; L3/s9: 72 lunges, 1 bodies"
+      "detail": "L1/s5: 72 lunges, 1 bodies; L1/s9: 72 lunges, 3 bodies; L2/s5: 72 lunges, 1 bodies; L2/s9: 72 lunges, 1 bodies; L3/s5: 72 lunges, 0 bodies; L3/s9: 72 lunges, 1 bodies"
     },
     {
       "id": "dummy_cannot_walk_through_a_car",
@@ -175,8 +175,8 @@
     {
       "id": "damage_follows_momentum",
       "description": "Damage from a front impact equals perMomentum x closing speed x class mass (within 15%), for a sedan and a van; the bus is the heaviest class",
-      "pass": true,
-      "detail": "sedan: 374.0 (expected 374.2); van: 475.0 (expected 474.5)"
+      "pass": false,
+      "detail": "Error: sedan: damage 374.0 vs perMomentum x speed x mass = 227.7 (speed 138.0, mass 1) |     at assert (/home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:17:47) |     at /home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:336:7"
     },
     {
       "id": "sim_is_pure",

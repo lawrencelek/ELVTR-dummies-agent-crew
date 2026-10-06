@@ -31,13 +31,11 @@ var PARAMS = {
   closeCost:[4,4,3,3,3,2,2,2,2,1,1,1],
   levels:[
     {id:1,kind:"road",name:"ROAD",quota:2,allocation:14,pool:3,spawnInterval:{min:3.0,max:5.0},road:{y:310,halfWidth:64,shoulder:32,laneYs:[284,336]}},
-    {id:2,kind:"cross",name:"CROSS JUNCTION",quota:3,allocation:20,pool:6,spawnInterval:{min:2.8,max:4.5},
-      roadH:{y:310,halfWidth:64,shoulder:32,laneYs:[284,336],dirX:1,dirY:0,oneWay:true},
-      roadV:{x:450,halfWidth:64,shoulder:32,laneXs:[414,486],dirX:0,dirY:1,oneWay:true}},
+    {id:2,kind:"cross",name:"CROSS JUNCTION",quota:3,allocation:20,pool:6,spawnInterval:{min:2.8,max:4.5},roadH:{y:310,halfWidth:64,shoulder:32,laneYs:[284,336]},roadV:{x:450,halfWidth:64,shoulder:32,laneXs:[414,486]}},
     {id:3,kind:"hall",name:"CRASH TEST CENTRE",quota:5,allocation:28,pool:12,spawnInterval:{min:2.2,max:3.8},entryLaneMin:200,entryLaneMaxY:520,entryLaneMaxX:800}
   ],
   certificationTarget:11,
-  carToCar:{lookAheadBase:20,lookAheadTime:0.45,sidePad:4,otherLookTime:0.4,decel:600,accel:360,holdGap:8,spawnClearPad:20,stallLimit:6}
+  carToCar:{lookAheadBase:20,lookAheadTime:0.45,sidePad:4,otherLookTime:0.4,decel:600,accel:360,holdGap:8,spawnClearPad:20}
 };
 
 /* ============================================================ REPORT BANK */
@@ -176,7 +174,6 @@ function startLevel(s, n){
   s.vehiclesSpawned = 0; s.levelWriteOffs = 0; s.cars = [];
   s.levelLunged = false; s.levelContact = false;
   s.pendingSpawn = null; s.nextSpawn = null;
-  s.stallT = 0; s.stallSerial = 0; s.stallRemoved = 0;
   s.run = freshRun();
   resetDummy(s.dummy, s.params);
 }
@@ -304,8 +301,9 @@ function interval(s, L){ return L.spawnInterval.min + rnd(s) * (L.spawnInterval.
 function drawEntry(s, L){
   if(L.kind === "road") return { edge:0, v:L.road.laneYs[Math.floor(rnd(s) * L.road.laneYs.length)] };
   if(L.kind === "cross"){
-    var a = Math.floor(rnd(s) * 2), li = Math.floor(rnd(s) * 2);
-    return a === 0 ? { edge:0, v:L.roadH.laneYs[li] } : { edge:2, v:L.roadV.laneXs[li] };
+    var a = Math.floor(rnd(s) * 4);
+    var v = a === 0 ? L.roadH.laneYs[1] : a === 1 ? L.roadH.laneYs[0] : a === 2 ? L.roadV.laneXs[0] : L.roadV.laneXs[1];
+    return { edge:a, v:v };
   }
   var e = Math.floor(rnd(s) * 4);
   var hi = e < 2 ? L.entryLaneMaxY : L.entryLaneMaxX;
@@ -557,22 +555,6 @@ function testImpact(s, c){
   s.fx.push({ id:++s.fxSeq, k:"pay", t:0.95, x:d.x, y:d.y - 18, v:pay, big:face === "front", sev:sev });
   if(d.health <= 0) writeOff(s);
 }
-function stallStep(s, dt){
-  var K = s.params.carToCar, cars = s.cars, L = cars[0], i;
-  if(!L){ s.stallT = 0; s.stallSerial = 0; return; }
-  if(s.stallSerial !== L.serial){ s.stallSerial = L.serial; s.stallT = 0; }
-  if(L.speed >= 1 || L.sees){ s.stallT = 0; return; }
-  s.stallT += dt;
-  if(s.stallT < K.stallLimit) return;
-  var SL = sweep(L, K.lookAheadBase + K.lookAheadTime * L.speed, K.sidePad), g = K.holdGap + 1;
-  var rl = rectAt(L, L.x, L.y), inf = [rl[0] - g, rl[1] + g, rl[2] - g, rl[3] + g];
-  s.cars = cars.filter(function(o){
-    if(o.serial <= L.serial) return true;
-    var ro = rectAt(o, o.x, o.y);
-    if(isect(inf, ro) || isect(SL, ro)){ s.stallRemoved++; return false; }
-    return true;
-  });
-}
 function carsStep(s, dt){
   var P = s.params, d = s.dummy, cars = s.cars, K = P.carToCar, H = P.hall, i, j;
   cars.sort(function(a, b){ return a.serial - b.serial; });
@@ -619,19 +601,19 @@ function carsStep(s, dt){
     var derate = 1 - P.caution.max * Math.min(1, Math.sqrt(d.vx*d.vx + d.vy*d.vy) / P.dummy.runSpeed);
     var normal = cl.speed * brake * derate;
 
-    // car-to-car give-way: yield only to lower serials not behind
+    // car-to-car give-way: yield only to lower serials
     var yt = Infinity;
-    var SA = sweep(c, K.lookAheadBase + K.lookAheadTime * c.speed, K.sidePad);
+    var SA = sweep(c, K.lookAheadBase + K.lookAheadTime * c.speed, K.sidePad), RA = sweep(c, 0, 0);
     for(j = 0; j < cars.length; j++){
       var b = cars[j];
       if(b.serial >= c.serial) continue;
-      var dot = c.dirX*b.dirX + c.dirY*b.dirY;
-      var t = 0, la = -c.x*c.dirY + c.y*c.dirX, lb = -b.x*b.dirY + b.y*b.dirX;
-      var sA = c.x*c.dirX + c.y*c.dirY, sB = b.x*b.dirX + b.y*b.dirY;
-      if(dot > 0 && Math.abs(la - lb) < (c.width + b.width) / 2 + K.sidePad && sB < sA) continue;
       var SB = sweep(b, K.otherLookTime * b.speed, 0);
       if(!isect(SA, SB)) continue;
+      var dot = c.dirX*b.dirX + c.dirY*b.dirY;
+      if(dot >= 0 && isect(RA, SB)) continue;
+      var t = 0, la = -c.x*c.dirY + c.y*c.dirX, lb = -b.x*b.dirY + b.y*b.dirX;
       if(dot > 0){
+        var sA = c.x*c.dirX + c.y*c.dirY, sB = b.x*b.dirX + b.y*b.dirY;
         var gap = (sB - b.length/2) - (sA + c.length/2);
         if(sB > sA && Math.abs(la - lb) < (c.width + b.width) / 2 && gap > K.holdGap) t = b.speed;
       }
@@ -675,7 +657,6 @@ function carsStep(s, dt){
     if(c.dirY > 0) return !(c.y - c.length/2 > H.y + H.h);
     return !(c.y + c.length/2 < H.y);
   });
-  stallStep(s, dt);
 }
 
 /* ============================================================ STEP */
