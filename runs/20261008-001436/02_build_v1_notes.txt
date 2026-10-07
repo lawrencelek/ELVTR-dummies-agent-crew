@@ -1,0 +1,2 @@
+CR-004 applied: in sim.js PARAMS, dummy.maxHealth and impact.maxPay are both 1600 (were 2300). No other code changed. Reach, service repair (maxHealth/fullTime = 53.3 points/s), the integrity bar and severity (damage/maxPay) all read these from params, so they follow automatically. index.html is unchanged because it contains no 2300 figure. I noticed no specification problems.
+=== END NOTES ===

@@ -1,3 +1,351 @@
+CHANGE REQUEST. Revise the current specification below so that it implements the change request and the updated brief. Return the complete specification in the same JSON shape. Keep every value, rule and acceptance criterion that the change does not touch exactly as it is; rewrite or remove the ones it replaces; add numbered rules under changed_rules and new acceptance criteria for everything new, and list the change under differences.
+
+# CHANGE REQUEST
+# CR-004 — Body health 1,600
+
+**From:** Lawrence, 8 October 2026: "LET'S DROP BODY HEALTH TO 1600".
+
+**Why.** CR-003 made the base of a hit a literal 100 points against a body of
+2,300, which put the quotas out of reach: level 1's two bodies needed about
+nine near-perfect head-on lunges from 14 cars.
+
+**The change. One number, plus the one that must follow it.**
+
+1. `dummy.maxHealth` becomes **1600** (was 2300).
+2. `impact.maxPay` becomes **1600** as well. *The assistant's addition:* the
+   cap on a single hit has always been one body's health, and severity
+   (damage / maxPay, used for shake and report signatures) should stay "share
+   of a body".
+
+**Nothing else changes.** The damage table (base 100, zone shares, x5 lunge,
+momentum factor), class masses, write-off bonus (2,500), service delay and
+full-repair time (30 s, so repair is proportionally slower in points per
+second), quotas, allocations, certification target, the write-off animation
+and all code structure stay exactly as released. Every other parameter,
+rule and acceptance criterion is kept word for word, except where it quotes
+2,300 or a figure derived from it.
+
+Worked values after the change: a head-on lunge into a cruising sedan (500)
+takes 31% of a body; level 1's quota of two bodies needs 3,200 points, about
+six and a half such lunges from 14 cars.
+
+
+# UPDATED BRIEF
+# DUMMIES — Vertical Slice Brief (input to the crew)
+
+This file is the human-written input to the three-agent crew, together with
+`baseline/dummies-testpad.html`. Everything downstream (specification, game
+code, QA report) is produced by the agents.
+
+## The game
+
+DUMMIES is a single-player, top-down 2D browser game for an exhibition, by
+Lawrence Lek. You are a FARSIGHT crash-test dummy in SHENZHEN SMART CITY, NEW
+ECONOMIC ZONE, CHINA, 20XX. "You are buying your freedom by destroying your
+body." Bait self-driving cars and lunge into their path. Damage earns score;
+destroyed bodies fulfil quotas and advance certification toward release.
+
+Intended player: a fifteen-year-old at an exhibition with a friend shouting
+suggestions over their shoulder. Move in eight directions, one button to
+lunge.
+
+## The baseline: the Testpad
+
+`baseline/dummies-testpad.html` is Lawrence's earlier hand-directed prototype.
+It is the reference for scale, feel, look and systems. **Port it; do not
+redesign it.** Keep, with the same behaviour and numbers unless this brief
+says otherwise:
+
+- The 900 x 620 canvas, the 820 x 540 hall, dummy size, vehicle sizes, lunge
+  distance. Lawrence has confirmed this scale.
+- Six vehicle classes (sedan, van, sports, bus, wagon, hatch) with their
+  detect / margin / predict / brakeLead dials, and the twelve-unit fleet.
+- Fleet learning: contacts raise a unit's dials; files brief, adapt and close.
+- Commitment: the car locks a side at its commit line and cannot take it back
+  (the hatchback may flip once).
+- Braking rules, including brake-first classes and the bus that cannot swerve.
+- Caution: cars lose speed when the dummy runs.
+- Service: stand still and the body is repaired.
+- Severity by closing speed and face: front pays, side pays a quarter, rear
+  pays nothing.
+- Report cards: behaviour signatures and the authored report bank, word for
+  word.
+- The look: colours, HUD (integrity bar, quota pips), cards, attract screen,
+  perception overlay with its toggle, restart button.
+
+## What changes from the Testpad
+
+1. **Three levels replace the eight-shift ladder** (see below).
+2. **Real-time units.** The Testpad moves a fixed number of pixels per frame,
+   so it runs faster on high-refresh screens. All speeds become pixels per
+   second (Testpad per-frame values x 60) and every update is scaled by `dt`.
+3. **Seeded randomness.** No `Math.random()`. The same seed and the same
+   inputs must give the same run.
+4. **No lunge chaining.** A lunge starts only on a fresh press. Holding the
+   lunge button down must not start another lunge.
+5. **Lunge direction.** The direction held at the moment of the press; if no
+   direction is held, the dummy's last facing direction (not always "up").
+6. **Tweened lunge and recovery** (Move Refinements MR-01). The lunge eases
+   out: fast at the start, slowing into the landing, same total distance.
+   After a lunge there is a short recovery (between 0.2 and 0.5 s) in which
+   the dummy can already move, but its movement speed is multiplied by an
+   eased factor that rises from 0 to 1. No hard freeze.
+7. **Certification follows the GDD.** The run is won by cumulative write-offs
+   across the run reaching a certification target that is larger than the sum
+   of the three level quotas, and attainable within the vehicles allocated.
+   The twelve-cell licence sheet stays as a display of fleet learning.
+8. **Cars never drive through each other** (see car-to-car rule below).
+9. **No network.** Remove the Google Fonts link; keep the font names as the
+   first choice in the font stack with system monospace fallbacks.
+
+Out of scope (do not add): price tiers, moods, new vehicle classes, audio,
+new art, extra levels.
+
+## The three levels
+
+All three use the same hall. The dummy can walk anywhere in the hall on every
+level. Each level has a quota of bodies to destroy, an allocation of vehicles
+and a pool (how many fleet units are in rotation, in fleet order).
+
+1. **ROAD.** One horizontal road across the hall. All traffic travels left
+   to right. Nothing on this level makes traffic stop: there is no junction
+   and no cross traffic, so undisturbed cars flow continuously. Cars react
+   only to the dummy. This is the teaching level: small pool, low quota.
+2. **CROSS JUNCTION.** A horizontal road and a vertical road crossing in the
+   middle of the hall. No traffic lights. Both roads are one-way with two
+   lanes each: the horizontal road runs left to right, the vertical road top
+   to bottom. There is no oncoming traffic on levels 1 and 2. Cars must never
+   collide with or pass through each other: they give way at the junction and
+   queue behind a waiting car.
+3. **CRASH TEST CENTRE.** The Testpad's open hall: a free-for-all with
+   vehicles entering from all four edges at any position, the full
+   twelve-unit pool, highest quota.
+
+**Solid cars (all levels; change request CR-001).** Every car is a solid
+rectangle on all four sides. The dummy can never be inside a car: if they
+overlap, the dummy is pushed out along the shortest way, and a moving car
+pushes the dummy ahead of it or aside. The dummy never blocks or slows a car
+by being solid. Cars never overlap each other, on any level, whatever the
+dummy does. A car only moves sideways into space that is free of other cars.
+
+**Road limits (levels 1 and 2; CR-001).** Outside the lanes on each side of a
+road is a hard shoulder that cars may use when swerving. Beyond the shoulder
+is a barrier: no part of a car may ever cross it. A car that cannot swerve far
+enough to clear the dummy, because of the barrier or another car, brakes
+instead. The dummy crosses shoulders and barriers freely. Both are drawn.
+
+**Damage (CR-003; replaces the CR-001 and CR-002 formulas).** Each class has a
+mass. For every contact:
+
+`damage = min(maxPay, round(basePoints x zoneShare x lungeFactor x momentumFactor))`
+
+- `basePoints`: 100.
+- `zoneShare`: which part of the car's rectangle the dummy reached, judged by
+  geometry from where the dummy came from. Nose (head-on) 1.00; front corner
+  (diagonally front-on) 0.60; flank (side-on, anywhere along it) 0.30; rear
+  corner (diagonally rear-on) 0.15; tail (directly from the rear) 0.05.
+- `lungeFactor`: `lungeMultiplier` (5) if the dummy is lunging on the step of
+  contact, otherwise 1. Flat: the direction and speed of the lunge do not
+  matter.
+- `momentumFactor`: (vehicleSpeed x class mass) / (refSpeed x refMass), the
+  reference being a cruising sedan. `vehicleSpeed` is the car's own forward
+  speed (`car.speed`): a braking car pays less, a stopped car pays nothing.
+- Score for the hit equals the damage. Where the Testpad uses severity
+  (report signatures, shake) use damage / maxPay.
+- Each car pays for its first contact only (`hit`).
+- A fast lunge must not tunnel: the zone is judged from the dummy's position
+  relative to the car before contact.
+
+**Write-off animation (CR-003).** When a hit takes health to zero the
+write-off is counted at once, then the game is in mode `"writeoff"` for
+`writeOff.duration` seconds (0.9 to 1.4). Nothing moves in that mode and
+confirm presses are ignored and not remembered. Then the card appears, or the
+Licensed ending if the certification target was reached. The renderer draws,
+from `state.writeOff`: a strong decaying screen shake, the dummy turning red,
+a small burst of particles, and the dummy gone before the animation ends.
+
+**Car-to-car rule (all levels).** Every car has a serial number that
+increases with each spawn. A car gives way only to cars with a lower serial
+number: if continuing would bring it into contact with such a car, it slows
+or stops until the way is clear. The car with the lowest serial number never
+waits for another car, so traffic can never deadlock. Giving way to another
+car does not light the brake lights' "braking for the dummy" logic
+differently: any slowing shows brake lights.
+
+**Level flow.** A level ends when its allocation has been spawned and no cars
+remain in the hall. Then, in this order: Non-compliant (quota was met in an
+earlier level, and this whole level had no lunge and no contact); then
+Decommissioned (level quota missed, or level 3 finished without reaching the
+certification target); otherwise a "level complete" card and the next level.
+Licensed: the write-off that reaches the certification target wins at once.
+Ending texts stay as in the Testpad, adjusted only where they mention "all
+twelve units".
+
+## Fixed technical contract (so automated checks can run)
+
+The Builder must output exactly two files.
+
+### `sim.js` — all game rules, no DOM, no timers, no clock, no Math.random
+
+Loadable in a browser (`window.DummiesSim`) and in Node (`module.exports`).
+Exports:
+
+- `PARAMS` — a literal copy of the Designer's specification `params`.
+- `Damage` — the damage-assessment module (CR-002). Two pure functions with no
+  state and no side effects; every hit in the game is scored by them and
+  nowhere else:
+  - `Damage.contactFace(car, px, py)` ->
+    `"nose" | "frontCorner" | "flank" | "rearCorner" | "tail"`.
+    `car` has `x, y, dirX, dirY, length, width`; `(px, py)` is the dummy's
+    centre at the last moment it was outside the car's rectangle. With `a`
+    the offset along the car's direction and `b` across it: nose if
+    `a > length/2` and `|b| <= width/2`; frontCorner if `a > length/2` and
+    `|b| > width/2`; flank if `|a| <= length/2`; tail if `a < -length/2` and
+    `|b| <= width/2`; rearCorner if `a < -length/2` and `|b| > width/2`.
+  - `Damage.assess(params, contact)` ->
+    `{ mass, faceFactor, lungeFactor, momentumFactor, damage }`, where
+    `contact` is `{ cls, vehicleSpeed, dirX, dirY, face, dummyVx, dummyVy,
+    lunging }` and `faceFactor` is the zone share.
+- `Vehicles` — the vehicle-behaviour module (CR-002). All spawning, speeds,
+  perception, commitment and swerving, braking, give-way, road limits and
+  removal live in it. It exposes at least `Vehicles.step(state, dt)` (advance
+  every car one step) and `Vehicles.cruiseSpeed(params, cls)` (a class's
+  undisturbed speed). `step` calls it; nothing outside it moves a car.
+- `createSim(options)` -> `state`. Options, all optional:
+  `seed` (number, default 1), `level` (1, 2 or 3, default 1),
+  `traffic` (boolean, default true; false means no car is ever spawned),
+  `autostart` (boolean, default false; true starts directly in mode "play",
+  false starts in mode "attract").
+- `step(state, input, dt)` -> mutates and returns `state`.
+  `input = { dx: -1|0|1, dy: -1|0|1, lunge: boolean, confirm: boolean }`.
+  `lunge` and `confirm` are "button is down" flags; `step` detects the fresh
+  press itself. `confirm` starts the game from "attract" and dismisses cards.
+  `dt` is seconds; checks use 1/60 and 1/120. `dy = -1` is up the screen.
+
+`state` is one plain JSON-serialisable object. `step` must derive everything
+from it (checks overwrite fields between steps). Required fields:
+
+```
+state.params            same values as PARAMS
+state.seed, state.time
+state.mode              "attract" | "play" | "writeoff" | "card" | "over"
+state.writeOff          null | { t, duration, x, y }   only in mode "writeoff":
+                        seconds elapsed, total seconds, where the body was
+state.ending            null | "licensed" | "decommissioned" | "noncompliant"
+state.card              null | { kind, title, sub, line }
+state.level             1 | 2 | 3
+state.quota             this level's quota
+state.allocation        this level's vehicle allocation
+state.vehiclesSpawned   vehicles spawned so far this level
+state.levelWriteOffs    bodies destroyed this level
+state.bodiesDestroyed   bodies destroyed this run (certification count)
+state.score
+state.dummy = {
+  x, y, vx, vy,         position px, velocity px/s
+  facing: { x, y },     unit vector
+  health,               maxHealth down to 0; the only record of damage
+  lunging: boolean,
+  recovering: boolean,  true for dummy.recoveryTime after a lunge ends
+  serviceOn: boolean }
+state.cars = [ {
+  serial,               integer, increases with every spawn in the run
+  id, cls,              fleet unit id and class key
+  x, y,                 centre of the car's rectangle as drawn
+  dirX, dirY,           travel direction, one of (1,0) (-1,0) (0,1) (0,-1)
+  length, width,        length is along the travel direction
+  speed,                current speed, px/s
+  sees: boolean,        dummy is inside its detection zone
+  lock: -1 | 0 | 1,     committed side, 0 = not committed
+  braking: boolean,     true on every step in which it is slowing or held
+  hit: boolean } ]      this car has already had its impact
+state.lastImpact = null | {   how the most recent contact was scored (CR-002)
+  time, serial, id, cls,
+  face,                 "nose" | "frontCorner" | "flank" | "rearCorner" | "tail"
+  vehicleSpeed, dirX, dirY, dummyVx, dummyVy, lunging,
+  mass, faceFactor, lungeFactor, momentumFactor, damage }
+```
+
+Rules the checks rely on:
+
+- With `autostart: true` the first step is already normal play.
+- `mode "play"` is the only mode in which the dummy and cars move. In
+  "writeoff" every car and the dummy keep their positions exactly.
+- A body destroyed: `bodiesDestroyed` and `levelWriteOffs` each rise by one
+  on that step and `mode` becomes "writeoff" with `state.writeOff` set. After
+  `writeOff.duration` seconds of steps `mode` becomes "card" (or "over" with
+  `ending: "licensed"` if the certification target is reached) and
+  `state.writeOff` is null. `state.ending` and `state.card` are set when the
+  animation ends, not before. A fresh `confirm` press dismisses the card and
+  play resumes with `dummy.health === maxHealth`. A confirm pressed or held
+  during "writeoff" does not dismiss the card that follows.
+- An ending sets `state.ending` and `mode "over"`. A fresh `confirm` press in
+  "over" restarts the run at level 1 in "attract".
+- Level end is evaluated in "play" whenever
+  `vehiclesSpawned >= allocation` and `cars` is empty.
+- An impact needs the dummy's circle to touch the car's rectangle. Its zone
+  comes from `Damage.contactFace` and its damage from `Damage.assess`; the
+  result is stored in `state.lastImpact`, health falls by exactly
+  `lastImpact.damage` and score rises by the same. Every zone pays, the tail
+  included. Each car has at most one impact (`hit`). The impact is judged
+  before the dummy is pushed out of the car.
+- After every step the dummy's circle does not reach more than 1 px into any
+  car's rectangle, and (inside the canvas) no two cars' rectangles overlap.
+- Dummy at full health: reach multiplier is exactly 1, so a lunge covers
+  exactly `dummy.lungeDistance` while `lunging` is true, in any direction,
+  at any `dt`. The dummy is clamped to the hall.
+
+### `index.html` — rendering and input only
+
+Loads `sim.js` with `<script src="sim.js"></script>`, keeps the Testpad's
+page layout and drawing, reads the keyboard (WASD and arrows move, Space
+lunges, any key or a click/tap confirms), calls `DummiesSim.step` with a
+fixed 1/60 s timestep and an accumulator, and draws from `state`. Screen
+shake and floating score numbers are drawing effects and may use
+`Math.random()`. Must work opened directly from disk with no network
+requests: no `http://` or `https://` anywhere in the file. Draw each level's
+roads so the layout is readable; show the level name and number.
+
+### Parameter schema the Designer must fill (`params`)
+
+```
+world:   { width: 900, height: 620 }
+hall:    { x: 40, y: 40, w: 820, h: 540 }
+dummy:   { radius, walkSpeed, runSpeed, rampTime, lungeDistance,
+           lungeDuration, lungeCooldown, recoveryTime, wearFloor,
+           wearSpeedLoss, maxHealth, writeOffBonus, startX, startY }
+impact:  { basePoints, refSpeed, refMass, maxPay, zoneNose, zoneFrontCorner,
+           zoneFlank, zoneRearCorner, zoneTail, lungeMultiplier }
+writeOff: { duration }
+caution: { max }
+service: { delay, fullTime }
+classes: { sedan: { label, width, length, speed, mass, swerve, commitFrac, flip,
+                    brakeFirst, base: {detect, margin, predict, brakeLead},
+                    step: {...}, cap: {...} },
+           van, sports, bus, wagon, hatch }
+fleet:   [ { id, cls } x 12 ]
+closeCost: [ 12 integers ]
+levels:  [ { id: 1, kind: "road",  name, quota, allocation, pool,
+             spawnInterval: { min, max },
+             road:  { y, halfWidth, shoulder, laneYs: [ ... ] } },
+           { id: 2, kind: "cross", name, quota, allocation, pool,
+             spawnInterval: { min, max },
+             roadH: { y, halfWidth, shoulder }, roadV: { x, halfWidth, shoulder } },
+           { id: 3, kind: "hall",  name, quota, allocation, pool,
+             spawnInterval: { min, max } } ]
+certificationTarget: integer
+```
+
+`halfWidth` covers the lanes; `shoulder` is the width of the hard shoulder on
+each side; the barriers are at the road centre line plus and minus
+(`halfWidth` + `shoulder`).
+
+Units: pixels, seconds, pixels per second. Testpad per-frame speeds
+(`walk`, `run`, class `sp`, `maxClosing`) are multiplied by 60. Testpad
+`predict` is already seconds of look-ahead and is unchanged. Distances
+(`detect`, `margin`, sizes, `lungeDist`) and times are unchanged.
+
+
+# CURRENT SPECIFICATION
 {
   "game": "DUMMIES",
   "slice": "three-level vertical slice ported from the Testpad",
@@ -23,7 +371,7 @@
       "recoveryTime": 0.35,
       "wearFloor": 0.45,
       "wearSpeedLoss": 0,
-      "maxHealth": 1600,
+      "maxHealth": 2300,
       "writeOffBonus": 2500,
       "startX": 150,
       "startY": 500
@@ -32,7 +380,7 @@
       "basePoints": 100,
       "refSpeed": 138,
       "refMass": 1.0,
-      "maxPay": 1600,
+      "maxPay": 2300,
       "zoneNose": 1,
       "zoneFrontCorner": 0.6,
       "zoneFlank": 0.3,
@@ -456,9 +804,9 @@
       "3. lungeFactor = impact.lungeMultiplier (5) if dummy.lunging is true on the step of contact, otherwise 1 (walking, running or standing, whatever the velocity). It is flat.",
       "4. momentumFactor = (vehicleSpeed * classes[cls].mass) / (impact.refSpeed * impact.refMass), refSpeed 138, refMass 1.0, so a cruising sedan is exactly 1.0. vehicleSpeed is car.speed after step b of the same step. A braking car pays proportionally less; vehicleSpeed <= 0 gives momentumFactor 0 and damage 0.",
       "5. dummy.health -= damage (floored at 0) and score += damage, both equal to state.lastImpact.damage (health lost is smaller only where the floor at 0 applies). Nothing else reduces health. A write-off follows when health reaches 0 (level_flow 5).",
-      "6. (CR-004, rewrites the figure) Severity-driven features (report signatures, screen shake, cards) keep using severity = damage / impact.maxPay, in [0,1]. With maxPay 1600 severity is the share of a body (a lunging sedan nose hit is 500/1600 = 0.31). The largest possible single hit, a lunge into a cruising bus nose, is 1174 or 0.73; no new rescaling is made.",
+      "6. Severity-driven features (report signatures, screen shake, cards) keep using severity = damage / impact.maxPay, in [0,1]. Values are now smaller than under CR-002 (largest possible single hit, a lunge into a cruising bus nose, is 1174 or 0.51); no new rescaling is made.",
       "7. Guaranteed ordering: zone shares fall in the order nose > frontCorner > flank > rearCorner > tail, so at equal speed, class and lunge state damage is non-increasing in that order; a lunging hit is 5 times the walking hit on the same zone before rounding; damage is non-decreasing in vehicleSpeed; direction of the lunge changes nothing.",
-      "8. (CR-004, rewrites the body figures) Calibration at cruise speed (walking / lunging): sedan nose 100/500, frontCorner 60/300, flank 30/150, rearCorner 15/75, tail 5/25. Nose by class: van 130/652, sports 125/626, bus 235/1174, wagon 125/626, hatch 90/452. Bus flank 70/352. No single hit reaches maxPay at cruise speed (largest 1174 < 1600), so the cap is a safeguard. A fresh body (1600) takes 4 lunging sedan nose hits (3 leave 100 health), or 16 walking ones."
+      "8. Calibration at cruise speed (walking / lunging): sedan nose 100/500, frontCorner 60/300, flank 30/150, rearCorner 15/75, tail 5/25. Nose by class: van 130/652, sports 125/626, bus 235/1174, wagon 125/626, hatch 90/452. Bus flank 70/352. No single hit reaches maxPay at cruise speed, so the cap is a safeguard. A fresh body (2300) takes 5 lunging sedan nose hits, or 23 walking ones."
     ],
     "damage_module": [
       "1. sim.js exports Damage with exactly two functions, contactFace and assess. Both are pure: no state, no reads of state or globals other than PARAMS passed in, no Math.random, no clock, no mutation of arguments, same inputs give same outputs.",
@@ -489,8 +837,7 @@
       "3. QA must audit vehicle behaviour with numbers: for each class, cruise speed, time from rest to cruise (expected cruise/accel), time and distance from cruise to stop when held (expected cruise/decel), maximum observed speed change per step per cause, lane-line deviation with no dummy, and barrier clearances on levels 1 and 2.",
       "4. QA must report, without fixing, how often the level 3 stall breaker (car_to_car 13) fires: number of firings and of runs across at least 30 seeds, with the dummy idle and with a scripted wandering dummy, and the longest time the lowest-serial car was held. Fixing it is a separate change.",
       "5. QA must confirm by code review that Damage is pure, that damage arithmetic exists only there, and that car movement exists only in Vehicles (module boundary of vehicles_module 3).",
-      "6. (CR-003) QA must report the write-off animation numbers: mode entered on the hit step, steps spent in writeoff at dt 1/60 and 1/120 (expected duration/dt within 1 step), that no car or dummy coordinate changes during it, and that confirm held or pressed during it does not dismiss the next card.",
-      "7. (CR-004) QA must report, with numbers, the body-health figures: maxHealth and maxPay both 1600 in PARAMS and state; lunging hits to write off a fresh body from a cruising sedan nose (expected 4) and walking hits (expected 16); the service repair rate (expected 1600/30 = 53.3 points/s after the 1.5 s delay); and severity of the sedan nose lunge (expected 0.3125)."
+      "6. (CR-003) QA must report the write-off animation numbers: mode entered on the hit step, steps spent in writeoff at dt 1/60 and 1/120 (expected duration/dt within 1 step), that no car or dummy coordinate changes during it, and that confirm held or pressed during it does not dismiss the next card."
     ],
     "road_limits": [
       "1. Levels 1 and 2 only. Each road has lanes (halfWidth), a hard shoulder of params shoulder px on each side, and a barrier at road centre +/- (halfWidth + shoulder). Level 1: y = 214 and y = 406. Level 2: horizontal y = 214 and 406, vertical x = 354 and 546.",
@@ -529,14 +876,6 @@
       "5. Particles: at the first frame of the writeoff a burst of 18 particles (allowed 12 to 24) is created at (writeOff.x, writeOff.y), with random directions and speeds 60 to 220 px/s, size 2 to 4 px, red and white, each fading linearly over 0.6 to 1.0 s and slowed by drag. They are drawn and updated in the renderer with Math.random, in real frame time, and are cleared when the card or ending appears. A small burst: none may travel more than about 200 px.",
       "6. Cars stay drawn at their frozen positions and the HUD stays; the integrity bar shows 0. No card is drawn until the mode leaves writeoff. The effect is drawing only, so the sim stays deterministic."
     ],
-    "body_health": [
-      "1. (CR-004) dummy.maxHealth = 1600 (was 2300). A fresh body, and the body after every card, has health 1600.",
-      "2. (CR-004) impact.maxPay = 1600 (was 2300), always equal to dummy.maxHealth. The cap on a single hit is one body's health and severity = damage / maxPay stays the share of a body.",
-      "3. (CR-004) Nothing else changes: basePoints 100, zone shares, lungeMultiplier 5, momentumFactor, class masses, writeOffBonus 2500, writeOff.duration, service.delay 1.5 and service.fullTime 30 s, quotas, allocations, pools, spawn intervals, certificationTarget 11 and all code structure are as released. Every rule that reads maxHealth (reach in lunge rule 5, the integrity bar, service repair) reads it from params and needs no other edit.",
-      "4. (CR-004) Service repair still restores a full body over fullTime seconds, so it is now 1600/30 = 53.3 points per second (was 76.7). Repair is proportionally slower in points per second; the time to full repair is unchanged.",
-      "5. (CR-004) Worked values, no code change: a head-on lunge into a cruising sedan takes 500 = 31.25% of a body; a fresh body falls to a sedan nose lunge in 4 hits (500 x 3 = 1500, health 100 left) and to 16 walking nose hits; level 1's quota of 2 bodies is 3,200 points of damage, about 6.4 such lunges if no points were lost to overkill. Worst case single hit (bus nose lunge, 1174) is 73% of a body.",
-      "6. (CR-004) The reach multiplier is 1 at full health exactly; at health h its value is 1 - (1 - wearFloor) * (1 - h/1600), so a given loss in points now wears reach faster than before. This is a consequence, not a retune."
-    ],
     "certification_and_endings": [
       "1. Certification count is bodiesDestroyed across the run. Target is certificationTarget=11 (sum of quotas 10, total allocation 62). The write-off that reaches it is counted at once and wins with licensed, even mid-level and even if a quota is unmet; the ending (mode over, state.ending) appears when the write-off animation ends.",
       "2. Quota is checked only at level end. Meeting it does not end the level early.",
@@ -550,8 +889,8 @@
     "Commitment lock at commitFrac, hatch flip, brake-first classes, the bus that cannot swerve, caution, service repair (swerve now subject to car_to_car 9 and 10).",
     "A single impact per car.",
     "Report cards, behaviour signatures and report bank word for word (severity input is damage / maxPay), HUD, attract screen, perception overlay and toggle, restart button.",
-    "Cooldown length, walk to run ramp shape, writeOff bonus and score formula, cars removed when out of hall. Body health is 1600 (CR-004; was 2300).",
-    "Level layouts, quotas, allocations, pools, spawn intervals, certification target, carToCar constants and the stall breaker (CR-003 and CR-004 do not touch them)."
+    "Cooldown length, walk to run ramp shape, writeOff bonus and score formula, cars removed when out of hall, body health 2300.",
+    "Level layouts, quotas, allocations, pools, spawn intervals, certification target, carToCar constants and the stall breaker (CR-003 does not touch them)."
   ],
   "acceptance_criteria": [
     {
@@ -561,7 +900,7 @@
     },
     {
       "id": "AC-02",
-      "text": "PARAMS deep-equals state.params and contains every schema field, including world, hall, 6 classes each with mass, 12 fleet entries, closeCost with 12 integers, 3 levels with shoulder fields, writeOff { duration }, impact { basePoints, refSpeed, refMass, maxPay, zoneNose, zoneFrontCorner, zoneFlank, zoneRearCorner, zoneTail, lungeMultiplier } and certificationTarget. PARAMS.impact has none of perMomentum, faceNose, faceCorner, faceFlank, faceTail, lungeBonus, maxClosing, yieldBase, yieldCurve, faceFront, faceSide, faceRear. Values: basePoints 100, refSpeed 138, refMass 1.0, maxPay 1600, shares 1/0.6/0.3/0.15/0.05, lungeMultiplier 5.",
+      "text": "PARAMS deep-equals state.params and contains every schema field, including world, hall, 6 classes each with mass, 12 fleet entries, closeCost with 12 integers, 3 levels with shoulder fields, writeOff { duration }, impact { basePoints, refSpeed, refMass, maxPay, zoneNose, zoneFrontCorner, zoneFlank, zoneRearCorner, zoneTail, lungeMultiplier } and certificationTarget. PARAMS.impact has none of perMomentum, faceNose, faceCorner, faceFlank, faceTail, lungeBonus, maxClosing, yieldBase, yieldCurve, faceFront, faceSide, faceRear. Values: basePoints 100, refSpeed 138, refMass 1.0, maxPay 2300, shares 1/0.6/0.3/0.15/0.05, lungeMultiplier 5.",
       "verify_by": "automated_check"
     },
     {
@@ -676,17 +1015,17 @@
     },
     {
       "id": "AC-25",
-      "text": "Playtest: a level lasts about 1 to 2 minutes and a competent player can meet the quota on each level and reach certification (with body health 1600 a body takes about 4 lunges into sedan noses; quotas and allocations are unchanged).",
+      "text": "Playtest: a level lasts about 1 to 2 minutes and a competent player can meet the quota on each level and reach certification (bodies now take about twice as many hits as under CR-002; difficulty is otherwise as before).",
       "verify_by": "playtest"
     },
     {
       "id": "AC-26",
-      "text": "Damage formula: PARAMS.impact values as in AC-02 and class masses sedan 1.0, van 1.5, sports 0.9, bus 3.0, wagon 1.2, hatch 0.8. In scripted impacts the health lost and the score gained both equal lastImpact.damage = min(1600, round(100 * zoneShare * lungeFactor * momentumFactor)) with lungeFactor 5 if lunging else 1, and momentumFactor = speed*mass/(138*1.0). The same zone at lunge directions of 8 different angles and at dummy speeds 800 and 1640 px/s gives the same damage (+/-0).",
+      "text": "Damage formula: PARAMS.impact values as in AC-02 and class masses sedan 1.0, van 1.5, sports 0.9, bus 3.0, wagon 1.2, hatch 0.8. In scripted impacts the health lost and the score gained both equal lastImpact.damage = min(2300, round(100 * zoneShare * lungeFactor * momentumFactor)) with lungeFactor 5 if lunging else 1, and momentumFactor = speed*mass/(138*1.0). The same zone at lunge directions of 8 different angles and at dummy speeds 800 and 1640 px/s gives the same damage (+/-0).",
       "verify_by": "automated_check"
     },
     {
       "id": "AC-27",
-      "text": "Damage calibration, cruising cars, nose, walking / lunging (each +/-1): sedan 100 / 500, van 130 / 652, sports 125 / 626, bus 235 / 1174, wagon 125 / 626, hatch 90 / 452. A cruising sedan: frontCorner 60 / 300, flank 30 / 150, rearCorner 15 / 75, tail 5 / 25. A lunge into a sedan nose costs 31.25% of maxHealth and does not write off a fresh body; no single hit from a fresh body at cruise speed writes it off.",
+      "text": "Damage calibration, cruising cars, nose, walking / lunging (each +/-1): sedan 100 / 500, van 130 / 652, sports 125 / 626, bus 235 / 1174, wagon 125 / 626, hatch 90 / 452. A cruising sedan: frontCorner 60 / 300, flank 30 / 150, rearCorner 15 / 75, tail 5 / 25. A lunge into a sedan nose costs 21.7% of maxHealth and does not write off a fresh body; no single hit from a fresh body at cruise speed writes it off.",
       "verify_by": "automated_check"
     },
     {
@@ -771,7 +1110,7 @@
     },
     {
       "id": "AC-44",
-      "text": "Damage table: for every class at cruise speed, every zone (nose, frontCorner, flank, rearCorner, tail) and both lunge states, Damage.assess equals min(1600, round(100 * share * (lunging?5:1) * speed*mass/138)), independent of the lunge direction and dummy velocity. Sedan values (+/-1) walking/lunging: nose 100/500; frontCorner 60/300; flank 30/150; rearCorner 15/75; tail 5/25. Output fields mass, faceFactor, lungeFactor, momentumFactor, damage are all returned; sedan momentumFactor is exactly 1 at 138.",
+      "text": "Damage table: for every class at cruise speed, every zone (nose, frontCorner, flank, rearCorner, tail) and both lunge states, Damage.assess equals min(2300, round(100 * share * (lunging?5:1) * speed*mass/138)), independent of the lunge direction and dummy velocity. Sedan values (+/-1) walking/lunging: nose 100/500; frontCorner 60/300; flank 30/150; rearCorner 15/75; tail 5/25. Output fields mass, faceFactor, lungeFactor, momentumFactor, damage are all returned; sedan momentumFactor is exactly 1 at 138.",
       "verify_by": "automated_check"
     },
     {
@@ -821,7 +1160,7 @@
     },
     {
       "id": "AC-54",
-      "text": "QA audit gate: the QA report contains the damage table with numbers per class, zone and lunge state checked against the formula and calibration; the Lawrence cases (sedan 100/500, 30/150, 5/25, bus nose 235/1174); vehicle path and start/stop numbers from AC-50 to AC-52; the barrier clearances; the write-off animation numbers of qa_audit 6; the body-health numbers of qa_audit 7; and the level 3 stall-breaker firing counts across at least 30 seeds, reported but not fixed. A release verdict is invalid if any of these are missing or any damage value mismatches by more than 1.",
+      "text": "QA audit gate: the QA report contains the damage table with numbers per class, zone and lunge state checked against the formula and calibration; the Lawrence cases (sedan 100/500, 30/150, 5/25, bus nose 235/1174); vehicle path and start/stop numbers from AC-50 to AC-52; the barrier clearances; the write-off animation numbers of qa_audit 6; and the level 3 stall-breaker firing counts across at least 30 seeds, reported but not fixed. A release verdict is invalid if any of these are missing or any damage value mismatches by more than 1.",
       "verify_by": "code_review"
     },
     {
@@ -868,26 +1207,6 @@
       "id": "AC-63",
       "text": "Playtest: the last hit on a body no longer jumps to the card; about a second of shake, red flash and particles plays first, including when the hit wins the run (the Licensed ending then appears).",
       "verify_by": "playtest"
-    },
-    {
-      "id": "AC-64",
-      "text": "Body health (CR-004): PARAMS.dummy.maxHealth === 1600 and PARAMS.impact.maxPay === 1600, they are equal, and state.dummy.health === 1600 at createSim, after every level start and after every card dismissal. The string 2300 appears nowhere in sim.js or in PARAMS.",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-65",
-      "text": "Body count (CR-004): from full health, successive lunging nose hits from a cruising sedan (500 each) leave health 1100, 600, 100 and the fourth hit writes off the body (health floored at 0, damage recorded 500, health lost 100). Sixteen walking nose hits (100 each) write off a fresh body on the 16th. Severity of the sedan nose lunge, damage / maxPay, is 0.3125 (+/-0.001). A single hit never exceeds 1600.",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-66",
-      "text": "Service and reach under 1600 (CR-004): a dummy at health 800 standing still after service.delay is repaired to 1600 in service.fullTime (30 s, +/-0.1 s), i.e. at 1600/30 points per second; reach at health 800 is 1 - 0.55 * 0.5 = 0.725 (+/-0.001) and at 1600 exactly 1. Nothing else in params differs from the previous release except maxHealth and maxPay (deep-compare of every other field).",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-67",
-      "text": "Playtest (CR-004): level 1's quota of two bodies is reachable in the allocation of 14 cars by a competent player without nearly every lunge being head-on and perfect; a fresh body is gone in about four good lunges.",
-      "verify_by": "playtest"
     }
   ],
   "differences": [
@@ -929,7 +1248,7 @@
     },
     {
       "kind": "change_vs_testpad",
-      "text": "CR-001 damage, as superseded by CR-003 and CR-004: the Testpad severity curve (impact.maxClosing, yieldBase, yieldCurve) stays removed. Per-class mass (sedan 1.0, van 1.5, sports 0.9, bus 3.0, wagon 1.2, hatch 0.8), maxPay (= maxHealth, now 1600 under CR-004), impact.contactEps 0.5 and impact.pushClearance 0.1 stay. The CR-001 closing-speed and CR-002 perMomentum formulas are both replaced by CR-003. Severity-driven features use damage / maxPay."
+      "text": "CR-001 damage, as superseded by CR-003: the Testpad severity curve (impact.maxClosing, yieldBase, yieldCurve) stays removed. Per-class mass (sedan 1.0, van 1.5, sports 0.9, bus 3.0, wagon 1.2, hatch 0.8), maxPay 2300 (= maxHealth), impact.contactEps 0.5 and impact.pushClearance 0.1 stay. The CR-001 closing-speed and CR-002 perMomentum formulas are both replaced by CR-003 (next entries). Severity-driven features use damage / maxPay."
     },
     {
       "kind": "change_vs_testpad",
@@ -941,7 +1260,7 @@
     },
     {
       "kind": "change_vs_testpad",
-      "text": "CR-003 consequences, as Lawrence confirmed, now superseded in its figures by CR-004: with base 100 a body took many hits; at body health 1600 a lunge into a cruising sedan nose (500) is 31.25% of a body and a walking nose hit (100) is 6.25%. Rear contact and side contact pay (tail 5%, rear corner 15%, flank 30%). Severity (damage/maxPay) is the share of a body; not retuned. Quotas, allocations and the certification target are unchanged."
+      "text": "CR-003 consequences, as Lawrence confirmed: with base 100 against a body of 2,300, bodies take about twice as many hits (a lunge into a cruising sedan nose is 500, 21.7% of a body, against 1143 under CR-002; a walking nose hit is 100). Rear contact and side contact now pay (tail 5%, rear corner 15%, flank 30%). Because damage numbers are smaller, damage/maxPay severity (shake and report signatures) is smaller than before; not retuned. Quotas, allocations and the certification target are unchanged, as requested, so levels will last somewhat longer if the player is less efficient."
     },
     {
       "kind": "change_vs_testpad",
@@ -989,15 +1308,7 @@
     },
     {
       "kind": "simplification_vs_gdd",
-      "text": "CR-001 addendum: stall breaker (car_to_car 13, params.carToCar.stallLimit 6 s) is a backstop, not a GDD feature. If the lowest-serial car is held at speed 0 for 6 s while not seeing the dummy, the adjacent higher-serial blocking cars are removed without score or write-off. It is a safety net against freezes and is not expected to fire in normal play. CR-002, CR-003 and CR-004 leave it unchanged; QA only reports on it."
-    },
-    {
-      "kind": "change_vs_testpad",
-      "text": "CR-004 body health 1,600 (Lawrence, 8 October 2026): dummy.maxHealth 2300 -> 1600, and, as the assistant's addition, impact.maxPay 2300 -> 1600 so the single-hit cap stays one body's health and severity (damage / maxPay) stays the share of a body. Reason: with a literal base of 100 against a body of 2,300 the quotas were out of reach (level 1's two bodies needed about nine near-perfect head-on lunges from 14 cars). New new body_health rules 1-6, qa_audit 7 and AC-64 to AC-67; AC-02, AC-25, AC-26, AC-27, AC-44, damage rules 6 and 8 and the unchanged_from_testpad body-health entry were rewritten for the 1600 figures (the 2300 quotes, the 21.7% figure, 0.51 largest severity and '5 lunging / 23 walking hits' became 1600, 31.25%, 0.73 and '4 lunging / 16 walking')."
-    },
-    {
-      "kind": "change_vs_testpad",
-      "text": "CR-004 consequences, no other value touched: damage table (base 100, zone shares, x5, momentum factor), class masses, writeOffBonus 2500, service delay and fullTime 30 s, write-off animation, quotas 2/3/5, allocations 14/20/28, certification target 11, pools, spawn intervals and all code structure stay exactly as released. Repair is slower in points per second (53.3, was 76.7) with the same 30 s to full. The reach wear (1 - 0.55 * lost share) now falls faster per point lost. Points required for level 1's quota are 3,200 (about 6.4 sedan nose lunges); because health is reset after each body, overkill makes it 4 lunges per body in practice (8 for two bodies). The Designer made no retune of quotas, as requested."
+      "text": "CR-001 addendum: stall breaker (car_to_car 13, params.carToCar.stallLimit 6 s) is a backstop, not a GDD feature. If the lowest-serial car is held at speed 0 for 6 s while not seeing the dummy, the adjacent higher-serial blocking cars are removed without score or write-off. It is a safety net against freezes and is not expected to fire in normal play. CR-002 and CR-003 leave it unchanged; QA only reports on it."
     }
   ]
 }

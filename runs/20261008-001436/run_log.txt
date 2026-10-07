@@ -1,0 +1,12 @@
+[00:14:36] DUMMIES crew run -> runs/20261008-001436
+[00:14:36] Change mode: revising the released build in output/ for CR-004_body_health_1600.md
+[00:14:36] Rules Designer: calling (95,477 chars in)
+[00:17:09] Rules Designer: done in 151.4 s (81,915 chars out)
+[00:17:09] Specification: 67 acceptance criteria, 0 labelled simplifications
+[00:17:09] Game Builder: calling (149,801 chars in)
+[00:19:26] Game Builder: done in 134.6 s (57,996 chars out)
+[00:19:27] Checks: 36/36 passed
+[00:19:27] QA / Repair Reviewer: calling (194,835 chars in)
+[00:20:55] QA / Repair Reviewer: done in 86.4 s (19,550 chars out)
+[00:20:55] QA verdict: release | 0 repair request(s) | All 36 automated checks pass. The only CR-004 edits in sim.js are the two figures: dummy.maxHealth and impact.maxPay are both 1600, and nothing else changed. The hand-computed damage values match the build's grid exactly. The code review found no blocking defect. The level 3 stall-breaker figures, the human-only playtest items and a few acceptance criteria that no check covers directly are reported below as unverified or as notes.
+[00:20:55] RELEASED after 1 build(s). Open output/game/index.html in a browser.

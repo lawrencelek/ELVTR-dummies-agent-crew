@@ -27,7 +27,7 @@ Released output from the run included in this repository:
 
 | File | Produced by | What it is |
 |------|-------------|------------|
-| `output/spec.json` | Rules Designer | All parameters in real-time units, the three level designs, the changed rules, 63 acceptance criteria, 25 listed differences from the GDD and the Testpad |
+| `output/spec.json` | Rules Designer | All parameters in real-time units, the three level designs, the changed rules, 67 acceptance criteria, 27 listed differences from the GDD and the Testpad |
 | `output/game/index.html`, `output/game/sim.js` | Game Builder | The playable browser game |
 | `output/checks.json` | Orchestrator | Results of 36 executable checks run against the build, plus measured damage and vehicle figures for QA |
 | `output/qa_report.json` | QA / Repair Reviewer | Per-criterion verdicts, defects, release decision |
@@ -110,7 +110,7 @@ How the outputs really pass between agents:
 - After a release, the crew takes **change requests** against the released
   build (`python crew.py --change changes/CR-xxx.md`): the Designer revises
   the specification, the Builder patches its own files, and the same checks
-  and QA gate the result. `changes/` holds Lawrence's three so far.
+  and QA gate the result. `changes/` holds Lawrence's four so far.
 - QA does more than read the check results. On CR-002 every check passed,
   and QA still sent the build back: it found that a hit landing on the last
   step of a lunge was scored as a standing hit. The Builder fixed it and a
@@ -161,7 +161,7 @@ artifact to `runs/<timestamp>/` and, if released, the final files to
 
 ```
 python crew.py --from-run runs/<timestamp>     # reuse that run's specification and first build
-python crew.py --change changes/CR-003_damage_zones_and_write_off_animation.md   # revise the released build for one change request
+python crew.py --change changes/CR-004_body_health_1600.md   # revise the released build for one change request
 node checks/run_checks.js output/game output/spec.json     # re-run only the checks
 node checks/bot_playthrough.js output/game 1               # automated player, seed 1
 ```
@@ -201,7 +201,8 @@ docs/                     screenshots
 | `20261006-224618` | **Change request CR-002** (logical damage, Vehicles and Damage modules, QA audits). Designer 228 s, Builder 180 s. Build passed 33 of 34 checks; the one failure was a **bug in the check harness** (for a car travelling down the screen it called a lunge in the same direction "head-on"; the build was right). Stopped by the operator during QA; the check was corrected. |
 | `20261006-225543` | **Release of CR-002**, after three builds. Build 1 (reused): 34 of 34 checks. QA's hand-calculated damage table matched the build on all 16 figures, and QA still said `repair`: it found that a hit on the last step of a lunge was scored as a standing hit, which no check covered, and that the vehicle figures the specification demands were missing from the check report. Build 2 (140 s) fixed the scoring; QA said `repair` again, only for the missing measured figures. The operator added those measurements, and a check for the last-step case, to the harness while the Builder made build 3 (134 s, one minor fix). 36 of 36 checks; QA said `release` (47 criteria pass, 8 unverified, 3 minor defects). |
 | `20261007-022555` | **Change request CR-003** (damage by zone, flat x5 lunge, write-off animation), run after the assignment deadline on a separate branch. Designer 173 s, Builder 172 s. Build passed 35 of 36 checks; the one failure was a **bug in the check harness** (it measured health 0.2 s after a tail hit, by which time service repair had restored the 7 points; the build was right). Stopped by the operator during QA; the check was corrected. |
-| `20261007-023212` | **The current release.** Specification and build reused. 36 of 36 checks on the first build. QA recomputed the damage grid by hand for all six classes, five zones, walking and lunging, and said `release` (44 criteria pass, 19 unverified, 2 minor defects). |
+| `20261007-023212` | **Release of CR-003.** Specification and build reused. 36 of 36 checks on the first build. QA recomputed the damage grid by hand for all six classes, five zones, walking and lunging, and said `release` (44 criteria pass, 19 unverified, 2 minor defects). |
+| `20261008-001436` | **The current release: change request CR-004** (body health 2,300 to 1,600). Designer 151 s, Builder 138 s. The new build differs from the last one only in that number and the hit cap that follows it. 36 of 36 checks on the first build; QA said `release` (53 criteria pass, 14 unverified, 2 minor defects). |
 
 **Executable checks** on the released build (run by Node against the generated
 `sim.js`): 36 of 36 passed.
@@ -256,7 +257,7 @@ docs/                     screenshots
 | Wagon | 144 x 1.2 | 125 / 626 | 75 / 376 | 38 / 188 | 19 / 94 | 6 / 31 |
 | Hatch | 156 x 0.8 | 90 / 452 | 54 / 271 | 27 / 136 | 14 / 68 | 5 / 23 |
 
-A fresh body has 2300 health. A braking car pays less and a stopped car pays nothing. Each car pays for its first contact only.
+A fresh body has 1600 health (CR-004). A braking car pays less and a stopped car pays nothing. Each car pays for its first contact only.
 
 **Vehicle figures** (measured by the check harness for QA's vehicle audit):
 
@@ -265,7 +266,7 @@ A fresh body has 2300 health. A braking car pays less and a stopped car pays not
 - Starting: every class reaches cruising speed from rest in the expected time (sedan 0.383 s).
 - Stopping behind a stopped car: every class stops without touching, about 7.9 px short.
 - Levels 1 and 2 over 120 s x 3 seeds each: no car removed inside the hall, longest stop 0 s and 0 s.
-- **Level 3 jam breaker, 30 seeds x 60 s:** with the dummy idle it deleted 3 cars in 3 of 30 runs; with the dummy wandering, 11 cars in 10 of 30 runs. The longest the oldest car was held was 22 s.
+- **Level 3 jam breaker, 30 seeds x 60 s:** with the dummy idle it deleted 3 cars in 3 of 30 runs; with the dummy wandering, 9 cars in 9 of 30 runs. The longest the oldest car was held was 21.8 s.
 
 **Automated player** (`checks/bot_playthrough.js`, informational). It only
 ambushes: it stands one lunge away from a lane and tries to land just in front
@@ -277,11 +278,12 @@ of a car's nose. It never baits and never lunges head-on.
 | 2 | 0 bodies | 7: 5 flank, 2 nose | 230 |
 | 3 | 0 bodies | 9: 6 flank, 1 front corner, 2 nose | 287 |
 
-**This player gets nowhere near the level 1 quota.** Two bodies need 4,600
-points of damage from 14 cars, and the best possible hit on a sedan (a lunge
-onto the nose) pays 500, so the quota takes about nine near-perfect lunges.
-The base of 100 is Lawrence's decision; the quotas were set before it and
-have not been retuned. Whether a person can meet them is untested.
+**This player gets nowhere near the level 1 quota**, before or after CR-004:
+it mostly clips flanks, and its nose hits land after its lunge has ended, so
+they pay the walking rate. With body health at 1,600, two bodies need 3,200
+points from 14 cars; a lunge onto a sedan's nose pays 500, so the quota
+takes about six and a half good head-on lunges (it was about nine at 2,300).
+Whether a person can meet that is untested.
 
 **Scripted browser playtest** (`checks/browser_playtest.js`, headless
 Chromium, real key events):
@@ -311,20 +313,21 @@ Chromium, real key events):
 
 ## Known limitations
 
-- **The quotas are probably out of reach after CR-003.** With a literal base
-  of 100, level 1's quota needs about nine near-perfect head-on lunges from
-  14 cars. Body health, quotas and allocations have not been retuned.
+- **Difficulty is still unproven.** Body health is now 1,600 (CR-004), so a
+  body takes about four head-on lunges into a sedan and level 1's quota about
+  six and a half from 14 cars. Nobody has yet played it at this setting;
+  quotas and allocations are unchanged.
 - **The report lines no longer fit the scoring.** They are the Testpad's
   words and still say "only the nose pays" and that rear impacts are not
   logged; rear hits now pay. The behaviour signatures that pick a report
-  ("greedy", "timid") use damage as a share of the 2,300 cap, which is now
-  always small, so players will mostly be called timid.
+  ("greedy", "timid") use damage as a share of the hit cap (now 1,600), which
+  is usually small, so players will mostly be called timid.
 - **Level 2's roads are one-way**, the assistant's decision to stop head-on
   deadlocks; Lawrence has not confirmed it.
 - **A jam breaker deletes cars on level 3.** If the oldest car in the hall is
   stuck for 6 s without seeing the dummy, the code removes the cars blocking
-  it. Measured over 30 seeds of 60 s: 3 cars in 3 runs with the dummy idle, 11
-  cars in 10 runs with it wandering. It never fired on levels 1 and 2.
+  it. Measured over 30 seeds of 60 s: 3 cars in 3 runs with the dummy idle, 9
+  cars in 9 runs with it wandering. It never fired on levels 1 and 2.
 - Whether the write-off animation is satisfying has not been judged by a
   person; the particles are small.
 - The modules are named sections of one file (`DummiesSim.Vehicles`,
