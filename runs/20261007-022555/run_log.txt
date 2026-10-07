@@ -1,0 +1,10 @@
+[02:25:55] DUMMIES crew run -> runs/20261007-022555
+[02:25:55] Change mode: revising the released build in output/ for CR-003_damage_zones_and_write_off_animation.md
+[02:25:55] Rules Designer: calling (89,104 chars in)
+[02:28:49] Rules Designer: done in 173.3 s (69,024 chars out)
+[02:28:49] Specification: 63 acceptance criteria, 0 labelled simplifications
+[02:28:49] Game Builder: calling (144,770 chars in)
+[02:31:40] Game Builder: done in 169.0 s (58,454 chars out)
+[02:31:41] Checks: 35/36 passed | failing: tail_contact_pays_its_small_share
+[02:31:41] QA / Repair Reviewer: calling (193,043 chars in)
+[stopped by operator during QA] The check tail_contact_pays_its_small_share had a bug in the harness: it measured health 0.2 s after the hit, by which time service repair had restored the 7 points a tail hit costs. The build was right. The check now measures on the step of the impact. Restarted with --reuse-build, reusing this specification and build 1.

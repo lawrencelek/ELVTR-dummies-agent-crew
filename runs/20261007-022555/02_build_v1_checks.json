@@ -1,8 +1,8 @@
 {
   "total": 36,
-  "passed": 36,
-  "failed": 0,
-  "all_passed": true,
+  "passed": 35,
+  "failed": 1,
+  "all_passed": false,
   "results": [
     {
       "id": "load_sim",
@@ -127,8 +127,8 @@
     {
       "id": "tail_contact_pays_its_small_share",
       "description": "Contact with the tail pays the tail share (5% of base, scaled by the car's speed and mass), and score rises by the same amount",
-      "pass": true,
-      "detail": "van at 120.0 px/s: tail pays 7"
+      "pass": false,
+      "detail": "Error: health or score did not move by the logged damage |     at assert (/home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:18:47) |     at /home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:255:5"
     },
     {
       "id": "write_off_animation_then_card",

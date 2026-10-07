@@ -1,0 +1,10 @@
+[02:32:12] DUMMIES crew run -> runs/20261007-023212
+[02:32:12] Change mode: revising the released build in output/ for CR-003_damage_zones_and_write_off_animation.md
+[02:32:12] Rules Designer: NOT called; specification reused from 20261007-022555
+[02:32:12] Specification: 63 acceptance criteria, 0 labelled simplifications
+[02:32:12] Game Builder: NOT called for build 1; files reused from 20261007-022555/02_build_v1
+[02:32:13] Checks: 36/36 passed
+[02:32:13] QA / Repair Reviewer: calling (192,858 chars in)
+[02:33:58] QA / Repair Reviewer: done in 102.9 s (18,644 chars out)
+[02:33:58] QA verdict: release | 0 repair request(s) | All 36 automated checks passed. The damage grid matches my hand calculation for every class, zone and lunge state. The write-off mode, freeze, timing, card and Licensed paths read correctly in sim.js, and index.html draws the shake, red dummy, fade and particle burst from state.writeOff only. Some acceptance criteria had no named check and are left unverified, and the playtest items need a person. Neither blocks release.
+[02:33:58] RELEASED after 1 build(s). Open output/game/index.html in a browser.

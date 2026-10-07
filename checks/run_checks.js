@@ -53,6 +53,12 @@ if (Sim) {
     throw new Error("no suitable car appeared within " + (maxSeconds || 60) + " s");
   };
   const fresh = (c) => !c.hit && inHall(c, 90) && c.speed > 1;
+  const moving = (c) => fresh(c) && c.speed > 40;      // fast enough that a hit still pays after one step of braking
+  const I = P.impact;
+  const ZONES = { nose: "zoneNose", frontCorner: "zoneFrontCorner", flank: "zoneFlank", rearCorner: "zoneRearCorner", tail: "zoneTail" };
+  const formula = (cls, speed, zone, lunging) => Math.min(I.maxPay, Math.round(I.basePoints * I[ZONES[zone]] * (lunging ? I.lungeMultiplier : 1) * (speed * P.classes[cls].mass) / (I.refSpeed * I.refMass)));
+  // step through the write-off animation; returns how long mode "writeoff" lasted
+  const throughWriteOff = (s, input) => { let t = 0; while (s.mode === "writeoff" && t < 5) { Sim.step(s, input || NONE, DT); t += DT; } return t; };
   const WW = P.world.width, WH = P.world.height;
   const half = (c) => ({ x: (c.dirY === 0 ? c.length : c.width) / 2, y: (c.dirY === 0 ? c.width : c.length) / 2 });
   // first pair of cars whose rectangles overlap inside the canvas, or null
@@ -235,26 +241,43 @@ if (Sim) {
   });
 
   check("front_impact_pays_once", "Front contact reduces health and adds score, once per car", () => {
-    const s = mk({ level: 1 }); const c = waitForCar(s, fresh, 60); const h0 = s.dummy.health, sc0 = s.score; touch(s, c, +1); run(s, NONE, 0.05);
+    const s = mk({ level: 1 }); const c = waitForCar(s, moving, 60); const h0 = s.dummy.health, sc0 = s.score; touch(s, c, +1); run(s, NONE, 0.05);
     const h1 = s.dummy.health, sc1 = s.score; assert(h1 < h0, "no damage from front contact"); assert(sc1 > sc0, "no score from front contact");
     const c2 = s.cars.find(k => k.serial === c.serial); assert(c2 && c2.hit === true, "car.hit not set after impact");
     for (let i = 0; i < 6; i++) { const k = s.cars.find(q => q.serial === c.serial); if (!k) break; touch(s, k, +1); Sim.step(s, NONE, DT); }
     assert(s.dummy.health >= h1 - 1e-6, `health kept dropping on the same car (${h1} -> ${s.dummy.health})`); return `health ${f1(h0)} -> ${f1(h1)}, score +${f1(sc1 - sc0)}`;
   });
 
-  check("rear_contact_pays_nothing", "Rear contact changes neither health nor score", () => {
-    const s = mk({ level: 1 }); const c = waitForCar(s, fresh, 60); touch(s, c, -1); run(s, NONE, 0.2);
-    assert(s.dummy.health === P.dummy.maxHealth, "rear contact damaged the dummy"); assert(s.score === 0, "rear contact scored");
+  check("tail_contact_pays_its_small_share", "Contact with the tail pays the tail share (5% of base, scaled by the car's speed and mass), and score rises by the same amount", () => {
+    const s = mk({ level: 1 }); const c = waitForCar(s, moving, 60); const h0 = s.dummy.health; touch(s, c, -1);
+    // measure on the step of the impact itself: a dummy that has been standing still is being repaired, which would hide a small hit a moment later
+    for (let i = 0; i < 12 && !(s.lastImpact && s.lastImpact.serial === c.serial); i++) Sim.step(s, NONE, DT);
+    const L = s.lastImpact; assert(L && L.serial === c.serial, "tail contact was not logged in state.lastImpact"); assert(L.face === "tail", "zone judged " + L.face);
+    const want = formula(L.cls, L.vehicleSpeed, "tail", false); assert(Math.abs(L.damage - want) <= 1, `tail paid ${L.damage}, formula gives ${want}`);
+    assert(Math.abs((h0 - s.dummy.health) - L.damage) <= 1.5 && Math.abs(s.score - L.damage) <= 1.5, "health or score did not move by the logged damage"); assert(L.damage > 0, "a moving car's tail paid nothing");
+    return `${L.cls} at ${f1(L.vehicleSpeed)} px/s: tail pays ${L.damage}`;
   });
 
-  check("write_off_card_and_fresh_body", "At zero health: one write-off counted, a card appears, confirm gives a fresh body", () => {
-    const s = mk({ level: 1 }); const c = waitForCar(s, fresh, 60); s.dummy.health = 0.5; touch(s, c, +1);
+  check("write_off_animation_then_card", "At zero health the write-off is counted at once, the game holds in mode 'writeoff' for the specified time with everything frozen and confirm ignored, then the card appears and a fresh confirm gives a fresh body", () => {
+    const dur = P.writeOff && P.writeOff.duration; assert(typeof dur === "number" && dur >= 0.9 && dur <= 1.4, "spec writeOff.duration must be between 0.9 and 1.4 s, got " + dur);
+    const s = mk({ level: 1 }); const c = waitForCar(s, moving, 60); s.dummy.health = 0.5; touch(s, c, +1);
     for (let i = 0; i < 30 && s.mode === "play"; i++) Sim.step(s, NONE, DT);
     assert(s.bodiesDestroyed === 1 && s.levelWriteOffs === 1, `write-offs: run ${s.bodiesDestroyed}, level ${s.levelWriteOffs}`);
-    assert(s.mode === "card" && s.card && typeof s.card.line === "string" && s.card.line.length > 5, "no report card after write-off; mode=" + s.mode);
-    assert(s.ending === null, "unexpected ending " + s.ending); run(s, NONE, 0.5); assert(s.mode === "card", "card dismissed without confirm");
-    Sim.step(s, inp({ confirm: true }), DT); Sim.step(s, NONE, DT); assert(s.mode === "play", "confirm did not dismiss the card; mode=" + s.mode);
+    assert(s.mode === "writeoff", "after the destroying hit the mode is " + s.mode + ", expected writeoff");
+    const W = s.writeOff; assert(W && typeof W.t === "number" && near(W.duration, dur, 0.001) && typeof W.x === "number" && typeof W.y === "number", "state.writeOff is missing or incomplete: " + JSON.stringify(W));
+    assert(s.card === null && s.ending === null, "card or ending set before the animation ended");
+    const snap = () => JSON.stringify([s.dummy.x, s.dummy.y, s.cars.map(k => [k.serial, k.x, k.y]), s.vehiclesSpawned]); const before = snap(); let t0 = W.t;
+    for (let i = 0; i < 12; i++) Sim.step(s, inp({ dx: 1, confirm: i % 4 < 2 }), DT);       // movement and confirm presses during the animation
+    assert(s.mode === "writeoff", "the animation was cut short by input; mode=" + s.mode); assert(snap() === before, "something moved or spawned during the write-off animation");
+    assert(s.writeOff.t > t0, "state.writeOff.t does not advance");
+    const total = 12 * DT + throughWriteOff(s, inp({ confirm: true }));                       // confirm held to the end must not dismiss the card
+    assert(Math.abs(total - dur) <= 0.08, `mode writeoff lasted ${total.toFixed(2)} s, specification says ${dur}`);
+    assert(s.mode === "card" && s.card && typeof s.card.line === "string" && s.card.line.length > 5, "no report card after the animation; mode=" + s.mode);
+    assert(s.writeOff === null, "state.writeOff not cleared after the animation"); assert(s.ending === null, "unexpected ending " + s.ending);
+    run(s, inp({ confirm: true }), 0.3); assert(s.mode === "card", "a confirm held since the animation dismissed the card"); run(s, NONE, 0.3); assert(s.mode === "card", "card dismissed without confirm");
+    Sim.step(s, inp({ confirm: true }), DT); Sim.step(s, NONE, DT); assert(s.mode === "play", "a fresh confirm did not dismiss the card; mode=" + s.mode);
     assert(s.dummy.health === P.dummy.maxHealth, "fresh body is not at maxHealth"); assert(s.bodiesDestroyed === 1, "write-off counted twice");
+    return `animation ${total.toFixed(2)} s, frozen, confirm ignored, then the card`;
   });
 
   const endLevel = (s) => { for (let i = 0; i < 300 && s.mode === "play"; i++) { s.cars = []; s.vehiclesSpawned = s.allocation; Sim.step(s, NONE, DT); } };
@@ -274,9 +297,10 @@ if (Sim) {
     Sim.step(s, inp({ confirm: true }), DT); Sim.step(s, NONE, DT); assert((s.mode === "attract" || s.mode === "play") && s.level === 1 && s.ending === null && s.bodiesDestroyed === 0, `confirm after an ending did not restart the run (mode ${s.mode}, level ${s.level}, ending ${s.ending})`);
   });
 
-  check("ending_licensed", "The write-off that reaches certificationTarget ends the run as 'licensed' at once", () => {
-    const s = mk({ level: 3 }); const c = waitForCar(s, fresh, 60); s.bodiesDestroyed = P.certificationTarget - 1; s.dummy.health = 0.5; touch(s, c, +1);
+  check("ending_licensed", "The write-off that reaches certificationTarget plays the write-off animation and then ends the run as 'licensed'", () => {
+    const s = mk({ level: 3 }); const c = waitForCar(s, moving, 60); s.bodiesDestroyed = P.certificationTarget - 1; s.dummy.health = 0.5; touch(s, c, +1);
     for (let i = 0; i < 30 && s.mode === "play"; i++) Sim.step(s, NONE, DT);
+    assert(s.mode === "writeoff" && s.ending === null, `after the winning hit: mode ${s.mode}, ending ${s.ending} (expected the write-off animation first)`); throughWriteOff(s);
     assert(s.ending === "licensed" && s.mode === "over", `mode ${s.mode}, ending ${s.ending}, bodies ${s.bodiesDestroyed}`);
     const sum = P.levels.reduce((a, l) => a + l.quota, 0); assert(P.certificationTarget > sum, `certificationTarget ${P.certificationTarget} must exceed quota sum ${sum}`);
   });
@@ -337,76 +361,65 @@ if (Sim) {
     return "Vehicles.step moves cars on its own; Damage has both functions";
   });
 
-  check("damage_module_is_logical", "Damage.assess follows perMomentum x vehicle speed x mass x face x lunge direction for every class, and the ordering is logical: head-on lunge pays most, lunging with the car pays less than standing still, the tail pays nothing, lunge speed does not matter", () => {
-    const Dm = Sim.Damage, I = P.impact; assert(Dm && typeof Dm.assess === "function" && typeof Dm.contactFace === "function", "Damage module missing");
-    for (const k of ["perMomentum", "maxPay", "faceNose", "faceCorner", "faceFlank", "faceTail", "lungeBonus"]) assert(typeof I[k] === "number", "spec impact." + k + " missing");
-    assert(I.faceNose > I.faceCorner && I.faceCorner > I.faceFlank && I.faceFlank > 0 && I.faceTail === 0, "spec face factors must satisfy nose > corner > flank > 0 = tail");
-    assert(I.lungeBonus > 0 && I.lungeBonus < 1, "spec lungeBonus must be between 0 and 1");
+  check("damage_module_is_logical", "Damage.assess follows Lawrence's table for every class: base 100 x zone share (nose 100%, front corner 60%, flank 30%, rear corner 15%, tail 5%) x 5 when lunging x the car's speed and mass relative to a cruising sedan; lunge direction and speed make no difference", () => {
+    const Dm = Sim.Damage; assert(Dm && typeof Dm.assess === "function" && typeof Dm.contactFace === "function", "Damage module missing");
+    const fixed = { basePoints: 100, zoneNose: 1, zoneFrontCorner: 0.6, zoneFlank: 0.3, zoneRearCorner: 0.15, zoneTail: 0.05, lungeMultiplier: 5, refSpeed: P.classes.sedan.speed, refMass: P.classes.sedan.mass };
+    for (const k of Object.keys(fixed)) assert(I[k] === fixed[k], `spec impact.${k} is ${I[k]}; Lawrence's value is ${fixed[k]}`);
+    assert(typeof I.maxPay === "number" && I.maxPay > 0, "spec impact.maxPay missing");
     const masses = Object.keys(P.classes).map(k => P.classes[k].mass); assert(masses.every(m => m > 0), "every class needs a mass"); assert(P.classes.bus.mass === Math.max(...masses), "bus is not the heaviest class");
-    const FF = { nose: I.faceNose, corner: I.faceCorner, flank: I.faceFlank, tail: I.faceTail };
     const got = (cls, speed, face, vx, vy, lunging, dir) => { dir = dir || [1, 0]; const r = Dm.assess(P, { cls, vehicleSpeed: speed, dirX: dir[0], dirY: dir[1], face, dummyVx: vx, dummyVy: vy, lunging }); assert(r && typeof r.damage === "number", "assess returned no damage"); return r.damage; };
-    const want = (cls, speed, face, c, lunging) => Math.min(I.maxPay, Math.round(I.perMomentum * speed * P.classes[cls].mass * FF[face] * (lunging ? 1 + I.lungeBonus * c : 1)));
-    const q = Math.SQRT1_2; reports.damage_table = []; reports.damage_grid = {};
-    for (const cls of Object.keys(P.classes)) { const sp = P.classes[cls].speed; reports.damage_grid[cls] = { cruiseSpeed: sp, mass: P.classes[cls].mass };
-      for (const face of ["nose", "corner", "flank", "tail"]) reports.damage_grid[cls][face] = { standing: got(cls, sp, face, 0, 0, false), lungeHeadOn: got(cls, sp, face, -900, 0, true), lungeAcross: got(cls, sp, face, 0, 900, true), lungeWithCar: got(cls, sp, face, 900, 0, true) }; }
-    for (const cls of Object.keys(P.classes)) { const sp = P.classes[cls].speed;
-      const cases = [
-        ["standing still at the nose", "nose", 0, 0, false, 0], ["head-on lunge into the nose", "nose", -900, 0, true, 1], ["lunge across the nose", "nose", 0, 900, true, 0],
-        ["lunge into the nose while moving away with the car", "nose", 900, 0, true, -1], ["standing at a front corner", "corner", 0, 0, false, 0],
-        ["diagonal lunge into a front corner, travelling with the car", "corner", 600, 600, true, -q], ["walking into a flank", "flank", 0, 100, false, 0],
-        ["lunge straight into a flank", "flank", 0, 900, true, 0], ["diagonal lunge into a flank, travelling with the car (Lawrence's bug case)", "flank", 600, 600, true, -q],
-        ["diagonal lunge into a flank, against the car", "flank", -600, 600, true, q], ["head-on lunge into the tail", "tail", -900, 0, true, 1] ];
-      const v = {}; for (const [name, face, vx, vy, lunging, c] of cases) { const g = got(cls, sp, face, vx, vy, lunging), w = want(cls, sp, face, c, lunging);
-        assert(Math.abs(g - w) <= 1, `${cls}, ${name}: build ${g} vs formula ${w}`); v[name] = g; reports.damage_table.push({ cls, vehicleSpeed: sp, mass: P.classes[cls].mass, case: name, damage: g }); }
-      const headOn = v["head-on lunge into the nose"], stand = v["standing still at the nose"]; for (const n of Object.keys(v)) assert(v[n] <= headOn, `${cls}: "${n}" pays ${v[n]}, more than a head-on lunge (${headOn})`);
-      if (stand < I.maxPay) assert(headOn > stand, cls + ": head-on lunge does not pay more than standing still");
-      assert(v["lunge into the nose while moving away with the car"] < stand, cls + ": lunging away at the nose should pay less than standing");
-      assert(v["diagonal lunge into a flank, travelling with the car (Lawrence's bug case)"] < v["walking into a flank"], cls + ": lunging with the car into a flank should pay less than walking into it");
-      assert(v["diagonal lunge into a flank, travelling with the car (Lawrence's bug case)"] < stand * 0.5, cls + ": the bug case still pays too much");
-      assert(v["head-on lunge into the tail"] === 0, cls + ": the tail pays");
-      assert(got(cls, sp, "nose", -100, 0, true) === got(cls, sp, "nose", -1600, 0, true), cls + ": damage changes with the speed of the lunge");
-      assert(got(cls, 0, "nose", -900, 0, true) === 0, cls + ": a stopped car does damage"); assert(got(cls, sp * 0.5, "nose", 0, 0, false) < stand || stand === 0, cls + ": a slower car does not hit more softly");
-      assert(got(cls, sp, "nose", 0, -900, true, [0, 1]) === headOn, cls + ": head-on lunge against a car travelling down the screen is not scored as head-on"); }
-    const sedanHeadOn = got("sedan", P.classes.sedan.speed, "nose", -900, 0, true), frac = sedanHeadOn / P.dummy.maxHealth;
-    assert(frac >= 0.35 && frac <= 0.65, `a head-on lunge into a cruising sedan takes ${(frac * 100).toFixed(0)}% of a fresh body (target about half)`);
+    reports.damage_grid = {};
+    for (const cls of Object.keys(P.classes)) { const sp = P.classes[cls].speed, g = reports.damage_grid[cls] = { cruiseSpeed: sp, mass: P.classes[cls].mass, momentumFactor: +((sp * P.classes[cls].mass) / (I.refSpeed * I.refMass)).toFixed(3) }; let prevW = Infinity;
+      for (const zone of Object.keys(ZONES)) { const w = got(cls, sp, zone, 0, 0, false), l = got(cls, sp, zone, -900, 0, true); g[zone] = { walking: w, lunging: l };
+        assert(Math.abs(w - formula(cls, sp, zone, false)) <= 1, `${cls} ${zone} walking: build ${w} vs formula ${formula(cls, sp, zone, false)}`);
+        assert(Math.abs(l - formula(cls, sp, zone, true)) <= 1, `${cls} ${zone} lunging: build ${l} vs formula ${formula(cls, sp, zone, true)}`);
+        assert(w < prevW, `${cls}: ${zone} (${w}) does not pay less than the zone before it (${prevW})`); prevW = w; assert(w > 0, `${cls} ${zone} pays nothing`);
+        for (const [vx, vy] of [[900, 0], [0, 900], [600, 600], [-600, 600], [-100, 0], [-1600, 0]]) assert(got(cls, sp, zone, vx, vy, true) === l, `${cls} ${zone}: a lunge with velocity (${vx},${vy}) pays ${got(cls, sp, zone, vx, vy, true)}, not ${l}; direction and speed of the lunge must not matter`);
+        assert(got(cls, sp, zone, 0, -900, true, [0, 1]) === l, `${cls} ${zone}: result changes with the car's direction of travel`);
+        assert(got(cls, sp, zone, 300, 0, false) === w, `${cls} ${zone}: a walking dummy's velocity changes the damage`);
+        assert(got(cls, 0, zone, -900, 0, true) === 0, `${cls} ${zone}: a stopped car pays`); assert(got(cls, sp * 0.5, zone, 0, 0, true) < l || l === I.maxPay, `${cls} ${zone}: a slower car does not pay less`); }
+      assert(g.nose.lunging >= Math.max(...Object.keys(ZONES).map(z => Math.max(g[z].walking, g[z].lunging))), cls + ": something pays more than a lunging nose hit"); }
+    const sd = reports.damage_grid.sedan; assert(sd.nose.walking === 100 && sd.nose.lunging === 500 && sd.frontCorner.walking === 60 && sd.flank.walking === 30 && sd.flank.lunging === 150 && sd.rearCorner.walking === 15 && sd.tail.walking === 5,
+      "cruising sedan does not give Lawrence's table exactly: " + JSON.stringify(sd));
     const car = { x: 100, y: 100, dirX: 1, dirY: 0, length: 60, width: 30 }, up = { x: 100, y: 100, dirX: 0, dirY: -1, length: 60, width: 30 };
-    const faces = [[car, 140, 100, "nose"], [car, 140, 130, "corner"], [car, 110, 130, "flank"], [car, 80, 70, "flank"], [car, 60, 100, "tail"], [car, 60, 130, "tail"], [up, 100, 60, "nose"], [up, 125, 100, "flank"], [up, 100, 140, "tail"], [up, 125, 60, "corner"]];
+    const faces = [[car, 140, 100, "nose"], [car, 140, 130, "frontCorner"], [car, 110, 130, "flank"], [car, 80, 70, "flank"], [car, 60, 100, "tail"], [car, 60, 130, "rearCorner"], [car, 60, 70, "rearCorner"],
+      [up, 100, 60, "nose"], [up, 125, 100, "flank"], [up, 100, 140, "tail"], [up, 125, 60, "frontCorner"], [up, 75, 140, "rearCorner"]];
     for (const [c, x, y, w] of faces) { const g = Dm.contactFace(c, x, y); assert(g === w, `contactFace: dummy at (${x},${y}) against a car at (100,100) heading (${c.dirX},${c.dirY}) gave "${g}", expected "${w}"`); }
-    return `sedan: standing ${got("sedan", P.classes.sedan.speed, "nose", 0, 0, false)}, head-on lunge ${sedanHeadOn} (${(frac * 100).toFixed(0)}% of a body), bug case ${got("sedan", P.classes.sedan.speed, "flank", 600, 600, true)}; bus head-on lunge ${got("bus", P.classes.bus.speed, "nose", -900, 0, true)}`;
+    return `sedan walking/lunging: nose ${sd.nose.walking}/${sd.nose.lunging}, front corner ${sd.frontCorner.walking}/${sd.frontCorner.lunging}, flank ${sd.flank.walking}/${sd.flank.lunging}, rear corner ${sd.rearCorner.walking}/${sd.rearCorner.lunging}, tail ${sd.tail.walking}/${sd.tail.lunging}; bus nose ${reports.damage_grid.bus.nose.walking}/${reports.damage_grid.bus.nose.lunging}`;
   });
 
-  check("damage_in_play_matches_module", "In real play, each hit is scored by the Damage module and logged in state.lastImpact: standing at the nose, a head-on lunge, a diagonal lunge into the flank travelling with the car (Lawrence's bug case), and the tail", () => {
-    const Dm = Sim.Damage, I = P.impact, out = [];
-    const scenario = (name, place, input, expectFace, expectFactor) => { const s = mk({ level: 1, seed: 7 }); const c = waitForCar(s, fresh, 60); const serial = c.serial, h0 = s.dummy.health, sc0 = s.score;
+  check("damage_in_play_matches_module", "In real play each hit is scored by the Damage module and logged in state.lastImpact: standing at the nose, a head-on lunge, a diagonal lunge into the flank, and the tail", () => {
+    const Dm = Sim.Damage, out = [];
+    const scenario = (name, place, input, expectFace, expectLunge) => { const s = mk({ level: 1, seed: 7 }); const c = waitForCar(s, moving, 60); const serial = c.serial, h0 = s.dummy.health;
       place(s, c); s.dummy.vx = 0; s.dummy.vy = 0; Sim.step(s, input, DT);
       for (let i = 0; i < 25 && !(s.lastImpact && s.lastImpact.serial === serial); i++) Sim.step(s, NONE, DT);
       const L = s.lastImpact; assert(L && L.serial === serial, name + ": no impact was logged in state.lastImpact");
-      for (const k of ["face", "vehicleSpeed", "dirX", "dirY", "dummyVx", "dummyVy", "lunging", "mass", "faceFactor", "lungeFactor", "damage", "cls"]) assert(k in L, name + ": lastImpact." + k + " missing");
-      assert(L.face === expectFace, `${name}: face judged "${L.face}", expected "${expectFace}"`);
+      for (const k of ["face", "vehicleSpeed", "dirX", "dirY", "dummyVx", "dummyVy", "lunging", "mass", "faceFactor", "lungeFactor", "momentumFactor", "damage", "cls"]) assert(k in L, name + ": lastImpact." + k + " missing");
+      assert(L.face === expectFace, `${name}: zone judged "${L.face}", expected "${expectFace}"`);
       const again = Dm.assess(P, L); assert(Math.abs(again.damage - L.damage) <= 1, `${name}: lastImpact.damage ${L.damage} is not what Damage.assess gives (${again.damage})`);
+      assert(Math.abs(L.damage - formula(L.cls, L.vehicleSpeed, L.face, L.lunging)) <= 1, `${name}: logged damage ${L.damage} vs formula ${formula(L.cls, L.vehicleSpeed, L.face, L.lunging)}`);
       const drop = h0 - s.dummy.health; assert(s.bodiesDestroyed > 0 || Math.abs(drop - L.damage) <= 1.5, `${name}: health fell by ${f1(drop)} but the logged damage is ${L.damage}`);
-      assert(L.vehicleSpeed >= 0 && L.vehicleSpeed <= P.classes[L.cls].speed * 1.02, `${name}: vehicleSpeed ${f1(L.vehicleSpeed)} is not the car's own speed (class speed ${P.classes[L.cls].speed}); the dummy's speed must not be in it`);
-      if (expectFactor !== null) assert(Math.abs(L.lungeFactor - expectFactor) <= 0.04, `${name}: lungeFactor ${L.lungeFactor} expected about ${expectFactor.toFixed(2)}`);
-      out.push(`${name}: ${L.cls} at ${f1(L.vehicleSpeed)} px/s, face ${L.face}, x${L.faceFactor} x${Number(L.lungeFactor).toFixed(2)} = ${L.damage}`); return { L, s, score: s.score - sc0 }; };
-    const stand = scenario("standing at the nose", (s, c) => touch(s, c, +1), NONE, "nose", 1);
-    const head = scenario("head-on lunge", (s, c) => { s.dummy.x = c.x + c.dirX * (c.length / 2 + R + 40); s.dummy.y = c.y; }, inp({ dx: -1, lunge: true }), "nose", 1 + I.lungeBonus);
-    const bug = scenario("diagonal lunge into the flank, with the car", (s, c) => { s.dummy.x = c.x - 14; s.dummy.y = c.y - c.width / 2 - R - 22; }, inp({ dx: 1, dy: 1, lunge: true }), "flank", 1 - I.lungeBonus * Math.SQRT1_2);
-    const tail = scenario("touching the tail", (s, c) => touch(s, c, -1), NONE, "tail", null);
-    assert(tail.L.damage === 0, "tail contact did damage"); assert(bug.s.bodiesDestroyed === 0, "the bug case still destroys the body");
-    const norm = (r) => r.L.damage / Math.max(1, r.L.vehicleSpeed * r.L.mass);   // damage per unit of vehicle momentum, so different cars can be compared
-    assert(norm(bug) < norm(stand) * 0.5, `the bug case pays ${bug.L.damage}; per unit of vehicle momentum that is not well below a standing nose hit (${stand.L.damage})`);
-    assert(norm(head) > norm(stand), "a head-on lunge does not pay more than standing still, per unit of vehicle momentum");
+      assert(L.vehicleSpeed >= 0 && L.vehicleSpeed <= P.classes[L.cls].speed * 1.02, `${name}: vehicleSpeed ${f1(L.vehicleSpeed)} is not the car's own speed`);
+      assert(L.lunging === expectLunge && L.lungeFactor === (expectLunge ? I.lungeMultiplier : 1), `${name}: lunging ${L.lunging}, lungeFactor ${L.lungeFactor}; expected ${expectLunge ? "a lunge (x" + I.lungeMultiplier + ")" : "no lunge (x1)"}`);
+      out.push(`${name}: ${L.cls} at ${f1(L.vehicleSpeed)} px/s, ${L.face} x${L.faceFactor}, lunge x${L.lungeFactor} = ${L.damage}`); return { L, s }; };
+    const stand = scenario("standing at the nose", (s, c) => touch(s, c, +1), NONE, "nose", false);
+    const head = scenario("head-on lunge", (s, c) => { s.dummy.x = c.x + c.dirX * (c.length / 2 + R + 40); s.dummy.y = c.y; }, inp({ dx: -1, lunge: true }), "nose", true);
+    const side = scenario("diagonal lunge into the flank", (s, c) => { s.dummy.x = c.x - 14; s.dummy.y = c.y - c.width / 2 - R - 22; }, inp({ dx: 1, dy: 1, lunge: true }), "flank", true);
+    const tail = scenario("touching the tail", (s, c) => touch(s, c, -1), NONE, "tail", false);
+    const norm = (r) => r.L.damage / Math.max(1e-9, r.L.momentumFactor);   // damage per unit of the car's momentum, so different cars compare
+    assert(near(norm(head), I.basePoints * I.lungeMultiplier, 0.03) && near(norm(stand), I.basePoints, 0.03), `per unit of momentum: head-on lunge ${f1(norm(head))}, standing ${f1(norm(stand))}`);
+    assert(norm(side) < norm(head), "a lunge into the flank pays as much as a head-on lunge"); assert(side.s.bodiesDestroyed === 0, "a flank lunge destroyed a fresh body");
     return out.join(" | ");
   });
 
   check("hit_during_any_lunge_step_counts_as_a_lunge", "A hit that lands on any step of a lunge, the final one included, is scored as a lunge (QA's finding on CR-002 build 1): swept over 200 head-on lunges started from slightly different distances", () => {
-    let tested = 0, finalStep = 0; const I = P.impact;
+    let tested = 0, finalStep = 0;
     for (let k = 0; k < 200; k++) { const s = mk({ level: 1, seed: 7 }); const c = waitForCar(s, fresh, 60); const serial = c.serial;
       s.dummy.x = c.x + c.length / 2 + R + 180 + k * 0.25; s.dummy.y = c.y; s.dummy.vx = 0; s.dummy.vy = 0; let input = inp({ dx: -1, lunge: true });
       for (let i = 0; i < 40; i++) { const was = s.dummy.lunging, before = s.lastImpact ? s.lastImpact.time : -1; Sim.step(s, input, DT); input = NONE; const L = s.lastImpact;
         if (L && L.time !== before && L.serial === serial) { if (was) { tested++; if (!s.dummy.lunging) finalStep++;
             assert(L.lunging === true, `start offset ${(180 + k * 0.25).toFixed(2)} px: a hit on a lunge step${s.dummy.lunging ? "" : " (the final one)"} was logged with lunging=false and lungeFactor ${L.lungeFactor}`);
-            assert(Math.abs(L.lungeFactor - (1 + I.lungeBonus)) <= 0.04, `start offset ${(180 + k * 0.25).toFixed(2)} px: head-on lunge hit has lungeFactor ${L.lungeFactor}, expected ${(1 + I.lungeBonus).toFixed(2)}`); }
+            assert(L.lungeFactor === I.lungeMultiplier, `start offset ${(180 + k * 0.25).toFixed(2)} px: lunge hit has lungeFactor ${L.lungeFactor}, expected ${I.lungeMultiplier}`); }
           break; } } }
     assert(tested >= 20, "only " + tested + " lunge hits were produced by the sweep"); return `${tested} hits during a lunge, ${finalStep} of them on the lunge's final step, all scored as lunges`;
   });
