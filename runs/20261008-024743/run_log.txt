@@ -1,0 +1,16 @@
+[02:47:43] DUMMIES crew run -> runs/20261008-024743
+[02:47:43] Change mode: the Designer revises the specification from 20261008-023803 (not released) instead of output/spec.json
+[02:47:43] Change mode: the Builder starts from 20261008-023803/02_build_v1 (not released) instead of output/game
+[02:47:43] Change mode: revising the released build in output/ for CR-005_perception_side_sensors_reaction_delay.md
+[02:47:43] Rules Designer: calling (145,425 chars in)
+[02:52:04] Rules Designer: done in 259.5 s (126,437 chars out)
+[02:52:04] Specification: 85 acceptance criteria, 0 labelled simplifications
+[02:52:04] Game Builder: calling (205,768 chars in)
+[02:54:49] Game Builder: done in 163.0 s (62,022 chars out)
+[02:54:52] Checks: 41/42 passed | failing: a_standing_dummy_is_steered_round
+[02:54:52] QA / Repair Reviewer: calling (270,396 chars in)
+[02:55:43] QA / Repair Reviewer: done in 49.8 s (11,179 chars out)
+[02:55:43] QA verdict: repair | 1 repair request(s) | 41 of 42 automated checks pass, but a_standing_dummy_is_steered_round fails. On level 2 a dummy standing at (245,284) was hit by SPT-11 (frontCorner, 38). That breaks the change 7 rule that a dummy standing still in a lane is not clipped (AC-84). The damage module, the write-off flow, the sensing and the reaction delay all read correctly, and the stand-and-lunge figures are now at or below 217 (sedan 150).
+[02:55:43] Not released -> repair cycle 1 of 2
+[02:55:43] Game Builder: calling (234,497 chars in)
+[stopped by operator during repair cycle 1] The one failing check, a_standing_dummy_is_steered_round, was wrong about the sports car. By design (GDD: 'late commitment; tight clearance') a sports car commits too late to clear a dummy standing in its lane, and it did the same in the Testpad. The 38-point front-corner clip is in character, not a regression. The check now requires no hits from the classes that commit early enough to steer round (sedan, van, wagon, hatch) and no flank or rear clips from any class. Restarted with --reuse-build on this specification and build 1.

@@ -131,6 +131,46 @@ Licensed ending if the certification target was reached. The renderer draws,
 from `state.writeOff`: a strong decaying screen shake, the dummy turning red,
 a small burst of particles, and the dummy gone before the animation ends.
 
+**Perception and reaction (CR-005).** Sensing is instant; reacting is not.
+
+- *Path zone:* with `a` the dummy's offset along the car's travel from the
+  car's centre and `b` across it, a point is in the path zone if
+  `0 < a < max(detect, perception.frontRange)` and `|b| < margin` (the
+  unit's dials). `sees` is true if either the dummy's actual position or its
+  predicted position (velocity x the unit's look-ahead) is in the path zone:
+  prediction only adds to what a car senses. A lock is released only when
+  the dummy's actual position is fully behind the car (behind its rear edge
+  by more than the dummy's radius); until then the car holds its offset. The longer range is for sensing only:
+  the commit line (`detect x commitFrac`) and the Testpad brake distances
+  (`detect x brakeLead`) still use the unit's own `detect`.
+- *Side sensors:* measured from the centre of the nose, using the dummy's
+  actual position: within `perception.sideRadius` and no more than
+  `perception.sideHalfAngleDeg` off the car's heading, and not in the path
+  zone.
+- *Aware:* a car is aware once it has sensed the dummy (either way)
+  continuously for `perception.reactionDelay` seconds; the timer resets when
+  sensing stops. Everything a car does because of the dummy (slowing,
+  braking, committing, the hatchback's flip) requires it to be aware. A
+  commitment already made stays made. The delay never applies to cars
+  giving way to each other, to barriers or to solidity.
+- *Speed because of the dummy* (replaces the Testpad's braking and caution
+  rules; speed still slews at the existing rates):
+  not aware: cruise, and the dummy's speed has no effect;
+  aware with the dummy only in a side sensor (wary): cruise x
+  `warySpeedFactor`;
+  aware with the dummy in the path and not committed (unsure): cruise x
+  `unsureSpeedFactor`, or the Testpad brake factor for that class and
+  distance if lower;
+  committed, swerve not yet complete (sideways offset more than 2 px from
+  the line it committed to): as unsure;
+  committed and swerve complete: cruise, ignoring the dummy;
+  committed but unable to swerve clear: brakes as before.
+  The Testpad caution factor (dummy moving fast) multiplies the wary and
+  unsure cases only.
+- The renderer draws the side sensors (lit while sensing), draws the path
+  zone as the rectangle that is actually tested, and shows a distinct cue
+  when a car becomes aware.
+
 **Car-to-car rule (all levels).** Every car has a serial number that
 increases with each spawn. A car gives way only to cars with a lower serial
 number: if continuing would bring it into contact with such a car, it slows
@@ -177,7 +217,10 @@ Exports:
   perception, commitment and swerving, braking, give-way, road limits and
   removal live in it. It exposes at least `Vehicles.step(state, dt)` (advance
   every car one step) and `Vehicles.cruiseSpeed(params, cls)` (a class's
-  undisturbed speed). `step` calls it; nothing outside it moves a car.
+  undisturbed speed) and `Vehicles.senses(state, car, px, py)` -> `"path" |
+  "side" | null` (pure geometry: which sensor of this car, with its unit's
+  current dials, a dummy standing still at that point would be in). `step`
+  calls it; nothing outside it moves a car.
 - `createSim(options)` -> `state`. Options, all optional:
   `seed` (number, default 1), `level` (1, 2 or 3, default 1),
   `traffic` (boolean, default true; false means no car is ever spawned),
@@ -221,7 +264,11 @@ state.cars = [ {
   dirX, dirY,           travel direction, one of (1,0) (-1,0) (0,1) (0,-1)
   length, width,        length is along the travel direction
   speed,                current speed, px/s
-  sees: boolean,        dummy is inside its detection zone
+  sees: boolean,        dummy is inside its path zone right now
+  wary: boolean,        dummy is inside a side sensor right now (and not in
+                        the path zone)
+  aware: boolean,       it has sensed the dummy continuously for
+                        perception.reactionDelay and may react
   lock: -1 | 0 | 1,     committed side, 0 = not committed
   braking: boolean,     true on every step in which it is slowing or held
   hit: boolean } ]      this car has already had its impact
@@ -283,6 +330,8 @@ dummy:   { radius, walkSpeed, runSpeed, rampTime, lungeDistance,
 impact:  { basePoints, refSpeed, refMass, maxPay, zoneNose, zoneFrontCorner,
            zoneFlank, zoneRearCorner, zoneTail, lungeMultiplier }
 writeOff: { duration }
+perception: { reactionDelay, sideRadius, sideHalfAngleDeg, warySpeedFactor,
+              unsureSpeedFactor, frontRange }
 caution: { max }
 service: { delay, fullTime }
 classes: { sedan: { label, width, length, speed, mass, swerve, commitFrac, flip,

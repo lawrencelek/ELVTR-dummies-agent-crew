@@ -199,7 +199,7 @@ function updateAware(){
 }
 function drawAware(c){
   if(!c.aware) return;
-  var o = awareMap[c.serial], age = o ? nowT - o.t : 9, y;
+  var o = awareMap[c.serial], age = o ? nowT - o.t : 9, y = c.y - Math.max(c.width, c.length * (c.dirY ? 1 : 0)) / 2 - 12;
   if(c.dirY) y = c.y - c.length / 2 - 12;
   else y = c.y - c.width / 2 - 14;
   ctx.save(); ctx.translate(c.x, y);
@@ -215,14 +215,13 @@ function drawCar(c){
   var u = S.fleet[c.unit], cl = P.classes[c.cls], D = SIM.dials(S, u), ang = Math.atan2(c.dirY, c.dirX);
   ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(ang);
   if(showPerception && S.mode === "play"){
-    var pc = S.params.perception, sr = pc.sideRadius, sa = pc.sideHalfAngleDeg * Math.PI / 180;
-    var rng = Math.max(D.detect, pc.frontRange);
+    var pc = P.perception, sr = pc.sideRadius, sa = pc.sideHalfAngleDeg * Math.PI / 180;
     ctx.fillStyle = c.wary ? "rgba(232,180,0,.28)" : "rgba(230,234,236,.05)";
     ctx.strokeStyle = c.wary ? "rgba(232,180,0,.8)" : "rgba(230,234,236,.18)"; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(c.length/2, 0); ctx.arc(c.length/2, 0, sr, -sa, sa); ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.fillStyle = c.sees ? "rgba(242,106,27,.24)" : "rgba(230,234,236,.07)";
-    ctx.fillRect(0, -D.margin, rng, D.margin * 2);
-    if(c.sees){ ctx.strokeStyle = "rgba(242,106,27,.8)"; ctx.strokeRect(0, -D.margin, rng, D.margin * 2); }
+    ctx.fillRect(0, -D.margin, D.detect, D.margin * 2);
+    if(c.sees){ ctx.strokeStyle = "rgba(242,106,27,.8)"; ctx.strokeRect(0, -D.margin, D.detect, D.margin * 2); }
     if(cl.swerve){
       ctx.strokeStyle = "rgba(230,234,236,.30)"; ctx.setLineDash([5,5]); ctx.lineWidth = 1;
       var ca = D.detect * cl.commitFrac;

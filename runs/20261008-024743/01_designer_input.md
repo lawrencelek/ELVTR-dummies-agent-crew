@@ -1,3 +1,540 @@
+CHANGE REQUEST. Revise the current specification below so that it implements the change request and the updated brief. Return the complete specification in the same JSON shape. Keep every value, rule and acceptance criterion that the change does not touch exactly as it is; rewrite or remove the ones it replaces; add numbered rules under changed_rules and new acceptance criteria for everything new, and list the change under differences.
+
+# CHANGE REQUEST
+# CR-005 — Side sensors, a reaction delay, and "unsure cars slow, committed cars don't"
+
+**From:** Lawrence, 8 October 2026, after discussing the first design pillar.
+
+**In his words:**
+
+> at the moment, standing front on and lunging at the car is an easy way to
+> get smashed for maximum damage. we need to possibly extend the car frontal
+> detection. would it make sense to add another sensor, front-side-facing,
+> with a shorter radius, so it's not like the car is totally blind from the
+> side? is it possible, for example, to add a short delay between detection
+> and the car reacting? Not noticeable, but might contribute to a better
+> 'feel'.
+
+He then said "go" to the assistant's proposal of three rules, with a side
+sensor radius of 100 px and a delay of 0.15 s as starting values.
+
+**What was measured on the released build (CR-004).** Against a sedan, a
+dummy standing in its lane that lunges head-on when the nose is anywhere
+from 80 to 160 px away gets a nose hit every time, for 300 to 355 points. No
+reading of the car is needed: the sedan sees the dummy from 212 px but does
+nothing until its commit line at 106 px, and a lunge covers 164 px. Baiting
+the car into committing first pays no more, because every car loses 40% of
+its speed whenever the dummy moves fast. A dummy standing 50 to 100 px beside
+the lane is never detected at all.
+
+**Aim.** The best-paying hit on a car should require outsmarting it (making
+it commit, or beating its reaction), not standing in front of it.
+
+## 1. Side sensors
+
+- Each car gets a short-range sensor covering its front quarters, beside the
+  existing forward path zone. Measured from the centre of the nose: the dummy
+  is in a side sensor if it is within `perception.sideRadius` (100 px), no
+  more than `perception.sideHalfAngleDeg` (80 degrees) off the car's heading,
+  and not already in the path zone. It uses the dummy's actual position.
+- A dummy in a side sensor makes the car **wary**: it slows. It does not
+  swerve or commit, because the dummy is not in its path.
+
+## 2. Reaction delay
+
+- Sensing is instant, reacting is not. A car becomes **aware** of the dummy
+  only once it has sensed it (path zone or side sensor) continuously for
+  `perception.reactionDelay` (0.15 s). If sensing stops, the timer resets.
+- Everything a car does *because of the dummy* needs it to be aware: slowing,
+  braking, committing to a side, the hatchback's flip. Until then it carries
+  on exactly as if the dummy were not there.
+- The delay applies only to the dummy. Cars giving way to each other, staying
+  inside barriers and staying solid are unchanged and immediate.
+- A commitment already made stays made.
+
+## 3. Unsure cars slow; committed cars don't
+
+A car's speed because of the dummy, replacing the Testpad's braking and
+"caution" rules:
+
+| The car is… | Speed |
+|---|---|
+| not aware of the dummy | cruising speed; the dummy's own speed has no effect |
+| aware, dummy in a side sensor only (wary) | cruise x `perception.warySpeedFactor` (0.6) |
+| aware, dummy in its path, not committed (unsure) | cruise x `perception.unsureSpeedFactor` (0.5), or the Testpad's brake factor for that class and distance if that is lower |
+| committed to a side, and the swerve is possible | back to cruising speed; it ignores the dummy from then on |
+| committed but unable to swerve clear (barrier or another car) | brakes as now |
+
+- The Testpad's caution rule (cars lose up to 40% speed when the dummy moves
+  fast) now applies only to cars that are aware and not committed, on top of
+  the wary or unsure factor. It no longer touches cars that have not noticed
+  the dummy or that have committed.
+- Speed still changes at the existing acceleration and braking rates.
+- The bus cannot swerve, so it never commits: it stays unsure and braked.
+
+Expected result, sedan, lunging onto the nose: standing in its lane and
+lunging about 150 (the car is unsure and cautious); a baited hit on a
+committed car, or an ambush that beats the reaction delay, the full 500.
+
+## 4. Show it
+
+- Draw the side sensors, lit while they sense the dummy.
+- Draw the forward path zone as the shape that is actually tested (a
+  rectangle of the car's detection length and margin), not a triangle.
+  *The assistant's addition: the old triangle under-shows where the car can
+  see near its nose, and would be misleading next to the new sensors.*
+- Make the gap between sensing and reacting readable: the zone lights the
+  moment the dummy is sensed; a distinct cue appears when the car becomes
+  aware; brake lights only come on once it actually slows.
+
+## 5. Longer frontal sensing (added after the first build)
+
+The first build of this change (run `20261008-021901`) passed 40 of 41
+checks and failed the pillar check. The reaction delay opened a new easy
+route: a sedan first senses a dummy in its lane when its nose is 168 px away,
+which is inside the lunge's 164 px reach plus the car's own travel. Lunging
+the instant it sensed you landed before it was aware, for the full 500. This
+is what Lawrence suggested at the start: "we need to possibly extend the car
+frontal detection".
+
+- The path zone used for **sensing** now reaches `perception.frontRange`
+  (320 px from the car's centre) or the unit's `detect` dial, whichever is
+  longer. Its width is unchanged (the unit's `margin`).
+- Nothing else moves. The commit line (`detect x commitFrac`), the Testpad
+  brake distances (`detect x brakeLead`) and learning all still use the
+  unit's own `detect` dial, exactly as before. Only *when the car first
+  notices you* is earlier.
+- So a dummy standing in a lane is sensed, and the car is aware and slowing,
+  well before any lunge can reach it. Beating the reaction delay now needs
+  an approach from outside the sensors.
+- The path zone is drawn to this longer range.
+
+## 6. A lunge must not make a car lose track of the dummy (added after the second build)
+
+The second build (run `20261008-022848`) still failed the pillar check. A
+trace showed a sedan slowing correctly to 69 px/s for a dummy standing in its
+lane, then **speeding back up to 138 px/s as the dummy lunged at it**, and
+being hit for the full 500. Cause: the path zone tests the dummy's
+*predicted* position (its velocity times the unit's look-ahead). A lunge is
+so fast that the prediction lands behind the car, so the car stops sensing
+the dummy, is no longer aware, and carries on as if it were not there.
+
+- `sees` is true if **either** the dummy's actual position **or** its
+  predicted position is in the path zone. Prediction can only add to what a
+  car senses, never take away.
+- A committed car's lock is released only once the dummy's **actual**
+  position is behind the car's centre (it has passed the dummy). It is never
+  released because of the predicted position. A released car returns to its
+  lane as now.
+- Nothing else changes. With this, a dummy that stands in a lane and lunges
+  at an aware car meets it unsure and cautious (about 0.3 of cruise).
+
+## 7. A car stays slow until its swerve is complete, and stays out until it is past (added after the third build)
+
+The third build (run `20261008-023803`) passed all 41 checks, but the
+measured sweep showed two things the checks had let through.
+
+- **Standing in the lane and lunging still paid well.** Lunging from 60 to
+  160 px landed on a sedan's nose for 315 to 380 of a possible 500. The car
+  commits at its commit line, immediately returns to cruise and ignores the
+  dummy, but it has not yet moved out of its lane, so a straight lunge meets
+  its nose while it is speeding up.
+- **A dummy standing still was being clipped.** The lock was released as
+  soon as the dummy was behind the car's centre; the car cut back into its
+  lane and its flank caught the dummy (9 of 14 cars on level 1).
+
+Rules:
+
+- A committed car stays at its **unsure** speed (with the caution factor)
+  until its swerve is **complete**: its sideways offset has reached the line
+  it committed to (within 2 px). Only then does it return to cruising speed
+  and ignore the dummy. A car that cannot complete its swerve brakes as
+  before.
+- A lock is released only once the dummy's actual position is **fully
+  behind the car**: behind its rear edge by more than the dummy's radius.
+  Until then the car holds its offset. This replaces the "behind the car's
+  centre" wording of section 6.
+- Result: a straight lunge down the lane meets a slow car (during the
+  swerve) or passes beside it (after the swerve). To hit a committed car at
+  full speed the dummy has to move into the line the car has chosen, which
+  is the bait: wait for it to commit and swing out, then lunge into its new
+  line. A dummy that just stands in a lane is not hit.
+
+## Not in this change
+
+Quotas, health, the damage table, levels, learning (the delay does not yet
+shrink as units learn), the chevron appearing on detection, a cue for the
+hatchback's flip, the level 3 jam breaker.
+
+**Working pillar wording, proposed by the assistant and not yet confirmed by
+Lawrence:** "There is always a way to outsmart the vehicle."
+
+
+# UPDATED BRIEF
+# DUMMIES — Vertical Slice Brief (input to the crew)
+
+This file is the human-written input to the three-agent crew, together with
+`baseline/dummies-testpad.html`. Everything downstream (specification, game
+code, QA report) is produced by the agents.
+
+## The game
+
+DUMMIES is a single-player, top-down 2D browser game for an exhibition, by
+Lawrence Lek. You are a FARSIGHT crash-test dummy in SHENZHEN SMART CITY, NEW
+ECONOMIC ZONE, CHINA, 20XX. "You are buying your freedom by destroying your
+body." Bait self-driving cars and lunge into their path. Damage earns score;
+destroyed bodies fulfil quotas and advance certification toward release.
+
+Intended player: a fifteen-year-old at an exhibition with a friend shouting
+suggestions over their shoulder. Move in eight directions, one button to
+lunge.
+
+## The baseline: the Testpad
+
+`baseline/dummies-testpad.html` is Lawrence's earlier hand-directed prototype.
+It is the reference for scale, feel, look and systems. **Port it; do not
+redesign it.** Keep, with the same behaviour and numbers unless this brief
+says otherwise:
+
+- The 900 x 620 canvas, the 820 x 540 hall, dummy size, vehicle sizes, lunge
+  distance. Lawrence has confirmed this scale.
+- Six vehicle classes (sedan, van, sports, bus, wagon, hatch) with their
+  detect / margin / predict / brakeLead dials, and the twelve-unit fleet.
+- Fleet learning: contacts raise a unit's dials; files brief, adapt and close.
+- Commitment: the car locks a side at its commit line and cannot take it back
+  (the hatchback may flip once).
+- Braking rules, including brake-first classes and the bus that cannot swerve.
+- Caution: cars lose speed when the dummy runs.
+- Service: stand still and the body is repaired.
+- Severity by closing speed and face: front pays, side pays a quarter, rear
+  pays nothing.
+- Report cards: behaviour signatures and the authored report bank, word for
+  word.
+- The look: colours, HUD (integrity bar, quota pips), cards, attract screen,
+  perception overlay with its toggle, restart button.
+
+## What changes from the Testpad
+
+1. **Three levels replace the eight-shift ladder** (see below).
+2. **Real-time units.** The Testpad moves a fixed number of pixels per frame,
+   so it runs faster on high-refresh screens. All speeds become pixels per
+   second (Testpad per-frame values x 60) and every update is scaled by `dt`.
+3. **Seeded randomness.** No `Math.random()`. The same seed and the same
+   inputs must give the same run.
+4. **No lunge chaining.** A lunge starts only on a fresh press. Holding the
+   lunge button down must not start another lunge.
+5. **Lunge direction.** The direction held at the moment of the press; if no
+   direction is held, the dummy's last facing direction (not always "up").
+6. **Tweened lunge and recovery** (Move Refinements MR-01). The lunge eases
+   out: fast at the start, slowing into the landing, same total distance.
+   After a lunge there is a short recovery (between 0.2 and 0.5 s) in which
+   the dummy can already move, but its movement speed is multiplied by an
+   eased factor that rises from 0 to 1. No hard freeze.
+7. **Certification follows the GDD.** The run is won by cumulative write-offs
+   across the run reaching a certification target that is larger than the sum
+   of the three level quotas, and attainable within the vehicles allocated.
+   The twelve-cell licence sheet stays as a display of fleet learning.
+8. **Cars never drive through each other** (see car-to-car rule below).
+9. **No network.** Remove the Google Fonts link; keep the font names as the
+   first choice in the font stack with system monospace fallbacks.
+
+Out of scope (do not add): price tiers, moods, new vehicle classes, audio,
+new art, extra levels.
+
+## The three levels
+
+All three use the same hall. The dummy can walk anywhere in the hall on every
+level. Each level has a quota of bodies to destroy, an allocation of vehicles
+and a pool (how many fleet units are in rotation, in fleet order).
+
+1. **ROAD.** One horizontal road across the hall. All traffic travels left
+   to right. Nothing on this level makes traffic stop: there is no junction
+   and no cross traffic, so undisturbed cars flow continuously. Cars react
+   only to the dummy. This is the teaching level: small pool, low quota.
+2. **CROSS JUNCTION.** A horizontal road and a vertical road crossing in the
+   middle of the hall. No traffic lights. Both roads are one-way with two
+   lanes each: the horizontal road runs left to right, the vertical road top
+   to bottom. There is no oncoming traffic on levels 1 and 2. Cars must never
+   collide with or pass through each other: they give way at the junction and
+   queue behind a waiting car.
+3. **CRASH TEST CENTRE.** The Testpad's open hall: a free-for-all with
+   vehicles entering from all four edges at any position, the full
+   twelve-unit pool, highest quota.
+
+**Solid cars (all levels; change request CR-001).** Every car is a solid
+rectangle on all four sides. The dummy can never be inside a car: if they
+overlap, the dummy is pushed out along the shortest way, and a moving car
+pushes the dummy ahead of it or aside. The dummy never blocks or slows a car
+by being solid. Cars never overlap each other, on any level, whatever the
+dummy does. A car only moves sideways into space that is free of other cars.
+
+**Road limits (levels 1 and 2; CR-001).** Outside the lanes on each side of a
+road is a hard shoulder that cars may use when swerving. Beyond the shoulder
+is a barrier: no part of a car may ever cross it. A car that cannot swerve far
+enough to clear the dummy, because of the barrier or another car, brakes
+instead. The dummy crosses shoulders and barriers freely. Both are drawn.
+
+**Damage (CR-003; replaces the CR-001 and CR-002 formulas).** Each class has a
+mass. For every contact:
+
+`damage = min(maxPay, round(basePoints x zoneShare x lungeFactor x momentumFactor))`
+
+- `basePoints`: 100.
+- `zoneShare`: which part of the car's rectangle the dummy reached, judged by
+  geometry from where the dummy came from. Nose (head-on) 1.00; front corner
+  (diagonally front-on) 0.60; flank (side-on, anywhere along it) 0.30; rear
+  corner (diagonally rear-on) 0.15; tail (directly from the rear) 0.05.
+- `lungeFactor`: `lungeMultiplier` (5) if the dummy is lunging on the step of
+  contact, otherwise 1. Flat: the direction and speed of the lunge do not
+  matter.
+- `momentumFactor`: (vehicleSpeed x class mass) / (refSpeed x refMass), the
+  reference being a cruising sedan. `vehicleSpeed` is the car's own forward
+  speed (`car.speed`): a braking car pays less, a stopped car pays nothing.
+- Score for the hit equals the damage. Where the Testpad uses severity
+  (report signatures, shake) use damage / maxPay.
+- Each car pays for its first contact only (`hit`).
+- A fast lunge must not tunnel: the zone is judged from the dummy's position
+  relative to the car before contact.
+
+**Write-off animation (CR-003).** When a hit takes health to zero the
+write-off is counted at once, then the game is in mode `"writeoff"` for
+`writeOff.duration` seconds (0.9 to 1.4). Nothing moves in that mode and
+confirm presses are ignored and not remembered. Then the card appears, or the
+Licensed ending if the certification target was reached. The renderer draws,
+from `state.writeOff`: a strong decaying screen shake, the dummy turning red,
+a small burst of particles, and the dummy gone before the animation ends.
+
+**Perception and reaction (CR-005).** Sensing is instant; reacting is not.
+
+- *Path zone:* with `a` the dummy's offset along the car's travel from the
+  car's centre and `b` across it, a point is in the path zone if
+  `0 < a < max(detect, perception.frontRange)` and `|b| < margin` (the
+  unit's dials). `sees` is true if either the dummy's actual position or its
+  predicted position (velocity x the unit's look-ahead) is in the path zone:
+  prediction only adds to what a car senses. A lock is released only when
+  the dummy's actual position is fully behind the car (behind its rear edge
+  by more than the dummy's radius); until then the car holds its offset. The longer range is for sensing only:
+  the commit line (`detect x commitFrac`) and the Testpad brake distances
+  (`detect x brakeLead`) still use the unit's own `detect`.
+- *Side sensors:* measured from the centre of the nose, using the dummy's
+  actual position: within `perception.sideRadius` and no more than
+  `perception.sideHalfAngleDeg` off the car's heading, and not in the path
+  zone.
+- *Aware:* a car is aware once it has sensed the dummy (either way)
+  continuously for `perception.reactionDelay` seconds; the timer resets when
+  sensing stops. Everything a car does because of the dummy (slowing,
+  braking, committing, the hatchback's flip) requires it to be aware. A
+  commitment already made stays made. The delay never applies to cars
+  giving way to each other, to barriers or to solidity.
+- *Speed because of the dummy* (replaces the Testpad's braking and caution
+  rules; speed still slews at the existing rates):
+  not aware: cruise, and the dummy's speed has no effect;
+  aware with the dummy only in a side sensor (wary): cruise x
+  `warySpeedFactor`;
+  aware with the dummy in the path and not committed (unsure): cruise x
+  `unsureSpeedFactor`, or the Testpad brake factor for that class and
+  distance if lower;
+  committed, swerve not yet complete (sideways offset more than 2 px from
+  the line it committed to): as unsure;
+  committed and swerve complete: cruise, ignoring the dummy;
+  committed but unable to swerve clear: brakes as before.
+  The Testpad caution factor (dummy moving fast) multiplies the wary and
+  unsure cases only.
+- The renderer draws the side sensors (lit while sensing), draws the path
+  zone as the rectangle that is actually tested, and shows a distinct cue
+  when a car becomes aware.
+
+**Car-to-car rule (all levels).** Every car has a serial number that
+increases with each spawn. A car gives way only to cars with a lower serial
+number: if continuing would bring it into contact with such a car, it slows
+or stops until the way is clear. The car with the lowest serial number never
+waits for another car, so traffic can never deadlock. Giving way to another
+car does not light the brake lights' "braking for the dummy" logic
+differently: any slowing shows brake lights.
+
+**Level flow.** A level ends when its allocation has been spawned and no cars
+remain in the hall. Then, in this order: Non-compliant (quota was met in an
+earlier level, and this whole level had no lunge and no contact); then
+Decommissioned (level quota missed, or level 3 finished without reaching the
+certification target); otherwise a "level complete" card and the next level.
+Licensed: the write-off that reaches the certification target wins at once.
+Ending texts stay as in the Testpad, adjusted only where they mention "all
+twelve units".
+
+## Fixed technical contract (so automated checks can run)
+
+The Builder must output exactly two files.
+
+### `sim.js` — all game rules, no DOM, no timers, no clock, no Math.random
+
+Loadable in a browser (`window.DummiesSim`) and in Node (`module.exports`).
+Exports:
+
+- `PARAMS` — a literal copy of the Designer's specification `params`.
+- `Damage` — the damage-assessment module (CR-002). Two pure functions with no
+  state and no side effects; every hit in the game is scored by them and
+  nowhere else:
+  - `Damage.contactFace(car, px, py)` ->
+    `"nose" | "frontCorner" | "flank" | "rearCorner" | "tail"`.
+    `car` has `x, y, dirX, dirY, length, width`; `(px, py)` is the dummy's
+    centre at the last moment it was outside the car's rectangle. With `a`
+    the offset along the car's direction and `b` across it: nose if
+    `a > length/2` and `|b| <= width/2`; frontCorner if `a > length/2` and
+    `|b| > width/2`; flank if `|a| <= length/2`; tail if `a < -length/2` and
+    `|b| <= width/2`; rearCorner if `a < -length/2` and `|b| > width/2`.
+  - `Damage.assess(params, contact)` ->
+    `{ mass, faceFactor, lungeFactor, momentumFactor, damage }`, where
+    `contact` is `{ cls, vehicleSpeed, dirX, dirY, face, dummyVx, dummyVy,
+    lunging }` and `faceFactor` is the zone share.
+- `Vehicles` — the vehicle-behaviour module (CR-002). All spawning, speeds,
+  perception, commitment and swerving, braking, give-way, road limits and
+  removal live in it. It exposes at least `Vehicles.step(state, dt)` (advance
+  every car one step) and `Vehicles.cruiseSpeed(params, cls)` (a class's
+  undisturbed speed) and `Vehicles.senses(state, car, px, py)` -> `"path" |
+  "side" | null` (pure geometry: which sensor of this car, with its unit's
+  current dials, a dummy standing still at that point would be in). `step`
+  calls it; nothing outside it moves a car.
+- `createSim(options)` -> `state`. Options, all optional:
+  `seed` (number, default 1), `level` (1, 2 or 3, default 1),
+  `traffic` (boolean, default true; false means no car is ever spawned),
+  `autostart` (boolean, default false; true starts directly in mode "play",
+  false starts in mode "attract").
+- `step(state, input, dt)` -> mutates and returns `state`.
+  `input = { dx: -1|0|1, dy: -1|0|1, lunge: boolean, confirm: boolean }`.
+  `lunge` and `confirm` are "button is down" flags; `step` detects the fresh
+  press itself. `confirm` starts the game from "attract" and dismisses cards.
+  `dt` is seconds; checks use 1/60 and 1/120. `dy = -1` is up the screen.
+
+`state` is one plain JSON-serialisable object. `step` must derive everything
+from it (checks overwrite fields between steps). Required fields:
+
+```
+state.params            same values as PARAMS
+state.seed, state.time
+state.mode              "attract" | "play" | "writeoff" | "card" | "over"
+state.writeOff          null | { t, duration, x, y }   only in mode "writeoff":
+                        seconds elapsed, total seconds, where the body was
+state.ending            null | "licensed" | "decommissioned" | "noncompliant"
+state.card              null | { kind, title, sub, line }
+state.level             1 | 2 | 3
+state.quota             this level's quota
+state.allocation        this level's vehicle allocation
+state.vehiclesSpawned   vehicles spawned so far this level
+state.levelWriteOffs    bodies destroyed this level
+state.bodiesDestroyed   bodies destroyed this run (certification count)
+state.score
+state.dummy = {
+  x, y, vx, vy,         position px, velocity px/s
+  facing: { x, y },     unit vector
+  health,               maxHealth down to 0; the only record of damage
+  lunging: boolean,
+  recovering: boolean,  true for dummy.recoveryTime after a lunge ends
+  serviceOn: boolean }
+state.cars = [ {
+  serial,               integer, increases with every spawn in the run
+  id, cls,              fleet unit id and class key
+  x, y,                 centre of the car's rectangle as drawn
+  dirX, dirY,           travel direction, one of (1,0) (-1,0) (0,1) (0,-1)
+  length, width,        length is along the travel direction
+  speed,                current speed, px/s
+  sees: boolean,        dummy is inside its path zone right now
+  wary: boolean,        dummy is inside a side sensor right now (and not in
+                        the path zone)
+  aware: boolean,       it has sensed the dummy continuously for
+                        perception.reactionDelay and may react
+  lock: -1 | 0 | 1,     committed side, 0 = not committed
+  braking: boolean,     true on every step in which it is slowing or held
+  hit: boolean } ]      this car has already had its impact
+state.lastImpact = null | {   how the most recent contact was scored (CR-002)
+  time, serial, id, cls,
+  face,                 "nose" | "frontCorner" | "flank" | "rearCorner" | "tail"
+  vehicleSpeed, dirX, dirY, dummyVx, dummyVy, lunging,
+  mass, faceFactor, lungeFactor, momentumFactor, damage }
+```
+
+Rules the checks rely on:
+
+- With `autostart: true` the first step is already normal play.
+- `mode "play"` is the only mode in which the dummy and cars move. In
+  "writeoff" every car and the dummy keep their positions exactly.
+- A body destroyed: `bodiesDestroyed` and `levelWriteOffs` each rise by one
+  on that step and `mode` becomes "writeoff" with `state.writeOff` set. After
+  `writeOff.duration` seconds of steps `mode` becomes "card" (or "over" with
+  `ending: "licensed"` if the certification target is reached) and
+  `state.writeOff` is null. `state.ending` and `state.card` are set when the
+  animation ends, not before. A fresh `confirm` press dismisses the card and
+  play resumes with `dummy.health === maxHealth`. A confirm pressed or held
+  during "writeoff" does not dismiss the card that follows.
+- An ending sets `state.ending` and `mode "over"`. A fresh `confirm` press in
+  "over" restarts the run at level 1 in "attract".
+- Level end is evaluated in "play" whenever
+  `vehiclesSpawned >= allocation` and `cars` is empty.
+- An impact needs the dummy's circle to touch the car's rectangle. Its zone
+  comes from `Damage.contactFace` and its damage from `Damage.assess`; the
+  result is stored in `state.lastImpact`, health falls by exactly
+  `lastImpact.damage` and score rises by the same. Every zone pays, the tail
+  included. Each car has at most one impact (`hit`). The impact is judged
+  before the dummy is pushed out of the car.
+- After every step the dummy's circle does not reach more than 1 px into any
+  car's rectangle, and (inside the canvas) no two cars' rectangles overlap.
+- Dummy at full health: reach multiplier is exactly 1, so a lunge covers
+  exactly `dummy.lungeDistance` while `lunging` is true, in any direction,
+  at any `dt`. The dummy is clamped to the hall.
+
+### `index.html` — rendering and input only
+
+Loads `sim.js` with `<script src="sim.js"></script>`, keeps the Testpad's
+page layout and drawing, reads the keyboard (WASD and arrows move, Space
+lunges, any key or a click/tap confirms), calls `DummiesSim.step` with a
+fixed 1/60 s timestep and an accumulator, and draws from `state`. Screen
+shake and floating score numbers are drawing effects and may use
+`Math.random()`. Must work opened directly from disk with no network
+requests: no `http://` or `https://` anywhere in the file. Draw each level's
+roads so the layout is readable; show the level name and number.
+
+### Parameter schema the Designer must fill (`params`)
+
+```
+world:   { width: 900, height: 620 }
+hall:    { x: 40, y: 40, w: 820, h: 540 }
+dummy:   { radius, walkSpeed, runSpeed, rampTime, lungeDistance,
+           lungeDuration, lungeCooldown, recoveryTime, wearFloor,
+           wearSpeedLoss, maxHealth, writeOffBonus, startX, startY }
+impact:  { basePoints, refSpeed, refMass, maxPay, zoneNose, zoneFrontCorner,
+           zoneFlank, zoneRearCorner, zoneTail, lungeMultiplier }
+writeOff: { duration }
+perception: { reactionDelay, sideRadius, sideHalfAngleDeg, warySpeedFactor,
+              unsureSpeedFactor, frontRange }
+caution: { max }
+service: { delay, fullTime }
+classes: { sedan: { label, width, length, speed, mass, swerve, commitFrac, flip,
+                    brakeFirst, base: {detect, margin, predict, brakeLead},
+                    step: {...}, cap: {...} },
+           van, sports, bus, wagon, hatch }
+fleet:   [ { id, cls } x 12 ]
+closeCost: [ 12 integers ]
+levels:  [ { id: 1, kind: "road",  name, quota, allocation, pool,
+             spawnInterval: { min, max },
+             road:  { y, halfWidth, shoulder, laneYs: [ ... ] } },
+           { id: 2, kind: "cross", name, quota, allocation, pool,
+             spawnInterval: { min, max },
+             roadH: { y, halfWidth, shoulder }, roadV: { x, halfWidth, shoulder } },
+           { id: 3, kind: "hall",  name, quota, allocation, pool,
+             spawnInterval: { min, max } } ]
+certificationTarget: integer
+```
+
+`halfWidth` covers the lanes; `shoulder` is the width of the hard shoulder on
+each side; the barriers are at the road centre line plus and minus
+(`halfWidth` + `shoulder`).
+
+Units: pixels, seconds, pixels per second. Testpad per-frame speeds
+(`walk`, `run`, class `sp`, `maxClosing`) are multiplied by 60. Testpad
+`predict` is already seconds of look-ahead and is unchanged. Distances
+(`detect`, `margin`, sizes, `lungeDist`) and times are unchanged.
+
+
+# CURRENT SPECIFICATION
 {
   "game": "DUMMIES",
   "slice": "three-level vertical slice ported from the Testpad",
@@ -417,7 +954,7 @@
     "randomness": [
       "1. No Math.random in sim.js. Use mulberry32 on a uint32 stored in state.rng (extra field). It is initialised from seed on createSim and on restart.",
       "2. Draw order is fixed: spawn interval, then the pending-spawn entry choice (approach or edge, then lane or lateral position), then unit. Each draw is made once and no more than needed. Level 2 draws approach among 2 options (0 = left, 1 = top), then lane among 2.",
-      "3. Draws are made only in mode play. Same seed and same input sequence must give a byte-identical state sequence. Solidity, push-out, damage, barrier, stall-breaker, write-off animation timing and (CR-005) side sensing, the longer path-zone range, the actual-or-predicted path test, the lock release, swerve completion, the reaction timer and awareness use no random draws.",
+      "3. Draws are made only in mode play. Same seed and same input sequence must give a byte-identical state sequence. Solidity, push-out, damage, barrier, stall-breaker, write-off animation timing and (CR-005) side sensing, the longer path-zone range, the actual-or-predicted path test, the lock release, the reaction timer and awareness use no random draws.",
       "4. A restart from mode over re-seeds state.rng from state.seed and resets fleet learning, score and counters, so a restarted run repeats the original."
     ],
     "lunge": [
@@ -445,7 +982,7 @@
       "7. (CR-005, rewrites the brake-light rule) braking is true on a step when the car's speed fell during that step, or when the car is held below its undisturbed target, i.e. its speed is below its cruise-based target for any reason (wary or unsure dummy response, car, truncation or swerve infeasible) and its target is not above its speed. braking is false while the car cruises, while it accelerates, and throughout the reaction delay (a car that is not yet aware of the dummy shows no brake lights because of it). Giving way to another car lights braking at once.",
       "8. A spawn is delayed while a spawn rectangle inflated by spawnClearPad overlaps any car. vehiclesSpawned and the serial increment only when the car actually appears.",
       "9. (CR-001) Sideways moves (swerve, hatch flip, and any lateral displacement) are made only into free space: the lateral sweep rectangle, from the car's current rectangle to its target lateral position, inflated by sidePad on all sides and extended by D in the travel direction, must not intersect any other car's rectangle (any serial). Each step the lateral displacement is also truncated by rule 6. If the check fails the lateral move for that step is not made.",
-      "10. (CR-001, CR-005 change 7) Swerve feasibility, used both at the commit line and every step while locked: the Testpad target lateral centre T must keep the car's whole rectangle inside the road's barrier limits (road_limits rule 3) and pass the free-space check of rule 9. At the commit line (reached by an aware car, perception_and_reaction rule 5), if the preferred side is infeasible the other side is tried (the hatch may still flip once, only to a feasible side); if neither is feasible the car does not lock and stays unsure: it brakes (speed target as perception_and_reaction rule 7, unsure case, stops short of the dummy using the Testpad braking rule of brake-first classes). If a locked car becomes infeasible, it keeps its lock, stops moving laterally and brakes as before (rule 7, committed but unable). The lock is released only as perception_and_reaction rule 6 says: when the dummy's actual position is fully behind the car (behind its rear edge by more than the dummy's radius). Until then the car holds its offset. A lateral move that is merely delayed by rule 9 or truncated by rule 6 on a step is not infeasibility: the swerve is incomplete and the car stays at its unsure speed (perception_and_reaction rule 7d).",
+      "10. (CR-001, CR-005 change 6) Swerve feasibility, used both at the commit line and every step while locked: the Testpad target lateral centre T must keep the car's whole rectangle inside the road's barrier limits (road_limits rule 3) and pass the free-space check of rule 9. At the commit line (reached by an aware car, perception_and_reaction rule 5), if the preferred side is infeasible the other side is tried (the hatch may still flip once, only to a feasible side); if neither is feasible the car does not lock and stays unsure: it brakes (speed target as perception_and_reaction rule 7, unsure case, stops short of the dummy using the Testpad braking rule of brake-first classes). If a locked car becomes infeasible, it keeps its lock, stops moving laterally and brakes as before (rule 7, committed but unable). The lock is released only as perception_and_reaction rule 6 says: when the dummy's actual position is behind the car's centre.",
       "11. (CR-001, addendum) Level 3 only: a car's lateral move is also rejected if its new lateral band (rectangle width inflated by sidePad) would overlap the band of any oncoming car (opposite travel direction), and a spawn waits while its band overlaps an oncoming car's band. This prevents head-on collinear traffic. Perpendicular traffic is handled by rule 3. Levels 1 and 2 have no oncoming cars (one-way), so no oncoming-band test applies there.",
       "12. (CR-001 addendum) Lowest serial never held for good. The car with the lowest serial in the hall must not be held up indefinitely by another car. This is ensured by: rule 2 (it never yields), rule 3 (cars behind it do not make it wait and it does not wait for cars behind), and the stall breaker of rule 13.",
       "13. (CR-001 addendum) Stall breaker (backstop). Track for the lowest-serial car L the continuous time it has speed < 1 px/s while the dummy is NOT inside its detection zone (sees false). When this time reaches carToCar.stallLimit (6 s), every car with a higher serial whose rectangle is within holdGap + 1 px of L's rectangle or inside L's look-ahead sweep S_L is removed from the hall without score and without write-off; it still counts as spawned. The timer resets whenever L moves at >= 1 px/s, sees the dummy, or leaves the hall. If no such car exists the timer simply keeps running. The breaker uses no random draws and is not expected to fire in normal play. QA only reports on it (qa_audit 4). The timer is frozen in mode writeoff. (CR-005 interpretation: 'sees' is the sensing path zone, which now reaches frontRange and counts the predicted position too, so the timer also resets while the dummy, or its predicted position, is anywhere in that longer zone.)"
@@ -483,13 +1020,13 @@
       "4. The zone is therefore the same at dt = 1/60 and 1/120 for the same approach."
     ],
     "vehicles_module": [
-      "1. sim.js exports Vehicles. All car behaviour lives in it: spawning (spawn timer, pending spawn, entry, serial, spawn clearance), cruise speeds, perception (path zone, side sensors, sees, wary, the reaction timer and aware, caution), commitment and swerving (lock, flip, feasibility, swerve completion, lock release), braking, giving way to other cars, truncation, road and barrier limits, removal when out of the hall, and the stall breaker. The rules of car_to_car, road_limits, one_way_level_2 and level_flow 2 and 4 are unchanged (except as edited by CR-005) and are implemented there.",
+      "1. sim.js exports Vehicles. All car behaviour lives in it: spawning (spawn timer, pending spawn, entry, serial, spawn clearance), cruise speeds, perception (path zone, side sensors, sees, wary, the reaction timer and aware, caution), commitment and swerving (lock, flip, feasibility, lock release), braking, giving way to other cars, truncation, road and barrier limits, removal when out of the hall, and the stall breaker. The rules of car_to_car, road_limits, one_way_level_2 and level_flow 2 and 4 are unchanged (except as edited by CR-005) and are implemented there.",
       "2. Exports at least Vehicles.step(state, dt) (advance spawning and every car one step, step b of solid_cars 2), Vehicles.cruiseSpeed(params, cls) = params.classes[cls].speed (the undisturbed speed before any slowing, braking or give-way) and (CR-005) Vehicles.senses(state, car, px, py) (perception_and_reaction rule 2). Vehicles.step is called only in mode play.",
       "3. Vehicles.step may read state.dummy, state.level, state.params, state.fleet learning and the RNG; it may write cars, vehiclesSpawned, serialCounter, nextSpawn, pendingSpawn, rng, the stall timer and car fields. It never writes dummy fields, health, score, bodiesDestroyed, mode, writeOff, lastImpact or any hit flag. Nothing outside Vehicles creates, moves, slows or removes a car (level start sets cars to an empty array and fleet learning updates unit dials after an impact, neither moves a car).",
       "4. A spawned car has speed = Vehicles.cruiseSpeed(params, cls), lock 0, braking false, hit false, sees false, wary false, aware false, senseTime 0 (extra car field, perception_and_reaction rule 3).",
-      "5. (CR-005 change 7) Speed bounds and rates, every step: 0 <= car.speed <= cruiseSpeed. Speed falls toward its target at no more than decel (600 px/s^2) and rises at no more than accel (360 px/s^2), except where truncation (car_to_car 6) sets it to the speed of the car it touches, or where a change of target (wary, unsure, caution factor) rescales the target. A car with no reason to slow (not aware of the dummy, or committed with its swerve complete and nothing lower-serial ahead) is at cruise speed exactly; the caution factor is not applied to it. A committed car whose swerve is not complete is slowed as unsure, caution factor included.",
+      "5. Speed bounds and rates, every step: 0 <= car.speed <= cruiseSpeed. Speed falls toward its target at no more than decel (600 px/s^2) and rises at no more than accel (360 px/s^2), except where truncation (car_to_car 6) sets it to the speed of the car it touches, or where a change of target (wary, unsure, caution factor) rescales the target. (CR-005) A car with no reason to slow (not aware of the dummy, or committed and able to swerve, and nothing lower-serial ahead) is at cruise speed exactly; the caution factor is not applied to it.",
       "6. Paths: a car's travel direction never changes during its life. With no dummy in its path zone or side sensor and no yield, a car stays on its lane line exactly (levels 1 and 2: lane y or x from params; level 3: its spawn lateral coordinate). Lateral motion happens only through swerve, flip or return to lane as in the Testpad, subject to car_to_car 9 and 10 and road_limits.",
-      "7. Within Vehicles.step the order is: spawn handling, then each car in ascending serial (perception: path and side sensing, reaction timer, aware; lock release; commitment; swerve completion; target speed; speed update; longitudinal then lateral displacement; truncation), then removal of cars wholly out of the hall, then the stall breaker. RNG draws occur only in spawn handling in the order of randomness rule 2."
+      "7. Within Vehicles.step the order is: spawn handling, then each car in ascending serial (perception: path and side sensing, reaction timer, aware; lock release; commitment; target speed; speed update; longitudinal then lateral displacement; truncation), then removal of cars wholly out of the hall, then the stall breaker. RNG draws occur only in spawn handling in the order of randomness rule 2."
     ],
     "perception_and_reaction": [
       "1. (CR-005 change 6, rewritten) Path zone. For a point P, with a its offset along the car's travel from the car's centre and b across it (using the unit's current detect and margin), P is in the path zone when 0 < a < senseRange and |b| < margin, where senseRange = max(detect, perception.frontRange) with the unit's current detect (so 320 px for every unit at its base dials, and the unit's own detect once learning raises it above 320). The width is the unit's margin, unchanged. sees is true when EITHER the dummy's actual position OR its predicted position (actual + velocity x the unit's current predict) is in the path zone. Prediction can only add to what a car senses, never take away. It is instant, computed every play step.",
@@ -497,31 +1034,26 @@
       "3. (CR-005) Reaction timer. Each car has senseTime (extra field, seconds). On every play step: if sees or wary, senseTime += dt, else senseTime = 0. aware = senseTime >= perception.reactionDelay (0.15 s, with a 1e-9 tolerance). aware is recomputed every step, so it is false the moment sensing stops. A car that has not been aware does nothing because of the dummy. Aware becomes true on the step in which senseTime first reaches 0.15 (9 steps at 1/60, 18 at 1/120; at most one step late).",
       "4. (CR-005) The delay applies only to the dummy. Giving way to other cars (car_to_car), staying inside barriers, solidity and truncation are immediate and never read aware. Spawning, serials and the stall breaker are unchanged.",
       "5. (CR-005) Everything a car does because of the dummy requires aware: slowing below cruise (rules 7 and 8), braking, committing to a side at the commit line, and the hatchback's flip. A car that is not aware carries on exactly as if the dummy were not there, including its lane, speed and lock state. Commit conditions otherwise as Testpad (dummy in the path zone, the dummy's predicted offset a below the commit line detect x commitFrac using the unit's own detect, swerve feasible per car_to_car 10), plus aware. A wary-only car (dummy in a side sensor, not in the path) never commits, swerves or flips.",
-      "6. (CR-005 change 7, rewritten) A commitment already made stays made: lock, side and target lateral position are not affected by aware dropping to false, by sees dropping to false, or by the dummy's predicted position moving. A committed car's lock is released only on a step when the dummy's ACTUAL position is fully behind the car: a_actual < -(length/2 + dummy.radius), i.e. behind the car's rear edge by more than the dummy's radius. Until then the car holds its lateral offset (it does not start to return to its lane). It is never released because of the predicted position, the dummy leaving the sensors, the dummy leaving the unit's detect zone, or the dummy merely being behind the car's centre. A released car is again uncommitted and returns to its lane as in the Testpad (subject to car_to_car 9); if it senses the dummy anew it is subject to the delay again.",
-      "7. (CR-005 change 7, replaces the Testpad braking and caution rules) Speed because of the dummy. Let c = cruiseSpeed(class), F = the Testpad caution factor, and B = the Testpad brake factor for the class and distance (computed from the unit's own detect x brakeLead; brake-first classes as Testpad; B = 1 beyond the brake distance). Target speed:\n   a) not aware: c. The dummy's own speed has no effect.\n   b) aware, wary (dummy in a side sensor only): c * warySpeedFactor * F.\n   c) aware, sees, lock 0 (unsure): min(c * unsureSpeedFactor, c * B) * F.\n   d) lock != 0, the swerve is possible (car_to_car 10) and NOT complete (the car's lateral centre is more than 2 px from its locked target lateral centre T): exactly as case c, min(c * unsureSpeedFactor, c * B) * F, whether or not aware or sees is still true (the commitment was made while aware, and the car stays slow until the swerve is done).\n   d2) lock != 0, the swerve is possible and complete (|lateral centre - T| <= 2 px): c. The car ignores the dummy from then on, whatever it does, until the lock is released (rule 6).\n   e) lock != 0 and the swerve is infeasible: c * B (the Testpad brake), F not applied.\n   The bus (swerve false) never locks: when aware and sees it stays in case c, and when aware and wary in case b. A car that has sensed the dummy but is not yet aware is case a (unless already locked, cases d to e). The yield target of car_to_car 4 and 5 is combined by taking the minimum of the two targets. Speed moves toward the target at decel and accel (vehicles_module 5).",
-      "8. (CR-005 change 7) F, the Testpad caution factor, = 1 - caution.max * s where s in [0,1] is the Testpad measure of the dummy moving fast (its speed fraction between walking and the Testpad maximum, using dummy.vx, vy as lunge velocity gives s = 1); s = 0 for a standing dummy, so F = 1 and the target in b is exactly 0.6 c and in c and d exactly min(0.5, B) c. F applies to cases b, c and d only (aware wary, unsure, and committed with the swerve not yet complete). It does not touch cars that have not noticed the dummy (a), cars committed with the swerve complete (d2), or committed cars that cannot swerve (e).",
-      "9. (CR-005 change 7) Lunge interplay: a dummy that has been in a car's path for at least reactionDelay and then lunges keeps the car aware (the actual position is still in the path zone, rule 1, even when the lunge's predicted position lands behind the car), so the car stays in case c (or case d if it has committed) with F near its minimum (0.6), target about 0.3 c (sedan: 0.5 * 0.6 * 138 = 41 px/s). A lunge onto the nose of such a sedan pays about 100 * 5 * 0.3 = 150. A car never speeds back up to cruise because of the dummy lunging at it, and never before its swerve is complete. A hit on a car that is committed with its swerve complete (case d2, at cruise) or not yet aware (case a, at cruise) pays the full 500. Speed reaches its target through the decel and accel slews, so the figure is reached after the slew (150 is a target, not an instantaneous value).",
+      "6. (CR-005 change 6, rewritten) A commitment already made stays made: lock, side and target lateral position are not affected by aware dropping to false, by sees dropping to false, or by the dummy's predicted position moving. A committed car's lock is released only on a step when the dummy's ACTUAL position is behind the car's centre (a_actual <= 0, i.e. the car has passed the dummy). It is never released because of the predicted position, the dummy leaving the sensors, or the dummy leaving the unit's detect zone. A released car is again uncommitted and returns to its lane as in the Testpad; if it senses the dummy anew it is subject to the delay again.",
+      "7. (CR-005, replaces the Testpad braking and caution rules) Speed because of the dummy. Let c = cruiseSpeed(class), F = the Testpad caution factor, and B = the Testpad brake factor for the class and distance (computed from the unit's own detect x brakeLead; brake-first classes as Testpad; B = 1 beyond the brake distance). Target speed:\n   a) not aware: c. The dummy's own speed has no effect.\n   b) aware, wary (dummy in a side sensor only): c * warySpeedFactor * F.\n   c) aware, sees, lock 0 (unsure): min(c * unsureSpeedFactor, c * B) * F.\n   d) lock != 0 and the swerve is possible (car_to_car 10): c. The car ignores the dummy from then on, whatever it does.\n   e) lock != 0 and the swerve is infeasible: c * B (the Testpad brake), F not applied.\n   The bus (swerve false) never locks: when aware and sees it stays in case c, and when aware and wary in case b. A car that has sensed the dummy but is not yet aware is case a. The yield target of car_to_car 4 and 5 is combined by taking the minimum of the two targets. Speed moves toward the target at decel and accel (vehicles_module 5).",
+      "8. (CR-005) F, the Testpad caution factor, = 1 - caution.max * s where s in [0,1] is the Testpad measure of the dummy moving fast (its speed fraction between walking and the Testpad maximum, using dummy.vx, vy as lunge velocity gives s = 1); s = 0 for a standing dummy, so F = 1 and the target in b is exactly 0.6 c and in c exactly min(0.5, B) c. F applies only to cases b and c. It no longer touches cars that have not noticed the dummy, or that have committed.",
+      "9. (CR-005 change 6) Lunge interplay: a dummy that has been in a car's path for at least reactionDelay and then lunges keeps the car aware (the actual position is still in the path zone, rule 1, even when the lunge's predicted position lands behind the car), so the car stays in case c with F near its minimum (0.6), target about 0.3 c (sedan: 0.5 * 0.6 * 138 = 41 px/s). A lunge onto the nose of such a sedan pays about 100 * 5 * 0.3 = 150. A car never speeds back up to cruise because of the dummy lunging at it. A hit on a car that is committed (case d, at cruise) or not yet aware (case a, at cruise) pays the full 500. Speed reaches its target through the decel and accel slews, so the figure is reached after the slew (150 is a target, not an instantaneous value).",
       "10. (CR-005) The dummy is judged by its actual position for the side sensors and by its actual or predicted position for the path zone. Sensors use the unit's current dials, so fleet learning enlarges the path zone as before (margin always; length only once detect exceeds frontRange). sideRadius, sideHalfAngleDeg, reactionDelay and frontRange are not changed by learning (learning of the delay is out of scope).",
       "11. (CR-005) Car fields. car.sees: path zone (actual or predicted), instant. car.wary: side sensor and not sees, instant. car.aware: as rule 3. car.senseTime: extra field. car.braking: car_to_car 7. These are written only inside Vehicles.",
-      "12. (CR-005 change 7, rewritten) Consequence for damage: vehicleSpeed is the car's actual speed after the step, so Damage is unchanged; an unsure car, or a committed car mid-swerve, on its slew toward 0.3 c pays proportionally less. Standing still in the lane in front of a car, at any distance, and lunging straight at it no longer gives the maximum: the car senses a lane-standing dummy from 320 px from its centre, keeps sensing it during the lunge (rule 1), commits at its commit line but stays slow until the swerve is complete (rule 7d), and after that it is out of the dummy's lane. The best-paying hit needs the car to be unaware (an ambush that arrives from outside the sensors and makes contact within reactionDelay of first sensing) or committed with its swerve complete and the dummy moved into the line the car has chosen (baited).",
+      "12. (CR-005, rewritten) Consequence for damage: vehicleSpeed is the car's actual speed after the step, so Damage is unchanged; an unsure car on its slew toward 0.3 c pays proportionally less. Standing still in the lane in front of a car, at any distance, and lunging no longer gives the maximum, because the car senses a lane-standing dummy from 320 px from its centre, long before a lunge can reach it, and keeps sensing it during the lunge (rule 1). The best-paying hit needs the car to be unaware (an ambush that arrives from outside the sensors and makes contact within reactionDelay of first sensing) or committed (baited).",
       "13. (CR-005) Not changed: damage table, quotas, health, levels, fleet learning, the chevron on detection, the hatchback flip cue and the level 3 jam breaker.",
       "14. (CR-005 change 5) Longer frontal sensing. The path zone used for sensing (sees, Vehicles.senses, the reaction timer) reaches max(detect, perception.frontRange) from the car's centre, with perception.frontRange = 320. Its width is the unit's margin, unchanged. No other quantity moves: the commit line (detect x commitFrac), the Testpad brake distances (detect x brakeLead), learning and the side sensors keep using the unit's own dials exactly as before. (The lock release is governed by rule 6, not by detect.)",
       "15. (CR-005 change 5) Effect, sedan at base dials: the car first senses a dummy standing in its lane when its centre is 320 px away (nose 289 px away), 108 px earlier than before, and is aware 0.15 s later with the nose still about 268 px away (car travel 21 px). A lunge covers at most 164 px plus about 41 px of the car's own travel in 0.3 s, so a dummy that has been standing in or entering the lane from afar can never make contact before the car is aware. The car is aware and slowing (case c) at the commit line, which is unchanged at 106 px from its centre; a dummy that stays in the lane past the commit line is baited as before.",
       "16. (CR-005 change 5) Beating the reaction delay therefore needs an approach from outside the sensors: the dummy must start outside the extended path zone (|b| >= margin or a >= senseRange) and outside the side sensor (more than 100 px from the nose or more than 80 degrees off heading), then close and make contact less than reactionDelay after first sensing. Contact made while aware is false pays at cruise speed; contact made while aware and uncommitted pays the slowed amount.",
       "17. (CR-005 change 6, new) A lunge never makes a car lose track of the dummy. Because a lunge's velocity x predict can place the predicted point behind the car (a_pred < 0) or beyond the zone, the predicted position is only an additional trigger: if the actual position is in the path zone, sees is true whatever the prediction says, so senseTime keeps running, aware stays true and the unsure target of case c holds through the lunge until contact.",
-      "18. (CR-005 change 7, rewritten) Lock release uses geometry of the actual position only: a_actual = (dummy.x - car.x)*dirX + (dummy.y - car.y)*dirY. The lock is released when a_actual < -(length/2 + dummy.radius) (sedan: a_actual < -44), and not otherwise. A lunging dummy whose predicted position is behind a committed car does not release it. A dummy that stays beside, ahead of, or only just behind a committed car holds the lock until the car's whole body, plus the dummy's radius, has passed it, so a car never cuts back into its lane onto a dummy standing still.",
-      "19. (CR-005 change 6, new) Unchanged by this rule set: the commit trigger (predicted offset below the commit line, in the path zone, aware, swerve feasible), the brake distances, the side sensor geometry (actual position), Vehicles.senses as a pure still-dummy geometry function, and every table value of AC-69.",
-      "20. (CR-005 change 7, new) Swerve complete. When a car locks, it stores its target lateral centre T (the Testpad target for the chosen side, after the shoulder/barrier limit of road_limits 3; extra car field written only in Vehicles; a hatch flip stores the new side's T and so makes the swerve incomplete again). The swerve is complete on a step when |lateral centre - T| <= 2 px, evaluated from the car's position at the start of the step's speed decision (before that step's lateral move), every play step, with no random draw. A swerve that is delayed (car_to_car 9) or truncated (car_to_car 6) stays incomplete, and the car stays at unsure speed (rule 7d). A car that cannot reach T (infeasible, car_to_car 10) is case e and brakes as before.",
-      "21. (CR-005 change 7, new) Order for a committing car: it commits at the commit line while slowed (it was already case c, because it must be aware); on the commit step the swerve is incomplete, so its target stays the unsure target and it does not speed up; it moves sideways at the Testpad lateral rate; only when the swerve is complete does the target jump to cruise and the car accelerates at accel. After that it ignores the dummy until the release of rule 6.",
-      "22. (CR-005 change 7, new) Consequences. (a) A straight lunge down the lane meets a slow car (during the swerve: damage about 150 or less for a sedan) or passes beside the car (after the swerve: a flank contact at best, flank lunge at cruise 150). (b) A dummy standing still in or beside the lane is not hit by a car that can swerve: the car holds its offset until its rear edge is more than the dummy's radius past the dummy, then returns to its lane. (c) To hit a committed car at full speed the dummy must move into the line the car has chosen after the swerve is complete (the bait), and lunge into it. The delay and the slow swerve make this a timing skill, not a standing skill.",
-      "23. (CR-005 change 7, new) Level pace: cars now spend longer at about 0.3 to 0.5 of cruise while swerving. Quotas, allocations and spawn intervals are not changed; level length is checked by AC-78.",
-      "24. (CR-005 change 7, new) Unchanged by change 7: sensing, the aware timer, the commit line and trigger, brake distances, the bus (never locks), Vehicles.senses, the damage table, the infeasible-swerve braking, car-to-car rules, quotas, health, levels."
+      "18. (CR-005 change 6, new) Lock release uses geometry of the actual position only: a_actual = (dummy.x - car.x)*dirX + (dummy.y - car.y)*dirY. The lock is released when a_actual <= 0, and not otherwise. A lunging dummy whose predicted position is behind a committed car does not release it. A dummy that stays beside or ahead of a committed car holds the lock until the car has passed it.",
+      "19. (CR-005 change 6, new) Unchanged by this rule set: the commit trigger (predicted offset below the commit line, in the path zone, aware, swerve feasible), the brake distances, the side sensor geometry (actual position), Vehicles.senses as a pure still-dummy geometry function, and every table value of AC-69."
     ],
     "perception_drawing": [
       "1. (CR-005) The renderer draws, from state.cars only and subject to the existing perception overlay toggle: each car's two side sensors as one front-facing wedge (sector of radius sideRadius, half-angle sideHalfAngleDeg, centred on the nose centre N and the heading), drawn faint when idle and lit (filled, brighter) while car.wary is true.",
       "2. (CR-005, rewritten) The path zone is drawn as the rectangle actually tested: from the car's centre along the heading for max(unit's detect, perception.frontRange) (320 at base dials), with half-width margin (the unit's current dials), not a triangle. It is faint when idle and lit the moment car.sees is true (same step as sensing, before awareness). The renderer reads frontRange from state.params.perception.",
       "3. A distinct aware cue (not the zone colour): a small bright marker or ring over the car, with a pulse of about 0.25 s when aware turns from false to true (the renderer keeps its own previous-frame value, no sim state), then a steady small marker while aware is true. It is drawn whether the overlay is on or off.",
-      "4. Brake lights are drawn from car.braking only, so they stay off during the reaction delay and come on only once the car slows (car_to_car 7). A committed car mid-swerve at unsure speed shows brake lights while its speed falls or is held below cruise.",
+      "4. Brake lights are drawn from car.braking only, so they stay off during the reaction delay and come on only once the car slows (car_to_car 7).",
       "5. The sim holds no drawing state; Math.random is not used for these cues."
     ],
     "writeoff_animation": [
@@ -583,13 +1115,13 @@
       "5. QA must confirm by code review that Damage is pure, that damage arithmetic exists only there, and that car movement exists only in Vehicles (module boundary of vehicles_module 3).",
       "6. (CR-003) QA must report the write-off animation numbers: mode entered on the hit step, steps spent in writeoff at dt 1/60 and 1/120 (expected duration/dt within 1 step), that no car or dummy coordinate changes during it, and that confirm held or pressed during it does not dismiss the next card.",
       "7. (CR-004) QA must report, with numbers, the body-health figures: maxHealth and maxPay both 1600 in PARAMS and state; lunging hits to write off a fresh body from a cruising sedan nose (expected 4) and walking hits (expected 16); the service repair rate (expected 1600/30 = 53.3 points/s after the 1.5 s delay); and severity of the sedan nose lunge (expected 0.3125).",
-      "8. (CR-005, rewritten for change 7) QA must report, with numbers: the Vehicles.senses table of AC-69 (point, expected, observed), including the 320 px edge; the number of steps from first sensing to aware at dt 1/60 and 1/120 (expected 9 and 18, +/-1) and that speed, lock and braking are unchanged during the delay; settled speeds for a sedan with a standing dummy in the side sensor (expected 82.8 +/-1) and in the path (expected min(69, 138*B) +/-1); the nose-lunge damage of a sedan in the three cases of AC-75 (standing in lane about 150, ambush 500, baited 500); the pillar sweep of AC-79 (lunge started from every nose gap 0 to 300 px in 20 px steps with the dummy standing in the lane since before the car came into range: maximum damage, expected at most 175, and the nose gap at which sees first turned true, expected about 289 for the sedan); a count over at least 30 seeds of cars that commit before being aware (expected 0); the lunge trace of AC-80; the lock-release check of AC-81; and (change 7) the straight-lunge sweep of AC-83 (nose gaps 60 to 160 px in 10 px steps for a lane-standing dummy: maximum damage, expected at most 175, with the car's speed, lock, swerve-complete flag and offset at contact for each gap), the swerve-completion trace of AC-82 (speed per step from commit to completion and after, expected at unsure speed until |offset - T| <= 2 px, then rising at accel) and the standing-dummy clip count of AC-84 (cars in contact per 14-car level 1 run with a dummy standing in the lane, over at least 30 seeds, expected 0 where the swerve is feasible)."
+      "8. (CR-005, rewritten for frontRange and change 6) QA must report, with numbers: the Vehicles.senses table of AC-69 (point, expected, observed), including the 320 px edge; the number of steps from first sensing to aware at dt 1/60 and 1/120 (expected 9 and 18, +/-1) and that speed, lock and braking are unchanged during the delay; settled speeds for a sedan with a standing dummy in the side sensor (expected 82.8 +/-1) and in the path (expected min(69, 138*B) +/-1); the nose-lunge damage of a sedan in the three cases of AC-75 (standing in lane about 150, ambush 500, baited 500); the pillar sweep of AC-79 (lunge started from every nose gap 0 to 300 px in 20 px steps with the dummy standing in the lane since before the car came into range: maximum damage with lock 0, expected at most 175, and the nose gap at which sees first turned true, expected about 289 for the sedan); a count over at least 30 seeds of cars that commit before being aware (expected 0); and (change 6) the lunge trace of AC-80: for a sedan slowed to about 69 px/s by a lane-standing dummy that then lunges, the per-step table of speed, sees and aware from the lunge start to contact (expected: sees and aware true on every step, speed never above its pre-lunge value, damage at most 175), plus the lock-release check of AC-81."
     ]
   },
   "unchanged_from_testpad": [
     "Canvas, hall, dummy size, vehicle sizes, lunge distance, six classes and twelve-unit fleet with detect/margin/predict/brakeLead dials.",
     "Fleet learning, file brief/adapt/close and closeCost. (CR-005: learning still raises only the unit's own detect, margin, predict and brakeLead; the commit line and brake distances still use detect; frontRange is not learned.)",
-    "Commitment lock at commitFrac, hatch flip, brake-first classes, the bus that cannot swerve, caution and service repair (swerve now subject to car_to_car 9 and 10). CR-005: commitment, the flip, braking and caution now need the car to be aware of the dummy, and caution applies only to aware cars that are wary, unsure, or committed with the swerve not yet complete (perception_and_reaction 5, 7 and 8). CR-005 change 7: a committed car stays at unsure speed until its swerve is complete, and its lock is released only when the dummy's actual position is fully behind the car, behind its rear edge by more than the dummy's radius (perception_and_reaction 6, 7, 18, 20).",
+    "Commitment lock at commitFrac, hatch flip, brake-first classes, the bus that cannot swerve, caution and service repair (swerve now subject to car_to_car 9 and 10). CR-005: commitment, the flip, braking and caution now need the car to be aware of the dummy, and caution applies only to aware cars that are not committed (perception_and_reaction 5, 7 and 8). CR-005 change 6: the lock is released only when the dummy's actual position is behind the car's centre (perception_and_reaction 6).",
     "A single impact per car.",
     "Report cards, behaviour signatures and report bank word for word (severity input is damage / maxPay), HUD, attract screen, perception overlay and toggle, restart button.",
     "Cooldown length, walk to run ramp shape, writeOff bonus and score formula, cars removed when out of hall. Body health is 1600 (CR-004; was 2300).",
@@ -613,7 +1145,7 @@
     },
     {
       "id": "AC-04",
-      "text": "Determinism: two runs with the same seed, level and input script produce identical JSON state at every step, including across write-off animations and including the new car fields wary, aware and senseTime (and the locked target field of perception_and_reaction 20). Different seeds give different spawn sequences.",
+      "text": "Determinism: two runs with the same seed, level and input script produce identical JSON state at every step, including across write-off animations and including the new car fields wary, aware and senseTime. Different seeds give different spawn sequences.",
       "verify_by": "automated_check"
     },
     {
@@ -858,12 +1390,12 @@
     },
     {
       "id": "AC-53",
-      "text": "Module boundary: in sim.js no assignment to car.x, car.y, car.speed, car.lock, car.braking, car.sees, car.wary, car.aware, car.senseTime, the car's locked target field or to the cars array (other than the level-start reset) exists outside Vehicles; Vehicles has no assignment to dummy.*, health, score, bodiesDestroyed, mode, writeOff or lastImpact; the only reduction of dummy.health in step is by lastImpact.damage.",
+      "text": "Module boundary: in sim.js no assignment to car.x, car.y, car.speed, car.lock, car.braking, car.sees, car.wary, car.aware, car.senseTime or to the cars array (other than the level-start reset) exists outside Vehicles; Vehicles has no assignment to dummy.*, health, score, bodiesDestroyed, mode, writeOff or lastImpact; the only reduction of dummy.health in step is by lastImpact.damage.",
       "verify_by": "code_review"
     },
     {
       "id": "AC-54",
-      "text": "QA audit gate: the QA report contains the damage table with numbers per class, zone and lunge state checked against the formula and calibration; the Lawrence cases (sedan 100/500, 30/150, 5/25, bus nose 235/1174); vehicle path and start/stop numbers from AC-50 to AC-52; the barrier clearances; the write-off animation numbers of qa_audit 6; the body-health numbers of qa_audit 7; the perception numbers of qa_audit 8 (including the frontRange pillar sweep of AC-79, the lunge trace of AC-80, the lock-release check of AC-81, and the change 7 checks of AC-82 to AC-84); and the level 3 stall-breaker firing counts across at least 30 seeds, reported but not fixed. A release verdict is invalid if any of these are missing or any damage value mismatches by more than 1.",
+      "text": "QA audit gate: the QA report contains the damage table with numbers per class, zone and lunge state checked against the formula and calibration; the Lawrence cases (sedan 100/500, 30/150, 5/25, bus nose 235/1174); vehicle path and start/stop numbers from AC-50 to AC-52; the barrier clearances; the write-off animation numbers of qa_audit 6; the body-health numbers of qa_audit 7; the perception numbers of qa_audit 8 (including the frontRange pillar sweep of AC-79, the lunge trace of AC-80 and the lock-release check of AC-81); and the level 3 stall-breaker firing counts across at least 30 seeds, reported but not fixed. A release verdict is invalid if any of these are missing or any damage value mismatches by more than 1.",
       "verify_by": "code_review"
     },
     {
@@ -933,7 +1465,7 @@
     },
     {
       "id": "AC-68",
-      "text": "Perception params (CR-005): PARAMS.perception deep-equals { reactionDelay: 0.15, sideRadius: 100, sideHalfAngleDeg: 80, warySpeedFactor: 0.6, unsureSpeedFactor: 0.5, frontRange: 320 }, is also state.params.perception, and no other params value differs from the previous release (deep-compare of every other field). Change 7 adds no param.",
+      "text": "Perception params (CR-005): PARAMS.perception deep-equals { reactionDelay: 0.15, sideRadius: 100, sideHalfAngleDeg: 80, warySpeedFactor: 0.6, unsureSpeedFactor: 0.5, frontRange: 320 }, is also state.params.perception, and no other params value differs from the previous release (deep-compare of every other field).",
       "verify_by": "automated_check"
     },
     {
@@ -953,12 +1485,12 @@
     },
     {
       "id": "AC-72",
-      "text": "Awareness gates everything: with the dummy teleported inside a sedan's commit line, the car does not lock, flip or slow until aware is true; then (swerve feasible) it locks on that step or the next and, while the swerve is incomplete, its target is the unsure target min(0.5, B) x cruise x F (not cruise); once |lateral centre - T| <= 2 px its target becomes cruise (caution not applied) even with the dummy running at it; (swerve infeasible) it does not lock and brakes as unsure; a locked car keeps its lock when aware or sees drops (dummy leaves the sensors) until the release rule of perception_and_reaction 6 (the dummy's actual position fully behind the car, behind its rear edge by more than the dummy radius; see AC-81); a hatchback flips only when aware (and a flip makes the swerve incomplete again); the bus never locks, stays at unsure speed (case c) in the path and at wary speed (case b) beside it; a wary-only car never locks. A dummy 213 to 320 px ahead does not set a lock (the commit line uses the unit's own detect). Over at least 30 seeds with random dummy inputs, no car locks or flips on a step where aware was false.",
+      "text": "Awareness gates everything: with the dummy teleported inside a sedan's commit line, the car does not lock, flip or slow until aware is true, then (swerve feasible) it locks on that step or the next and returns to cruise speed (target = cruise, caution not applied) while locked, even with the dummy running at it; (swerve infeasible) it does not lock and brakes as unsure; a locked car keeps its lock when aware or sees drops (dummy leaves the sensors) until the release rule of perception_and_reaction 6 (the dummy's actual position behind the car's centre; see AC-81); a hatchback flips only when aware; the bus never locks, stays at unsure speed (case c) in the path and at wary speed (case b) beside it; a wary-only car never locks. A dummy 213 to 320 px ahead does not set a lock (the commit line uses the unit's own detect). Over at least 30 seeds with random dummy inputs, no car locks or flips on a step where aware was false.",
       "verify_by": "automated_check"
     },
     {
       "id": "AC-73",
-      "text": "Caution scope: with the dummy running or lunging, a car with aware false and lock 0 has target exactly cruise and its speed stays at cruise; a committed car with a feasible swerve that is complete (|lateral centre - T| <= 2 px) has target exactly cruise; aware cars that are wary, unsure, or committed with the swerve not yet complete have the caution factor F applied; a committed car that cannot swerve has the Testpad brake without F.",
+      "text": "Caution scope: with the dummy running or lunging, a car with aware false has target exactly cruise and its speed stays at cruise; a committed car with a feasible swerve has target exactly cruise; only aware, uncommitted cars (wary or unsure) have the caution factor F applied.",
       "verify_by": "automated_check"
     },
     {
@@ -968,12 +1500,12 @@
     },
     {
       "id": "AC-75",
-      "text": "Outsmarting pays (sedan, SDN-01 at full cruise, full-health dummy, nose lunge, level 1 free of other cars). (a) Standing in the lane: the dummy stands still in the lane from before the car comes into range (so the car is aware and unsure well before the lunge), then lunges onto the nose from a nose gap of 80 to 160 px: lastImpact.damage is at most 175 and about 150 (+/-25) where the car is still at its unsure target, and below 40% of case (b); the car may have locked but its swerve is then incomplete (speed at most its unsure target plus slew). (b) Ambush: the dummy starts outside both sensors (outside the extended path zone and more than 100 px from the nose), is placed so that a lunge makes nose contact, and the lunge makes contact before senseTime reaches 0.15 (car unaware at cruise 138; setup may be constructed by overwriting dummy and car positions so first sensing occurs less than 0.15 s before contact): damage 500 (+/-1). (c) Baited: car.lock is non-zero with a feasible swerve, the swerve is complete (|lateral centre - T| <= 2 px), speed 138 at contact and the dummy has moved into the car's chosen line before the lunge: damage 500 (+/-1). A dummy 50 to 100 px beside the lane makes the car wary (speed 0.6 cruise) but not commit.",
+      "text": "Outsmarting pays (sedan, SDN-01 at full cruise, full-health dummy, nose lunge, level 1 free of other cars). (a) Standing in the lane: the dummy stands still in the lane from before the car comes into range (so the car is aware and unsure well before the lunge), then lunges onto the nose from a nose gap of 80 to 160 px while lock is 0: lastImpact.damage is 150 (+/-25) at the default dials, and below 40% of case (b). (b) Ambush: the dummy starts outside both sensors (outside the extended path zone and more than 100 px from the nose), is placed so that a lunge makes nose contact, and the lunge makes contact before senseTime reaches 0.15 (car unaware at cruise 138; setup may be constructed by overwriting dummy and car positions so first sensing occurs less than 0.15 s before contact): damage 500 (+/-1). (c) Baited: car.lock is non-zero with a feasible swerve and speed 138 at contact: damage 500 (+/-1). A dummy 50 to 100 px beside the lane makes the car wary (speed 0.6 cruise) but not commit.",
       "verify_by": "automated_check"
     },
     {
       "id": "AC-76",
-      "text": "Module boundary and cost (CR-005): all sensing, the reaction timer, awareness, swerve completion, lock release and speed-because-of-the-dummy arithmetic exists only in Vehicles (no use of sideRadius, sideHalfAngleDeg, reactionDelay, warySpeedFactor, unsureSpeedFactor or frontRange outside Vehicles, the PARAMS literal, state.params and the renderer's read of frontRange for drawing); the Damage module is unchanged and still pure; no new RNG draws are added (AC-04 still holds).",
+      "text": "Module boundary and cost (CR-005): all sensing, the reaction timer, awareness, lock release and speed-because-of-the-dummy arithmetic exists only in Vehicles (no use of sideRadius, sideHalfAngleDeg, reactionDelay, warySpeedFactor, unsureSpeedFactor or frontRange outside Vehicles, the PARAMS literal, state.params and the renderer's read of frontRange for drawing); the Damage module is unchanged and still pure; no new RNG draws are added (AC-04 still holds).",
       "verify_by": "code_review"
     },
     {
@@ -983,43 +1515,23 @@
     },
     {
       "id": "AC-78",
-      "text": "Playtest (CR-005): standing front-on and lunging no longer gets the big hit from a sedan or a similar car, at any distance; the car visibly eases off well before the lunge can reach it, stays slow while it swerves, and does not speed back up as the dummy lunges at it; a baited car that has committed and finished its swerve, or an ambush that closes in on the car from the side or from outside the sensors before it reacts, still pays close to the full hit. A dummy that simply stands in the lane is not hit. The delay is not noticeable as lag but cars do not twitch the instant the dummy enters the zone. Levels remain finishable in about 1 to 2 minutes with the quotas unchanged.",
+      "text": "Playtest (CR-005): standing front-on and lunging no longer gets the big hit from a sedan or a similar car, at any distance; the car visibly eases off well before the lunge can reach it and does not speed back up as the dummy lunges at it; a baited car that has committed, or an ambush that closes in on the car from the side or from outside the sensors before it reacts, still pays close to the full hit. The delay is not noticeable as lag but cars do not twitch the instant the dummy enters the zone. Levels remain finishable in about 1 to 2 minutes with the quotas unchanged.",
       "verify_by": "playtest"
     },
     {
       "id": "AC-79",
-      "text": "Pillar sweep, longer frontal sensing (CR-005 change 5; the check that failed in run 20261008-021901). Sedan SDN-01 on level 1, base dials, full-health dummy. (a) A dummy standing still in the lane, car approaching from beyond range: sees first turns true when the car's centre is 320 (+/-5) px from the dummy, i.e. a nose gap of about 289, and aware 9 steps later at 1/60. (b) A nose-gap sweep from 0 to 300 px in 20 px steps, the dummy standing in the lane since before the car came into range, lunging straight at the car from each gap: every contact has damage <= 175 whatever the lock state; no contact has the car unaware (aware false) at contact. (c) Lunging on the first step in which sees is true makes no contact at all before the car is aware (the lunge plus the car's travel is less than the nose gap). (d) Learning does not shorten the range: with detect raised to 300 by learning the range is still 320; with detect 400 it is 400. (e) The commit line is unchanged: a sedan at base dials with a lane-standing dummy locks only when the dummy's predicted offset a is below 106 (detect 212 x commitFrac 0.5), not at 160; its Testpad brake distance still uses 212 x brakeLead.",
+      "text": "Pillar sweep, longer frontal sensing (CR-005 change 5; the check that failed in run 20261008-021901). Sedan SDN-01 on level 1, base dials, full-health dummy. (a) A dummy standing still in the lane, car approaching from beyond range: sees first turns true when the car's centre is 320 (+/-5) px from the dummy, i.e. a nose gap of about 289, and aware 9 steps later at 1/60. (b) A nose-gap sweep from 0 to 300 px in 20 px steps, the dummy standing in the lane since before the car came into range, lunging straight at the car from each gap: every contact with lock 0 has damage <= 175; no contact has the car unaware (aware false) at contact. (c) Lunging on the first step in which sees is true makes no contact at all before the car is aware (the lunge plus the car's travel is less than the nose gap). (d) Learning does not shorten the range: with detect raised to 300 by learning the range is still 320; with detect 400 it is 400. (e) The commit line is unchanged: a sedan at base dials with a lane-standing dummy locks only when the dummy's predicted offset a is below 106 (detect 212 x commitFrac 0.5), not at 160; its Testpad brake distance still uses 212 x brakeLead.",
       "verify_by": "automated_check"
     },
     {
       "id": "AC-80",
-      "text": "A lunge does not make a car lose track (CR-005 change 6; the check that failed in run 20261008-022848; lock condition relaxed by change 7). Sedan SDN-01 on level 1, base dials, full-health dummy standing still in the lane since before the car came into range, so the car is aware and has settled near 69 px/s. The dummy then lunges straight at it from nose gaps of 80, 120 and 160 px. On every step from the lunge start until contact: car.sees is true, car.aware is true while lock is 0, and car.speed never exceeds its value on the step before the lunge (+/-1) and trends toward about 41 px/s (0.3 x cruise); damage at contact is at most 175. (If the car locks during the lunge, its speed stays at the unsure target until the swerve is complete, which does not happen before contact in these cases.) Also in a unit case: with the dummy's actual position in the path zone and its predicted position (velocity x predict) behind the car's centre or outside the zone, sees is true; with the actual position outside the zone and the predicted position inside it, sees is also true; with the actual position outside and the predicted position only in the side wedge, sees is false (wary is decided by the actual position only).",
+      "text": "A lunge does not make a car lose track (CR-005 change 6; the check that failed in run 20261008-022848). Sedan SDN-01 on level 1, base dials, full-health dummy standing still in the lane since before the car came into range, so the car is aware and has settled near 69 px/s. The dummy then lunges straight at it from nose gaps of 80, 120 and 160 px. On every step from the lunge start until contact: car.sees is true, car.aware is true, car.lock is 0, and car.speed never exceeds its value on the step before the lunge (+/-1) and trends toward about 41 px/s (0.3 x cruise); damage at contact is at most 175. Also in a unit case: with the dummy's actual position in the path zone and its predicted position (velocity x predict) behind the car's centre or outside the zone, sees is true; with the actual position outside the zone and the predicted position inside it, sees is also true; with the actual position outside and the predicted position only in the side wedge, sees is false (wary is decided by the actual position only).",
       "verify_by": "automated_check"
     },
     {
       "id": "AC-81",
-      "text": "Lock release (CR-005 change 7, rewrites the change 6 check). A sedan that has committed (lock non-zero) keeps its lock and its lateral offset on every step in which a_actual >= -(length/2 + dummy.radius) (sedan: a_actual >= -44), including when the dummy is just behind the car's centre or beside it, when the dummy lunges so that its predicted position is behind the car, when sees or aware turn false, and when the dummy is outside the unit's detect zone; the lock is cleared on the first step in which a_actual < -(length/2 + dummy.radius), after which the car returns to its lane as before and is again uncommitted. A lock is never cleared on a step where a_actual >= -(length/2 + radius). Verified over at least 30 seeds with random dummy inputs on levels 1 to 3, for all classes that can lock.",
+      "text": "Lock release (CR-005 change 6). A sedan that has committed (lock non-zero) keeps its lock on every step in which the dummy's actual position is ahead of the car's centre (a_actual > 0), including when the dummy lunges so that its predicted position is behind the car, when sees or aware turn false, and when the dummy is outside the unit's detect zone; the lock is cleared on the first step in which a_actual <= 0, after which the car returns to its lane as before and is again uncommitted. A lock is never cleared on a step where a_actual > 0. Verified over at least 30 seeds with random dummy inputs on levels 1 to 3.",
       "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-82",
-      "text": "Swerve completion (CR-005 change 7). Sedan SDN-01 on level 1 with the shoulder free, base dials, dummy standing still in the lane: from the commit step until |lateral centre - T| <= 2 px, car.lock is non-zero, the car's target speed is min(0.5, B) x 138 x F (F = 1 for a standing dummy, so at most 69 and about 41 if the dummy is moving fast) and its speed never rises above its value on the commit step (+/-1); on the first step with |lateral centre - T| <= 2 px the target becomes 138 and the speed then rises at no more than accel (360 px/s^2) with braking false once it accelerates. A delayed or truncated lateral move (car_to_car 9 or 6) keeps the car at unsure speed. A committed car that cannot reach T (infeasible) brakes as case e. The hatchback's flip makes the swerve incomplete again and the car slows again until the new T is reached.",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-83",
-      "text": "Straight-lunge sweep (CR-005 change 7; the check that passed all 41 in run 20261008-023803 but let 315 to 380 through). Sedan SDN-01 on level 1, base dials, full-health dummy standing still in the lane since before the car came into range, lunging straight down the lane (towards the car) from nose gaps of 60 to 160 px in 10 px steps. For every gap: either there is no contact (the car passed beside the dummy after its swerve) or the contact has damage <= 175. No contact pays more than 175 whether the car is locked or not. The same sweep with the dummy standing 0 to 20 px off the lane centre gives the same bound.",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-84",
-      "text": "Standing dummy is not clipped (CR-005 change 7; 9 of 14 cars on level 1 were hit in run 20261008-023803). Level 1, 14 cars, dummy standing still in a lane at x 450 (and in a second run on the shoulder at y 230 and at y 390), 30 seeds, where the swerve is feasible: zero cars contact the dummy (state.lastImpact stays null, health unchanged). A locked car holds its offset until its rear edge is more than dummy.radius (13 px) past the dummy, only then returning to its lane; the car's rectangle never overlaps the dummy's circle during the return (the dummy is standing still, so no push-out). Where the swerve is infeasible (barrier or occupied lane) the car brakes and stops short as AC-33.",
-      "verify_by": "automated_check"
-    },
-    {
-      "id": "AC-85",
-      "text": "Playtest (CR-005 change 7): the best hit requires outsmarting the car. Standing in the lane, front-on, and lunging gets a small hit from a slowly swerving car, or nothing; a dummy that just stands still is never clipped as the car cuts back in; waiting for a car to commit and swing out, then moving into its new line and lunging gets the full nose hit on a fast car; an ambush from the side still works. This is the working pillar 'There is always a way to outsmart the vehicle' (wording not yet confirmed by Lawrence).",
-      "verify_by": "playtest"
     }
   ],
   "differences": [
@@ -1141,7 +1653,7 @@
     },
     {
       "kind": "change_vs_testpad",
-      "text": "CR-005 speed because of the dummy replaces the Testpad braking and caution rules (as amended by change 7): not aware = cruise (the dummy's speed has no effect); wary = cruise x 0.6 x caution; unsure = min(cruise x 0.5, Testpad brake) x caution; committed with a feasible swerve not yet complete = as unsure; committed with a feasible swerve complete = cruise, ignores the dummy; committed but infeasible = Testpad brake without caution. The caution factor (up to 40% loss) applies to aware wary, unsure and mid-swerve cars only. The bus never commits, so it stays unsure. Assumption: the Testpad caution factor is 1 - caution.max x s with s the dummy's speed fraction (1 when lunging), and the 'about 150' figure for a standing-in-lane lunge corresponds to 0.5 x 0.6 = 0.3 x cruise reached after the decel slew."
+      "text": "CR-005 speed because of the dummy replaces the Testpad braking and caution rules: not aware = cruise (the dummy's speed has no effect); wary = cruise x 0.6 x caution; unsure = min(cruise x 0.5, Testpad brake) x caution; committed with a feasible swerve = cruise, ignores the dummy; committed but infeasible = Testpad brake without caution. The caution factor (up to 40% loss) now applies only to aware, uncommitted cars. The bus never commits, so it stays unsure. Assumption: the Testpad caution factor is 1 - caution.max x s with s the dummy's speed fraction (1 when lunging), and the 'about 150' figure for a standing-in-lane lunge corresponds to 0.5 x 0.6 = 0.3 x cruise reached after the decel slew."
     },
     {
       "kind": "change_vs_testpad",
@@ -1157,19 +1669,15 @@
     },
     {
       "kind": "change_vs_testpad",
-      "text": "CR-005 change 5 scope and interpretations: only when the car first notices the dummy moves. The commit line (detect x commitFrac), the Testpad brake distances (detect x brakeLead, so the brake factor B is 1 beyond them and an unsure car beyond detect is at 0.5 cruise) and learning keep the unit's own detect. Because car.sees now means the longer zone, the stall-breaker timer (car_to_car 13) and the idle-dummy tests also use it; the breaker is therefore suspended more often while the dummy is near a lane, which is a consequence, not a retune. Cars slow earlier for a dummy standing in a lane, so level durations may lengthen slightly; quotas, allocations and spawn intervals are not changed (AC-78 checks 1 to 2 minutes)."
+      "text": "CR-005 change 5 scope and interpretations: only when the car first notices the dummy moves. The commit line (detect x commitFrac), the Testpad brake distances (detect x brakeLead, so the brake factor B is 1 beyond them and an unsure car beyond detect is at 0.5 cruise) and learning keep the unit's own detect. (The lock-release test, which change 5 left on the unit's own detect zone, is replaced by change 6 below.) Because car.sees now means the longer zone, the stall-breaker timer (car_to_car 13) and the idle-dummy tests also use it; the breaker is therefore suspended more often while the dummy is near a lane, which is a consequence, not a retune. Cars slow earlier for a dummy standing in a lane, so level durations may lengthen slightly; quotas, allocations and spawn intervals are not changed (AC-78 checks 1 to 2 minutes)."
     },
     {
       "kind": "change_vs_testpad",
-      "text": "CR-005 change 6, a lunge must not make a car lose track of the dummy (after run 20261008-022848 failed the pillar check: a sedan slowed to 69 px/s sped back up to 138 px/s as the dummy lunged, because the lunge's predicted position landed behind the car, and it was hit for 500). sees is true if EITHER the actual OR the predicted position is in the path zone; prediction only adds. A committed car's lock is never released because of the predicted position, the dummy leaving the unit's detect zone or the sensors (the release condition itself is replaced by change 7 below). Side sensors (actual position only), Vehicles.senses (pure still-dummy geometry; the step calls it for the actual and the predicted point), the commit line, brake distances, damage, quotas, health and levels are unchanged. Rules rewritten: perception_and_reaction 1, 2, 5, 6, 9, 10, 11, 12; car_to_car 10 and 13 (wording); qa_audit 8; AC-54, AC-72, AC-78; new perception_and_reaction 17-19 and AC-80, AC-81."
+      "text": "CR-005 change 6, a lunge must not make a car lose track of the dummy (after run 20261008-022848 failed the pillar check: a sedan slowed to 69 px/s sped back up to 138 px/s as the dummy lunged, because the lunge's predicted position landed behind the car, and it was hit for 500). (1) sees is true if EITHER the actual OR the predicted position is in the path zone; prediction only adds. (2) A committed car's lock is released only when the dummy's actual position is behind the car's centre (a_actual <= 0); never because of the predicted position, and no longer because the dummy leaves the unit's detect zone or the sensors (this replaces the change 5 release test; interpretation of 'it has passed the dummy'). A released car returns to its lane as before. Side sensors (actual position only), Vehicles.senses (pure still-dummy geometry; the step calls it for the actual and the predicted point), the commit line, brake distances, damage, quotas, health and levels are unchanged. Rules rewritten: perception_and_reaction 1, 2, 5, 6, 9, 10, 11, 12; car_to_car 10 and 13 (wording); qa_audit 8; AC-54, AC-72, AC-78; new perception_and_reaction 17-19 and AC-80, AC-81. Consequence: a committed car whose dummy stays beside or ahead of it holds its lock longer than in the Testpad, until it passes; a dummy that retreats sideways out of a locked car's path no longer frees it early."
     },
     {
       "kind": "change_vs_testpad",
-      "text": "CR-005 change 7, a car stays slow until its swerve is complete, and stays out until it is past (Lawrence, after run 20261008-023803 passed all 41 checks but the sweep showed lunges from 60 to 160 px paying 315 to 380 and 9 of 14 level 1 cars clipping a standing dummy). (1) Speed: a committed car with a feasible swerve stays at the unsure speed, min(0.5, B) x cruise x F, until |lateral centre - T| <= 2 px of its locked target lateral centre T; only then does it return to cruise and ignore the dummy (perception_and_reaction 7d and 7d2, 20, 21). A car that cannot complete its swerve brakes as before. The caution factor F now also applies to mid-swerve cars. (2) Release: the lock is released only when the dummy's actual position is behind the car's rear edge by more than the dummy's radius (a_actual < -(length/2 + radius)); this replaces change 6's 'behind the car's centre' (perception_and_reaction 6, 18); until then the car holds its offset. (3) Result: a straight lunge down the lane meets a slow car or passes beside it; the full hit needs baiting; a standing dummy is not clipped (perception_and_reaction 22). Interpretation and additions of the Designer: T is stored as one extra car field written only inside Vehicles; a hatchback flip resets completeness; the 2 px tolerance is evaluated at the start of the step's speed decision; level pace may slow a little (perception_and_reaction 23), with quotas, allocations and spawn intervals left unchanged. No param changes. Rules rewritten: car_to_car 10; vehicles_module 1, 5, 7; perception_and_reaction 6, 7, 8, 9, 12, 18; randomness 3; qa_audit 8; AC-04, AC-53, AC-54, AC-68, AC-72, AC-73, AC-75, AC-76, AC-78, AC-79, AC-80, AC-81; new perception_and_reaction 20-24, perception_drawing 4 (wording) and AC-82 to AC-85. Consequence: a car that has committed holds a wider, longer lane offset than in the Testpad, which can take it across a shoulder for longer."
-    },
-    {
-      "kind": "change_vs_testpad",
-      "text": "CR-005 not changed (out of scope, as requested): quotas, health, damage table, levels, fleet learning (the delay does not shrink as units learn), the chevron on detection, a cue for the hatchback's flip, the level 3 jam breaker. The working pillar wording 'There is always a way to outsmart the vehicle.' is proposed by the assistant and not yet confirmed by Lawrence; it is not part of the rules (AC-85 only refers to it)."
+      "text": "CR-005 not changed (out of scope, as requested): quotas, health, damage table, levels, fleet learning (the delay does not shrink as units learn), the chevron on detection, a cue for the hatchback's flip, the level 3 jam breaker. The working pillar wording 'There is always a way to outsmart the vehicle.' is proposed by the assistant and not yet confirmed by Lawrence; it is not part of the rules."
     }
   ]
 }

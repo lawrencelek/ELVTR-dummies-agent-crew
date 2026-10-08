@@ -1,0 +1,14 @@
+[02:19:01] DUMMIES crew run -> runs/20261008-021901
+[02:19:01] Change mode: revising the released build in output/ for CR-005_perception_side_sensors_reaction_delay.md
+[02:19:01] Rules Designer: calling (106,794 chars in)
+[02:23:26] Rules Designer: done in 262.6 s (101,640 chars out)
+[02:23:26] Specification: 78 acceptance criteria, 0 labelled simplifications
+[02:23:26] Game Builder: calling (173,672 chars in)
+[02:26:37] Game Builder: done in 189.2 s (62,201 chars out)
+[02:26:39] Checks: 40/41 passed | failing: outsmarting_pays_more_than_stand_and_lunge
+[02:26:39] QA / Repair Reviewer: calling (224,970 chars in)
+[02:28:32] QA / Repair Reviewer: done in 111.1 s (21,919 chars out)
+[02:28:32] QA verdict: repair | 2 repair request(s) | The damage module, write-off flow and drawing are correct, and 40 of 41 checks pass. The one failed check, outsmarting_pays_more_than_stand_and_lunge, is a real defect. Starting a lunge makes the predicted dummy point overshoot the car. That drops `sees` and resets `senseTime`, so an aware, unsure car goes back to cruise speed. Standing in the lane and lunging therefore still pays the full 500, which is the exact behaviour CR-005 was meant to remove.
+[02:28:32] Not released -> repair cycle 1 of 2
+[02:28:32] Game Builder: calling (209,800 chars in)
+[stopped by operator during QA] Build 1 passed 40 of 41 checks. The failure was real and is a gap in the change request, not a Builder fault: with a 0.15 s reaction delay, a dummy standing in a sedan's lane can lunge the moment it is first sensed (168 px away, inside lunge reach) and land before the car is aware, for the full 500. The reaction delay needs a longer frontal sensing range, as Lawrence first suggested. CR-005 was amended (section 5) and the run restarted from this specification and build.

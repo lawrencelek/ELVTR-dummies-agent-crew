@@ -1,6 +1,6 @@
 {
-  "total": 42,
-  "passed": 42,
+  "total": 41,
+  "passed": 41,
   "failed": 0,
   "all_passed": true,
   "results": [
@@ -194,7 +194,7 @@
       "id": "hit_during_any_lunge_step_counts_as_a_lunge",
       "description": "A hit that lands on any step of a lunge, the final one included, is scored as a lunge (QA's finding on CR-002 build 1): swept over 200 head-on lunges started from slightly different distances",
       "pass": true,
-      "detail": "161 hits during a lunge, 0 of them on the lunge's final step, all scored as lunges"
+      "detail": "192 hits during a lunge, 4 of them on the lunge's final step, all scored as lunges"
     },
     {
       "id": "perception_geometry",
@@ -221,28 +221,22 @@
       "detail": "cruise held at 138"
     },
     {
-      "id": "a_standing_dummy_is_steered_round",
-      "description": "A dummy that simply stands in a lane is steered round: no hits from sedans, vans, wagons or hatchbacks, and no car cuts back in and clips it with its flank or rear (levels 1 and 2). The bus, which cannot swerve, and the sports car, which commits too late by design, may still touch it with their front",
-      "pass": true,
-      "detail": "L1 y=284: 19 cars, 0 hits; L1 y=336: 19 cars, 0 hits; L2 y=284: 21 cars, 0 hits (plus 1 front contact by a bus or sports car, allowed); L2 y=336: 21 cars, 0 hits (plus 2 front contacts by a bus or sports car, allowed)"
-    },
-    {
       "id": "outsmarting_pays_more_than_stand_and_lunge",
       "description": "The pillar: the best hit from standing in a car's lane and lunging at it pays clearly less than the best hit from baiting it into committing and then lunging into its new line",
       "pass": true,
-      "detail": "sedan: first sensed at 317 px; best stand-and-lunge 150 of 500; bait-then-lunge 300 (frontCorner); ambush from outside the sensors 500; van: first sensed at 317 px; best stand-and-lunge 217 of 652; bait-then-lunge 652 (nose); ambush from outside the sensors 652"
+      "detail": "sedan: first sensed at 317 px; stand-and-lunge on an uncommitted car 0; straight lunge after it committed 380; bait-then-lunge 500 (nose); ambush from outside the sensors 500; van: first sensed at 317 px; stand-and-lunge on an uncommitted car 196; straight lunge after it committed 554; bait-then-lunge 652 (nose); ambush from outside the sensors 652"
     },
     {
       "id": "traffic_audit",
       "description": "Vehicle paths and stop/start, measured over 120 s per level with a wandering dummy: on levels 1 and 2 no car is removed while still inside the hall and no car stays stopped for more than 15 s (level 3 is measured and reported to QA, not enforced)",
       "pass": true,
-      "detail": "L1: 87 cars, 81 exited, 0 removed inside the hall, longest stop 0 s | L2: 96 cars, 92 exited, 0 removed inside the hall, longest stop 0 s | L3: 108 cars, 96 exited, 5 removed inside the hall, longest stop 13.7 s"
+      "detail": "L1: 87 cars, 81 exited, 0 removed inside the hall, longest stop 0 s | L2: 96 cars, 93 exited, 0 removed inside the hall, longest stop 0 s | L3: 104 cars, 95 exited, 4 removed inside the hall, longest stop 9.8 s"
     },
     {
       "id": "vehicle_numbers_for_qa",
       "description": "Vehicle start/stop, lane and barrier figures are measured for the QA audit; every car's speed stays between 0 and its class speed on all levels",
       "pass": true,
-      "detail": "lane deviation {\"level1\":0,\"level2\":0,\"level3\":0}; barrier clearance {\"level1MinPxWithWanderingDummy\":9,\"level2MinPxWithWanderingDummy\":3.02}; L3 breaker idle 3 cars in 3/30 runs, wandering 4 cars in 4/30 runs"
+      "detail": "lane deviation {\"level1\":0,\"level2\":0,\"level3\":0}; barrier clearance {\"level1MinPxWithWanderingDummy\":9,\"level2MinPxWithWanderingDummy\":3.34}; L3 breaker idle 3 cars in 3/30 runs, wandering 6 cars in 6/30 runs"
     },
     {
       "id": "sim_is_pure",
@@ -520,32 +514,25 @@
       "sedan": {
         "cruiseSpeed": 138,
         "dummyFirstSensedAtCentreDistancePx": 317,
-        "bestStandAndLunge": {
-          "damage": 150,
+        "bestStandAndLungeOnAnUncommittedCar": {
+          "damage": 0
+        },
+        "bestStraightLungeAfterItCommitted": {
+          "damage": 380,
           "face": "nose",
           "lunging": true,
-          "vehicleSpeed": 41,
-          "gap": 60,
+          "vehicleSpeed": 105,
+          "gap": 120,
           "awareBefore": true,
           "lockBefore": 1
         },
-        "ofWhichBestAfterTheCarHadCommitted": {
-          "damage": 150,
-          "face": "nose",
-          "lunging": true,
-          "vehicleSpeed": 41,
-          "gap": 60,
-          "awareBefore": true,
-          "lockBefore": 1
-        },
-        "hitsOnADummyThatLungedShortAndThenStoodStill": 0,
         "bestBaitThenLunge": {
-          "damage": 300,
-          "face": "frontCorner",
+          "damage": 500,
+          "face": "nose",
           "lunging": true,
           "vehicleSpeed": 138,
-          "waitSteps": 39,
-          "lunge": "straight sideways"
+          "waitSteps": 8,
+          "lunge": "diagonally toward the car"
         },
         "bestAmbushFromOutsideTheSensors": {
           "damage": 500,
@@ -597,242 +584,241 @@
           },
           {
             "gap": 50,
-            "damage": 0,
-            "face": null,
-            "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "damage": 150,
+            "face": "flank",
+            "lunging": true,
+            "vehicleSpeed": 138,
+            "lockBefore": 1
           },
           {
             "gap": 60,
-            "damage": 150,
+            "damage": 359,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 99,
             "lockBefore": 1
           },
           {
             "gap": 70,
-            "damage": 150,
+            "damage": 315,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 87,
             "lockBefore": 1
           },
           {
             "gap": 80,
-            "damage": 150,
+            "damage": 337,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 93,
             "lockBefore": 1
           },
           {
             "gap": 90,
-            "damage": 150,
+            "damage": 337,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 93,
             "lockBefore": 1
           },
           {
             "gap": 100,
-            "damage": 150,
+            "damage": 359,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 99,
             "lockBefore": 1
           },
           {
             "gap": 110,
-            "damage": 150,
+            "damage": 359,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 99,
             "lockBefore": 1
           },
           {
             "gap": 120,
-            "damage": 150,
+            "damage": 380,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 105,
             "lockBefore": 1
           },
           {
             "gap": 130,
-            "damage": 90,
+            "damage": 241,
             "face": "frontCorner",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 111,
             "lockBefore": 1
           },
           {
             "gap": 140,
-            "damage": 90,
+            "damage": 254,
             "face": "frontCorner",
             "lunging": true,
-            "vehicleSpeed": 41,
+            "vehicleSpeed": 117,
             "lockBefore": 1
           },
           {
             "gap": 150,
-            "damage": 0,
-            "face": null,
-            "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "damage": 267,
+            "face": "frontCorner",
+            "lunging": true,
+            "vehicleSpeed": 123,
+            "lockBefore": 1
           },
           {
             "gap": 160,
-            "damage": 0,
-            "face": null,
-            "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "damage": 280,
+            "face": "frontCorner",
+            "lunging": true,
+            "vehicleSpeed": 129,
+            "lockBefore": 1
           },
           {
             "gap": 170,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 180,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 190,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 200,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 210,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 220,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 230,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 240,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 250,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 260,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 270,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 280,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 290,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           },
           {
             "gap": 300,
-            "damage": 0,
-            "face": null,
+            "damage": 30,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 138,
+            "lockBefore": 0
           }
         ]
       },
       "van": {
         "cruiseSpeed": 120,
         "dummyFirstSensedAtCentreDistancePx": 317,
-        "bestStandAndLunge": {
-          "damage": 217,
+        "bestStandAndLungeOnAnUncommittedCar": {
+          "damage": 196,
+          "face": "flank",
+          "lunging": true,
+          "vehicleSpeed": 120,
+          "gap": 20,
+          "awareBefore": false,
+          "lockBefore": 0
+        },
+        "bestStraightLungeAfterItCommitted": {
+          "damage": 554,
           "face": "nose",
           "lunging": true,
-          "vehicleSpeed": 40,
-          "gap": 50,
+          "vehicleSpeed": 102,
+          "gap": 40,
           "awareBefore": true,
           "lockBefore": 1
         },
-        "ofWhichBestAfterTheCarHadCommitted": {
-          "damage": 217,
-          "face": "nose",
-          "lunging": true,
-          "vehicleSpeed": 40,
-          "gap": 50,
-          "awareBefore": true,
-          "lockBefore": 1
-        },
-        "hitsOnADummyThatLungedShortAndThenStoodStill": 0,
         "bestBaitThenLunge": {
           "damage": 652,
           "face": "nose",
           "lunging": true,
           "vehicleSpeed": 120,
-          "waitSteps": 33,
+          "waitSteps": 22,
           "lunge": "straight sideways"
         },
         "bestAmbushFromOutsideTheSensors": {
@@ -861,219 +847,219 @@
           },
           {
             "gap": 20,
-            "damage": 0,
-            "face": null,
-            "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "damage": 196,
+            "face": "flank",
+            "lunging": true,
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 30,
-            "damage": 0,
-            "face": null,
-            "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "damage": 391,
+            "face": "frontCorner",
+            "lunging": true,
+            "vehicleSpeed": 120,
+            "lockBefore": 1
           },
           {
             "gap": 40,
-            "damage": 130,
-            "face": "frontCorner",
+            "damage": 554,
+            "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 40,
+            "vehicleSpeed": 102,
             "lockBefore": 1
           },
           {
             "gap": 50,
-            "damage": 217,
+            "damage": 391,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 40,
+            "vehicleSpeed": 72,
             "lockBefore": 1
           },
           {
             "gap": 60,
-            "damage": 196,
+            "damage": 424,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 78,
             "lockBefore": 1
           },
           {
             "gap": 70,
-            "damage": 196,
+            "damage": 424,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 78,
             "lockBefore": 1
           },
           {
             "gap": 80,
-            "damage": 196,
+            "damage": 457,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 84,
             "lockBefore": 1
           },
           {
             "gap": 90,
-            "damage": 196,
+            "damage": 457,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 84,
             "lockBefore": 1
           },
           {
             "gap": 100,
-            "damage": 196,
+            "damage": 489,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 90,
             "lockBefore": 1
           },
           {
             "gap": 110,
-            "damage": 196,
+            "damage": 522,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 96,
             "lockBefore": 1
           },
           {
             "gap": 120,
-            "damage": 196,
+            "damage": 522,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 96,
             "lockBefore": 1
           },
           {
             "gap": 130,
-            "damage": 196,
+            "damage": 554,
             "face": "nose",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 102,
             "lockBefore": 1
           },
           {
             "gap": 140,
-            "damage": 117,
+            "damage": 352,
             "face": "frontCorner",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 108,
             "lockBefore": 1
           },
           {
             "gap": 150,
-            "damage": 117,
+            "damage": 372,
             "face": "frontCorner",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 114,
             "lockBefore": 1
           },
           {
             "gap": 160,
-            "damage": 117,
+            "damage": 391,
             "face": "frontCorner",
             "lunging": true,
-            "vehicleSpeed": 36,
+            "vehicleSpeed": 120,
             "lockBefore": 1
           },
           {
             "gap": 170,
-            "damage": 0,
-            "face": null,
-            "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "damage": 391,
+            "face": "frontCorner",
+            "lunging": true,
+            "vehicleSpeed": 120,
+            "lockBefore": 1
           },
           {
             "gap": 180,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 190,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 200,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 210,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 220,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 230,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 240,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 250,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 260,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 270,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 280,
-            "damage": 0,
-            "face": null,
+            "damage": 39,
+            "face": "flank",
             "lunging": false,
-            "vehicleSpeed": null,
-            "lockBefore": null
+            "vehicleSpeed": 120,
+            "lockBefore": 0
           },
           {
             "gap": 290,
@@ -1108,7 +1094,7 @@
         "level": 2,
         "runs": 3,
         "carsSeen": 96,
-        "leftByExiting": 92,
+        "leftByExiting": 93,
         "removedInsideHall": 0,
         "longestStopSeconds": 0,
         "carsThatStopped": 0
@@ -1116,11 +1102,11 @@
       {
         "level": 3,
         "runs": 3,
-        "carsSeen": 108,
-        "leftByExiting": 96,
-        "removedInsideHall": 5,
-        "longestStopSeconds": 13.7,
-        "carsThatStopped": 15
+        "carsSeen": 104,
+        "leftByExiting": 95,
+        "removedInsideHall": 4,
+        "longestStopSeconds": 9.8,
+        "carsThatStopped": 10
       }
     ],
     "vehicle_audit": {
@@ -1193,11 +1179,11 @@
         }
       },
       "speedChange": {
-        "carStepsMeasured": 408614,
+        "carStepsMeasured": 405387,
         "slewLimitUpPxPerStep": 6,
         "slewLimitDownPxPerStep": 10,
         "maxIncreasePerStep": 6,
-        "maxDecreasePerStep": 156,
+        "maxDecreasePerStep": 192,
         "stepsOverUpLimit": 0,
         "stepsOverDownLimit": 10,
         "overLimitByCause": {
@@ -1215,7 +1201,7 @@
       },
       "barrierClearance": {
         "level1MinPxWithWanderingDummy": 9,
-        "level2MinPxWithWanderingDummy": 3.02
+        "level2MinPxWithWanderingDummy": 3.34
       },
       "level3StallBreaker": {
         "idleDummy": {
@@ -1228,9 +1214,9 @@
         "wanderingDummy": {
           "seeds": 30,
           "secondsPerRun": 60,
-          "carsRemovedInsideHall": 4,
-          "runsWithARemoval": 4,
-          "longestHoldOfLowestSerialCarSeconds": 10.4
+          "carsRemovedInsideHall": 6,
+          "runsWithARemoval": 6,
+          "longestHoldOfLowestSerialCarSeconds": 28.7
         }
       },
       "startStopNote": "measuredCruiseToStop runs from the first step the following car slows until it is below 1 px/s behind a car held stopped in its lane. It is longer than cruise/decel because the car starts slowing at its look-ahead distance and then closes the remaining gap slowly; decel limits the rate of slowing, not the total time. gapToStoppedCarAtRestPx >= 0 means it stopped without touching."

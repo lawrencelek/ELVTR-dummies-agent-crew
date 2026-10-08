@@ -415,13 +415,147 @@ if (Sim) {
   check("hit_during_any_lunge_step_counts_as_a_lunge", "A hit that lands on any step of a lunge, the final one included, is scored as a lunge (QA's finding on CR-002 build 1): swept over 200 head-on lunges started from slightly different distances", () => {
     let tested = 0, finalStep = 0;
     for (let k = 0; k < 200; k++) { const s = mk({ level: 1, seed: 7 }); const c = waitForCar(s, fresh, 60); const serial = c.serial;
-      s.dummy.x = c.x + c.length / 2 + R + 180 + k * 0.25; s.dummy.y = c.y; s.dummy.vx = 0; s.dummy.vy = 0; let input = inp({ dx: -1, lunge: true });
+      s.dummy.x = c.x + c.length / 2 + R + 150 + k * 0.25; s.dummy.y = c.y; s.dummy.vx = 0; s.dummy.vy = 0; let input = inp({ dx: -1, lunge: true });
       for (let i = 0; i < 40; i++) { const was = s.dummy.lunging, before = s.lastImpact ? s.lastImpact.time : -1; Sim.step(s, input, DT); input = NONE; const L = s.lastImpact;
         if (L && L.time !== before && L.serial === serial) { if (was) { tested++; if (!s.dummy.lunging) finalStep++;
-            assert(L.lunging === true, `start offset ${(180 + k * 0.25).toFixed(2)} px: a hit on a lunge step${s.dummy.lunging ? "" : " (the final one)"} was logged with lunging=false and lungeFactor ${L.lungeFactor}`);
-            assert(L.lungeFactor === I.lungeMultiplier, `start offset ${(180 + k * 0.25).toFixed(2)} px: lunge hit has lungeFactor ${L.lungeFactor}, expected ${I.lungeMultiplier}`); }
+            assert(L.lunging === true, `start offset ${(150 + k * 0.25).toFixed(2)} px: a hit on a lunge step${s.dummy.lunging ? "" : " (the final one)"} was logged with lunging=false and lungeFactor ${L.lungeFactor}`);
+            assert(L.lungeFactor === I.lungeMultiplier, `start offset ${(150 + k * 0.25).toFixed(2)} px: lunge hit has lungeFactor ${L.lungeFactor}, expected ${I.lungeMultiplier}`); }
           break; } } }
     assert(tested >= 20, "only " + tested + " lunge hits were produced by the sweep"); return `${tested} hits during a lunge, ${finalStep} of them on the lunge's final step, all scored as lunges`;
+  });
+
+  // ---- CR-005: perception, reaction delay, unsure / committed speeds --------------------------------------------
+  const PC = P.perception || {};
+  // a single car of a class approaching along a level 1 lane, with every other car removed each step
+  const approach = (cls, seed) => { const s = mk({ level: 1, seed: seed || 7 }); const c = waitForCar(s, k => k.cls === cls && !k.hit && k.dirX === 1 && k.x > H.x - 20 && k.x < H.x + 80 && k.speed > 40, 300); return { s, serial: c.serial, laneY: c.y }; };
+  const only = (s, serial) => { s.cars = s.cars.filter(k => k.serial === serial); keepAlive(s); return s.cars[0] || null; };
+  const hold = (s, x, y) => { s.dummy.x = x; s.dummy.y = y; };
+
+  check("perception_geometry", "Vehicles.senses reports the forward path zone (out to the 320 px frontal range), the side sensors (100 px from the nose, up to 80 degrees off the heading) and nothing outside them, for cars heading in all four directions; a unit whose detection has grown past 320 px senses that far", () => {
+    const V = Sim.Vehicles; assert(V && typeof V.senses === "function", "Vehicles.senses missing");
+    assert(PC.sideRadius === 100, "spec perception.sideRadius is " + PC.sideRadius + "; the agreed starting value is 100"); assert(PC.reactionDelay === 0.15, "spec perception.reactionDelay is " + PC.reactionDelay + "; the agreed starting value is 0.15");
+    assert(PC.sideHalfAngleDeg === 80, "spec perception.sideHalfAngleDeg should be 80, got " + PC.sideHalfAngleDeg); assert(PC.frontRange === 320, "spec perception.frontRange should be 320, got " + PC.frontRange);
+    for (const k of ["warySpeedFactor", "unsureSpeedFactor"]) assert(PC[k] > 0 && PC[k] < 1, "spec perception." + k + " must be between 0 and 1");
+    const { s, serial } = approach("sedan"); const real = only(s, serial), B = P.classes.sedan.base; assert(B.detect < 320 && B.margin === 44 && real.length === 62, "this table assumes the sedan's base dials (detect 212, margin 44, length 62)");
+    // points as (along, across) from the car's centre, the car heading along +a; expected sensor
+    const table = [[100, 0, "path"], [60, 0, "path"], [230, 0, "path"], [319, 0, "path"], [321, 0, null], [319, 43, "path"], [319, 45, null], [100, 50, "side"], [50, 60, "side"], [45, -60, "side"],
+      [31, 90, null], [40, -60, null], [-20, 30, null], [31, 101, null], [51, 30, "path"], [91, 95, null]];
+    const rows = []; let n = 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const car = JSON.parse(JSON.stringify(real)); car.dirX = dx; car.dirY = dy; car.x = 450; car.y = 310;
+      for (const [a, b, want] of table) { const x = car.x + a * dx + b * (-dy), y = car.y + a * dy + b * dx, g = V.senses(s, car, x, y) || null; n++;
+        if (dx === 1) rows.push({ along: a, across: b, expected: want, observed: g });
+        assert(g === want, `car heading (${dx},${dy}): a dummy ${a} px along and ${b} px across from its centre is reported as ${JSON.stringify(g)}, expected ${JSON.stringify(want)}`); } }
+    const before = JSON.stringify(s); V.senses(s, real, real.x + 100, real.y); assert(JSON.stringify(s) === before, "Vehicles.senses changed the state");
+    const unit = s.fleet && s.fleet.find(u => u.id === real.id); assert(unit && typeof unit.contacts === "number", "cannot find the car's fleet unit to test a learned detection range");
+    const saved = unit.contacts; unit.contacts = 7;                 // sedan detect 212 + 7 x 30 reaches its cap of 400
+    const far = [V.senses(s, real, real.x + 390, real.y) || null, V.senses(s, real, real.x + 410, real.y) || null]; unit.contacts = saved;
+    assert(far[0] === "path" && far[1] === null, `with detection learned up to 400 px: 390 px ahead gives ${JSON.stringify(far[0])} (expected path), 410 px gives ${JSON.stringify(far[1])} (expected null)`);
+    reports.perception_geometry = { car: "sedan at base dials, heading along +along", points: rows, learnedDetect400: { at390: far[0], at410: far[1] }, headingsTested: 4 };
+    return n + " points classified correctly over four headings; learned 400 px range respected";
+  });
+
+  check("reaction_delay_then_unsure_then_committed", "A car senses a dummy in its lane at once but does nothing for the reaction delay; then it slows while unsure; once committed to a side it returns to cruising speed and ignores the dummy, even a fast-moving one", () => {
+    const out = [];
+    for (const cls of ["sedan", "van"]) { const { s, serial } = approach(cls); let c = only(s, serial); const cruise = P.classes[cls].speed, px = c.x + c.length / 2 + 150, py = c.y;
+      for (const k of ["sees", "wary", "aware"]) assert(typeof c[k] === "boolean", "car." + k + " missing");
+      let t = 0, firstSees = null, awareAt = null;
+      for (let i = 0; i < 60 && awareAt === null; i++) { hold(s, px, py); Sim.step(s, NONE, DT); c = only(s, serial); assert(c, "car vanished"); t += DT;
+        if (c.sees && firstSees === null) firstSees = t;
+        if (!c.aware) assert(!c.braking && c.lock === 0 && c.speed >= cruise - 0.5, `${cls}: reacted before it was aware (t=${t.toFixed(2)} s: speed ${f1(c.speed)}, braking ${c.braking}, lock ${c.lock})`); else awareAt = t; }
+      assert(firstSees !== null && firstSees <= 2 * DT + 1e-9, cls + ": the dummy in its lane was not sensed at once"); assert(awareAt !== null, cls + ": never became aware");
+      assert(Math.abs((awareAt - firstSees) - PC.reactionDelay) <= 2 * DT + 1e-9, `${cls}: became aware ${(awareAt - firstSees).toFixed(3)} s after sensing; the delay is ${PC.reactionDelay} s`);
+      let sawBrake = false; for (let i = 0; i < 15; i++) { hold(s, px, py); Sim.step(s, NONE, DT); c = only(s, serial); if (c.braking) sawBrake = true; }
+      assert(c.lock === 0, cls + ": committed earlier than expected in this set-up"); assert(c.speed <= cruise * (PC.unsureSpeedFactor + 0.12), `${cls}: unsure speed is ${f1(c.speed)}, expected about ${f1(cruise * PC.unsureSpeedFactor)} or less`); assert(sawBrake, cls + ": no brake lights while slowing");
+      const unsureSpeed = c.speed; let g = 0; while (c && c.lock === 0 && g++ < 240) { hold(s, px, py); Sim.step(s, NONE, DT); c = only(s, serial); }
+      assert(c && c.lock !== 0, cls + ": never committed to a side with a dummy standing in its lane");
+      for (let i = 0; i < 42 && c; i++) { hold(s, px, py); Sim.step(s, inp({ dx: 1 }), DT); c = only(s, serial); }      // the dummy "runs" on the spot: caution must not apply
+      assert(c, cls + ": car vanished after committing"); assert(c.speed >= cruise * 0.95, `${cls}: ${(42 * DT).toFixed(1)} s after committing its speed is ${f1(c.speed)}, expected back at cruise ${cruise}`);
+      out.push(`${cls}: aware after ${(awareAt - firstSees).toFixed(2)} s, unsure at ${f1(unsureSpeed)} px/s, committed and back to ${f1(c.speed)}`); }
+    // the delay is in seconds, not steps: at 120 steps per second it is 18 steps; and a one-step break in sensing restarts it
+    { const { s, serial } = approach("sedan"); let c = only(s, serial); const px = c.x + c.length / 2 + 150, py = c.y, h = 1 / 120; let n = 0, first = null, at = null;
+      for (let i = 0; i < 80 && at === null; i++) { hold(s, px, py); Sim.step(s, NONE, h); c = only(s, serial); n++; if (c.sees && first === null) first = n; if (c.aware) at = n; }
+      assert(at !== null && Math.abs((at - first) - PC.reactionDelay * 120) <= 2, `at 120 steps per second the car became aware ${at - first} steps after sensing; expected ${PC.reactionDelay * 120}`); out.push(`120 Hz: aware after ${at - first} steps`); }
+    { const { s, serial } = approach("sedan"); let c = only(s, serial); const px = c.x + c.length / 2 + 150, py = c.y;
+      for (let i = 0; i < 5; i++) { hold(s, px, py); Sim.step(s, NONE, DT); c = only(s, serial); } assert(c.sees && !c.aware, "set-up: expected sensed but not yet aware after 5 steps");
+      hold(s, px, py - 200); Sim.step(s, NONE, DT); c = only(s, serial); assert(!c.sees && !c.aware, "moving the dummy out of the zone for one step did not stop the sensing");
+      let n = 0; for (let i = 0; i < 30 && !c.aware; i++) { hold(s, px, py); Sim.step(s, NONE, DT); c = only(s, serial); n++; }
+      assert(c.aware && n >= Math.round(PC.reactionDelay * 60) - 1, `after a one-step break the car was aware again after only ${n} steps; the full delay (${Math.round(PC.reactionDelay * 60)} steps) must run again`); out.push(`after a break: aware after ${n} more steps`); }
+    return out.join("; ");
+  });
+
+  check("side_sensor_makes_a_car_wary", "A dummy standing 60 px beside a lane is picked up by the side sensor: the car slows to its wary speed after the reaction delay, without swerving or committing", () => {
+    const out = [];
+    for (const cls of ["sedan", "van"]) { const { s, serial, laneY } = approach(cls); let c = only(s, serial); const cruise = P.classes[cls].speed, px = c.x + c.length / 2 + 300, py = laneY + (laneY > P.levels[0].road.y ? 60 : -60);
+      let minSpeed = cruise, sawWary = false, waryT = 0, reactedEarly = null;
+      for (let i = 0; i < 420; i++) { hold(s, px, py); Sim.step(s, NONE, DT); c = only(s, serial); if (!c) break;
+        assert(!c.sees, cls + ": a dummy 60 px beside the lane was reported in the path zone"); assert(c.lock === 0 && Math.abs(c.y - laneY) < 0.5, cls + ": the car swerved or committed for a dummy that is not in its path");
+        if (c.wary) { sawWary = true; waryT += DT; if (!c.aware && c.speed < cruise - 0.5) reactedEarly = waryT; } if (c.speed < minSpeed) minSpeed = c.speed; }
+      assert(sawWary, cls + ": the side sensor never picked up the dummy"); assert(reactedEarly === null, `${cls}: slowed ${reactedEarly && reactedEarly.toFixed(2)} s after sensing, before it was aware`);
+      assert(minSpeed <= cruise * (PC.warySpeedFactor + 0.1) && minSpeed >= cruise * (PC.warySpeedFactor - 0.08), `${cls}: slowest speed ${f1(minSpeed)}, expected about ${f1(cruise * PC.warySpeedFactor)}`);
+      out.push(`${cls}: sensed for ${waryT.toFixed(2)} s, slowed to ${f1(minSpeed)} of ${cruise}`); }
+    return out.join("; ");
+  });
+
+  check("unnoticed_cars_ignore_the_dummy", "A dummy running and lunging well away from the road has no effect on a car that has not sensed it", () => {
+    const { s, serial } = approach("sedan"); let c = only(s, serial); const cruise = P.classes.sedan.speed; s.dummy.x = H.x + 200; s.dummy.y = H.y + 40;
+    for (let i = 0; i < 200 && c; i++) { s.dummy.y = H.y + 40; Sim.step(s, inp({ dx: i % 120 < 60 ? 1 : -1, lunge: i % 50 < 3 }), DT); c = only(s, serial); if (!c) break;
+      assert(!c.sees && !c.wary && !c.aware, "the car sensed a dummy on the far side of the hall"); assert(c.speed >= cruise * 0.99, `the car slowed to ${f1(c.speed)} for a dummy it has not sensed`); }
+    return "cruise held at " + cruise;
+  });
+
+  check("a_standing_dummy_is_steered_round", "A dummy that simply stands in a lane is steered round: no hits from sedans, vans, wagons or hatchbacks, and no car cuts back in and clips it with its flank or rear (levels 1 and 2). The bus, which cannot swerve, and the sports car, which commits too late by design, may still touch it with their front", () => {
+    const out = [];
+    for (const level of [1, 2]) { const L = P.levels[level - 1], spots = L.kind === "road" ? L.road.laneYs.map(y => ({ x: H.x + H.w * 0.5, y })) : (L.roadH.laneYs || [L.roadH.y]).map(y => ({ x: H.x + H.w * 0.25, y }));
+      for (const sp of spots) { const s = mk({ level, seed: 3 }); let hits = [], lastT = -1, tick = 0, cars = new Set(), allowed = 0;
+        for (let i = 0; i < 60 * 80; i++) { keepAlive(s);
+          if (s.mode !== "play") { tick++; Sim.step(s, inp({ confirm: tick % 20 < 2 }), DT); continue; }
+          hold(s, sp.x, sp.y); Sim.step(s, NONE, DT); s.cars.forEach(k => cars.add(k.serial)); const Lm = s.lastImpact;
+          // the bus cannot swerve, and the sports car commits too late to clear a standing dummy (its design, as in the Testpad): their front contacts are allowed
+          if (Lm && Lm.time !== lastT) { lastT = Lm.time; const C = P.classes[Lm.cls], front = Lm.face === "nose" || Lm.face === "frontCorner";
+            if (!front || (C.swerve && C.commitFrac >= 0.4)) hits.push(`${Lm.id} ${Lm.face} ${Lm.damage}`); else allowed++; } }
+        assert(hits.length === 0, `level ${level}, dummy standing at (${Math.round(sp.x)},${Math.round(sp.y)}): hit by ${hits.length} of ${cars.size} cars, e.g. ${hits.slice(0, 3).join("; ")}`); out.push(`L${level} y=${sp.y}: ${cars.size} cars, 0 hits` + (allowed ? ` (plus ${allowed} front contact${allowed > 1 ? "s" : ""} by a bus or sports car, allowed)` : "")); } }
+    return out.join("; ");
+  });
+
+  check("outsmarting_pays_more_than_stand_and_lunge", "The pillar: the best hit from standing in a car's lane and lunging at it pays clearly less than the best hit from baiting it into committing and then lunging into its new line", () => {
+    reports.outsmart = {}; const out = [];
+    const result = (s, serial, since) => { const L = s.lastImpact; return L && L.serial === serial && L.time >= since ? { damage: L.damage, face: L.face, lunging: L.lunging, vehicleSpeed: Math.round(L.vehicleSpeed) } : { damage: 0 }; };
+    for (const cls of ["sedan", "van"]) { const cruise = P.classes[cls].speed; let bestStand = { damage: 0 }, bestBait = { damage: 0 }, bestAmbush = { damage: 0 };
+      const sweep = [], standingClips = []; let seesFirstCentreDistance = null, bestAfterCommit = { damage: 0 };
+      for (let gap = 0; gap <= 300; gap += 10) {                       // stand in its lane from before it comes into range; lunge head-on when the nose is <gap> px away
+        const { s, serial } = approach(cls); let c = only(s, serial), fired = null, prev = null, at = null; hold(s, c.x + c.length / 2 + R + 420, c.y);
+        for (let i = 0; i < 900 && c; i++) { let input = NONE; if (fired === null && s.dummy.x - R - (c.x + c.length / 2) <= gap) { input = inp({ dx: -1, lunge: true }); fired = s.time; }
+          if (c.sees && seesFirstCentreDistance === null) seesFirstCentreDistance = Math.round(s.dummy.x - c.x);
+          prev = { aware: c.aware, lock: c.lock, speed: Math.round(c.speed) }; const before = s.lastImpact ? s.lastImpact.time : -1; Sim.step(s, input, DT);
+          if (s.lastImpact && s.lastImpact.serial === serial && s.lastImpact.time !== before && at === null) at = prev; c = only(s, serial); if (fired !== null && s.time - fired > 1.5) break; }
+        const r = result(s, serial, fired === null ? 1e9 : fired); r.gap = gap; if (at) { r.awareBefore = at.aware; r.lockBefore = at.lock; } sweep.push(r);
+        if (r.damage > 0) { if (!r.lunging) standingClips.push(r);
+          if (r.lunging && r.lockBefore === 0 && (r.face === "nose" || r.face === "frontCorner")) assert(r.awareBefore === true, `${cls}: lunging from a nose gap of ${gap} px hit the front of an uncommitted car that was not aware of a dummy standing in its lane (${r.damage} points at ${r.vehicleSpeed} px/s)`);
+          if (r.damage > bestStand.damage) bestStand = r;                       // every straight lunge from standing in the lane counts, whatever the car had decided by then
+          if (r.lockBefore !== 0 && r.damage > bestAfterCommit.damage) bestAfterCommit = r; } }
+      for (const diag of [0, -1]) for (let wait = 0; wait <= 50; wait++) {   // stand in its lane until it commits, wait, then lunge into the line it has chosen
+        const { s, serial, laneY } = approach(cls); let c = only(s, serial); const px = c.x + c.length / 2 + R + 420, py = c.y; hold(s, px, py); let g = 0;
+        while (c && c.lock === 0 && g++ < 700) { Sim.step(s, NONE, DT); c = only(s, serial); } if (!c || c.lock === 0) continue;
+        for (let i = 0; i < wait && c; i++) { Sim.step(s, NONE, DT); c = only(s, serial); } if (!c) continue;
+        const side = Math.abs(c.y - laneY) > 0.5 ? Math.sign(c.y - laneY) : (c.lock > 0 ? 1 : -1), fired = s.time; Sim.step(s, inp({ dx: diag, dy: side, lunge: true }), DT); c = only(s, serial);
+        for (let i = 0; i < 90 && c; i++) { Sim.step(s, NONE, DT); c = only(s, serial); }
+        const r = result(s, serial, fired); r.waitSteps = wait; r.lunge = diag ? "diagonally toward the car" : "straight sideways"; if (r.damage > bestBait.damage) bestBait = r; }
+      for (let gap = 30; gap <= 150; gap += 5) {                       // ambush from outside the side sensor: 115 px beside the lane, lunge at the nose
+        const { s, serial, laneY } = approach(cls); let c = only(s, serial), fired = null; const off = laneY > P.levels[0].road.y ? 115 : -115; hold(s, c.x + c.length / 2 + R + 420, c.y + off);
+        for (let i = 0; i < 700 && c; i++) { let input = NONE; if (fired === null && s.dummy.x - R - (c.x + c.length / 2) <= gap) { input = inp({ dx: -1, dy: -Math.sign(off), lunge: true }); fired = s.time; }
+          Sim.step(s, input, DT); c = only(s, serial); if (fired !== null && s.time - fired > 1.5) break; }
+        const r = result(s, serial, fired === null ? 1e9 : fired); r.gap = gap; if (r.damage > bestAmbush.damage) bestAmbush = r; }
+      reports.outsmart[cls] = { cruiseSpeed: cruise, dummyFirstSensedAtCentreDistancePx: seesFirstCentreDistance, bestStandAndLunge: bestStand, ofWhichBestAfterTheCarHadCommitted: bestAfterCommit, hitsOnADummyThatLungedShortAndThenStoodStill: standingClips.length,
+        bestBaitThenLunge: bestBait, bestAmbushFromOutsideTheSensors: bestAmbush, standAndLungeSweepByNoseGap: sweep.map(r => ({ gap: r.gap, damage: r.damage, face: r.face || null, lunging: !!r.lunging, vehicleSpeed: r.vehicleSpeed || null, lockBefore: r.lockBefore === undefined ? null : r.lockBefore })) };
+      assert(seesFirstCentreDistance !== null && Math.abs(seesFirstCentreDistance - Math.max(PC.frontRange, P.classes[cls].base.detect)) <= 6, `${cls}: a dummy standing in the lane was first sensed ${seesFirstCentreDistance} px from the car's centre; expected about ${Math.max(PC.frontRange, P.classes[cls].base.detect)}`);
+      const full = formula(cls, cruise, "nose", true);
+      assert(bestStand.damage <= 0.45 * full, `${cls}: standing in the lane and lunging straight at the car pays up to ${bestStand.damage} of a possible ${full} (from a nose gap of ${bestStand.gap} px: ${bestStand.face} at ${bestStand.vehicleSpeed} px/s, lock ${bestStand.lockBefore}); it must pay well under half`);
+      assert(standingClips.length === 0, `${cls}: a dummy that lunged short and then stood still in the lane was hit by the car in ${standingClips.length} of the trials (e.g. ${standingClips[0] && standingClips[0].face} for ${standingClips[0] && standingClips[0].damage}); cars must steer round a standing dummy and stay out until they are past`);
+      assert(bestBait.damage > 0, cls + ": no baited lunge in the sweep landed at all"); assert(bestBait.lunging === true, cls + ": the best baited hit was not a lunge");
+      assert(bestBait.vehicleSpeed >= cruise * 0.85, `${cls}: the best baited hit met the car at ${bestBait.vehicleSpeed} px/s; a committed car should be back near cruise (${cruise})`);
+      assert(bestBait.damage >= bestStand.damage * 1.5, `${cls}: baiting pays ${bestBait.damage}, stand-and-lunge pays ${bestStand.damage}; baiting must pay at least half as much again`);
+      out.push(`${cls}: first sensed at ${seesFirstCentreDistance} px; best stand-and-lunge ${bestStand.damage} of ${full}; bait-then-lunge ${bestBait.damage} (${bestBait.face}); ambush from outside the sensors ${bestAmbush.damage}`); }
+    return out.join("; ");
   });
 
   check("traffic_audit", "Vehicle paths and stop/start, measured over 120 s per level with a wandering dummy: on levels 1 and 2 no car is removed while still inside the hall and no car stays stopped for more than 15 s (level 3 is measured and reported to QA, not enforced)", () => {

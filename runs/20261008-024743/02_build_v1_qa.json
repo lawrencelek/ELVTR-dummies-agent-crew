@@ -1,0 +1,206 @@
+{
+  "verdict": "repair",
+  "summary": "41 of 42 automated checks pass, but a_standing_dummy_is_steered_round fails. On level 2 a dummy standing at (245,284) was hit by SPT-11 (frontCorner, 38). That breaks the change 7 rule that a dummy standing still in a lane is not clipped (AC-84). The damage module, the write-off flow, the sensing and the reaction delay all read correctly, and the stand-and-lunge figures are now at or below 217 (sedan 150).",
+  "criteria": [
+    {
+      "id": "AC-01..AC-11",
+      "status": "pass",
+      "evidence": "Checks load_sim, params_match_spec, sim_is_pure, deterministic_and_seeded, move_speed_equal_8_directions, walk_frame_rate_independent, lunge_distance_equal_8_directions, lunge_frame_rate_independent, lunge_eases_out, held_lunge_does_not_chain, recovery_is_tweened all pass. Code read: no Math.random in sim.js, and the RNG is the mulberry32 function rnd on state.rng."
+    },
+    {
+      "id": "AC-12..AC-18",
+      "status": "pass",
+      "evidence": "level1_road_flows_left_to_right (14 cars), level2_cross_no_collisions (both one-way roads used, no overlap), level3_free_for_all (4 directions, 6 classes), traffic_audit, vehicle_numbers_for_qa (lane deviation 0). Draw order in spawnStep is interval, entry, then unit, as specified."
+    },
+    {
+      "id": "AC-15, AC-28, AC-30, AC-34",
+      "status": "pass",
+      "evidence": "solid_cars_and_barriers_under_active_play and dummy_cannot_walk_through_a_car pass. Code: axisMove truncates against every car, latFree gates sideways moves, limits() applies the barrier bounds."
+    },
+    {
+      "id": "AC-19..AC-21, AC-56..AC-60",
+      "status": "pass",
+      "evidence": "write_off_animation_then_card (1.10 s, frozen, confirm ignored), ending_licensed, ending_decommissioned, level_progression. step(): writeoff mode only advances time and writeOff.t, so cars, spawning, the dummy and senseTime are frozen. A confirm held through the animation is not fresh because prevConfirm is updated every step."
+    },
+    {
+      "id": "AC-22, AC-26, AC-27, AC-42..AC-49, AC-64..AC-66",
+      "status": "pass",
+      "evidence": "damage_module_is_logical, damage_in_play_matches_module, hit_during_any_lunge_step_counts_as_a_lunge, front_impact_pays_once, tail_contact_pays_its_small_share. Hand-computed grid matches the build for every class and zone. judge() is the only place that touches health and score, and it calls Damage.contactFace and Damage.assess."
+    },
+    {
+      "id": "AC-35, AC-39..AC-41",
+      "status": "pass",
+      "evidence": "levels_always_end_with_dummy_in_traffic (all levels ended in 62 to 97 s). traffic_audit shows 0 removals inside the hall on levels 1 and 2. The stall breaker is reported only (see vehicle_audit)."
+    },
+    {
+      "id": "AC-50..AC-53",
+      "status": "pass",
+      "evidence": "modules_exist_and_do_the_work and vehicle_numbers_for_qa pass. Over-limit speed steps: 10, all caused by truncation. Code read: car fields are written only in carsStep, spawnStep and stallStep, and Vehicles never writes dummy fields, health or score."
+    },
+    {
+      "id": "AC-68, AC-69, AC-76",
+      "status": "pass",
+      "evidence": "perception_geometry passes: 64 points over four headings, the 320 px edge, and the learned 400 px range. senses() reads only the unit's dials and params.perception. Perception params are in PARAMS and match the spec."
+    },
+    {
+      "id": "AC-70, AC-71, AC-72, AC-73, AC-74",
+      "status": "pass",
+      "evidence": "reaction_delay_then_unsure_then_committed (aware after 0.13 s, 17 steps at 120 Hz, 9 more after a break; 69.0 then 138), side_sensor_makes_a_car_wary (82.8), unnoticed_cars_ignore_the_dummy. Code: aware is gated on senseTime >= 0.15, and the commit and flip conditions include c.aware. Case a returns cruise, so the dummy's speed has no effect. F is applied only in the wary, unsure and mid-swerve cases, not in complete (d2) or stuck (e)."
+    },
+    {
+      "id": "AC-75, AC-79, AC-80, AC-83",
+      "status": "pass",
+      "evidence": "outsmarting_pays_more_than_stand_and_lunge: sedan stand-and-lunge best 150, baited 300 (frontCorner), ambush 500. The sedan sweep gaps 0 to 300 never exceed 150. Van best is 217, near the 175 bound; this is the van's own mass (momentum factor 1.3), so it is fine for the sedan criteria. Sensing starts at about 317 px, in line with the 320 px range. sees uses actual OR predicted path position."
+    },
+    {
+      "id": "AC-81",
+      "status": "unverified",
+      "evidence": "Code: release only when aActual < -(length/2 + radius), and lockT is cleared on release. No automated check covers the 30-seed lock-release test, so I cannot confirm it from a named result."
+    },
+    {
+      "id": "AC-82",
+      "status": "unverified",
+      "evidence": "Code: the unsure target holds until |lw0 - lockT| <= 2, and the hatch flip resets lockT. No swerve-completion trace is in the checks report."
+    },
+    {
+      "id": "AC-84",
+      "status": "fail",
+      "evidence": "a_standing_dummy_is_steered_round failed: level 2, dummy at (245,284), hit by 1 of 21 cars (SPT-11, frontCorner 38). The criterion requires zero clips where the swerve is feasible."
+    },
+    {
+      "id": "AC-13, AC-14, AC-16, AC-17, AC-31, AC-32, AC-33, AC-36",
+      "status": "unverified",
+      "evidence": "No named check reports these directly. Flow, overlap and barrier behaviour pass under the checks listed above. The draw code for shoulders and barriers exists in drawShoulders and drawBarriers."
+    },
+    {
+      "id": "AC-23",
+      "status": "pass",
+      "evidence": "index.html has no external URLs and fonts keep the Testpad names first. It uses a fixed 1/60 accumulator and loads sim.js through a script tag (html_static passes)."
+    },
+    {
+      "id": "AC-24, AC-25, AC-36, AC-37, AC-55, AC-61, AC-63, AC-67, AC-77, AC-78, AC-85",
+      "status": "unverified",
+      "evidence": "Playtest items that need a person. Code read: index.html draws the side wedge, the lit and idle path rectangle of max(detect, frontRange) x 2*margin, the aware ring and diamond, brake lights from c.braking, and the write-off effects (shake 14(1-u)^2, red blend over u/0.25, fade 0.35 to 0.85, 18 particles)."
+    },
+    {
+      "id": "AC-02, AC-54",
+      "status": "unverified",
+      "evidence": "AC-54 needs the QA report items: AC-81, AC-82 and AC-84 evidence is not in the checks report, and the AC-84 check failed."
+    }
+  ],
+  "defects": [
+    {
+      "severity": "major",
+      "file": "sim.js",
+      "problem": "A standing dummy is still clipped by the fast Sports car (SPT-11 frontCorner 38 on level 2 at (245,284)). Sports has commitFrac 0.3, so it commits only about 57 px from its centre, and it is still at about 96 px/s (0.5 x 192). The swerve to margin 31 takes about 0.3 s, which is about as long as the car needs to reach the dummy. Its flank or front corner therefore meets the dummy before the lateral clearance exists. AC-84 requires zero such hits."
+    },
+    {
+      "severity": "minor",
+      "file": "sim.js",
+      "problem": "Brake factor B is computed from conflict (including the predicted position) and a Testpad-style stuck flag before awareness is applied. This is harmless because B is only used when aware or locked, but the stuck path for an unaware, unlocked car is not covered by any check."
+    }
+  ],
+  "damage_audit": {
+    "cases": [
+      {
+        "case": "sedan nose walking/lunging",
+        "expected": 100,
+        "build": 100,
+        "match": true
+      },
+      {
+        "case": "sedan nose lunging",
+        "expected": 500,
+        "build": 500,
+        "match": true
+      },
+      {
+        "case": "sedan frontCorner 60/300",
+        "expected": 60,
+        "build": 60,
+        "match": true
+      },
+      {
+        "case": "sedan flank 30/150",
+        "expected": 30,
+        "build": 30,
+        "match": true
+      },
+      {
+        "case": "sedan rearCorner 15/75",
+        "expected": 15,
+        "build": 15,
+        "match": true
+      },
+      {
+        "case": "sedan tail 5/25",
+        "expected": 5,
+        "build": 5,
+        "match": true
+      },
+      {
+        "case": "bus nose 235/1174 (mf 2.348)",
+        "expected": 235,
+        "build": 235,
+        "match": true
+      },
+      {
+        "case": "bus frontCorner 141/704",
+        "expected": 141,
+        "build": 141,
+        "match": true
+      },
+      {
+        "case": "bus flank 70/352",
+        "expected": 70,
+        "build": 70,
+        "match": true
+      },
+      {
+        "case": "bus rearCorner 35/176",
+        "expected": 35,
+        "build": 35,
+        "match": true
+      },
+      {
+        "case": "bus tail 12/59",
+        "expected": 12,
+        "build": 12,
+        "match": true
+      },
+      {
+        "case": "van, sports, wagon and hatch all five zones, walking and lunging (hand-computed)",
+        "expected": 0,
+        "build": 0,
+        "match": true
+      }
+    ],
+    "ordering_logical": true,
+    "single_code_path": true,
+    "comment": "All values match within rounding. Zone shares fall from nose to tail. Lunging pays 5 times the walking hit (up to rounding). A lunge in any direction pays the same, because only the boolean lunging enters assess. A stopped car pays 0 and still records lastImpact. Nothing pays more than the 1174 bus nose lunge. judge() is the only place that changes health or score, and it uses Damage."
+  },
+  "vehicle_audit": {
+    "paths": "Cars keep their lane exactly with no dummy (lane deviation 0 on all levels). Sideways motion happens only through swerve, flip and return, gated by latFree, limits() (barrier bounds) and axisMove truncation. Measured barrier clearance with a wandering dummy is 9 px on level 1 and 3.02 px on level 2. A car can leave its lane only by locking onto the dummy, and it holds the offset until the dummy is fully behind it.",
+    "stop_start": "A car slows or stops for: giving way to a lower-serial car (target 0 or the leader's speed), truncation against any car, an infeasible swerve (brake factor B), a bus or van braking early, an unsure or wary response to the dummy, and the caution factor. It restarts at accel (360 px/s^2) when the test is clear. Rest to cruise matches cruise/accel (sedan 0.383 s). The measured traffic-audit longest stop is 0 s on levels 1 and 2 and 13.7 s on level 3. The serial order means no deadlock between cars.",
+    "removal": "Cars are removed when wholly outside the hall. The only other path is the level 3 stall breaker. The traffic report shows 0 inside-hall removals on levels 1 and 2, and 5 on level 3. The stall-breaker report shows 3 cars in 3 of 30 idle-dummy runs and 4 cars in 4 of 30 wandering runs, with the longest hold at 10.4 s. This does delete cars to clear a jam, so level 3 jams still occur, and it is reported, not fixed.",
+    "concerns": [
+      "Fast low-commitFrac classes (sports) commit too late to clear a standing dummy in the lane.",
+      "The level 3 stall breaker fires and removes cars, because jams still occur there."
+    ]
+  },
+  "scope_violations": [],
+  "missing_testpad_systems": [],
+  "repair_requests": [
+    {
+      "file": "sim.js",
+      "problem": "AC-84 and the failed check a_standing_dummy_is_steered_round: SPT-11 clips a standing lane dummy (level 2, dummy at (245,284), frontCorner 38). The car commits too late for its swerve to clear the dummy at its unsure speed.",
+      "required_change": "In Vehicles (carsStep), trace the SPT-11 case and find why it is hit: late commit, a lateral move rejected by latFree or axisMove, or a swerve that is slower than the dummy clearance needs. Then make the fix inside Vehicles so a feasible swerve clears a standing dummy. For example, make the lateral slew fast enough that the lateral offset reaches the dummy's clearance before the car's front reaches the dummy at its unsure speed. Alternatively hold the unsure speed lower for low-commitFrac classes until the swerve is complete. If the fix needs a change to the commit line (detect x commitFrac), flag it to the Designer; the spec says the commit line is unchanged. Re-run a_standing_dummy_is_steered_round for all classes on levels 1 and 2."
+    }
+  ],
+  "notes": [
+    "Sedan stand-and-lunge best is 150, and the van best is 217 (mass 1.5, above the sedan figure).",
+    "I could not confirm AC-81 and AC-82 from named check results; the code looks right, but the 30-seed lock-release test and the swerve-completion trace are missing from the report.",
+    "The aware cue is drawn even with the overlay off, as the spec says.",
+    "The level 3 stall breaker firing counts are reported only, as the spec requires."
+  ]
+}

@@ -1,0 +1,16 @@
+[02:28:48] DUMMIES crew run -> runs/20261008-022848
+[02:28:48] Change mode: the Designer revises the specification from 20261008-021901 (not released) instead of output/spec.json
+[02:28:48] Change mode: the Builder starts from 20261008-021901/02_build_v1 (not released) instead of output/game
+[02:28:48] Change mode: revising the released build in output/ for CR-005_perception_side_sensors_reaction_delay.md
+[02:28:48] Rules Designer: calling (127,948 chars in)
+[02:33:01] Rules Designer: done in 251.4 s (109,495 chars out)
+[02:33:01] Specification: 79 acceptance criteria, 0 labelled simplifications
+[02:33:01] Game Builder: calling (185,752 chars in)
+[02:35:36] Game Builder: done in 153.8 s (61,419 chars out)
+[02:35:38] Checks: 40/41 passed | failing: outsmarting_pays_more_than_stand_and_lunge
+[02:35:38] QA / Repair Reviewer: calling (233,270 chars in)
+[02:37:13] QA / Repair Reviewer: done in 93.4 s (22,224 chars out)
+[02:37:13] QA verdict: repair | 3 repair request(s) | 40 of 41 automated checks pass, but the pillar check outsmarting_pays_more_than_stand_and_lunge fails. It measured a stand-and-lunge from a 180 px nose gap hitting a sedan at its full 138 px/s for 500, which is the exact hole CR-005 change 5 was meant to close. The damage grid matches my hand calculation and the module boundaries are clean. The Builder ran no tests, and the pillar result, the unverified AC-69/AC-79/AC-75, and the lock-release behaviour need fixing or showing before release.
+[02:37:13] Not released -> repair cycle 1 of 2
+[02:37:13] Game Builder: calling (218,579 chars in)
+[stopped by operator during repair cycle 1] The pillar check failed again, and a step-by-step trace showed why: the car slows correctly while the dummy stands in its lane, but when the dummy lunges, its PREDICTED position (velocity x look-ahead) jumps behind the car, the car stops sensing it, forgets it and accelerates back to cruise before the hit. That is a gap in the rules (inherited from the Testpad's prediction), not a Builder fault. CR-005 was amended (section 6) and the run restarted from this specification and build.

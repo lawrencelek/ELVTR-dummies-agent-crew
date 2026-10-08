@@ -1,0 +1,16 @@
+[02:38:03] DUMMIES crew run -> runs/20261008-023803
+[02:38:03] Change mode: the Designer revises the specification from 20261008-022848 (not released) instead of output/spec.json
+[02:38:03] Change mode: the Builder starts from 20261008-022848/02_build_v1 (not released) instead of output/game
+[02:38:03] Change mode: revising the released build in output/ for CR-005_perception_side_sensors_reaction_delay.md
+[02:38:03] Rules Designer: calling (137,220 chars in)
+[02:41:40] Rules Designer: done in 215.9 s (110,950 chars out)
+[02:41:40] Specification: 81 acceptance criteria, 0 labelled simplifications
+[02:41:40] Game Builder: calling (193,360 chars in)
+[02:44:12] Game Builder: done in 150.2 s (61,366 chars out)
+[02:44:14] Checks: 41/41 passed
+[02:44:14] QA / Repair Reviewer: calling (256,669 chars in)
+[02:45:58] QA / Repair Reviewer: done in 101.8 s (22,519 chars out)
+[02:45:58] QA verdict: repair | 2 repair request(s) | All 41 automated checks pass and the damage grid matches my hand calculation. But the build still fails the CR-005 pillar. A dummy that stands in the lane and lunges makes the aware sedan commit on the first lunge step, because the commit test uses the predicted position. The car then returns to cruise speed and pays 280 to 380 instead of about 150. The QA report is also missing several qa_audit 8 items, so a release verdict would be invalid.
+[02:45:58] Not released -> repair cycle 1 of 2
+[02:45:58] Game Builder: calling (223,904 chars in)
+[stopped by operator during repair cycle 1] All 41 checks passed, but the operator's reading of the measured sweep showed the pillar check was too lenient: it counted a straight lunge that lands just after the car commits as 'baiting'. Standing in a sedan's lane and lunging from 60 to 160 px still paid 315 to 380, because a committed car returns to cruise before it has swung clear. A second defect: a car released its lock as soon as the dummy was behind its centre, cut back into its lane and clipped a standing dummy (9 of 14 cars on level 1). Both come from the change request's wording. CR-005 was amended (section 7), the check was tightened, and the run restarted from this specification and build.

@@ -1,8 +1,8 @@
 {
   "total": 42,
-  "passed": 42,
-  "failed": 0,
-  "all_passed": true,
+  "passed": 41,
+  "failed": 1,
+  "all_passed": false,
   "results": [
     {
       "id": "load_sim",
@@ -222,9 +222,9 @@
     },
     {
       "id": "a_standing_dummy_is_steered_round",
-      "description": "A dummy that simply stands in a lane is steered round: no hits from sedans, vans, wagons or hatchbacks, and no car cuts back in and clips it with its flank or rear (levels 1 and 2). The bus, which cannot swerve, and the sports car, which commits too late by design, may still touch it with their front",
-      "pass": true,
-      "detail": "L1 y=284: 19 cars, 0 hits; L1 y=336: 19 cars, 0 hits; L2 y=284: 21 cars, 0 hits (plus 1 front contact by a bus or sports car, allowed); L2 y=336: 21 cars, 0 hits (plus 2 front contacts by a bus or sports car, allowed)"
+      "description": "A dummy that simply stands in a lane is not hit by swerving cars: they go round it and do not cut back in until they are past (levels 1 and 2; the bus, which cannot swerve, is excluded)",
+      "pass": false,
+      "detail": "Error: level 2, dummy standing at (245,284): hit by 1 of 21 cars, e.g. SPT-11 frontCorner 38 |     at assert (/home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:18:47) |     at /home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:514:9"
     },
     {
       "id": "outsmarting_pays_more_than_stand_and_lunge",

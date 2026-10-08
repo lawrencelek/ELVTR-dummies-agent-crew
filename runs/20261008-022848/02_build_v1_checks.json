@@ -1,0 +1,576 @@
+{
+  "total": 41,
+  "passed": 40,
+  "failed": 1,
+  "all_passed": false,
+  "results": [
+    {
+      "id": "load_sim",
+      "description": "sim.js loads in Node and exports createSim, step, PARAMS",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "params_match_spec",
+      "description": "Builder's PARAMS equal the Designer's spec params (Designer output reached the Builder)",
+      "pass": true,
+      "detail": "262 parameters identical"
+    },
+    {
+      "id": "state_shape",
+      "description": "createSim returns the contract state shape, JSON-serialisable, for all three levels",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "attract_then_confirm",
+      "description": "Default start is the attract screen; a confirm press begins play",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "move_speed_equal_8_directions",
+      "description": "Distance covered in 1 s is equal in all eight directions (within 1%) and goes the way the input points",
+      "pass": true,
+      "detail": "px in 1 s: 122.2, 122.2, 122.2, 122.2, 122.2, 122.2, 122.2, 122.2"
+    },
+    {
+      "id": "walk_frame_rate_independent",
+      "description": "Walking covers the same distance at 60 and 120 steps per second (within 2%)",
+      "pass": true,
+      "detail": "60 Hz 203.2 px, 120 Hz 202.8 px"
+    },
+    {
+      "id": "run_speed_matches_spec",
+      "description": "After the ramp, speed equals spec runSpeed straight and diagonal (within 3%)",
+      "pass": true,
+      "detail": "px/s: 162.0, 162.0"
+    },
+    {
+      "id": "lunge_distance_equal_8_directions",
+      "description": "Lunge distance is equal in all eight directions (within 1%), equals spec lungeDistance (within 2%), and follows the facing direction when no direction is held",
+      "pass": true,
+      "detail": "px: 164.0, 164.0, 164.0, 164.0, 164.0, 164.0, 164.0, 164.0"
+    },
+    {
+      "id": "lunge_frame_rate_independent",
+      "description": "A lunge covers the same distance at 120 steps per second (within 2%)",
+      "pass": true,
+      "detail": "164.0 px"
+    },
+    {
+      "id": "lunge_eases_out",
+      "description": "The lunge is tweened: more than 60% of the distance is covered in the first half of its duration",
+      "pass": true,
+      "detail": "87% at half time"
+    },
+    {
+      "id": "no_midair_steering",
+      "description": "Direction input during a lunge does not change its path",
+      "pass": true,
+      "detail": "drift 0.000 px"
+    },
+    {
+      "id": "held_lunge_does_not_chain",
+      "description": "Holding the lunge button and a direction for 3 s starts exactly one lunge",
+      "pass": true,
+      "detail": "1 lunge"
+    },
+    {
+      "id": "recovery_is_tweened",
+      "description": "After a lunge the dummy is 'recovering' for spec recoveryTime, can move during it, and starts slowly",
+      "pass": true,
+      "detail": "recovery 0.35 s, moved 19.6 px during it"
+    },
+    {
+      "id": "deterministic_and_seeded",
+      "description": "Same seed and inputs give an identical state after 40 s; a different seed gives different traffic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "level1_road_flows_left_to_right",
+      "description": "Level 1: every car travels left to right inside the road band, at its class speed, and never stalls (dummy out of the way)",
+      "pass": true,
+      "detail": "14 cars in 60 s"
+    },
+    {
+      "id": "car_speed_real_time",
+      "description": "An undisturbed car's reported speed equals its class speed and its real displacement per second, at 60 and 120 steps per second",
+      "pass": true,
+      "detail": "px in 1 s at 60 / 120 Hz: 120.0 / 120.0"
+    },
+    {
+      "id": "level2_cross_no_collisions",
+      "description": "Level 2: traffic uses both one-way roads (left to right, top to bottom), cars never overlap inside the canvas, and traffic keeps flowing for 150 s (no deadlock)",
+      "pass": true,
+      "detail": "39 cars through, 18 horizontal, 24 vertical, no overlap"
+    },
+    {
+      "id": "level3_free_for_all",
+      "description": "Level 3: vehicles enter from at least three of the four edges, several classes appear, and cars never overlap inside the canvas",
+      "pass": true,
+      "detail": "4 directions, 6 classes, no overlap"
+    },
+    {
+      "id": "detection_commit_and_brake_flags",
+      "description": "A dummy standing in a lane is seen, the car commits to a side (lock) and the lock does not change afterwards",
+      "pass": true,
+      "detail": "VAN-07: seen, lock 1"
+    },
+    {
+      "id": "front_impact_pays_once",
+      "description": "Front contact reduces health and adds score, once per car",
+      "pass": true,
+      "detail": "health 1600.0 -> 1471.8, score +130.0"
+    },
+    {
+      "id": "tail_contact_pays_its_small_share",
+      "description": "Contact with the tail pays the tail share (5% of base, scaled by the car's speed and mass), and score rises by the same amount",
+      "pass": true,
+      "detail": "van at 120.0 px/s: tail pays 7"
+    },
+    {
+      "id": "write_off_animation_then_card",
+      "description": "At zero health the write-off is counted at once, the game holds in mode 'writeoff' for the specified time with everything frozen and confirm ignored, then the card appears and a fresh confirm gives a fresh body",
+      "pass": true,
+      "detail": "animation 1.10 s, frozen, confirm ignored, then the card"
+    },
+    {
+      "id": "level_progression",
+      "description": "Quota met and allocation spent: level 1 -> 2 -> 3 via a card and confirm",
+      "pass": true,
+      "detail": "1 -> 2 -> 3"
+    },
+    {
+      "id": "ending_decommissioned",
+      "description": "Allocation spent with the quota missed ends the run as 'decommissioned'",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "ending_licensed",
+      "description": "The write-off that reaches certificationTarget plays the write-off animation and then ends the run as 'licensed'",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "levels_always_end_with_dummy_in_traffic",
+      "description": "With a dummy standing on the road (at each road edge, so cars must swerve), every level still runs to its end, cars never overlap, never cross a barrier, and the dummy is never left inside a car",
+      "pass": true,
+      "detail": "all ended: L1:64s, L1:63s, L1:66s, L1:62s, L2:80s, L2:80s, L2:79s, L2:80s, L2:78s, L2:83s, L2:78s, L2:80s, L3:89s, L3:97s"
+    },
+    {
+      "id": "solid_cars_and_barriers_under_active_play",
+      "description": "With the dummy wandering across the roads and lunging for 90 s per level: cars never overlap each other, never cross a road barrier, and the dummy is never left inside a car",
+      "pass": true,
+      "detail": "L1/s5: 71 lunges, 1 bodies; L1/s9: 72 lunges, 0 bodies; L2/s5: 72 lunges, 0 bodies; L2/s9: 72 lunges, 0 bodies; L3/s5: 72 lunges, 0 bodies; L3/s9: 72 lunges, 0 bodies"
+    },
+    {
+      "id": "dummy_cannot_walk_through_a_car",
+      "description": "Cars are solid on every side: a dummy placed against a car's side, or walking into it, is pushed out and never ends up inside",
+      "pass": true,
+      "detail": "pushed out and kept out"
+    },
+    {
+      "id": "modules_exist_and_do_the_work",
+      "description": "sim.js exports a Vehicles module and a Damage module; Vehicles.step alone moves the cars; Vehicles.cruiseSpeed returns the class speed",
+      "pass": true,
+      "detail": "Vehicles.step moves cars on its own; Damage has both functions"
+    },
+    {
+      "id": "damage_module_is_logical",
+      "description": "Damage.assess follows Lawrence's table for every class: base 100 x zone share (nose 100%, front corner 60%, flank 30%, rear corner 15%, tail 5%) x 5 when lunging x the car's speed and mass relative to a cruising sedan; lunge direction and speed make no difference",
+      "pass": true,
+      "detail": "sedan walking/lunging: nose 100/500, front corner 60/300, flank 30/150, rear corner 15/75, tail 5/25; bus nose 235/1174"
+    },
+    {
+      "id": "damage_in_play_matches_module",
+      "description": "In real play each hit is scored by the Damage module and logged in state.lastImpact: standing at the nose, a head-on lunge, a diagonal lunge into the flank, and the tail",
+      "pass": true,
+      "detail": "standing at the nose: van at 120.0 px/s, nose x1, lunge x1 = 130 | head-on lunge: van at 120.0 px/s, nose x1, lunge x5 = 652 | diagonal lunge into the flank: van at 120.0 px/s, flank x0.3, lunge x5 = 196 | touching the tail: van at 120.0 px/s, tail x0.05, lunge x1 = 7"
+    },
+    {
+      "id": "hit_during_any_lunge_step_counts_as_a_lunge",
+      "description": "A hit that lands on any step of a lunge, the final one included, is scored as a lunge (QA's finding on CR-002 build 1): swept over 200 head-on lunges started from slightly different distances",
+      "pass": true,
+      "detail": "200 hits during a lunge, 6 of them on the lunge's final step, all scored as lunges"
+    },
+    {
+      "id": "perception_geometry",
+      "description": "Vehicles.senses reports the forward path zone, the side sensors (100 px from the nose, up to 80 degrees off the heading) and nothing outside them",
+      "pass": true,
+      "detail": "10 points classified correctly"
+    },
+    {
+      "id": "reaction_delay_then_unsure_then_committed",
+      "description": "A car senses a dummy in its lane at once but does nothing for the reaction delay; then it slows while unsure; once committed to a side it returns to cruising speed and ignores the dummy, even a fast-moving one",
+      "pass": true,
+      "detail": "sedan: aware after 0.13 s, unsure at 69.0 px/s, committed and back to 138.0; van: aware after 0.13 s, unsure at 60.0 px/s, committed and back to 120.0"
+    },
+    {
+      "id": "side_sensor_makes_a_car_wary",
+      "description": "A dummy standing 60 px beside a lane is picked up by the side sensor: the car slows to its wary speed after the reaction delay, without swerving or committing",
+      "pass": true,
+      "detail": "sedan: sensed for 0.72 s, slowed to 82.8 of 138; van: sensed for 0.87 s, slowed to 72.0 of 120"
+    },
+    {
+      "id": "unnoticed_cars_ignore_the_dummy",
+      "description": "A dummy running and lunging well away from the road has no effect on a car that has not sensed it",
+      "pass": true,
+      "detail": "cruise held at 138"
+    },
+    {
+      "id": "outsmarting_pays_more_than_stand_and_lunge",
+      "description": "The pillar: the best hit from standing in a car's lane and lunging at it pays clearly less than the best hit from baiting it into committing and then lunging into its new line",
+      "pass": false,
+      "detail": "Error: sedan: stand-and-lunge met the car at 138 px/s; an unsure car should have slowed |     at assert (/home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:18:47) |     at /home/claude/elvtr-dummies-agent-crew/checks/run_checks.js:513:33"
+    },
+    {
+      "id": "traffic_audit",
+      "description": "Vehicle paths and stop/start, measured over 120 s per level with a wandering dummy: on levels 1 and 2 no car is removed while still inside the hall and no car stays stopped for more than 15 s (level 3 is measured and reported to QA, not enforced)",
+      "pass": true,
+      "detail": "L1: 87 cars, 80 exited, 0 removed inside the hall, longest stop 0 s | L2: 96 cars, 91 exited, 0 removed inside the hall, longest stop 0 s | L3: 108 cars, 103 exited, 1 removed inside the hall, longest stop 6.2 s"
+    },
+    {
+      "id": "vehicle_numbers_for_qa",
+      "description": "Vehicle start/stop, lane and barrier figures are measured for the QA audit; every car's speed stays between 0 and its class speed on all levels",
+      "pass": true,
+      "detail": "lane deviation {\"level1\":0,\"level2\":0,\"level3\":0}; barrier clearance {\"level1MinPxWithWanderingDummy\":9.14,\"level2MinPxWithWanderingDummy\":9.96}; L3 breaker idle 3 cars in 3/30 runs, wandering 4 cars in 3/30 runs"
+    },
+    {
+      "id": "sim_is_pure",
+      "description": "sim.js uses no Math.random, timers, clock or DOM",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "html_static",
+      "description": "index.html has a canvas, loads sim.js, handles the keyboard, uses a fixed timestep and makes no network requests",
+      "pass": true,
+      "detail": "1 inline script(s) parse without syntax errors"
+    }
+  ],
+  "reports": {
+    "damage_grid": {
+      "sedan": {
+        "cruiseSpeed": 138,
+        "mass": 1,
+        "momentumFactor": 1,
+        "nose": {
+          "walking": 100,
+          "lunging": 500
+        },
+        "frontCorner": {
+          "walking": 60,
+          "lunging": 300
+        },
+        "flank": {
+          "walking": 30,
+          "lunging": 150
+        },
+        "rearCorner": {
+          "walking": 15,
+          "lunging": 75
+        },
+        "tail": {
+          "walking": 5,
+          "lunging": 25
+        }
+      },
+      "van": {
+        "cruiseSpeed": 120,
+        "mass": 1.5,
+        "momentumFactor": 1.304,
+        "nose": {
+          "walking": 130,
+          "lunging": 652
+        },
+        "frontCorner": {
+          "walking": 78,
+          "lunging": 391
+        },
+        "flank": {
+          "walking": 39,
+          "lunging": 196
+        },
+        "rearCorner": {
+          "walking": 20,
+          "lunging": 98
+        },
+        "tail": {
+          "walking": 7,
+          "lunging": 33
+        }
+      },
+      "sports": {
+        "cruiseSpeed": 192,
+        "mass": 0.9,
+        "momentumFactor": 1.252,
+        "nose": {
+          "walking": 125,
+          "lunging": 626
+        },
+        "frontCorner": {
+          "walking": 75,
+          "lunging": 376
+        },
+        "flank": {
+          "walking": 38,
+          "lunging": 188
+        },
+        "rearCorner": {
+          "walking": 19,
+          "lunging": 94
+        },
+        "tail": {
+          "walking": 6,
+          "lunging": 31
+        }
+      },
+      "bus": {
+        "cruiseSpeed": 108,
+        "mass": 3,
+        "momentumFactor": 2.348,
+        "nose": {
+          "walking": 235,
+          "lunging": 1174
+        },
+        "frontCorner": {
+          "walking": 141,
+          "lunging": 704
+        },
+        "flank": {
+          "walking": 70,
+          "lunging": 352
+        },
+        "rearCorner": {
+          "walking": 35,
+          "lunging": 176
+        },
+        "tail": {
+          "walking": 12,
+          "lunging": 59
+        }
+      },
+      "wagon": {
+        "cruiseSpeed": 144,
+        "mass": 1.2,
+        "momentumFactor": 1.252,
+        "nose": {
+          "walking": 125,
+          "lunging": 626
+        },
+        "frontCorner": {
+          "walking": 75,
+          "lunging": 376
+        },
+        "flank": {
+          "walking": 38,
+          "lunging": 188
+        },
+        "rearCorner": {
+          "walking": 19,
+          "lunging": 94
+        },
+        "tail": {
+          "walking": 6,
+          "lunging": 31
+        }
+      },
+      "hatch": {
+        "cruiseSpeed": 156,
+        "mass": 0.8,
+        "momentumFactor": 0.904,
+        "nose": {
+          "walking": 90,
+          "lunging": 452
+        },
+        "frontCorner": {
+          "walking": 54,
+          "lunging": 271
+        },
+        "flank": {
+          "walking": 27,
+          "lunging": 136
+        },
+        "rearCorner": {
+          "walking": 14,
+          "lunging": 68
+        },
+        "tail": {
+          "walking": 5,
+          "lunging": 23
+        }
+      }
+    },
+    "outsmart": {
+      "sedan": {
+        "cruiseSpeed": 138,
+        "bestStandAndLunge": {
+          "damage": 500,
+          "face": "nose",
+          "lunging": true,
+          "vehicleSpeed": 138,
+          "gap": 180
+        },
+        "bestBaitThenLunge": {
+          "damage": 500,
+          "face": "nose",
+          "lunging": true,
+          "vehicleSpeed": 138,
+          "waitSteps": 27,
+          "lunge": "straight sideways"
+        },
+        "bestAmbushFromOutsideTheSideSensor": {
+          "damage": 500,
+          "face": "nose",
+          "lunging": true,
+          "vehicleSpeed": 138,
+          "gap": 125
+        }
+      }
+    },
+    "traffic": [
+      {
+        "level": 1,
+        "runs": 3,
+        "carsSeen": 87,
+        "leftByExiting": 80,
+        "removedInsideHall": 0,
+        "longestStopSeconds": 0,
+        "carsThatStopped": 0
+      },
+      {
+        "level": 2,
+        "runs": 3,
+        "carsSeen": 96,
+        "leftByExiting": 91,
+        "removedInsideHall": 0,
+        "longestStopSeconds": 0,
+        "carsThatStopped": 0
+      },
+      {
+        "level": 3,
+        "runs": 3,
+        "carsSeen": 108,
+        "leftByExiting": 103,
+        "removedInsideHall": 1,
+        "longestStopSeconds": 6.2,
+        "carsThatStopped": 4
+      }
+    ],
+    "vehicle_audit": {
+      "perClass": {
+        "sedan": {
+          "cruiseSpeed": 138,
+          "mass": 1,
+          "expectedRestToCruiseSeconds": 0.383,
+          "expectedCruiseToStopSeconds": 0.23,
+          "expectedStopDistancePx": 15.9,
+          "measuredRestToCruiseSeconds": 0.383,
+          "measuredCruiseToStopSeconds": 3.883,
+          "measuredStopDistancePx": 72.5,
+          "gapToStoppedCarAtRestPx": 7.9
+        },
+        "van": {
+          "cruiseSpeed": 120,
+          "mass": 1.5,
+          "expectedRestToCruiseSeconds": 0.333,
+          "expectedCruiseToStopSeconds": 0.2,
+          "expectedStopDistancePx": 12,
+          "measuredRestToCruiseSeconds": 0.333,
+          "measuredCruiseToStopSeconds": 3.8,
+          "measuredStopDistancePx": 64.2,
+          "gapToStoppedCarAtRestPx": 7.8
+        },
+        "sports": {
+          "cruiseSpeed": 192,
+          "mass": 0.9,
+          "expectedRestToCruiseSeconds": 0.533,
+          "expectedCruiseToStopSeconds": 0.32,
+          "expectedStopDistancePx": 30.7,
+          "measuredRestToCruiseSeconds": 0.533,
+          "measuredCruiseToStopSeconds": 4.05,
+          "measuredStopDistancePx": 97.7,
+          "gapToStoppedCarAtRestPx": 7.9
+        },
+        "bus": {
+          "cruiseSpeed": 108,
+          "mass": 3,
+          "expectedRestToCruiseSeconds": 0.3,
+          "expectedCruiseToStopSeconds": 0.18,
+          "expectedStopDistancePx": 9.7,
+          "measuredRestToCruiseSeconds": 0.3,
+          "measuredCruiseToStopSeconds": 3.717,
+          "measuredStopDistancePx": 54.2,
+          "gapToStoppedCarAtRestPx": 7.8
+        },
+        "wagon": {
+          "cruiseSpeed": 144,
+          "mass": 1.2,
+          "expectedRestToCruiseSeconds": 0.4,
+          "expectedCruiseToStopSeconds": 0.24,
+          "expectedStopDistancePx": 17.3,
+          "measuredRestToCruiseSeconds": 0.4,
+          "measuredCruiseToStopSeconds": 3.917,
+          "measuredStopDistancePx": 75.7,
+          "gapToStoppedCarAtRestPx": 7.9
+        },
+        "hatch": {
+          "cruiseSpeed": 156,
+          "mass": 0.8,
+          "expectedRestToCruiseSeconds": 0.433,
+          "expectedCruiseToStopSeconds": 0.26,
+          "expectedStopDistancePx": 20.3,
+          "measuredRestToCruiseSeconds": 0.433,
+          "measuredCruiseToStopSeconds": 3.983,
+          "measuredStopDistancePx": 82.2,
+          "gapToStoppedCarAtRestPx": 7.8
+        }
+      },
+      "speedChange": {
+        "carStepsMeasured": 404925,
+        "slewLimitUpPxPerStep": 6,
+        "slewLimitDownPxPerStep": 10,
+        "maxIncreasePerStep": 6,
+        "maxDecreasePerStep": 156,
+        "stepsOverUpLimit": 0,
+        "stepsOverDownLimit": 8,
+        "overLimitByCause": {
+          "truncation": 8,
+          "cautionRescale": 0,
+          "other": 0
+        },
+        "otherExample": null,
+        "note": "cause is attributed from outside the sim: 'truncation' if the car is touching another car after the step, else 'cautionRescale' if the dummy's speed changed on that step, else 'other'"
+      },
+      "laneDeviationNoDummy": {
+        "level1": 0,
+        "level2": 0,
+        "level3": 0
+      },
+      "barrierClearance": {
+        "level1MinPxWithWanderingDummy": 9.14,
+        "level2MinPxWithWanderingDummy": 9.96
+      },
+      "level3StallBreaker": {
+        "idleDummy": {
+          "seeds": 30,
+          "secondsPerRun": 60,
+          "carsRemovedInsideHall": 3,
+          "runsWithARemoval": 3,
+          "longestHoldOfLowestSerialCarSeconds": 6
+        },
+        "wanderingDummy": {
+          "seeds": 30,
+          "secondsPerRun": 60,
+          "carsRemovedInsideHall": 4,
+          "runsWithARemoval": 3,
+          "longestHoldOfLowestSerialCarSeconds": 17.9
+        }
+      },
+      "startStopNote": "measuredCruiseToStop runs from the first step the following car slows until it is below 1 px/s behind a car held stopped in its lane. It is longer than cruise/decel because the car starts slowing at its look-ahead distance and then closes the remaining gap slowly; decel limits the rate of slowing, not the total time. gapToStoppedCarAtRestPx >= 0 means it stopped without touching."
+    }
+  }
+}

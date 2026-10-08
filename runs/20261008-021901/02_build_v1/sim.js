@@ -8,7 +8,7 @@ var PARAMS = {
   dummy:{radius:13,walkSpeed:81,runSpeed:162,rampTime:1.0,lungeDistance:164,lungeDuration:0.3,lungeCooldown:0.55,recoveryTime:0.35,wearFloor:0.45,wearSpeedLoss:0,maxHealth:1600,writeOffBonus:2500,startX:150,startY:500},
   impact:{basePoints:100,refSpeed:138,refMass:1.0,maxPay:1600,zoneNose:1,zoneFrontCorner:0.6,zoneFlank:0.3,zoneRearCorner:0.15,zoneTail:0.05,lungeMultiplier:5,contactEps:0.5,pushClearance:0.1},
   writeOff:{duration:1.1},
-  perception:{reactionDelay:0.15,sideRadius:100,sideHalfAngleDeg:80,warySpeedFactor:0.6,unsureSpeedFactor:0.5,frontRange:320},
+  perception:{reactionDelay:0.15,sideRadius:100,sideHalfAngleDeg:80,warySpeedFactor:0.6,unsureSpeedFactor:0.5},
   caution:{max:0.4},
   service:{delay:1.5,fullTime:30.0},
   classes:{
@@ -353,7 +353,7 @@ function unitOf(s, c){
 function senses(s, c, px, py){
   var D = dials(s, unitOf(s, c)), pr = s.params.perception;
   var rx = px - c.x, ry = py - c.y, along = rx*c.dirX + ry*c.dirY, lat = -rx*c.dirY + ry*c.dirX;
-  if(along > 0 && along < Math.max(D.detect, pr.frontRange) && Math.abs(lat) < D.margin) return "path";
+  if(along > 0 && along < D.detect && Math.abs(lat) < D.margin) return "path";
   var vx = px - (c.x + c.dirX * c.length / 2), vy = py - (c.y + c.dirY * c.length / 2);
   var m = Math.sqrt(vx*vx + vy*vy);
   if(m <= pr.sideRadius + 1e-9 && vx*c.dirX + vy*c.dirY >= m * Math.cos(pr.sideHalfAngleDeg * Math.PI / 180) - 1e-9) return "side";
@@ -374,7 +374,7 @@ function placeCar(s, ps){
   var P = s.params, H = P.hall, f = P.fleet[ps.unit], cl = P.classes[f.cls];
   var c = { serial:0, id:f.id, cls:f.cls, unit:ps.unit, x:0, y:0, dirX:0, dirY:0, length:cl.length, width:cl.width,
             speed:cruiseSpeed(P, f.cls), sees:false, wary:false, aware:false, senseTime:0, lock:0, braking:false, hit:false,
-            lat:0, base:0, lockPush:0, lockT:0, flipped:false, life:0, vx:0, vy:0 };
+            lat:0, base:0, lockPush:0, flipped:false, life:0, vx:0, vy:0 };
   var e = ps.edge, h = cl.length / 2;
   if(e === 0){ c.x = H.x - h; c.y = ps.v; c.dirX = 1; }
   else if(e === 1){ c.x = H.x + H.w + h; c.y = ps.v; c.dirX = -1; }
@@ -514,15 +514,12 @@ function carsStep(s, dt){
     var ppx = d.x + d.vx * D.predict, ppy = d.y + d.vy * D.predict;
     var rx = ppx - c.x, ry = ppy - c.y;
     var along = rx*c.dirX + ry*c.dirY, lat = -rx*c.dirY + ry*c.dirX;
-    var aActual = (d.x - c.x)*c.dirX + (d.y - c.y)*c.dirY;
-    var conflict = senses(s, c, d.x, d.y) === "path" || senses(s, c, ppx, ppy) === "path";
+    var conflict = senses(s, c, ppx, ppy) === "path";
     c.sees = conflict;
     c.wary = !conflict && senses(s, c, d.x, d.y) === "side";
     if(c.sees || c.wary) c.senseTime = (c.senseTime || 0) + dt; else c.senseTime = 0;
     c.aware = c.senseTime >= pr.reactionDelay - 1e-9;
-    if(c.lock && aActual < -(c.length / 2 + P.dummy.radius)){ c.lock = 0; c.flipped = false; c.lockT = 0; }
     var canSwerve = cl.swerve || u.closed, stuck = false, dl = 0;
-    var complete = c.lock !== 0 && Math.abs(lw0 - c.lockT) <= 2;
     if(canSwerve){
       var cf = u.closed ? Math.min(0.92, cl.commitFrac * 1.7) : cl.commitFrac, commitAt = D.detect * cf;
       if(!c.lock && conflict && c.aware && along < commitAt){
@@ -530,14 +527,11 @@ function carsStep(s, dt){
         if(swFeasible(s, c, pf, D.margin)) c.lock = pf;
         else if(swFeasible(s, c, -pf, D.margin)) c.lock = -pf;
         else stuck = true;
-        if(c.lock){ c.lockPush = D.margin; c.lockT = sg * (c.base + c.lock * c.lockPush); complete = Math.abs(lw0 - c.lockT) <= 2; }
+        if(c.lock) c.lockPush = D.margin;
       }
       if(c.lock && cl.flip && c.aware && !u.closed && !c.flipped && along < commitAt * 0.52){
         if((lat > 0 && c.lock === 1) || (lat < 0 && c.lock === -1)){
-          if(swFeasible(s, c, -c.lock, c.lockPush)){
-            c.lock = -c.lock; c.flipped = true;
-            c.lockT = sg * (c.base + c.lock * c.lockPush); complete = Math.abs(lw0 - c.lockT) <= 2;
-          }
+          if(swFeasible(s, c, -c.lock, c.lockPush)){ c.lock = -c.lock; c.flipped = true; }
         }
       }
       if(c.lock){
@@ -559,11 +553,7 @@ function carsStep(s, dt){
     // speed because of the dummy
     var F = 1 - P.caution.max * Math.min(1, Math.sqrt(d.vx*d.vx + d.vy*d.vy) / P.dummy.runSpeed);
     var normal;
-    if(c.lock){
-      if(stuck) normal = cruise * brake;
-      else if(complete) normal = cruise;
-      else normal = Math.min(cruise * pr.unsureSpeedFactor, cruise * brake) * F;
-    }
+    if(c.lock) normal = stuck ? cruise * brake : cruise;
     else if(!c.aware) normal = cruise;
     else if(conflict) normal = Math.min(cruise * pr.unsureSpeedFactor, cruise * brake) * F;
     else normal = cruise * pr.warySpeedFactor * F;

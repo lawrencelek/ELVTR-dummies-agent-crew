@@ -1,0 +1,10 @@
+[02:56:36] DUMMIES crew run -> runs/20261008-025636
+[02:56:36] Change mode: revising the released build in output/ for CR-005_perception_side_sensors_reaction_delay.md
+[02:56:36] Rules Designer: NOT called; specification reused from 20261008-024743
+[02:56:36] Specification: 85 acceptance criteria, 0 labelled simplifications
+[02:56:36] Game Builder: NOT called for build 1; files reused from 20261008-024743/02_build_v1
+[02:56:39] Checks: 42/42 passed
+[02:56:39] QA / Repair Reviewer: calling (270,478 chars in)
+[02:58:56] QA / Repair Reviewer: done in 135.8 s (21,252 chars out)
+[02:58:56] QA verdict: release | 0 repair request(s) | All 42 automated checks pass. I read the CR-005 rules (sensing, reaction delay, speed targets, swerve completion, lock release, write-off, damage routing) and they match the specification. The hand-computed damage grid matches the build in all 60 cases. Several playtest and QA-report items are unverified because they need a person or figures the report does not contain (listed below). None of them is a defect.
+[02:58:56] RELEASED after 1 build(s). Open output/game/index.html in a browser.

@@ -14,8 +14,10 @@ A crew of three agents takes Lawrence's hand-directed prototype (the
 a **playable three-level vertical slice of DUMMIES**, plus the specification
 it was built from and an independent QA report. Cars are solid on every side. Damage is a base of
 100 points, scaled by which part of the car is hit, multiplied by five for a
-lunge, and scaled by the car's speed and mass. The game code has a `Vehicles`
-module and a `Damage` module.
+lunge, and scaled by the car's speed and mass. Cars sense the dummy ahead and
+to the side, react after a short delay, slow while unsure and speed up once
+committed, so the best hits come from outsmarting them. The game code has a
+`Vehicles` module and a `Damage` module.
 
 | Level | What it is |
 |-------|------------|
@@ -27,9 +29,9 @@ Released output from the run included in this repository:
 
 | File | Produced by | What it is |
 |------|-------------|------------|
-| `output/spec.json` | Rules Designer | All parameters in real-time units, the three level designs, the changed rules, 67 acceptance criteria, 27 listed differences from the GDD and the Testpad |
+| `output/spec.json` | Rules Designer | All parameters in real-time units, the three level designs, the changed rules, 85 acceptance criteria, 37 listed differences from the GDD and the Testpad |
 | `output/game/index.html`, `output/game/sim.js` | Game Builder | The playable browser game |
-| `output/checks.json` | Orchestrator | Results of 36 executable checks run against the build, plus measured damage and vehicle figures for QA |
+| `output/checks.json` | Orchestrator | Results of 42 executable checks run against the build, plus measured damage and vehicle figures for QA |
 | `output/qa_report.json` | QA / Repair Reviewer | Per-criterion verdicts, defects, release decision |
 
 **To play:** download the repository (green **Code** button, **Download ZIP**),
@@ -41,6 +43,8 @@ a side, then lunge across its orange nose. Only the nose pays in full.
 ![Level 2, the cross junction](docs/screenshot_level2.png)
 
 ![The write-off animation: the body turns red and breaks up before the card appears](docs/writeoff_b.png)
+
+![A car's side sensor (lit) picking up a dummy beside its lane; the faint rectangle is its forward path zone and the marker above the car shows it is aware](docs/sensors.png)
 
 ## Architecture
 
@@ -97,7 +101,7 @@ the orchestrator hands it.
 How the outputs really pass between agents:
 
 - The check `params_match_spec` fails unless the Builder's `PARAMS` are
-  identical to the Designer's 256 numbers.
+  identical to the Designer's 262 numbers.
 - The checks measure movement, lunge, levels and endings against the
   Designer's values, not against constants in the harness.
 - A build is released only if every check passes **and** QA says `release`. If
@@ -110,7 +114,7 @@ How the outputs really pass between agents:
 - After a release, the crew takes **change requests** against the released
   build (`python crew.py --change changes/CR-xxx.md`): the Designer revises
   the specification, the Builder patches its own files, and the same checks
-  and QA gate the result. `changes/` holds Lawrence's four so far.
+  and QA gate the result. `changes/` holds Lawrence's five so far.
 - QA does more than read the check results. On CR-002 every check passed,
   and QA still sent the build back: it found that a hit landing on the last
   step of a lunge was scored as a standing hit. The Builder fixed it and a
@@ -122,11 +126,12 @@ How the outputs really pass between agents:
 |----------|---------------|
 | "Move in eight directions and press one button to lunge" | Yes; equal speed and equal lunge distance in all eight directions, checked |
 | "Lunge travels in the facing direction without midair steering" | Yes; held direction, or facing direction if none is held |
+| "Fast or unpredictable movement makes cars slow sooner"; a car that never detected you "has not slowed for you" | Yes, reworked (CR-005): a car slows only once it is aware of you and until it has committed and swung clear; unnoticed and committed cars run at full speed |
 | "A miss causes a recovery delay" | Yes, as an eased 0.35 s recovery, not a freeze (Move Refinements MR-01) |
 | Vehicle classes with different avoidance | Six of the GDD's eight: sedan, van, sports, bus, wagon, hatchback (no SUV or police car) |
 | Hatchback: "one signalled recommitment" | Yes |
 | "The cars visibly learn" | Yes, as in the Testpad: each write-off briefs the unit that caused it |
-| Detection wedge, commit line, chevron, brake lights | Yes. The chevron appears at commitment, as in the Testpad, not on detection as the GDD says |
+| Detection wedge, commit line, chevron, brake lights | Yes, plus side sensors and an "aware" marker (CR-005). The path zone is now drawn as the rectangle that is really tested. The chevron appears at commitment, as in the Testpad, not on detection as the GDD says |
 | "Rear contact gives no damage, score" | **No longer**: by Lawrence's decision the tail pays 5% and a rear corner 15% (CR-003) |
 | "Impact value depends on class, speed and angle"; "lunge multipliers" | Damage = 100 x zone share (nose 100%, front corner 60%, flank 30%, rear corner 15%, tail 5%) x 5 if lunging x the car's speed and mass relative to a cruising sedan (CR-003, Lawrence's table) |
 | Standing still triggers service | Yes, as in the Testpad: unlimited, not once per body |
@@ -161,7 +166,7 @@ artifact to `runs/<timestamp>/` and, if released, the final files to
 
 ```
 python crew.py --from-run runs/<timestamp>     # reuse that run's specification and first build
-python crew.py --change changes/CR-004_body_health_1600.md   # revise the released build for one change request
+python crew.py --change changes/CR-005_perception_side_sensors_reaction_delay.md   # revise the released build for one change request
 node checks/run_checks.js output/game output/spec.json     # re-run only the checks
 node checks/bot_playthrough.js output/game 1               # automated player, seed 1
 ```
@@ -202,10 +207,15 @@ docs/                     screenshots
 | `20261006-225543` | **Release of CR-002**, after three builds. Build 1 (reused): 34 of 34 checks. QA's hand-calculated damage table matched the build on all 16 figures, and QA still said `repair`: it found that a hit on the last step of a lunge was scored as a standing hit, which no check covered, and that the vehicle figures the specification demands were missing from the check report. Build 2 (140 s) fixed the scoring; QA said `repair` again, only for the missing measured figures. The operator added those measurements, and a check for the last-step case, to the harness while the Builder made build 3 (134 s, one minor fix). 36 of 36 checks; QA said `release` (47 criteria pass, 8 unverified, 3 minor defects). |
 | `20261007-022555` | **Change request CR-003** (damage by zone, flat x5 lunge, write-off animation), run after the assignment deadline on a separate branch. Designer 173 s, Builder 172 s. Build passed 35 of 36 checks; the one failure was a **bug in the check harness** (it measured health 0.2 s after a tail hit, by which time service repair had restored the 7 points; the build was right). Stopped by the operator during QA; the check was corrected. |
 | `20261007-023212` | **Release of CR-003.** Specification and build reused. 36 of 36 checks on the first build. QA recomputed the damage grid by hand for all six classes, five zones, walking and lunging, and said `release` (44 criteria pass, 19 unverified, 2 minor defects). |
-| `20261008-001436` | **The current release: change request CR-004** (body health 2,300 to 1,600). Designer 151 s, Builder 138 s. The new build differs from the last one only in that number and the hit cap that follows it. 36 of 36 checks on the first build; QA said `release` (53 criteria pass, 14 unverified, 2 minor defects). |
+| `20261008-001436` | **Release of CR-004** (body health 2,300 to 1,600). Designer 151 s, Builder 138 s. The new build differs from the last one only in that number and the hit cap that follows it. 36 of 36 checks on the first build; QA said `release` (53 criteria pass, 14 unverified, 2 minor defects). |
+| `20261008-021901` | **Change request CR-005** (side sensors, reaction delay, unsure cars slow and committed cars don't). Build 1 passed 40 of 41 checks. The failure was real and came from the change request: with a reaction delay, lunging the instant a car first sensed you landed before it reacted, for the full 500. Stopped; section 5 (sense from 320 px) added. |
+| `20261008-022848` | Specification and build revised. 40 of 41 again. A step-by-step trace showed a car slowing correctly, then **speeding back up as the dummy lunged at it**: a lunge is so fast that the dummy's predicted position lands behind the car, so the car stopped sensing it. Stopped; section 6 added. |
+| `20261008-023803` | 41 of 41, but the operator's reading of the measured sweep showed the pillar check was too lenient: a straight lunge from 60 to 160 px still paid 315 to 380, and cars cut back in and clipped a standing dummy (9 of 14 on level 1). Stopped; section 7 added and the check tightened. |
+| `20261008-024743` | 41 of 42. The one failure was a **mistake in the new standing-dummy check**: it did not allow for the sports car, which by design commits too late to clear a dummy standing in its lane. Stopped by the operator; check corrected. |
+| `20261008-025636` | **The current release.** Same specification and build. 42 of 42 checks; QA recomputed the damage grid (60 cases) and reviewed the perception rules, and said `release` (33 criteria pass, 12 unverified, 2 defects). |
 
 **Executable checks** on the released build (run by Node against the generated
-`sim.js`): 36 of 36 passed.
+`sim.js`): 42 of 42 passed.
 
 | Check | What it verifies | Result |
 |-------|------------------|--------|
@@ -241,6 +251,12 @@ docs/                     screenshots
 | `damage_module_is_logical` | Damage.assess follows Lawrence's table for every class: base 100 x zone share (nose 100%, front corner 60%, flank 30%, rear corner 15%, tail 5%) x 5 when lunging x the car's speed and mass relative to a cruising sedan; lunge direction and speed make no difference | pass |
 | `damage_in_play_matches_module` | In real play each hit is scored by the Damage module and logged in state.lastImpact: standing at the nose, a head-on lunge, a diagonal lunge into the flank, and the tail | pass |
 | `hit_during_any_lunge_step_counts_as_a_lunge` | A hit that lands on any step of a lunge, the final one included, is scored as a lunge (QA's finding on CR-002 build 1): swept over 200 head-on lunges started from slightly different distances | pass |
+| `perception_geometry` | Vehicles.senses reports the forward path zone (out to the 320 px frontal range), the side sensors (100 px from the nose, up to 80 degrees off the heading) and nothing outside them, for cars heading in all four directions; a unit whose detection has grown past 320 px senses that far | pass |
+| `reaction_delay_then_unsure_then_committed` | A car senses a dummy in its lane at once but does nothing for the reaction delay; then it slows while unsure; once committed to a side it returns to cruising speed and ignores the dummy, even a fast-moving one | pass |
+| `side_sensor_makes_a_car_wary` | A dummy standing 60 px beside a lane is picked up by the side sensor: the car slows to its wary speed after the reaction delay, without swerving or committing | pass |
+| `unnoticed_cars_ignore_the_dummy` | A dummy running and lunging well away from the road has no effect on a car that has not sensed it | pass |
+| `a_standing_dummy_is_steered_round` | A dummy that simply stands in a lane is steered round: no hits from sedans, vans, wagons or hatchbacks, and no car cuts back in and clips it with its flank or rear (levels 1 and 2). The bus, which cannot swerve, and the sports car, which commits too late by design, may still touch it with their front | pass |
+| `outsmarting_pays_more_than_stand_and_lunge` | The pillar: the best hit from standing in a car's lane and lunging at it pays clearly less than the best hit from baiting it into committing and then lunging into its new line | pass |
 | `traffic_audit` | Vehicle paths and stop/start, measured over 120 s per level with a wandering dummy: on levels 1 and 2 no car is removed while still inside the hall and no car stays stopped for more than 15 s (level 3 is measured and reported to QA, not enforced) | pass |
 | `vehicle_numbers_for_qa` | Vehicle start/stop, lane and barrier figures are measured for the QA audit; every car's speed stays between 0 and its class speed on all levels | pass |
 | `sim_is_pure` | sim.js uses no Math.random, timers, clock or DOM | pass |
@@ -259,6 +275,16 @@ docs/                     screenshots
 
 A fresh body has 1600 health (CR-004). A braking car pays less and a stopped car pays nothing. Each car pays for its first contact only.
 
+**What each tactic pays** (best result of a scripted sweep, lunging, against one car on level 1; from `outsmarting_pays_more_than_stand_and_lunge`):
+
+| Tactic | Sedan | Van |
+|---|---|---|
+| Stand in its lane and lunge straight at it | 150 (nose, car at 41 px/s) | 217 (nose, car at 40 px/s) |
+| Stand in its lane until it commits, then lunge into the line it chose | 300 (frontCorner, car at 138 px/s) | 652 (nose, car at 120 px/s) |
+| Ambush from 115 px beside the lane, outside every sensor | 500 (nose, car at 138 px/s) | 652 (nose, car at 120 px/s) |
+
+Before CR-005 standing in a sedan's lane and lunging paid 300 to 355 from anywhere between 80 and 160 px, and baiting paid no more. A dummy standing in a lane is first sensed 317 px from the car's centre.
+
 **Vehicle figures** (measured by the check harness for QA's vehicle audit):
 
 - Lane keeping with the dummy out of the way: deviation from the lane line 0, 0, 0 px on levels 1, 2 and 3.
@@ -266,7 +292,7 @@ A fresh body has 1600 health (CR-004). A braking car pays less and a stopped car
 - Starting: every class reaches cruising speed from rest in the expected time (sedan 0.383 s).
 - Stopping behind a stopped car: every class stops without touching, about 7.9 px short.
 - Levels 1 and 2 over 120 s x 3 seeds each: no car removed inside the hall, longest stop 0 s and 0 s.
-- **Level 3 jam breaker, 30 seeds x 60 s:** with the dummy idle it deleted 3 cars in 3 of 30 runs; with the dummy wandering, 9 cars in 9 of 30 runs. The longest the oldest car was held was 21.8 s.
+- **Level 3 jam breaker, 30 seeds x 60 s:** with the dummy idle it deleted 3 cars in 3 of 30 runs; with the dummy wandering, 4 cars in 4 of 30 runs. The longest the oldest car was held was 10.4 s.
 
 **Automated player** (`checks/bot_playthrough.js`, informational). It only
 ambushes: it stands one lunge away from a lane and tries to land just in front
@@ -274,16 +300,15 @@ of a car's nose. It never baits and never lunges head-on.
 
 | Seed | Level 1 (quota 2 of 14 cars) | Hits | Points |
 |------|------|------|------|
-| 1 | 0 bodies | 7: 6 flank, 1 front corner | 177 |
-| 2 | 0 bodies | 7: 5 flank, 2 nose | 230 |
-| 3 | 0 bodies | 9: 6 flank, 1 front corner, 2 nose | 287 |
+| 1 | 0 bodies | 7, all front corner | 311 |
+| 2 | 0 bodies | 7, all front corner | 327 |
+| 3 | 0 bodies | 9, all front corner | 423 |
 
-**This player gets nowhere near the level 1 quota**, before or after CR-004:
-it mostly clips flanks, and its nose hits land after its lunge has ended, so
-they pay the walking rate. With body health at 1,600, two bodies need 3,200
-points from 14 cars; a lunge onto a sedan's nose pays 500, so the quota
-takes about six and a half good head-on lunges (it was about nine at 2,300).
-Whether a person can meet that is untested.
+**This player still gets nowhere near the level 1 quota** (3,200 points for
+two bodies). It stands one lunge from the lane, which is now outside the side
+sensors, so the cars it reaches are at full speed, but it lands on front
+corners after its lunge has ended and is paid the walking rate. It does not
+bait. Whether a person can meet the quota is untested.
 
 **Scripted browser playtest** (`checks/browser_playtest.js`, headless
 Chromium, real key events):
@@ -313,6 +338,9 @@ Chromium, real key events):
 
 ## Known limitations
 
+- **Baiting a sedan is worth less than ambushing it.** The scripted bait reached only a sedan's front corner (300); the full 500 came from an ambush from outside the sensors. Against the van the bait reached the nose (652). A person may bait better than the script; this is untested.
+- **The on-screen control hint is out of date.** It still says "hold to run, cars slow for you"; cars now slow only when they have noticed you and not yet committed.
+- **The sports car still touches a dummy standing in its lane** with its front corner (it commits late by design, as in the Testpad).
 - **Difficulty is still unproven.** Body health is now 1,600 (CR-004), so a
   body takes about four head-on lunges into a sedan and level 1's quota about
   six and a half from 14 cars. Nobody has yet played it at this setting;
@@ -326,8 +354,8 @@ Chromium, real key events):
   deadlocks; Lawrence has not confirmed it.
 - **A jam breaker deletes cars on level 3.** If the oldest car in the hall is
   stuck for 6 s without seeing the dummy, the code removes the cars blocking
-  it. Measured over 30 seeds of 60 s: 3 cars in 3 runs with the dummy idle, 9
-  cars in 9 runs with it wandering. It never fired on levels 1 and 2.
+  it. Measured over 30 seeds of 60 s: 3 cars in 3 runs with the dummy idle, 4
+  cars in 4 runs with it wandering. It never fired on levels 1 and 2.
 - Whether the write-off animation is satisfying has not been judged by a
   person; the particles are small.
 - The modules are named sections of one file (`DummiesSim.Vehicles`,

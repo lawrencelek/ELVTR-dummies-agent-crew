@@ -1,0 +1,16 @@
+CR-005 is implemented and not run, so I haven't confirmed the AC-69 to AC-75 numbers. The changes are in the PARAMS `perception` group (copied key for key), the new `Vehicles.senses` and the rewritten per-car logic in `carsStep`.
+
+- **Sensors and awareness:** A car gets `wary` (side wedge), `senseTime` and `aware`. Awareness comes on after 0.15 s of continuous sensing and resets the moment sensing stops. Commit and hatch flip now need `aware`.
+- **Speed:** Target speed follows rule 7:
+  - not aware: cruise
+  - committed and able to swerve: cruise
+  - committed but unable to swerve: brake factor
+  - aware and wary: 0.6 × cruise × caution
+  - aware and unsure: min(0.5 × cruise, brake factor × cruise) × caution
+- **Brake lights:** `braking` is true when speed fell, or the car is held below cruise with its target at or below its speed, or it is truncated or boxed in.
+- **Renderer:** It draws the side wedge, which lights while `wary`. It draws the path zone as a rectangle, lit while `sees`. A white diamond with a 0.25 s pulse marks awareness, drawn even with the overlay off. The renderer keeps its own previous-frame awareness, keyed by serial.
+
+One specification problem: the spec says the Testpad caution factor is 0 for a standing dummy "between walking and max", but the Testpad formula is `min(1, speed/runSpeed)`. I kept the Testpad formula, so a walking dummy already gives F = 0.8. A standing dummy gives F = 1, as the checks need.
+
+Separately, the current code never releases a lock when the dummy leaves detection (the spec's "Testpad release rule"). I left that unchanged.
+=== END FILE ===
