@@ -212,7 +212,7 @@ docs/                     screenshots
 | `20261008-022848` | Specification and build revised. 40 of 41 again. A step-by-step trace showed a car slowing correctly, then **speeding back up as the dummy lunged at it**: a lunge is so fast that the dummy's predicted position lands behind the car, so the car stopped sensing it. Stopped; section 6 added. |
 | `20261008-023803` | 41 of 41, but the operator's reading of the measured sweep showed the pillar check was too lenient: a straight lunge from 60 to 160 px still paid 315 to 380, and cars cut back in and clipped a standing dummy (9 of 14 on level 1). Stopped; section 7 added and the check tightened. |
 | `20261008-024743` | 41 of 42. The one failure was a **mistake in the new standing-dummy check**: it did not allow for the sports car, which by design commits too late to clear a dummy standing in its lane. Stopped by the operator; check corrected. |
-| `20261008-025636` | **The current release.** Same specification and build. 42 of 42 checks; QA recomputed the damage grid (60 cases) and reviewed the perception rules, and said `release` (33 criteria pass, 12 unverified, 2 defects). |
+| `20261008-025636` | **The current release.** Same specification and build. 42 of 42 checks; QA recomputed the damage grid (60 cases) and reviewed the perception rules, and said `release`. Its report groups the 85 acceptance criteria into 45 entries (33 pass, 12 unverified, mostly because they need a person); it lists 2 minor defects. |
 
 **Executable checks** on the released build (run by Node against the generated
 `sim.js`): 42 of 42 passed.
