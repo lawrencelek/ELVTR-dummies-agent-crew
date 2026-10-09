@@ -78,3 +78,21 @@ All entries dated 6 October 2026 unless stated. Times are not recorded.
 | 68 | Everyone sees the commit chevron and brake lights; the Sensors upgrade adds the cars' detection zones | user-confirmed (9 October: "Sensors, ok"); what else Sensors shows is open | Keeps pillar 4 for players without the upgrade | Players without Sensors cannot see a car's zone before it notices them | — |
 | 69 | Spine: a lunge can change direction by up to 45° | user-confirmed (9 October; not built) | Limits chasing a car's swerve | — | — |
 | 70 | A is always the legs (lunge, then lunge and jump); B is always action, the arms | user-confirmed (9 October); the detailed mapping is proposed (GDD Edit 10, section 11.5) | A body logic a player can learn: legs on one button, arms on the other | Jump and Extra cell both use A again. Proposed split by timing: during the lunge is a jump, just after landing is the second lunge. Replaces row 66's proposed mapping. | — |
+| 71 | Each branch has one job, and branches don't overlap. Head senses the environment. Arms manipulate it. Legs move: walking, jumping and turning faster. Battery or Heart becomes a global stamina mechanic. Torso's job is open. | user-confirmed (9 October, Lawrence's own review of the tree) | It should be clear what each branch does | Turning moves from Torso to Legs. The fifteen-upgrade tree (rows 58–65) needs re-sorting to match. | — |
+| 72 | Stamina or battery is a global mechanic, not just an upgrade branch | user-confirmed in principle (9 October); its form is open (open decision D1 below) | Gives every action a cost the player manages | Touches every branch on purpose | — |
+
+## Open decisions (to make)
+
+These are listed so nothing is lost. None is decided. Options marked *recommended* are the assistant's suggestions.
+
+| # | Decision | Options | Notes |
+|---|---|---|---|
+| D1 | What form the global battery or stamina takes | (a) Stamina that recharges by itself, so running low costs only time. (b) A lunge budget per body: each lunge spends charge, and a flat battery means the body is towed away with no write-off. (c) A battery that drains over time, so you must destroy yourself before it runs out. (d) One battery per level, replacing the traffic count as the level's clock. | Lawrence raised (c) and (a). *Recommended:* build (a) first, because it is cheap and close to today's recharge, then test (b), which rewards outsmarting over spamming lunges. (c) adds a second clock beside the traffic count and blocks the Non-compliant ending (a whole level with no lunge). |
+| D2 | Start small: five upgrades, one per part, before growing towards the fifteen | Which five | Joshua's suggestion; Lawrence leaning yes (9 October). The assistant's five are in the conversation of 9 October. |
+| D3 | Which button the arms use | Lawrence's review says "Adds Abilities ('A' button)"; row 70 says A is the legs and B is the arms | Needs one answer |
+| D4 | Torso's job | Strength, meaning harder hits; or something else | *Recommended:* strength as impact. A real dummy's chest is its instrumented part, and harder hits are the opposite of armour, so pillar 6 holds. |
+| D5 | Head: limited view, or "fog of war" from limited memory | (a) A sensor circle around the dummy: outside it the map dims and cars show as last-seen marks that fade. (b) A forward field of view. (c) Levels bigger than the screen, with Head zooming out. | *Recommended:* (a). It is visible from above and fits "limited memory". Playtest that a first-time player can still read the road. |
+| D6 | How upgrades are earned, and whether they persist across bodies | Credits; one token per write-off; rising prices | *Recommended* in skill-tree review 2: one token per write-off, cores cost 1. |
+| D7 | Pillar 1 wording | "There is always a way to outsmart the vehicle" as replacement or addition | — |
+| D8 | Branch name | Battery or Heart | — |
+| D9 | Fix two likely exploits in today's build | Stuck cars brake to 30%; cars enter already aware | Code paths confirmed, not measured (skill-tree review 2). Awaiting "go". |
