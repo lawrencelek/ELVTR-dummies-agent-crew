@@ -88,21 +88,31 @@ All entries dated 6 October 2026 unless stated. Times are not recorded.
 
 | 76 | The two-tier tree. Head (what you see): Wider view → Memory, Ears. Torso (where you point): Hips → Spine, Neck. Legs (where you go, A): Jump → Spring start, Grip. Arms (what you change, B): Carry → Hold on, Throw. Battery (how much you can do): Big battery → Kinetic charge, Fast charge. The five tier-1 upgrades are the starting set. | user-confirmed (9 October: "Approved."; not built). The Torso branch is Lawrence's own; the rest is the assistant's extrapolation from his principles, which he approved. | Built from first principles: one job per part, simple and powerful core upgrades, readable from above, no health | Kicking cones becomes something every dummy does; running faster becomes Spring start; dents on cars show for everyone (pillar 3); the second lunge becomes Big battery. Replaces the upgrades in rows 60–65. Keeps rows 58 (structure), 67, 69, 70 and 73–75. | GDD Edit 10, section 11.5 |
 
+| 77 | The global battery starts as a stamina bar that refills by itself | user-confirmed (9 October, answer to D1; not built). Needs tuning. | Simplest form; running low costs only time | Adds no new way to lose a body or a level | Closes D1 |
+| 78 | Upgrades are bought with credits earned through points. Points and credits are separate: points add up and set the high score; credits are what players spend. An economy and a skill-tree system are needed. | user-confirmed (9 October, answer to D6; not built) | Earning through points is the simplest way; separating the two keeps the high score intact when players spend | Credits need their own earning rate and prices (proposed in GDD Edit 11, section 6) | Closes D6, except persistence (D13) |
+| 79 | The design pillars are re-evaluated for Edit 11, following Lawrence's notes. (1) There is always a way to outsmart the car. (2) Juiced to 11: you feel like the dummy. (3) The cars visibly learn, and behave with emergent individual and group behaviour; this absorbs the old readable-signals pillar. (4) You start by moving like a machine and end by moving like a human: you get better at reading the cars, and they get better at reading you. (5) Stellar Art Direction. The premise is reframed: a stiff dummy that gets upgrades for human-like movement, at the cost of destroying itself. | user-confirmed direction (9 October, answer to D7); the exact wording in GDD Edit 11 is proposed | The skill tree changes what the game is about | Five pillars, not six: "degrees of freedom" becomes the tagline of pillar 4 | Closes D7 |
+| 80 | The branch is called Battery | user-confirmed (9 October, answer to D8) | — | — | Closes D8 |
+| 81 | Fog of war and memory become a possible feature to test. Starting values: the dummy sees about 50% of the screen around where it stands, and what it has seen fades with time. | user-confirmed as a test (9 October, answer to D11); exact numbers proposed in GDD Edit 11 | Sensing the environment as a play mechanic | It may conflict with the readable cues of pillar 3, so test it with first-time players | Closes D11 |
+| 82 | Noted for later: a simple inventory system, a music volume slider, saving the game, a menu system | user-noted (9 October) | — | — | GDD Edit 11, section 13 |
+
 ## Open decisions (to make)
 
 These are listed so nothing is lost. None is decided. Options marked *recommended* are the assistant's suggestions.
 
 | # | Decision | Options | Notes |
 |---|---|---|---|
-| D1 | What form the global battery or stamina takes | (a) Stamina that recharges by itself, so running low costs only time. (b) A lunge budget per body: each lunge spends charge, and a flat battery means the body is towed away with no write-off. (c) A battery that drains over time, so you must destroy yourself before it runs out. (d) One battery per level, replacing the traffic count as the level's clock. | Lawrence raised (c) and (a). *Recommended:* build (a) first, because it is cheap and close to today's recharge, then test (b), which rewards outsmarting over spamming lunges. (c) adds a second clock beside the traffic count and blocks the Non-compliant ending (a whole level with no lunge). |
+| D1 | What form the global battery or stamina takes | — | **Decided 9 October:** a stamina bar that refills by itself, to be tuned (row 77). |
 | D2 | Start small: five upgrades, one per part, before growing towards the fifteen | — | **Decided 9 October:** the five tier-1 upgrades of row 76 are the starting set. |
 | D3 | Which button the arms use | — | **Decided 9 October:** the arms use B (row 76, consistent with row 70). |
 | D4 | Torso's job | — | **Decided 9 October:** manoeuvrability (row 73). The strength suggestion was not taken. |
 | D5 | Head: limited view, or "fog of war" from limited memory | — | **Decided 9 October:** a forward view cone for the detection zones (row 75). How far the fog goes is D11. |
-| D6 | How upgrades are earned, and whether they persist across bodies | Credits; one token per write-off; rising prices | *Recommended* in skill-tree review 2: one token per write-off, cores cost 1. |
-| D7 | Pillar 1 wording | "There is always a way to outsmart the vehicle" as replacement or addition | — |
-| D8 | Branch name | Battery or Heart | — |
+| D6 | How upgrades are earned, and whether they persist across bodies | — | **Decided 9 October:** credits earned through points, kept separate from points (row 78). Persistence is D13. |
+| D7 | Pillar 1 wording | — | **Decided 9 October:** the pillars are re-evaluated (row 79). |
+| D8 | Branch name | — | **Decided 9 October:** Battery (row 80). |
 | D9 | Fix two likely exploits in today's build | Stuck cars brake to 30%; cars enter already aware | Code paths confirmed, not measured (skill-tree review 2). Awaiting "go". |
 | D10 | Neck's ability | — | **Decided 9 October:** keep looking (row 74). |
-| D11 | How far the fog of war goes | (a) Only the detection zones are limited to the view cone (decided, row 75). (b) Cars outside the cone also become last-seen marks that fade: the dummy's limited memory. | Try (a) first. (b) is harder for first-time players, so test it later. |
+| D11 | How far the fog of war goes | — | **Decided 9 October:** fog of war and memory become a feature to test, starting at about 50% of the screen and fading with time (row 81). |
 | D12 | The Head upgrades, given the view cone | — | **Decided 9 October:** Wider view, then Memory and Ears (row 76). |
+| D13 | Do upgrades last for the rest of a run, across bodies? | Proposed: yes. A new run starts stiff again. | Without this, buying an upgrade for a body you are about to destroy is pointless |
+| D14 | Credit earning rate and prices | Proposed: 1 credit per point; tier 1 costs 4,000; tier 2 costs 8,000 | Tune with the bot and playtests (GDD Edit 11, section 6) |
+| D15 | What spends stamina | Proposed: lunges and jumps only; walking and running are free | Keeps the first version simple |
