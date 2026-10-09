@@ -83,6 +83,9 @@ All entries dated 6 October 2026 unless stated. Times are not recorded.
 
 | 73 | Torso is manoeuvrability. The dummy starts with a lot of mechanical stiffness, which is still fun. Hips is the core upgrade: turn faster. Spine and Neck are the next joints. | user-confirmed (9 October) | Turning is the dummy's first degree of freedom | Turning moves back to Torso from Legs (row 71); Legs keeps moving and jumping. Waist (row 61) is renamed Hips. Spine keeps its 45° bend (row 69). Neck's ability is open (D10). | — |
 
+| 74 | Neck: keep looking. Walk sideways or backwards while still facing the car, without turning. | user-confirmed (9 October; not built) | Helps the aim-and-reposition loop that stiffness makes hard | — | Closes D10 |
+| 75 | Sensing is direction-based: the dummy sees the cars' detection zones only in the direction it faces, a view cone. Head upgrades change the cone. Lawrence: "a genuinely interesting play mechanic". | user-confirmed (9 October; not built) | Sensing the environment becomes part of play, and turning (Torso) now also decides what you see | Replaces rows 60 and 68's "zones hidden until the Sensors upgrade". Proposed: cars, chevrons and brake lights stay visible everywhere (row 68), so pillar 4 holds. Rotation (Torso) and sensing (Head) now work together on purpose. | — |
+
 ## Open decisions (to make)
 
 These are listed so nothing is lost. None is decided. Options marked *recommended* are the assistant's suggestions.
@@ -93,9 +96,11 @@ These are listed so nothing is lost. None is decided. Options marked *recommende
 | D2 | Start small: five upgrades, one per part, before growing towards the fifteen | Which five | Joshua's suggestion; Lawrence leaning yes (9 October). The assistant's five are in the conversation of 9 October. |
 | D3 | Which button the arms use | Lawrence's review says "Adds Abilities ('A' button)"; row 70 says A is the legs and B is the arms | Needs one answer |
 | D4 | Torso's job | — | **Decided 9 October:** manoeuvrability (row 73). The strength suggestion was not taken. |
-| D5 | Head: limited view, or "fog of war" from limited memory | (a) A sensor circle around the dummy: outside it the map dims and cars show as last-seen marks that fade. (b) A forward field of view. (c) Levels bigger than the screen, with Head zooming out. | *Recommended:* (a). It is visible from above and fits "limited memory". Playtest that a first-time player can still read the road. |
+| D5 | Head: limited view, or "fog of war" from limited memory | — | **Decided 9 October:** a forward view cone for the detection zones (row 75). How far the fog goes is D11. |
 | D6 | How upgrades are earned, and whether they persist across bodies | Credits; one token per write-off; rising prices | *Recommended* in skill-tree review 2: one token per write-off, cores cost 1. |
 | D7 | Pillar 1 wording | "There is always a way to outsmart the vehicle" as replacement or addition | — |
 | D8 | Branch name | Battery or Heart | — |
 | D9 | Fix two likely exploits in today's build | Stuck cars brake to 30%; cars enter already aware | Code paths confirmed, not measured (skill-tree review 2). Awaiting "go". |
-| D10 | Neck's ability (Torso branch) | (a) Keep looking: walk sideways or backwards while still facing the car, without turning. (b) Whiplash: after a hit, snap round to face the nearest car, ready to lunge again. | *Recommended:* (a). It helps the aim-and-reposition loop that stiffness makes hard, and from above it reads as the body moving while the facing arrow stays on the car. |
+| D10 | Neck's ability | — | **Decided 9 October:** keep looking (row 74). |
+| D11 | How far the fog of war goes | (a) Only the detection zones are limited to the view cone (decided, row 75). (b) Cars outside the cone also become last-seen marks that fade: the dummy's limited memory. | Try (a) first. (b) is harder for first-time players, so test it later. |
+| D12 | The Head upgrades, given the view cone | Proposed: Wider view (core); Memory (zones stay visible about 2 s after you look away); Ears (pulses where cars outside your view are) | Assistant's draft |
