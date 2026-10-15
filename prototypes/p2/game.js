@@ -122,7 +122,10 @@
   const pad = { prev: {}, mx: 0, my: 0, bHeld: false };
   function pollPad() {
     pad.mx = pad.my = 0; pad.bHeld = false;
-    const gp = navigator.getGamepads ? Array.from(navigator.getGamepads()).find((g) => g && g.connected) : null;
+    if (pad.blocked) return;
+    let gp = null;
+    try { gp = navigator.getGamepads ? Array.from(navigator.getGamepads()).find((g) => g && g.connected) : null; }
+    catch (e) { pad.blocked = true; return; } // embedded previews can forbid the gamepad feature; keyboard still works
     if (!gp) return;
     const bt = (i) => !!(gp.buttons[i] && gp.buttons[i].pressed);
     const ax = Math.abs(gp.axes[0] || 0) > 0.25 ? gp.axes[0] : 0, ay = Math.abs(gp.axes[1] || 0) > 0.25 ? gp.axes[1] : 0;
