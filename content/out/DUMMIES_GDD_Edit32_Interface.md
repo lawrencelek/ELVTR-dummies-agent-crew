@@ -2,7 +2,7 @@
 
 **Generated · 2026-10-15 · run `20261015-013357` · Proposed**
 
-- **Parent:** [Design](../kb/DUMMIES_V29_Design.md). Consumer: `prototypes/p1/content/interface.json`.
+- **Parent:** [Design](../kb/DUMMIES_V29_Design.md). Consumer: `prototypes/p2/content/interface.json`.
 - **Source:** `content/pipeline.py`. Regenerate; do not hand-edit.
 - **Status:** Proposed. Generated from the knowledge base, checked by validators and the critic.
 

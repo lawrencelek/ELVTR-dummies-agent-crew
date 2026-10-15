@@ -2,7 +2,7 @@
 
 Parameter IDs come from two places and are merged:
   - Engineering §13.5 (the V29 registry table), parsed from the KB copy.
-  - prototypes/p1/sim.js REG, PROTO and OVERRIDES (what P1 actually runs), read with Node.
+  - prototypes/p2/sim.js REG, PROTO and OVERRIDES (the P1.9 sim the consumer runs), read with Node.
 Palette roles come from Design D10.2. Nothing here is typed by hand that the docs already state.
 """
 import json
@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-P1 = ROOT / "prototypes" / "p1"
+P1 = ROOT / "prototypes" / "p2"   # consumer sim: byte-identical to the P1.9 freeze
 
 # D10.2 role names -> the key game.js uses for that role (game.js const C)
 ROLE_KEYS = {"Floor": "floor", "Grid": "grid", "Structure": "structure", "Fleet": "fleet", "Dummy body": "dummy",

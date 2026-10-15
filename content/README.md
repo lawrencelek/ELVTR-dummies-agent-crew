@@ -1,21 +1,21 @@
 # DUMMIES — Dynamic Content Pipeline (ELVTR Assignment #4)
 
-**Capstone game:** DUMMIES, by Lawrence Lek. **Consumer:** the P1 prototype, `prototypes/p1/`.
+**Capstone game:** DUMMIES, by Lawrence Lek. **Consumer:** the P2 prototype, `prototypes/p2/`: the P1.9 simulation with a content-aware renderer. P1 stays frozen at P1.9.
 **Knowledge base:** `DUMMIES_V29_Design.md` plus its GDD edits. **Focus:** visual material.
 
-The pipeline reads the GDD, retrieves the sections that govern each piece of content, has a generator agent write it, checks it with deterministic validators and an independent critic agent, repairs it, and publishes it as data the P1 build draws.
+The pipeline reads the GDD, retrieves the sections that govern each piece of content, has a generator agent write it, checks it with deterministic validators and an independent critic agent, repairs it, and publishes it as data the P2 build draws.
 
-![P1.10 with generated content: district dressing, vehicle liveries, tyre marks, FARSIGHT HUD](docs/p1_road_lane.png)
+![P2 with generated content: district dressing, vehicle liveries, tyre marks, FARSIGHT HUD](docs/p2_road_lane.png)
 
 ## 1. What P1 is thin on, and what was generated
 
-| Content | The gap in P1.9 | Generated output | P1 consumer |
+| Content | The gap in P1.9 | Generated output | P2 consumer |
 |---|---|---|---|
 | **Juice**, referenced against top-down arcade driving games | Feedback is hard-coded literals in `game.js` (`kick(3 + 9 * k, …)`). No value has a parameter ID. Denied actions only toast. A touch on a spent car looks close to a hit. Braking leaves no trace. A replacement chassis just appears. | 14 event responses and 3 persistent states. 68 `proto.juice.*` IDs plus `feedback.hitStop` and `feedback.writeOffSeconds`. New: tyre marks (Absolute Drift), chassis drop (Super Sprint). | `content/juice.json` → `processEvents()`, particles, tyre marks, drop |
 | **Interface**, per GDD D10.3–D10.5 and D9.2–D9.3 | The HUD is a developer panel ("VIEW · Scanners in view cone"). It ignores the six D10.5 modules. The cue grammar is explained nowhere. Copy is placeholder English. Vehicles never speak. | HUD in D10.5 modules with Chinese titles (review pending). A cue key on the pause screen. A FARSIGHT copy deck. Eleven worker barks bound to logged sim events. | `content/interface.json` → `drawHUD()`, pause, report, shop, endings, toasts, barks |
 | **Graphics** (environment, vehicles, character) | Vehicles are identical grey rectangles. The dummy lacks the FARSIGHT markings D4.1 requires. The road is a grid with no district (D9.2 anchors 1–3). D10.6: a greybox cannot pass the beauty gate. | Roof liveries: SEDAN-01 "Depot parcel courier", VAN-02 "Lane maintenance". Crash-test quadrant targets on the dummy. 32 decals of bilingual signage and service markings across the three roads. | `content/graphics.json` → `drawCar()`, `drawBody()`, `drawField()` |
 
-Every output is data, not code. The renderer has a fixed set of primitives; the content chooses and tunes them. Without `content.js` the build falls back to P1.9 exactly.
+Every output is data, not code. The renderer has a fixed set of primitives; the content chooses and tunes them. Without `content.js` the P2 build falls back to the P1.9 presentation.
 
 ## 2. Pipeline
 
@@ -30,7 +30,7 @@ flowchart TD
     CRIT["Critic agent<br/>agents/critic.md<br/>own retrieval + probes from the draft<br/>lore · tone · rule · truth · data"]
     GATE{"No blocking issue?"}
     FIX["Generator repair<br/>applies every fix, max 2–3 rounds"]
-    PUB[/"prototypes/p1/content/*.json → content.js<br/>dummies_p1.html rebuilt<br/>content/out/ GDD edits 31–33"/]
+    PUB[/"prototypes/p2/content/*.json → content.js<br/>dummies_p2.html rebuilt<br/>content/out/ GDD edits 31–33"/]
     KB --> IDX --> RET
     SPEC --> RET --> GEN --> VAL --> CRIT --> GATE
     GATE -- "issues" --> FIX --> VAL
@@ -59,10 +59,10 @@ python content/pipeline.py                         # all three types, about 15 m
 python content/pipeline.py --type interface         # one type
 python content/pipeline.py --query "vehicles speak as workers"   # retrieval only, no model calls
 python content/pipeline.py --check                  # re-validate published content, rebuild content.js; no model calls
-node prototypes/p1/test_sim.js                      # sim untouched: 34/34
+node prototypes/p2/test_sim.js                      # P1.9 sim, unchanged: 34/34
 ```
 
-Then open `prototypes/p1/dummies_p1.html`. Press Esc in play for the cue key. Press T: every generated ID is a live slider.
+Then open `prototypes/p2/dummies_p2.html`. Press Esc in play for the cue key. Press T: every generated ID is a live slider.
 
 ## 3. Knowledge base and retrieval
 
@@ -159,10 +159,10 @@ Each tweak came from reading a run's trace or a screenshot.
 
 | | |
 |---|---|
-| ![Pause screen with the generated cue key](docs/p1_pause_cuekey.png) | ![L3 Corner with district dressing](docs/p1_corner.png) |
-| ![Write-off: debris, stamp, tyre marks](docs/p1_writeoff.png) | ![Shop with generated node copy](docs/p1_shop.png) |
+| ![Pause screen with the generated cue key](docs/p2_pause_cuekey.png) | ![L3 Corner with district dressing](docs/p2_corner.png) |
+| ![Write-off: debris, stamp, tyre marks](docs/p2_writeoff.png) | ![Shop with generated node copy](docs/p2_shop.png) |
 
-![Close-up: roof liveries, dummy markings, tyre marks](docs/p1_closeup.png)
+![Close-up: roof liveries, dummy markings, tyre marks](docs/p2_closeup.png)
 
 ## 9. Runs
 
@@ -174,11 +174,13 @@ Each tweak came from reading a run's trace or a screenshot.
 | `20261015-013537` | graphics | Accepted with 3 open fix-level issues; superseded. |
 | `20261015-014041` | graphics, 3 repair rounds | Accepted with 1 open fix-level issue. **Published graphics.** |
 
+These runs published to `prototypes/p1/` (then labelled P1.10). The build later moved to `prototypes/p2/` unchanged, and P1 went back to its P1.9 freeze; run logs keep the original paths.
+
 Agents ran on `claude-sonnet-5-5` through Claude Code. A full three-type run makes 15–21 calls and takes about 12 minutes of model time.
 
 ## 10. Limitations
 
-- **No player has seen P1.10.** Voice and visual fit are self-assessed. Barks are timed but not read-tested at play speed.
+- **No player has seen P2.** Voice and visual fit are self-assessed. Barks are timed but not read-tested at play speed.
 - **The critic is not an oracle.** It misses things ("Move it!"), sometimes reverses itself, and can be wrong about facts. Validators hold the hard rules.
 - **Graphics stay fix-level imperfect.** Every graphics run left at least one open fix-level issue; the gate accepts those.
 - **Chinese text is unreviewed.** All of it carries `review: pending` (D9.2).
