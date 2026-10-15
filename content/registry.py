@@ -36,6 +36,30 @@ SIM_EVENTS = {
 }
 CAR_EVENTS = [e for e, f in SIM_EVENTS.items() if "car" in f]
 
+# P2.1: cases the renderer derives from sim state each frame and logs in the trace under 'presentation'.
+PRESENT_EVENTS = {
+    "near-miss": ["car", "model", "cls", "seniority", "gap", "speed", "lunging"],
+    "miss": ["car", "model", "cls", "seniority", "gap"],
+    "upgrade-seen": ["car", "model", "cls", "seniority", "node"],
+}
+CAR_DERIVED = ["model", "cls", "seniority"]   # added by the renderer to every event that names a car
+
+
+def event_fields(ev):
+    """Fields a bark or hit layer may read for an event: logged sim fields plus renderer-derived ones."""
+    if ev in PRESENT_EVENTS:
+        return PRESENT_EVENTS[ev]
+    f = list(SIM_EVENTS[ev])
+    if ev == "writeoff":   # attributed to the impact that caused it in the same step (sim.js account -> writeOff)
+        f += ["car", "zone"]
+    if "car" in f:
+        f += [x for x in CAR_DERIVED if x not in f]
+    return f
+
+
+# Frame-only colours game.js uses for FARSIGHT chrome (not in D10.2; frame layer only).
+FRAME_ROLES = {"glass": ("#FFFFFF", "P1 frame glass"), "aquaDeep": ("#1E8FB8", "P1 frame accent and frame text")}
+
 
 def eng_registry(kb_dir):
     text = (Path(kb_dir) / "DUMMIES_V29_Engineering_Spec.md").read_text(encoding="utf-8")
@@ -85,6 +109,8 @@ def palette(kb_dir):
             roles[ROLE_KEYS[m.group(1)]] = {"hex": m.group(2).upper(), "use": m.group(3), "source": "DESIGN#D10.2"}
     for k, (hx, use) in P1_FIELD_ROLES.items():
         roles[k] = {"hex": hx, "use": use, "source": "P1 game.js"}
+    for k, (hx, use) in FRAME_ROLES.items():
+        roles[k] = {"hex": hx, "use": use, "source": "P1 game.js (frame only)"}
     return roles
 
 

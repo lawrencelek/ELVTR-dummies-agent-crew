@@ -1,0 +1,49 @@
+{
+  "run": "20261015-084501",
+  "results": [
+    {
+      "type": "terminal",
+      "ok": true,
+      "rounds": 2
+    }
+  ],
+  "calls": [
+    {
+      "label": "terminal/02_generator",
+      "role": "Generator",
+      "seconds": 35.5,
+      "output_tokens": 5500,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "terminal/r0_critic",
+      "role": "Critic",
+      "seconds": 17.9,
+      "output_tokens": 2224,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "terminal/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 17.2,
+      "output_tokens": 3408,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "terminal/r1_critic",
+      "role": "Critic",
+      "seconds": 16.2,
+      "output_tokens": 1969,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

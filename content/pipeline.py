@@ -13,8 +13,8 @@ Knowledge base (V29 Design + GDD edits) -> BM25 retrieval -> Generator agent -> 
   publish    prototypes/p2/content/<type>.json, content.js, rebuilt dummies_p2.html, GDD edit in content/out/
 
 Usage:
-  python content/pipeline.py                          all three types
-  python content/pipeline.py --type juice,graphics    some types
+  python content/pipeline.py                          P2.1 types: barks, hits, terminal
+  python content/pipeline.py --type juice,graphics    other types (P2.0: juice, interface, graphics)
   python content/pipeline.py --query "barks workers"  show what retrieval returns, no model calls
   python content/pipeline.py --check                  re-validate published content, rebuild content.js; no model calls
 Needs Python 3.9+, Node 18+, and Claude Code signed in (`claude` on PATH). No API key is stored here.
@@ -38,12 +38,13 @@ import registry  # noqa: E402
 
 P2 = ROOT / "prototypes" / "p2"   # consumer: P1.9 sim + content-aware renderer; P1 stays frozen
 OUT_CONTENT = P2 / "content"
-TYPES = ["juice", "interface", "graphics"]
+TYPES = ["juice", "interface", "graphics", "barks", "hits", "terminal"]   # P2.0 foundation, then the P2.1 gap fills
+P21 = ["barks", "hits", "terminal"]
 MAX_REPAIRS = 2
 CALL_TIMEOUT_S = 1500
 MODEL = os.environ.get("CONTENT_MODEL")
 CLAUDE = shutil.which("claude") or "claude"
-EDIT_NO = {"juice": 31, "interface": 32, "graphics": 33}
+EDIT_NO = {"juice": 31, "interface": 32, "graphics": 33, "barks": 34, "hits": 35, "terminal": 36}
 
 # Registry IDs shown to the generator, per type (the full registry is used by the validators).
 REG_PREFIXES = {
@@ -53,6 +54,13 @@ REG_PREFIXES = {
     "interface": ("proto.standoffDistance", "proto.learn.", "proto.scale.unitsPerMetre", "proto.honkSeconds",
                   "proto.driver.patienceSeconds", "proto.health.", "proto.quota.", "ui.type", "feedback."),
     "graphics": ("vehicles.", "body.radius", "world.", "ui.type", "proto.shoulderWidth", "proto.art.", "props.cone.radius"),
+    "barks": ("proto.scale.unitsPerMetre", "body.radius", "vehicles.sedan.", "vehicles.van.", "movement.lunge", "ui.type",
+              "proto.standoffDistance", "proto.honkSeconds", "perception.sideRadius", "proto.driver.patienceSeconds", "feedback."),
+    "hits": ("feedback.", "damage.bodyHealth", "damage.referenceSpeed", "proto.recoil", "proto.dummyStrikeSpeed", "body.radius",
+             "movement.lunge", "battery.capacity", "proto.art.", "vehicles.sedan.cruiseSpeed", "vehicles.van.cruiseSpeed",
+             "proto.scale.unitsPerMetre", "proto.restitution"),
+    "terminal": ("ui.", "world.", "body.radius", "vehicles.sedan.", "vehicles.van.", "battery.", "movement.", "damage.",
+                 "proto.quota.", "proto.health.", "traffic.", "perception.", "sensing.", "feedback."),
 }
 
 
@@ -116,7 +124,7 @@ def load_context():
     return {
         "manifest": man, "chunks": chunks, "index": rag.Index(chunks), "kb_ids": {c["id"] for c in chunks},
         "registry": registry.registry(kb), "palette": registry.palette(kb), "levels": registry.levels(),
-        "sim_events": registry.SIM_EVENTS,
+        "sim_events": registry.SIM_EVENTS, "event_fields": registry.event_fields,
     }
 
 
@@ -188,7 +196,7 @@ def brief(spec, ctx):
     kind = spec["type"]
     allowed = dict(spec["allowed"])
     if "event_fields" in allowed:   # the generator cannot see registry.py: give it the real field names
-        allowed["event_fields"] = {e: ctx["sim_events"][e] for e in allowed["events"]}
+        allowed["event_fields"] = {e: registry.event_fields(e) for e in allowed["events"]}
     extra = brief_extras(spec)
     return "\n".join([
         f"# BRIEF — {spec['title']}", f"Content type: {kind}. Parameter prefix for new IDs: {spec['param_prefix']}",
@@ -197,8 +205,25 @@ def brief(spec, ctx):
         "\n## JSON schema", "```", *spec["schema"], "```",
         "\n## Consumer contract (what the renderer can draw)", *[f"- {g}" for g in spec["consumer"]],
         "\n## Allowed values", "```json", json.dumps(allowed, indent=1, ensure_ascii=False), "```", *extra,
-        "\n## Game data", game_data(kind, ctx),
+        "\n## Game data", game_data(kind, ctx), published_context(kind),
     ])
+
+
+def published_context(kind):
+    """What earlier published content this type sits beside (read from prototypes/p2/content)."""
+    out = []
+    try:
+        if kind == "terminal":
+            ci = json.loads((OUT_CONTENT / "interface.json").read_text(encoding="utf-8"))
+            fr = ci.get("copy", {}).get("frame", {})
+            out.append(f"\nPublished interface content: district line '{fr.get('district')}' / '{fr.get('districtZh')}' prints under the lockup. "
+                       "HUD module titles: " + ", ".join(f"{m['module']} ({m.get('zh', '')})" for s in ("left", "right") for m in ci["hud"][s]) + ".")
+        if kind == "barks":
+            cg = json.loads((OUT_CONTENT / "graphics.json").read_text(encoding="utf-8"))
+            out.append("\nPublished graphics content: vehicle jobs " + "; ".join(f"{k}: {v.get('job')}" for k, v in cg.get("vehicles", {}).items()) + ".")
+    except (OSError, KeyError, ValueError):
+        pass
+    return "\n".join(out)
 
 
 def issue_lines(v_issues, c_issues):
@@ -322,9 +347,13 @@ def item_label(it):
     if not isinstance(it, dict):
         return short(it)
     parts = []
-    for k in ("event", "module", "cue", "job", "label", "text", "note", "meaning", "reference"):
+    for k in ("event", "module", "cue", "job", "label", "text", "note", "meaning", "reference", "product", "tagline", "eyebrow"):
         if isinstance(it.get(k), str):
             parts.append(it[k])
+    if it.get("when"):
+        parts.insert(1, json.dumps(it["when"], ensure_ascii=False))
+    if it.get("style"):
+        parts.insert(1, it["style"])
     if it.get("rows"):
         parts.append(" / ".join(r.get("label", "") for r in it["rows"]))
     if it.get("shake"):
@@ -457,6 +486,33 @@ def gdd_edit(kind, d):
         for lv, ds in (d.get("environment") or {}).items():
             for s in ds:
                 L.append(f"| {lv} | {short(s.get('note', s.get('shape')), 80)} | {s.get('surface', '')} | {short(s.get('text', ''), 40)} | {', '.join(s.get('sources', []))} |")
+    elif kind == "barks":
+        L += ["## Bark bank", "", "| Event | When | Style | Priority | Line | Sources |", "|---|---|---|---:|---|---|"]
+        for b in d.get("lines", []):
+            L.append(f"| `{b.get('event')}` | {short(json.dumps(b.get('when') or {}, ensure_ascii=False), 60)} | {b.get('style')} | {b.get('priority')} | "
+                     f"{short(b.get('text', ''), 90)} | {', '.join(b.get('sources', []))} |")
+    elif kind == "hits":
+        L += [f"- **Hit pause:** `{d.get('hitStop')}` (simulation, unchanged). **Reduced motion:** `{d.get('reducedMotion')}`.", "",
+              "## Layers", "", "| Event | When | Response | Reference | Sources |", "|---|---|---|---|---|"]
+        for e in d.get("layers", []):
+            resp = [k for k in ("shake", "zoom", "flash", "crumple", "stumble", "ring", "rays", "popup", "streaks") if e.get(k)]
+            resp += [f"{p.get('type')} ×`{p.get('count') if isinstance(p.get('count'), str) else '/'.join(p.get('count') or [])}` at {p.get('at', 'dummy')}" for p in e.get("particles") or []]
+            if e.get("sound"):
+                resp.append(f"{e['sound'].get('type')} sound")
+            L.append(f"| `{e.get('event')}` | {short(json.dumps(e.get('when') or {}, ensure_ascii=False), 50)} | {short(', '.join(resp), 160)} | "
+                     f"{short(e.get('reference', ''), 70)} | {', '.join(e.get('sources', []))} |")
+    elif kind == "terminal":
+        hd, pn, sg, ti = d.get("header") or {}, d.get("panels") or {}, d.get("signage") or {}, d.get("title") or {}
+        L += ["## Header", "", f"- **Lockup:** FARSIGHT · {hd.get('product')} · {hd.get('productZh')} ({hd.get('review')}).",
+              f"- **Tagline:** {hd.get('tagline')}", f"- **Badges:** {' · '.join(hd.get('badges') or [])}", "",
+              "## Panels", "", "- " + "; ".join(f"{k} `{v}`" for k, v in pn.items() if k != "sources"), "",
+              "## Icons", "", "| Module | Shapes |", "|---|---:|"]
+        L += [f"| {m} | {len(v)} |" for m, v in (d.get("icons") or {}).items() if m != "sources"]
+        L += ["", "## Texture", "", "- **Diagnostics:** " + ", ".join(f"`{x}`" for x in (d.get("texture") or {}).get("diagnostics", [])), "",
+              "## Signage", "", "| EN | 中文 (review) |", "|---|---|"]
+        L += [f"| {short(s.get('text', ''), 90)} | {s.get('zh', '')} |" for s in sg.get("lines", []) if isinstance(s, dict)]
+        L += ["", "## Title screen", "", f"- **Eyebrow:** {ti.get('eyebrow')}"] + [f"- **Line {i + 1}:** {x}" for i, x in enumerate(ti.get("lines") or [])] + \
+             [f"- **Start:** {ti.get('start')}"] + [f"- **{k}:** {v}" for k, v in (ti.get("difficulty") or {}).items()]
     return "\n".join(L) + "\n"
 
 
@@ -483,11 +539,12 @@ def check_published(ctx):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--type", default=",".join(TYPES))
+    ap.add_argument("--type", default=",".join(P21))
     ap.add_argument("--query")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--no-publish", action="store_true")
     ap.add_argument("--max-repairs", type=int, default=MAX_REPAIRS)
+    ap.add_argument("--publish-run", metavar="RUN_ID", help="publish accepted content from a --no-publish run after review")
     a = ap.parse_args()
     ctx = load_context()
     if a.query:
@@ -496,6 +553,17 @@ def main():
         return 0
     if a.check:
         return 1 if check_published(ctx) else 0
+    if a.publish_run:
+        rd = HERE / "runs" / a.publish_run
+        done = {r["type"]: r for r in json.loads((rd / "summary.json").read_text())["results"]}
+        for k in [k.strip() for k in a.type.split(",") if k.strip()]:
+            if not (done.get(k) or {}).get("ok"):
+                print(f"{k}: not accepted in run {a.publish_run}; not published")
+                continue
+            publish(k, json.loads((rd / k / "final.json").read_text(encoding="utf-8")), a.publish_run)
+            print(f"{k}: published from run {a.publish_run}")
+        print("content.js types:", bundle())
+        return 0
     kinds = [k.strip() for k in a.type.split(",") if k.strip()]
     for k in kinds:
         if k not in TYPES:

@@ -34,8 +34,10 @@
   // ---------- generated content (content/pipeline.py -> content.js). Missing parts fall back to the P1.9 literals.
   const CT = window.DUMMIES_CONTENT || {};
   const CJ = CT.juice || null, CI = CT.interface || null, CG = CT.graphics || null;
+  const CB = CT.barks || null, CH = CT.hits || null, CTM = CT.terminal || null; // P2.1: humour, hit juice, FARSIGHT terminal skin
   const CPARAM = {};
-  for (const part of [CJ, CI, CG]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
+  for (const part of [CJ, CI, CG, CB, CH, CTM]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
+  const BUILD = CB || CH || CTM ? 'P2.1' : 'P2.0';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -56,7 +58,11 @@
   const MOTION = RM ? (CJ && CJ.reducedMotion ? jv(CJ.reducedMotion) : 0.25) : 1;
   // Juice: camera shake, body flinch, field flash, write-off stamp, particles, car hit pulse, horn timers.
   const fx = { shake: { amp: 0, t0: -9, dur: 0.3 }, flinchT0: -9, flash: { t0: -9, dur: 0.18 }, stampT0: -9, parts: [], carPulse: new Map(), horn: new Map(), smokeT: 0,
-    marks: [], dropT0: -9, barks: new Map(), barkT: -9, barked: new Set() };
+    marks: [], dropT0: -9, barks: new Map(), barkT: -9, barked: new Set(),
+    // P2.1
+    zoom: { amt: 0, t0: -9, dur: 0.2, x: 0, y: 0 }, crumple: { amt: 0, t0: -9, dur: 0.3, ang: 0 }, stumble: { amp: 0, t0: -9, dur: 0.5 },
+    rings: [], streaks: [], bubbles: new Map(), carBarkT: new Map(), cars: new Map(), nm: new Map(), nmDone: new Set(),
+    lungeWatch: null, lastImpact: null, pendingNodes: [], upgradeWatch: null, barkN: 0, juiceT: new Map() };
   function kick(amp, dur) { const cur = fx.shake.amp * Math.max(0, 1 - (app.realT - fx.shake.t0) / fx.shake.dur); if (amp >= cur) fx.shake = { amp, t0: app.realT, dur }; }
   function shakeOffset() {
     const a = app.realT - fx.shake.t0;
@@ -85,6 +91,9 @@
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
     fx.marks = []; fx.barks.clear(); fx.barked.clear();
+    fx.rings = []; fx.streaks = []; fx.bubbles.clear(); fx.carBarkT.clear(); fx.cars.clear(); fx.nm.clear(); fx.nmDone.clear();
+    fx.lungeWatch = null; fx.lastImpact = null; fx.upgradeWatch = null; if (!carry) fx.pendingNodes = [];
+    app.present = [];
   }
 
   // ---------- input
@@ -165,6 +174,16 @@
       g.gain.setValueAtTime(gain || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.03);
     },
+    noise(f0, f1, dur, gain) { // band-passed noise sweep: crunch, whoosh, clatter
+      if (!this.ctx || !app.sound) return;
+      const c = this.ctx, t = c.currentTime, n = Math.max(1, Math.floor(c.sampleRate * dur));
+      if (!this.buf || this.buf.length < n) { this.buf = c.createBuffer(1, Math.max(n, c.sampleRate), c.sampleRate); const d = this.buf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+      const src = c.createBufferSource(), bp = c.createBiquadFilter(), g = c.createGain();
+      src.buffer = this.buf; bp.type = 'bandpass'; bp.Q.value = 1.2;
+      bp.frequency.setValueAtTime(Math.max(20, f0), t); bp.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
+      g.gain.setValueAtTime(gain || 0.08, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(bp); bp.connect(g); g.connect(c.destination); src.start(t); src.stop(t + dur + 0.03);
+    },
   };
   const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone' };
   // Generated juice (content/juice.json): one entry per sim event, every value a parameter ID. Returns false if absent.
@@ -201,23 +220,201 @@
     const text = fillIn(pick.text, Object.fromEntries(Object.entries(vars).map(([k2, v]) => [k2, typeof v === 'number' ? Math.round(v) : v])));
     fx.barks.set(e.car, { text, t0: app.realT }); fx.barked.add(e.car); fx.barkT = app.realT;
   }
+  // ---------- P2.1 event layer: car identity, derived cases (near miss, miss, upgrade seen), hit juice, barks.
+  const SENIORITY = ['New', 'Practised', 'Experienced', 'Senior'];
+  function seniorityOf(c) { return c.applied >= 5 ? 3 : c.applied >= 3 ? 2 : c.applied >= 1 ? 1 : 0; } // the notches drawn beside the tag
+  function trackCars(s) {
+    for (const c of s.cars) fx.cars.set(c.id, { id: c.id, model: c.model, cls: c.cls, slot: c.slot || 0, seniority: seniorityOf(c), x: c.x, y: c.y, h: c.h, L: c.L, W: c.W });
+  }
+  function upm() { return (app.sim && app.sim.P['proto.scale.unitsPerMetre']) || 12.2; }
+  function whenOk(when, e) {
+    for (const [k, v] of Object.entries(when || {})) {
+      if (v && typeof v === 'object') { // bounds are numbers or parameter IDs
+        const n = +e[k], lo = v.min == null ? -Infinity : typeof v.min === 'string' ? pv(v.min) : v.min, hi = v.max == null ? Infinity : typeof v.max === 'string' ? pv(v.max) : v.max;
+        if (e[k] == null || !(n >= lo && n <= hi)) return false;
+      }
+      else if (e[k] !== v) return false;
+    }
+    return true;
+  }
+  // Every event that names a car gets the car's model, class and seniority; a write-off gets the car of the impact that caused it.
+  function enrich(e) {
+    const out = Object.assign({}, e);
+    if (e.type === 'writeoff' && fx.lastImpact && fx.lastImpact.t === e.t) Object.assign(out, { car: fx.lastImpact.car, zone: fx.lastImpact.zone });
+    const info = out.car && fx.cars.get(out.car);
+    if (info) Object.assign(out, { model: info.model, cls: info.cls, seniority: info.seniority });
+    if (e.type === 'honk') out.at = e.at === 'body' ? 'body' : 'cone';
+    return out;
+  }
+  // Derived cases are computed from sim state and logged under 'presentation' in the exported trace.
+  function present(s, type, data) {
+    const e = Object.assign({ t: +s.t.toFixed(4), type }, data);
+    app.present.push(e);
+    const x = enrich(e);
+    hitJuice(x, s);
+    barkLine(x, s);
+  }
+  function carGap(b, c, R) { // body edge to car edge, world units
+    const ca = Math.cos(c.h), sa = Math.sin(c.h), dx = b.x - c.x, dy = b.y - c.y;
+    const lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca;
+    return Math.hypot(Math.max(Math.abs(lx) - c.L / 2, 0), Math.max(Math.abs(ly) - c.W / 2, 0)) - R;
+  }
+  function deriveCases(s) {
+    trackCars(s);
+    const b = s.body, P = s.P;
+    if (s.phase !== 'play' || !b.alive) { fx.lungeWatch = null; return; }
+    const gapMax = pv('proto.barks.nearMissGap') || 26, vMin = pv('proto.barks.nearMissSpeed') || 60, R = P['body.radius'];
+    for (const c of s.cars) {
+      if (fx.nmDone.has(c.id)) continue;
+      const g = carGap(b, c, R), st = fx.nm.get(c.id);
+      if (g < gapMax && Math.abs(c.v) >= vMin) {
+        if (!st) fx.nm.set(c.id, { min: g, v: Math.abs(c.v), lunging: b.mode === 'lunge', contact: false });
+        else if (g < st.min) { st.min = g; st.v = Math.abs(c.v); st.lunging = st.lunging || b.mode === 'lunge'; }
+      } else if (st && g > gapMax * 1.6) {
+        fx.nm.delete(c.id); fx.nmDone.add(c.id);
+        if (!st.contact) present(s, 'near-miss', { car: c.id, gap: +(Math.max(0, st.min) / upm()).toFixed(1), speed: Math.round(st.v), lunging: st.lunging });
+      }
+    }
+    for (const id of fx.nm.keys()) if (!s.cars.some((c) => c.id === id)) fx.nm.delete(id);
+    const lw = fx.lungeWatch;
+    if (lw && b.mode !== 'lunge') {
+      fx.lungeWatch = null;
+      if (!lw.contact) {
+        let best = null, bd = pv('proto.barks.missRadius') || 120;
+        for (const c of s.cars) { const g = carGap(b, c, R); if (g < bd) { bd = g; best = c; } }
+        present(s, 'miss', best ? { car: best.id, gap: +(Math.max(0, bd) / upm()).toFixed(1) } : { car: null, gap: null });
+      }
+    }
+  }
+  function noteContact(e) {
+    if (!e.car) return;
+    if (fx.lungeWatch) fx.lungeWatch.contact = true;
+    const st = fx.nm.get(e.car); if (st) st.contact = true;
+    fx.nmDone.add(e.car);
+  }
+
+  // Generated hit juice (content/hits.json): base and accent layers per event; presentation only.
+  function contactOf(e, s) {
+    const b = s.body, car = e.car && (s.cars.find((c) => c.id === e.car) || fx.cars.get(e.car));
+    let x = b.x, y = b.y;
+    const eff = (type) => { for (let i = s.effects.length - 1; i >= 0; i--) if (s.effects[i].type === type && Math.abs(s.effects[i].t - e.t) < 1e-3) return s.effects[i]; return null; };
+    const be = e.type === 'impact' ? eff('burst') : e.type === 'writeoff' ? eff('wreck') : null;
+    let nx = Math.cos(b.facing), ny = Math.sin(b.facing);
+    if (car) { const dx = b.x - car.x, dy = b.y - car.y, l = Math.hypot(dx, dy) || 1; nx = dx / l; ny = dy / l; }
+    if (be) { x = be.x; y = be.y; } else if (car && e.type !== 'miss') { x = b.x - nx * s.P['body.radius']; y = b.y - ny * s.P['body.radius']; }
+    return { x, y, nx, ny, car, eff: be };
+  }
+  function hitJuice(e, s) {
+    const res = { done: false, sound: false };
+    if (!CH || !CH.layers) return res;
+    const layers = CH.layers.filter((L) => L.event === e.type);
+    if (!layers.length) return res;
+    res.done = true;
+    const now = app.realT, rk = e.type + ':' + (e.car || '');
+    if (/^(touch-spent|knock)$/.test(e.type) && now - (fx.juiceT.get(rk) || -9) < 0.25) { res.sound = true; return res; } // the sim logs every contact frame; juice the first
+    fx.juiceT.set(rk, now);
+    const ct = contactOf(e, s), b = s.body, set = {};
+    for (const L of layers) {
+      if (!whenOk(L.when, e)) continue;
+      const k = L.scale && L.scale.by ? clamp((+e[L.scale.by] || 0) / (pv(L.scale.full) || 1), 0, 1) : 1;
+      for (const blk of ['shake', 'zoom', 'crumple', 'stumble', 'rays', 'popup']) if (L[blk]) set[blk] = { v: L[blk], k };
+      if (L.flash != null) set.flash = { v: L.flash, k };
+      if (L.ring) fx.rings.push({ x: ct.x, y: ct.y, r: jv(L.ring.radius, k), w: jv(L.ring.width, k) || 2, t0: now, dur: Math.max(0.05, jv(L.ring.seconds, k)), role: L.ring.role });
+      if (L.streaks) {
+        const along = e.type === 'near-miss' && ct.car ? ct.car.h : b.facing + Math.PI, n = Math.round(jv(L.streaks.count, k)), len = jv(L.streaks.length, k), lines = [];
+        const ox = e.type === 'near-miss' ? -ct.nx * s.P['body.radius'] * 1.4 : 0, oy = e.type === 'near-miss' ? -ct.ny * s.P['body.radius'] * 1.4 : 0;
+        for (let i = 0; i < n; i++) lines.push({ off: (Math.random() - 0.5) * 30, lag: Math.random() * 12, len: len * (0.6 + Math.random() * 0.4) });
+        fx.streaks.push({ x: b.x + ox, y: b.y + oy, dir: along, lines, t0: now, dur: Math.max(0.05, jv(L.streaks.seconds, k)), role: L.streaks.role });
+      }
+      for (const pt of L.particles || []) {
+        const n = Math.round(jv(pt.count, k));
+        if (n <= 0) continue;
+        const at = pt.at === 'contact' ? ct : pt.at === 'car' && ct.car ? ct.car : b;
+        const dir = pt.dir === 'backward' ? b.facing + Math.PI : pt.dir === 'facing' ? b.facing : pt.dir === 'away' ? Math.atan2(ct.ny, ct.nx) : null;
+        puff(at.x, at.y, n, { type: pt.type, dir, spread: 1.2, speed: jv(pt.speed, k), life: jv(pt.life, k), size: jv(pt.size, k), role: pt.role });
+      }
+      if (L.sound) {
+        const sd = L.sound, f0 = jv(sd.from, k), f1 = jv(sd.to, k), dur = Math.max(0.02, jv(sd.seconds, k)), g = Math.min(0.25, jv(sd.gain, k));
+        if (sd.type === 'noise') Snd.noise(f0, f1, dur, g); else Snd.tone(f0, f1, dur, sd.wave || 'triangle', g);
+        res.sound = true;
+      }
+    }
+    if (set.shake) kick(jv(set.shake.v.amp, set.shake.k), Math.max(0.02, jv(set.shake.v.seconds, set.shake.k)));
+    if (set.zoom) fx.zoom = { amt: jv(set.zoom.v.amount, set.zoom.k), t0: now, dur: Math.max(0.05, jv(set.zoom.v.seconds, set.zoom.k)), x: ct.x, y: ct.y };
+    if (set.flash) fx.flash = { t0: now, dur: jv(set.flash.v, set.flash.k) };
+    if (set.crumple) { fx.crumple = { amt: jv(set.crumple.v.amount, set.crumple.k), t0: now, dur: Math.max(0.05, jv(set.crumple.v.seconds, set.crumple.k)), ang: Math.atan2(ct.ny, ct.nx) }; fx.flinchT0 = now; }
+    if (set.stumble) fx.stumble = { amp: jv(set.stumble.v.amp, set.stumble.k), t0: now, dur: Math.max(0.05, jv(set.stumble.v.seconds, set.stumble.k)) };
+    if (ct.eff && (set.rays || set.popup)) ct.eff._cfg = { rays: set.rays, popup: set.popup, nx: ct.nx, ny: ct.ny };
+    if (e.type === 'impact' && e.car) fx.carPulse.set(e.car, now);
+    if (e.type === 'writeoff') fx.stampT0 = now;
+    return res;
+  }
+  function zoomApply() {
+    const z = fx.zoom, a = app.realT - z.t0;
+    if (a >= z.dur || !z.amt) return;
+    const k = 1 + z.amt * Math.pow(1 - a / z.dur, 2) * MOTION;
+    ctx.translate(z.x, z.y); ctx.scale(k, k); ctx.translate(-z.x, -z.y);
+  }
+
+  // Generated barks (content/barks.json): highest priority, then most specific line wins; seeded pick among equals.
+  function barkLine(e, s) {
+    if (!CB || !CB.lines || !e.car) return;
+    const info = fx.cars.get(e.car);
+    if (!info) return;
+    const pool = CB.lines.filter((ln) => ln.event === e.type && whenOk(ln.when, e));
+    if (!pool.length) return;
+    const pr = Math.max(...pool.map((ln) => ln.priority || 1)), now = app.realT, dur = pv('proto.barks.seconds') || 2.2;
+    const top = [];   // seeded variation: every matching line of the top priority; specific lines count twice
+    for (const ln of pool) if ((ln.priority || 1) === pr) { top.push(ln); if (Object.keys(ln.when || {}).length) top.push(ln); }
+    const cur = fx.bubbles.get(e.car), last = fx.carBarkT.get(e.car);
+    if (cur && now - cur.t0 < dur && cur.priority > pr) return;
+    if (pr < 3) { // write-offs always speak; hits outrank chatter; chatter waits out both cooldowns
+      if (last && now - last.t < (pv('proto.barks.carCooldown') || 4) && last.pr >= pr) return;
+      if (pr === 1) {
+        if (now - fx.barkT < (pv('proto.barks.cooldown') || 0.8)) return;
+        let live = 0; for (const bk of fx.bubbles.values()) if (now - bk.t0 < dur) live++;
+        if (!cur && live >= (pv('proto.barks.maxOnScreen') || 3)) return;
+      }
+    }
+    const pick = top[(Math.round(e.t * 60) + info.slot * 7 + fx.barkN++) % top.length];
+    const vars = Object.assign({}, e, { chassis: e.chassis != null ? String(e.chassis).padStart(2, '0') : null });
+    for (const k of ['lost', 'assessed', 'angle', 'closing', 'speed', 'health']) if (typeof vars[k] === 'number') vars[k] = Math.round(vars[k]);
+    const text = fillIn(pick.text, vars);
+    fx.bubbles.set(e.car, { text, style: pick.style || 'speech', priority: pr, t0: now, car: e.car });
+    fx.barkT = now; fx.carBarkT.set(e.car, { t: now, pr });
+    app.present.push({ t: +s.t.toFixed(4), type: 'bark', car: e.car, event: e.type, style: pick.style, text });
+  }
+
   function processEvents() {
     const s = app.sim;
     if (!s) return;
     const ev = s.events;
+    trackCars(s);
     for (let i = app.lastEv; i < ev.length; i++) {
-      const e = ev[i];
-      const juiced = juice(e, s);
-      bark(e, s);
-      switch (e.type) {
+      const e0 = ev[i];
+      if (e0.type === 'lunge') fx.lungeWatch = { contact: false };
+      if (/^(impact|knock|touch|touch-spent|contact-ignored)$/.test(e0.type)) noteContact(e0);
+      if (e0.type === 'impact') fx.lastImpact = e0;
+      if (e0.type === 'purchase') fx.pendingNodes.push(NODES[e0.node].name);
+      if (e0.type === 'chassis' && fx.pendingNodes.length) { fx.upgradeWatch = fx.pendingNodes[fx.pendingNodes.length - 1]; fx.pendingNodes = []; }
+      const e = enrich(e0);
+      const hj = hitJuice(e, s);
+      const juiced = hj.done || juice(e0, s);
+      if (CB) barkLine(e, s); else bark(e0, s);
+      if (CB && fx.upgradeWatch && e.car && ((e0.type === 'commit' && e0.cause === 'body') || (e0.type === 'honk' && e0.at === 'body'))) {
+        const node = fx.upgradeWatch; fx.upgradeWatch = null;
+        fx.carBarkT.delete(e.car); fx.barkT = -9;
+        present(s, 'upgrade-seen', { car: e.car, node });
+      }
+      switch (e0.type) {
         case 'lunge': {
-          Snd.tone(220, 90, 0.12, 'triangle', 0.12);
+          if (!hj.sound) Snd.tone(220, 90, 0.12, 'triangle', 0.12);
           if (!juiced) { kick(1.5, 0.1); const b = s.body; puff(b.x, b.y, 7, { type: 'dust', dir: b.facing + Math.PI, spread: 1.4, speed: 60, life: 0.45, size: 4 }); }
           break;
         }
         case 'impact': {
           const k = Math.min(1, e.assessed / 500);
-          Snd.tone(160, 40, 0.28 + 0.2 * k, 'sawtooth', 0.08 + 0.12 * k); Snd.tone(900, 240, 0.07, 'square', 0.05);
+          if (!hj.sound) { Snd.tone(160, 40, 0.28 + 0.2 * k, 'sawtooth', 0.08 + 0.12 * k); Snd.tone(900, 240, 0.07, 'square', 0.05); }
           if (!juiced) {
             kick(3 + 9 * k, 0.25 + 0.2 * k); fx.flinchT0 = app.realT; fx.carPulse.set(e.car, app.realT);
             const b = s.body; puff(b.x, b.y, 8 + Math.round(10 * k), { type: 'spark', speed: 160, life: 0.35, size: 2 });
@@ -225,7 +422,7 @@
           break;
         }
         case 'knock': { if (!juiced) { const b = s.body; puff(b.x, b.y, 5, { type: 'dust', speed: 50, life: 0.4, size: 3 }); } break; }
-        case 'touch-spent': Snd.tone(260, 240, 0.06, 'sine', 0.06); if (!juiced) kick(1, 0.1); toast(copy('toast.touch-spent', 'Spent car — no reward')); break;
+        case 'touch-spent': if (!hj.sound) Snd.tone(260, 240, 0.06, 'sine', 0.06); if (!juiced) kick(1, 0.1); toast(copy('toast.touch-spent', 'Spent car — no reward')); break;
         case 'honk': if (e.at === 'body') horn(); else Snd.tone(880, 880, 0.05, 'sine', 0.03); fx.horn.set(e.car, app.realT); break;
         case 'learn-standoff': Snd.tone(330, 260, 0.12, 'triangle', 0.05); toast(copy('toast.learn-standoff', '{model} now stops {metres} m back', { model: e.model, metres: (e.to / s.P['proto.scale.unitsPerMetre']).toFixed(1) })); break;
         case 'unstick': if (e.how === 'reverse') { Snd.tone(1000, 1000, 0.06, 'square', 0.03); Snd.tone(1000, 1000, 0.06, 'square', 0.03, 0.25); } break;
@@ -234,7 +431,7 @@
         case 'drone-drop': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
         case 'chassis': fx.dropT0 = app.realT; break;
         case 'writeoff': {
-          [392, 311, 233, 155].forEach((f, j) => Snd.tone(f, f * 0.98, 0.16, 'square', 0.07, j * 0.11));
+          if (!hj.sound) [392, 311, 233, 155].forEach((f, j) => Snd.tone(f, f * 0.98, 0.16, 'square', 0.07, j * 0.11));
           if (!juiced) {
             kick(14, 0.6); fx.flash.t0 = app.realT; fx.flash.dur = 0.18; fx.stampT0 = app.realT;
             const b = s.body; puff(b.x, b.y, 24, { type: 'spark', speed: 220, life: 0.5, size: 2.5 }); puff(b.x, b.y, 10, { type: 'smoke', speed: 30, life: 1.2, size: 8 });
@@ -252,6 +449,7 @@
       }
     }
     app.lastEv = ev.length;
+    deriveCases(s);
   }
   function horn() { Snd.tone(440, 430, 0.16, 'square', 0.05); Snd.tone(349, 340, 0.22, 'square', 0.05, 0.18); }
   function toast(msg) { app.toast = { msg, t: app.realT }; }
@@ -332,22 +530,34 @@
   function txt(s, x, y, font, color, align, base) {
     ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'left'; ctx.textBaseline = base || 'alphabetic'; ctx.fillText(s, x, y);
   }
-  function label(s, x, y) { // uppercase eyebrow with tracking
-    ctx.font = '700 10px ' + F_UI; ctx.fillStyle = C.secondary; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  function label(s, x, y, color) { // uppercase eyebrow with tracking
+    ctx.font = '700 10px ' + F_UI; ctx.fillStyle = color || C.secondary; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     let cx = x; for (const ch of s) { ctx.fillText(ch, cx, y); cx += ctx.measureText(ch).width + 1.4; }
   }
-  function panel(x, y, w, h, opts) {
+  function roleC(r) { return r === 'glass' ? '#FFFFFF' : r === 'aquaDeep' ? C.aquaDeep : C[r] || null; }
+  function panel(x, y, w, h, opts) { // P2.1: skinned by content/terminal.json panels
+    const pn = CTM && CTM.panels, R = pn ? clamp(pv(pn.radius) || 14, 2, 30) : 14, gl = pn ? clamp(pv(pn.gloss) || 28, 0, 60) : 28, sb = pn ? pv(pn.shadow) || 18 : 18;
+    const bc = pn && roleC(pn.border) ? rgba(roleC(pn.border), pv(pn.borderAlpha) != null ? pv(pn.borderAlpha) : 0.75) : 'rgba(79,195,232,0.75)';
     ctx.save();
-    ctx.shadowColor = 'rgba(16,40,56,0.18)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6;
-    rr(x, y, w, h, 14);
+    ctx.shadowColor = 'rgba(16,40,56,0.18)'; ctx.shadowBlur = sb; ctx.shadowOffsetY = Math.round(sb / 3);
+    rr(x, y, w, h, R);
     const g = ctx.createLinearGradient(0, y, 0, y + h);
     g.addColorStop(0, 'rgba(255,255,255,0.97)'); g.addColorStop(1, (opts && opts.tint) || 'rgba(236,247,252,0.95)');
     ctx.fillStyle = g; ctx.fill(); ctx.restore();
-    rr(x + 0.5, y + 0.5, w - 1, h - 1, 14); ctx.strokeStyle = 'rgba(79,195,232,0.75)'; ctx.lineWidth = 1.5; ctx.stroke();
+    rr(x + 0.5, y + 0.5, w - 1, h - 1, R); ctx.strokeStyle = bc; ctx.lineWidth = 1.5; ctx.stroke();
+    if (pn) { rr(x + 2, y + 2, w - 4, h - 4, Math.max(1, R - 1.5)); ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 1; ctx.stroke(); } // bevel
     // glass highlight
-    ctx.save(); rr(x + 2, y + 2, w - 4, Math.min(28, h / 3), 12); ctx.clip();
-    const hg = ctx.createLinearGradient(0, y, 0, y + 28); hg.addColorStop(0, 'rgba(255,255,255,0.9)'); hg.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = hg; ctx.fillRect(x, y, w, 30); ctx.restore();
+    if (gl > 0) {
+      ctx.save(); rr(x + 2, y + 2, w - 4, Math.min(gl, h / 3), Math.max(1, R - 2)); ctx.clip();
+      const hg = ctx.createLinearGradient(0, y, 0, y + gl); hg.addColorStop(0, 'rgba(255,255,255,0.9)'); hg.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = hg; ctx.fillRect(x, y, w, gl + 2); ctx.restore();
+    }
+  }
+  function glassPill(x, y, w, h) {
+    rr(x, y, w, h, h / 2);
+    const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, 'rgba(255,255,255,0.92)'); g.addColorStop(1, 'rgba(214,236,244,0.85)');
+    ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = 'rgba(79,195,232,0.8)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.save(); rr(x + 1, y + 1, w - 2, h / 2, h / 2 - 1); ctx.clip(); ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.fillRect(x, y, w, h / 2); ctx.restore();
   }
   function fmtT(t) { const m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + String(s).padStart(2, '0'); }
   function num(v) { return Math.round(v).toLocaleString('en-GB'); }
@@ -361,25 +571,81 @@
 
   // ---------- frame + HUD
   function drawFrame() {
-    const g = ctx.createLinearGradient(0, 0, 0, VH);
-    g.addColorStop(0, '#EAF6FB'); g.addColorStop(0.5, '#D6ECF4'); g.addColorStop(1, '#C3E1EC');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
-    // soft orbs
-    const o = ctx.createRadialGradient(1120, 40, 10, 1120, 40, 260);
-    o.addColorStop(0, 'rgba(255,255,255,0.8)'); o.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
+    const bd = CTM && CTM.backdrop;
+    if (bd && bd.stops && bd.stops.length > 1) { // P2.1 FARSIGHT backdrop: gradient and soft glows, frame only
+      ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, VW, VH);
+      const g = ctx.createLinearGradient(0, 0, 0, VH);
+      for (const st of bd.stops) g.addColorStop(clamp(st.at, 0, 1), rgba(roleC(st.role) || C.aqua, st.alpha != null ? st.alpha : 1));
+      ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
+      for (const gl of bd.glows || []) {
+        const col = roleC(gl.role) || '#FFFFFF', o = ctx.createRadialGradient(gl.x, gl.y, 0, gl.x, gl.y, gl.r);
+        o.addColorStop(0, rgba(col, gl.alpha != null ? gl.alpha : 0.6)); o.addColorStop(1, rgba(col, 0));
+        ctx.fillStyle = o; ctx.fillRect(gl.x - gl.r, gl.y - gl.r, gl.r * 2, gl.r * 2);
+      }
+    } else {
+      const g = ctx.createLinearGradient(0, 0, 0, VH);
+      g.addColorStop(0, '#EAF6FB'); g.addColorStop(0.5, '#D6ECF4'); g.addColorStop(1, '#C3E1EC');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
+      const o = ctx.createRadialGradient(1120, 40, 10, 1120, 40, 260);
+      o.addColorStop(0, 'rgba(255,255,255,0.8)'); o.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
+    }
     txt('FARSIGHT', 24, 40, '900 26px ' + F_BRAND, C.aquaDeep);
     ctx.font = '900 26px ' + F_BRAND; const bw = ctx.measureText('FARSIGHT').width;
     const fr = CI && CI.copy && CI.copy.frame;
-    txt(fr ? fr.district + (fr.districtZh ? '  ·  ' + fr.districtZh : '') : 'CRASH LAB  ·  SHENZHEN SMART CITY  ·  NEW ECONOMIC ZONE  ·  深圳智慧城市测试区', 24 + bw + 16, 38, '700 11px ' + F_UI, C.ink2);
-    txt((CT.juice || CT.interface || CT.graphics ? 'P2.0 · GENERATED CONTENT' : 'P2.0 · NO CONTENT LOADED'), VW - 24, 38, '700 11px ' + F_UI, C.ink2, 'right');
+    const district = fr ? fr.district + (fr.districtZh ? '  ·  ' + fr.districtZh : '') : 'CRASH LAB  ·  SHENZHEN SMART CITY  ·  NEW ECONOMIC ZONE  ·  深圳智慧城市测试区';
+    const hd = CTM && CTM.header;
+    if (hd) { // product lockup, tagline, district identifier, static badges
+      const lx = 24 + bw + 16, prod = hd.product + (hd.productZh ? '  ' + hd.productZh : '');
+      ctx.fillStyle = rgba(C.aquaDeep, 0.45); ctx.fillRect(lx - 9, 14, 1.5, 34);
+      txt(prod, lx, 28, '800 15px ' + F_BRAND, C.aquaDeep);
+      ctx.font = '800 15px ' + F_BRAND; const pw = ctx.measureText(prod).width;
+      if (hd.tagline) txt(hd.tagline, lx + pw + 12, 27, 'italic 400 11px ' + F_UI, C.ink2);
+      txt(district, lx, 45, '700 10px ' + F_UI, C.ink2);
+      let bx = VW - 24;
+      for (const bg of (hd.badges || []).slice(0, 3).reverse()) {
+        ctx.font = '700 9px ' + F_UI; const w = ctx.measureText(bg).width + 22; bx -= w;
+        glassPill(bx, 17, w, 20); ctx.fillStyle = C.aqua; ctx.beginPath(); ctx.arc(bx + 9, 27, 2.5, 0, TAU); ctx.fill();
+        txt(bg, bx + w / 2 + 4, 30.5, '700 9px ' + F_UI, C.aquaDeep, 'center'); bx -= 8;
+      }
+    } else txt(district, 24 + bw + 16, 38, '700 11px ' + F_UI, C.ink2);
+    const buildLabel = BUILD + (CT.juice || CT.interface || CT.graphics ? ' · GENERATED CONTENT' : ' · NO CONTENT LOADED');
+    if (hd) txt(buildLabel, VW - 24, 50, '700 8px ' + F_UI, rgba(C.secondary, 0.75), 'right');
+    else txt(buildLabel, VW - 24, 38, '700 11px ' + F_UI, C.ink2, 'right');
     // field bezel
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.25)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 12); ctx.fillStyle = '#F7FBFD'; ctx.fill(); ctx.restore();
     rr(FX - 6.5, FY - 6.5, FW + 13, FH + 13, 12); ctx.strokeStyle = 'rgba(79,195,232,0.9)'; ctx.lineWidth = 1.5; ctx.stroke();
     const prompt = app.screen === 'title' ? '↑↓ road   ·   ◀▶ difficulty   ·   A / Space start   ·   T tuning'
       : 'MOVE  WASD / ◀▲▼▶      A  LUNGE  Space / J      B  CONE  K / Shift      PAUSE  Esc      TUNING  T';
-    txt(prompt, VW / 2, VH - 18, '700 11px ' + F_UI, C.ink2, 'center');
+    if (CTM) drawTerminalTexture();
+    txt(prompt, VW / 2, CTM ? VH - 8 : VH - 18, '700 11px ' + F_UI, C.ink2, 'center');
+  }
+  // P2.1 tier-4 texture (content/terminal.json): range marks on the bezel, diagnostic runs, FARSIGHT signage. Never reacts to play.
+  function drawTerminalTexture() {
+    const tx = CTM.texture || {}, step = Math.max(10, pv(tx.rangeMarks) || 40);
+    ctx.strokeStyle = rgba(C.aquaDeep, 0.5); ctx.lineWidth = 1; ctx.beginPath();
+    for (let x = 0, i = 0; x <= FW + 0.5; x += step, i++) { const L = i % 5 === 0 ? 5 : 3; ctx.moveTo(FX + x + 0.5, FY + FH + 8); ctx.lineTo(FX + x + 0.5, FY + FH + 8 + L); }
+    for (let y = 0, i = 0; y <= FH + 0.5; y += step, i++) { const L = i % 5 === 0 ? 4 : 2; ctx.moveTo(FX - 8, FY + y + 0.5); ctx.lineTo(FX - 8 - L, FY + y + 0.5); ctx.moveTo(FX + FW + 8, FY + y + 0.5); ctx.lineTo(FX + FW + 8 + L, FY + y + 0.5); }
+    ctx.stroke();
+    const ids = (tx.diagnostics || []).filter((id) => current(id) != null);
+    if (ids.length) {
+      const rows = 4, off = Math.floor(app.realT / 2.5);
+      for (const [side, X] of [[0, 14], [1, VW - 226]]) for (let r = 0; r < rows; r++) {
+        const id = ids[(off + r * 2 + side) % ids.length], v = current(id);
+        txt(id + '  ' + (Math.abs(v) >= 100 || v % 1 === 0 ? Math.round(v) : (+v).toFixed(2)), X, FY + FH + 18 + r * 12, '400 8px ' + F_MONO, rgba(C.secondary, 0.5));
+      }
+    }
+    const sg = CTM.signage, lines = (sg && sg.lines) || [];
+    if (lines.length) {
+      const per = Math.max(2, pv(sg.seconds) || 6), idx = Math.max(0, Math.floor(app.realT / per)) % lines.length, u = (app.realT % per) / per;
+      const ln = lines[idx], text = typeof ln === 'string' ? ln : ln.text + (ln.zh ? '   ' + ln.zh : '');
+      glassPill(FX + 40, FY + FH + 16, FW - 80, 22);
+      txt('NOTICE  通告', FX + 54, FY + FH + 31, '800 8px ' + F_UI, C.aquaDeep);
+      ctx.globalAlpha = Math.max(0, Math.min(1, u * per / 0.4, (1 - u) * per / 0.4));
+      txt(text, FX + FW / 2 + 24, FY + FH + 31.5, '700 11px ' + F_UI, C.ink2, 'center');
+      ctx.globalAlpha = 1;
+    }
   }
 
   // Generated HUD (content/interface.json hud): D10.5 modules in two columns; each row is a fact with a fixed widget.
@@ -462,8 +728,17 @@
       panel(X, FY, 216, FH);
       let y = FY + 14;
       for (const m of CI.hud[side] || []) {
-        label(String(m.title || m.module).toUpperCase(), X + 14, y + 12);
-        if (m.zh) txt(m.zh, X + 202, y + 12, '700 10px ' + F_UI, C.secondary, 'right');
+        const pn = CTM && CTM.panels, icon = CTM && CTM.icons && CTM.icons[m.module];
+        if (pn && pn.band) { // FARSIGHT header band: aqua gloss, white title (frame layer)
+          rr(X + 8, y - 1, 200, 20, 7);
+          const bg = ctx.createLinearGradient(0, y - 1, 0, y + 19); bg.addColorStop(0, rgba(roleC(pn.bandRole) || C.aqua, 0.95)); bg.addColorStop(1, rgba(C.aquaDeep, 0.95));
+          ctx.fillStyle = bg; ctx.fill();
+          ctx.save(); rr(X + 9, y, 198, 9, 6); ctx.clip(); ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(X + 8, y - 1, 200, 10); ctx.restore();
+        }
+        const tx = icon ? X + 36 : X + 14;
+        if (icon) { ctx.save(); ctx.translate(X + 22, y + 9); drawShapes(icon, 1); ctx.restore(); } // icons are drawn for the band (glass on aqua)
+        label(String(m.title || m.module).toUpperCase(), tx, y + 12, pn && pn.band ? '#FFFFFF' : null);
+        if (m.zh) txt(m.zh, X + 200, y + 12, '700 10px ' + F_UI, pn && pn.band ? '#FFFFFF' : C.secondary, 'right');
         y += 24;
         for (const row of m.rows || []) y += factWidget(row.fact, row.label || '', X + 14, y, 188, s);
         y += 14;
@@ -558,7 +833,7 @@
     ctx.save();
     rr(FX, FY, FW, FH, 6); ctx.clip();
     ctx.translate(FX, FY);
-    if (!still) { const sh = shakeOffset(); ctx.translate(sh.x, sh.y); }
+    if (!still) { const sh = shakeOffset(); ctx.translate(sh.x, sh.y); zoomApply(); }
     ctx.fillStyle = C.floor; ctx.fillRect(-24, -24, FW + 48, FH + 48);
     ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.beginPath();
     for (let x = 0; x <= FW; x += 40) { ctx.moveTo(x + 0.5, -24); ctx.lineTo(x + 0.5, FH + 24); }
@@ -820,7 +1095,7 @@
       const last = fx.horn.get(c.id) || 0; if (c.honkAt === 'body' && app.realT - last > 1.4) { horn(); fx.horn.set(c.id, app.realT); }
     }
     if (s.P['proto.learningEnabled']) {
-      const n = c.applied >= 5 ? 3 : c.applied >= 3 ? 2 : c.applied >= 1 ? 1 : 0;
+      const n = seniorityOf(c);
       for (let j = 0; j < 3; j++) { ctx.fillStyle = j < n ? C.primary : '#C9D5DB'; ctx.fillRect(c.x + tw / 2 + 8 + j * 5, ty - 8, 3, 10); }
     }
   }
@@ -880,7 +1155,14 @@
     if (fl < 0.3) { const k = (1 - fl / 0.3) * 4 * MOTION; jx += Math.sin(app.realT * 97) * k; jy += Math.cos(app.realT * 83) * k; }
     if (wear > 0.6) { const k = (wear - 0.6) * 2.5 * MOTION; jx += Math.sin(app.realT * 41) * k; jy += Math.cos(app.realT * 37) * k; }
     ctx.translate(jx, jy);
-    ctx.rotate(b.facing + (wear > 0.4 ? Math.sin(app.realT * 6) * 0.06 * wear * MOTION : 0));
+    const cr = fx.crumple, ca = app.realT - cr.t0;
+    if (ca < cr.dur && cr.amt) { // squash along the hit normal, overshoot, settle (presentation only)
+      const u = ca / cr.dur, q = cr.amt * Math.cos(u * Math.PI * 2.5) * Math.pow(1 - u, 2) * MOTION;
+      ctx.rotate(cr.ang); ctx.scale(1 - q, 1 + q * 0.6); ctx.rotate(-cr.ang);
+    }
+    const sb = fx.stumble, sa0 = app.realT - sb.t0, stumbling = sa0 < sb.dur && sb.amp;
+    const wob = stumbling ? Math.sin(sa0 * 22) * sb.amp * (1 - sa0 / sb.dur) * MOTION : 0;
+    ctx.rotate(b.facing + wob + (wear > 0.4 ? Math.sin(app.realT * 6) * 0.06 * wear * MOTION : 0));
     let sx = 1, sy = 1;
     if (b.mode === 'lunge') { sx = 1.16; sy = 0.88; } else if (b.mode === 'recover') { sx = 0.9; sy = 1.08; }
     else if (b.mode === 'knock') { sx = 0.86; sy = 1.12; ctx.rotate(Math.sin(b.knockT * 38) * 0.35 * MOTION); }
@@ -914,6 +1196,15 @@
     else { ctx.beginPath(); ctx.arc(0, 14, 3.2, 0, TAU); ctx.fill(); }
     ctx.restore();
     if (b.held) { ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -14); ctx.lineTo(12, -6); if (wear <= 0.55) { ctx.moveTo(0, 14); ctx.lineTo(12, 6); } ctx.stroke(); }
+    else if (stumbling) { // a miss: arms flail out from the shoulder joints
+      const f = 1 - sa0 / sb.dur; ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.beginPath();
+      for (const sd of wear > 0.55 ? [-1] : [-1, 1]) {
+        const a1 = sd * (1.9 + Math.sin(sa0 * 31 + sd) * 0.9 * f), a2 = a1 + sd * Math.sin(sa0 * 43) * 0.8 * f;
+        const ex = Math.cos(a1) * 8, ey = sd * 14 + Math.sin(a1) * 8 * sd;
+        ctx.moveTo(0, sd * 14); ctx.lineTo(ex, ey); ctx.lineTo(ex + Math.cos(a2) * 6, ey + Math.sin(a2) * 6 * sd);
+      }
+      ctx.stroke(); ctx.lineCap = 'butt';
+    }
     // head knocked off-centre, cracked when nearly spent
     const hx = wear * 2.2, hy = -wear * 1.4;
     ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(hx, hy, 6.5, 0, TAU); ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.4; ctx.stroke();
@@ -929,17 +1220,28 @@
     for (const e of s.effects) {
       if (e._w == null) e._w = app.realT;
       const age = app.realT - e._w;
-      if (e.type === 'burst' && age < 0.9) {
-        const k = Math.min(1, age / 0.35), big = Math.min(1, e.v / 500);
-        ctx.strokeStyle = 'rgba(16,20,23,' + (1 - k) + ')'; ctx.lineWidth = 2 + 2 * big;
-        for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5, r0 = 6 + 14 * k, r1 = r0 + 8 + 18 * big; ctx.beginPath(); ctx.moveTo(e.x + Math.cos(a) * r0, e.y + Math.sin(a) * r0); ctx.lineTo(e.x + Math.cos(a) * r1, e.y + Math.sin(a) * r1); ctx.stroke(); }
-        if (age < 0.09) { ctx.fillStyle = 'rgba(255,255,255,' + (1 - age / 0.09) + ')'; ctx.beginPath(); ctx.arc(e.x, e.y, 12 + 14 * big, 0, TAU); ctx.fill(); }
-        ctx.globalAlpha = Math.max(0, 1 - age / 0.9);
-        const pop = age < 0.12 ? 1.5 - 0.5 * (age / 0.12) : 1;
-        ctx.save(); ctx.translate(e.x, e.y - 24 - age * 30); ctx.scale(pop, pop);
-        const ang = e.angle != null ? (e.angle < 20 ? 'head-on' : e.angle < 50 ? 'angled' : 'glancing') + ' ' + Math.round(e.angle) + '°' : e.zone;
-        txt('+' + num(e.v) + '  ' + ang, 0, 0, '700 ' + (13 + 5 * big) + 'px ' + F_MONO, C.primary, 'center');
-        ctx.restore(); ctx.globalAlpha = 1;
+      const cf = e._cfg || {}, ry = cf.rays, pu = cf.popup;
+      const rayDur = ry ? Math.max(0.1, jv(ry.v.seconds, ry.k)) : 0.9, popDur = pu ? Math.max(0.2, jv(pu.v.seconds, pu.k)) : 0.9;
+      if (e.type === 'burst' && age < Math.max(rayDur, popDur)) {
+        const big = Math.min(1, e.v / 500);
+        if (age < rayDur) { // impact burst cue: radial lines at the contact (D10.3)
+          const k = Math.min(1, age / (rayDur * 0.4)), n = ry ? Math.max(4, Math.round(jv(ry.v.count, ry.k))) : 10, len = ry ? jv(ry.v.length, ry.k) : 8 + 18 * big;
+          ctx.strokeStyle = 'rgba(16,20,23,' + (1 - age / rayDur) + ')'; ctx.lineWidth = 2 + 2 * big;
+          for (let i = 0; i < n; i++) { const a = i * TAU / n + (n % 2 ? 0 : 0.1), r0 = 6 + 14 * k, r1 = r0 + len * (i % 2 ? 0.7 : 1); ctx.beginPath(); ctx.moveTo(e.x + Math.cos(a) * r0, e.y + Math.sin(a) * r0); ctx.lineTo(e.x + Math.cos(a) * r1, e.y + Math.sin(a) * r1); ctx.stroke(); }
+          if (age < 0.09) { ctx.fillStyle = 'rgba(255,255,255,' + (1 - age / 0.09) + ')'; ctx.beginPath(); ctx.arc(e.x, e.y, 12 + 14 * big, 0, TAU); ctx.fill(); }
+        }
+        if (age < popDur) {
+          ctx.globalAlpha = Math.max(0, Math.min(1, 3 * (1 - age / popDur)));
+          const pk = pu ? jv(pu.v.pop, pu.k) : 1.5, size = pu ? jv(pu.v.size, pu.k) : 13 + 5 * big, rise = pu ? jv(pu.v.rise, pu.k) : 30 * popDur;
+          const pop = age < 0.12 ? pk - (pk - 1) * (age / 0.12) : 1;
+          const ox = pu ? (cf.nx || 0) * 34 : 0; // P2.1: the value rises on the dummy's side, clear of the car's tag
+          ctx.save(); ctx.translate(e.x + ox, e.y - 24 - rise * Math.min(1, age / popDur)); ctx.scale(pop, pop);
+          const ang = e.angle != null ? (e.angle < 20 ? 'head-on' : e.angle < 50 ? 'angled' : 'glancing') + ' ' + Math.round(e.angle) + '°' : e.zone;
+          const label = '+' + num(e.v) + '  ' + ang;
+          if (pu) { ctx.font = '700 ' + size + 'px ' + F_MONO; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.textAlign = 'center'; ctx.strokeText(label, 0, 0); }
+          txt(label, 0, 0, '700 ' + size + 'px ' + F_MONO, C.primary, 'center');
+          ctx.restore(); ctx.globalAlpha = 1;
+        }
       } else if (e.type === 'touch' && age < 0.5) {
         ctx.strokeStyle = 'rgba(74,90,102,' + (0.6 * (1 - age / 0.5)) + ')'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(e.x, e.y, 6 + age * 20, 0, Math.PI * 2); ctx.stroke();
       } else if (e.type === 'wreck' && age < 1.6) {
@@ -951,6 +1253,28 @@
         ctx.globalAlpha = 1;
       }
     }
+  }
+  function drawRingsStreaks() { // P2.1 hit juice: contact rings and speed lines (matte ink, field only)
+    const now = app.realT;
+    fx.rings = fx.rings.filter((r) => now - r.t0 < r.dur);
+    for (const r of fx.rings) {
+      const u = (now - r.t0) / r.dur, rad = r.r * (0.25 + 0.75 * (1 - Math.pow(1 - u, 3)));
+      ctx.strokeStyle = rgba(C[r.role] || C.primary, 0.8 * (1 - u)); ctx.lineWidth = Math.max(0.5, r.w * (1 - u * 0.6));
+      ctx.beginPath(); ctx.arc(r.x, r.y, rad, 0, TAU); ctx.stroke();
+    }
+    fx.streaks = fx.streaks.filter((st) => now - st.t0 < st.dur);
+    ctx.lineCap = 'round';
+    for (const st of fx.streaks) {
+      const u = (now - st.t0) / st.dur, cx = Math.cos(st.dir), cy = Math.sin(st.dir), px = -cy, py = cx;
+      ctx.strokeStyle = rgba(C[st.role] || C.secondary, 0.65 * (1 - u)); ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (const ln of st.lines) {
+        const s0 = 10 + ln.lag + u * 26, x0 = st.x + px * ln.off + cx * s0, y0 = st.y + py * ln.off + cy * s0;
+        ctx.moveTo(x0, y0); ctx.lineTo(x0 + cx * ln.len * (1 - u * 0.5), y0 + cy * ln.len * (1 - u * 0.5));
+      }
+      ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
   }
   function rgba(hex, a) { const h = (i) => parseInt(hex.slice(i, i + 2), 16); return 'rgba(' + h(1) + ',' + h(3) + ',' + h(5) + ',' + Math.max(0, a) + ')'; }
   function lowHealth(key, fallback) { const st = CJ && CJ.states && CJ.states.lowHealth; return st && st[key] ? jv(st[key]) : fallback; }
@@ -1019,6 +1343,77 @@
       ctx.globalAlpha = 1;
     }
   }
+  // P2.1 bark bubbles (content/barks.json): above the model tag, tail to the car; four styles.
+  function wrapLines(str, maxW) {
+    const out = []; let line = '';
+    for (const wd of String(str).split(' ')) { const tt = line ? line + ' ' + wd : wd; if (ctx.measureText(tt).width > maxW && line) { out.push(line); line = wd; } else line = tt; }
+    if (line) out.push(line);
+    return out.slice(0, 2);
+  }
+  function bubblePath(style, x, y, w, h) {
+    if (style === 'shout') { // jagged burst
+      const cx = x + w / 2, cy = y + h / 2, n = Math.max(14, Math.round((w + h) / 9));
+      ctx.beginPath();
+      for (let i = 0; i < n * 2; i++) {
+        const a = (i / (n * 2)) * TAU, out = i % 2 === 0, rx = w / 2 + (out ? 9 : 2), ry = h / 2 + (out ? 7 : 1.5);
+        const px = cx + Math.cos(a) * rx, py = cy + Math.sin(a) * ry;
+        i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+      }
+      ctx.closePath();
+    } else if (style === 'thought') { // cloud: scalloped edge
+      ctx.beginPath();
+      const bumps = Math.max(5, Math.round(w / 22)), r = Math.min(h / 2 + 2, 11);
+      rr(x, y, w, h, h / 2);
+      for (let i = 0; i <= bumps; i++) { const bx = x + 6 + (w - 12) * i / bumps; ctx.moveTo(bx + r * 0.7, y); ctx.arc(bx, y, r * 0.7, 0, TAU); ctx.moveTo(bx + r * 0.7, y + h); ctx.arc(bx, y + h, r * 0.7, 0, TAU); }
+    } else rr(x, y, w, h, style === 'mutter' ? 6 : 9);
+  }
+  function drawBubbles(s) {
+    if (!fx.bubbles.size) return;
+    const dur = pv('proto.barks.seconds') || 2.2, size = Math.max(9, pv('proto.barks.textSize') || 11), now = app.realT, placed = [];
+    const order = [...fx.bubbles.entries()].sort((a, b2) => b2[1].priority - a[1].priority || b2[1].t0 - a[1].t0);
+    const hits = (r, own) => placed.some((q) => q.car !== own && r.x < q.x + q.w + 4 && r.x + r.w + 4 > q.x && r.y < q.y + q.h + 4 && r.y + r.h + 4 > q.y);
+    ctx.font = '700 10px ' + F_MONO;
+    for (const c of s.cars) { // model tags are cues: bubbles keep clear of other cars' tags
+      const tw = ctx.measureText(c.model + (c.spent ? ' · SPENT' : '')).width + 10, ty = c.y - Math.max(c.L, c.W) / 2 - 12;
+      placed.push({ x: c.x - tw / 2, y: ty - 10, w: tw + 18, h: 15, car: c.id });
+    }
+    for (const [id, bk] of order) {
+      const live = s.cars.find((x) => x.id === id), c = live || fx.cars.get(id), age = now - bk.t0;
+      if (!c || age > dur) { fx.bubbles.delete(id); continue; }
+      const st = bk.style, fs = st === 'mutter' ? size - 1 : size, lh = fs + 3;
+      ctx.font = (st === 'shout' ? '800 ' : st === 'mutter' ? '400 ' : '700 ') + fs + 'px ' + F_UI;
+      const lines = wrapLines(bk.text, 176), tw = Math.max(...lines.map((l) => ctx.measureText(l).width));
+      const pad = st === 'shout' ? 12 : 8, w = tw + pad * 2, h = lines.length * lh + 8;
+      const tagTop = c.y - Math.max(c.L, c.W) / 2 - 22, extra = st === 'shout' ? 8 : st === 'thought' ? 14 : 8;
+      const x = clamp(c.x - w / 2, 6, FW - w - 6), ax = clamp(c.x, x + 10, x + w - 10);
+      const up = tagTop - extra - h, down = c.y + Math.max(c.L, c.W) / 2 + extra + 6;
+      const sx = st === 'shout' ? 10 : st === 'thought' ? 4 : 0, sy = st === 'shout' ? 8 : st === 'thought' ? 6 : 0; // spikes and scallops
+      const box = (yy) => ({ x: x - sx, y: yy - sy, w: w + 2 * sx, h: h + 2 * sy });
+      let y = up, below = false;
+      if (y < 6 || hits(box(y), id)) { y = Math.min(down, FH - h - 6); below = true; }
+      for (let lift = 0; hits(box(y), id) && lift < 3; lift++) { y = up - (lift + 1) * (h + 2 * sy + 6); below = false; }
+      if (y < 6 || hits(box(y), id)) { if (bk.priority < 2) continue; y = clamp(up, 6, FH - h - 6); below = false; }
+      placed.push(Object.assign(box(y), { car: null }));
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, 5 * (dur - age), 14 * age) * (st === 'mutter' ? 0.9 : 1);
+      if (st === 'shout') { const k = age < 0.14 ? 1.3 - 0.3 * (age / 0.14) : 1, jx = age < 0.3 ? Math.sin(age * 90) * 1.5 * MOTION : 0; ctx.translate(x + w / 2 + jx, y + h / 2); ctx.scale(k, k); ctx.translate(-(x + w / 2), -(y + h / 2)); }
+      const ink = st === 'shout' ? C.primary : C.secondary, lw = st === 'shout' ? 1.8 : 1.2, white = 'rgba(255,255,255,0.97)';
+      ctx.strokeStyle = ink; ctx.fillStyle = white;
+      if (st === 'mutter') ctx.setLineDash([3, 3]);
+      bubblePath(st, x, y, w, h); ctx.lineWidth = lw * 2; ctx.stroke(); ctx.fill(); // stroke, then fill: inner arcs vanish, outer edge stays
+      ctx.lineWidth = lw;
+      if (st === 'thought') {
+        for (const [f, r] of [[0.35, 3.2], [0.7, 2]]) { const ty = below ? y - (y - (c.y + Math.max(c.L, c.W) / 2)) * f : y + h + (tagTop - y - h) * f; ctx.beginPath(); ctx.arc(ax + (c.x - ax) * f, ty, r, 0, TAU); ctx.fill(); ctx.stroke(); }
+      } else {
+        const by = below ? y + 2 : y + h - 2, tip = below ? y - 7 : y + h + 7, tx = clamp(c.x, ax - 8, ax + 8);
+        ctx.beginPath(); ctx.moveTo(ax - 5, by); ctx.lineTo(tx, tip); ctx.lineTo(ax + 5, by); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(ax - 5, below ? y : y + h); ctx.lineTo(tx, tip); ctx.lineTo(ax + 5, below ? y : y + h); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      lines.forEach((l, i) => txt(l, x + w / 2, y + 4 + fs + i * lh - 2, ctx.font, st === 'mutter' ? C.secondary : C.primary, 'center'));
+      ctx.restore();
+    }
+  }
   // Generated vector art (content/graphics.json): palette roles only, in the caller's local units.
   const FONT = { mono: F_MONO, ui: F_UI, brand: F_BRAND };
   function drawShapes(list, alpha, heading) { // heading: keep text upright on rotated cars
@@ -1077,9 +1472,10 @@
     for (const c of s.cars) drawCar(s, c);
     drawBody(s);
     drawEffects(s);
+    drawRingsStreaks();
     drawParts(s);
     for (const d of s.drones) drawDrone(s, d);
-    drawBarks(s);
+    if (CB) drawBubbles(s); else drawBarks(s);
     // write-off flash and stamp
     const fa = app.realT - fx.flash.t0;
     if (fa < fx.flash.dur) { ctx.fillStyle = 'rgba(255,255,255,' + (0.55 * (1 - fa / fx.flash.dur) * (RM ? 0.4 : 1)) + ')'; ctx.fillRect(-24, -24, FW + 48, FH + 48); }
@@ -1141,16 +1537,21 @@
     veil();
     const x = FX + 60, y = FY + 40, w = FW - 120;
     panel(x, y, w, FH - 80);
+    const TT = CTM && CTM.title, quotaOf = (id) => (app.tune['proto.quota.' + id] != null ? app.tune['proto.quota.' + id] : PROTO['proto.quota.' + id]);
+    const tv = { roads: LEVEL_LIST.length, q1: quotaOf(LEVEL_LIST[0]), q2: quotaOf(LEVEL_LIST[1]), q3: quotaOf(LEVEL_LIST[2]) };
+    const fit = (str, X, Y, maxW, size, weight, col) => { let sz = size; ctx.font = weight + ' ' + sz + 'px ' + F_UI; while (ctx.measureText(str).width > maxW && sz > 10) { sz -= 0.5; ctx.font = weight + ' ' + sz + 'px ' + F_UI; } txt(str, X, Y, ctx.font, col); };
+    if (TT && TT.eyebrow) label(TT.eyebrow.toUpperCase(), x + 36, y + 22, C.aquaDeep);
     txt('DUMMIES', x + 32, y + 78, '900 64px ' + F_BRAND, C.primary);
-    txt('P2 · Generated content', x + 36, y + 106, '700 14px ' + F_UI, C.aquaDeep);
-    txt('You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.', x + 36, y + 136, '400 13px ' + F_UI, C.ink2);
-    txt('Three roads: 1, then 2, then 3 write-offs. Every lost body before the last buys one upgrade.', x + 36, y + 156, '400 13px ' + F_UI, C.ink2);
+    txt(BUILD + ' · Generated content', x + 36, y + 106, '700 14px ' + F_UI, C.aquaDeep);
+    fit(TT && TT.lines ? fillIn(TT.lines[0], tv) : 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.', x + 36, y + 136, w - 72, 13, '400', C.ink2);
+    fit(TT && TT.lines ? fillIn(TT.lines[1], tv) : 'Three roads: 1, then 2, then 3 write-offs. Every lost body before the last buys one upgrade.', x + 36, y + 156, w - 72, 13, '400', C.ink2);
     const dname = DIFFICULTIES[app.difficulty].name, dtxt = '◀  ' + dname.toUpperCase() + ' · ' + difficultyHealth(app.difficulty) + ' health  ▶';
     ctx.font = '700 12px ' + F_MONO; const dw = ctx.measureText(dtxt).width + 24;
     rr(x + w - 36 - dw, y + 180, dw, 24, 12); ctx.fillStyle = app.difficulty === 1 ? 'rgba(255,255,255,0.8)' : 'rgba(245,197,66,0.3)'; ctx.fill();
     ctx.strokeStyle = C.aquaDeep; ctx.lineWidth = 1.2; ctx.stroke();
     txt(dtxt, x + w - 36 - dw / 2, y + 196, '700 12px ' + F_MONO, C.primary, 'center');
-    txt(['Easy: you break quickly', 'Default', 'Hard: you take a beating'][app.difficulty], x + w - 36 - dw - 10, y + 196, '400 11px ' + F_UI, C.ink2, 'right');
+    const dnote = TT && TT.difficulty && TT.difficulty[dname] ? fillIn(TT.difficulty[dname], { health: difficultyHealth(app.difficulty) }) : ['Easy: you break quickly', 'Default', 'Hard: you take a beating'][app.difficulty];
+    txt(dnote, x + w - 36 - dw - 10, y + 196, '400 11px ' + F_UI, C.ink2, 'right');
     label('CHOOSE A ROAD', x + 36, y + 196);
     LEVEL_LIST.forEach((id, i) => {
       const yy = y + 208 + i * 58, on = i === app.level;
@@ -1165,7 +1566,7 @@
     label('CONTROLS', x + 36, ky);
     const rows = [['Move / face', 'WASD · arrows · stick'], ['A  Lunge along facing', 'Space · J · pad A'], ['B  Cone (after Carry)', 'K · Shift · pad B'], ['Pause', 'Esc · Start']];
     rows.forEach((r, i) => { const cx = x + 36 + (i % 2) * 330, cy = ky + 22 + Math.floor(i / 2) * 20; txt(r[0], cx, cy, '700 12px ' + F_UI, C.primary); txt(r[1], cx + 150, cy, '400 12px ' + F_MONO, C.ink2); });
-    txt('Press A or Space to start', x + w / 2, y + FH - 104, '700 14px ' + F_UI, C.aquaDeep, 'center');
+    txt(TT && TT.start ? TT.start : 'Press A or Space to start', x + w / 2, y + FH - 104, '700 14px ' + F_UI, C.aquaDeep, 'center');
   }
   function drawReport(s) {
     veil();
@@ -1400,7 +1801,7 @@
   const traceEl = document.getElementById('trace'), traceTxt = document.getElementById('trace-text');
   function showTrace() {
     if (!app.sim) return;
-    traceTxt.value = JSON.stringify(app.sim.trace(), null, 1);
+    traceTxt.value = JSON.stringify(Object.assign({}, app.sim.trace(), { presentation: app.present || [] }), null, 1);
     traceEl.hidden = false; traceTxt.focus(); traceTxt.select();
   }
   document.getElementById('trace-close').addEventListener('click', () => { traceEl.hidden = true; cv.focus(); });
@@ -1414,7 +1815,7 @@
   // ---------- loop
   let last = performance.now(), acc = 0;
   function frame(now) {
-    const dt = Math.min(0.1, (now - last) / 1000); last = now; app.realT += dt;
+    const dt = clamp((now - last) / 1000, 0, 0.1); last = now; app.realT += dt; // rAF can stamp the first frame before load time
     pollPad();
     handleMenus();
     const s = app.sim;

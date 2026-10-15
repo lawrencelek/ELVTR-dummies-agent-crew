@@ -20,7 +20,7 @@ For each issue:
 - "fix": the corrected replacement, ready to paste in place of "found". Keep the same JSON type.
 - "severity": "block" if it breaks canon or truth, "fix" if it is drift that should change.
 
-Precedence: ENG governs exact values. For the P1 prototype, BRIEF, LOG and DRIVER decisions are newer GDD edits and override DESIGN where they differ. Do not flag content that follows a P1 decision.
+Precedence: ENG governs exact values. For the P1 prototype, BRIEF, LOG and DRIVER decisions are newer GDD edits and override DESIGN where they differ. Do not flag content that follows a P1 decision. EDIT26 is the earlier full GDD: it sets rules where DESIGN is silent; where EDIT26 and DESIGN differ, DESIGN wins.
 
 Review every item and every string in one pass, and list every issue you find. Do not stop at the first few.
 Fixes listed under SETTLED were applied in earlier rounds. Do not reverse them.

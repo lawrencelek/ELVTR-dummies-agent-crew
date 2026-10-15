@@ -1,0 +1,189 @@
+[
+  {
+    "query": "hit feedback hit-stop dummy crumples dents shake grows with damage crunch horn",
+    "results": [
+      {
+        "id": "EDIT26#5.5",
+        "score": 36.723
+      },
+      {
+        "id": "DESIGN#D4.5",
+        "score": 19.208
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 17.453
+      }
+    ]
+  },
+  {
+    "query": "miss stumble arms flailing clatter lunge squash stretch speed lines whoosh",
+    "results": [
+      {
+        "id": "EDIT26#5.5",
+        "score": 31.423
+      },
+      {
+        "id": "EDIT26#5.1",
+        "score": 18.12
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 11.385
+      }
+    ]
+  },
+  {
+    "query": "impact burst positive qualifying hit contact position radial motion",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 23.209
+      },
+      {
+        "id": "EDIT26#4.2~2",
+        "score": 17.614
+      },
+      {
+        "id": "ENG#8.2~1",
+        "score": 13.849
+      }
+    ]
+  },
+  {
+    "query": "scored hit touch on spent car must not use indistinguishable reward feedback",
+    "results": [
+      {
+        "id": "DESIGN#D4.5",
+        "score": 30.483
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 23.857
+      },
+      {
+        "id": "ENG#8.1",
+        "score": 10.339
+      }
+    ]
+  },
+  {
+    "query": "body visibly announces lunge positive impact miss recovery empty charge write-off",
+    "results": [
+      {
+        "id": "DESIGN#D4.5",
+        "score": 30.244
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 14.592
+      },
+      {
+        "id": "EDIT26#10.1",
+        "score": 14.422
+      }
+    ]
+  },
+  {
+    "query": "juice reference top-down arcade driving screen shake hit pause permanence impact",
+    "results": [
+      {
+        "id": "JUICE#J1",
+        "score": 39.655
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 34.079
+      },
+      {
+        "id": "LOG#P1.1-observations",
+        "score": 20.508
+      }
+    ]
+  },
+  {
+    "query": "cars glide dummy flops sprite with mass against a flat diagram weight squash stretch",
+    "results": [
+      {
+        "id": "EDIT26#4.1~1",
+        "score": 37.623
+      },
+      {
+        "id": "DESIGN#D10.1",
+        "score": 20.404
+      },
+      {
+        "id": "EDIT26#5.2~4",
+        "score": 11.824
+      }
+    ]
+  },
+  {
+    "query": "write-off shake particles body turns red disappears destruction presentation",
+    "results": [
+      {
+        "id": "EDIT26#5.5",
+        "score": 22.278
+      },
+      {
+        "id": "EDIT26#5.1",
+        "score": 21.203
+      },
+      {
+        "id": "DESIGN#D4.5",
+        "score": 19.547
+      }
+    ]
+  },
+  {
+    "query": "P1.2 juice camera shake player shake lunge impact write-off stamp",
+    "results": [
+      {
+        "id": "LOG#P1.2/juice",
+        "score": 39.708
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 30.0
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 28.649
+      }
+    ]
+  },
+  {
+    "query": "near miss distinct cues input denial positive impact sound visual equivalent",
+    "results": [
+      {
+        "id": "DESIGN#D9.4",
+        "score": 42.159
+      },
+      {
+        "id": "EDIT26#3.3",
+        "score": 26.032
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 15.573
+      }
+    ]
+  },
+  {
+    "query": "gloss bloom translucency stay in frame matte play area dummy only saturated actor reserved red",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 37.08
+      },
+      {
+        "id": "EDIT26#4.1~2",
+        "score": 31.202
+      },
+      {
+        "id": "JUICE#J4",
+        "score": 24.255
+      }
+    ]
+  }
+]

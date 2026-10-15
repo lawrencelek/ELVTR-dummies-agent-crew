@@ -1,0 +1,49 @@
+{
+  "run": "20261015-085359",
+  "results": [
+    {
+      "type": "barks",
+      "ok": true,
+      "rounds": 2
+    }
+  ],
+  "calls": [
+    {
+      "label": "barks/02_generator",
+      "role": "Generator",
+      "seconds": 34.3,
+      "output_tokens": 5029,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "barks/r0_critic",
+      "role": "Critic",
+      "seconds": 33.7,
+      "output_tokens": 4014,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "barks/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 15.1,
+      "output_tokens": 3118,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "barks/r1_critic",
+      "role": "Critic",
+      "seconds": 22.8,
+      "output_tokens": 2906,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

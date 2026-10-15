@@ -3,6 +3,7 @@
 Every rule cites the canon it enforces. Issues use the same shape as the critic's:
 {id, kind, severity, path, found, canon, rule}.
 """
+import json
 import math
 import re
 
@@ -336,6 +337,7 @@ def touches_circle(s, r):
 
 def check_shape(iss, path, s, roles, forbidden, ctx):
     sp = ctx["spec"]["allowed"]
+    roles = {k: v for k, v in roles.items() if not str(v.get("source", "")).endswith("(frame only)")}   # frame colours never reach the field
     if s.get("shape") not in sp["shapes"]:
         iss.add("data", path + ".shape", s.get("shape"), "Unsupported shape.", "pipeline:consumer")
     for key in ("fill", "stroke", "a", "b"):
@@ -437,7 +439,324 @@ def graphics(content, ctx, iss):
                     break
 
 
-VALIDATORS = {"juice": juice, "interface": interface, "graphics": graphics}
+# ---------------------------------------------------------------- P2.1 shared
+DIGIT_RE = re.compile(r"\d")
+
+
+def check_when(iss, path, when, fields, sp, ev):
+    """'when' keys must be fields the event carries; literals must be values the sim logs."""
+    if not isinstance(when, dict):
+        iss.add("data", path, when, "'when' is an object of field conditions.", "pipeline:consumer")
+        return
+    for k, v in when.items():
+        if k not in fields:
+            iss.add("truth", f"{path}.{k}", k, f"'{ev}' does not carry '{k}' (fields: {fields}).", "DESIGN#D9.3")
+            continue
+        if isinstance(v, dict):
+            ok_vals = all(isinstance(x, (int, float)) and not isinstance(x, bool) or (isinstance(x, str) and ID_RE.match(x)) for x in v.values())
+            if k not in sp.get("numeric_fields", []) or not set(v) <= {"min", "max"} or not ok_vals:
+                iss.add("data", f"{path}.{k}", v, "Range conditions use {min, max} on a numeric field; bounds are numbers or parameter IDs.", "pipeline:consumer")
+            elif sp.get("range_ids"):
+                for b, x in v.items():
+                    if not isinstance(x, str):
+                        iss.add("data", f"{path}.{k}.{b}", x, "Thresholds are statistics: use a parameter ID, not a bare number.", "ENG#11.5")
+        elif k in sp.get("values", {}) and v not in sp["values"][k]:
+            iss.add("truth", f"{path}.{k}", v, f"The sim never logs {k} = {v!r} (logged: {sp['values'][k]}).", "pipeline:sim events")
+
+
+def when_matches(case, when):
+    return all(when.get(k) == v for k, v in case.items())
+
+
+def no_digits(iss, path, s, rule, canon, severity="block"):
+    if isinstance(s, str) and DIGIT_RE.search(re.sub(r"\{\w+\}", "", s)):
+        iss.add("truth", path, s, rule, canon, severity)
+
+
+def short_sentences(iss, path, s):
+    if isinstance(s, str) and not CJK_RE.search(s):
+        for x in sentences(s):
+            if words(x) > 15:
+                iss.add("tone", path, x, "Short sentences, under 15 words.", "project style", "fix")
+
+
+def required_params(content, ctx, iss, need):
+    declared = {p.get("id") for p in content.get("params") or []}
+    for pid in need:
+        if pid not in declared:
+            iss.add("data", "params", pid, "The renderer reads this parameter; declare it.", "pipeline:consumer")
+
+
+# ---------------------------------------------------------------- barks (P2.1 humour)
+def barks(content, ctx, iss):
+    sp, fields_of = ctx["spec"]["allowed"], ctx["event_fields"]
+    lines = content.get("lines") or []
+    if not lines:
+        iss.add("data", "lines", None, "The bark bank is the deliverable.", "pipeline:spec gap")
+    wo_pri, other_pri, styles = [], [], set()
+    for i, b in enumerate(lines):
+        path, ev, text = f"lines[{i}]", b.get("event"), b.get("text") or ""
+        if ev not in sp["events"]:
+            iss.add("data", path + ".event", ev, "Barks bind to events the renderer can place on a car.", "pipeline:consumer")
+            continue
+        fields = fields_of(ev)
+        check_when(iss, path + ".when", b.get("when") or {}, fields, sp, ev)
+        for ph in placeholders(text):
+            if ph not in fields:
+                iss.add("truth", path + ".text", "{" + ph + "}", f"'{ev}' does not log '{ph}'; barks state only logged facts.", "DESIGN#D9.3")
+        if b.get("style") not in sp["styles"]:
+            iss.add("data", path + ".style", b.get("style"), f"Bubble styles are {sp['styles']}.", "pipeline:consumer")
+        styles.add(b.get("style"))
+        if b.get("priority") not in sp["priorities"]:
+            iss.add("data", path + ".priority", b.get("priority"), "Priority is 1, 2 or 3.", "pipeline:consumer")
+        (wo_pri if ev == "writeoff" else other_pri).append(b.get("priority") or 0)
+        if len(text) > sp["max_chars"]:
+            iss.add("rule", path + ".text", text, f"Bubbles wrap at two lines: at most {sp['max_chars']} characters.", "DESIGN#D10.4", "fix")
+        short_sentences(iss, path + ".text", text)
+        if CJK_RE.search(text):
+            iss.add("lore", path + ".text", text, "Bark text is English in the slice; Chinese needs editorial review.", "DESIGN#D9.2")
+    if wo_pri and other_pri and min(wo_pri) <= max(other_pri):
+        iss.add("rule", "lines", f"write-off priority {min(wo_pri)} vs other {max(other_pri)}", "Write-off barks take priority over every other line.", "EDIT26#6.6")
+    for case in sp["required_cases"]:
+        n = sum(1 for b in lines if b.get("event") == case["event"] and when_matches(case["when"], b.get("when") or {}))
+        if n < case["min_lines"]:
+            iss.add("data", "lines", f"{case['event']} {json.dumps(case['when'])}: {n} line(s)",
+                    f"The bark key needs at least {case['min_lines']} line(s) for this case.", "EDIT26#6.6")
+    for st in sp["styles"]:
+        if st not in styles:
+            iss.add("data", "lines", st, f"Style '{st}' is unused; each case needs its own look.", "pipeline:spec gap", "fix")
+    if not any("seniority" in (b.get("when") or {}) for b in lines):
+        iss.add("data", "lines", "no seniority line", "The bark key includes seniority.", "EDIT26#6.6", "fix")
+    required_params(content, ctx, iss, sp["required_params"])
+    ts = resolve(ctx, content, "proto.barks.textSize")
+    tmin = ctx["registry"]["ui.typeTexture"]["value"]
+    if isinstance(ts, (int, float)) and ts < tmin:
+        iss.add("rule", "params", ts, f"Bubble text is at least ui.typeTexture ({tmin}).", "DESIGN#D10.4")
+
+
+# ---------------------------------------------------------------- hits (P2.1 juice)
+def hits(content, ctx, iss):
+    sp, fields_of = ctx["spec"]["allowed"], ctx["event_fields"]
+    if content.get("hitStop") != "feedback.hitStop":
+        iss.add("data", "hitStop", content.get("hitStop"), "Hit pause is the registry's feedback.hitStop.", "ENG#5.8")
+    for i, p in enumerate(content.get("params") or []):
+        if re.search(r"hit-?stop|freeze|pause", p.get("id", ""), re.I):
+            iss.add("rule", f"params[{i}].id", p.get("id"), "The hit-stop stays the simulation's feedback.hitStop; P2.1 juice is presentation only.", "pipeline:designer decision")
+    rm = content.get("reducedMotion")
+    check_value_slot(ctx, content, iss, "reducedMotion", rm, False)
+    rv = resolve(ctx, content, rm) if isinstance(rm, str) else None
+    if isinstance(rv, (int, float)) and rv > 0.25:
+        iss.add("rule", "reducedMotion", rv, "Reduced motion scales juice to 25%.", "LOG#P1.2/juice")
+    seen, accents = set(), 0
+    slots = {"shake": ("amp", "seconds"), "zoom": ("amount", "seconds"), "crumple": ("amount", "seconds"),
+             "stumble": ("amp", "seconds"), "ring": ("radius", "seconds", "width"), "rays": ("count", "length", "seconds"),
+             "popup": ("size", "rise", "seconds", "pop"), "streaks": ("count", "length", "seconds")}
+    for i, L in enumerate(content.get("layers") or []):
+        path, ev = f"layers[{i}]", L.get("event")
+        if ev not in sp["events"]:
+            iss.add("data", path + ".event", ev, "The renderer layers juice only on listed events.", "pipeline:consumer")
+            continue
+        fields, when = fields_of(ev), L.get("when") or {}
+        check_when(iss, path + ".when", when, fields, sp, ev)
+        if not when:
+            seen.add(ev)
+        elif ev == "impact":
+            accents += 1
+        sc = L.get("scale")
+        if sc:
+            if sc.get("by") not in fields or sc.get("by") not in sp["numeric_fields"]:
+                iss.add("truth", path + ".scale.by", sc.get("by"), f"Scale only by a numeric field '{ev}' carries: {[f for f in fields if f in sp['numeric_fields']]}.", "pipeline:sim events")
+            check_value_slot(ctx, content, iss, path + ".scale.full", sc.get("full"), False)
+        for blk, keys in slots.items():
+            if L.get(blk):
+                if blk in sp["only_on"] and ev not in sp["only_on"][blk]:
+                    iss.add("rule", f"{path}.{blk}", ev, f"'{blk}' belongs only to {sp['only_on'][blk]}.", "DESIGN#D10.3" if blk in ("rays", "popup") else "pipeline:consumer")
+                for k in keys:
+                    check_value_slot(ctx, content, iss, f"{path}.{blk}.{k}", L[blk].get(k))
+                if blk in ("ring", "streaks") and L[blk].get("role") not in sp["line_roles"]:
+                    iss.add("rule", f"{path}.{blk}.role", L[blk].get("role"), "Effect lines avoid reserved inks: red warns, primary and secondary are cue inks, aqua is frame-only, yellow is the dummy.", "EDIT26#4.2~2")
+        if L.get("flash") is not None:
+            check_value_slot(ctx, content, iss, path + ".flash", L["flash"])
+        if ev == "impact":   # run 20261015-084459: the critic caught rings and rays past the burst cap; now deterministic
+            cap = 2 * 2 * ctx["registry"]["body.radius"]["value"]
+            for blk, key in (("ring", "radius"), ("rays", "length")):
+                if L.get(blk):
+                    x = L[blk].get(key)
+                    for xi in (x if isinstance(x, list) else [x]):
+                        xv = resolve(ctx, content, xi) if isinstance(xi, str) else None
+                        if isinstance(xv, (int, float)) and xv > cap:
+                            iss.add("rule", f"{path}.{blk}.{key}", xv, f"The impact burst is at most 2 × body width ({cap:g} units).", "EDIT26#4.2~2")
+        if ev in sp["no_reward_events"]:
+            for blk in sp["reward_blocks"]:
+                if L.get(blk):
+                    iss.add("rule", f"{path}.{blk}", ev, f"'{ev}' is not a scored hit; it must not use hit reward feedback ({blk}).", "DESIGN#D4.5")
+            if any(p.get("type") == "spark" for p in L.get("particles") or []):
+                iss.add("rule", path + ".particles", "spark", f"Sparks read as a scored hit; '{ev}' is not one.", "DESIGN#D4.5")
+        for j, pt in enumerate(L.get("particles") or []):
+            pp = f"{path}.particles[{j}]"
+            if pt.get("type") not in sp["particle_types"]:
+                iss.add("data", pp + ".type", pt.get("type"), "Unsupported particle type.", "pipeline:consumer")
+            if pt.get("dir", "random") not in sp["particle_dirs"]:
+                iss.add("data", pp + ".dir", pt.get("dir"), "Unsupported particle direction.", "pipeline:consumer")
+            if pt.get("at", "dummy") not in sp["particle_at"]:
+                iss.add("data", pp + ".at", pt.get("at"), "Particles spawn at the dummy, the contact or the car.", "pipeline:consumer")
+            if pt.get("at") in ("car", "contact") or pt.get("dir") == "away":
+                if "car" not in fields:
+                    iss.add("truth", pp + ".at", pt.get("at") or pt.get("dir"), f"'{ev}' names no car; spawn at the dummy.", "pipeline:consumer")
+            if pt.get("role") not in sp["particle_roles"]:
+                iss.add("rule", pp + ".role", pt.get("role"), "Particles avoid reserved inks: red warns, primary and secondary are cue inks, aqua is frame-only.", "EDIT26#4.2~2")
+            for k in ("count", "speed", "life", "size"):
+                check_value_slot(ctx, content, iss, f"{pp}.{k}", pt.get(k))
+        snd = L.get("sound")
+        if snd:
+            if snd.get("type") not in sp["sound_types"]:
+                iss.add("data", path + ".sound.type", snd.get("type"), "Sound is a 'tone' or a 'noise' burst.", "pipeline:consumer")
+            if snd.get("type") == "tone" and snd.get("wave") not in sp["waves"]:
+                iss.add("data", path + ".sound.wave", snd.get("wave"), f"Waves are {sp['waves']}.", "pipeline:consumer")
+            for k in ("from", "to", "seconds", "gain"):
+                check_value_slot(ctx, content, iss, f"{path}.sound.{k}", snd.get(k))
+            g = snd.get("gain")
+            for x in (g if isinstance(g, list) else [g]):
+                gv = resolve(ctx, content, x) if isinstance(x, str) else None
+                if isinstance(gv, (int, float)) and gv > sp["max_gain"]:
+                    iss.add("data", f"{path}.sound.gain", gv, f"The renderer clamps gain to {sp['max_gain']}; a higher value is silently lost.", "pipeline:consumer", "fix")
+            for k in ("from", "to"):
+                v = snd.get(k)
+                for x in (v if isinstance(v, list) else [v]):
+                    hz = resolve(ctx, content, x) if isinstance(x, str) else None
+                    if isinstance(hz, (int, float)) and not 20 <= hz <= 12000:
+                        iss.add("data", f"{path}.sound.{k}", hz, "Frequencies are audible: 20 to 12000 Hz.", "pipeline:consumer")
+    for need in sp["required_events"]:
+        if need not in seen:
+            iss.add("data", "layers", need, f"The gap needs a base layer (when {{}}) for '{need}'.", "pipeline:spec gap")
+    if accents < sp["min_impact_accents"]:
+        iss.add("data", "layers", f"{accents} impact accent(s)", f"Every hit should differ: at least {sp['min_impact_accents']} impact accents.", "pipeline:spec gap")
+
+
+# ---------------------------------------------------------------- terminal (P2.1 interface skin)
+def terminal(content, ctx, iss):
+    sp, reg = ctx["spec"]["allowed"], ctx["registry"]
+    fx0, fy0, fx1, fy1 = sp["field_rect"]
+
+    def role(path, r, where):
+        if r is None:
+            return
+        if r in sp["forbidden_roles"]:
+            iss.add("rule", path, r, sp["forbidden_roles"][r], "DESIGN#D10.2")
+        elif r not in sp["frame_roles"]:
+            iss.add("rule", path, r, f"Frame colours are {sp['frame_roles']}.", "DESIGN#D10.2")
+        elif r == "dummy" and not any(where.startswith(w) for w in sp["dummy_role_only_in"]):
+            iss.add("rule", path, r, "Safety yellow marks the dummy and its body facts, not the brand.", "DESIGN#D10.1")
+
+    bd = content.get("backdrop") or {}
+    stops = bd.get("stops") or []
+    if not 2 <= len(stops) <= 4:
+        iss.add("data", "backdrop.stops", len(stops), "The backdrop gradient has 2 to 4 stops.", "pipeline:consumer")
+    last = -1
+    for i, s in enumerate(stops):
+        role(f"backdrop.stops[{i}].role", s.get("role"), "backdrop")
+        at, al = s.get("at"), s.get("alpha", 1)
+        if not isinstance(at, (int, float)) or not 0 <= at <= 1 or at < last:
+            iss.add("data", f"backdrop.stops[{i}].at", at, "Stops run from 0 to 1, top to bottom.", "pipeline:consumer")
+        else:
+            last = at
+        if not isinstance(al, (int, float)) or not 0 <= al <= 1:
+            iss.add("data", f"backdrop.stops[{i}].alpha", al, "Alpha is 0 to 1.", "pipeline:consumer")
+    for i, g in enumerate(bd.get("glows") or []):
+        role(f"backdrop.glows[{i}].role", g.get("role"), "backdrop")
+        x, y = g.get("x", 0), g.get("y", 0)
+        if fx0 < x < fx1 and fy0 < y < fy1:
+            iss.add("rule", f"backdrop.glows[{i}]", [x, y], "Bloom stays in the frame; a glow centred behind the play field is never seen.", "DESIGN#D10.1", "fix")
+    hd = content.get("header") or {}
+    if not hd.get("product") or len(hd.get("product", "")) > sp["product_max_chars"]:
+        iss.add("data", "header.product", hd.get("product"), f"Product name, 1 to {sp['product_max_chars']} characters.", "pipeline:consumer")
+    if not CJK_RE.search(hd.get("productZh") or ""):
+        iss.add("lore", "header.productZh", hd.get("productZh"), "The lockup is bilingual (district identifiers).", "DESIGN#D9.2")
+    if len(hd.get("tagline") or "") > sp["tagline_max_chars"]:
+        iss.add("rule", "header.tagline", hd.get("tagline"), f"Tagline fits the strip: {sp['tagline_max_chars']} characters.", "DESIGN#D10.2", "fix")
+    no_digits(iss, "header.tagline", hd.get("tagline"), "Brand copy states no figures; every statistic maps to a parameter.", "project rule: data alignment")
+    badges = hd.get("badges") or []
+    if len(badges) > sp["max_badges"]:
+        iss.add("data", "header.badges", len(badges), f"At most {sp['max_badges']} badges.", "pipeline:consumer", "fix")
+    for i, b in enumerate(badges):
+        if not isinstance(b, str) or len(b) > sp["badge_max_chars"]:
+            iss.add("rule", f"header.badges[{i}]", b, f"Badges are short static labels (≤{sp['badge_max_chars']}).", "DESIGN#D10.2", "fix")
+        no_digits(iss, f"header.badges[{i}]", b, "Static badges state no figures; an invented number is an undocumented statistic.", "project rule: data alignment")
+    pn = content.get("panels") or {}
+    for k in ("radius", "gloss", "borderAlpha", "shadow"):
+        check_value_slot(ctx, content, iss, f"panels.{k}", pn.get(k), False)
+    role("panels.border", pn.get("border"), "panels")
+    role("panels.bandRole", pn.get("bandRole"), "panels")
+    ic = content.get("icons") or {}
+    h = sp["icon_half_size"] + 0.5
+    for m in sp["icon_modules"]:
+        shapes = ic.get(m)
+        if not shapes:
+            iss.add("data", "icons", m, f"Icon for {m} is required.", "pipeline:spec gap")
+            continue
+        for j, s in enumerate(shapes):
+            path = f"icons.{m}[{j}]"
+            if s.get("shape") not in sp["shapes"]:
+                iss.add("data", path + ".shape", s.get("shape"), f"Icon shapes are {sp['shapes']}.", "pipeline:consumer")
+                continue
+            for key in ("fill", "stroke", "a", "b"):
+                role(f"{path}.{key}", s.get(key), f"icons.{m}")
+            x0, y0, x1, y1 = bbox(s)
+            if x0 < -h or y0 < -h or x1 > h or y1 > h:
+                iss.add("rule", path, [round(x0, 1), round(y0, 1), round(x1, 1), round(y1, 1)], "Icons fit their 16-unit box.", "pipeline:consumer", "fix")
+    tx = content.get("texture") or {}
+    ids = tx.get("diagnostics") or []
+    lo, hi = sp["diagnostic_ids"]
+    if not lo <= len(ids) <= hi:
+        iss.add("data", "texture.diagnostics", len(ids), f"{lo} to {hi} registry IDs.", "pipeline:consumer", "fix")
+    for i, pid in enumerate(ids):
+        if pid not in reg:
+            iss.add("data", f"texture.diagnostics[{i}]", pid, "Diagnostics print real registry IDs only.", "ENG#13.5")
+        elif re.match(r"proto\.(term|barks|hits|juice|ui)\.", pid):
+            iss.add("data", f"texture.diagnostics[{i}]", pid, "Diagnostics print simulation parameters, not presentation ones.", "ENG#13.5", "fix")
+    check_value_slot(ctx, content, iss, "texture.rangeMarks", tx.get("rangeMarks"), False)
+    sg = content.get("signage") or {}
+    sl = sg.get("lines") or []
+    lo, hi = sp["sign_lines"]
+    if not lo <= len(sl) <= hi:
+        iss.add("data", "signage.lines", len(sl), f"{lo} to {hi} notices.", "pipeline:consumer", "fix")
+    for i, ln in enumerate(sl):
+        t = ln.get("text") if isinstance(ln, dict) else ln
+        path = f"signage.lines[{i}].text"
+        if not isinstance(t, str) or not t:
+            iss.add("data", path, t, "Each notice has English text.", "pipeline:consumer")
+            continue
+        if len(t) > sp["sign_max_chars"]:
+            iss.add("rule", path, t, f"Notices fit the band: {sp['sign_max_chars']} characters.", "DESIGN#D10.2", "fix")
+        if placeholders(t):
+            iss.add("truth", path, t, "Signage is static texture; it cannot report the run.", "EDIT26#4.2~3")
+        no_digits(iss, path, t, "Signage states no figures; texture never changes with play and invents no statistics.", "EDIT26#4.2~3")
+        short_sentences(iss, path, t)
+    check_value_slot(ctx, content, iss, "signage.seconds", sg.get("seconds"), False)
+    ti = content.get("title") or {}
+    allow = sp["title_placeholders"]
+    tl = ti.get("lines") or []
+    if len(tl) != 2:
+        iss.add("data", "title.lines", len(tl), "Two title lines.", "pipeline:consumer")
+    items = [("eyebrow", ti.get("eyebrow"))] + [(f"lines[{i}]", s) for i, s in enumerate(tl)] + [("start", ti.get("start"))] + \
+        [(f"difficulty.{k}", (ti.get("difficulty") or {}).get(k)) for k in ("Fragile", "Standard", "Reinforced")]
+    for key, s in items:
+        path = "title." + key
+        if not isinstance(s, str) or not s:
+            iss.add("data", path, s, "Title copy slot is required.", "pipeline:consumer")
+            continue
+        slot = key.split("[")[0].split(".")[0]
+        for ph in placeholders(s):
+            if ph not in allow.get(slot, []):
+                iss.add("truth", path, "{" + ph + "}", f"Placeholder not available here (allowed: {allow.get(slot, [])}).", "pipeline:consumer")
+        no_digits(iss, path, s, "Figures come from placeholders bound to registry values, never typed.", "project rule: data alignment")
+        short_sentences(iss, path, s)
+    if isinstance(ti.get("start"), str) and not re.search(r"\bA\b|Space", ti["start"]):
+        iss.add("rule", "title.start", ti.get("start"), "The start prompt names the button (A or Space).", "EDIT26#4.2~4", "fix")
+    required_params(content, ctx, iss, sp["required_params"])
+
+
+VALIDATORS = {"juice": juice, "interface": interface, "graphics": graphics, "barks": barks, "hits": hits, "terminal": terminal}
 
 
 def validate(kind, content, ctx):
