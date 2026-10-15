@@ -1,5 +1,7 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
+> **Assignment #4 (Dynamic Content Pipeline)** lives in [`content/`](content/README.md). It generates juice, interface and graphics content from the GDD for the P1 prototype in [`prototypes/p1/`](prototypes/p1/README.md).
+
 **Capstone game:** DUMMIES, by Lawrence Lek.
 
 DUMMIES is a single-player, top-down 2D browser game for an exhibition. You are

@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The copy sounds like DUMMIES. It is dry and operational, with district signage, bilingual test identifiers and numbered zones, and it avoids cheer and generic sci-fi. One roof mark is drawn in the reserved cue colour, so it needs to change.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.van.roof[4].fill",
+      "found": "{\"shape\":\"rect\",\"x\":-33,\"y\":-8,\"w\":3,\"h\":16,\"fill\":\"primary\"}",
+      "canon": "DESIGN#D10.2",
+      "rule": "Primary cue colour is reserved for reflex information and outlines. A solid dark bar across the van's tail can read as a stop or brake cue, so decoration must use a non-cue role.",
+      "fix": "{\"shape\":\"rect\",\"x\":-33,\"y\":-8,\"w\":3,\"h\":16,\"fill\":\"secondary\"}"
+    }
+  ]
+}

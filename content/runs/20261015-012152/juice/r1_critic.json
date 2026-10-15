@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The copy sounds like DUMMIES: dry, instrument-like, and every value has a parameter ID. Cue priority, reserved red, matte marks and the spent-versus-scored distinction all hold. Two small data defects remain: the drone-dispatch event has no particles even though its own reference and the drop param describe dust, and the brake-mark speed gate uses a canvas unit for a simulation speed.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "data",
+      "severity": "fix",
+      "path": "events[13].particles",
+      "canon": "LOG#P1.2/honking-and-drones",
+      "rule": "The drone lifts the cone over `proto.droneLiftSeconds`, and the drop param says dust plays when a drone lifts. The event reference promises rotor-wash dust, so the empty particle list contradicts both.",
+      "found": "[]",
+      "fix": "[{\"type\":\"dust\",\"count\":\"proto.juice.drop.dustCount\",\"speed\":\"proto.juice.touchSpent.dustSpeed\",\"life\":\"proto.juice.lunge.dustLife\",\"size\":\"proto.juice.lunge.dustSize\",\"role\":\"structure\",\"dir\":\"random\"}]"
+    },
+    {
+      "id": "C2",
+      "kind": "data",
+      "severity": "fix",
+      "path": "params[proto.juice.brakeMarks.minSpeed].unit",
+      "canon": "DESIGN#D10.2",
+      "rule": "Render scaling must not change simulation units. Car speed is a simulation quantity in world units/s (DRIVER#DB1), not canvas units/s.",
+      "found": "canvas units/s",
+      "fix": "world units/s"
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 **Frozen at P1.9 · 15 October 2026 · Lawrence Lek**
 
+**P1.10 · Generated content.** Presentation only; `sim.js` unchanged. Juice, HUD, copy, barks and art come from `content/*.json`, written by the [content pipeline](../../content/README.md). Delete `content.js` and rebuild to get P1.9 back.
+
 A loose greybox prototype for one question: is baiting and lunging into cars fun? It covers dummy movement, two upgrade branches (Hips → Spine, Carry → Throw), three roads, Sedan and Van, and Highway Code drivers.
 
 ![L1: a car stops 4 m short of the dummy](docs/l1_close_stop.png)
@@ -28,7 +30,8 @@ Open `dummies_p1.html` in a browser. No install, no server.
 | `dummies_p1.html` | Playable build. Single file. |
 | `sim.js` | Deterministic 60 Hz simulation. No DOM. |
 | `game.js` | Renderer, input, UI, audio, tuning panel. |
-| `shell.html`, `build.py` | Page wrapper. `python3 build.py` bundles `sim.js` + `game.js` into the HTML. |
+| `shell.html`, `build.py` | Page wrapper. `python3 build.py` bundles `sim.js` + `content.js` + `game.js` into the HTML. |
+| `content/*.json`, `content.js` | Generated juice, interface and graphics content (P1.10). Regenerate with `python content/pipeline.py`. |
 | `test_sim.js` | Headless tests. `node test_sim.js` → 34/34. |
 | `policy_check.js` | Bot play styles: stand in lane, blind lunge, read and lunge. |
 | `car_metrics.js` | Car predictability: swerves per car, interrupts, yaw. |

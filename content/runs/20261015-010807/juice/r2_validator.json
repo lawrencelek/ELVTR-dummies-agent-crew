@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "truth",
+    "severity": "block",
+    "path": "events[1].scale.by",
+    "found": "impact",
+    "canon": "pipeline:sim events",
+    "rule": "Scale only by a field the 'impact' event carries."
+  }
+]

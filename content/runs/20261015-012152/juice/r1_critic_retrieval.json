@@ -1,0 +1,158 @@
+[
+  {
+    "query": "cues take priority over particles shake decorative information",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 11.012
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 7.451
+      }
+    ]
+  },
+  {
+    "query": "brake marks the car is slowing rear position visible state change",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 21.152
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 12.632
+      }
+    ]
+  },
+  {
+    "query": "presentation preserves tactical information hides readable mechanics",
+    "results": [
+      {
+        "id": "DESIGN#D2.4",
+        "score": 22.536
+      },
+      {
+        "id": "DESIGN#D9.2",
+        "score": 8.696
+      }
+    ]
+  },
+  {
+    "query": "reserved red warning cues dummy only saturated actor frame aqua separate role",
+    "results": [
+      {
+        "id": "DRIVER#DB5",
+        "score": 13.386
+      },
+      {
+        "id": "ENG#7.2",
+        "score": 9.15
+      }
+    ]
+  },
+  {
+    "query": "wreck debris animation visual only obstruction",
+    "results": [
+      {
+        "id": "ENG#8.5",
+        "score": 11.654
+      },
+      {
+        "id": "ENG#10.4~1",
+        "score": 7.268
+      }
+    ]
+  },
+  {
+    "query": "reduced motion 25%",
+    "results": [
+      {
+        "id": "LOG#P1.3/physics-basis",
+        "score": 4.366
+      },
+      {
+        "id": "LOG#P1.3/automated-evidence",
+        "score": 4.229
+      }
+    ]
+  },
+  {
+    "query": "Scale applied to shake, flinch and tremble under reduced-motion settings.",
+    "results": [
+      {
+        "id": "DRIVER#DB1",
+        "score": 6.84
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 5.931
+      }
+    ]
+  },
+  {
+    "query": "Flashing lights on the honking car; sound keeps a visual equivalent",
+    "results": [
+      {
+        "id": "LOG#P1.2/honking-and-drones",
+        "score": 15.882
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 14.04
+      }
+    ]
+  },
+  {
+    "query": "Time for a mark to fade, so old marks do not read as braking now.",
+    "results": [
+      {
+        "id": "LOG#P1.6",
+        "score": 10.293
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 9.014
+      }
+    ]
+  },
+  {
+    "query": "Hit pause, shake scaled by hit strength, sparks, contact flash",
+    "results": [
+      {
+        "id": "ENG#5.3~2",
+        "score": 10.576
+      },
+      {
+        "id": "LOG#P1.2-observations",
+        "score": 8.777
+      }
+    ]
+  },
+  {
+    "query": "White contact flash on a scored hit, just over the hit-stop.",
+    "results": [
+      {
+        "id": "ENG#5.3~2",
+        "score": 14.022
+      },
+      {
+        "id": "DESIGN#D4.4",
+        "score": 10.899
+      }
+    ]
+  },
+  {
+    "query": "Dull bump on a spent car, well below the scored-hit minimum.",
+    "results": [
+      {
+        "id": "ENG#6.2~2",
+        "score": 7.426
+      },
+      {
+        "id": "ENG#8.2~1",
+        "score": 7.055
+      }
+    ]
+  }
+]

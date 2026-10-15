@@ -1,0 +1,271 @@
+{
+  "type": "interface",
+  "title": "Interface: HUD modules, cue key, on-screen copy and vehicle barks",
+  "param_prefix": "proto.ui.",
+  "gap": [
+    "P1's HUD is a developer panel. It shows 'VIEW · Scanners in view cone', 'Drivers: Highway Code', 'Sensors: straight ahead'.",
+    "It does not use the six HUD modules the GDD names (D10.5: BODY, CHARGE, FLEET, CONTRACT, SHIFT, RECORD).",
+    "The cue grammar (state pip: chevron, closed ring, opening ring, red broken ring; caution triangle; spent slash) is explained nowhere in the game.",
+    "On-screen copy is placeholder English: 'Cars dodge you: get hit head-on for the big payoff.' It is not FARSIGHT's voice.",
+    "Vehicles never speak, although D9.3 says they speak as workers. There are no bilingual district identifiers (D9.2 anchor 2)."
+  ],
+  "deliverable": [
+    "HUD layout: the D10.5 modules split into a left and right column, each row bound to a sim fact the renderer can draw.",
+    "Module titles in English with a Chinese title marked for editorial review.",
+    "A cue key for the pause screen: one line per cue the field draws.",
+    "A copy deck: intro banner, denial lines, toasts, report, shop, endings, frame identifier.",
+    "A bark bank: short lines vehicles say, each bound to a logged sim event and only its fields."
+  ],
+  "queries": [
+    "HUD modules BODY CHARGE FLEET CONTRACT SHIFT RECORD screens report purchase ending",
+    "information taxonomy dynamic cue intent chevron closed commitment cue interrupted expiring spent mark",
+    "state pip chevron intention closed ring committed opening ring expiring red broken ring interrupted view cone visibility",
+    "voice and reports vehicles speak as workers deadlines rank fear of retraining barks",
+    "bilingual district test identifiers editorial review Chinese wording legibility",
+    "learned stop line FLEET shows stop distance toast names the change",
+    "type cap height model IDs readouts legibility contrast tier high-contrast",
+    "subject contract FARSIGHT promises release certification testing contract paid test",
+    "caution grey warning triangle roof cautious car horn honk flash lights",
+    "shop shows cost prerequisite owned credit balance shortfall postpones",
+    "endings Licensed Non-compliant Failed test refusal second confirmation",
+    "node effects Hips faster deliberate reorientation turn rate Spine steer lunge Carry place cone Throw",
+    "blind spots sensor shadows pillars barriers vans BLIND wedges hide from side sensors"
+  ],
+  "critic_queries": [
+    "barks never assert facts the simulation did not establish neutral fallback",
+    "defer explanatory copy naming counter until changed return",
+    "decorative diagnostic text never carries a decision",
+    "no automatic repair SERVICE meter",
+    "dry register corporate politeness barely contains personality",
+    "Chinese wording requires informed editorial review"
+  ],
+  "k": 3,
+  "max_chunks": 20,
+  "allowed": {
+    "modules": [
+      "BODY",
+      "CHARGE",
+      "FLEET",
+      "CONTRACT",
+      "SHIFT",
+      "RECORD",
+      "BUILD"
+    ],
+    "required_modules": [
+      "BODY",
+      "CHARGE",
+      "FLEET",
+      "CONTRACT",
+      "SHIFT",
+      "RECORD"
+    ],
+    "facts": {
+      "subject.chassis": {
+        "h": 24,
+        "shows": "chassis number of the current body"
+      },
+      "body.difficulty": {
+        "h": 22,
+        "shows": "difficulty setting name and body health"
+      },
+      "body.health": {
+        "h": 50,
+        "shows": "health bar with numbers; flashes red below 30%"
+      },
+      "body.reach": {
+        "h": 22,
+        "shows": "current wear-adjusted lunge reach"
+      },
+      "body.charge": {
+        "h": 44,
+        "shows": "charge segments"
+      },
+      "contract.writeOffs": {
+        "h": 70,
+        "shows": "write-off boxes for this road and the count"
+      },
+      "contract.road": {
+        "h": 22,
+        "shows": "road n of 3 and its name"
+      },
+      "build.nodes": {
+        "h": 128,
+        "shows": "Torso and Arms nodes, owned state"
+      },
+      "record.points": {
+        "h": 58,
+        "shows": "points"
+      },
+      "record.credits": {
+        "h": 52,
+        "shows": "spendable body credits"
+      },
+      "fleet.models": {
+        "h": 60,
+        "shows": "each model ID and its current stop distance in metres; red once learned"
+      },
+      "fleet.note": {
+        "h": 22,
+        "shows": "one-line note under the fleet list (label text only)"
+      },
+      "shift.admitted": {
+        "h": 26,
+        "shows": "cars admitted of scheduled"
+      },
+      "shift.onRoad": {
+        "h": 20,
+        "shows": "cars on the road now"
+      },
+      "shift.next": {
+        "h": 20,
+        "shows": "class and seconds until the next admission"
+      },
+      "clock.active": {
+        "h": 40,
+        "shows": "active simulation time"
+      }
+    },
+    "module_header_h": 24,
+    "module_gap_h": 14,
+    "column_budget_h": 580,
+    "label_max_chars": 22,
+    "cues": [
+      "intention",
+      "committed",
+      "expiring",
+      "interrupted",
+      "caution",
+      "braking",
+      "spent",
+      "honk",
+      "blind",
+      "view"
+    ],
+    "copy_placeholders": {
+      "intro": [
+        "road",
+        "roads",
+        "roadName",
+        "quota",
+        "difficulty",
+        "health"
+      ],
+      "denied": [],
+      "toast.touch-spent": [],
+      "toast.drone-dispatch": [],
+      "toast.purchase": [
+        "node"
+      ],
+      "toast.learn-standoff": [
+        "model",
+        "metres"
+      ],
+      "toast.refusal-locked": [],
+      "report.eyebrow": [],
+      "report.title": [
+        "chassis"
+      ],
+      "report.line": [
+        "n",
+        "quota",
+        "points"
+      ],
+      "report.cleared": [
+        "roadName",
+        "nextRoad",
+        "nextQuota",
+        "points"
+      ],
+      "report.credit": [
+        "credits"
+      ],
+      "report.continue": [],
+      "shop.eyebrow": [],
+      "shop.title": [],
+      "shop.deploy": [],
+      "shop.bank": [
+        "credits"
+      ],
+      "shop.nodes": [],
+      "endings": [],
+      "frame.district": [],
+      "frame.districtZh": []
+    },
+    "bark_events": [
+      "impact",
+      "touch-spent",
+      "honk",
+      "commit",
+      "interrupt",
+      "unstick",
+      "admit"
+    ],
+    "bark_derived_fields": [
+      "model",
+      "cls"
+    ],
+    "bark_max_chars": 64
+  },
+  "schema": [
+    "{",
+    "  \"params\": [ {\"id\": \"proto.ui.<name>\", \"value\": number, \"unit\": \"s|count|...\", \"purpose\": \"...\", \"sources\": [...]} ],",
+    "  \"hud\": {",
+    "    \"left\":  [ {\"module\": allowed.modules, \"title\": \"EN title\", \"zh\": \"Chinese title\", \"review\": \"pending\", \"rows\": [ {\"fact\": allowed.facts key, \"label\": \"short label\"} ], \"sources\": [...]} ],",
+    "    \"right\": [ same ]",
+    "  },",
+    "  \"cueKey\": [ {\"cue\": allowed.cues, \"label\": \"2-3 words\", \"meaning\": \"one short sentence\", \"sources\": [...]} ],",
+    "  \"copy\": {",
+    "    \"intro\": [\"line 1\", \"line 2\"],",
+    "    \"denied\": {\"lunge\": \"...\", \"pickup\": \"...\", \"drop\": \"...\", \"throw\": \"...\"},",
+    "    \"toast\": {\"touch-spent\": \"...\", \"drone-dispatch\": \"...\", \"purchase\": \"...{node}...\", \"learn-standoff\": \"...{model}...{metres}...\", \"refusal-locked\": \"...\"},",
+    "    \"report\": {\"eyebrow\": \"...\", \"title\": \"...{chassis}...\", \"line\": \"...\", \"cleared\": \"...\", \"credit\": \"...\", \"continue\": \"...\"},",
+    "    \"shop\": {\"eyebrow\": \"...\", \"title\": \"...\", \"deploy\": \"...\", \"bank\": \"...\", \"nodes\": {\"hips\": \"...\", \"spine\": \"...\", \"carry\": \"...\", \"throw\": \"...\"}},",
+    "    \"endings\": {\"Licensed\": \"...\", \"Failed test\": \"...\", \"Non-compliant\": \"...\"},",
+    "    \"frame\": {\"district\": \"EN district/test identifier line\", \"districtZh\": \"Chinese line\", \"review\": \"pending\"},",
+    "    \"sources\": [...]",
+    "  },",
+    "  \"barks\": [ {\"event\": allowed.bark_events, \"when\": {field: literal value} or {}, \"text\": \"line with {placeholders}\", \"sources\": [...]} ]",
+    "}",
+    "Placeholders in copy use only the names listed in allowed.copy_placeholders for that key. Bark placeholders and 'when' keys use only that event's fields plus model and cls."
+  ],
+  "consumer": [
+    "drawHUD() draws hud.left in the left column and hud.right in the right column, in order. Each module prints its title and Chinese title as an eyebrow, then its rows.",
+    "Each fact has a fixed widget and height (allowed.facts). A column must fit its budget: sum of rows + header and gap per module.",
+    "Labels print in 10-12 px type inside a 216-unit column. Keep them short.",
+    "cueKey prints on the pause screen beside the menu, each line next to the real glyph the field uses.",
+    "Copy strings replace the P1 literals with the same role. {placeholders} are filled by the renderer.",
+    "Barks show for proto.ui.barkSeconds as a tag beside the car named by the event. At most one bark per car, and none within proto.ui.barkCooldown of the last.",
+    "Sim event fields: impact {model, cls, zone, closing, angle, assessed, lost, carState, bait, lunging, stopped, learnedStandoff}; touch-spent {car}; honk {car, at: 'body' or a cone id}; commit {car, man: 'shift' or 'brake', cause}; interrupt {car, by}; unstick {car, how: 'reverse' or 'replan'}; admit {car, cls, model, lane}."
+  ],
+  "voices": {
+    "FARSIGHT (all UI copy: banner, denials, toasts, report, shop, endings, frame)": "The corporate terminal. Polite, procedural, optimistic on the surface; dry register (D9.2, D10.1). It states facts the run logged.",
+    "Vehicles (barks only)": "Workers: deadlines, rank, fear of retraining, resentment, pride. Corporate politeness barely contains personality (D9.3). A vehicle talks about its own job and the event just logged, never in FARSIGHT's slogans."
+  },
+  "slots": {
+    "intro[0]": "Banner line 1 over the field for 4 s at the start of each road: which road, and how many write-offs clear it.",
+    "intro[1]": "Banner line 2: difficulty and body health, plus the one thing to do. Not a strategy hint.",
+    "denied.lunge": "Toast when A is refused: no charge, or still recovering. Refusals cost nothing.",
+    "denied.pickup": "Toast when B is pressed with Carry owned but no cone within reach.",
+    "denied.drop": "Toast when a held cone cannot be placed: no legal room ahead.",
+    "denied.throw": "Toast when a held cone cannot be thrown: no legal room ahead.",
+    "toast.touch-spent": "Toast when the dummy touches a car whose allowance is already spent: solid, no damage, no points.",
+    "toast.drone-dispatch": "Toast when a FARSIGHT drone flies in to move a cone that has blocked a car for 5 s.",
+    "toast.purchase": "Toast after a node is bought in the shop.",
+    "toast.learn-standoff": "Toast when a hit on a stopped car makes that model stop further back from now on. P1.8 decided this toast names the change.",
+    "toast.refusal-locked": "Toast when the visitor chooses 'Refuse testing' in the pause menu before completing one body.",
+    "report.eyebrow": "Small caps label above the write-off report.",
+    "report.title": "Headline of the report for a non-final write-off.",
+    "report.line": "Summary line: write-off n of the road's quota, and points this body.",
+    "report.cleared": "Summary line instead, when this write-off clears the road and the next road follows.",
+    "report.credit": "Line confirming one body credit was granted, with the new balance.",
+    "report.continue": "Prompt to press A to go on to the shop.",
+    "shop.eyebrow": "Small caps label above the shop.",
+    "shop.title": "Shop headline: modifications install on the next chassis.",
+    "shop.deploy": "Button when no credits remain: leave the shop and deploy the next chassis.",
+    "shop.bank": "Button when credits remain unspent: keep them for later and deploy the next chassis.",
+    "shop.nodes.<node>": "The node's action description under its name: what the visitor can now do (D3.9). Max two short sentences.",
+    "endings.<kind>": "Subtitle under the ending title (LICENSED, FAILED TEST, NON-COMPLIANT).",
+    "frame.district": "Header strip beside the FARSIGHT logo, always visible: district and test identifier.",
+    "frame.districtZh": "The same identifier in Chinese, shown after it."
+  }
+}

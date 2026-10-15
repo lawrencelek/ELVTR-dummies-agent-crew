@@ -1,0 +1,56 @@
+{
+  "verdict": "revise",
+  "summary": "The copy and dressing sound like DUMMIES: dry, bilingual, operational, with no cheer or gloss. Three things need correcting: ring shapes on the cars and the dummy that look like gameplay cues, and straight-road edge lines that contradict the 56-unit lane width the corner level uses.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.sedan.roof[2]",
+      "found": "{\"shape\":\"ring\",\"x\":-19,\"y\":0,\"r\":5,\"lineWidth\":1,\"stroke\":\"secondary\"}",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "A closed ring on a car is the closed-commitment cue (DB5). Roof decoration must not look like a cue.",
+      "fix": "{\"shape\":\"rect\",\"x\":-24,\"y\":-5,\"w\":10,\"h\":10,\"stroke\":\"secondary\",\"lineWidth\":1}"
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.van.roof[10]",
+      "found": "{\"shape\":\"ring\",\"x\":22,\"y\":0,\"r\":5.5,\"lineWidth\":1,\"stroke\":\"secondary\"}",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "A closed ring on a car is the closed-commitment cue (DB5). Roof decoration must not look like a cue.",
+      "fix": "{\"shape\":\"rect\",\"x\":17,\"y\":-5.5,\"w\":11,\"h\":11,\"stroke\":\"secondary\",\"lineWidth\":1}"
+    },
+    {
+      "id": "C3",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "dummy.markings[1]",
+      "found": "{\"shape\":\"ring\",\"x\":-5,\"y\":0,\"r\":8.5,\"lineWidth\":1,\"stroke\":\"primary\"}",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "A ring around the dummy reads as the charge ring/segments cue. Body markings must not imitate a gameplay cue.",
+      "fix": "{\"shape\":\"rect\",\"x\":-10,\"y\":-8,\"w\":10,\"h\":16,\"stroke\":\"primary\",\"lineWidth\":1}"
+    },
+    {
+      "id": "C4",
+      "kind": "data",
+      "severity": "fix",
+      "path": "environment.straight[1].points and environment.straight[2].points",
+      "found": "[[0,246],[800,246]] and [[0,354],[800,354]]",
+      "canon": "DESIGN#D6.1",
+      "rule": "Tarmac half-width is world.laneWidth (56). The corner level uses 56, so the straight edges should sit at 300±56.",
+      "fix": "[[0,244],[800,244]] and [[0,356],[800,356]]"
+    },
+    {
+      "id": "C5",
+      "kind": "data",
+      "severity": "fix",
+      "path": "environment.barrier[1].points and environment.barrier[2].points",
+      "found": "[[0,246],[800,246]] and [[0,354],[800,354]]",
+      "canon": "DESIGN#D6.1",
+      "rule": "Tarmac half-width is world.laneWidth (56), so the barrier level's edge lines have the same 54-unit error.",
+      "fix": "[[0,244],[800,244]] and [[0,356],[800,356]]"
+    }
+  ]
+}

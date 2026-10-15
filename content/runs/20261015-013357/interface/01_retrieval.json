@@ -1,0 +1,223 @@
+[
+  {
+    "query": "HUD modules BODY CHARGE FLEET CONTRACT SHIFT RECORD screens report purchase ending",
+    "results": [
+      {
+        "id": "DESIGN#D10.5",
+        "score": 35.55
+      },
+      {
+        "id": "ENG#11.2",
+        "score": 15.117
+      },
+      {
+        "id": "ENG#10.1",
+        "score": 12.426
+      }
+    ]
+  },
+  {
+    "query": "information taxonomy dynamic cue intent chevron closed commitment cue interrupted expiring spent mark",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 44.855
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 24.47
+      },
+      {
+        "id": "BRIEF#P1.3",
+        "score": 21.043
+      }
+    ]
+  },
+  {
+    "query": "state pip chevron intention closed ring committed opening ring expiring red broken ring interrupted view cone visibility",
+    "results": [
+      {
+        "id": "BRIEF#P1.3",
+        "score": 76.334
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 63.391
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 33.895
+      }
+    ]
+  },
+  {
+    "query": "voice and reports vehicles speak as workers deadlines rank fear of retraining barks",
+    "results": [
+      {
+        "id": "DESIGN#D9.3",
+        "score": 42.542
+      },
+      {
+        "id": "DESIGN#D9.4",
+        "score": 10.099
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 9.313
+      }
+    ]
+  },
+  {
+    "query": "bilingual district test identifiers editorial review Chinese wording legibility",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 47.186
+      },
+      {
+        "id": "DESIGN#D10.4",
+        "score": 9.625
+      },
+      {
+        "id": "BRIEF#P1.2",
+        "score": 5.811
+      }
+    ]
+  },
+  {
+    "query": "learned stop line FLEET shows stop distance toast names the change",
+    "results": [
+      {
+        "id": "LOG#P1.8",
+        "score": 31.43
+      },
+      {
+        "id": "DRIVER#DB4a",
+        "score": 21.663
+      },
+      {
+        "id": "LOG#P1.7-observations",
+        "score": 14.222
+      }
+    ]
+  },
+  {
+    "query": "type cap height model IDs readouts legibility contrast tier high-contrast",
+    "results": [
+      {
+        "id": "DESIGN#D10.4",
+        "score": 41.442
+      },
+      {
+        "id": "DESIGN#D10.2",
+        "score": 14.171
+      },
+      {
+        "id": "DESIGN#D10.5",
+        "score": 14.079
+      }
+    ]
+  },
+  {
+    "query": "subject contract FARSIGHT promises release certification testing contract paid test",
+    "results": [
+      {
+        "id": "DESIGN#D9.1",
+        "score": 37.091
+      },
+      {
+        "id": "DESIGN#D1",
+        "score": 25.497
+      },
+      {
+        "id": "DESIGN#D8",
+        "score": 9.881
+      }
+    ]
+  },
+  {
+    "query": "caution grey warning triangle roof cautious car horn honk flash lights",
+    "results": [
+      {
+        "id": "DRIVER#DB5",
+        "score": 35.207
+      },
+      {
+        "id": "LOG#P1.7",
+        "score": 28.184
+      },
+      {
+        "id": "LOG#P1.2/honking-and-drones",
+        "score": 12.63
+      }
+    ]
+  },
+  {
+    "query": "shop shows cost prerequisite owned credit balance shortfall postpones",
+    "results": [
+      {
+        "id": "DESIGN#D3.9",
+        "score": 34.916
+      },
+      {
+        "id": "ENG#9.3",
+        "score": 29.123
+      },
+      {
+        "id": "DESIGN#D10.5",
+        "score": 12.457
+      }
+    ]
+  },
+  {
+    "query": "endings Licensed Non-compliant Failed test refusal second confirmation",
+    "results": [
+      {
+        "id": "DESIGN#D8",
+        "score": 30.544
+      },
+      {
+        "id": "ENG#10.2",
+        "score": 27.853
+      },
+      {
+        "id": "BRIEF#P1.2",
+        "score": 19.054
+      }
+    ]
+  },
+  {
+    "query": "node effects Hips faster deliberate reorientation turn rate Spine steer lunge Carry place cone Throw",
+    "results": [
+      {
+        "id": "DESIGN#D3.8",
+        "score": 36.849
+      },
+      {
+        "id": "BRIEF#P1.5",
+        "score": 28.998
+      },
+      {
+        "id": "DESIGN#D3.6",
+        "score": 28.646
+      }
+    ]
+  },
+  {
+    "query": "blind spots sensor shadows pillars barriers vans BLIND wedges hide from side sensors",
+    "results": [
+      {
+        "id": "LOG#P1.5/pillars-and-blind-spots",
+        "score": 46.825
+      },
+      {
+        "id": "LOG#P1.9",
+        "score": 20.691
+      },
+      {
+        "id": "LOG#P1.4-observations",
+        "score": 19.952
+      }
+    ]
+  }
+]

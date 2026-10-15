@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "It sounds like DUMMIES: dry, instrument-like, nothing cheerful, and every value has an ID with a canon source. One problem: the denied action reuses the body flinch, which makes a free refusal look like damage.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "events[5].flinch",
+      "found": "true",
+      "canon": "DESIGN#D4.5",
+      "rule": "A denied action is a short stutter that costs nothing and is distinct from a miss. Flinch is the 0.3 s body jitter used for absorbed impact, so it makes a denial look like a hit.",
+      "fix": "false"
+    }
+  ]
+}

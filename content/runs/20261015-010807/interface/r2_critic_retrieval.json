@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 20.67
+      },
+      {
+        "id": "DESIGN#D11.1",
+        "score": 7.526
+      }
+    ]
+  },
+  {
+    "query": "defer explanatory copy naming counter until changed return",
+    "results": [
+      {
+        "id": "DESIGN#D5.3",
+        "score": 11.313
+      },
+      {
+        "id": "ENG#6.4",
+        "score": 9.849
+      }
+    ]
+  },
+  {
+    "query": "decorative diagnostic text never carries a decision",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 21.691
+      },
+      {
+        "id": "DESIGN#D6.2",
+        "score": 6.476
+      }
+    ]
+  },
+  {
+    "query": "no automatic repair SERVICE meter",
+    "results": [
+      {
+        "id": "DESIGN#D3.1",
+        "score": 8.546
+      },
+      {
+        "id": "DESIGN#D2.3",
+        "score": 8.537
+      }
+    ]
+  },
+  {
+    "query": "dry register corporate politeness barely contains personality",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 11.697
+      },
+      {
+        "id": "DESIGN#D4.1",
+        "score": 4.61
+      }
+    ]
+  },
+  {
+    "query": "Chinese wording requires informed editorial review",
+    "results": [
+      {
+        "id": "ENG#7.4",
+        "score": 4.6
+      },
+      {
+        "id": "ENG#10.4~1",
+        "score": 2.604
+      }
+    ]
+  },
+  {
+    "query": "{roadName} test complete. Next: {nextRoad}, target {nextQuota}. Points: {points}.",
+    "results": [
+      {
+        "id": "DESIGN#D1.2",
+        "score": 10.622
+      },
+      {
+        "id": "ENG#11.4",
+        "score": 10.586
+      }
+    ]
+  },
+  {
+    "query": "How long a vehicle bark tag stays beside its car, readable at exhibition volume.",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 10.734
+      },
+      {
+        "id": "LOG#P1.6",
+        "score": 7.785
+      }
+    ]
+  },
+  {
+    "query": "Minimum gap after the last bark before another may show, so lines do not stack.",
+    "results": [
+      {
+        "id": "ENG#9.3",
+        "score": 7.436
+      },
+      {
+        "id": "ENG#6.2~2",
+        "score": 6.79
+      }
+    ]
+  },
+  {
+    "query": "Licensed. Contract complete. Certification does not imply permission to drive.",
+    "results": [
+      {
+        "id": "LOG#P1.3/automated-evidence",
+        "score": 10.295
+      },
+      {
+        "id": "ENG#10.2",
+        "score": 9.43
+      }
+    ]
+  },
+  {
+    "query": "The commitment is ending. Less than a full action window remains.",
+    "results": [
+      {
+        "id": "ENG#6.2~2",
+        "score": 16.053
+      },
+      {
+        "id": "ENG#6.3",
+        "score": 7.258
+      }
+    ]
+  },
+  {
+    "query": "The car has braked for safety. Its route is no longer reliable.",
+    "results": [
+      {
+        "id": "LOG#P1.1/car-rules",
+        "score": 10.226
+      },
+      {
+        "id": "LOG#P1.5/car-fixes-found-in-testing",
+        "score": 9.68
+      }
+    ]
+  }
+]

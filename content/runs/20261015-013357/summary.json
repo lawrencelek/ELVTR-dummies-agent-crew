@@ -1,0 +1,108 @@
+{
+  "run": "20261015-013357",
+  "results": [
+    {
+      "type": "juice",
+      "ok": true,
+      "rounds": 3
+    },
+    {
+      "type": "interface",
+      "ok": true,
+      "rounds": 2
+    }
+  ],
+  "calls": [
+    {
+      "label": "juice/02_generator",
+      "role": "Generator",
+      "seconds": 75.3,
+      "output_tokens": 13285,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r0_critic",
+      "role": "Critic",
+      "seconds": 34.3,
+      "output_tokens": 4572,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 38.5,
+      "output_tokens": 8954,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r1_critic",
+      "role": "Critic",
+      "seconds": 27.5,
+      "output_tokens": 3724,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 38.4,
+      "output_tokens": 8970,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r2_critic",
+      "role": "Critic",
+      "seconds": 19.3,
+      "output_tokens": 2612,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/02_generator",
+      "role": "Generator",
+      "seconds": 43.4,
+      "output_tokens": 6599,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r0_critic",
+      "role": "Critic",
+      "seconds": 35.0,
+      "output_tokens": 4785,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 15.4,
+      "output_tokens": 3260,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r1_critic",
+      "role": "Critic",
+      "seconds": 16.2,
+      "output_tokens": 2082,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

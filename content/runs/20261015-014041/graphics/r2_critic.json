@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The copy sounds like DUMMIES: dry, operational, bilingual, with no cheer or slang. Two service edge lines were not given the same fix as the SETTLED straight[4] line. They still sit too close to the edge strip and run the full length of the level like a dashed path.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.barrier[3]",
+      "found": "{\"shape\": \"line\", \"points\": [[0, 368], [800, 368]], \"dash\": [8, 6], \"stroke\": \"fleet\", \"lineWidth\": 1.5, \"alpha\": 0.7, \"surface\": \"shoulder\", \"hazard\": false, \"note\": \"Service edge line along the south pavement\"",
+      "canon": "DESIGN#D10.6",
+      "rule": "The same dashed service edge line was already moved to y 378 and shortened to 142 units on L1 (SETTLED). An 800-unit dashed line at y 368 sits in the edge strip and reads as a dashed path cue.",
+      "fix": "{\"shape\": \"line\", \"points\": [[120, 378], [262, 378]], \"dash\": [8, 6], \"stroke\": \"fleet\", \"lineWidth\": 1.5, \"alpha\": 0.7, \"surface\": \"shoulder\", \"hazard\": false, \"note\": \"Service edge line along the south pavement\", \"sources\": [\"DESIGN#D9.2\", \"DESIGN#D6.2\"]}"
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.corner[6]",
+      "found": "{\"shape\": \"line\", \"points\": [[0, 508], [450, 508]], \"dash\": [8, 6], \"stroke\": \"fleet\", \"lineWidth\": 1.5, \"alpha\": 0.7, \"surface\": \"shoulder\", \"hazard\": false, \"note\": \"Service edge line on the south pavement\"",
+      "canon": "DESIGN#D10.6",
+      "rule": "The same settled correction applies here. At y 508 the line is 6 units from the tarmac edge at about 502, inside the edge strip, and it runs 450 units as a dashed line.",
+      "fix": "{\"shape\": \"line\", \"points\": [[20, 524], [162, 524]], \"dash\": [8, 6], \"stroke\": \"fleet\", \"lineWidth\": 1.5, \"alpha\": 0.7, \"surface\": \"shoulder\", \"hazard\": false, \"note\": \"Service edge line on the south pavement\", \"sources\": [\"DESIGN#D9.2\", \"DESIGN#D6.2\"]}"
+    }
+  ]
+}

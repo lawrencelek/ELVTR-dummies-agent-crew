@@ -1,0 +1,35 @@
+[01:33:57] KB: 175 chunks from 6 docs; registry 154 IDs
+[01:33:57] == juice: Juice: feedback for every logged event
+[01:33:57] juice: retrieved 16 chunks for 10 queries: JUICE#J1, DESIGN#D4.5, LOG#P1.2/juice, JUICE#J3, LOG#P1.2/dummy-damage-states, DESIGN#D10.1, DESIGN#D9.4, LOG#P1.3/rules, JUICE#J2, JUICE#J4, DESIGN#D10.2, DESIGN#D10.5, LOG#P1.1-observations, DESIGN#D10.6, DESIGN#D9.1, ENG#11.2
+[01:33:57] Generator: calling (24,573 chars in)
+[01:35:14] Generator: done in 75.3 s (17,930 chars out)
+[01:35:14] Critic: calling (58,737 chars in)
+[01:35:50] Critic: done in 34.3 s (2,119 chars out)
+[01:35:50] juice: round 0: validator 0 issues (0 block); critic revise with 5 issues (1 block)
+[01:35:50] Generator (repair): calling (49,085 chars in)
+[01:36:29] Generator (repair): done in 38.5 s (17,977 chars out)
+[01:36:29] Critic: calling (59,350 chars in)
+[01:36:58] Critic: done in 27.5 s (1,337 chars out)
+[01:36:58] juice: round 1: validator 0 issues (0 block); critic revise with 2 issues (0 block)
+[01:36:58] Generator (repair): calling (48,606 chars in)
+[01:37:38] Generator (repair): done in 38.4 s (18,018 chars out)
+[01:37:38] Critic: calling (59,597 chars in)
+[01:37:59] Critic: done in 19.3 s (764 chars out)
+[01:37:59] juice: round 2: validator 0 issues (0 block); critic revise with 1 issues (0 block)
+[01:37:59] juice: ACCEPTED after 3 critic round(s)
+[01:37:59] juice: published to prototypes/p1/content/juice.json and content/out/
+[01:37:59] == interface: Interface: HUD modules, cue key, on-screen copy and vehicle barks
+[01:37:59] interface: retrieved 20 chunks for 13 queries: DESIGN#D10.5, DESIGN#D10.3~1, BRIEF#P1.3, DESIGN#D9.3, DESIGN#D9.2, LOG#P1.8, DESIGN#D10.4, DESIGN#D9.1, DRIVER#DB5, DESIGN#D3.9, DESIGN#D8, DESIGN#D3.8, LOG#P1.5/pillars-and-blind-spots, ENG#11.2, DESIGN#D9.4, DRIVER#DB4a, DESIGN#D10.2, DESIGN#D1, LOG#P1.7, ENG#9.3
+[01:37:59] Generator: calling (34,640 chars in)
+[01:38:44] Generator: done in 43.4 s (6,615 chars out)
+[01:38:44] Critic: calling (53,722 chars in)
+[01:39:20] Critic: done in 35.0 s (3,542 chars out)
+[01:39:20] interface: round 0: validator 0 issues (0 block); critic revise with 9 issues (4 block)
+[01:39:20] Generator (repair): calling (46,220 chars in)
+[01:39:37] Generator (repair): done in 15.4 s (6,660 chars out)
+[01:39:37] Critic: calling (54,271 chars in)
+[01:39:54] Critic: done in 16.2 s (331 chars out)
+[01:39:54] interface: round 1: validator 0 issues (0 block); critic pass with 0 issues (0 block)
+[01:39:54] interface: ACCEPTED after 2 critic round(s)
+[01:39:54] interface: published to prototypes/p1/content/interface.json and content/out/
+[01:39:54] bundled content.js and rebuilt dummies_p1.html: juice, interface, graphics

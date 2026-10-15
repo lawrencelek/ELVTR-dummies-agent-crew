@@ -1,0 +1,11 @@
+{
+  "note": "Knowledge base for the DUMMIES content pipeline. V29 Design is the source of record; the rest are GDD edits that extend it. Paths are relative to the repository root.",
+  "docs": [
+    {"id": "DESIGN", "path": "content/kb/DUMMIES_V29_Design.md", "title": "DUMMIES V29 Design (GDD)"},
+    {"id": "ENG", "path": "content/kb/DUMMIES_V29_Engineering_Spec.md", "title": "DUMMIES V29 Engineering Spec and parameter registry"},
+    {"id": "BRIEF", "path": "prototypes/p1/DUMMIES_P1_Prototype_Brief.md", "title": "GDD edit: P1 prototype brief"},
+    {"id": "LOG", "path": "prototypes/p1/DUMMIES_Prototype_Log.md", "title": "GDD edit: P1 observation log"},
+    {"id": "DRIVER", "path": "prototypes/p1/DUMMIES_Driver_Behaviour.md", "title": "GDD edit: driver behaviour"},
+    {"id": "JUICE", "path": "content/kb/DUMMIES_GDD_Edit30_Juice_References.md", "title": "GDD edit 30: juice references (top-down arcade driving)"}
+  ]
+}

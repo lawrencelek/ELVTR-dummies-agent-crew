@@ -1,0 +1,786 @@
+{
+  "params": [
+    {
+      "id": "proto.art.signSize",
+      "value": 14,
+      "unit": "world units",
+      "purpose": "Essential bilingual district signage text size on the road and verges",
+      "sources": [
+        "DESIGN#D9.2",
+        "DESIGN#D6.1"
+      ]
+    },
+    {
+      "id": "proto.art.markSize",
+      "value": 10,
+      "unit": "world units",
+      "purpose": "Secondary service-marking text size, above the ui.typeTexture floor",
+      "sources": [
+        "DESIGN#D9.2",
+        "DESIGN#D10.3~1"
+      ]
+    }
+  ],
+  "vehicles": {
+    "sedan": {
+      "job": "Depot parcel courier",
+      "jobZh": "仓区快递",
+      "review": "pending",
+      "roof": [
+        {
+          "shape": "rect",
+          "x": -26,
+          "y": -11,
+          "w": 5,
+          "h": 22,
+          "fill": "secondary",
+          "alpha": 0.6
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -18,
+              -10
+            ],
+            [
+              6,
+              -10
+            ]
+          ],
+          "stroke": "primary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -18,
+              10
+            ],
+            [
+              6,
+              10
+            ]
+          ],
+          "stroke": "primary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "circle",
+          "x": -14,
+          "y": 0,
+          "r": 3.5,
+          "fill": "primary"
+        },
+        {
+          "shape": "circle",
+          "x": -14,
+          "y": 0,
+          "r": 1.5,
+          "fill": "structure"
+        },
+        {
+          "shape": "circle",
+          "x": -8,
+          "y": 11,
+          "r": 2,
+          "fill": "secondary"
+        }
+      ],
+      "sources": [
+        "DESIGN#D9.2",
+        "DESIGN#D10.6",
+        "DESIGN#D5.1",
+        "LOG#P1.2/light-and-relief"
+      ]
+    },
+    "van": {
+      "job": "Maintenance supply run",
+      "jobZh": "维保物资配送",
+      "review": "pending",
+      "roof": [
+        {
+          "shape": "stripes",
+          "x": -30,
+          "y": -14,
+          "w": 40,
+          "h": 4,
+          "angle": 45,
+          "gap": 4,
+          "stroke": "primary"
+        },
+        {
+          "shape": "stripes",
+          "x": -30,
+          "y": 10,
+          "w": 40,
+          "h": 4,
+          "angle": 45,
+          "gap": 4,
+          "stroke": "primary"
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -31,
+              -13
+            ],
+            [
+              -31,
+              13
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -14,
+              -12
+            ],
+            [
+              -14,
+              12
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "circle",
+          "x": -23,
+          "y": 0,
+          "r": 4.5,
+          "fill": "secondary",
+          "stroke": "primary",
+          "lineWidth": 1
+        },
+        {
+          "shape": "circle",
+          "x": -23,
+          "y": 0,
+          "r": 1.8,
+          "fill": "structure"
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              10,
+              -12
+            ],
+            [
+              10,
+              12
+            ]
+          ],
+          "stroke": "primary",
+          "lineWidth": 2
+        }
+      ],
+      "sources": [
+        "DESIGN#D9.2",
+        "DESIGN#D10.6",
+        "DESIGN#D5.1",
+        "DESIGN#D6.2"
+      ]
+    }
+  },
+  "dummy": {
+    "markings": [
+      {
+        "shape": "rect",
+        "x": -12,
+        "y": -4.5,
+        "w": 11,
+        "h": 9,
+        "fill": "floor",
+        "stroke": "primary",
+        "lineWidth": 0.8
+      },
+      {
+        "shape": "text",
+        "x": -6.5,
+        "y": 0,
+        "text": "FS",
+        "size": 9,
+        "font": "mono",
+        "align": "center",
+        "fill": "primary"
+      },
+      {
+        "shape": "quadrant",
+        "x": -2,
+        "y": -8,
+        "r": 3.5,
+        "a": "primary",
+        "b": "floor"
+      },
+      {
+        "shape": "quadrant",
+        "x": -2,
+        "y": 8,
+        "r": 3.5,
+        "a": "primary",
+        "b": "floor"
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            4,
+            -11
+          ],
+          [
+            4,
+            -6.5
+          ]
+        ],
+        "stroke": "primary",
+        "lineWidth": 1
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            4,
+            6.5
+          ],
+          [
+            4,
+            11
+          ]
+        ],
+        "stroke": "primary",
+        "lineWidth": 1
+      }
+    ],
+    "sources": [
+      "DESIGN#D4.1",
+      "DESIGN#D10.1",
+      "DESIGN#D10.2",
+      "LOG#P1.2/dummy-damage-states"
+    ]
+  },
+  "environment": {
+    "straight": [
+      {
+        "shape": "text",
+        "x": 40,
+        "y": 268,
+        "text": "物流路 LOGISTICS RD",
+        "size": 14,
+        "font": "ui",
+        "align": "left",
+        "fill": "fleet",
+        "alpha": 0.55,
+        "review": "pending",
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Bilingual road name stencilled on the tarmac of the logistics road",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "circle",
+        "x": 200,
+        "y": 330,
+        "r": 6,
+        "fill": "shoulder",
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Utility access cover; no mechanics",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            170,
+            232
+          ],
+          [
+            410,
+            232
+          ]
+        ],
+        "dash": [
+          10,
+          6
+        ],
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Painted service kerb line on the north pavement",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            20,
+            368
+          ],
+          [
+            270,
+            368
+          ]
+        ],
+        "dash": [
+          10,
+          6
+        ],
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Painted service kerb line on the south pavement",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "stripes",
+        "x": 190,
+        "y": 182,
+        "w": 90,
+        "h": 24,
+        "angle": 45,
+        "gap": 6,
+        "stroke": "structure",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Hatched apron in front of the depot gate",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D10.1"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 190,
+        "y": 140,
+        "w": 90,
+        "h": 40,
+        "fill": "structure",
+        "stroke": "primary",
+        "lineWidth": 1.5,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Depot gate: the entrance that justifies the traffic",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 235,
+        "y": 160,
+        "text": "A1 仓区入口",
+        "size": 10,
+        "font": "ui",
+        "align": "center",
+        "fill": "primary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual depot entrance label",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 400,
+        "y": 436,
+        "text": "测试区01 TEST ZONE 01",
+        "size": 14,
+        "font": "ui",
+        "align": "center",
+        "fill": "secondary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual district/test identifier board",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D9.1"
+        ]
+      }
+    ],
+    "barrier": [
+      {
+        "shape": "text",
+        "x": 40,
+        "y": 268,
+        "text": "维保路 SERVICE RD",
+        "size": 14,
+        "font": "ui",
+        "align": "left",
+        "fill": "fleet",
+        "alpha": 0.55,
+        "review": "pending",
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Bilingual maintenance road name stencilled on the tarmac",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "circle",
+        "x": 600,
+        "y": 330,
+        "r": 6,
+        "fill": "shoulder",
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Utility access cover; no mechanics",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            0,
+            368
+          ],
+          [
+            800,
+            368
+          ]
+        ],
+        "dash": [
+          10,
+          6
+        ],
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Painted service kerb line on the south pavement, behind the barrier",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 300,
+        "y": 130,
+        "w": 100,
+        "h": 40,
+        "fill": "structure",
+        "stroke": "primary",
+        "lineWidth": 1.5,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Maintenance yard gate on the north side",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 350,
+        "y": 150,
+        "text": "B1 检修场",
+        "size": 10,
+        "font": "ui",
+        "align": "center",
+        "fill": "primary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual yard label",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 252,
+        "y": 410,
+        "w": 36,
+        "h": 14,
+        "fill": "structure",
+        "stroke": "primary",
+        "lineWidth": 1.5,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Service door beyond the west barrier gap; destination for the gap",
+        "sources": [
+          "DESIGN#D9.2",
+          "LOG#P1.5/pillars-and-blind-spots"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 512,
+        "y": 410,
+        "w": 36,
+        "h": 14,
+        "fill": "structure",
+        "stroke": "primary",
+        "lineWidth": 1.5,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Service door beyond the east barrier gap",
+        "sources": [
+          "DESIGN#D9.2",
+          "LOG#P1.5/pillars-and-blind-spots"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 270,
+        "y": 440,
+        "text": "检修口",
+        "size": 10,
+        "font": "ui",
+        "align": "center",
+        "fill": "secondary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual service-door label (west)",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 530,
+        "y": 440,
+        "text": "检修口",
+        "size": 10,
+        "font": "ui",
+        "align": "center",
+        "fill": "secondary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual service-door label (east)",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      }
+    ],
+    "corner": [
+      {
+        "shape": "text",
+        "x": 40,
+        "y": 462,
+        "text": "物流路 LOGISTICS RD",
+        "size": 14,
+        "font": "ui",
+        "align": "left",
+        "fill": "fleet",
+        "alpha": 0.55,
+        "review": "pending",
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Bilingual road name on the approach leg",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "circle",
+        "x": 120,
+        "y": 415,
+        "r": 6,
+        "fill": "shoulder",
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Utility access cover; no mechanics",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            0,
+            508
+          ],
+          [
+            440,
+            508
+          ]
+        ],
+        "dash": [
+          10,
+          6
+        ],
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Painted service kerb line on the south pavement",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            618,
+            0
+          ],
+          [
+            618,
+            330
+          ]
+        ],
+        "dash": [
+          10,
+          6
+        ],
+        "stroke": "secondary",
+        "lineWidth": 1.5,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Painted service kerb line on the east pavement of the vertical leg",
+        "sources": [
+          "DESIGN#D9.2",
+          "ENG#7.2"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 300,
+        "y": 260,
+        "w": 80,
+        "h": 36,
+        "fill": "structure",
+        "stroke": "primary",
+        "lineWidth": 1.5,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Yard gate inside the bend",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 340,
+        "y": 278,
+        "text": "C1 站场",
+        "size": 10,
+        "font": "ui",
+        "align": "center",
+        "fill": "primary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual yard gate label",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "stripes",
+        "x": 300,
+        "y": 298,
+        "w": 80,
+        "h": 8,
+        "angle": 45,
+        "gap": 5,
+        "stroke": "structure",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Hatched apron in front of the yard gate",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D10.1"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 80,
+        "y": 535,
+        "w": 120,
+        "h": 40,
+        "fill": "structure",
+        "stroke": "primary",
+        "lineWidth": 1.5,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Charging bay serving the fleet",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 140,
+        "y": 555,
+        "text": "充电位 CHARGE",
+        "size": 10,
+        "font": "ui",
+        "align": "center",
+        "fill": "primary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual charging bay label",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 640,
+        "y": 300,
+        "text": "测试区03 TEST ZONE 03",
+        "size": 14,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Bilingual district/test identifier board beside the vertical leg",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D9.1"
+        ]
+      }
+    ]
+  }
+}

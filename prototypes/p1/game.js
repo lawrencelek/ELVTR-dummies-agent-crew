@@ -31,10 +31,32 @@
   const previews = LEVEL_LIST.map((id) => new Sim(id, { 'run.appearances.road': 0 }));
   const TAU = Math.PI * 2;
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+  // ---------- generated content (content/pipeline.py -> content.js). Missing parts fall back to the P1.9 literals.
+  const CT = window.DUMMIES_CONTENT || {};
+  const CJ = CT.juice || null, CI = CT.interface || null, CG = CT.graphics || null;
+  const CPARAM = {};
+  for (const part of [CJ, CI, CG]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
+  function pv(id) {
+    if (id == null) return null;
+    if (app.tune[id] != null) return app.tune[id];
+    if (CPARAM[id] != null) return CPARAM[id];
+    if (app.sim && app.sim.P[id] != null) return app.sim.P[id];
+    return REG[id] != null ? REG[id] : PROTO[id] != null ? PROTO[id] : null;
+  }
+  function jv(v, k) { // a parameter ID, or [minId, maxId] interpolated by k
+    if (Array.isArray(v)) { const a = pv(v[0]), b = pv(v[1]); return a == null || b == null ? 0 : a + (b - a) * (k || 0); }
+    const x = pv(v); return x == null ? 0 : x;
+  }
+  function fillIn(str, vars) { return String(str).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m)); }
+  function copy(path, fallback, vars) {
+    const v = path.split('.').reduce((o, k) => (o && o[k] != null ? o[k] : null), CI && CI.copy);
+    return fillIn(typeof v === 'string' ? v : fallback, vars);
+  }
   const RM = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const MOTION = RM ? 0.25 : 1;
+  const MOTION = RM ? (CJ && CJ.reducedMotion ? jv(CJ.reducedMotion) : 0.25) : 1;
   // Juice: camera shake, body flinch, field flash, write-off stamp, particles, car hit pulse, horn timers.
-  const fx = { shake: { amp: 0, t0: -9, dur: 0.3 }, flinchT0: -9, flash: { t0: -9, dur: 0.18 }, stampT0: -9, parts: [], carPulse: new Map(), horn: new Map(), smokeT: 0 };
+  const fx = { shake: { amp: 0, t0: -9, dur: 0.3 }, flinchT0: -9, flash: { t0: -9, dur: 0.18 }, stampT0: -9, parts: [], carPulse: new Map(), horn: new Map(), smokeT: 0,
+    marks: [], dropT0: -9, barks: new Map(), barkT: -9, barked: new Set() };
   function kick(amp, dur) { const cur = fx.shake.amp * Math.max(0, 1 - (app.realT - fx.shake.t0) / fx.shake.dur); if (amp >= cur) fx.shake = { amp, t0: app.realT, dur }; }
   function shakeOffset() {
     const a = app.realT - fx.shake.t0;
@@ -45,7 +67,7 @@
   function puff(x, y, n, opt) {
     for (let i = 0; i < n; i++) {
       const a = (opt.dir != null ? opt.dir + (Math.random() - 0.5) * (opt.spread || 1.2) : Math.random() * TAU), sp = (opt.speed || 40) * (0.5 + Math.random());
-      fx.parts.push({ type: opt.type, x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t0: app.realT, life: (opt.life || 0.5) * (0.7 + Math.random() * 0.6), size: opt.size || 3 });
+      fx.parts.push({ type: opt.type, x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t0: app.realT, life: (opt.life || 0.5) * (0.7 + Math.random() * 0.6), size: opt.size || 3, role: opt.role, spin: Math.random() * TAU });
     }
   }
   function mix(c1, c2, k) {
@@ -62,6 +84,7 @@
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
+    fx.marks = []; fx.barks.clear(); fx.barked.clear();
   }
 
   // ---------- input
@@ -141,41 +164,82 @@
     },
   };
   const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone' };
+  // Generated juice (content/juice.json): one entry per sim event, every value a parameter ID. Returns false if absent.
+  function juice(e, s) {
+    const spec = CJ && CJ.events ? CJ.events.find((x) => x.event === e.type) : null;
+    if (!spec) return false;
+    let k = 1;
+    if (spec.scale && spec.scale.by) k = clamp((+e[spec.scale.by] || 0) / (pv(spec.scale.full) || 1), 0, 1);
+    if (spec.shake) kick(jv(spec.shake.amp, k), Math.max(0.02, jv(spec.shake.seconds, k)));
+    if (spec.flash) fx.flash = { t0: app.realT, dur: jv(spec.flash, k) };
+    if (spec.flinch) fx.flinchT0 = app.realT;
+    if (spec.carPulse && e.car) fx.carPulse.set(e.car, app.realT);
+    if (spec.stamp) fx.stampT0 = app.realT;
+    const b = s.body;
+    for (const pt of spec.particles || []) {
+      const n = Math.round(jv(pt.count, k));
+      if (n <= 0) continue;
+      const dir = pt.dir === 'backward' ? b.facing + Math.PI : pt.dir === 'facing' ? b.facing : null;
+      puff(e.x != null && e.type === 'chassis' ? e.x : b.x, e.y != null && e.type === 'chassis' ? e.y : b.y, n,
+        { type: pt.type, dir, spread: 1.4, speed: jv(pt.speed, k), life: jv(pt.life, k), size: jv(pt.size, k), role: pt.role });
+    }
+    return true;
+  }
+  // Generated barks (content/interface.json): a worker line beside the car that a logged event names.
+  function bark(e, s) {
+    if (!CI || !CI.barks || !e.car || fx.barked.has(e.car)) return;
+    if (app.realT - fx.barkT < (pv('proto.ui.barkCooldown') || 2.5)) return;
+    const car = s.cars.find((c) => c.id === e.car);
+    if (!car) return;
+    const vars = Object.assign({ model: car.model, cls: car.cls === 'van' ? 'Van' : 'Sedan' }, e);
+    const pool = CI.barks.filter((bk) => bk.event === e.type && Object.entries(bk.when || {}).every(([key, val]) => vars[key] === val));
+    if (!pool.length) return;
+    const pick = pool[(s.events.length + car.slot) % pool.length];
+    const text = fillIn(pick.text, Object.fromEntries(Object.entries(vars).map(([k2, v]) => [k2, typeof v === 'number' ? Math.round(v) : v])));
+    fx.barks.set(e.car, { text, t0: app.realT }); fx.barked.add(e.car); fx.barkT = app.realT;
+  }
   function processEvents() {
     const s = app.sim;
     if (!s) return;
     const ev = s.events;
     for (let i = app.lastEv; i < ev.length; i++) {
       const e = ev[i];
+      const juiced = juice(e, s);
+      bark(e, s);
       switch (e.type) {
         case 'lunge': {
-          Snd.tone(220, 90, 0.12, 'triangle', 0.12); kick(1.5, 0.1);
-          const b = s.body; puff(b.x, b.y, 7, { type: 'dust', dir: b.facing + Math.PI, spread: 1.4, speed: 60, life: 0.45, size: 4 });
+          Snd.tone(220, 90, 0.12, 'triangle', 0.12);
+          if (!juiced) { kick(1.5, 0.1); const b = s.body; puff(b.x, b.y, 7, { type: 'dust', dir: b.facing + Math.PI, spread: 1.4, speed: 60, life: 0.45, size: 4 }); }
           break;
         }
         case 'impact': {
           const k = Math.min(1, e.assessed / 500);
           Snd.tone(160, 40, 0.28 + 0.2 * k, 'sawtooth', 0.08 + 0.12 * k); Snd.tone(900, 240, 0.07, 'square', 0.05);
-          kick(3 + 9 * k, 0.25 + 0.2 * k); fx.flinchT0 = app.realT; fx.carPulse.set(e.car, app.realT);
-          const b = s.body; puff(b.x, b.y, 8 + Math.round(10 * k), { type: 'spark', speed: 160, life: 0.35, size: 2 });
+          if (!juiced) {
+            kick(3 + 9 * k, 0.25 + 0.2 * k); fx.flinchT0 = app.realT; fx.carPulse.set(e.car, app.realT);
+            const b = s.body; puff(b.x, b.y, 8 + Math.round(10 * k), { type: 'spark', speed: 160, life: 0.35, size: 2 });
+          }
           break;
         }
-        case 'knock': { const b = s.body; puff(b.x, b.y, 5, { type: 'dust', speed: 50, life: 0.4, size: 3 }); break; }
-        case 'touch-spent': Snd.tone(260, 240, 0.06, 'sine', 0.06); kick(1, 0.1); toast('Spent car — no reward'); break;
+        case 'knock': { if (!juiced) { const b = s.body; puff(b.x, b.y, 5, { type: 'dust', speed: 50, life: 0.4, size: 3 }); } break; }
+        case 'touch-spent': Snd.tone(260, 240, 0.06, 'sine', 0.06); if (!juiced) kick(1, 0.1); toast(copy('toast.touch-spent', 'Spent car — no reward')); break;
         case 'honk': if (e.at === 'body') horn(); else Snd.tone(880, 880, 0.05, 'sine', 0.03); fx.horn.set(e.car, app.realT); break;
-        case 'learn-standoff': Snd.tone(330, 260, 0.12, 'triangle', 0.05); toast(e.model + ' now stops ' + (e.to / s.P['proto.scale.unitsPerMetre']).toFixed(1) + ' m back'); break;
+        case 'learn-standoff': Snd.tone(330, 260, 0.12, 'triangle', 0.05); toast(copy('toast.learn-standoff', '{model} now stops {metres} m back', { model: e.model, metres: (e.to / s.P['proto.scale.unitsPerMetre']).toFixed(1) })); break;
         case 'unstick': if (e.how === 'reverse') { Snd.tone(1000, 1000, 0.06, 'square', 0.03); Snd.tone(1000, 1000, 0.06, 'square', 0.03, 0.25); } break;
-        case 'drone-dispatch': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); toast('FARSIGHT drone dispatched to clear a cone'); break;
+        case 'drone-dispatch': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); toast(copy('toast.drone-dispatch', 'FARSIGHT drone dispatched to clear a cone')); break;
         case 'drone-pickup': Snd.tone(320, 200, 0.08, 'square', 0.05); break;
         case 'drone-drop': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
+        case 'chassis': fx.dropT0 = app.realT; break;
         case 'writeoff': {
           [392, 311, 233, 155].forEach((f, j) => Snd.tone(f, f * 0.98, 0.16, 'square', 0.07, j * 0.11));
-          kick(14, 0.6); fx.flash.t0 = app.realT; fx.stampT0 = app.realT;
-          const b = s.body; puff(b.x, b.y, 24, { type: 'spark', speed: 220, life: 0.5, size: 2.5 }); puff(b.x, b.y, 10, { type: 'smoke', speed: 30, life: 1.2, size: 8 });
+          if (!juiced) {
+            kick(14, 0.6); fx.flash.t0 = app.realT; fx.flash.dur = 0.18; fx.stampT0 = app.realT;
+            const b = s.body; puff(b.x, b.y, 24, { type: 'spark', speed: 220, life: 0.5, size: 2.5 }); puff(b.x, b.y, 10, { type: 'smoke', speed: 30, life: 1.2, size: 8 });
+          }
           break;
         }
-        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); toast(DENY_TEXT[e.action] || 'Denied'); break;
-        case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(NODES[e.node].name + ' installed'); break;
+        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); toast(copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
+        case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODES[e.node].name })); break;
         case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
         case 'throw': Snd.tone(620, 180, 0.16, 'triangle', 0.07); break;
@@ -220,7 +284,7 @@
           if (item === 'Resume') app.paused = false;
           else if (item === 'Restart level') { startLevel(app.level); return; }
           else if (item === 'Refuse testing') {
-            if (s.run.writeOffs < 1) toast('Refusal opens after one completed body');
+            if (s.run.writeOffs < 1) toast(copy('toast.refusal-locked', 'Refusal opens after one completed body'));
             else if (!app.confirmRefuse) app.confirmRefuse = true;
             else { s.withdraw(); app.paused = false; }
           } else if (item === 'Show trace') showTrace();
@@ -303,8 +367,9 @@
     ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
     txt('FARSIGHT', 24, 40, '900 26px ' + F_BRAND, C.aquaDeep);
     ctx.font = '900 26px ' + F_BRAND; const bw = ctx.measureText('FARSIGHT').width;
-    txt('CRASH LAB  ·  SHENZHEN SMART CITY  ·  NEW ECONOMIC ZONE  ·  深圳智慧城市测试区', 24 + bw + 16, 38, '700 11px ' + F_UI, C.ink2);
-    txt('P1.9 · FINDING THE FUN', VW - 24, 38, '700 11px ' + F_UI, C.ink2, 'right');
+    const fr = CI && CI.copy && CI.copy.frame;
+    txt(fr ? fr.district + (fr.districtZh ? '  ·  ' + fr.districtZh : '') : 'CRASH LAB  ·  SHENZHEN SMART CITY  ·  NEW ECONOMIC ZONE  ·  深圳智慧城市测试区', 24 + bw + 16, 38, '700 11px ' + F_UI, C.ink2);
+    txt((CT.juice || CT.interface || CT.graphics ? 'P1.10 · GENERATED CONTENT' : 'P1.9 · FINDING THE FUN'), VW - 24, 38, '700 11px ' + F_UI, C.ink2, 'right');
     // field bezel
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.25)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 12); ctx.fillStyle = '#F7FBFD'; ctx.fill(); ctx.restore();
@@ -314,7 +379,97 @@
     txt(prompt, VW / 2, VH - 18, '700 11px ' + F_UI, C.ink2, 'center');
   }
 
+  // Generated HUD (content/interface.json hud): D10.5 modules in two columns; each row is a fact with a fixed widget.
+  function factWidget(f, label, x, y, w, s) {
+    const b = s.body, P = s.P, r = s.run, R = x + w;
+    switch (f) {
+      case 'subject.chassis': txt(label, x, y + 14, '700 11px ' + F_UI, C.secondary); txt(String(b.chassis).padStart(2, '0'), R, y + 14, '700 12px ' + F_MONO, C.primary, 'right'); return 24;
+      case 'body.difficulty': txt(label, x, y + 13, '700 11px ' + F_UI, C.secondary); txt(s.difficulty + ' · ' + num(P['damage.bodyHealth']), R, y + 13, '700 11px ' + F_MONO, C.ink2, 'right'); return 22;
+      case 'body.health': {
+        const hp = b.alive ? b.health : 0, frac = hp / P['damage.bodyHealth'];
+        rr(x, y + 2, w, 12, 6); ctx.fillStyle = '#E2EAEE'; ctx.fill();
+        if (frac > 0) {
+          const low = frac < 0.3 && Math.floor(app.realT * 4) % 2 === 0;
+          rr(x, y + 2, Math.max(12, w * frac), 12, 6); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1; ctx.stroke();
+        }
+        txt(num(hp) + ' / ' + num(P['damage.bodyHealth']), x, y + 34, '700 13px ' + F_MONO, C.primary);
+        txt(label, R, y + 34, '400 11px ' + F_UI, C.secondary, 'right'); return 50;
+      }
+      case 'body.reach': txt(label, x, y + 13, '700 11px ' + F_UI, C.secondary); txt(String(Math.round(s.reach())), R, y + 13, '700 12px ' + F_MONO, C.primary, 'right'); return 22;
+      case 'body.charge': {
+        const cap = P['battery.capacity'];
+        for (let i = 0; i < cap; i++) {
+          const cw = (w - (cap - 1) * 6) / cap, xx = x + i * (cw + 6), fr = Math.max(0, Math.min(1, b.charge - i));
+          rr(xx, y + 2, cw, 16, 4); ctx.fillStyle = '#E2EAEE'; ctx.fill();
+          if (fr > 0) { rr(xx, y + 2, cw * fr, 16, 4); ctx.fillStyle = fr >= 1 ? C.primary : C.secondary; ctx.fill(); }
+        }
+        txt(label, x, y + 34, '400 11px ' + F_UI, C.secondary); return 44;
+      }
+      case 'contract.writeOffs': {
+        for (let i = 0; i < s.quota; i++) {
+          const xx = x + i * 38; rr(xx, y + 2, 32, 32, 6);
+          ctx.fillStyle = i < r.writeOffs ? C.dummy : '#E2EAEE'; ctx.fill(); ctx.strokeStyle = i < r.writeOffs ? C.joints : '#C9D5DB'; ctx.lineWidth = 1; ctx.stroke();
+          if (i < r.writeOffs) { ctx.strokeStyle = C.joints; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(xx + 8, y + 26); ctx.lineTo(xx + 24, y + 10); ctx.stroke(); }
+        }
+        txt(label + ' ' + r.writeOffs + ' / ' + s.quota, x, y + 54, '700 12px ' + F_UI, C.primary);
+        txt('Σ ' + s.totalWriteOffs(), R, y + 54, '700 12px ' + F_MONO, C.secondary, 'right'); return 70;
+      }
+      case 'contract.road': txt(label, x, y + 13, '700 11px ' + F_UI, C.secondary); txt((s.roadIndex + 1) + ' / ' + LEVEL_LIST.length + ' · ' + LEVELS[s.levelId].name, R, y + 13, '700 11px ' + F_MONO, C.primary, 'right'); return 22;
+      case 'build.nodes': {
+        txt(label, x, y + 8, '700 10px ' + F_UI, C.secondary);
+        [['Torso', 'hips', 'spine'], ['Arms', 'carry', 'throw']].forEach((cl, ci) => {
+          const yy = y + 12 + ci * 58;
+          txt(cl[0].toUpperCase(), x, yy + 10, '700 10px ' + F_UI, C.secondary);
+          [cl[1], cl[2]].forEach((n, k) => {
+            const xx = x + k * 100, own = s.has(n);
+            rr(xx, yy + 16, 84, 28, 8); ctx.fillStyle = own ? C.aqua : 'rgba(255,255,255,0.7)'; ctx.fill();
+            ctx.strokeStyle = own ? C.aquaDeep : '#C9D5DB'; ctx.lineWidth = 1.2; ctx.stroke();
+            txt(NODES[n].name, xx + 42, yy + 34, '700 12px ' + F_UI, own ? '#06202B' : C.secondary, 'center');
+            if (k === 0) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xx + 86, yy + 30); ctx.lineTo(xx + 98, yy + 30); ctx.stroke(); }
+          });
+        });
+        return 128;
+      }
+      case 'record.points': txt(num(r.points), x, y + 30, '700 28px ' + F_MONO, C.primary); txt(label, x, y + 48, '400 11px ' + F_UI, C.secondary); return 58;
+      case 'record.credits':
+        rr(x, y + 2, 82, 40, 10); ctx.fillStyle = r.credits ? C.dummy : '#E2EAEE'; ctx.fill();
+        txt(String(r.credits), x + 41, y + 30, '700 22px ' + F_MONO, C.primary, 'center');
+        txt(label, x + 94, y + 27, '400 11px ' + F_UI, C.secondary); return 52;
+      case 'fleet.models':
+        txt(label, R, y + 11, '400 11px ' + F_UI, C.secondary, 'right');
+        ['sedan', 'van'].forEach((k, i) => {
+          const m = s.models[k], yy = y + 30 + i * 22, so = s.modelStandoff(m), wary = so > P['proto.standoffDistance'] + 1e-6;
+          txt(m.id, x, yy, '700 12px ' + F_MONO, C.primary);
+          txt((so / P['proto.scale.unitsPerMetre']).toFixed(1) + ' m', R, yy, '700 12px ' + F_MONO, wary ? C.warning : C.ink2, 'right');
+        });
+        return 60;
+      case 'fleet.note': txt(label, x, y + 13, '400 11px ' + F_UI, C.secondary); return 22;
+      case 'shift.admitted': txt(r.admitted + ' / ' + s.schedule.length, x, y + 18, '700 16px ' + F_MONO, C.primary); txt(label, x + 82, y + 18, '400 11px ' + F_UI, C.secondary); return 26;
+      case 'shift.onRoad': txt(s.cars.length + ' ' + label, x, y + 14, '400 12px ' + F_UI, C.ink2); return 20;
+      case 'shift.next': {
+        const t = s.slot < s.schedule.length ? label + ' ' + (s.schedule[s.slot].cls === 'van' ? 'Van' : 'Sedan') + ' · ' + Math.max(0, s.nextAt - s.t).toFixed(1) + ' s' : '—';
+        txt(t, x, y + 14, '400 12px ' + F_UI, C.ink2); return 20;
+      }
+      case 'clock.active': txt(fmtT(s.tOffset + s.t), x, y + 26, '700 22px ' + F_MONO, C.primary); txt(label, x + 76, y + 26, '400 11px ' + F_UI, C.secondary); return 40;
+      default: return 0;
+    }
+  }
+  function drawHUDContent(s) {
+    for (const [side, X] of [['left', 12], ['right', VW - 228]]) {
+      panel(X, FY, 216, FH);
+      let y = FY + 14;
+      for (const m of CI.hud[side] || []) {
+        label(String(m.title || m.module).toUpperCase(), X + 14, y + 12);
+        if (m.zh) txt(m.zh, X + 202, y + 12, '700 10px ' + F_UI, C.secondary, 'right');
+        y += 24;
+        for (const row of m.rows || []) y += factWidget(row.fact, row.label || '', X + 14, y, 188, s);
+        y += 14;
+      }
+    }
+    if (app.tuned) { rr(26, FY + FH - 40, 188, 24, 6); ctx.fillStyle = 'rgba(228,68,46,0.12)'; ctx.fill(); txt('TUNED RUN · UNRANKED', 120, FY + FH - 24, '700 10px ' + F_UI, C.warning, 'center'); }
+  }
   function drawHUD(s) {
+    if (CI && CI.hud) { drawHUDContent(s); return; }
     const b = s.body, P = s.P, r = s.run;
     // left column
     panel(12, FY, 216, FH);
@@ -418,6 +573,7 @@
     road(2 * lw + 2 * sh + 2, C.grid); road(2 * lw + 2 * sh - 2, C.shoulder);
     road(2 * lw + 3, C.structure); road(2 * lw - 1, C.road);
     road(2, 'rgba(74,90,102,0.55)', [16, 14]);
+    if (CG && CG.environment) drawShapes(CG.environment[s.levelId || L.id]);
     drawShadows(s);
     // statics, lit from the top right
     for (const st of L.statics) {
@@ -459,7 +615,8 @@
       const o = off(P['vehicles.' + c.cls + '.height']);
       ctx.save(); ctx.translate(c.x + o.x, c.y + o.y); ctx.rotate(c.h); rr(-c.L / 2, -c.W / 2, c.L, c.W, 7); ctx.fill(); ctx.restore();
     }
-    if (b.alive) { const o = off(P['proto.art.dummyHeight'] + (b.mode === 'lunge' ? 8 : 0)); ctx.beginPath(); ctx.arc(b.x + o.x, b.y + o.y, 13, 0, TAU); ctx.fill(); }
+    const dk = dropK(), dh = dk && CJ ? jv(CJ.states.replacementDrop.height) * dk : 0;
+    if (b.alive) { const o = off(P['proto.art.dummyHeight'] + (b.mode === 'lunge' ? 8 : 0) + dh); ctx.beginPath(); ctx.arc(b.x + o.x, b.y + o.y, 13, 0, TAU); ctx.fill(); }
     ctx.fillStyle = 'rgba(16,40,56,0.12)';
     for (const d of s.drones) {
       const o = off(P['proto.art.droneHeight'] * d.alt);
@@ -593,6 +750,7 @@
   function drawCar(s, c) {
     const braking = (c.man && c.man.type === 'brake') || c.state === 'interrupted' || (c._pv != null && c.v < c._pv - 0.4);
     c._pv = c.v;
+    markCar(c, braking);
     const pulse = app.realT - (fx.carPulse.get(c.id) != null ? fx.carPulse.get(c.id) : -9);
     // roof highlight from the top-right sun, expressed in car-local axes
     const lx = Math.cos(-c.h) * 1 - Math.sin(-c.h) * -1, ly = Math.sin(-c.h) * 1 + Math.cos(-c.h) * -1;
@@ -607,6 +765,7 @@
       const lg = ctx.createLinearGradient(lx * 16, ly * 16, -lx * 16, -ly * 16);
       lg.addColorStop(0, 'rgba(255,255,255,0.34)'); lg.addColorStop(0.55, 'rgba(255,255,255,0)'); lg.addColorStop(1, 'rgba(16,20,23,0.14)');
       rr(-c.L / 2 + 2, -c.W / 2 + 2, c.L - 4, c.W - 4, 6); ctx.fillStyle = lg; ctx.fill();
+      if (CG && CG.vehicles && CG.vehicles[c.cls]) drawShapes(CG.vehicles[c.cls].roof, 1, c.h);
       if (pulse < 0.12) { rr(-c.L / 2, -c.W / 2, c.L, c.W, 7); ctx.fillStyle = 'rgba(255,255,255,' + (0.7 * (1 - pulse / 0.12)) + ')'; ctx.fill(); }
       ctx.fillStyle = '#56636C'; rr(c.L / 2 - 18, -c.W / 2 + 4, 9, c.W - 8, 3); ctx.fill(); // windscreen
       if (c.cls === 'van') { ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 1; ctx.strokeRect(-c.L / 2 + 6, -c.W / 2 + 5, c.L - 30, c.W - 10); }
@@ -699,6 +858,12 @@
       if (e.short) { ctx.beginPath(); ctx.arc(e.x, e.y, 3, 0, Math.PI * 2); ctx.stroke(); }
     }
     ctx.save(); ctx.translate(b.x, b.y);
+    const dk = dropK();
+    if (dk) { // replacement chassis lowered on a cable, then set down (presentation only)
+      const h = jv(CJ.states.replacementDrop.height) * dk;
+      ctx.strokeStyle = 'rgba(16,20,23,' + (0.5 * dk) + ')'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(0, -h * 0.5); ctx.lineTo(0, -b.y - 30); ctx.stroke();
+      ctx.translate(0, -h * 0.5); ctx.scale(1 + h / 160, 1 + h / 160);
+    }
     // charge ring (screen-aligned)
     const cap = P['battery.capacity'], seg = (Math.PI * 2) / cap, gap = 0.28;
     for (let i = 0; i < cap; i++) {
@@ -734,6 +899,7 @@
     ctx.save(); shape(); ctx.clip();
     const lg = ctx.createLinearGradient(9, -9, -9, 9); lg.addColorStop(0, 'rgba(255,255,255,0.35)'); lg.addColorStop(1, 'rgba(16,20,23,0.12)');
     ctx.fillStyle = lg; ctx.fillRect(-14, -14, 28, 28);
+    if (CG && CG.dummy) drawShapes(CG.dummy.markings, 1 - wear * 0.6);
     for (let i = 0; i < Math.floor(wear * 5); i++) { const a = (b.chassis * 2.1 + i * 1.9) % TAU; ctx.fillStyle = 'rgba(26,29,31,0.3)'; ctx.beginPath(); ctx.arc(Math.cos(a) * 8, Math.sin(a) * 8, 2.5 + (i % 2), 0, TAU); ctx.fill(); }
     ctx.restore();
     shape(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.4; ctx.stroke();
@@ -783,25 +949,114 @@
       }
     }
   }
+  function rgba(hex, a) { const h = (i) => parseInt(hex.slice(i, i + 2), 16); return 'rgba(' + h(1) + ',' + h(3) + ',' + h(5) + ',' + Math.max(0, a) + ')'; }
+  function lowHealth(key, fallback) { const st = CJ && CJ.states && CJ.states.lowHealth; return st && st[key] ? jv(st[key]) : fallback; }
   function drawParts(s) {
     const b = s.body, P = s.P, now = app.realT;
     if (b.alive && s.phase === 'play') {
       const wear = 1 - b.health / P['damage.bodyHealth'];
-      if (wear > 0.45 && now - fx.smokeT > 0.32 - wear * 0.15) { fx.smokeT = now; puff(b.x, b.y, 1, { type: 'smoke', dir: -2.36, spread: 0.6, speed: 18, life: 1.1, size: 4 + 4 * wear }); }
-      if (wear > 0.7 && Math.random() < 0.05) puff(b.x, b.y, 3, { type: 'spark', speed: 110, life: 0.25, size: 1.6 });
+      if (wear > lowHealth('smokeFrom', 0.45) && now - fx.smokeT > 0.32 - wear * 0.15) { fx.smokeT = now; puff(b.x, b.y, 1, { type: 'smoke', dir: -2.36, spread: 0.6, speed: 18, life: 1.1, size: 4 + 4 * wear }); }
+      if (wear > lowHealth('sparkFrom', 0.7) && Math.random() < 0.05) puff(b.x, b.y, 3, { type: 'spark', speed: 110, life: 0.25, size: 1.6 });
     }
     const dt = Math.min(0.05, now - (fx.lastPartT || now)); fx.lastPartT = now;
     fx.parts = fx.parts.filter((p) => now - p.t0 < p.life);
     for (const p of fx.parts) {
-      const a = (now - p.t0) / p.life;
+      const a = (now - p.t0) / p.life, col = p.role && C[p.role];
       p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 0.93; p.vy *= 0.93;
-      if (p.type === 'dust') { ctx.fillStyle = 'rgba(122,138,150,' + (0.35 * (1 - a)) + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1 + a * 1.5), 0, TAU); ctx.fill(); }
-      else if (p.type === 'smoke') { ctx.fillStyle = 'rgba(70,78,84,' + (0.28 * (1 - a)) + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1 + a * 2), 0, TAU); ctx.fill(); }
-      else { ctx.strokeStyle = a < 0.5 ? 'rgba(255,240,180,' + (1 - a) + ')' : 'rgba(245,197,66,' + (1 - a) + ')'; ctx.lineWidth = p.size; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); ctx.stroke(); }
+      if (p.type === 'dust') { ctx.fillStyle = col ? rgba(col, 0.35 * (1 - a)) : 'rgba(122,138,150,' + (0.35 * (1 - a)) + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1 + a * 1.5), 0, TAU); ctx.fill(); }
+      else if (p.type === 'smoke') { ctx.fillStyle = col ? rgba(col, 0.28 * (1 - a)) : 'rgba(70,78,84,' + (0.28 * (1 - a)) + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1 + a * 2), 0, TAU); ctx.fill(); }
+      else if (p.type === 'debris') {
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.spin + a * 9); ctx.fillStyle = rgba(col || C.dummy, 1 - a);
+        ctx.fillRect(-p.size, -p.size * 0.6, p.size * 2, p.size * 1.2); ctx.restore();
+      } else if (p.type === 'ring') { ctx.strokeStyle = rgba(col || C.secondary, 0.7 * (1 - a)); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(p.x - p.vx * (now - p.t0), p.y - p.vy * (now - p.t0), p.size * (1 + a * 2), 0, TAU); ctx.stroke(); }
+      else { ctx.strokeStyle = col ? rgba(col, 1 - a) : a < 0.5 ? 'rgba(255,240,180,' + (1 - a) + ')' : 'rgba(245,197,66,' + (1 - a) + ')'; ctx.lineWidth = p.size; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); ctx.stroke(); }
+    }
+  }
+  // Generated tyre marks (content/juice.json states.brakeMarks): matte, persistent, under every cue.
+  function markCar(c, braking) {
+    const bm = CJ && CJ.states && CJ.states.brakeMarks;
+    if (!bm) return;
+    const ca = Math.cos(c.h), sa = Math.sin(c.h), wheels = [-1, 1].map((sd) => {
+      const u = -c.L / 2 + 6, v = sd * (c.W / 2 - 4); return [c.x + u * ca - v * sa, c.y + u * sa + v * ca];
+    });
+    if (braking && c.v > jv(bm.minSpeed) && c._mk && Math.hypot(wheels[0][0] - c._mk[0][0], wheels[0][1] - c._mk[0][1]) > 1.5) {
+      for (let i = 0; i < 2; i++) fx.marks.push({ a: c._mk[i], b: wheels[i], t: app.realT });
+      const mx = Math.max(2, Math.round(jv(bm.max)));
+      if (fx.marks.length > mx) fx.marks.splice(0, fx.marks.length - mx);
+    }
+    c._mk = wheels;
+  }
+  function drawMarks() {
+    const bm = CJ && CJ.states && CJ.states.brakeMarks;
+    if (!bm || !fx.marks.length) return;
+    const fade = jv(bm.fadeSeconds) || 1, al = jv(bm.alpha), col = C[bm.role] || C.primary;
+    ctx.lineWidth = jv(bm.width) || 2; ctx.lineCap = 'round';
+    fx.marks = fx.marks.filter((m) => app.realT - m.t < fade);
+    for (const m of fx.marks) { ctx.strokeStyle = rgba(col, al * (1 - (app.realT - m.t) / fade)); ctx.beginPath(); ctx.moveTo(m.a[0], m.a[1]); ctx.lineTo(m.b[0], m.b[1]); ctx.stroke(); }
+    ctx.lineCap = 'butt';
+  }
+  function dropK() { // replacement-chassis drop: 1 at delivery start, 0 on the floor
+    const rd = CJ && CJ.states && CJ.states.replacementDrop;
+    if (!rd) return 0;
+    const dur = jv(rd.seconds) || 0.5, age = app.realT - fx.dropT0;
+    return age >= 0 && age < dur ? 1 - age / dur : 0;
+  }
+  function drawBarks(s) {
+    if (!fx.barks.size) return;
+    const dur = pv('proto.ui.barkSeconds') || 1.8;
+    for (const [id, bk] of fx.barks) {
+      const c = s.cars.find((x) => x.id === id), age = app.realT - bk.t0;
+      if (!c || age > dur) { fx.barks.delete(id); continue; }
+      ctx.globalAlpha = Math.min(1, 4 * (dur - age), 6 * age);
+      ctx.font = '700 10px ' + F_MONO; const w = ctx.measureText(bk.text).width + 14;
+      const x = clamp(c.x - w / 2, 4, FW - w - 4), y = clamp(c.y + Math.max(c.L, c.W) / 2 + 10, 8, FH - 22);
+      rr(x, y, w, 17, 5); ctx.fillStyle = 'rgba(255,255,255,0.94)'; ctx.fill(); ctx.strokeStyle = C.secondary; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(clamp(c.x, x + 8, x + w - 8) - 4, y); ctx.lineTo(clamp(c.x, x + 8, x + w - 8), y - 5); ctx.lineTo(clamp(c.x, x + 8, x + w - 8) + 4, y); ctx.fillStyle = 'rgba(255,255,255,0.94)'; ctx.fill();
+      txt(bk.text, x + 7, y + 12, '700 10px ' + F_MONO, C.primary);
+      ctx.globalAlpha = 1;
+    }
+  }
+  // Generated vector art (content/graphics.json): palette roles only, in the caller's local units.
+  const FONT = { mono: F_MONO, ui: F_UI, brand: F_BRAND };
+  function drawShapes(list, alpha, heading) { // heading: keep text upright on rotated cars
+    if (!list) return;
+    for (const sh of list) {
+      ctx.save(); ctx.globalAlpha = (sh.alpha != null ? sh.alpha : 1) * (alpha != null ? alpha : 1);
+      const fill = sh.fill && C[sh.fill], stroke = sh.stroke && C[sh.stroke], lw = sh.lineWidth || 1;
+      const x = sh.x || 0, y = sh.y || 0;
+      if (sh.shape === 'rect' || sh.shape === 'stripes') {
+        ctx.translate(x + sh.w / 2, y + sh.h / 2); if (sh.rotate) ctx.rotate(sh.rotate * DEG);
+        if (sh.shape === 'rect') {
+          if (fill) { ctx.fillStyle = fill; ctx.fillRect(-sh.w / 2, -sh.h / 2, sh.w, sh.h); }
+          if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.strokeRect(-sh.w / 2, -sh.h / 2, sh.w, sh.h); }
+        } else {
+          ctx.beginPath(); ctx.rect(-sh.w / 2, -sh.h / 2, sh.w, sh.h); ctx.clip();
+          if (fill) { ctx.fillStyle = fill; ctx.fillRect(-sh.w / 2, -sh.h / 2, sh.w, sh.h); }
+          ctx.rotate((sh.angle != null ? sh.angle : 45) * DEG); ctx.strokeStyle = stroke || C.primary; ctx.lineWidth = lw;
+          const R = Math.hypot(sh.w, sh.h), g = Math.max(2, sh.gap || 6);
+          ctx.beginPath(); for (let d = -R; d <= R; d += g) { ctx.moveTo(d, -R); ctx.lineTo(d, R); } ctx.stroke();
+        }
+      } else if (sh.shape === 'circle' || sh.shape === 'ring') {
+        ctx.beginPath(); ctx.arc(x, y, sh.r, 0, TAU);
+        if (fill && sh.shape === 'circle') { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke || sh.shape === 'ring') { ctx.strokeStyle = stroke || C.primary; ctx.lineWidth = lw; ctx.stroke(); }
+      } else if (sh.shape === 'quadrant') {
+        for (let q = 0; q < 4; q++) { ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, sh.r, q * Math.PI / 2, (q + 1) * Math.PI / 2); ctx.closePath(); ctx.fillStyle = C[q % 2 ? sh.b : sh.a] || (q % 2 ? C.dummy : C.joints); ctx.fill(); }
+        ctx.beginPath(); ctx.arc(x, y, sh.r, 0, TAU); ctx.strokeStyle = stroke || C.joints; ctx.lineWidth = lw * 0.8; ctx.stroke();
+      } else if (sh.shape === 'line' && sh.points && sh.points.length > 1) {
+        ctx.beginPath(); sh.points.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+        ctx.setLineDash(sh.dash || []); ctx.strokeStyle = stroke || C.primary; ctx.lineWidth = lw; ctx.stroke(); ctx.setLineDash([]);
+      } else if (sh.shape === 'text' && sh.text) {
+        ctx.translate(x, y); if (sh.rotate) ctx.rotate(sh.rotate * DEG);
+        if (heading != null && Math.cos(heading + (sh.rotate || 0) * DEG) < -0.05) { ctx.rotate(Math.PI); ctx.translate(0, -(sh.size || 10) * 0.7); }
+        txt(sh.text, 0, 0, '700 ' + (sh.size || 10) + 'px ' + (FONT[sh.font] || F_UI), fill || C.secondary, sh.align || 'left');
+      }
+      ctx.restore();
     }
   }
   function drawLive(s) {
     const P = s.P, b = s.body;
+    drawMarks();
     // prediction zones and paths: inside the view cone unless toggled
     ctx.save();
     if (!P['proto.zonesEverywhere'] && b.alive) { wedge(b, P); ctx.clip(); }
@@ -821,14 +1076,15 @@
     drawEffects(s);
     drawParts(s);
     for (const d of s.drones) drawDrone(s, d);
+    drawBarks(s);
     // write-off flash and stamp
     const fa = app.realT - fx.flash.t0;
     if (fa < fx.flash.dur) { ctx.fillStyle = 'rgba(255,255,255,' + (0.55 * (1 - fa / fx.flash.dur) * (RM ? 0.4 : 1)) + ')'; ctx.fillRect(-24, -24, FW + 48, FH + 48); }
-    const sa = app.realT - fx.stampT0;
-    if (sa < 1.3) {
+    const sa = app.realT - fx.stampT0, stampDur = (CJ && CJ.writeOff ? jv(CJ.writeOff) : 1.1) + 0.2;
+    if (sa < stampDur) {
       const wr = s.effects.find((e) => e.type === 'wreck'), x = wr ? clamp(wr.x, 150, FW - 150) : FW / 2, y = wr ? clamp(wr.y, 80, FH - 80) : FH / 2;
       const k = sa < 0.15 ? 1.6 - 0.6 * (sa / 0.15) : 1;
-      ctx.save(); ctx.translate(x, y - 46); ctx.rotate(-0.12); ctx.scale(k, k); ctx.globalAlpha = Math.min(1, (1.3 - sa) * 3);
+      ctx.save(); ctx.translate(x, y - 46); ctx.rotate(-0.12); ctx.scale(k, k); ctx.globalAlpha = Math.min(1, (stampDur - sa) * 3);
       rr(-108, -22, 216, 44, 6); ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fill(); ctx.strokeStyle = C.warning; ctx.lineWidth = 3; ctx.stroke();
       txt('WRITTEN OFF', 0, 9, '900 26px ' + F_BRAND, C.warning, 'center');
       ctx.restore(); ctx.globalAlpha = 1;
@@ -836,8 +1092,9 @@
     // low health: pulsing warning vignette
     if (b.alive) {
       const wear = 1 - b.health / P['damage.bodyHealth'];
-      if (wear > 0.7) {
-        const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - 0.7) / 0.3;
+      const vf = lowHealth('vignetteFrom', 0.7);
+      if (wear > vf) {
+        const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf);
         const vg = ctx.createRadialGradient(FW / 2, FH / 2, FH * 0.35, FW / 2, FH / 2, FW * 0.62);
         vg.addColorStop(0, 'rgba(228,68,46,0)'); vg.addColorStop(1, 'rgba(228,68,46,' + (0.08 + 0.16 * pulse) + ')');
         ctx.fillStyle = vg; ctx.fillRect(-24, -24, FW + 48, FH + 48);
@@ -847,8 +1104,10 @@
       const a = Math.min(1, (4 - s.t) / 0.6);
       ctx.globalAlpha = a; rr(FW / 2 - 230, 18, 460, 46, 10); ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill();
       ctx.strokeStyle = C.aqua; ctx.lineWidth = 1.5; ctx.stroke();
-      txt('ROAD ' + (s.roadIndex + 1) + ' OF ' + LEVEL_LIST.length + ' · ' + LEVELS[s.levelId].name + ' · ' + s.quota + ' write-off' + (s.quota === 1 ? '' : 's') + ' to clear', FW / 2, 38, '700 13px ' + F_UI, C.primary, 'center');
-      txt(s.difficulty + ' · ' + P['damage.bodyHealth'] + ' health. Cars dodge you: get hit head-on for the big payoff.', FW / 2, 55, '400 12px ' + F_UI, C.ink2, 'center');
+      const iv = { road: s.roadIndex + 1, roads: LEVEL_LIST.length, roadName: LEVELS[s.levelId].name, quota: s.quota, difficulty: s.difficulty, health: P['damage.bodyHealth'] };
+      const intro = CI && CI.copy && CI.copy.intro;
+      txt(intro ? fillIn(intro[0], iv) : 'ROAD ' + (s.roadIndex + 1) + ' OF ' + LEVEL_LIST.length + ' · ' + LEVELS[s.levelId].name + ' · ' + s.quota + ' write-off' + (s.quota === 1 ? '' : 's') + ' to clear', FW / 2, 38, '700 13px ' + F_UI, C.primary, 'center');
+      txt(intro && intro[1] ? fillIn(intro[1], iv) : s.difficulty + ' · ' + P['damage.bodyHealth'] + ' health. Cars dodge you: get hit head-on for the big payoff.', FW / 2, 55, '400 12px ' + F_UI, C.ink2, 'center');
       ctx.globalAlpha = 1;
     }
     if (app.toast && app.realT - app.toast.t < 1.4) {
@@ -909,11 +1168,12 @@
     veil();
     const rp = s.report, x = FX + 110, y = FY + 70, w = FW - 220, h = 420;
     panel(x, y, w, h);
-    label(rp.roadCleared ? 'ROAD ' + (s.roadIndex + 1) + ' CLEARED' : 'TEST REPORT', x + 28, y + 30);
-    txt(rp.roadCleared ? LEVELS[s.levelId].name + ' cleared' : 'Chassis ' + String(rp.chassis).padStart(2, '0') + ' written off', x + 28, y + 64, '800 26px ' + F_BRAND, C.primary);
+    label(rp.roadCleared ? 'ROAD ' + (s.roadIndex + 1) + ' CLEARED' : copy('report.eyebrow', 'TEST REPORT').toUpperCase(), x + 28, y + 30);
+    const chs = String(rp.chassis).padStart(2, '0');
+    txt(rp.roadCleared ? LEVELS[s.levelId].name + ' cleared' : copy('report.title', 'Chassis {chassis} written off', { chassis: chs }), x + 28, y + 64, '800 26px ' + F_BRAND, C.primary);
     const nq = rp.nextRoad ? s.P['proto.quota.' + rp.nextRoad] : 0;
-    txt(rp.roadCleared ? 'Next: ' + LEVELS[rp.nextRoad].name + ' — ' + nq + ' write-off' + (nq === 1 ? '' : 's') + ' to clear. Points this body: ' + num(rp.points)
-      : 'Write-off ' + s.run.writeOffs + ' of ' + s.quota + ' on this road. Points this body: ' + num(rp.points), x + 28, y + 88, '400 13px ' + F_UI, C.ink2);
+    txt(rp.roadCleared ? copy('report.cleared', 'Next: {nextRoad} — {nextQuota} write-off(s) to clear. Points this body: {points}', { roadName: LEVELS[s.levelId].name, nextRoad: LEVELS[rp.nextRoad].name, nextQuota: nq, points: num(rp.points) })
+      : copy('report.line', 'Write-off {n} of {quota} on this road. Points this body: {points}', { n: s.run.writeOffs, quota: s.quota, points: num(rp.points) }), x + 28, y + 88, '400 13px ' + F_UI, C.ink2);
     label('IMPACTS', x + 28, y + 122);
     const cols = ['Car', 'Angle', 'Strike u/s', 'Dummy Δv', 'Assessed', 'Lost', 'Car state'];
     const cx = [0, 86, 150, 222, 294, 366, 420];
@@ -924,15 +1184,15 @@
         .forEach((v, i) => txt(String(v), x + 28 + cx[i], yy, (i >= 1 && i <= 5 ? '700 12px ' : '400 12px ') + (i >= 1 && i <= 5 ? F_MONO : F_UI), C.primary));
     });
     rr(x + 28, y + h - 92, w - 56, 44, 10); ctx.fillStyle = 'rgba(245,197,66,0.25)'; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.stroke();
-    txt('Body credit +1   ·   balance ' + s.run.credits, x + 44, y + h - 64, '700 14px ' + F_UI, C.primary);
-    txt('A  continue to modifications', x + w - 28, y + h - 18, '700 12px ' + F_UI, C.aquaDeep, 'right');
+    txt(copy('report.credit', 'Body credit +1   ·   balance {credits}', { credits: s.run.credits }), x + 44, y + h - 64, '700 14px ' + F_UI, C.primary);
+    txt(copy('report.continue', 'A  continue to modifications'), x + w - 28, y + h - 18, '700 12px ' + F_UI, C.aquaDeep, 'right');
   }
   function drawShop(s) {
     veil();
     const x = FX + 40, y = FY + 30, w = FW - 80, h = FH - 60;
     panel(x, y, w, h);
-    label('FARSIGHT APPROVED MODIFICATIONS', x + 28, y + 30);
-    txt('Install on the next chassis', x + 28, y + 60, '800 22px ' + F_BRAND, C.primary);
+    label(copy('shop.eyebrow', 'FARSIGHT APPROVED MODIFICATIONS').toUpperCase(), x + 28, y + 30);
+    txt(copy('shop.title', 'Install on the next chassis'), x + 28, y + 60, '800 22px ' + F_BRAND, C.primary);
     rr(x + w - 160, y + 20, 132, 44, 10); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1; ctx.stroke();
     txt(s.run.credits + ' credit' + (s.run.credits === 1 ? '' : 's'), x + w - 94, y + 48, '700 15px ' + F_MONO, C.primary, 'center');
     const colW = (w - 84) / 2;
@@ -946,7 +1206,7 @@
         ctx.strokeStyle = on ? C.aquaDeep : '#C9D5DB'; ctx.lineWidth = on ? 2.5 : 1.2; ctx.stroke();
         txt(node.name, cx + 16, yy + 28, '800 18px ' + F_BRAND, C.primary);
         txt(own ? 'OWNED' : chk.ok ? 'BUY · ' + s.P[node.price] : chk.why.toUpperCase(), cx + colW - 16, yy + 27, '700 11px ' + F_UI, own ? C.aquaDeep : chk.ok ? C.primary : '#8C9AA4', 'right');
-        wrapText(node.desc, cx + 16, yy + 50, colW - 32, 16, '400 12px ' + F_UI, C.ink2);
+        wrapText(copy('shop.nodes.' + n, node.desc), cx + 16, yy + 50, colW - 32, 16, '400 12px ' + F_UI, C.ink2);
         if (ri === 0) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 30, yy + 90); ctx.lineTo(cx + 30, yy + 102); ctx.stroke(); }
       });
     });
@@ -967,7 +1227,7 @@
     const on = app.shopRow === 2;
     rr(x + 28, y + h - 76, w - 56, 44, 10); ctx.fillStyle = on ? C.aqua : 'rgba(255,255,255,0.7)'; ctx.fill();
     ctx.strokeStyle = on ? C.aquaDeep : '#C9D5DB'; ctx.lineWidth = 1.2; ctx.stroke();
-    txt(s.run.credits ? 'Bank ' + s.run.credits + ' credit' + (s.run.credits === 1 ? '' : 's') + ' and deploy the next chassis' : 'Deploy the next chassis', x + w / 2, y + h - 48, '700 14px ' + F_UI, on ? '#06202B' : C.primary, 'center');
+    txt(s.run.credits ? copy('shop.bank', 'Bank {credits} credit(s) and deploy the next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy the next chassis'), x + w / 2, y + h - 48, '700 14px ' + F_UI, on ? '#06202B' : C.primary, 'center');
     txt('◀▶▲▼ select   ·   A buy   ·   B deploy', x + w / 2, y + h - 12, '400 11px ' + F_UI, C.secondary, 'center');
   }
   function wrapText(str, x, y, w, lh, font, color) {
@@ -975,9 +1235,44 @@
     for (const wd of words) { const t = line ? line + ' ' + wd : wd; if (ctx.measureText(t).width > w && line) { txt(line, x, yy, font, color); line = wd; yy += lh; } else line = t; }
     if (line) txt(line, x, yy, font, color);
   }
+  // Cue key glyphs: the same marks the field draws (state pip, caution, brake, spent, honk, blind, view).
+  function cueGlyph(cue, x, y) {
+    ctx.save(); ctx.translate(x, y); ctx.lineWidth = 2.5;
+    const car = (spent) => { rr(-16, -7, 32, 14, 4); ctx.fillStyle = C.fleet; ctx.fill(); if (spent) { ctx.strokeStyle = C.primary; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-11, 5); ctx.lineTo(11, -5); ctx.stroke(); } };
+    if (cue === 'intention') { ctx.strokeStyle = C.secondary; ctx.beginPath(); ctx.moveTo(-3, -6); ctx.lineTo(4, 0); ctx.lineTo(-3, 6); ctx.stroke(); }
+    else if (cue === 'committed' || cue === 'expiring') {
+      ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(0, 0, 7, 0, TAU); ctx.fill(); ctx.strokeStyle = C.primary; ctx.beginPath();
+      if (cue === 'committed') ctx.arc(0, 0, 7, 0, TAU); else ctx.arc(0, 0, 7, -Math.PI / 2, -Math.PI / 2 + TAU * (0.35 + 0.3 * Math.abs(Math.sin(app.realT * 1.5))));
+      ctx.stroke();
+    } else if (cue === 'interrupted') {
+      ctx.strokeStyle = C.warning; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.arc(0, 0, 8, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = C.warning; ctx.fillRect(-1.5, -5, 3, 6); ctx.fillRect(-1.5, 3, 3, 2.5);
+    } else if (cue === 'caution') {
+      ctx.strokeStyle = C.secondary; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -7); ctx.lineTo(6.5, 5); ctx.lineTo(-6.5, 5); ctx.closePath(); ctx.stroke();
+      ctx.fillStyle = C.secondary; ctx.fillRect(-1, -2.5, 2, 4); ctx.fillRect(-1, 2.5, 2, 1.5);
+    } else if (cue === 'braking') { car(false); ctx.fillStyle = C.warning; ctx.fillRect(-16, -5, 3, 4); ctx.fillRect(-16, 1, 3, 4); }
+    else if (cue === 'spent') car(true);
+    else if (cue === 'honk') { rr(-20, -8, 40, 16, 8); ctx.fillStyle = '#FFF1C9'; ctx.fill(); ctx.strokeStyle = C.primary; ctx.lineWidth = 1.2; ctx.stroke(); txt('HONK', 0, 4, '700 9px ' + F_MONO, C.primary, 'center'); }
+    else if (cue === 'blind') { ctx.beginPath(); ctx.moveTo(-14, -4); ctx.lineTo(14, -9); ctx.lineTo(14, 9); ctx.lineTo(-14, 4); ctx.closePath(); ctx.fillStyle = 'rgba(79,195,232,0.14)'; ctx.fill(); ctx.setLineDash([3, 4]); ctx.strokeStyle = 'rgba(30,143,184,0.85)'; ctx.lineWidth = 1.2; ctx.stroke(); ctx.setLineDash([]); }
+    else if (cue === 'view') { ctx.strokeStyle = 'rgba(16,20,23,0.4)'; ctx.setLineDash([2, 4]); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(14, -10); ctx.moveTo(-12, 0); ctx.lineTo(14, 10); ctx.stroke(); ctx.setLineDash([]); }
+    ctx.restore();
+  }
+  function drawCueKey(x, y, w) {
+    const keys = CI.cueKey;
+    panel(x, y, w, 44 + keys.length * 50);
+    label(copy('cueKeyTitle', 'CUE KEY'), x + 20, y + 28);
+    keys.forEach((k, i) => {
+      const yy = y + 54 + i * 50;
+      cueGlyph(k.cue, x + 40, yy + 4);
+      txt(k.label || k.cue, x + 72, yy, '700 12px ' + F_UI, C.primary);
+      wrapText(k.meaning || '', x + 72, yy + 16, w - 92, 14, '400 11px ' + F_UI, C.ink2);
+    });
+  }
   function drawPause(s) {
     veil();
-    const x = FX + 220, y = FY + 120, w = 360;
+    const ck = CI && CI.cueKey && CI.cueKey.length;
+    if (ck) drawCueKey(FX + 420, FY + 12, 360);
+    const x = ck ? FX + 40 : FX + 220, y = FY + 120, w = 360;
     panel(x, y, w, 300);
     label('TEST PAUSED', x + 24, y + 30);
     const items = PAUSE_ITEMS.slice();
@@ -997,7 +1292,7 @@
     label('TEST CONTRACT RESULT', x + 28, y + 30);
     const title = { Licensed: 'LICENSED', 'Failed test': 'FAILED TEST', 'Non-compliant': 'NON-COMPLIANT' }[e.kind] || e.kind;
     txt(title, x + 28, y + 76, '900 40px ' + F_BRAND, e.kind === 'Licensed' ? C.primary : e.kind === 'Failed test' ? C.warning : C.secondary);
-    const sub = { Licensed: 'Contract complete. Your current testing contract is released.', 'Failed test': 'Useful traffic ran out before the contract was complete.', 'Non-compliant': 'You refused further testing. FARSIGHT has recorded your position.' }[e.kind];
+    const sub = copy('endings.' + e.kind, { Licensed: 'Contract complete. Your current testing contract is released.', 'Failed test': 'Useful traffic ran out before the contract was complete.', 'Non-compliant': 'You refused further testing. FARSIGHT has recorded your position.' }[e.kind] || '');
     txt(sub, x + 30, y + 100, '400 13px ' + F_UI, C.ink2);
     const imp = s.events.filter((v) => v.type === 'impact');
     const stats = [['Active time', fmtT(e.t)], ['Write-offs', String(e.writeOffs)], ['Roads cleared', (e.kind === 'Licensed' ? LEVEL_LIST.length : e.road - 1) + ' / ' + LEVEL_LIST.length], ['Points', num(e.points)],
@@ -1052,8 +1347,13 @@
     ['proto.damageExponent', 1, 3, 0.1], ['proto.dummyStrikeSpeed', 0, 400, 5], ['proto.dummyMass', 0.01, 1, 0.005],
     ['proto.restitution', 0, 1, 0.05], ['proto.contactFriction', 0, 1, 0.05], ['proto.recoilScale', 0, 2, 0.05], ['proto.recoilSeconds', 0, 1, 0.05],
   ];
+  for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
   const tuneEl = document.getElementById('tune'), grid = document.getElementById('tune-grid');
-  function current(id) { return app.sim ? app.sim.P[id] : (app.tune[id] != null ? app.tune[id] : (REG[id] != null ? REG[id] : PROTO[id])); }
+  function current(id) {
+    if (app.tune[id] != null) return app.tune[id];
+    if (app.sim && app.sim.P[id] != null) return app.sim.P[id];
+    return CPARAM[id] != null ? CPARAM[id] : REG[id] != null ? REG[id] : PROTO[id];
+  }
   function setParam(id, v) {
     app.tune[id] = v;
     if (app.sim) { app.sim.P[id] = v; app.tuned = true; if (id === 'proto.health.' + DIFFICULTIES[Math.round(app.sim.P['proto.difficulty'])].key) app.sim.P['damage.bodyHealth'] = v; }

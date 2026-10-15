@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The table sounds like DUMMIES. It is dry, ink-dark and matte, and it stays at the P1.2 values. Two small problems remain: the pickup ring reads as a ring cue, and the drone-dispatch note describes the wrong job.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "events[10].particles[0].type",
+      "found": "ring",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "Decoration must not look like a cue. An expanding ring on the dummy reads as the charge ring or a commitment ring, and the only ring burst the canon grants is the impact burst on a scored hit.",
+      "fix": "dust"
+    },
+    {
+      "id": "C2",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "events[14].reference",
+      "found": "Aerial delivery read from drone height, no field effect",
+      "canon": "LOG#P1.1-observations",
+      "rule": "Drones move blocked cones after a 5 s honk (O1.12). Chassis delivery is the separate 'chassis' event.",
+      "fix": "Drone cone recovery read from drone height, no field effect"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 20.67
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 11.641
+      }
+    ]
+  },
+  {
+    "query": "defer explanatory copy naming counter until changed return",
+    "results": [
+      {
+        "id": "DESIGN#D5.3",
+        "score": 11.313
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 11.206
+      }
+    ]
+  },
+  {
+    "query": "decorative diagnostic text never carries a decision",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 21.691
+      },
+      {
+        "id": "DESIGN#D6.2",
+        "score": 6.476
+      }
+    ]
+  },
+  {
+    "query": "no automatic repair SERVICE meter",
+    "results": [
+      {
+        "id": "DESIGN#D3.1",
+        "score": 8.546
+      },
+      {
+        "id": "DESIGN#D2.3",
+        "score": 8.537
+      }
+    ]
+  },
+  {
+    "query": "dry register corporate politeness barely contains personality",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 11.697
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 4.718
+      }
+    ]
+  },
+  {
+    "query": "Chinese wording requires informed editorial review",
+    "results": [
+      {
+        "id": "ENG#7.4",
+        "score": 4.6
+      },
+      {
+        "id": "ENG#10.4~1",
+        "score": 2.604
+      }
+    ]
+  },
+  {
+    "query": "{roadName} cleared. Next: {nextRoad}, {nextQuota} write-offs. {points} points this body.",
+    "results": [
+      {
+        "id": "LOG#P1.5/campaign",
+        "score": 17.765
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 15.791
+      }
+    ]
+  },
+  {
+    "query": "Road {road} of {roads}: {roadName}. {quota} write-offs clear it.",
+    "results": [
+      {
+        "id": "LOG#P1.5/campaign",
+        "score": 23.032
+      },
+      {
+        "id": "DESIGN#D1.2",
+        "score": 14.512
+      }
+    ]
+  },
+  {
+    "query": "The car has fixed its plan. Only safety braking interrupts it.",
+    "results": [
+      {
+        "id": "DESIGN#D5.2",
+        "score": 10.891
+      },
+      {
+        "id": "DRIVER#DB4",
+        "score": 10.637
+      }
+    ]
+  },
+  {
+    "query": "Appearance already assessed. No damage or points recorded.",
+    "results": [
+      {
+        "id": "DESIGN#D7",
+        "score": 13.853
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 12.424
+      }
+    ]
+  },
+  {
+    "query": "Contract complete. The subject is released from testing.",
+    "results": [
+      {
+        "id": "ENG#10.2",
+        "score": 7.432
+      },
+      {
+        "id": "ENG#10.4~1",
+        "score": 6.621
+      }
+    ]
+  },
+  {
+    "query": "Traffic exhausted. Contract incomplete. Retry available.",
+    "results": [
+      {
+        "id": "ENG#10.2",
+        "score": 16.244
+      },
+      {
+        "id": "ENG#10.4~2",
+        "score": 7.511
+      }
+    ]
+  }
+]

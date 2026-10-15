@@ -658,3 +658,27 @@ The selected value replaces `damage.bodyHealth`, including the assessment cap.
   - O1.24 Vehicle profiles: Courier, Learner, Emergency, Rattled, Bus (DB6).
 - **Open design questions:** Bend speed for cars. L3 balance with straight sensors. Patient-pass loophole. Roadside diagonal lunge.
 - **Prototype-only parameters:** All `proto.*` IDs in `sim.js` PROTO and the registry overrides in OVERRIDES. None promoted to the registry.
+
+## P1.10 — Generated content
+
+**Build:** `dummies_p1.html` v11 · 15 Oct 2026 · Source: `content/pipeline.py` (Assignment 4). Presentation only.
+
+- **Sim:** `sim.js` unchanged. `node test_sim.js` 34/34.
+- **Juice:** `content/juice.json`. Every response is a `proto.juice.*` or `feedback.*` ID. Tyre marks persist. A replacement chassis is lowered in.
+- **Interface:** `content/interface.json`. HUD uses the D10.5 modules. Cue key on pause. FARSIGHT copy. Vehicle barks bound to logged events.
+- **Graphics:** `content/graphics.json`. Roof liveries for SEDAN-01 and VAN-02. Quadrant targets on the dummy. Bilingual district signage per road.
+- **Chinese text:** All marked review pending (D9.2).
+- **Tuning panel:** Generated IDs appear as sliders.
+- **Fallback:** Without `content.js` the build runs the P1.9 presentation.
+
+| ID group | Count | Source |
+|---|---:|---|
+| `proto.juice.*` | 68 | `content/out/DUMMIES_GDD_Edit31_Juice.md` |
+| `proto.ui.barkSeconds`, `proto.ui.barkCooldown` | 2 | `content/out/DUMMIES_GDD_Edit32_Interface.md` |
+
+### Questions for the P1.10 session
+
+- Do tyre marks read as the test's record, or as noise?
+- Does anyone read a bark at play speed? Do barks sound like workers?
+- Does the HUD answer "how am I doing" without the old VIEW panel?
+- Does the road feel like a district? Does any sign read as cover?

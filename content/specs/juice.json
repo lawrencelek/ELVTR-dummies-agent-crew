@@ -1,0 +1,122 @@
+{
+  "type": "juice",
+  "title": "Juice: feedback for every logged event",
+  "param_prefix": "proto.juice.",
+  "gap": [
+    "P1 has juice, but it is hard-coded in game.js as unlabelled literals: kick(3 + 9 * k, 0.25 + 0.2 * k), 8 + 10k sparks, a 1.3 s stamp.",
+    "No juice value maps to a parameter ID, so none can be tuned, logged or compared (project rule: every statistic maps to a registry ID).",
+    "D4.5 asks for distinct feedback the build lacks: a denied action only shows a toast; a touch on a spent car is a small kick close to a scored hit; braking leaves no trace on the floor; a replacement chassis simply appears.",
+    "The pass was never checked against the genre it borrows from: top-down arcade driving."
+  ],
+  "deliverable": [
+    "A data table the P1 renderer reads: one entry per sim event, built only from the renderer's primitives.",
+    "Three persistent states: tyre marks left by braking cars, low-health effects, the replacement-chassis drop.",
+    "Every numeric value is a parameter ID: reuse registry IDs (feedback.hitStop, feedback.writeOffSeconds) and declare new proto.juice.* IDs with value, unit and purpose.",
+    "Each entry names the top-down driving reference it adapts."
+  ],
+  "queries": [
+    "juice reference top-down arcade driving games screen shake hit pause permanence",
+    "impact feedback hit-stop destruction presentation cues take priority over particles shake",
+    "P1.2 juice camera shake player shake lunge impact write-off stamp cone in flight",
+    "brake marks tyre marks persist floor forensic record",
+    "touch spent car must not look like scored hit reward feedback",
+    "replacement chassis drop helicopter delivery placement",
+    "dummy damage states wear smoke sparks tremble vignette",
+    "dummy only persistently saturated actor reserved red warning palette",
+    "input denial near miss write-off purchase blocked traffic distinct cues sound visual equivalent",
+    "recoil stagger knock bounce restitution"
+  ],
+  "critic_queries": [
+    "cues take priority over particles shake decorative information",
+    "brake marks the car is slowing rear position visible state change",
+    "presentation preserves tactical information hides readable mechanics",
+    "reserved red warning cues dummy only saturated actor frame aqua separate role",
+    "wreck debris animation visual only obstruction",
+    "reduced motion 25%"
+  ],
+  "k": 3,
+  "max_chunks": 16,
+  "allowed": {
+    "events": [
+      "lunge",
+      "impact",
+      "knock",
+      "touch-spent",
+      "writeoff",
+      "denied",
+      "chassis",
+      "throw",
+      "drop",
+      "pickup",
+      "punt",
+      "honk",
+      "purchase",
+      "drone-dispatch"
+    ],
+    "event_fields": "see SIM_EVENTS in registry.py; scale.by must be a numeric field of that event",
+    "particle_types": [
+      "dust",
+      "smoke",
+      "spark",
+      "debris",
+      "ring"
+    ],
+    "particle_dirs": [
+      "random",
+      "backward",
+      "facing"
+    ],
+    "particle_roles": [
+      "floor",
+      "grid",
+      "structure",
+      "fleet",
+      "dummy",
+      "joints",
+      "primary",
+      "secondary"
+    ],
+    "mark_roles": [
+      "primary",
+      "secondary",
+      "joints",
+      "fleet"
+    ]
+  },
+  "schema": [
+    "{",
+    "  \"params\": [ {\"id\": \"proto.juice.<event>.<name>\", \"value\": number, \"unit\": \"canvas units|s|count|ratio|world units|canvas units/s|alpha\", \"purpose\": \"one line\", \"sources\": [chunk ids]} ],",
+    "  \"hitStop\": \"feedback.hitStop\",",
+    "  \"writeOff\": \"feedback.writeOffSeconds\",",
+    "  \"reducedMotion\": \"<param id, ratio applied to shake, flinch and tremble>\",",
+    "  \"events\": [ {",
+    "     \"event\": one of allowed.events,",
+    "     \"scale\": {\"by\": \"<numeric field of the event>\", \"full\": \"<param id: field value that gives full intensity>\"} | null,",
+    "     \"shake\": {\"amp\": V, \"seconds\": V} | null,",
+    "     \"flash\": V | null,            (white field flash, seconds)",
+    "     \"flinch\": true|false,         (body flinch)",
+    "     \"carPulse\": true|false,       (pulse the event's car; car events only)",
+    "     \"stamp\": true|false,          (WRITTEN OFF stamp; writeoff only)",
+    "     \"particles\": [ {\"type\": allowed.particle_types, \"count\": V, \"speed\": V, \"life\": V, \"size\": V, \"role\": allowed.particle_roles, \"dir\": allowed.particle_dirs} ],",
+    "     \"reference\": \"which reference technique this adapts, in a few words\",",
+    "     \"sources\": [chunk ids]",
+    "  } ],",
+    "  \"states\": {",
+    "     \"brakeMarks\": {\"width\": V, \"alpha\": V, \"fadeSeconds\": V, \"max\": V, \"minSpeed\": V, \"role\": allowed.mark_roles, \"reference\": \"...\", \"sources\": [...]},",
+    "     \"lowHealth\": {\"smokeFrom\": V, \"sparkFrom\": V, \"vignetteFrom\": V, \"sources\": [...]},",
+    "     \"replacementDrop\": {\"seconds\": V, \"height\": V, \"reference\": \"...\", \"sources\": [...]}",
+    "  }",
+    "}",
+    "V is a parameter ID string, or a two-item array [minId, maxId] interpolated by the event's scale (0 to 1). Never a bare number."
+  ],
+  "consumer": [
+    "game.js processEvents() reads this table for each new sim event. Missing events fall back to the P1.2 constants.",
+    "Shake moves the play field only; HUD and frame never shake. Amplitude is in reference-canvas units and decays quadratically.",
+    "Flash fills the field white at up to 55% opacity for the given seconds. Flinch jitters the body 0.3 s.",
+    "Particles spawn at the dummy (for 'chassis', at the new body). Events that happen elsewhere (honk, purchase, drone-dispatch) cannot have particles. 'backward' is opposite the facing; 'facing' is along it. 'ring' is an expanding outline. 'debris' is a tumbling rectangle.",
+    "Brake marks: while a car brakes above minSpeed, its two rear wheels draw matte lines on the floor, under cars and cues. Each fades over fadeSeconds; at most max segments.",
+    "lowHealth thresholds are wear fractions (1 - health / damage.bodyHealth).",
+    "replacementDrop animates the new chassis from height to the floor over seconds, with its shadow closing in. It runs on the 'chassis' event and is presentation only.",
+    "Sound is out of scope here; the existing P1 tones stay."
+  ]
+}

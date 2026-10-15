@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "rule",
+    "severity": "block",
+    "path": "states.brakeMarks.role",
+    "found": "structure",
+    "canon": "JUICE#J4",
+    "rule": "Persistent marks use matte ink roles."
+  }
+]

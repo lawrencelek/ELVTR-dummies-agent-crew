@@ -1,0 +1,158 @@
+[
+  {
+    "query": "cues take priority over particles shake decorative information",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 11.012
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 7.451
+      }
+    ]
+  },
+  {
+    "query": "brake marks the car is slowing rear position visible state change",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 21.152
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 12.632
+      }
+    ]
+  },
+  {
+    "query": "presentation preserves tactical information hides readable mechanics",
+    "results": [
+      {
+        "id": "DESIGN#D2.4",
+        "score": 22.536
+      },
+      {
+        "id": "DESIGN#D9.2",
+        "score": 8.696
+      }
+    ]
+  },
+  {
+    "query": "reserved red warning cues dummy only saturated actor frame aqua separate role",
+    "results": [
+      {
+        "id": "DRIVER#DB5",
+        "score": 13.386
+      },
+      {
+        "id": "ENG#7.2",
+        "score": 9.15
+      }
+    ]
+  },
+  {
+    "query": "wreck debris animation visual only obstruction",
+    "results": [
+      {
+        "id": "ENG#8.5",
+        "score": 11.654
+      },
+      {
+        "id": "ENG#10.4~1",
+        "score": 7.268
+      }
+    ]
+  },
+  {
+    "query": "reduced motion 25%",
+    "results": [
+      {
+        "id": "LOG#P1.3/physics-basis",
+        "score": 4.366
+      },
+      {
+        "id": "LOG#P1.3/automated-evidence",
+        "score": 4.229
+      }
+    ]
+  },
+  {
+    "query": "Scale applied to shake, flinch and tremble under reduced-motion settings.",
+    "results": [
+      {
+        "id": "DRIVER#DB1",
+        "score": 6.84
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 5.931
+      }
+    ]
+  },
+  {
+    "query": "Low-contrast mark opacity so old marks never read as live braking.",
+    "results": [
+      {
+        "id": "DESIGN#D10.4",
+        "score": 11.238
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 9.014
+      }
+    ]
+  },
+  {
+    "query": "Wear at which smoke starts, matching the damage states.",
+    "results": [
+      {
+        "id": "DESIGN#D4.1",
+        "score": 5.89
+      },
+      {
+        "id": "LOG#P1.9/automated-evidence",
+        "score": 5.844
+      }
+    ]
+  },
+  {
+    "query": "Aerial delivery read from drone height, no field effect",
+    "results": [
+      {
+        "id": "LOG#P1.2/questions-for-the-p1-2-session",
+        "score": 11.491
+      },
+      {
+        "id": "LOG#P1.2/honking-and-drones",
+        "score": 10.377
+      }
+    ]
+  },
+  {
+    "query": "Debris lifetime, inside the destruction presentation.",
+    "results": [
+      {
+        "id": "ENG#8.5",
+        "score": 6.517
+      },
+      {
+        "id": "LOG#P1.5/pillars-and-blind-spots",
+        "score": 4.366
+      }
+    ]
+  },
+  {
+    "query": "Dull bump on a spent car, well under a scored hit.",
+    "results": [
+      {
+        "id": "DESIGN#D11.3",
+        "score": 6.668
+      },
+      {
+        "id": "ENG#10.1",
+        "score": 6.324
+      }
+    ]
+  }
+]
