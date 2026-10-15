@@ -23,7 +23,7 @@ Every output is data, not code. The renderer has a fixed set of primitives; the 
 flowchart TD
     KB[/"Knowledge base<br/>V29 Design + Engineering registry<br/>P1 brief, log, driver spec<br/>GDD Edit 30: juice references"/]
     IDX["rag.py<br/>chunk at ## / ### headings → 175 chunks<br/>BM25 index"]
-    SPEC[/"specs/&lt;type&gt;.json<br/>gap, queries, schema, consumer contract,<br/>allowed values, slots, voices"/]
+    SPEC[/"specs/TYPE.json<br/>gap, queries, schema, consumer contract,<br/>allowed values, slots, voices"/]
     RET["Retrieve<br/>10–13 queries, round-robin, ≤ 20 chunks"]
     GEN["Generator agent<br/>agents/generator.md<br/>cites chunk IDs per item"]
     VAL[["Validators — checks.py<br/>grounding, registry IDs, palette roles,<br/>event fields, geometry, bilingual review"]]
