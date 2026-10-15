@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "data",
+    "severity": "fix",
+    "path": "environment.corner[7].surface",
+    "found": "tarmac",
+    "canon": "pipeline:geometry",
+    "rule": "Declared tarmac but it sits on shoulder (69 units from the centreline)."
+  }
+]

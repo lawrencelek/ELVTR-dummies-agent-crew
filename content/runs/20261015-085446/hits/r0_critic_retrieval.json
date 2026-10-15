@@ -1,0 +1,158 @@
+[
+  {
+    "query": "cues take priority over particles shake decorative information feedback never hides a car's cues",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 19.024
+      },
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 16.419
+      }
+    ]
+  },
+  {
+    "query": "presentation preserves tactical information hides readable mechanics",
+    "results": [
+      {
+        "id": "DESIGN#D2.4",
+        "score": 25.05
+      },
+      {
+        "id": "DESIGN#D9.2",
+        "score": 9.649
+      }
+    ]
+  },
+  {
+    "query": "reduced motion 25%",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 11.681
+      },
+      {
+        "id": "LOG#P1.3/physics-basis",
+        "score": 4.564
+      }
+    ]
+  },
+  {
+    "query": "hit-stop 0.06 trial value destruction presentation 1.1",
+    "results": [
+      {
+        "id": "ENG#5.8",
+        "score": 18.748
+      },
+      {
+        "id": "DESIGN#D4.4",
+        "score": 14.096
+      }
+    ]
+  },
+  {
+    "query": "vehicle movement braking must not be disguised by decorative animation cars glide according to physical state",
+    "results": [
+      {
+        "id": "DESIGN#D4.1",
+        "score": 11.084
+      },
+      {
+        "id": "DESIGN#D10.4",
+        "score": 8.562
+      }
+    ]
+  },
+  {
+    "query": "reserved red warning cues dummy only saturated actor frame aqua separate role",
+    "results": [
+      {
+        "id": "DESIGN#D10.2",
+        "score": 26.187
+      },
+      {
+        "id": "JUICE#J4",
+        "score": 21.121
+      }
+    ]
+  },
+  {
+    "query": "Art of Screenshake camera kick; Juice It or Lose It squash, deeper on the front zone",
+    "results": [
+      {
+        "id": "DESIGN#D7",
+        "score": 11.215
+      },
+      {
+        "id": "LOG#P1.2",
+        "score": 7.919
+      }
+    ]
+  },
+  {
+    "query": "Art of Screenshake knockback and impact effects: the lunge's momentum throws chips",
+    "results": [
+      {
+        "id": "BRIEF#P1.5",
+        "score": 8.155
+      },
+      {
+        "id": "BRIEF#P1.2",
+        "score": 7.883
+      }
+    ]
+  },
+  {
+    "query": "art of rally dust plumes: a dull thump and dust when the dummy hits a stopped car",
+    "results": [
+      {
+        "id": "DRIVER#DB4a",
+        "score": 9.942
+      },
+      {
+        "id": "DRIVER#DB4b",
+        "score": 8.195
+      }
+    ]
+  },
+  {
+    "query": "Art of Screenshake: shake scaled by damage, contact flash, sparks, crunch",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 11.448
+      },
+      {
+        "id": "LOG#P1.2/dummy-damage-states",
+        "score": 7.35
+      }
+    ]
+  },
+  {
+    "query": "Scale on shake, zoom, crumple and stumble under reduced-motion settings.",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 28.075
+      },
+      {
+        "id": "DRIVER#DB1",
+        "score": 6.548
+      }
+    ]
+  },
+  {
+    "query": "Contact ring radius on a light hit; inside the 2 x body width burst cap.",
+    "results": [
+      {
+        "id": "DRIVER#DB3a",
+        "score": 13.663
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 11.452
+      }
+    ]
+  }
+]

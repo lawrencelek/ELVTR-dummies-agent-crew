@@ -1,0 +1,36 @@
+{
+  "verdict": "revise",
+  "summary": "It mostly sounds like DUMMIES: dry, operational district copy with bilingual identifiers and numbered zones, and no cheer or slang. Two rule problems remain. The depot gate hazard hatching reads as a solid barrier, and the vehicle roof dots still use the reserved primary cue colour.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[7]",
+      "found": "{\"shape\": \"stripes\", \"x\": 560, \"y\": 196, \"w\": 100, \"h\": 8, \"angle\": 45, \"gap\": 6, \"stroke\": \"dummy\", \"lineWidth\": 1.5}",
+      "canon": "DESIGN#D6.2",
+      "rule": "Decoration has no collider, and hatched forms read as barriers. The barrier-level stripes were already replaced for this reason, and yellow hatching also competes with the dummy as the only saturated actor.",
+      "fix": "{\"shape\": \"line\", \"points\": [[560, 200], [660, 200]], \"stroke\": \"secondary\", \"lineWidth\": 1.5}"
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.sedan.roof[4].fill",
+      "found": "primary",
+      "canon": "DESIGN#D10.2",
+      "rule": "Primary cue colour is reserved for reflex information. Settled fixes already moved decorative roof fills off it, and a dark dot on a vehicle can read as a state pip or cue.",
+      "fix": "floor"
+    },
+    {
+      "id": "C3",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.van.roof[6].fill",
+      "found": "primary",
+      "canon": "DESIGN#D10.2",
+      "rule": "Primary cue colour is reserved for reflex information. Decorative roof hardware must not use it, because it can read as a state pip or cue.",
+      "fix": "floor"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "type": "graphics",
+  "title": "Graphics: vehicle identities, dummy markings, district dressing",
+  "param_prefix": "proto.art.",
+  "gap": [
+    "Vehicles are identical grey rounded rectangles with a windscreen. Only the floating tag tells SEDAN-01 from VAN-02.",
+    "No vehicle shows a district job (D9.2 anchor 3) or self-driving hardware. D10.6 asks for two recognisable vehicle identities.",
+    "The dummy has a head disc, shoulder bar, joints and nose vector, but none of the FARSIGHT markings D4.1 requires.",
+    "The road is a calibration grid and nothing else: no logistics or maintenance district, entrances, destinations, service markings or bilingual test identifiers (D9.2 anchors 1 and 2).",
+    "D10.6: a greybox can establish feel but cannot pass the beauty gate."
+  ],
+  "deliverable": [
+    "Roof art for the Sedan and the Van: a district job, identity marks and sensor hardware, as vector shapes in car-local units.",
+    "FARSIGHT markings for the dummy, as vector shapes inside the body footprint.",
+    "Ground dressing and signage for each P1 road (straight, barrier, corner), as vector shapes in world units.",
+    "Palette role names only. Geometry stays inside the registry footprints."
+  ],
+  "queries": [
+    "dummy overhead silhouette head disc shoulder bar nose vector black joint markers FARSIGHT markings",
+    "visual register instrumented city friendly corporate terminal near-white ground calibration marks matte",
+    "palette roles floor grid structure fleet dummy joints primary secondary warning brand aqua",
+    "class model appearance sedan van identity marks silhouettes readable labels",
+    "fictional district logistics maintenance road entrances destinations service markings recurring vehicle jobs",
+    "representative finished assets two recognisable vehicle identities coherent environment cover must look like cover",
+    "light and relief sun shadows heights pillars barriers crates lit edges",
+    "Shenzhen smart city new economic zone city is the testing apparatus grids numbered zones measuring instruments",
+    "level layouts L1 Straight L2 Barrier L3 Corner flyover pillars barrier gaps bend",
+    "surfaces tarmac pavement shoulders kerbs stripes add no mechanics",
+    "dummy damage states dents shoulder bar bends facing arrow never changes"
+  ],
+  "critic_queries": [
+    "dummy is the only persistently saturated actor reserved red warning hazard markings exceptions",
+    "frame aqua separate role gloss translucency bloom stay in the frame",
+    "essential geometry stays legible behind the authored art",
+    "kerbs and painted stripes add no mechanics visual material implicit physics",
+    "intent chevron arrow shape detected car provisional route",
+    "not claims of documentary accuracy editorial review",
+    "expansion catalogue Sports Hatchback SUV Police expansion-gated"
+  ],
+  "k": 3,
+  "max_chunks": 18,
+  "allowed": {
+    "shapes": [
+      "rect",
+      "circle",
+      "ring",
+      "quadrant",
+      "line",
+      "text",
+      "stripes"
+    ],
+    "roles": "palette roles from DESIGN#D10.2 plus P1 field roles road and shoulder",
+    "forbidden_roles": {
+      "vehicle": [
+        "dummy",
+        "warning",
+        "aqua"
+      ],
+      "dummy": [
+        "warning",
+        "aqua"
+      ],
+      "environment": [
+        "aqua"
+      ]
+    },
+    "environment_saturated_roles": [
+      "warning",
+      "dummy"
+    ],
+    "environment_saturated_requires": "hazard: true",
+    "fonts": [
+      "mono",
+      "ui",
+      "brand"
+    ],
+    "pip_clear_radius": 9,
+    "nose_corridor": {
+      "x_from": 6,
+      "half_width": 2.5
+    },
+    "levels": [
+      "straight",
+      "barrier",
+      "corner"
+    ],
+    "min_text_size_param": "ui.typeTexture"
+  },
+  "schema": [
+    "{",
+    "  \"params\": [] (art geometry is asset data bounded by registry IDs; declare proto.art.* only for a tunable value),",
+    "  \"vehicles\": {",
+    "    \"sedan\": {\"job\": \"district job in 2-4 words\", \"jobZh\": \"Chinese job\", \"review\": \"pending\", \"roof\": [shape], \"sources\": [...]},",
+    "    \"van\":   {same}",
+    "  },",
+    "  \"dummy\": {\"markings\": [shape], \"sources\": [...]},",
+    "  \"environment\": {",
+    "    \"straight\": [decal], \"barrier\": [decal], \"corner\": [decal]",
+    "  }",
+    "}",
+    "shape: {\"shape\": allowed.shapes, ...geometry..., \"fill\": role?, \"stroke\": role?, \"lineWidth\": n?, \"alpha\": 0-1?}",
+    "  rect {x, y, w, h, rotate?}   circle {x, y, r}   ring {x, y, r, lineWidth}   quadrant {x, y, r, a: role, b: role} (crash-test target: alternating quarters)",
+    "  line {points: [[x,y],...], dash?: [on, off]}   text {x, y, text, size, font, align: left|center|right, rotate?}   stripes {x, y, w, h, angle, gap} (hatching)",
+    "decal: a shape plus \"surface\": \"tarmac\"|\"shoulder\"|\"verge\", \"hazard\": true|false, \"note\": \"what it is in the district\", \"sources\": [...]",
+    "Any text containing Chinese characters also carries \"review\": \"pending\"."
+  ],
+  "consumer": [
+    "Vehicle roof shapes draw in car-local units after the body fill and before windscreen, lights and the state pip. Origin is the car centre; +x points to the nose; +y is the car's right side. The body is vehicles.<cls>.length by vehicles.<cls>.width.",
+    "The state pip draws at the car centre, radius 8. Keep a clear circle of pip_clear_radius around the origin.",
+    "Dummy markings draw in body-local units after the body fill, under the shoulder bar, head and nose vector. Origin is the body centre; +x is facing. Footprint radius is body.radius. The nose vector runs along +x from x = 6.5; keep the nose corridor clear.",
+    "Dummy markings fade with wear like the body's yellow.",
+    "Environment decals draw in world units (world.width by world.height) after the road and before shadows, statics, cones, cars and cues.",
+    "The road for each level is a centreline polyline; tarmac half-width is world.laneWidth; shoulders add proto.shoulderWidth each side. 'tarmac' decals sit within world.laneWidth of the centreline, 'shoulder' within the shoulder band, 'verge' beyond it.",
+    "Text uses the P1 fonts: mono = B612 Mono, ui = B612, brand = Nunito."
+  ],
+  "already_drawn": [
+    "Field: floor fill, 40-unit calibration grid, small crosshair marks every 200 units.",
+    "Road: tarmac band, pavement shoulders, edge strips, the dashed centre line.",
+    "Statics: pillars labelled P0, P1..., barriers with hatching, crates, and their shadows toward 7:30.",
+    "Cars: body fill, roof light gradient, windscreen, headlights, brake lights, amber indicators, the state pip at the centre, the model tag above.",
+    "Dummy: yellow dented body, shoulder bar, black joints, head disc, nose vector, charge ring around it.",
+    "Cue shapes that decoration must not imitate: chevrons and arrows (intent), closed or opening rings (commitment, charge), red dashed ring (interrupted), dashed car outlines (predicted pose), the red STOP line, the aqua BLIND wedge, the grey caution triangle. Filled boxes in structure colour read as crates or barriers, which are solid; decoration has no collider."
+  ]
+}

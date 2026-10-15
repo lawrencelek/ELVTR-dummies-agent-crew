@@ -1,0 +1,83 @@
+<title>DUMMIES P2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&family=B612+Mono:wght@400;700&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: one instrumented cabinet — game canvas on top, keys and tuning drawer below. Deliberate single light look (crash-lab field in a corporate terminal frame). */
+:root {
+  --ground: #DCEEF5;      /* page behind the cabinet */
+  --ink: #101417;         /* primary cue / text */
+  --ink-2: #4A5A66;       /* secondary text */
+  --line: #B8C4CB;        /* structure */
+  --aqua: #4FC3E8;        /* FARSIGHT frame accent */
+  --aqua-deep: #1E8FB8;
+  --panel: #F7FBFD;
+  --font-ui: "B612", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "B612 Mono", ui-monospace, Menlo, monospace;
+  --font-brand: "Nunito", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body { background: var(--ground); color: var(--ink); font-family: var(--font-ui); }
+.wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 16px; display: grid; gap: 12px; }
+#game { display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; background: #EDF1F3; box-shadow: 0 10px 30px rgba(16, 40, 56, 0.18); outline: none; }
+#game:focus-visible { box-shadow: 0 0 0 3px var(--aqua), 0 10px 30px rgba(16, 40, 56, 0.18); }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.keys { margin: 0; flex: 1 1 320px; min-width: 0; font-size: 12px; color: var(--ink-2); letter-spacing: 0.02em; }
+.keys kbd { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; background: var(--panel); color: var(--ink); }
+button { font: 700 12px var(--font-ui); color: var(--ink); background: linear-gradient(#FFFFFF, #E4F3F9); border: 1px solid var(--aqua); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+button:hover { background: linear-gradient(#FFFFFF, #D2ECF6); }
+button:focus-visible { outline: 3px solid var(--aqua-deep); outline-offset: 2px; }
+details#tune { background: var(--panel); border: 1px solid var(--aqua); border-radius: 14px; padding-inline: 16px; padding-block: 4px 14px; }
+details#tune summary { cursor: pointer; font: 800 15px var(--font-brand); padding-block: 10px; color: var(--ink); }
+details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2); margin-left: 8px; }
+#tune-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 10px 20px; }
+.trow { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; min-width: 0; }
+.trow .pid, .tcheck code { font: 400 11px var(--font-mono); color: var(--ink-2); overflow-wrap: anywhere; }
+.trow output { font: 700 12px var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.trow input { grid-column: 1 / -1; width: 100%; accent-color: var(--aqua-deep); }
+.tcheck { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; min-width: 0; }
+.tcheck input { accent-color: var(--aqua-deep); margin-top: 2px; }
+.tune-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.note { margin: 10px 0 0; font-size: 11px; color: var(--ink-2); }
+.modal { position: fixed; inset: 0; background: rgba(16, 20, 23, 0.4); display: grid; place-items: center; padding-inline: 16px; padding-block: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)); }
+.modal-card { width: min(760px, 100%); background: var(--panel); border: 1px solid var(--aqua); border-radius: 14px; padding: 16px; display: grid; gap: 10px; }
+.modal-card h2 { margin: 0; font: 800 18px var(--font-brand); }
+.modal-card p { margin: 0; font-size: 12px; color: var(--ink-2); }
+#trace-text { width: 100%; box-sizing: border-box; height: 46vh; font: 400 11px var(--font-mono); color: var(--ink); background: #FFFFFF; border: 1px solid var(--line); border-radius: 8px; padding: 8px; resize: vertical; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+</style>
+
+<div class="wrap">
+  <canvas id="game" tabindex="0" aria-label="DUMMIES P2 game. Keyboard or gamepad required."></canvas>
+  <div class="bar">
+    <p class="keys">
+      <kbd>WASD</kbd> move · <kbd>Space</kbd> A lunge · <kbd>K</kbd> B cone · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · gamepad works
+    </p>
+    <button id="btn-tune" type="button">Tuning</button>
+    <button id="btn-sound" type="button" aria-pressed="true">Sound on</button>
+  </div>
+  <details id="tune">
+    <summary>Tuning <small>Registry and prototype IDs. Changes apply live and mark the run as tuned.</small></summary>
+    <div id="tune-grid"></div>
+    <div class="tune-actions">
+      <button id="t-credit" type="button">Grant 1 credit</button>
+      <button id="t-reset" type="button">Reset to registry values</button>
+    </div>
+    <p class="note">Snapshot values (car sensor length, car speed) apply to the next car admitted. Body health applies to the next chassis.</p>
+  </details>
+</div>
+
+<div id="trace" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-labelledby="trace-h">
+    <h2 id="trace-h">Run trace</h2>
+    <p>Events, milestones and parameters for this run. Copy it into a file for playtest notes.</p>
+    <textarea id="trace-text" readonly spellcheck="false"></textarea>
+    <div class="modal-actions">
+      <button id="trace-copy" type="button">Copy trace</button>
+      <button id="trace-close" type="button">Close</button>
+    </div>
+  </div>
+</div>
+<!--SCRIPTS-->

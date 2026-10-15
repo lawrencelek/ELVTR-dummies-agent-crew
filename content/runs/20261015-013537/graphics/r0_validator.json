@@ -1,0 +1,83 @@
+[
+  {
+    "id": "V1",
+    "kind": "grounding",
+    "severity": "block",
+    "path": "environment.barrier[3].sources",
+    "found": "LOG#P1.8",
+    "canon": "pipeline",
+    "rule": "Cited chunk was not in the retrieved context."
+  },
+  {
+    "id": "V2",
+    "kind": "grounding",
+    "severity": "block",
+    "path": "environment.barrier[4].sources",
+    "found": "LOG#P1.8",
+    "canon": "pipeline",
+    "rule": "Cited chunk was not in the retrieved context."
+  },
+  {
+    "id": "V3",
+    "kind": "grounding",
+    "severity": "block",
+    "path": "environment.barrier[7].sources",
+    "found": "LOG#P1.8",
+    "canon": "pipeline",
+    "rule": "Cited chunk was not in the retrieved context."
+  },
+  {
+    "id": "V4",
+    "kind": "grounding",
+    "severity": "block",
+    "path": "environment.barrier[8].sources",
+    "found": "LOG#P1.8",
+    "canon": "pipeline",
+    "rule": "Cited chunk was not in the retrieved context."
+  },
+  {
+    "id": "V5",
+    "kind": "grounding",
+    "severity": "block",
+    "path": "environment.barrier[10].sources",
+    "found": "LOG#P1.8",
+    "canon": "pipeline",
+    "rule": "Cited chunk was not in the retrieved context."
+  },
+  {
+    "id": "V6",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.straight[5]",
+    "found": "DEPOT 仓区 A",
+    "canon": "DESIGN#D10.4",
+    "rule": "Text is about 111 units wide but its board is 100; it spills over the edge."
+  },
+  {
+    "id": "V7",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.barrier[3]",
+    "found": "overlaps barrier at (0,388)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  },
+  {
+    "id": "V8",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.barrier[4]",
+    "found": "overlaps barrier at (290,388)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  },
+  {
+    "id": "V9",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.corner[6]",
+    "found": "COLD CHAIN 冷链 C",
+    "canon": "DESIGN#D10.4",
+    "rule": "Text is about 141 units wide but its board is 120; it spills over the edge."
+  }
+]

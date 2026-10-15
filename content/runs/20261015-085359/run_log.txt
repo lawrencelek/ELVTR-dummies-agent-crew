@@ -1,0 +1,14 @@
+[08:53:59] KB: 270 chunks from 7 docs; registry 154 IDs
+[08:53:59] == barks: Barks: vehicle humour in speech bubbles, one line per logged case
+[08:53:59] barks: retrieved 18 chunks for 10 queries: EDIT26#6.6, EDIT26#3.2, EDIT26#3.1, DESIGN#D9.3, DESIGN#D9.4, EDIT26#6.4, DESIGN#D9.2, DESIGN#D10.3~1, DRIVER#DB5, ENG#11.3, DESIGN#D9.1, DESIGN#D4.5, EDIT26#10.5, DESIGN#D6.1, DRIVER#DB6, EDIT26#11.1, ENG#5.3~2, EDIT26#10.2
+[08:53:59] Generator: calling (34,064 chars in)
+[08:54:35] Generator: done in 34.3 s (6,426 chars out)
+[08:54:35] Critic: calling (58,605 chars in)
+[08:55:11] Critic: done in 33.7 s (1,848 chars out)
+[08:55:11] barks: round 0: validator 0 issues (0 block); critic revise with 5 issues (2 block)
+[08:55:11] Generator (repair): calling (44,074 chars in)
+[08:55:28] Generator (repair): done in 15.1 s (6,481 chars out)
+[08:55:28] Critic: calling (59,130 chars in)
+[08:55:52] Critic: done in 22.8 s (518 chars out)
+[08:55:52] barks: round 1: validator 0 issues (0 block); critic pass with 0 issues (0 block)
+[08:55:52] barks: ACCEPTED after 2 critic round(s)

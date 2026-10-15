@@ -1,0 +1,431 @@
+{
+  "params": [
+    {
+      "id": "proto.ui.barkSeconds",
+      "value": 2.5,
+      "unit": "s",
+      "purpose": "How long a vehicle bark tag stays beside its car, readable at exhibition volume.",
+      "sources": [
+        "DESIGN#D9.4",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "id": "proto.ui.barkCooldown",
+      "value": 4,
+      "unit": "s",
+      "purpose": "Minimum gap after the last bark before another may show, so lines do not stack.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DESIGN#D9.4"
+      ]
+    }
+  ],
+  "hud": {
+    "left": [
+      {
+        "module": "BODY",
+        "title": "BODY",
+        "zh": "车体",
+        "review": "pending",
+        "rows": [
+          {
+            "fact": "subject.chassis",
+            "label": "Chassis"
+          },
+          {
+            "fact": "body.difficulty",
+            "label": "Rating"
+          },
+          {
+            "fact": "body.health",
+            "label": "Integrity"
+          },
+          {
+            "fact": "body.reach",
+            "label": "Lunge reach"
+          }
+        ],
+        "sources": [
+          "DESIGN#D10.5",
+          "DESIGN#D10.4",
+          "DESIGN#D9.1"
+        ]
+      },
+      {
+        "module": "CHARGE",
+        "title": "CHARGE",
+        "zh": "电量",
+        "review": "pending",
+        "rows": [
+          {
+            "fact": "body.charge",
+            "label": "Lunge charge"
+          }
+        ],
+        "sources": [
+          "DESIGN#D10.5",
+          "DESIGN#D10.3~1"
+        ]
+      },
+      {
+        "module": "FLEET",
+        "title": "FLEET",
+        "zh": "车队",
+        "review": "pending",
+        "rows": [
+          {
+            "fact": "fleet.models",
+            "label": "Stop distance"
+          },
+          {
+            "fact": "fleet.note",
+            "label": "Red: learned stop"
+          }
+        ],
+        "sources": [
+          "DESIGN#D10.5",
+          "DRIVER#DB4a",
+          "LOG#P1.8"
+        ]
+      }
+    ],
+    "right": [
+      {
+        "module": "CONTRACT",
+        "title": "CONTRACT",
+        "zh": "合同",
+        "review": "pending",
+        "rows": [
+          {
+            "fact": "contract.road",
+            "label": "Test road"
+          },
+          {
+            "fact": "contract.writeOffs",
+            "label": "Write-offs"
+          }
+        ],
+        "sources": [
+          "DESIGN#D10.5",
+          "DESIGN#D9.1"
+        ]
+      },
+      {
+        "module": "SHIFT",
+        "title": "SHIFT",
+        "zh": "班次",
+        "review": "pending",
+        "rows": [
+          {
+            "fact": "shift.admitted",
+            "label": "Admitted"
+          },
+          {
+            "fact": "shift.onRoad",
+            "label": "On road"
+          },
+          {
+            "fact": "shift.next",
+            "label": "Next admission"
+          },
+          {
+            "fact": "clock.active",
+            "label": "Active time"
+          }
+        ],
+        "sources": [
+          "DESIGN#D10.5",
+          "ENG#6.5",
+          "ENG#10.1"
+        ]
+      },
+      {
+        "module": "RECORD",
+        "title": "RECORD",
+        "zh": "记录",
+        "review": "pending",
+        "rows": [
+          {
+            "fact": "record.points",
+            "label": "Points"
+          },
+          {
+            "fact": "record.credits",
+            "label": "Body credits"
+          }
+        ],
+        "sources": [
+          "DESIGN#D10.5",
+          "DESIGN#D9.1"
+        ]
+      }
+    ]
+  },
+  "cueKey": [
+    {
+      "cue": "intention",
+      "label": "Chevron",
+      "meaning": "The car is reacting. Its plan is not fixed yet.",
+      "sources": [
+        "BRIEF#P1.3",
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "cue": "committed",
+      "label": "Closed ring",
+      "meaning": "The car has fixed its route and will follow it.",
+      "sources": [
+        "BRIEF#P1.3",
+        "DRIVER#DB5",
+        "DESIGN#D10.3~1"
+      ]
+    },
+    {
+      "cue": "expiring",
+      "label": "Opening ring",
+      "meaning": "The commitment is ending. Less than a full action window remains.",
+      "sources": [
+        "BRIEF#P1.3",
+        "DRIVER#DB5",
+        "DESIGN#D10.3~1"
+      ]
+    },
+    {
+      "cue": "interrupted",
+      "label": "Red broken ring",
+      "meaning": "The car has braked for safety. Its route is no longer reliable.",
+      "sources": [
+        "BRIEF#P1.3",
+        "DRIVER#DB5",
+        "DESIGN#D10.3~1"
+      ]
+    },
+    {
+      "cue": "caution",
+      "label": "Caution triangle",
+      "meaning": "The car is slowing past a nearby dummy.",
+      "sources": [
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "cue": "braking",
+      "label": "Brake marks",
+      "meaning": "The car is slowing down.",
+      "sources": [
+        "DESIGN#D10.3~1",
+        "BRIEF#P1.3"
+      ]
+    },
+    {
+      "cue": "spent",
+      "label": "Spent slash",
+      "meaning": "This appearance cannot award another scoring impact.",
+      "sources": [
+        "DESIGN#D10.3~1",
+        "BRIEF#P1.3"
+      ]
+    },
+    {
+      "cue": "honk",
+      "label": "HONK bubble",
+      "meaning": "The car has been blocked too long and complains.",
+      "sources": [
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "cue": "blind",
+      "label": "Sensor zone",
+      "meaning": "Marks where this car can sense. Outside it, it cannot.",
+      "sources": [
+        "DESIGN#D10.3~1",
+        "BRIEF#P1.3"
+      ]
+    },
+    {
+      "cue": "view",
+      "label": "View cone",
+      "meaning": "The wedge where the dummy resolves sensor information.",
+      "sources": [
+        "DESIGN#D10.3~1",
+        "BRIEF#P1.3"
+      ]
+    }
+  ],
+  "copy": {
+    "intro": [
+      "FARSIGHT TEST ROAD {road} OF {roads}: {roadName}.",
+      "Contract: {quota} bodies. {difficulty} chassis, rated {health}."
+    ],
+    "denied": {
+      "lunge": "Lunge declined. Charge below requirement.",
+      "pickup": "Pickup declined. No cone in reach, or Carry not installed.",
+      "drop": "Drop declined. No cone carried.",
+      "throw": "Throw declined. Not installed, or no cone carried."
+    },
+    "toast": {
+      "touch-spent": "Appearance already spent. No score recorded.",
+      "drone-dispatch": "Maintenance drone dispatched. Obstruction cleared.",
+      "purchase": "{node} installed. Approved by FARSIGHT.",
+      "learn-standoff": "{model} stop line moved to {metres} m.",
+      "refusal-locked": "Modification locked. Prerequisite not installed."
+    },
+    "report": {
+      "eyebrow": "FARSIGHT · TEST COMPLETION REPORT",
+      "title": "Chassis {chassis} written off",
+      "line": "Test {n} of {quota}. Assessed value: {points}.",
+      "cleared": "{roadName} certified. Next: {nextRoad}, target {nextQuota}. Points: {points}.",
+      "credit": "Body credit issued: {credits}.",
+      "continue": "Continue to body services"
+    },
+    "shop": {
+      "eyebrow": "FARSIGHT · BODY MODIFICATION",
+      "title": "Approved modifications",
+      "deploy": "Deploy replacement body",
+      "bank": "Balance: {credits} credits",
+      "nodes": {
+        "hips": "Hips · Torso. Opens Spine.",
+        "spine": "Spine · Torso. Steer the lunge.",
+        "carry": "Carry · Arms. Hold a cone.",
+        "throw": "Throw · Arms. Throw the cone."
+      }
+    },
+    "endings": {
+      "Licensed": "Licensed. Contract complete. Certification does not imply permission to drive.",
+      "Failed test": "Failed test. Contract unmet. Replay approved.",
+      "Non-compliant": "Non-compliant. Record filed for review. Replay available."
+    },
+    "frame": {
+      "district": "SHENZHEN SMART CITY · NEW ECONOMIC ZONE · TEST ROAD",
+      "districtZh": "深圳智慧城市 · 新经济区 · 测试道路",
+      "review": "pending"
+    },
+    "sources": [
+      "DESIGN#D9.1",
+      "DESIGN#D9.2",
+      "DESIGN#D9.3",
+      "DESIGN#D10.5",
+      "DESIGN#D1",
+      "LOG#P1.8",
+      "BRIEF#P1.2"
+    ]
+  },
+  "barks": [
+    {
+      "event": "admit",
+      "when": {},
+      "text": "{model} on shift. Deadline: yesterday.",
+      "sources": [
+        "DESIGN#D9.3",
+        "ENG#6.5"
+      ]
+    },
+    {
+      "event": "impact",
+      "when": {
+        "stopped": true
+      },
+      "text": "{model} was stationary. Please log that.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DRIVER#DB4a"
+      ]
+    },
+    {
+      "event": "impact",
+      "when": {
+        "learnedStandoff": true
+      },
+      "text": "That one goes on my record.",
+      "sources": [
+        "DESIGN#D9.3",
+        "ENG#6.5"
+      ]
+    },
+    {
+      "event": "touch-spent",
+      "when": {},
+      "text": "No accident detected. Please improve.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DESIGN#D10.3~1"
+      ]
+    },
+    {
+      "event": "honk",
+      "when": {
+        "at": "body"
+      },
+      "text": "Your freedom remains in progress. Kindly move.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "event": "honk",
+      "when": {},
+      "text": "{model} is on schedule. Please clear the lane.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "event": "commit",
+      "when": {
+        "man": "brake"
+      },
+      "text": "{model} yielding. Brake logged.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "event": "commit",
+      "when": {
+        "man": "shift"
+      },
+      "text": "{model} changing lane. Policy permitting.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "event": "interrupt",
+      "when": {},
+      "text": "{model} braking. Someone has a deadline.",
+      "sources": [
+        "DESIGN#D9.3",
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "event": "unstick",
+      "when": {
+        "how": "reverse"
+      },
+      "text": "{model} reversing. Making room, not conceding.",
+      "sources": [
+        "DESIGN#D9.3",
+        "LOG#P1.8"
+      ]
+    },
+    {
+      "event": "unstick",
+      "when": {
+        "how": "replan"
+      },
+      "text": "{model} replanning. Please do not report the delay.",
+      "sources": [
+        "DESIGN#D9.3",
+        "LOG#P1.8"
+      ]
+    }
+  ]
+}

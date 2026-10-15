@@ -1,0 +1,74 @@
+[
+  {
+    "id": "V1",
+    "kind": "rule",
+    "severity": "block",
+    "path": "vehicles.sedan.roof[2]",
+    "found": "line near the car centre",
+    "canon": "DESIGN#D10.3~1",
+    "rule": "Keep the state pip clear; cues outrank decoration."
+  },
+  {
+    "id": "V2",
+    "kind": "rule",
+    "severity": "block",
+    "path": "vehicles.van.roof[6]",
+    "found": "ring near the car centre",
+    "canon": "DESIGN#D10.3~1",
+    "rule": "Keep the state pip clear; cues outrank decoration."
+  },
+  {
+    "id": "V3",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.straight[2]",
+    "found": "[-3, 249, 803, 255]",
+    "canon": "DESIGN#D9.2",
+    "rule": "Decal must sit fully inside the field; cut-off text is unreadable."
+  },
+  {
+    "id": "V4",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.straight[3]",
+    "found": "[-3, 345, 803, 351]",
+    "canon": "DESIGN#D9.2",
+    "rule": "Decal must sit fully inside the field; cut-off text is unreadable."
+  },
+  {
+    "id": "V5",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.straight[4]",
+    "found": "overlaps pillar at (276,358)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  },
+  {
+    "id": "V6",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.barrier[2]",
+    "found": "[-3, 249, 803, 255]",
+    "canon": "DESIGN#D9.2",
+    "rule": "Decal must sit fully inside the field; cut-off text is unreadable."
+  },
+  {
+    "id": "V7",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.corner[3]",
+    "found": "[-3, 389, 443, 395]",
+    "canon": "DESIGN#D9.2",
+    "rule": "Decal must sit fully inside the field; cut-off text is unreadable."
+  },
+  {
+    "id": "V8",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.corner[4]",
+    "found": "[499, -3, 505, 333]",
+    "canon": "DESIGN#D9.2",
+    "rule": "Decal must sit fully inside the field; cut-off text is unreadable."
+  }
+]

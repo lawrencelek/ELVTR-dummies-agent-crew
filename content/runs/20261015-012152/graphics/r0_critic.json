@@ -1,0 +1,116 @@
+{
+  "verdict": "revise",
+  "summary": "The district dressing mostly sounds like DUMMIES: dry, operational and specific to the logistics and maintenance zone. It breaks the presentation rules in places, though. It uses decorative translucency, cue-like rings, dashes and hatching, a label that implies a mechanic, and \"bilingual\" labels that are Chinese-only.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.sedan.roof[0].alpha",
+      "found": "\"alpha\": 0.6",
+      "canon": "ENG#5.8",
+      "rule": "No decorative translucency in the matte field; translucency stays in the frame (D10.1).",
+      "fix": "\"alpha\": 1"
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[0].alpha / environment.barrier[0].alpha / environment.corner[0].alpha",
+      "found": "\"fill\": \"fleet\", \"alpha\": 0.55",
+      "canon": "ENG#5.8",
+      "rule": "The matte field has no decorative translucency. Essential district language must stay legible (D9.2), and fleet grey at 55% on tarmac will not meet 4.5:1.",
+      "fix": "\"fill\": \"secondary\" with no alpha (opaque)"
+    },
+    {
+      "id": "C3",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "environment.straight[6].text",
+      "found": "A1 仓区入口",
+      "canon": "DESIGN#D9.2",
+      "rule": "District identifiers are bilingual and essential language must be readable. The note says bilingual but the text is Chinese only.",
+      "fix": "A1 仓区入口 DEPOT"
+    },
+    {
+      "id": "C4",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "environment.barrier[4].text",
+      "found": "B1 检修场",
+      "canon": "DESIGN#D9.2",
+      "rule": "Bilingual labels must carry both languages.",
+      "fix": "B1 检修场 YARD"
+    },
+    {
+      "id": "C5",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "environment.barrier[7].text, environment.barrier[8].text",
+      "found": "检修口",
+      "canon": "DESIGN#D9.2",
+      "rule": "The service-door labels are noted as bilingual but are Chinese only.",
+      "fix": "检修口 SERVICE DOOR"
+    },
+    {
+      "id": "C6",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "environment.corner[5].text",
+      "found": "C1 站场",
+      "canon": "DESIGN#D9.2",
+      "rule": "Bilingual labels must carry both languages.",
+      "fix": "C1 站场 YARD"
+    },
+    {
+      "id": "C7",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.corner[8].text",
+      "found": "充电位 CHARGE",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "CHARGE is the name of the lunge-charge cue and battery mechanic. Decoration must not imply a mechanic, and the sign suggests a recharge zone.",
+      "fix": "车位 FLEET BAY"
+    },
+    {
+      "id": "C8",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[1].stroke, environment.barrier[1].stroke, environment.corner[1].stroke",
+      "found": "\"stroke\": \"secondary\", \"lineWidth\": 1.5",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "A secondary-ink ring on the tarmac imitates the closed or opening commitment rings, which decoration must not imitate. The utility cover should read as a flat road fixture.",
+      "fix": "\"stroke\": \"structure\", \"lineWidth\": 1"
+    },
+    {
+      "id": "C9",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[2], environment.straight[3], environment.barrier[2], environment.corner[2], environment.corner[3]",
+      "found": "\"dash\": [10, 6], \"stroke\": \"secondary\", \"lineWidth\": 1.5",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "Dashed secondary-ink lines imitate the planning cues (dashed predicted path or outline) and the dashed centre line. Painted kerb lines add no mechanics and must not look like a cue.",
+      "fix": "\"stroke\": \"structure\", \"lineWidth\": 1 (solid, remove \"dash\")"
+    },
+    {
+      "id": "C10",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[4], environment.corner[6]",
+      "found": "\"shape\": \"stripes\", ... \"angle\": 45, \"gap\": 6, \"stroke\": \"structure\"",
+      "canon": "DESIGN#D6.2",
+      "rule": "Hatching in structure colour imitates the renderer's barrier hatching, so the apron reads as a barrier. Surface markings add no mechanics.",
+      "fix": "{\"shape\":\"rect\",\"x\":190,\"y\":182,\"w\":90,\"h\":24,\"fill\":\"grid\"} for straight[4]; the same flat grid-fill rect with the existing x, y, w and h for corner[6]"
+    },
+    {
+      "id": "C11",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.barrier[5], environment.barrier[6]",
+      "found": "\"fill\": \"structure\", \"stroke\": \"primary\"",
+      "canon": "ENG#7.2",
+      "rule": "A structure-fill, outlined solid placed just beyond each barrier gap looks like a collidable static. A prop's visible footprint must agree with its collision footprint, and decoration has no collider.",
+      "fix": "\"fill\": \"floor\", \"stroke\": \"structure\""
+    }
+  ]
+}

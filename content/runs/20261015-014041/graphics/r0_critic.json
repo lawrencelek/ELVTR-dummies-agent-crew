@@ -1,0 +1,116 @@
+{
+  "verdict": "revise",
+  "summary": "The copy sounds like DUMMIES: dry, operational, bilingual and free of marketing gloss. The faults are presentation rules: a roof mark that imitates the state pip, structure colour used on car roofs, road identifiers too faint to pass the 3:1 tier-2 contrast target, and one label that implies a mechanic.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.sedan.roof[5]",
+      "found": "{\"shape\":\"ring\",\"x\":17,\"y\":0,\"r\":6,\"lineWidth\":1,\"stroke\":\"secondary\"}",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "Decoration must not imitate cue shapes. A small ring with a centre dot reads as a second state pip (radius 8) or a closed commitment ring.",
+      "fix": "{\"shape\":\"rect\",\"x\":14,\"y\":-4,\"w\":6,\"h\":8,\"stroke\":\"secondary\",\"lineWidth\":1}"
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.van.roof[9].fill",
+      "found": "structure",
+      "canon": "DESIGN#D10.2",
+      "rule": "Structure colour is reserved for barriers and fixed forms, so it must not mark car roofs. Use the secondary cue colour or fleet tones.",
+      "fix": "secondary"
+    },
+    {
+      "id": "C3",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.van.roof[10].fill",
+      "found": "structure",
+      "canon": "DESIGN#D10.2",
+      "rule": "Structure colour is reserved for barriers and fixed forms, so it must not mark car roofs.",
+      "fix": "secondary"
+    },
+    {
+      "id": "C4",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[0].alpha",
+      "found": 0.5,
+      "canon": "DESIGN#D10.2",
+      "rule": "Essential road identifiers need a 3:1 tier-2 contrast target. Secondary ink at 50% on the pale ground is about 2.2:1.",
+      "fix": 0.7
+    },
+    {
+      "id": "C5",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[1].alpha",
+      "found": 0.5,
+      "canon": "DESIGN#D9.2",
+      "rule": "Essential bilingual identifiers must stay readable and not become faint texture. The 3:1 contrast target applies.",
+      "fix": 0.7
+    },
+    {
+      "id": "C6",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.barrier[0].alpha",
+      "found": 0.5,
+      "canon": "DESIGN#D10.2",
+      "rule": "The tier-2 contrast target is 3:1, and 50% secondary ink falls short of it.",
+      "fix": 0.7
+    },
+    {
+      "id": "C7",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.barrier[1].alpha",
+      "found": 0.5,
+      "canon": "DESIGN#D9.2",
+      "rule": "Essential bilingual identifiers must stay readable.",
+      "fix": 0.7
+    },
+    {
+      "id": "C8",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.corner[0].alpha",
+      "found": 0.5,
+      "canon": "DESIGN#D10.2",
+      "rule": "The tier-2 contrast target is 3:1, and 50% secondary ink falls short of it.",
+      "fix": 0.7
+    },
+    {
+      "id": "C9",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.corner[1].alpha",
+      "found": 0.5,
+      "canon": "DESIGN#D9.2",
+      "rule": "Essential bilingual identifiers must stay readable.",
+      "fix": 0.7
+    },
+    {
+      "id": "C10",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.corner[2].alpha",
+      "found": 0.5,
+      "canon": "DESIGN#D9.2",
+      "rule": "A destination marking is essential operational text and needs the 3:1 contrast target.",
+      "fix": 0.7
+    },
+    {
+      "id": "C11",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "environment.straight[5].text",
+      "found": "SERVICE PULL-IN",
+      "canon": "DESIGN#D6.2",
+      "rule": "Stripes and kerbs add no mechanics, and the slice has no pull-in or parking behaviour. A pull-in label implies a stopping place.",
+      "fix": "SERVICE SHOULDER"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "verdict": "revise",
+  "summary": "The copy mostly sounds like DUMMIES: dry FARSIGHT register, workers' resentment in the barks, and no slogans. It has some truth problems, because several lines assert things the sim did not log (a late shift, 'Again', 'on time', a 'noon' deadline, a charge refusal that may really be recovery). It also has a truncated shop button and some engineering jargon leaking into player-facing text.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "block",
+      "path": "copy.denied.lunge",
+      "found": "Lunge declined. Charge not ready.",
+      "canon": "ENG#5.2~1",
+      "rule": "A is denied for no charge or for recovery, and copy may only assert the logged reason; one string cannot blame charge when the refusal may be recovery.",
+      "fix": "Lunge declined. Charge or recovery incomplete."
+    },
+    {
+      "id": "C2",
+      "kind": "data",
+      "severity": "fix",
+      "path": "copy.shop.bank",
+      "found": "Keep {credits} credits. Deploy",
+      "canon": "DESIGN#D3.9",
+      "rule": "The bank button must say plainly that credits are kept and the next chassis deploys; the truncated label does not, and it breaks the singular case of 1 credit.",
+      "fix": "Keep {credits} in credit. Deploy next chassis"
+    },
+    {
+      "id": "C3",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "copy.shop.nodes.spine",
+      "found": "Steer during the lunge window. Within declared limits.",
+      "canon": "DESIGN#D3.9",
+      "rule": "The node text states what the visitor can now do in plain terms; 'declared limits' is spec jargon, not FARSIGHT's voice.",
+      "fix": "Steer your lunge while it is in progress. Only slightly."
+    },
+    {
+      "id": "C4",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "cueKey[7].meaning",
+      "found": "The car has been blocked for more than the honk limit.",
+      "canon": "DRIVER#DB5",
+      "rule": "The key must explain the HONK bubble in visitor terms. 'Honk limit' is an internal term, and the cue means blocked for more than 5 s.",
+      "fix": "The car has been blocked for some time and is warning you."
+    },
+    {
+      "id": "C5",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "cueKey[1].meaning",
+      "found": "The car has fixed its plan and will follow it.",
+      "canon": "ENG#6.2~2",
+      "rule": "Commitment promises the corridor until expiry unless a safety interruption is visibly announced, so it cannot say the car will simply follow it.",
+      "fix": "The car has fixed its route and will hold it unless interrupted."
+    },
+    {
+      "id": "C6",
+      "kind": "truth",
+      "severity": "block",
+      "path": "barks[1].text",
+      "found": "{model} hit. Down {lost} health. My shift is late.",
+      "canon": "DESIGN#D9.3",
+      "rule": "Barks react to recorded events and cannot assert facts the sim did not log; no lateness is logged. The line also reads as a report rather than a worker.",
+      "fix": "{model} hit. {lost} health lost. That goes on my record."
+    },
+    {
+      "id": "C7",
+      "kind": "truth",
+      "severity": "block",
+      "path": "barks[8].text",
+      "found": "Replanning. Again. On my own time.",
+      "canon": "DESIGN#D5.4",
+      "rule": "Barks never assert facts the simulation did not establish; 'Again' claims a repeat that the unstick event does not log.",
+      "fix": "Replanning. On my own time."
+    },
+    {
+      "id": "C8",
+      "kind": "truth",
+      "severity": "block",
+      "path": "barks[10].text",
+      "found": "Courier run. Entering the zone, on time.",
+      "canon": "DESIGN#D9.3",
+      "rule": "The admit event logs no punctuality, so 'on time' is an unlogged claim; keep to the car's job and the admission.",
+      "fix": "Courier run. Entering the zone."
+    },
+    {
+      "id": "C9",
+      "kind": "truth",
+      "severity": "fix",
+      "path": "barks[9].text",
+      "found": "Crates due by noon. Entering the zone.",
+      "canon": "DESIGN#D9.3",
+      "rule": "The game has no clock time and the admit event logs no deadline. A vague job statement stays true to the logged admission.",
+      "fix": "Crates due this shift. Entering the zone."
+    }
+  ]
+}

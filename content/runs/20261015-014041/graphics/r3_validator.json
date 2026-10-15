@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "data",
+    "severity": "fix",
+    "path": "environment.corner[6].surface",
+    "found": "shoulder",
+    "canon": "pipeline:geometry",
+    "rule": "Declared shoulder but it sits on verge (84 units from the centreline)."
+  }
+]

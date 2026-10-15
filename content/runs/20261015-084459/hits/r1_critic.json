@@ -1,0 +1,36 @@
+{
+  "verdict": "revise",
+  "summary": "The layers sound like DUMMIES: dry, physical and presentation-only, with the sim left untouched and hit-stop left on the registry. The remaining drift is in particle and streak roles. Sparks and the miss streaks are drawn in the reserved tier-1 and tier-2 cue colours, so they can pass for cues.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "layers[0].particles[0].role",
+      "found": "primary",
+      "canon": "EDIT26#4.2~2",
+      "rule": "The cue.primary treatment is reserved for tier-1 cues, and decoration must not use it. The settled ring fix applied the same rule.",
+      "fix": "structure"
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "layers[8].particles[2].role",
+      "found": "primary",
+      "canon": "EDIT26#4.2~2",
+      "rule": "Write-off sparks are decoration and must not be drawn in the reserved tier-1 cue colour.",
+      "fix": "structure"
+    },
+    {
+      "id": "C3",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "layers[14].streaks.role",
+      "found": "secondary",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "Straight speed lines in the cue.secondary colour behind the dummy imitate the lunge trace, an actual action in progress. After a miss the lunge has ended, so the lines suggest it is still running.",
+      "fix": "structure"
+    }
+  ]
+}

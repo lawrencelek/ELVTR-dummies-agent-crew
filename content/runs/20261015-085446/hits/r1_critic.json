@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The copy and parameters sound like DUMMIES: dry, physical and tied to the crash lab. Two things need changing. The write-off layer puts the smoke on the car instead of the dummy's body, and the scored hit on a stopped car sounds almost the same as the touch on a spent car.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "layers[8].particles[1].at",
+      "found": "car",
+      "canon": "EDIT26#5.1",
+      "rule": "A write-off destroys the dummy's body: it shakes, throws particles, turns red and disappears. The smoke belongs on the written-off body, not on the car.",
+      "fix": "dummy"
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "params[proto.hits.stopped.thumpFrom/thumpTo/thumpSeconds/thumpGain]",
+      "found": "{\"proto.hits.stopped.thumpFrom\":420,\"proto.hits.stopped.thumpTo\":110,\"proto.hits.stopped.thumpSeconds\":0.16,\"proto.hits.stopped.thumpGain\":0.14}",
+      "canon": "DESIGN#D4.5",
+      "rule": "A scored hit and a touch on a spent car must not use indistinguishable feedback. The stopped-car thump is nearly the same as the spent-car thud (500 to 140 Hz, 0.12 s, gain 0.12).",
+      "fix": "{\"proto.hits.stopped.thumpFrom\":900,\"proto.hits.stopped.thumpTo\":160,\"proto.hits.stopped.thumpSeconds\":0.2,\"proto.hits.stopped.thumpGain\":0.18}"
+    }
+  ]
+}

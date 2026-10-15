@@ -1,0 +1,85 @@
+{
+  "run": "20261015-014041",
+  "results": [
+    {
+      "type": "graphics",
+      "ok": true,
+      "rounds": 4
+    }
+  ],
+  "calls": [
+    {
+      "label": "graphics/02_generator",
+      "role": "Generator",
+      "seconds": 89.5,
+      "output_tokens": 12436,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r0_critic",
+      "role": "Critic",
+      "seconds": 81.1,
+      "output_tokens": 10639,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 33.1,
+      "output_tokens": 6149,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r1_critic",
+      "role": "Critic",
+      "seconds": 51.4,
+      "output_tokens": 6529,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 26.2,
+      "output_tokens": 5492,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r2_critic",
+      "role": "Critic",
+      "seconds": 54.4,
+      "output_tokens": 7095,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r3_repair",
+      "role": "Generator (repair)",
+      "seconds": 22.5,
+      "output_tokens": 5041,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r3_critic",
+      "role": "Critic",
+      "seconds": 44.6,
+      "output_tokens": 5668,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "rule",
+    "severity": "block",
+    "path": "dummy.markings[1]",
+    "found": "[-12.1, -9, -0.9, 2.7]",
+    "canon": "ENG#13.5",
+    "rule": "Markings stay inside the 13-unit body."
+  }
+]
