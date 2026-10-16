@@ -1,8 +1,8 @@
 # DUMMIES — P2 Prototype: Generated Content
 
-**P2.1 · 15 October 2026 · Lawrence Lek**
+**P2.2 · 16 October 2026 · Lawrence Lek**
 
-P1.9's simulation with a presentation layer generated from the GDD. Gameplay is unchanged. P2.1 fills three gaps: humour (vehicle barks in speech bubbles), juice (layered hit feedback) and graphics (a FARSIGHT smart-city interface skin). Content comes from `content/*.json`, written by the [content pipeline](../../content/README.md). P1 stays frozen at P1.9.
+P1.9's simulation with a presentation layer generated from the GDD. P2.2 makes drivers react in 0.3 s and shows where each car can stop. P2.1 fills three gaps: humour (vehicle barks in speech bubbles), juice (layered hit feedback) and graphics (a FARSIGHT smart-city interface skin). Content comes from `content/*.json`, written by the [content pipeline](../../content/README.md). P1 stays frozen at P1.9.
 
 ![P2.1: a front hit with a shout bubble, burst and value popup](../../content/docs/p2_impact.png)
 
@@ -31,17 +31,36 @@ Open `dummies_p2.html` in a browser. No install, no server.
 
 P2.0 layers stay underneath: `juice.json` (other events, tyre marks, chassis drop), `interface.json` (D10.5 HUD, cue key, copy deck), `graphics.json` (liveries, dummy markings, district dressing).
 
-- **Unchanged:** `sim.js` is byte-identical to P1.9, including the 0.06 s hit-stop. `node test_sim.js` → 34/34.
+- **Sim:** P1.9 rules, including the 0.06 s hit-stop. P2.2 changes two driver values (below). `node test_sim.js` → 34/34.
 - **Derived cases:** near miss, miss and upgrade seen are computed by the renderer from sim state. They and every bark are logged in the exported trace under `presentation`.
 - **Fallback:** Each layer falls back to P2.0, and without `content.js` to P1.9.
 - **Chinese text:** All marked review pending (D9.2).
+
+## P2.2 — Stopping
+
+Playtest: cars hit a dummy standing well ahead in their lane.
+
+- **Cause:** P1.7's Highway Code reaction, 0.67 s. At cruise a car needs 212 u (17 m) to stop, plus its 50 u stop line.
+- **Reaction:** `perception.reactionDelay` 0.67 → 0.3 s. Stopping distance at cruise: 212 → 162 u (13 m).
+- **Covered reaction:** `proto.driver.coveredReaction` 0.4 → 0.18 s. Stays faster than plain reaction (P1.7 ratio 0.6).
+- **Stop bracket:** A grey bracket across each moving car's width, ahead of it. The nose stops there if the car sees the dummy now. Display only. In the cue key. Toggle `proto.stopCue`.
+- **Bracket distance:** v × reaction left + v² ÷ (2 × `traffic.hardBraking`). Hidden once a planned stop shows its STOP line.
+- **Sweep:** Dummy stands still at every 25 u of every lane for 30 s. Hit at 45 → 20 of 209 positions.
+
+| Still hit | Why |
+|---|---|
+| Lane 0, within 25 u of the left edge (all roads) | The car enters 144–169 u away. It cannot see past the map edge. |
+| L3, on the bend and up to 120 u past it | P1.9 straight sensors (O1.29). The beam points past the bend. Cars find the dummy at 30–120 u. |
+
+- `node policy_check.js`: Stand in lane, 0 impacts in 300 s.
+- **Smoke test:** L1 now clears in 8 s before any car exits. The test replays a road until traffic has crossed.
 
 ## Files
 
 | File | Role |
 |---|---|
 | `dummies_p2.html` | Playable build. Single file. |
-| `sim.js` | P1.9 simulation, unchanged. |
+| `sim.js` | P1.9 simulation. P2.2: reaction values, `proto.stopCue`. |
 | `game.js` | P1.9 renderer plus the content layer: juice, HUD, copy, barks and bubbles, hit layers, derived cases, terminal skin, vector art. |
 | `content/*.json`, `content.js` | Generated content and its bundle. Do not hand-edit. |
 | `shell.html`, `build.py` | `python3 build.py` bundles `sim.js` + `content.js` + `game.js`. |
@@ -66,6 +85,12 @@ python content/pipeline.py --check                               # re-validate a
 | `proto.ui.barkSeconds`, `proto.ui.barkCooldown` | 2 | `content/out/DUMMIES_GDD_Edit32_Interface.md` (P2.0 barks; superseded) |
 
 None promoted to the registry.
+
+## Questions for the P2.2 session
+
+- Do cars now stop when you stand well ahead?
+- Does the stop bracket teach where it is safe to stand? Is it noise?
+- Should L3 cars stay blind round the bend?
 
 ## Questions for the P2.1 session
 

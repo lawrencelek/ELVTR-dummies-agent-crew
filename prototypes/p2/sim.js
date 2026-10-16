@@ -38,7 +38,7 @@
   const PROTO = {
     'proto.swerveLength': 120, 'proto.swerveOuter': 34, 'proto.shoulderWidth': 24,
     'proto.substeps': 4,
-    'proto.learningEnabled': 0, 'proto.zonesEverywhere': 0, 'proto.pathsEverywhere': 1,
+    'proto.learningEnabled': 0, 'proto.zonesEverywhere': 0, 'proto.pathsEverywhere': 1, 'proto.stopCue': 1,
     'proto.returnSignalSeconds': 0.5, 'proto.returnClearance': 30, 'proto.carYawRate': 240,
     'proto.difficulty': 1, 'proto.health.fragile': 200, 'proto.health.standard': 300, 'proto.health.reinforced': 600,
     'proto.quota.straight': 1, 'proto.quota.barrier': 2, 'proto.quota.corner': 3,
@@ -47,7 +47,7 @@
     'proto.damageModel': 1, 'proto.damageExponent': 2, 'proto.dummyMass': 0.056, 'proto.restitution': 0.3, 'proto.dummyStrikeSpeed': 100,
     'proto.contactFriction': 0.3, 'proto.recoilScale': 0.6, 'proto.recoilSeconds': 0.35,
     'proto.standoffDistance': 50, 'proto.learn.standoffEnabled': 1, 'proto.learn.standoffStep': 35, 'proto.learn.standoffMax': 190, 'proto.sensorStraight': 1, 'proto.unstick.reverseSpeed': 30, 'proto.unstick.reverseGap': 140, 'proto.unstick.reverseSeconds': 5, 'proto.honkSeconds': 5,
-    'proto.scale.unitsPerMetre': 12.2, 'proto.driver.coveredReaction': 0.4, 'proto.driver.cautionZone': 180,
+    'proto.scale.unitsPerMetre': 12.2, 'proto.driver.coveredReaction': 0.18, 'proto.driver.cautionZone': 180,
     'proto.driver.cautionSpeed': 82, 'proto.driver.passClearance': 24, 'proto.driver.passSpeed': 55,
     'proto.driver.patienceSeconds': 8, 'proto.droneSpeed': 240, 'proto.droneLiftSeconds': 0.5,
     'proto.art.shadowScale': 0.3, 'proto.art.crateHeight': 30, 'proto.art.barrierHeight': 14,
@@ -58,7 +58,8 @@
   const OVERRIDES = {
     'props.cone.radius': 7.2, 'run.appearances.road': 100,
     // P1.7 Standard driver, derived from UK Highway Code stopping distances at 12.2 world units per metre.
-    'perception.reactionDelay': 0.67, 'traffic.comfortBraking': 37, 'traffic.hardBraking': 79,
+    // P2.2: reaction 0.67 -> 0.3 s (playtest: cars hit a dummy standing well ahead). Braking unchanged.
+    'perception.reactionDelay': 0.3, 'traffic.comfortBraking': 37, 'traffic.hardBraking': 79,
     'traffic.acceleration': 43, 'traffic.timeGap': 2.0, 'perception.forwardLength': 560,
   };
 

@@ -295,18 +295,23 @@ check('determinism: same inputs → same trace', () => {
 });
 for (const lvl of D.LEVEL_LIST) {
   check(`smoke ${lvl}: 10 min scripted play, no NaN, cars admit and exit`, () => {
-    const s = new Sim(lvl);
-    let t = 0;
+    let s = new Sim(lvl), admitted = 0, exited = 0;
     for (let i = 0; i < 60 * 600; i++) {
       const cmd = { mx: Math.sin(i / 37) , my: Math.cos(i / 53), aPress: i % 41 === 0, bPress: i % 113 === 0, bRelease: i % 113 === 3 };
       s.step(cmd);
       if (s.phase === 'report') s.continueReport();
       if (s.phase === 'shop') { for (const n of ['hips', 'carry', 'spine', 'throw']) s.buy(n); s.leaveShop(); }
-      if (s.phase === 'ending' || s.phase === 'next') break;
+      if (s.phase === 'ending' || s.phase === 'next') {
+        admitted += s.run.admitted; exited += s.run.exited;
+        if (exited > 0) break;
+        s = new Sim(lvl); // road cleared before any car crossed: replay it until traffic has flowed
+        continue;
+      }
       for (const c of s.cars) assert(Number.isFinite(c.x + c.y + c.v), 'NaN car');
       assert(Number.isFinite(s.body.x + s.body.y), 'NaN body');
     }
-    assert(s.run.admitted > 0 && s.run.exited > 0, `admitted ${s.run.admitted} exited ${s.run.exited}`);
+    if (s.phase !== 'ending' && s.phase !== 'next') { admitted += s.run.admitted; exited += s.run.exited; }
+    assert(admitted > 0 && exited > 0, `admitted ${admitted} exited ${exited}`);
     console.log(`   ${lvl}: t=${s.t.toFixed(1)} writeOffs=${s.run.writeOffs} hits=${s.events.filter((e) => e.type === 'impact').length} ending=${s.run.ending && s.run.ending.kind}`);
   });
 }

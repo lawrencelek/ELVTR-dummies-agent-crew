@@ -121,7 +121,7 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
   const PROTO = {
     'proto.swerveLength': 120, 'proto.swerveOuter': 34, 'proto.shoulderWidth': 24,
     'proto.substeps': 4,
-    'proto.learningEnabled': 0, 'proto.zonesEverywhere': 0, 'proto.pathsEverywhere': 1,
+    'proto.learningEnabled': 0, 'proto.zonesEverywhere': 0, 'proto.pathsEverywhere': 1, 'proto.stopCue': 1,
     'proto.returnSignalSeconds': 0.5, 'proto.returnClearance': 30, 'proto.carYawRate': 240,
     'proto.difficulty': 1, 'proto.health.fragile': 200, 'proto.health.standard': 300, 'proto.health.reinforced': 600,
     'proto.quota.straight': 1, 'proto.quota.barrier': 2, 'proto.quota.corner': 3,
@@ -130,7 +130,7 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
     'proto.damageModel': 1, 'proto.damageExponent': 2, 'proto.dummyMass': 0.056, 'proto.restitution': 0.3, 'proto.dummyStrikeSpeed': 100,
     'proto.contactFriction': 0.3, 'proto.recoilScale': 0.6, 'proto.recoilSeconds': 0.35,
     'proto.standoffDistance': 50, 'proto.learn.standoffEnabled': 1, 'proto.learn.standoffStep': 35, 'proto.learn.standoffMax': 190, 'proto.sensorStraight': 1, 'proto.unstick.reverseSpeed': 30, 'proto.unstick.reverseGap': 140, 'proto.unstick.reverseSeconds': 5, 'proto.honkSeconds': 5,
-    'proto.scale.unitsPerMetre': 12.2, 'proto.driver.coveredReaction': 0.4, 'proto.driver.cautionZone': 180,
+    'proto.scale.unitsPerMetre': 12.2, 'proto.driver.coveredReaction': 0.18, 'proto.driver.cautionZone': 180,
     'proto.driver.cautionSpeed': 82, 'proto.driver.passClearance': 24, 'proto.driver.passSpeed': 55,
     'proto.driver.patienceSeconds': 8, 'proto.droneSpeed': 240, 'proto.droneLiftSeconds': 0.5,
     'proto.art.shadowScale': 0.3, 'proto.art.crateHeight': 30, 'proto.art.barrierHeight': 14,
@@ -141,7 +141,8 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
   const OVERRIDES = {
     'props.cone.radius': 7.2, 'run.appearances.road': 100,
     // P1.7 Standard driver, derived from UK Highway Code stopping distances at 12.2 world units per metre.
-    'perception.reactionDelay': 0.67, 'traffic.comfortBraking': 37, 'traffic.hardBraking': 79,
+    // P2.2: reaction 0.67 -> 0.3 s (playtest: cars hit a dummy standing well ahead). Braking unchanged.
+    'perception.reactionDelay': 0.3, 'traffic.comfortBraking': 37, 'traffic.hardBraking': 79,
     'traffic.acceleration': 43, 'traffic.timeGap': 2.0, 'perception.forwardLength': 560,
   };
 
@@ -2150,7 +2151,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     y += 52; label('VIEW', X + 14, y);
     txt(P['proto.zonesEverywhere'] ? 'Scanners everywhere' : 'Scanners in view cone', X + 14, y + 22, '400 12px ' + F_UI, C.ink2);
     txt(P['proto.pathsEverywhere'] ? 'Car paths always shown' : 'Car paths in view cone', X + 14, y + 40, '400 12px ' + F_UI, C.ink2);
-    txt('Drivers: Highway Code', X + 14, y + 58, '400 12px ' + F_UI, C.ink2);
+    txt('Drivers react in ' + (+P['perception.reactionDelay']).toFixed(2) + ' s', X + 14, y + 58, '400 12px ' + F_UI, C.ink2);
     txt(P['proto.sensorStraight'] ? 'Sensors: straight ahead' : 'Sensors: follow the road', X + 14, y + 76, '400 12px ' + F_UI, C.ink2);
   }
 
@@ -2351,6 +2352,26 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     const e = pts[pts.length - 1], ex = e.x, ey = e.y;
     ctx.save(); ctx.translate(ex, ey); ctx.rotate(e.h); rr(-c.L / 2, -c.W / 2, c.L, c.W, 6);
     ctx.setLineDash([5, 4]); ctx.strokeStyle = provisional ? 'rgba(74,90,102,0.6)' : C.primary; ctx.lineWidth = 1.4; ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+  }
+  // P2.2 stop bracket: where this car's nose stops if the dummy steps into its path now, and the car sees it.
+  // v × reaction still to run (perception.reactionDelay, or proto.driver.coveredReaction when covering the brake)
+  // + v² / (2 × traffic.hardBraking). Display only; hidden once a planned stop shows its STOP line.
+  function drawStopCue(s, c) {
+    const P = s.P;
+    if (!P['proto.stopCue'] || c.v < 5 || (c.man && (c.man.type === 'reverse' || c.man.standoff))) return;
+    const braking = !!(c.man && c.man.type === 'brake');
+    const covering = (c.nearT || 0) - (c.pathT || 0) >= P['perception.reactionDelay'] - 1e-9;
+    const react = braking ? 0 : Math.max(0, (covering ? P['proto.driver.coveredReaction'] : P['perception.reactionDelay']) - (c.pathT || 0));
+    const sN = c.s + c.L / 2 + c.v * react + c.v * c.v / (2 * P['traffic.hardBraking']);
+    if (sN > c.path.length) return;
+    const q = pathAt(c.path, sN), d = s.plannedD(c, sN), hw = c.W / 2 + 4, k = 6;
+    const cx = q.x + q.nx * d, cy = q.y + q.ny * d;
+    if (cx < -10 || cx > FW + 10 || cy < -10 || cy > FH + 10) return;
+    ctx.strokeStyle = C.secondary; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    ctx.beginPath(); // a bracket across the swept width, its ends turned back toward the car
+    ctx.moveTo(cx + q.nx * hw - q.tx * k, cy + q.ny * hw - q.ty * k); ctx.lineTo(cx + q.nx * hw, cy + q.ny * hw);
+    ctx.lineTo(cx - q.nx * hw, cy - q.ny * hw); ctx.lineTo(cx - q.nx * hw - q.tx * k, cy - q.ny * hw - q.ty * k);
+    ctx.stroke(); ctx.lineJoin = 'miter';
   }
   function drawCar(s, c) {
     const braking = (c.man && c.man.type === 'brake') || c.state === 'interrupted' || (c._pv != null && c.v < c._pv - 0.4);
@@ -2788,6 +2809,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     if (b.alive || P['proto.zonesEverywhere']) for (const c of s.cars) { drawZones(s, c); if (!P['proto.pathsEverywhere']) drawPath(s, c); }
     ctx.restore();
     if (P['proto.pathsEverywhere']) for (const c of s.cars) drawPath(s, c);
+    if (b.alive) for (const c of s.cars) drawStopCue(s, c);
     if (b.alive) {
       wedge(b, P); ctx.fillStyle = 'rgba(16,20,23,0.025)'; ctx.fill();
       const hw = P['sensing.coneWidth'] * DEG / 2;
@@ -2983,13 +3005,16 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
       ctx.fillStyle = C.secondary; ctx.fillRect(-1, -2.5, 2, 4); ctx.fillRect(-1, 2.5, 2, 1.5);
     } else if (cue === 'braking') { car(false); ctx.fillStyle = C.warning; ctx.fillRect(-16, -5, 3, 4); ctx.fillRect(-16, 1, 3, 4); }
     else if (cue === 'spent') car(true);
+    else if (cue === 'stoppoint') { rr(-22, -6, 22, 12, 4); ctx.fillStyle = C.fleet; ctx.fill(); ctx.strokeStyle = C.secondary; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(9, -10); ctx.lineTo(15, -10); ctx.lineTo(15, 10); ctx.lineTo(9, 10); ctx.stroke(); }
     else if (cue === 'honk') { rr(-20, -8, 40, 16, 8); ctx.fillStyle = '#FFF1C9'; ctx.fill(); ctx.strokeStyle = C.primary; ctx.lineWidth = 1.2; ctx.stroke(); txt('HONK', 0, 4, '700 9px ' + F_MONO, C.primary, 'center'); }
     else if (cue === 'blind') { ctx.beginPath(); ctx.moveTo(-14, -4); ctx.lineTo(14, -9); ctx.lineTo(14, 9); ctx.lineTo(-14, 4); ctx.closePath(); ctx.fillStyle = 'rgba(79,195,232,0.14)'; ctx.fill(); ctx.setLineDash([3, 4]); ctx.strokeStyle = 'rgba(30,143,184,0.85)'; ctx.lineWidth = 1.2; ctx.stroke(); ctx.setLineDash([]); }
     else if (cue === 'view') { ctx.strokeStyle = 'rgba(16,20,23,0.4)'; ctx.setLineDash([2, 4]); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(14, -10); ctx.moveTo(-12, 0); ctx.lineTo(14, 10); ctx.stroke(); ctx.setLineDash([]); }
     ctx.restore();
   }
+  const CUE_P22 = { cue: 'stoppoint', label: 'Stop bracket', meaning: 'Where the car stops if it sees you now. Inside it, it cannot stop.' };
   function drawCueKey(x, y, w) {
-    const keys = CI.cueKey;
+    const keys = CI.cueKey.slice();
+    if (app.sim && app.sim.P['proto.stopCue'] && !keys.some((k) => k.cue === CUE_P22.cue)) keys.splice(Math.max(0, keys.findIndex((k) => k.cue === 'braking') + 1), 0, CUE_P22);
     panel(x, y, w, 44 + keys.length * 50);
     label(copy('cueKeyTitle', 'CUE KEY'), x + 20, y + 28);
     keys.forEach((k, i) => {
@@ -3099,7 +3124,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
       inp.addEventListener('input', () => setParam(id, parseFloat(inp.value)));
       row.append(nm, out, inp); grid.append(row);
     }
-    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits']]) {
+    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits'], ['proto.stopCue', 'Show each car\'s stop bracket']]) {
       const row = document.createElement('label'); row.className = 'tcheck';
       const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-' + id.replace(/\./g, '-');
       inp.addEventListener('change', () => setParam(id, inp.checked ? 1 : 0));
@@ -3114,7 +3139,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
       const v = current(id); if (document.activeElement !== inp) inp.value = v;
       inp.nextSibling; inp.parentNode.querySelector('output').textContent = (+v).toFixed(v % 1 ? 2 : 0) + (REG[id] != null && v !== REG[id] ? '  (registry ' + REG[id] + ')' : '');
     }
-    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
+    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
   }
   function toggleTune() { tuneEl.open = !tuneEl.open; if (tuneEl.open) { syncTune(); tuneEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
   document.getElementById('btn-tune').addEventListener('click', toggleTune);
