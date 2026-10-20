@@ -4,7 +4,8 @@
    hard shadows down-left. Translucency is SNES-style colour math on whole pixels. Exposes window.PIX. */
 (function (root) {
   'use strict';
-  const AW = 400, AH = 300, U = 2, TAU = Math.PI * 2;
+  // Field size (D27 test, Edit 41.1): 400 × 300 art px by default; ?field=large gives 640 × 480 (40 × 30 tiles of 16 px).
+  const BIG = root.PIX_FIELD === 'large', AW = BIG ? 640 : 400, AH = BIG ? 480 : 300, U = 2, TAU = Math.PI * 2;
   const SUN = { x: -Math.SQRT1_2, y: Math.SQRT1_2 }; // light from 1:30, shadows fall to 7:30
 
   // ---------- palettes (Edit 37 §4.1.4 roles; placeholders registered as data). One is chosen at load.
@@ -855,7 +856,7 @@
     const city = PAL.scenery === 'city';
     if (city) { // deck plates with seams, grates and drains
       for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) if (x % 16 === 0 || y % 16 === 0) B.put(x, y, K.grass2);
-      for (let i = 0; i < 90; i++) { const x = Math.floor(r() * 25) * 16 + 4, y = Math.floor(r() * 19) * 16 + 4, w = 3 + Math.floor(r() * 6); for (let k = 0; k < w; k += 2) { B.put(x + k, y, K.grass3); B.put(x + k, y + 1, K.grass3); } }
+      for (let i = 0; i < Math.round(90 * AW * AH / 120000); i++) { const x = Math.floor(r() * AW / 16) * 16 + 4, y = Math.floor(r() * Math.ceil(AH / 16)) * 16 + 4, w = 3 + Math.floor(r() * 6); for (let k = 0; k < w; k += 2) { B.put(x + k, y, K.grass3); B.put(x + k, y + 1, K.grass3); } }
     } else {
       for (let i = 0; i < 2000; i++) { const x = Math.floor(r() * AW), y = Math.floor(r() * AH); B.put(x, y, K.grass2); B.put(x + 1, y - 1, K.grass2); }
       for (let i = 0; i < 650; i++) B.put(Math.floor(r() * AW), Math.floor(r() * AH), K.grass3);
@@ -874,7 +875,8 @@
       }
     } else for (const [bx, by, br] of [[40, 8, 2], [170, 5, 3], [300, 10, 2], [372, 4, 1]]) { for (const p of circle(br)) B.put(bx + p[0], by + p[1], K.bubble); B.put(bx - 1, by - 1, K.bubble); }
     // road and pavement from the distance to the centre line
-    const geo = pathGeom(level.center), lw = P['world.laneWidth'], outer = lw + P['proto.shoulderWidth'];
+    const geo0 = pathGeom(level.center), geoR = level.ring ? pathGeom(level.ring) : null, lw = P['world.laneWidth'], outer = lw + P['proto.shoulderWidth'];
+    const geo = geoR ? { length: geo0.length, at: geo0.at, near: (x, y) => { const a = geo0.near(x, y), b2 = geoR.near(x, y); return b2.d < a.d ? b2 : a; } } : geo0; // the roundabout ring is road too
     const near = new Float32Array(AW * AH);
     for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) {
       const wx = (x + 0.5) * U, wy = (y + 0.5) * U, n = geo.near(wx, wy);
@@ -935,7 +937,7 @@
   }
 
   root.PIX = {
-    AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
+    AW, AH, U, BIG, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
     monument, fountain, deck,
   };

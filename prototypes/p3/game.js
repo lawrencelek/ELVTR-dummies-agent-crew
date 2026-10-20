@@ -14,19 +14,24 @@
   const F_UI = '"B612", "Segoe UI", system-ui, sans-serif';
   const F_MONO = '"B612 Mono", ui-monospace, Menlo, monospace';
   const F_BRAND = '"Nunito", "Segoe UI", system-ui, sans-serif';
-  const VW = 1280, VH = 720, FX = 240, FY = 60, FW = 800, FH = 600;
+  // Reference canvas 1280 × 720 for the frame and HUD. The field is AW × AH art px; RA reference units per art px.
+  // Standard: 640 × 360 screen, 400 × 300 field at (120, 30), RA 2. Large (?field=large, D27 test): 960 × 540 screen,
+  // 640 × 480 field at (160, 30), RA 4/3. The HUD keeps its physical size; the field shows more city at a smaller pixel.
+  const BIG = !!PIX.BIG, VW = 1280, VH = 720, RA = VW / (BIG ? 960 : 640);
+  const FX = (BIG ? 160 : 120) * RA, FY = 30 * RA, FW = PIX.AW * RA, FH = PIX.AH * RA;
+  const TOPY = BIG ? 31 : 43; // top-bar baseline: inside the strip above the field
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
   // Integer scaling: the canvas is always a whole multiple of the 640 × 360 art screen (ui.artScale = 2 reference units per art pixel).
-  const SW = 640, SH = 360;
+  const SW = BIG ? 960 : 640, SH = BIG ? 540 : 360;
   let scale = 1, kpx = 2;
   function resize() {
     const st = cv.parentElement, dpr = window.devicePixelRatio || 1;
     kpx = Math.max(1, Math.floor(Math.min(st.clientWidth * dpr / SW, st.clientHeight * dpr / SH)));
     if (cv.width !== SW * kpx) { cv.width = SW * kpx; cv.height = SH * kpx; }
     cv.style.width = cv.width / dpr + 'px'; cv.style.height = cv.height / dpr + 'px';
-    scale = kpx / 2;
+    scale = kpx * SW / VW;
   }
   window.addEventListener('resize', resize);
   if (window.ResizeObserver) new ResizeObserver(resize).observe(cv.parentElement);
@@ -37,7 +42,9 @@
     screen: 'title', level: 0, difficulty: 1, sim: null, paused: false, pauseSel: 0, confirmRefuse: false,
     shopCol: 0, shopRow: 0, endSel: 0, tune: {}, lastEv: 0, toast: null, realT: 0, sound: true, tuned: false,
   };
-  const previews = LEVEL_LIST.map((id) => new Sim(id, { 'run.appearances.road': 0 }));
+  // Large field (D27 test): the world grows with the field (1 art px = 2 units). Layouts come from districts_large.json.
+  const FIELD = PIX.BIG ? { 'world.width': PIX.AW * PIX.U, 'world.height': PIX.AH * PIX.U, 'ui.playWidth': PIX.AW * PIX.U, 'ui.playHeight': PIX.AH * PIX.U } : {};
+  const previews = LEVEL_LIST.map((id) => new Sim(id, Object.assign({ 'run.appearances.road': 0 }, FIELD)));
   const TAU = Math.PI * 2;
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
   // ---------- generated content (content/pipeline.py -> content.js). Missing parts fall back to the P1.9 literals.
@@ -101,8 +108,9 @@
     if (!carry) app.roads = [];
     app.level = i; app.roadCarry = carry || null;
     // Edit 41: each run plays one of the three baked layouts per district, at random (tuning: proto.layout fixes one)
-    const layout = app.tune['proto.layout'] != null ? app.tune['proto.layout'] : 1 + Math.floor(Math.random() * 3);
-    app.sim = new Sim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty, 'proto.layout': layout }, app.tune), carry);
+    const nL = (((PIX.BIG ? window.DISTRICT_DB_LARGE : window.DISTRICT_DB) || {}).districts || {})[LEVEL_LIST[i]], nLay = nL && nL.length ? nL.length : 1;
+    const layout = app.tune['proto.layout'] != null ? app.tune['proto.layout'] : 1 + Math.floor(Math.random() * nLay);
+    app.sim = new Sim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty, 'proto.layout': layout }, app.tune, FIELD), carry);
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
@@ -1167,7 +1175,7 @@
     if (still || scroll) { drawSprites(s, la, true); if (scroll && s.body.alive) drawBodySprite(s); } else drawLive(s, la);
     if (scroll && prevOk) composeScroll(s); else if (!still) { prevFB.set(FB.d); prevOk = true; }
     flush();
-    const sh = still ? { x: 0, y: 0 } : shakeOffset(), ox = Math.round(sh.x / U) * U, oy = Math.round(sh.y / U) * U;
+    const sh = still ? { x: 0, y: 0 } : shakeOffset(), ox = Math.round(sh.x / RA) * RA, oy = Math.round(sh.y / RA) * RA;
     ctx.save(); ctx.beginPath(); ctx.rect(FX, FY, FW, FH); ctx.clip();
     ctx.fillStyle = PIX.PAL.grass; ctx.fillRect(FX, FY, FW, FH);
     ctx.imageSmoothingEnabled = false; ctx.drawImage(art, FX + ox, FY + oy, FW, FH);
@@ -1210,10 +1218,10 @@
       ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
     }
     if (FT.neon) { ctx.save(); ctx.shadowColor = FT.brand; ctx.shadowBlur = 14; }
-    txt('FARSIGHT', 24, 44, '900 30px ' + F_BRAND, FT.brand);
+    txt('FARSIGHT', 24, TOPY + 1, '900 30px ' + F_BRAND, FT.brand);
     if (FT.neon) ctx.restore();
     const s = app.sim;
-    if (app.screen === 'title' || !s) txt('SELECT A DISTRICT', FX + FW / 2, 40, fLab, FT.dim, 'center');
+    if (app.screen === 'title' || !s) txt('SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
     else drawTopBar(s);
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
@@ -1221,7 +1229,7 @@
     if (s && app.screen === 'game' && !app.paused && s.phase === 'play') { // controls only while they apply
       const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']];
       if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']);
-      drawKeys(keys, FX + FW / 2, 674);
+      drawKeys(keys, FX + FW / 2, BIG ? FY + FH + 4 : 674);
     }
   }
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
@@ -1232,24 +1240,24 @@
     const gap = (1264 - FX - w.reduce((a, b) => a + b, 0)) / (items.length - 1);
     let x = FX;
     items.forEach(([k, v], i) => {
-      if (k) { txt(k, x, 42, fLab, FT.dim); ctx.font = fLab; x += ctx.measureText(k).width + 10; txt(v, x, 44, fNum, FT.text); ctx.font = fNum; x += ctx.measureText(v).width + gap; }
-      else { txt(v, x, 42, fLab, FT.text); ctx.font = fLab; x += ctx.measureText(v).width + gap; }
+      if (k) { txt(k, x, TOPY - 1, fLab, FT.dim); ctx.font = fLab; x += ctx.measureText(k).width + 10; txt(v, x, TOPY + 1, fNum, FT.text); ctx.font = fNum; x += ctx.measureText(v).width + gap; }
+      else { txt(v, x, TOPY - 1, fLab, FT.text); ctx.font = fLab; x += ctx.measureText(v).width + gap; }
     });
   }
   // Left: the body's numbers. Health first and largest; dash beneath.
   function drawHUD(s) {
     const b = s.body, P = s.P, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
-    const X = 16, W = 208, TX = 30;
+    const X = 16, W = FX - 32, TX = 30, BW = W - 28; // left column: as wide as the space beside the field
     panel(X, 62, W, 150);
     txt('BODY', TX, 92, fLab, FT.dim); txt(num(hp), TX, 146, '700 48px ' + F_MONO, frac < 0.3 && b.alive ? C.warning : FT.text);
-    rr(TX, 164, 180, 26, 6); ctx.fillStyle = FT.track; ctx.fill();
+    rr(TX, 164, BW, 26, 6); ctx.fillStyle = FT.track; ctx.fill();
     if (frac > 0) {
       const low = frac < 0.3 && Math.floor(app.realT * 4) % 2 === 0;
-      rr(TX, 164, Math.max(12, 180 * frac), 26, 6); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
+      rr(TX, 164, Math.max(12, BW * frac), 26, 6); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
     }
     panel(X, 222, W, 86);
     txt('DASH', TX, 252, fLab, FT.dim);
-    const cap = s.capacity(), pw = (180 - (cap - 1) * 10) / cap; // Big battery: 3 (D26)
+    const cap = s.capacity(), pw = (BW - (cap - 1) * 10) / cap; // Big battery: 3 (D26)
     for (let i = 0; i < cap; i++) {
       const x = TX + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
       rr(x, 266, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
@@ -1262,7 +1270,7 @@
   function drawDistrict(s) {
     const D = s.district;
     if (!D) return;
-    const X = 16, Y = 318, W = 208, cw = 56, ch = 42, g = 6, gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
+    const X = 16, Y = 318, W = FX - 32, g = 6, cw = Math.min(56, Math.floor((W - 16 - (D.cols - 1) * g) / D.cols)), ch = Math.round(cw * 0.75), gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
     panel(X, Y, W, 50 + D.rows * ch + (D.rows - 1) * g + 16);
     txt('DISTRICT', 30, Y + 32, fLab, FT.dim); txt(s.screenName(), X + W - 14, Y + 32, fLab, FT.text, 'right');
     const Wd = s.P['world.width'], Hd = s.P['world.height'];
@@ -1273,6 +1281,7 @@
       ctx.save(); rr(x, y, cw, ch, 5); ctx.clip();
       if (iy === 0) { ctx.fillStyle = rgba(PIX.PAL.water.length === 7 ? PIX.PAL.water : '#4FC3E8', 0.9); ctx.fillRect(x, y, cw, 4); }
       ctx.beginPath(); cell.center.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
+      if (cell.ring) cell.ring.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
       ctx.strokeStyle = seen ? (cur ? FT.selText : FT.text) : FT.off; ctx.lineWidth = seen ? 5 : 3; ctx.lineJoin = 'round'; ctx.stroke();
       for (const dk of cell.decks || []) { // flyovers: a thin double line
         ctx.beginPath(); if (dk.hz) { ctx.moveTo(x, y + dk.off / Hd * ch); ctx.lineTo(x + cw, y + dk.off / Hd * ch); } else { ctx.moveTo(x + dk.off / Wd * cw, y); ctx.lineTo(x + dk.off / Wd * cw, y + ch); }
@@ -1322,7 +1331,7 @@
   }
   // The chassis doll is drawn at ui.artScale like the field: one doll pixel = one art pixel, on the art grid.
   function drawBodyPanel(s) {
-    const X = 1056, W = 208, Y = 62, b = s.body, U = PIX.U, eff = b.alive ? partEffects(s) : [];
+    const X = FX + FW + 16, W = VW - X - 16, Y = 62, b = s.body, U = RA, eff = b.alive ? partEffects(s) : []; // U here: reference units per art px
     const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + 36;
     panel(X, Y, W, yHit - Y + 66 + (eff.length ? 16 + eff.length * 32 : 0));
     txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);

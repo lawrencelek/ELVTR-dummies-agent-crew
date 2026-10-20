@@ -31,13 +31,17 @@ function checkCity(D, P, sim) {
       }
     }
     const tiles = lv.patches.filter((p) => p.kind === 'puddle').reduce((n, p) => n + p.w * p.h / 1024, 0);
-    if (tiles !== Math.round(dp('puddleShare') * 25 * 19)) out.push(tag + ' puddle tiles ' + tiles);
+    if (tiles !== Math.round(dp('puddleShare') * Math.ceil(W / P['world.tileSize']) * Math.ceil(H / P['world.tileSize']))) out.push(tag + ' puddle tiles ' + tiles);
     if (lv.focal) {
       const ok = lv.focal === 'roundabout' ? lv.patches.some((p) => p.kind === 'matting') : lv.focal === 'plate' ? lv.patches.filter((p) => p.kind === 'plate').length >= 2
         : lv.statics.some((q) => q.landmark === lv.focal);
       if (!ok) out.push(tag + ' landmark missing: ' + lv.focal);
     }
-    if ((lv.decks || []).length) { deckCells++; if (!lv.statics.some((q) => q.deck)) out.push(tag + ' flyover without pillars'); }
+    if ((lv.decks || []).length) {
+      deckCells++;
+      if (!lv.statics.some((q) => q.deck)) out.push(tag + ' flyover without pillars');
+      for (const dk of lv.decks) if (!sim.deckCrossOK(lv.center, dk, P, W, H) || (lv.ring && !sim.deckCrossOK(lv.ring, dk, P, W, H))) out.push(tag + ' flyover runs along the road'); // clause 17 (Edit 41.1)
+    }
   }
   if (deckCells < Math.round(dp('decks')) * 3 - (dp('decks') >= 2 ? 1 : 0)) out.push(id + ' flyover screens ' + deckCells);
   return out;
@@ -47,12 +51,13 @@ function checkCity(D, P, sim) {
 function startBot(sim, D, overrides, secs) {
   const wrap = (a) => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
   const s = new sim.Sim(D.levelId, Object.assign({ 'proto.layout': 1 }, overrides || {}));
+  const W = s.P['world.width'], H = s.P['world.height'];
   s.district = D; D.cur = D.start.slice(); s.level = sim.cellLevel(D, D.start, s.P); s.reset();
   s.checkFlip = () => {}; // the bot stays on the start screen
   const clearLine = (x0, y0, x1, y1) => { for (let t = 0; t <= 1; t += 0.02) { const x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t; if (s.level.statics.some((st) => x > st.x - 15 && x < st.x + st.w + 15 && y > st.y - 15 && y < st.y + st.h + 15)) return false; } return true; };
   const homeOf = () => {
     const b = s.body, L = s.level.lanes[0]; let best = null;
-    for (let q = 0; q <= L.length; q += 16) { const p = sim.pathAt(L, q); for (const side of [-1, 1]) { const x = p.x + p.nx * side * 90, y = p.y + p.ny * side * 90; if (x < 30 || y < 60 || x > 770 || y > 570 || !clearLine(b.x, b.y, x, y)) continue; const d = Math.hypot(x - b.x, y - b.y); if (!best || d < best.d) best = { x, y, d }; } }
+    for (let q = 0; q <= L.length; q += 16) { const p = sim.pathAt(L, q); for (const side of [-1, 1]) { const x = p.x + p.nx * side * 90, y = p.y + p.ny * side * 90; if (x < 30 || y < 60 || x > W - 30 || y > H - 30 || !clearLine(b.x, b.y, x, y)) continue; const d = Math.hypot(x - b.x, y - b.y); if (!best || d < best.d) best = { x, y, d }; } }
     return best || { x: b.x, y: b.y };
   };
   let home = homeOf(), first = null;

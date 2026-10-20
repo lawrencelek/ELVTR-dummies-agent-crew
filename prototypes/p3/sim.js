@@ -50,7 +50,7 @@
     'world.district.cbd.quota': 3, 'world.district.cbd.interval': 2.6, 'world.district.cbd.vanShare': 0.3, 'world.district.cbd.blockShare': 0.25, 'world.district.cbd.blockMax': 160, 'world.district.cbd.lowHeight': 120, 'world.district.cbd.towerShare': 0.5, 'world.district.cbd.puddleShare': 0.02, 'world.district.cbd.jerseyShare': 0.08, 'world.district.cbd.decks': 1,
     'world.district.campus.quota': 4, 'world.district.campus.interval': 2.5, 'world.district.campus.vanShare': 0.4, 'world.district.campus.blockShare': 0.2, 'world.district.campus.blockMax': 160, 'world.district.campus.lowHeight': 80, 'world.district.campus.towerShare': 0.1, 'world.district.campus.puddleShare': 0.01, 'world.district.campus.jerseyShare': 0.08, 'world.district.campus.decks': 1,
     'world.deckHeight': 60, 'world.deckStack': 60, 'world.deckWidth': 128, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
-    'world.towerHeightMin': 220, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 140, 'damage.plateMultiplier': 1.5,
+    'world.towerHeightMin': 220, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 140, 'damage.plateMultiplier': 1.5, 'world.deckParallelAngle': 30,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
   const PROTO = {
@@ -272,7 +272,8 @@
   // The start screen (top middle, river to the north) is the handcrafted road. The rest are generated from the seed.
   // Only the screen the dummy stands on runs. Its edges are solid except at gates: the road crossing and pedestrian gates.
   const SIDE = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] }, OPP = { N: 'S', E: 'W', S: 'N', W: 'E' }, SIDES = ['N', 'E', 'S', 'W'];
-  const ACROSS = { W: [220, 300, 380], E: [220, 300, 380], N: [280, 400, 520], S: [280, 400, 520] }; // where a road may cross an edge
+  // Where a road may cross an edge: 220/300/380 on side edges and 280/400/520 on top and bottom at 800 × 600; scaled with the screen.
+  const across = (sd, W, H) => (horiz(sd) ? [0.3667, 0.5, 0.6333].map((f) => Math.round(H * f / 4) * 4) : [0.35, 0.5, 0.65].map((f) => Math.round(W * f / 4) * 4));
   const BEND_R = 100, S_SPAN = 300, S_MAX = 160, GRID = 16, THEMES = ['flyover', 'barrier', 'plain', 'flyover', 'barrier'];
   const horiz = (sd) => sd === 'W' || sd === 'E';
   const sideOf = (a, b) => (b[0] > a[0] ? 'E' : b[0] < a[0] ? 'W' : b[1] > a[1] ? 'S' : 'N');
@@ -365,12 +366,12 @@
       const fixedOff = (c, sd) => { if (!isStart(c)) return null; const f = fixed.find((q) => q.side === sd); return f ? f.off : null; };
       for (let i = 0; i + 1 < path.length; i++) {
         const a = path[i], b = path[i + 1], sa = sideOf(a, b), sb = OPP[sa];
-        let off = fixedOff(a, sa); if (off == null) off = fixedOff(b, sb); if (off == null) off = pick(r, ACROSS[sa]);
+        let off = fixedOff(a, sa); if (off == null) off = fixedOff(b, sb); if (off == null) off = pick(r, across(sa, W, H));
         ends[i].push({ side: sa, off }); ends[i + 1].push({ side: sb, off });
       }
       for (const i of [0, path.length - 1]) {
         const c = path[i], fo = isStart(c) ? fixed.find((f) => !inside(c[0] + SIDE[f.side][0], c[1] + SIDE[f.side][1])) : null;
-        const sd = fo ? fo.side : pick(r, outsides(c)), e = { side: sd, off: fo ? fo.off : pick(r, ACROSS[sd]), outer: true };
+        const sd = fo ? fo.side : pick(r, outsides(c)), e = { side: sd, off: fo ? fo.off : pick(r, across(sd, W, H)), outer: true };
         if (i === 0) ends[i].unshift(e); else ends[i].push(e);
       }
       if (ends.some(([a, b]) => horiz(a.side) === horiz(b.side) && Math.abs(a.off - b.off) > S_MAX)) continue; // S-bends stay gentle
@@ -411,7 +412,8 @@
   // jersey barriers on world.jerseyShare of the road edge, then city blocks to world.blockShare of the screen (7.9 clause 6).
   function generateScreen(D, cell, P, r) {
     const W = P['world.width'], H = P['world.height'], lw = P['world.laneWidth'], OUTER = lw + P['proto.shoulderWidth'];
-    const BR = P['body.radius'], ALLEY = P['world.pedestrianGap'], top = cell.canal ? 48 : 0, c = cell.center, d = roadDist(c);
+    const BR = P['body.radius'], ALLEY = P['world.pedestrianGap'], top = cell.canal ? 48 : 0, c = cell.center, d0 = roadDist(c), dr = cell.ring ? roadDist(cell.ring) : null;
+    const d = dr ? (x, y) => Math.min(d0(x, y), dr(x, y)) : d0; // the roundabout ring counts as road
     const keep = gateZones(cell.gates, W, H), path = makePath(c), statics = [];
     const city = D.kind === 'city', dp = (f, dflt) => (city ? dpar(P, D.levelId, f) : dflt), focalPatches = [];
     const deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DECK_W / 2, w: W, h: DECK_W } : { x: dk.off - DECK_W / 2, y: 0, w: DECK_W, h: H });
@@ -527,7 +529,7 @@
     }
     const info = INFO(D.levelId);
     return { id: D.levelId, name: info.name, blurb: info.blurb, center: c, lanes: lanesOf(c, P), statics: P['proto.city'] ? statics.concat(blocks) : statics.filter((st) => st.kind !== 'jersey'),
-      coneHomes: cones, spawns: spawns.length ? spawns : [{ x: 400, y: 120, f: 90 }], focalPatches, decks: cell.decks || [] };
+      coneHomes: cones, spawns: spawns.length ? spawns : [{ x: 400, y: 120, f: 90 }], focalPatches, decks: cell.decks || [], ring: cell.ring || null };
   }
   // The level for one screen of a district, built on first entry and kept.
   function cellLevel(D, c, P) {
@@ -591,6 +593,22 @@
     }
     return pts.map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]);
   }
+  // A flyover may cross a ground road, not run along it (Edit 41.1). Along the deck, the road's centre line stays under the
+  // deck for at most one tile (world.tileSize); within a lane of the deck's edge, a road running within world.deckParallelAngle (30°) of the deck's
+  // direction also stays at most one tile. Checked per screen against every deck.
+  function deckCrossOK(center, dk, P, W, H) {
+    const T = P['world.tileSize'], half = DECK_W / 2, wide = half + P['world.laneWidth'], path = makePath(center), par = Math.sin(P['world.deckParallelAngle'] * DEG);
+    let core = null, side = null;
+    const long = (run) => !!run && run.max - run.min > T;
+    const grow = (run, a) => (run ? { min: Math.min(run.min, a), max: Math.max(run.max, a) } : { min: a, max: a });
+    for (let s = 0; s <= path.length; s += 4) {
+      const p = pathAt(path, s), inside = p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H;
+      const dist = Math.abs(dk.hz ? p.y - dk.off : p.x - dk.off), along = dk.hz ? p.x : p.y, parallel = Math.abs(dk.hz ? p.ty : p.tx) < par;
+      if (inside && dist <= half) core = grow(core, along); else { if (long(core)) return false; core = null; }
+      if (inside && dist <= wide && parallel) side = grow(side, along); else { if (long(side)) return false; side = null; }
+    }
+    return !long(core) && !long(side);
+  }
   // Roundabout (Interchange): the road enters radially, loops round a central island and leaves radially. Smoothed corners.
   function roundaboutCenter(a, b, W, H, lead, Rc, r) {
     const ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 }, cx = W / 2, cy = H / 2;
@@ -617,19 +635,14 @@
       const path = pick(r, paths).map(xy), ends = path.map(() => []);
       for (let i = 0; i + 1 < path.length; i++) {
         const a = path[i], b = path[i + 1], sa = sideOf(a, b), sb = OPP[sa];
-        const off = isC(a) || isC(b) ? (horiz(sa) ? H / 2 : W / 2) : pick(r, ACROSS[sa]); // roads meet the landmark square on
+        const off = isC(a) || isC(b) ? (horiz(sa) ? H / 2 : W / 2) : pick(r, across(sa, W, H)); // roads meet the landmark square on
         ends[i].push({ side: sa, off }); ends[i + 1].push({ side: sb, off });
       }
       for (const i of [0, path.length - 1]) {
-        const sd = pick(r, outsides(path[i])), e = { side: sd, off: pick(r, ACROSS[sd]), outer: true };
+        const sd = pick(r, outsides(path[i])), e = { side: sd, off: pick(r, across(sd, W, H)), outer: true };
         if (i === 0) ends[i].unshift(e); else ends[i].push(e);
       }
       if (ends.some(([a, b]) => horiz(a.side) === horiz(b.side) && Math.abs(a.off - b.off) > S_MAX)) continue;
-      // flyovers: the first crosses a row, the second a column, higher (world.deckHeight, + world.deckStack)
-      const decks = [], nd = Math.round(dpar(P, id, 'decks'));
-      if (nd >= 1) decks.push({ hz: true, line: info.focal === 'roundabout' ? centre[1] : Math.floor(r() * R), off: info.focal === 'roundabout' ? H / 2 : pick(r, [220, 300, 380]), height: P['world.deckHeight'] });
-      if (nd >= 2) decks.push({ hz: false, line: centre[0], off: W / 2, height: P['world.deckHeight'] + P['world.deckStack'] });
-      if (decks.some((dk) => dk.hz && dk.line === 0 && dk.off - DECK_W / 2 < 60)) continue; // keep the river row's deck off the water
       const cells = Array.from({ length: R }, () => Array.from({ length: C }, () => null));
       path.forEach((c, i) => {
         const focal = isC(c) ? info.focal : null;
@@ -637,8 +650,27 @@
           theme: focal ? 'focal' : pick(r, info.themes), level: null, cones: null,
           center: focal === 'roundabout' ? roundaboutCenter(ends[i][0], ends[i][1], W, H, P['world.spawnLeadIn'], P['world.roundaboutRadius'], r)
             : roadCenter(ends[i][0], ends[i][1], W, H, P['world.spawnLeadIn']),
-          decks: decks.filter((dk) => (dk.hz ? c[1] : c[0]) === dk.line).map((dk) => ({ hz: dk.hz, off: dk.off, height: dk.height })) };
+          // the whole ring is road; traffic uses the part on its route (Edit 41.1)
+          ring: focal === 'roundabout' ? arcPts(W / 2, H / 2, P['world.roundaboutRadius'], 0, 2 * Math.PI, 48).map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]) : null,
+          decks: [] };
       });
+      // flyovers: the first crosses a row, the second a column, higher (world.deckHeight, + world.deckStack).
+      // Each takes an offset where it crosses every road on its line, never runs along one (deckCrossOK), and stays off the river.
+      const decks = [], nd = Math.round(dpar(P, id, 'decks'));
+      const specs = [];
+      if (nd >= 1) specs.push({ hz: true, line: info.focal === 'roundabout' ? centre[1] : Math.floor(r() * R), height: P['world.deckHeight'] });
+      if (nd >= 2) specs.push({ hz: false, line: centre[0], height: P['world.deckHeight'] + P['world.deckStack'] });
+      for (const sp of specs) {
+        const span = sp.hz ? H : W, line = cells.flat().filter((q) => (sp.hz ? q.cell[1] : q.cell[0]) === sp.line), cands = [];
+        for (let off = 120; off <= span - 120; off += 20) {
+          if (sp.hz && sp.line === 0 && off - DECK_W / 2 < 60) continue; // keep the river row's deck off the water
+          if (line.every((q) => deckCrossOK(q.center, { hz: sp.hz, off }, P, W, H) && (!q.ring || deckCrossOK(q.ring, { hz: sp.hz, off }, P, W, H)))) cands.push(off);
+        }
+        if (!cands.length) break;
+        decks.push({ hz: sp.hz, line: sp.line, off: pick(r, cands), height: sp.height });
+      }
+      if (decks.length < specs.length) continue;
+      for (const q of cells.flat()) q.decks = decks.filter((dk) => (dk.hz ? q.cell[1] : q.cell[0]) === dk.line).map((dk) => ({ hz: dk.hz, off: dk.off, height: dk.height }));
       for (let y = 0; y < R; y++) for (let x = 0; x < C; x++) for (const sd of ['E', 'S']) {
         const nx = x + SIDE[sd][0], ny = y + SIDE[sd][1];
         if (!inside(nx, ny)) continue;
@@ -701,12 +733,14 @@
     return out;
   }
   // A city district from baked data (content/districts/districts.json), or generated when there is none.
-  function bakedDB() {
-    if (typeof window !== 'undefined' && window.DISTRICT_DB) return window.DISTRICT_DB;
-    try { return typeof require === 'function' ? require('../../content/districts/districts.json') : null; } catch (e) { return null; }
+  // Baked layouts for this world size: districts.json (800 × 600) or districts_large.json (1280 × 960, the D27 test).
+  function bakedDB(P) {
+    const W = P['world.width'], H = P['world.height'], fit = (db) => { const sz = db && (db.size || [800, 600]); return sz && sz[0] === W && sz[1] === H ? db : null; };
+    if (typeof window !== 'undefined') return fit(window.DISTRICT_DB) || fit(window.DISTRICT_DB_LARGE);
+    try { return typeof require === 'function' ? fit(require('../../content/districts/districts.json')) || fit(require('../../content/districts/districts_large.json')) : null; } catch (e) { return null; }
   }
   function cityDistrict(id, P) {
-    const db = P['proto.layout'] >= 0 ? bakedDB() : null, list = db && db.districts && db.districts[id];
+    const db = P['proto.layout'] >= 0 ? bakedDB(P) : null, list = db && db.districts && db.districts[id];
     if (!list || !list.length) return planCity(id, P);
     const k = clamp(Math.round(P['proto.layout']) || 1, 1, list.length) - 1, L = list[k], C = L.cols, R = L.rows;
     const cells = L.cells.map((row) => row.map((q) => Object.assign({}, q, { level: null, cones: null })));
@@ -714,7 +748,7 @@
       visited: new Set([L.start[1] * C + L.start[0]]), lastFlip: null, baked: true };
     for (const row of cells) for (const q of row) {
       const lv = { id, name: DISTRICTS[id].name, blurb: DISTRICTS[id].blurb, center: q.center, lanes: lanesOf(q.center, P),
-        statics: q.statics.map((s, i) => Object.assign({}, s, { id: 's' + i })), coneHomes: q.coneHomes, spawns: q.spawns, patches: q.patches, decks: q.decks || [] };
+        statics: q.statics.map((s, i) => Object.assign({}, s, { id: 's' + i })), coneHomes: q.coneHomes, spawns: q.spawns, patches: q.patches, decks: q.decks || [], ring: q.ring || null };
       const solid = SIDES.filter((sd) => { const x = q.cell[0] + SIDE[sd][0], y = q.cell[1] + SIDE[sd][1]; return x < 0 || y < 0 || x >= C || y >= R; });
       Object.assign(lv, { key: id + '#' + (k + 1) + '@' + q.cell[0] + ',' + q.cell[1], cell: q.cell.slice(), gates: q.gates, solid, canal: q.canal, theme: q.theme, focal: q.focal, order: q.order });
       q.level = lv;
@@ -728,7 +762,7 @@
       const lv = cellLevel(D, q.cell, P);
       return { cell: q.cell, order: q.order, ends: q.ends, canal: q.canal, gates: q.gates, theme: lv.theme, focal: q.focal || null,
         center: lv.center.map(([x, y]) => [r1(x), r1(y)]), statics: lv.statics.map(({ id: _i, ...s }) => s), coneHomes: lv.coneHomes, spawns: lv.spawns,
-        patches: lv.patches, decks: lv.decks || [] };
+        patches: lv.patches, decks: lv.decks || [], ring: q.ring || null };
     }));
     return { seed: D.seed, cols: D.cols, rows: D.rows, start: D.start, path: D.path, decks: D.decks, cells };
   }
@@ -1941,7 +1975,7 @@
   }
 
   const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
-    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, roadCenter, makePatches, roadDist, SIDE };
+    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, deckCrossOK, roadCenter, makePatches, roadDist, SIDE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.DUMMIES = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -19,6 +19,10 @@ P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber 
 
 Open `dummies_p3.html` in a browser. No install, no server. **Full screen** fills the display at the largest whole scale.
 
+**Field-size test (D27):** the **Field** button (or `?field=large`) switches to a 640 × 480 art-px field (40 × 30 tiles of 16 px) on a 960 × 540 screen. Standard is 400 × 300 on 640 × 360.
+
+![Standard and large field side by side at the same physical size](docs/p3_field_compare.png)
+
 | Control | Keys |
 |---|---|
 | Move | WASD or arrows |
@@ -109,9 +113,12 @@ A black outline vanishes on a dark field. The background owns the darkest values
 
 - **Data:** `tables.districts` in the registry; `world.district.<id>.<field>` in `sim.js`.
 - **Flyovers:** decks on piers across a whole row or column (`world.deckHeight` 60; stacked +`world.deckStack` 60). Deck traffic runs both ways and never meets the dummy. Piers are solid ground statics. No buildings under a deck.
+- **Flyovers cross roads (Edit 41.1):** under a deck, a road's centre line runs at most one tile along it; beside it, a road within `world.deckParallelAngle` (30°) of its direction runs at most one tile. Each deck takes an offset where every road on its line passes.
+- **Roundabout:** the whole ring is road; traffic uses the part on its route.
 - **Towers:** a share of large lots (`world.district.<id>.towerShare`) rise 220–380 units, with LED crowns.
 - **Layouts made in advance:** `node tools/district_bake.js` tries seeds and keeps the first three per district that pass the contract (`tools/district_check.js`) with different roads, and whose start screen gives the bot a write-off within 150 s. Output: `content/districts/districts.json` (15 layouts).
 - **Per run:** one layout per district at random. Tuning: `proto.layout` 1–3 fixes one; −1 generates live.
+- **Large field:** `node tools/district_bake.js 30 --large --keep 2` writes `content/districts/districts_large.json` (10 layouts at 1280 × 960 units).
 
 ![The five centre screens and a flyover screen](docs/p3_districts_sheet.png)
 
@@ -298,6 +305,7 @@ Day version: `docs/p3_chassis_modules.png`.
 | `world.towerHeightMin`, `world.towerHeightMax`, `world.roundaboutRadius` | 220, 380, 140 units | Registry, Proposed |
 | `damage.plateMultiplier`, `world.terrain.matting.lunge` | 1.5, 1.15 | Registry values, now used |
 | `proto.layout` | 0 | Registry, prototype group. Baked layout 1–3; −1 = live |
+| `world.deckParallelAngle` | 30° | Registry, Proposed (Edit 41.1) |
 | `ui.typeFieldLabel` | 12 units | Registry. Tags and barks |
 | `battery.capacity` | 2 | Registry (D19) |
 | `proto.parts.legDashLoss` | 1.5 | Registry, prototype group. Dash reach per leg share |
@@ -326,9 +334,10 @@ Day version: `docs/p3_chassis_modules.png`.
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html`, with `content/db/fleet.json` as `window.FLEET_DB` |
 | `tools/city_gen.js` | City v2 generator: `node tools/city_gen.js .` prints block and barrier data |
-| `test_sim.js` | `node test_sim.js`: 67 checks, incl. 11 for the city districts (contract on all 15 layouts, landmarks, flyovers, plates, matting, smoke runs) |
+| `test_sim.js` | `node test_sim.js`: 69 checks, incl. 13 for the city districts (contract on all 15 standard and 10 large layouts, crossings, landmarks, flyovers, plates, matting, smoke runs) |
 | `tools/district_bake.js`, `tools/district_check.js` | Bake 3 layouts per district; the district contract and start-screen bot |
 | `../../content/districts/districts.json` | The 15 baked layouts, bundled as `window.DISTRICT_DB` |
+| `../../content/districts/districts_large.json` | 10 layouts for the large-field test, bundled as `window.DISTRICT_DB_LARGE` |
 | `../../content/db/` | Fleet database and `check_lore.py` (lore consistency) |
 
 ## Open

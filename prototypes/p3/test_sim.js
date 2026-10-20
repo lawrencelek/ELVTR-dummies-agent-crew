@@ -554,6 +554,21 @@ check('city: five districts in a fixed order, quotas rising, and three baked lay
     const probs = checkCity(Dd, s.P, D); assert.strictEqual(probs.length, 0, id + '/' + k + ': ' + probs.slice(0, 2).join('; '));
   }
 });
+check('field test (D27): the large layouts (1280 × 960) pass the same contract, flyover crossing rule included', () => {
+  const big = { 'world.width': 1280, 'world.height': 960, 'ui.playWidth': 1280, 'ui.playHeight': 960 };
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2]) {
+    const s = new Sim(id, Object.assign({ 'proto.layout': k }, big)), Dd = s.district;
+    assert(Dd.baked && Dd.cells.flat().some((q) => q.center.some(([x, y]) => x > 1000 || y > 760)), id + '/' + k + ' large layout not loaded');
+    const probs = checkCity(Dd, s.P, D); assert.strictEqual(probs.length, 0, id + '/' + k + ': ' + probs.slice(0, 2).join('; '));
+  }
+});
+check('flyovers cross roads; they never run along one for more than a tile', () => {
+  const P = Object.assign({}, D.REG, D.PROTO, D.OVERRIDES);
+  assert(D.deckCrossOK([[400, -200], [400, 800]], { hz: true, off: 300 }, P, 800, 600), 'perpendicular crossing');
+  assert(!D.deckCrossOK([[-200, 300], [1000, 300]], { hz: true, off: 300 }, P, 800, 600), 'road under the deck');
+  assert(!D.deckCrossOK([[-200, 380], [1000, 380]], { hz: true, off: 300 }, P, 800, 600), 'road alongside, one lane off the deck edge');
+  assert(D.deckCrossOK([[-200, 520], [1000, 520]], { hz: true, off: 300 }, P, 800, 600), 'parallel road well clear');
+});
 check('city: the centre screen holds the landmark; flyovers cross whole rows or columns on pillars', () => {
   const want = { riverside: 'monument', market: 'fountain', interchange: 'roundabout', cbd: 'tower', campus: 'plate' };
   for (const id of D.DISTRICT_LIST) {

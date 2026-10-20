@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit41-2026-10-20",
+ "registryVersion": "edit41.1-2026-10-20",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–41 (20 October 2026)",
  "entries": [
@@ -4376,6 +4376,28 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Playtest a layout by number"
+  },
+  {
+   "id": "world.deckParallelAngle",
+   "group": "World",
+   "owner": "World",
+   "label": "Flyover parallel limit",
+   "description": "A road within this angle of a flyover's direction, within a lane of its edge, may run beside it for at most world.tileSize.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 30,
+   "status": "proposed",
+   "source": "Edit 41.1 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 90
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Flyovers cross roads; they never run along them"
   }
  ],
  "tables": {
