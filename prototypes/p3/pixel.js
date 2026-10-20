@@ -25,6 +25,10 @@
     tagFill: '#FFFFFF', tagInk: '#101417', tagBorder: '#1A1D1F', tagSpentFill: '#101417', tagSpentInk: '#FFFFFF',
     popInk: '#101417', popOutline: '#FFFFFF', stampFill: '#FFFFFF', stampOutline: '#1A1D1F',
     podStripes: null, reflect: null, edgeLight: null, flowers: 160,
+    // city statics (proto.city): eco blocks with roof gardens by day
+    bldgRoof: '#E9F1F4', bldgEdge: '#B9CCD6', bldgFace: '#DCE8EE', bldgDark: '#9FB6C2', bldgUnit: '#5DBB46', bldgUnitD: '#3E9A3A',
+    bldgLed: ['#4FC3E8', '#1A7FA7', '#8FE0F5'], bldgOutline: '#4A6F86', spill: false,
+    jersey: '#C9D3DA', jerseyTop: '#EEF2F4', jerseyLed: '#9AA8B1', jerseyO: '#5E6F7B',
   };
   // Chongqing night: dark ground, LED towers, lime-uplit planting, river reflections. Cues turn light-on-dark.
   // Yellow stays the dummy's alone; red stays the warning's alone (no red or yellow décor in the field).
@@ -43,13 +47,12 @@
     tagFill: '#1840C8', tagInk: '#FFFFFF', tagBorder: '#6FE4FF', tagSpentFill: '#F4F8FA', tagSpentInk: '#1840C8',
     popInk: '#FFFFFF', popOutline: '#1840C8', stampFill: '#0B0E17', stampOutline: '#FFB0B0',
     podStripes: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#E6F4FF'], reflect: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], edgeLight: '#E6F4FF', flowers: 40,
+    bldgRoof: '#1A2133', bldgEdge: '#2C3650', bldgFace: '#0D1220', bldgDark: '#080C16', bldgUnit: '#3A4560', bldgUnitD: '#222A3C',
+    bldgLed: ['#3FD0FF', '#2F6BFF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], bldgOutline: '#05070B', spill: true,
+    jersey: '#3A4252', jerseyTop: '#6B7894', jerseyLed: '#3FD0FF', jerseyO: '#05070B',
   };
   // Cyber: the night palette with a city instead of parkland. Decks for lawns, blocks for trees, jersey barriers for hedges.
-  const CYBER = {
-    scenery: 'city', grass: '#10141D', grass2: '#161B26', grass3: '#1D2331', flowers: 0,
-    bldgRoof: '#1A2133', bldgEdge: '#2C3650', bldgFace: '#0D1220', bldgDark: '#080C16', bldgUnit: '#3A4560', bldgUnitD: '#222A3C',
-    bldgLed: ['#3FD0FF', '#2F6BFF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], jersey: '#2C3240', jerseyTop: '#4A5468', jerseyLed: '#3FD0FF',
-  };
+  const CYBER = { scenery: 'city', grass: '#10141D', grass2: '#161B26', grass3: '#1D2331', flowers: 0 };
   const NAME = { night: 'night', cyber: 'cyber' }[root.PIX_PALETTE_NAME] || 'day';
   const PAL = Object.assign({}, DAY, NAME !== 'day' ? NIGHT : {}, NAME === 'cyber' ? CYBER : {});
   function rgb(hex) { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
@@ -403,7 +406,7 @@
   }
   // City block (decoration): roof lifted by H, south face with lit windows and a vertical LED sign of abstract glyphs.
   function building(wpx, hpx, H, r, led) {
-    const S = spr(wpx, hpx + H, 0, H), o = K.podO;
+    const S = spr(wpx, hpx + H, 0, H), o = K.bldgOutline;
     const P = (x, y, c) => sput(S, x, y + H, c); // y relative to the footprint top; roof spans -H .. hpx - H - 1
     const top = -H, face0 = hpx - H;
     for (let y = top; y < face0; y++) for (let x = 0; x < wpx; x++) P(x, y, K.bldgRoof);
@@ -427,8 +430,14 @@
     for (let x = 0; x < wpx; x++) P(x, hpx - 1, o);
     return S;
   }
-  function jersey(B, ax, ay, bx, by) { // low barrier segment along a line (art px): lit top, dark face, LED dots
-    line(ax, ay, bx, by, (x, y, i) => { B.put(x, y - 1, K.jerseyTop); B.put(x, y, i % 3 === 0 ? K.jerseyLed : K.jersey); B.put(x, y + 1, K.podO); });
+  function jersey(wpx, hpx, e) { // jersey barrier on its footprint (anchor = footprint top-left): lit top, face with LED dots
+    const S = spr(wpx, hpx + e, 0, e), P = (x, y, c) => sput(S, x, y + e, c), horiz = wpx >= hpx;
+    for (let y = -e; y < hpx; y++) for (let x = 0; x < wpx; x++) {
+      const edge = x === 0 || x === wpx - 1 || y === -e || y === hpx - 1, face = y >= hpx - e;
+      const dot = face && (horiz ? x % 3 === 1 : y % 3 === 1);
+      P(x, y, edge ? K.jerseyO : face ? (dot ? K.jerseyLed : K.jersey) : K.jerseyTop);
+    }
+    return S;
   }
   // Static shadow: the footprint swept down-left by its height (hard edge, multiply).
   function rectShadow(B, st, h, P) {
@@ -484,28 +493,12 @@
       if (near[y * AW + x] < outer + 12) continue;
       const c = r() < 0.6 ? K.flower : K.flower2; B.put(x, y, c); B.put(x + 1, y + 1, c);
     }
-    B.props = [];
-    if (city) {
-      // jersey barriers just outside the pavement, with gaps
-      for (let s = 30; s < geo.length; s += 34) for (const side of [-1, 1]) {
-        const qa = geo.at(s), qb = geo.at(s + 20); if (!qa || !qb) continue;
-        const a = [qa.x + qa.nx * side * (outer + 8), qa.y + qa.ny * side * (outer + 8)], b = [qb.x + qb.nx * side * (outer + 8), qb.y + qb.ny * side * (outer + 8)];
-        if ([a, b].some(([wx, wy]) => wy < 46 || roadD(wx, wy) < outer + 4 || !clearOf(wx, wy, 10))) continue;
-        jersey(B, a[0] / U, a[1] / U, b[0] / U, b[1] / U);
-      }
-      // city blocks on the decks, clear of the road band, spawns, pods and cones
-      const blocks = [], leds = KX('bldgLed');
-      for (let t = 0; t < 600 && blocks.length < 10; t++) {
-        const w = 56 + Math.floor(r() * 70), h = 40 + Math.floor(r() * 40), wx = -20 + r() * (AW * U + 20 - w), wy = 60 + r() * (AH * U - 40 - h);
-        const pts = [[wx, wy], [wx + w, wy], [wx, wy + h], [wx + w, wy + h], [wx + w / 2, wy + h / 2]];
-        if (pts.some(([px, py]) => roadD(px, py) < outer + 30 || !clearOf(px, py, 40))) continue;
-        if (blocks.some((q) => wx < q.wx + q.w + 16 && wx + w + 16 > q.wx && wy < q.wy + q.h + 16 && wy + h + 16 > q.wy)) continue;
-        blocks.push({ wx, wy, w, h });
-      }
-      blocks.forEach((q, i) => {
-        const x = Math.round(q.wx / U), y = Math.round(q.wy / U), w = Math.round(q.w / U), h = Math.round(q.h / U), H = 10 + Math.floor(r() * 13), led = leds[i % leds.length];
-        for (let k = 0; k < 4; k++) for (let xx = x; xx < x + w; xx++) B.mix(xx, y + h + k, led, [0.28, 0.18, 0.1, 0.05][k]); // neon spill on the deck
-        B.props.push({ x, y, w, h, spr: building(w, h, H, r, led) });
+    if (PAL.spill) { // neon spill on the ground in front of each block
+      const leds = KX('bldgLed');
+      level.statics.forEach((st, i) => {
+        if (st.kind !== 'block') return;
+        const x = Math.round(st.x / U), y = Math.round((st.y + st.h) / U), w = Math.round(st.w / U), led = leds[i % leds.length];
+        for (let k = 0; k < 4; k++) for (let xx = x; xx < x + w; xx++) B.mix(xx, y + k, led, [0.28, 0.18, 0.1, 0.05][k]);
       });
     }
     // hedges just outside the pavement, in runs of three, kept clear of pods, spawns and cones
@@ -526,12 +519,12 @@
       trees.push([wx, wy]);
     }
     trees.sort((a, b) => a[1] - b[1]).forEach(([wx, wy]) => tree(B, Math.round(wx / U), Math.round(wy / U)));
-    for (const st of level.statics) rectShadow(B, st, P[st.kind === 'barrier' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
+    for (const st of level.statics) if (!PAL.spill || st.kind !== 'block') rectShadow(B, st, st.kind === 'block' ? st.height : P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
     return B;
   }
 
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
-    text, textWidth, FONT_H, blit, car, dummy, CONE, DRONE, pod, barrier, ground, pathGeom, rng, HEADINGS,
+    text, textWidth, FONT_H, blit, car, dummy, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

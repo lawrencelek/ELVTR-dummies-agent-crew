@@ -48,13 +48,32 @@ Campaign, difficulty and quotas match P2.2.
 |---|---|---|---|
 | Default | Edit 37 eco-city: lawns, canal, white pods | FARSIGHT light glass | Dark on light |
 | `?palette=night` | Chongqing night: dark lawns, lime-lit trees, LED-striped towers, river reflections, light strings | Dark glass, cyan LED edges | Light on dark. Blue LED model tags. Red STOP line with a pink halo |
-| `?palette=cyber` | Night colours, city scenery: deck plates, city blocks with lit windows and vertical LED signs, jersey barriers | As night | As night |
+| `?palette=cyber` | Night colours, city scenery: deck plates instead of lawns and trees | As night | As night |
 
 - **Exclusive hues hold in both.** Yellow is the dummy alone. Red is the warning alone.
 - **Night contrast (on road):** `cue.primary` 14.9:1 · `cue.secondary` 6.2:1 · `cue.warning` 4.5:1 (halo 9.2:1) · `dummy.body` 9.8:1.
-- **Cyber scenery is decoration.** Blocks and jersey barriers do not collide or cast sensor shadows. The dummy walks through them.
+- **Palettes never change play.** The city below is the same in all three.
 - **X-ray pass (all palettes).** An occluded car or dummy shows as a checker of its own pixels.
 - **Options, not decided.** Decision 88 still names the eco-city field.
+
+## City (Fix A, `proto.city` = 1)
+
+Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`). Anything that looks solid is solid.
+
+| Road | Blocks | Jersey barriers |
+|---|---|---|
+| L1 Straight | 8 | 5 |
+| L2 Barrier | 7 | 2 |
+| L3 Corner | 7 | 3 |
+
+- **Collide** with the dummy and cones. **Cast sensor shadows** (`occluded`). Cars never swerve into them.
+- **Blocks:** off the road band (pavement + 30 units), ≥ 44 units apart, flush to an edge or ≥ 44 clear of it. Height per block (60–140 units) only sets the drawing.
+- **Jersey barriers:** 44 × 8 units, 4 units off the pavement, straight stretches only, ≥ 60 units apart.
+- **Access checked:** every open spot connects to a spawn; the road is reachable.
+- **Looks:** eco blocks with roof gardens by day; LED blocks with lit windows, vertical glyph signs and neon spill by night and in cyber.
+- **X-ray pass.** An occluded car or dummy shows as a checker of its own pixels (tier 1: never occluded).
+- **`proto.city` = 0** restores the P2.2 roads (tuning panel; applies on the next road or restart).
+- **Not rebalanced.** Blocks add cover and sensor shadows. Quotas, traffic and pod layout are P2.2 values.
 
 ## Type at registry size (GDD §4.2.3)
 
@@ -83,6 +102,7 @@ Campaign, difficulty and quotas match P2.2.
 | `ui.playWidth`, `ui.playHeight` | 800, 600 | Registry values, now in `REG` |
 | `ui.typeLoadBearing`, `ui.typeSecondary`, `ui.typeTexture` | 24, 16, 9 | Registry values, now in `REG` |
 | `proto.art.extrusion` | 0.3 | Proposed. Share of height drawn as a screen-up offset |
+| `proto.city` | 1 | Proposed. City blocks and jersey barriers are statics; 0 = P2.2 roads |
 
 ## Files
 
@@ -93,7 +113,7 @@ Campaign, difficulty and quotas match P2.2.
 | `game.js` | Input, events, juice, HUD, screens, tuning. P2.2 logic; new renderer |
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html` |
-| `test_sim.js` | `node test_sim.js`: 34 checks |
+| `test_sim.js` | `node test_sim.js`: 42 checks, 8 for the city |
 
 ## Open
 

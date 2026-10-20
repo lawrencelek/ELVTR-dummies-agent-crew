@@ -565,16 +565,18 @@
   const EXT = (h) => Math.round(h * pv('proto.art.extrusion') / U); // object height drawn as a screen-up offset, art px
   const artCache = new Map();
   function levelArt(s) {
-    const id = s.level.id;
+    const id = s.level.id + (s.P['proto.city'] ? ':city' : '');
     if (!artCache.has(id)) {
       const P = s.P, L = s.level;
-      const gr = PIX.ground(L, P, 7 + LEVEL_LIST.indexOf(id) * 31);
-      artCache.set(id, {
-        ground: gr,
-        statics: (gr.props || []).map((p) => ({ st: { x: p.x * U, y: p.y * U, w: p.w * U, h: p.h * U }, spr: p.spr, decor: true })).concat(L.statics.map((st, i) => ({ st, spr: st.kind === 'barrier'
-          ? PIX.barrier(Math.round(st.w / U), Math.round(st.h / U), EXT(P['proto.art.barrierHeight']))
-          : PIX.pod(Math.round(st.w / U), Math.round(st.h / U), EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i) }))),
-      });
+      const gr = PIX.ground(L, P, 7 + LEVEL_LIST.indexOf(id) * 31), leds = PIX.PAL.bldgLed;
+      const sprite = (st, i) => {
+        const w = Math.round(st.w / U), h = Math.round(st.h / U);
+        if (st.kind === 'block') return PIX.building(w, h, EXT(st.height), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]));
+        if (st.kind === 'jersey') return PIX.jersey(w, h, EXT(P['proto.art.barrierHeight']));
+        if (st.kind === 'barrier') return PIX.barrier(w, h, EXT(P['proto.art.barrierHeight']));
+        return PIX.pod(w, h, EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i);
+      };
+      artCache.set(id, { ground: gr, statics: L.statics.map((st, i) => ({ st, spr: sprite(st, i) })) });
     }
     return artCache.get(id);
   }
@@ -1291,7 +1293,7 @@
       inp.addEventListener('input', () => setParam(id, parseFloat(inp.value)));
       row.append(nm, out, inp); grid.append(row);
     }
-    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits'], ['proto.stopCue', 'Show each car\'s stop bracket']]) {
+    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits'], ['proto.stopCue', 'Show each car\'s stop bracket'], ['proto.city', 'City blocks and jersey barriers are solid (next road or restart)']]) {
       const row = document.createElement('label'); row.className = 'tcheck';
       const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-' + id.replace(/\./g, '-');
       inp.addEventListener('change', () => setParam(id, inp.checked ? 1 : 0));
@@ -1306,7 +1308,7 @@
       const v = current(id); if (document.activeElement !== inp) inp.value = v;
       inp.nextSibling; inp.parentNode.querySelector('output').textContent = (+v).toFixed(v % 1 ? 2 : 0) + (REG[id] != null && v !== REG[id] ? '  (registry ' + REG[id] + ')' : '');
     }
-    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
+    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue', 'proto.city']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
   }
   function toggleTune() { tuneEl.open = !tuneEl.open; if (tuneEl.open) { syncTune(); tuneEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
   document.getElementById('btn-tune').addEventListener('click', toggleTune);

@@ -315,5 +315,66 @@ for (const lvl of D.LEVEL_LIST) {
     console.log(`   ${lvl}: t=${s.t.toFixed(1)} writeOffs=${s.run.writeOffs} hits=${s.events.filter((e) => e.type === 'impact').length} ending=${s.run.ending && s.run.ending.kind}`);
   });
 }
+// ---------- P3 city (proto.city): blocks and jersey barriers are solid statics
+const CITY = (st) => st.kind === 'block' || st.kind === 'jersey';
+check('city: every road gains solid blocks and jersey barriers; proto.city 0 removes them', () => {
+  for (const lvl of D.LEVEL_LIST) {
+    const s = new Sim(lvl), s0 = new Sim(lvl, { 'proto.city': 0 });
+    assert(s.level.statics.some((st) => st.kind === 'block') && s.level.statics.some((st) => st.kind === 'jersey'), lvl);
+    assert(!s0.level.statics.some(CITY), lvl + ' with proto.city 0');
+  }
+});
+check('city: the dummy cannot walk into a block', () => {
+  const s = empty('straight'), bk = s.level.statics.find((st) => st.kind === 'block' && st.x === 488 && st.y === 548);
+  assert(bk, 'block 488,548');
+  s.body.x = bk.x + bk.w / 2; s.body.y = bk.y - 40; s.body.facing = Math.PI / 2;
+  idle(s, 240, { mx: 0, my: 1 });
+  assert(s.body.y + s.P['body.radius'] <= bk.y + 0.5, 'body bottom ' + (s.body.y + 13).toFixed(2) + ' block top ' + bk.y);
+});
+check('city: the dummy cannot walk through a jersey barrier', () => {
+  const s = empty('straight'), jb = s.level.statics.find((st) => st.kind === 'jersey' && st.y > 300);
+  s.body.x = jb.x + jb.w / 2; s.body.y = jb.y + jb.h + 30; s.body.facing = -Math.PI / 2;
+  idle(s, 240, { mx: 0, my: -1 });
+  assert(s.body.y - s.P['body.radius'] >= jb.y + jb.h - 0.5, 'body top ' + (s.body.y - 13).toFixed(2) + ' barrier bottom ' + (jb.y + jb.h));
+});
+check('city: a block casts a sensor shadow; open ground does not', () => {
+  const s = empty('straight'), bk = s.level.statics.find((st) => st.kind === 'block' && st.x === 168 && st.y === 94);
+  assert(s.occluded(null, bk.x + bk.w / 2, bk.y - 20, bk.x + bk.w / 2, bk.y + bk.h + 20), 'line through the block');
+  assert(!s.occluded(null, 120, 60, 120, 190), 'line over open deck');
+});
+check('city: every open spot connects to a spawn, and the road is reachable', () => {
+  for (const lvl of D.LEVEL_LIST) {
+    const s = new Sim(lvl), S = 4, W = 800, H = 600, R = s.P['body.radius'], gw = W / S, gh = H / S, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh);
+    const rd = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
+    for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const x = i * S + 2, y = j * S + 2; free[j * gw + i] = x > R && x < W - R && y > R && y < H - R && s.level.statics.every((st) => rd(x, y, st) > R + 0.5) ? 1 : 0; }
+    const q = [];
+    for (const sp of s.level.spawns) { const k = Math.floor(sp.y / S) * gw + Math.floor(sp.x / S); assert(free[k], lvl + ' spawn blocked'); seen[k] = 1; q.push(k); }
+    while (q.length) { const k = q.pop(), i = k % gw, j = (k - i) / gw; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ii = i + di, jj = j + dj; if (ii < 0 || jj < 0 || ii >= gw || jj >= gh) continue; const kk = jj * gw + ii; if (free[kk] && !seen[kk]) { seen[kk] = 1; q.push(kk); } } }
+    let lost = 0; for (let k = 0; k < free.length; k++) if (free[k] && !seen[k]) lost++;
+    assert.strictEqual(lost, 0, lvl + ' enclosed cells');
+    const road = s.level.lanes[0], mid = D.pathAt(road, road.length / 2), k = Math.floor(mid.y / S) * gw + Math.floor(mid.x / S);
+    assert(seen[k], lvl + ' road unreachable');
+  }
+});
+for (const lvl of D.LEVEL_LIST) {
+  check(`city ${lvl}: no car ever overlaps a block or jersey barrier (10 min)`, () => {
+    let s = new Sim(lvl), worst = null;
+    const city = () => s.level.statics.filter(CITY);
+    for (let i = 0; i < 60 * 600; i++) {
+      s.step({ mx: Math.sin(i / 37), my: Math.cos(i / 53), aPress: i % 41 === 0 });
+      if (s.phase === 'report') s.continueReport();
+      if (s.phase === 'shop') s.leaveShop();
+      if (s.phase === 'ending' || s.phase === 'next') s = new Sim(lvl);
+      for (const c of s.cars) {
+        const ca = Math.cos(c.h), sa = Math.sin(c.h);
+        for (const [u, v] of [[-1, -1], [1, -1], [1, 1], [-1, 1], [0, -1], [0, 1], [1, 0], [-1, 0]]) {
+          const x = c.x + (u * c.L / 2) * ca - (v * c.W / 2) * sa, y = c.y + (u * c.L / 2) * sa + (v * c.W / 2) * ca;
+          for (const st of city()) if (x > st.x && x < st.x + st.w && y > st.y && y < st.y + st.h) worst = worst || `${c.id} at ${x.toFixed(1)},${y.toFixed(1)} in ${st.kind} ${st.x},${st.y}`;
+        }
+      }
+    }
+    assert(!worst, worst);
+  });
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

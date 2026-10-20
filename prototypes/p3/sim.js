@@ -56,6 +56,7 @@
     'proto.art.shadowScale': 0.3, 'proto.art.crateHeight': 30, 'proto.art.barrierHeight': 14,
     'proto.art.coneHeight': 14, 'proto.art.dummyHeight': 18, 'proto.art.droneHeight': 70,
     'proto.art.extrusion': 0.3, // P3: share of an object's height drawn as screen-up offset (three-quarter view)
+    'proto.city': 1, // P3: city blocks and jersey barriers are level statics (Fix A). 0 restores the P2.2 roads.
   };
 
   // P1.2 prototype overrides of registry values (logged in DUMMIES_Prototype_Log.md).
@@ -140,6 +141,16 @@
       ],
       cones: [[110, 196], [310, 190], [500, 414], [690, 420]],
       spawns: [{ x: 400, y: 480, f: -90 }, { x: 160, y: 480, f: -90 }, { x: 640, y: 480, f: -90 }, { x: 400, y: 120, f: 90 }],
+      // P3 city (proto.city): jersey barriers and blocks are solid. They collide and cast sensor shadows like any static.
+      city: [
+        { x: 588, y: 208, w: 44, h: 8, kind: 'jersey' }, { x: 738, y: 208, w: 44, h: 8, kind: 'jersey' },
+        { x: 58, y: 384, w: 44, h: 8, kind: 'jersey' }, { x: 358, y: 384, w: 44, h: 8, kind: 'jersey' },
+        { x: 658, y: 384, w: 44, h: 8, kind: 'jersey' }, { x: 168, y: 94, w: 100, h: 56, kind: 'block', height: 130 },
+        { x: 0, y: 474, w: 60, h: 48, kind: 'block', height: 110 }, { x: 576, y: 96, w: 80, h: 60, kind: 'block', height: 140 },
+        { x: 110, y: 556, w: 76, h: 44, kind: 'block', height: 90 }, { x: 488, y: 548, w: 116, h: 52, kind: 'block', height: 90 },
+        { x: 288, y: 556, w: 60, h: 44, kind: 'block', height: 60 }, { x: 0, y: 102, w: 64, h: 64, kind: 'block', height: 130 },
+        { x: 656, y: 556, w: 80, h: 44, kind: 'block', height: 130 },
+      ],
     },
     barrier: {
       name: 'L2 Barrier', blurb: 'Hide behind the barrier. Ambush through the gaps.',
@@ -151,6 +162,14 @@
       ],
       cones: [[90, 202], [260, 198], [540, 202], [150, 428], [700, 428]],
       spawns: [{ x: 400, y: 500, f: -90 }, { x: 140, y: 500, f: -90 }, { x: 660, y: 500, f: -90 }, { x: 300, y: 110, f: 90 }],
+      // P3 city (proto.city): jersey barriers and blocks are solid. They collide and cast sensor shadows like any static.
+      city: [
+        { x: 288, y: 208, w: 44, h: 8, kind: 'jersey' }, { x: 588, y: 208, w: 44, h: 8, kind: 'jersey' },
+        { x: 110, y: 90, w: 80, h: 44, kind: 'block', height: 100 }, { x: 526, y: 476, w: 56, h: 76, kind: 'block', height: 100 },
+        { x: 504, y: 92, w: 60, h: 56, kind: 'block', height: 110 }, { x: 614, y: 98, w: 68, h: 44, kind: 'block', height: 130 },
+        { x: 248, y: 500, w: 64, h: 52, kind: 'block', height: 100 }, { x: 0, y: 454, w: 64, h: 40, kind: 'block', height: 60 },
+        { x: 0, y: 552, w: 68, h: 48, kind: 'block', height: 110 },
+      ],
     },
     corner: {
       name: 'L3 Corner', blurb: 'A right-angle bend. Read curved approaches.',
@@ -159,6 +178,14 @@
         { x: 236, y: 336, w: 28, h: 28, kind: 'pillar' }, { x: 626, y: 456, w: 32, h: 32, kind: 'pillar' }],
       cones: [[200, 330], [320, 552], [660, 220], [420, 120]],
       spawns: [{ x: 300, y: 560, f: -90 }, { x: 700, y: 400, f: 180 }, { x: 200, y: 160, f: 0 }, { x: 720, y: 140, f: 180 }],
+      // P3 city (proto.city): jersey barriers and blocks are solid. They collide and cast sensor shadows like any static.
+      city: [
+        { x: 58, y: 524, w: 44, h: 8, kind: 'jersey' }, { x: 358, y: 524, w: 44, h: 8, kind: 'jersey' },
+        { x: 458, y: 108, w: 8, h: 44, kind: 'jersey' }, { x: 498, y: 560, w: 60, h: 40, kind: 'block', height: 110 },
+        { x: 294, y: 178, w: 60, h: 52, kind: 'block', height: 120 }, { x: 640, y: 556, w: 64, h: 44, kind: 'block', height: 110 },
+        { x: 0, y: 238, w: 68, h: 48, kind: 'block', height: 120 }, { x: 0, y: 144, w: 88, h: 40, kind: 'block', height: 60 },
+        { x: 676, y: 272, w: 68, h: 48, kind: 'block', height: 70 }, { x: 150, y: 552, w: 64, h: 48, kind: 'block', height: 130 },
+      ],
     },
   };
   const LEVEL_LIST = ['straight', 'barrier', 'corner'];
@@ -170,7 +197,7 @@
     return {
       id, name: L.name, blurb: L.blurb, center: c,
       lanes: [makePath(offsetPts(c, half)), makePath(offsetPts(c, -half).reverse())],
-      statics: L.statics.map((s, i) => Object.assign({ id: 's' + i }, s)),
+      statics: L.statics.concat(P['proto.city'] ? L.city || [] : []).map((s, i) => Object.assign({ id: 's' + i }, s)),
       coneHomes: L.cones.slice(), spawns: L.spawns.slice(),
     };
   }
