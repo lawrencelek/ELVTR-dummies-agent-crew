@@ -114,7 +114,7 @@ check('impulse model: hand-computed cases (m_d 0.056, e 0.3, cap 100, p 2)', () 
   assert.strictEqual(I(P, 0, 0, 138, 0, 1, 0, 'sedan').assessed, 0, 'separating car');
 });
 check('difficulty: constant health across roads; Standard 800 default, Fragile 600, Reinforced 1000 (Edit 40.1)', () => {
-  for (const lvl of D.LEVEL_LIST) { const s = new Sim(lvl); assert.strictEqual(s.body.health, 800); assert(near(s.reach(), 164)); }
+  for (const lvl of D.ROADS) { const s = new Sim(lvl); assert.strictEqual(s.body.health, 800); assert(near(s.reach(), 164)); }
   assert.strictEqual(new Sim('corner', { 'proto.difficulty': 0 }).body.health, 600);
   assert.strictEqual(new Sim('straight', { 'proto.difficulty': 2 }).body.health, 1000);
 });
@@ -147,7 +147,7 @@ check('blocked by a cone: car honks after 5 s, drone clears the cone, traffic re
   assert(honk.t >= 5, 'honked early at ' + honk.t);
 });
 check('initial cones sit off the road', () => {
-  for (const lvl of D.LEVEL_LIST) {
+  for (const lvl of D.ROADS) {
     const s = new Sim(lvl), half = s.P['world.laneWidth'] + s.P['proto.shoulderWidth'];
     for (const cn of s.cones) { const pr = D.pathProject(s.level.lanes[0], cn.x, cn.y); assert(Math.abs(pr.lat + s.P['world.laneWidth'] / 2) > half, lvl + ' ' + cn.id); }
   }
@@ -293,7 +293,7 @@ check('determinism: same inputs → same trace', () => {
   const run = () => { const s = new Sim('barrier'); for (let i = 0; i < 3600; i++) s.step({ mx: Math.sin(i / 50), my: Math.cos(i / 70), aPress: i % 97 === 0 }); return JSON.stringify(s.events); };
   assert.strictEqual(run(), run());
 });
-for (const lvl of D.LEVEL_LIST) {
+for (const lvl of D.ROADS) {
   check(`smoke ${lvl}: 10 min scripted play, no NaN, cars admit and exit`, () => {
     let s = new Sim(lvl), admitted = 0, exited = 0;
     for (let i = 0; i < 60 * 600; i++) {
@@ -318,7 +318,7 @@ for (const lvl of D.LEVEL_LIST) {
 // ---------- P3 city (proto.city): blocks and jersey barriers are solid statics
 const CITY = (st) => st.kind === 'block' || st.kind === 'jersey';
 check('city: every road gains solid blocks and jersey barriers; proto.city 0 removes them', () => {
-  for (const lvl of D.LEVEL_LIST) {
+  for (const lvl of D.ROADS) {
     const s = new Sim(lvl), s0 = new Sim(lvl, { 'proto.city': 0 });
     assert(s.level.statics.some((st) => st.kind === 'block') && s.level.statics.some((st) => st.kind === 'jersey'), lvl);
     assert(!s0.level.statics.some(CITY), lvl + ' with proto.city 0');
@@ -343,7 +343,7 @@ check('city: a block casts a sensor shadow; open ground does not', () => {
   assert(!s.occluded(null, 20, 300, 780, 300), 'line along the open road');
 });
 check('city: every open spot connects to a spawn, and the road is reachable', () => {
-  for (const lvl of D.LEVEL_LIST) {
+  for (const lvl of D.ROADS) {
     const s = new Sim(lvl), S = 4, W = 800, H = 600, R = s.P['body.radius'], gw = W / S, gh = H / S, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh);
     const rd = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
     for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const x = i * S + 2, y = j * S + 2; free[j * gw + i] = x > R && x < W - R && y > R && y < H - R && s.level.statics.every((st) => rd(x, y, st) > R + 0.5) ? 1 : 0; }
@@ -356,7 +356,7 @@ check('city: every open spot connects to a spawn, and the road is reachable', ()
     assert(seen[k], lvl + ' road unreachable');
   }
 });
-for (const lvl of D.LEVEL_LIST) {
+for (const lvl of D.ROADS) {
   check(`city ${lvl}: no car ever overlaps a block or jersey barrier (10 min)`, () => {
     let s = new Sim(lvl), worst = null;
     const city = () => s.level.statics.filter(CITY);
@@ -433,7 +433,7 @@ const { planDistrict, cellLevel, cellName, edgeCrossings, SIDE } = D;
 const OPPS = { N: 'S', E: 'W', S: 'N', W: 'E' };
 function rdist(x, y, r) { return Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h))); }
 check('district: one road through all nine screens; its ends leave the district; crossings match on shared edges', () => {
-  for (const id of D.LEVEL_LIST) {
+  for (const id of D.ROADS) {
     const s = new Sim(id), Dd = s.district;
     assert(Dd, id + ': no district');
     assert.strictEqual(new Set(Dd.path.map((c) => c.join())).size, 9, id + ': road misses a screen');
@@ -447,7 +447,7 @@ check('district: one road through all nine screens; its ends leave the district;
   }
 });
 check('district: every generated screen meets the city contract; every gate is open on both sides and reachable', () => {
-  for (const id of D.LEVEL_LIST) for (const seed of [0, 1]) {
+  for (const id of D.ROADS) for (const seed of [0, 1]) {
     const s = new Sim(id, { 'proto.district.seed': seed }), Dd = s.district, R = s.P['body.radius'];
     for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
       const lv = cellLevel(Dd, [x, y], s.P), tag = id + '/' + seed + '/' + cellName([x, y]);
@@ -488,7 +488,7 @@ check('district: open ground crosses any edge and flips the screen; a building a
   const n = push(420, 30, { mx: 0, my: -1 }); assert.strictEqual(n.screenName(), 'B1'); assert(near(n.body.y, R, 0.5), 'river edge holds');
 });
 check('district: marked edge stretches are exactly where an open-looking edge stops the dummy', () => {
-  for (const id of D.LEVEL_LIST) {
+  for (const id of D.ROADS) {
     const s = new Sim(id), Dd = s.district, R = s.P['body.radius'];
     for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
       Dd.cur = [x, y]; s.level = cellLevel(Dd, [x, y], s.P);
@@ -511,7 +511,7 @@ check('district: cones stay on their screen; a held cone travels with the dummy'
   assert.strictEqual(s.screenName(), 'C1'); assert(s.cones.includes(cn) && !first.slice(1).some((c) => s.cones.includes(c)), 'new screen: its cones plus the held one');
 });
 check('puddles: world.puddleShare of tiles on every screen, never under a static, spawn or cone', () => {
-  for (const id of D.LEVEL_LIST) {
+  for (const id of D.ROADS) {
     const s = new Sim(id), Dd = s.district;
     for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
       const lv = cellLevel(Dd, [x, y], s.P), tiles = lv.patches.reduce((n, p) => n + p.w * p.h / 1024, 0);
@@ -542,5 +542,74 @@ check('Big battery: three charges when owned (D26); base two', () => {
   s.run.credits = 1; s.phase = 'shop'; const r = s.buy('bigBattery'); assert(r.ok && r.price === 1, 'one credit');
   s.leaveShop(); assert.strictEqual(s.capacity(), 3); assert.strictEqual(s.body.charge, 3);
 });
+// ---------- Edit 41 (20 Oct): five city districts, baked layouts, flyovers, landmarks
+const { checkCity } = require('./tools/district_check.js');
+check('city: five districts in a fixed order, quotas rising, and three baked layouts each that pass the contract', () => {
+  assert.deepStrictEqual(D.DISTRICT_LIST, ['riverside', 'market', 'interchange', 'cbd', 'campus']);
+  const q = D.DISTRICT_LIST.map((id) => D.REG['world.district.' + id + '.quota']);
+  for (let i = 1; i < q.length; i++) assert(q[i] >= q[i - 1], 'quota falls at ' + D.DISTRICT_LIST[i]);
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
+    const s = new Sim(id, { 'proto.layout': k }), Dd = s.district;
+    assert(Dd && Dd.baked && Dd.layout === k, id + ' layout ' + k + ' not baked');
+    const probs = checkCity(Dd, s.P, D); assert.strictEqual(probs.length, 0, id + '/' + k + ': ' + probs.slice(0, 2).join('; '));
+  }
+});
+check('city: the centre screen holds the landmark; flyovers cross whole rows or columns on pillars', () => {
+  const want = { riverside: 'monument', market: 'fountain', interchange: 'roundabout', cbd: 'tower', campus: 'plate' };
+  for (const id of D.DISTRICT_LIST) {
+    const s = new Sim(id, { 'proto.layout': 1 }), Dd = s.district, c = Dd.cells[1][1];
+    assert.strictEqual(c.focal, want[id], id + ' focal');
+    for (const dk of Dd.decks) { const cells = Dd.cells.flat().filter((q) => (q.decks || []).length && (dk.hz ? q.cell[1] === dk.line : q.cell[0] === dk.line)); assert.strictEqual(cells.length, 3, id + ' deck spans 3 screens'); }
+  }
+  const t = new Sim('interchange', { 'proto.layout': 1 }), hs = t.district.decks.map((dk) => dk.height);
+  assert(hs.length === 2 && hs[1] > hs[0], 'stacked: the column deck is higher');
+});
+check('city: the same layout plays the same; the next district follows in order', () => {
+  const run = () => { const s = new Sim('market', { 'proto.layout': 2 }); for (let i = 0; i < 1800; i++) s.step({ mx: Math.sin(i / 40), my: Math.cos(i / 60), aPress: i % 89 === 0 }); return JSON.stringify(s.events); };
+  assert.strictEqual(run(), run());
+  const s = new Sim('riverside', { 'run.appearances.road': 0 }); s.body.health = 1; s.writeOff(); s.checkTerminal();
+  assert(s.report && s.report.roadCleared && s.report.nextRoad === 'market', 'Riverside clears to Old Market');
+  assert(new Sim('campus').isFinal, 'Campus is the last district');
+});
+check('flyovers: deck traffic runs both ways on the active screen and never touches the dummy', () => {
+  const s = new Sim('interchange', { 'proto.layout': 1, 'run.appearances.road': 0 }); s.checkTerminal = () => {};
+  const Dd = s.district, cell = Dd.cells.flat().find((q) => (q.decks || []).length);
+  Dd.cur = cell.cell.slice(); s.level = D.cellLevel(Dd, cell.cell, s.P); s.fillDecks();
+  assert(s.deckCars.length > 0 && s.deckCars.some((c) => c.dir > 0) && s.deckCars.some((c) => c.dir < 0), 'both directions');
+  const dk = s.level.decks[0]; s.body.x = dk.hz ? 400 : dk.off; s.body.y = dk.hz ? dk.off : 300; const h = s.body.health;
+  idle(s, 600, {});
+  assert.strictEqual(s.body.health, h, 'no hits from the deck'); assert(s.deckCars.length > 0, 'traffic keeps coming');
+});
+check('interchange: the roundabout island is crash matting: dash × world.terrain.matting.lunge', () => {
+  const s = new Sim('interchange', { 'proto.layout': 1, 'run.appearances.road': 0 }); s.checkTerminal = () => {};
+  const Dd = s.district; Dd.cur = [1, 1]; s.level = D.cellLevel(Dd, [1, 1], s.P);
+  const m = s.level.patches.find((p) => p.kind === 'matting'); assert(m, 'matting');
+  s.body.x = m.x + m.w / 2; s.body.y = m.y + m.h / 2; s.body.facing = 0; const x0 = s.body.x;
+  s.step({ aPress: true }); assert.strictEqual(s.body.mode, 'lunge'); assert(near(s.body.lunge.R, 164 * 1.15, 0.01), 'reach ' + s.body.lunge.R);
+  void x0;
+});
+check('campus: a hit taken on a calibrated plate scores damage.plateMultiplier', () => {
+  const s = new Sim('campus', { 'proto.layout': 1, 'run.appearances.road': 1 }); s.checkTerminal = () => {};
+  const Dd = s.district, c = Dd.cells[1][1]; Dd.cur = [1, 1]; s.level = D.cellLevel(Dd, [1, 1], s.P); s.fillDecks();
+  const plate = s.level.patches.find((p) => p.kind === 'plate'); assert(plate, 'a plate');
+  s.body.x = plate.x + plate.w / 2; s.body.y = plate.y + plate.h / 2;
+  assert.strictEqual(s.surfaceAt(s.body.x, s.body.y), 'plate');
+  const before = s.run.points, ct = { k: 0, car: { id: 'carX', spent: false, model: 'SEDAN-01', cls: 'sedan' }, closing: 100, ph: { raw: 100, assessed: 100, angle: 0, dvd: 1, un: 1 }, px: s.body.x + 10, py: s.body.y, zone: 'front', carState: 'cruise', cause: null, lunging: false, stopped: false };
+  s.account([ct]); assert(near(s.run.points - before, 150), 'points ' + (s.run.points - before));
+  void c;
+});
+for (const id of D.DISTRICT_LIST) {
+  check(`smoke ${id}: 5 min scripted play across screens, no NaN`, () => {
+    const s = new Sim(id, { 'proto.layout': 1 });
+    for (let i = 0; i < 60 * 300; i++) {
+      s.step({ mx: Math.sin(i / 37), my: Math.cos(i / 53), aPress: i % 41 === 0 });
+      if (s.phase === 'report') s.continueReport();
+      if (s.phase === 'shop') s.leaveShop();
+      if (s.phase === 'ending' || s.phase === 'next') break;
+      for (const c of s.cars.concat(s.deckCars)) assert(Number.isFinite((c.x || 0) + (c.y || 0) + (c.s || 0) + c.v), 'NaN car');
+      assert(Number.isFinite(s.body.x + s.body.y), 'NaN body');
+    }
+  });
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

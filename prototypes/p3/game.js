@@ -2,7 +2,7 @@
    Screen: 640 × 360 art pixels, integer-scaled. Field: 400 × 300 art pixels at (120, 30). HUD and screens: 1280 × 720 reference units. */
 (function () {
   'use strict';
-  const { Sim, NODES, LEVELS, LEVEL_LIST, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt } = window.DUMMIES;
+  const { Sim, NODES, LEVELS, LEVEL_LIST, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, INFO, DISTRICTS } = window.DUMMIES;
   const PIX = window.PIX;
 
   // Palette roles (Design §4.2 / D10.2, Trial)
@@ -100,7 +100,9 @@
   function startLevel(i, carry) {
     if (!carry) app.roads = [];
     app.level = i; app.roadCarry = carry || null;
-    app.sim = new Sim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, app.tune), carry);
+    // Edit 41: each run plays one of the three baked layouts per district, at random (tuning: proto.layout fixes one)
+    const layout = app.tune['proto.layout'] != null ? app.tune['proto.layout'] : 1 + Math.floor(Math.random() * 3);
+    app.sim = new Sim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty, 'proto.layout': layout }, app.tune), carry);
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
@@ -207,7 +209,8 @@
       src.connect(bp); bp.connect(g); g.connect(c.destination); src.start(t); src.stop(t + dur + 0.03);
     },
   };
-  const THEME_NAME = { start: 'Start screen', flyover: 'Flyover pillars', barrier: 'Barrier run', plain: 'Open street' };
+  const THEME_NAME = { start: 'Start screen', flyover: 'Pillars', barrier: 'Barrier run', plain: 'Open street',
+    monument: 'Lantern monument', fountain: 'Fountain square', roundabout: 'Roundabout', tower: 'FARSIGHT Tower', plate: 'Test plates' };
   const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone' };
   // Generated juice (content/juice.json): one entry per sim event, every value a parameter ID. Returns false if absent.
   function juice(e, s) {
@@ -518,7 +521,7 @@
         case 'skid': { const c = s.cars.find((q) => q.id === e.car); if (c) puff(c.x, c.y, 10, { type: 'spark', role: 'puddleHi', dir: c.h + Math.PI, spread: 2.2, speed: 120, life: 0.35, size: 2 }); Snd.tone(1800, 900, 0.18, 'sawtooth', 0.02); break; }
         case 'screen': { // D24: first visit names the screen
           Snd.tone(300, 520, 0.12, 'triangle', 0.04);
-          if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (THEME_NAME[e.theme] || '')); }
+          if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (THEME_NAME[e.focal || e.theme] || '')); }
           break;
         }
         case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODES[e.node].name })); break;
@@ -539,7 +542,7 @@
 
   // ---------- menus
   const PAUSE_ITEMS = ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title'];
-  const END_ITEMS = ['Play again from road 1', 'Choose a road', 'Show trace'];
+  const END_ITEMS = ['Play again from district 1', 'Choose a district', 'Show trace'];
   const SHOP_GRID = [['hips', 'spine'], ['carry', 'throw'], ['bigBattery']];
   function handleMenus() {
     const s = app.sim;
@@ -594,9 +597,9 @@
         else if (m === 'down') app.endSel = (app.endSel + 1) % items.length;
         else if (m === 'ok') {
           const it = items[app.endSel];
-          if (it === 'Retry this road') { const rs = app.roads.slice(); startLevel(app.level, app.roadCarry); app.roads = rs; return; }
-          if (it === 'Play again from road 1') { startLevel(0); return; }
-          if (it === 'Choose a road') { app.screen = 'title'; app.sim = null; return; }
+          if (it === 'Retry this district') { const rs = app.roads.slice(); startLevel(app.level, app.roadCarry); app.roads = rs; return; }
+          if (it === 'Play again from district 1') { startLevel(0); return; }
+          if (it === 'Choose a district') { app.screen = 'title'; app.sim = null; return; }
           if (it === 'Replay this level') { startLevel(app.level); return; }
           if (it === 'Choose another level') { app.screen = 'title'; app.sim = null; return; }
           showTrace();
@@ -697,11 +700,13 @@
       const sprite = (st, i) => {
         const w = Math.round(st.w / U), h = Math.round(st.h / U);
         if (st.kind === 'block') return PIX.building(w, h, EXT(st.height), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]));
+        if (st.kind === 'monument') return PIX.monument(w, h, EXT(st.height));
+        if (st.kind === 'fountain') return PIX.fountain(w, h, EXT(st.height));
         if (st.kind === 'jersey') return PIX.jersey(w, h, EXT(P['proto.art.barrierHeight']));
         if (st.kind === 'barrier') return PIX.barrier(w, h, EXT(P['proto.art.barrierHeight']));
         return PIX.pod(w, h, EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i);
       };
-      artCache.set(id, { ground: gr, statics: L.statics.map((st, i) => ({ st, spr: sprite(st, i) })) });
+      artCache.set(id, { ground: gr, statics: L.statics.map((st, i) => ({ st, spr: sprite(st, i) })), decks: (L.decks || []).map((dk) => Object.assign({ dk }, PIX.deck(dk, P))) });
     }
     return artCache.get(id);
   }
@@ -991,9 +996,22 @@
     FB.put(x, y - 1, Math.floor(app.realT * 4) % 2 ? K.warn : K.podCrown);
     for (const [rx, ry] of [[-7, -4], [7, -4], [-7, 4], [7, 4]]) { const a = app.realT * 40 + rx; FB.put(Math.round(x + rx + Math.cos(a) * 2), Math.round(y + ry + Math.sin(a) * 1.2), K.ink); }
   }
+  function deckCarPose(s, c) { // a deck car's world position and heading (Edit 41)
+    const dk = s.level.decks[c.k], lw = s.P['world.laneWidth'] / 2;
+    return dk.hz ? { x: c.s, y: dk.off + c.dir * lw, h: c.dir > 0 ? 0 : Math.PI } : { x: dk.off - c.dir * lw, y: c.s, h: c.dir > 0 ? Math.PI / 2 : -Math.PI / 2 };
+  }
+  function drawDeck(s, d, k) { // the flyover, then its traffic, lifted by the deck's height
+    PIX.blit(FB, d.S, d.dk.hz ? 0 : Math.round((d.dk.off - s.P['world.deckWidth'] / 2) / U), d.dk.hz ? Math.round((d.dk.off - s.P['world.deckWidth'] / 2) / U) - d.ext : -d.ext);
+    for (const c of s.deckCars || []) {
+      if (c.k !== k) continue;
+      const q = deckCarPose(s, c);
+      PIX.blit(FB, PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(s.P['vehicles.' + c.cls + '.height']), q.h, false), q.x / U, q.y / U - d.ext);
+    }
+  }
   function drawSprites(s, la, still) { // depth-sorted by the ground line of each object
     const list = [];
     for (const o of la.statics) list.push([o.st.y + o.st.h, () => PIX.blit(FB, o.spr, Math.round(o.st.x / U), Math.round(o.st.y / U))]);
+    (la.decks || []).forEach((d, k) => list.push([d.dk.hz ? d.dk.off + s.P['world.deckWidth'] / 2 : s.P['world.height'] + d.dk.height / 1000, () => drawDeck(s, d, k)])); // flyovers sort by their south edge
     for (const cn of s.cones) if (cn.state === 'free' || cn.state === 'flight') list.push([cn.y + 6, () => PIX.blit(FB, PIX.CONE, cn.x / U, (cn.y - coneLift(cn) * 1.2) / U)]);
     if (!still) {
       for (const c of s.cars) list.push([c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
@@ -1160,8 +1178,10 @@
   function drawFieldHD(s) {
     const P = s.P;
     if (s.t < 4 && s.phase === 'play') {
-      const iv = { road: s.roadIndex + 1, roads: LEVEL_LIST.length, roadName: LEVELS[s.levelId].name, quota: s.quota, difficulty: s.difficulty, health: P['damage.bodyHealth'] };
-      const intro = CI && CI.copy && CI.copy.intro, msg = (intro ? fillIn(intro[0], iv) : 'Road ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. Write-offs required: ' + iv.quota + '.') +
+      const iv = { road: s.roadIndex + 1, roads: s.list.length, roadName: INFO(s.levelId).name, quota: s.quota, difficulty: s.difficulty, health: P['damage.bodyHealth'] };
+      const intro = CI && CI.copy && CI.copy.intro;
+      const msg = s.isCity ? 'District ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. ' + INFO(s.levelId).blurb + ' Write-offs required: ' + iv.quota + '.'
+        : (intro ? fillIn(intro[0], iv) : 'Road ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. Write-offs required: ' + iv.quota + '.') +
         (s.district ? ' ' + s.district.cols * s.district.rows + ' screens: walk off a marked edge to explore.' : '');
       const lines = wrapLines(msg, FW - 88, fLab), h = 22 + lines.length * 30;
       ctx.globalAlpha = Math.min(1, (4 - s.t) / 0.6);
@@ -1179,7 +1199,7 @@
   }
 
   // ---------- frame + essentials HUD (V29 D10.3: only facts the player acts on, at registry type size)
-  function roadLabel(id) { return 'ROAD ' + (LEVEL_LIST.indexOf(id) + 1) + ' · ' + LEVELS[id].name.replace(/^L\d+\s*/, '').toUpperCase(); }
+  function roadLabel(id) { const d = !!DISTRICTS[id]; return (d ? '' : 'ROAD ') + ((d ? LEVEL_LIST : window.DUMMIES.ROADS).indexOf(id) + 1) + ' · ' + INFO(id).name.replace(/^L\d+\s*/, '').replace('Central Business District', 'CBD').toUpperCase(); }
   function drawFrame() {
     const g = ctx.createLinearGradient(0, 0, 0, VH);
     g.addColorStop(0, FT.bg[0]); g.addColorStop(0.5, FT.bg[1]); g.addColorStop(1, FT.bg[2]);
@@ -1193,7 +1213,7 @@
     txt('FARSIGHT', 24, 44, '900 30px ' + F_BRAND, FT.brand);
     if (FT.neon) ctx.restore();
     const s = app.sim;
-    if (app.screen === 'title' || !s) txt('SELECT A ROAD', FX + FW / 2, 40, fLab, FT.dim, 'center');
+    if (app.screen === 'title' || !s) txt('SELECT A DISTRICT', FX + FW / 2, 40, fLab, FT.dim, 'center');
     else drawTopBar(s);
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
@@ -1254,6 +1274,11 @@
       if (iy === 0) { ctx.fillStyle = rgba(PIX.PAL.water.length === 7 ? PIX.PAL.water : '#4FC3E8', 0.9); ctx.fillRect(x, y, cw, 4); }
       ctx.beginPath(); cell.center.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
       ctx.strokeStyle = seen ? (cur ? FT.selText : FT.text) : FT.off; ctx.lineWidth = seen ? 5 : 3; ctx.lineJoin = 'round'; ctx.stroke();
+      for (const dk of cell.decks || []) { // flyovers: a thin double line
+        ctx.beginPath(); if (dk.hz) { ctx.moveTo(x, y + dk.off / Hd * ch); ctx.lineTo(x + cw, y + dk.off / Hd * ch); } else { ctx.moveTo(x + dk.off / Wd * cw, y); ctx.lineTo(x + dk.off / Wd * cw, y + ch); }
+        ctx.strokeStyle = FT.accent; ctx.lineWidth = 2; ctx.setLineDash([3, 2]); ctx.stroke(); ctx.setLineDash([]);
+      }
+      if (cell.focal) { ctx.beginPath(); ctx.arc(x + cw / 2, y + ch / 2, 3, 0, TAU); ctx.fillStyle = FT.accent; ctx.fill(); }
       ctx.restore();
     }
     const b = s.body;
@@ -1323,8 +1348,8 @@
     });
   }
   function difficultyHealth(i) { const k = 'proto.health.' + DIFFICULTIES[i].key; return app.tune[k] != null ? app.tune[k] : PROTO[k]; }
-  function endItems(s) { return s.run.ending && s.run.ending.kind !== 'Licensed' ? ['Retry this road', ...END_ITEMS] : END_ITEMS; }
-  function quotaOf(id) { return app.tune['proto.quota.' + id] != null ? app.tune['proto.quota.' + id] : PROTO['proto.quota.' + id]; }
+  function endItems(s) { return s.run.ending && s.run.ending.kind !== 'Licensed' ? ['Retry this district', ...END_ITEMS] : END_ITEMS; }
+  function quotaOf(id) { const k = DISTRICTS[id] ? 'world.district.' + id + '.quota' : 'proto.quota.' + id; return app.tune[k] != null ? app.tune[k] : REG[k] != null ? REG[k] : PROTO[k]; }
   function drawTitle() {
     drawField(previews[app.level], true);
     veil();
@@ -1333,12 +1358,12 @@
     const TT = CTM && CTM.title, tv = { roads: LEVEL_LIST.length, q1: quotaOf(LEVEL_LIST[0]), q2: quotaOf(LEVEL_LIST[1]), q3: quotaOf(LEVEL_LIST[2]) };
     txt('DUMMIES', x + 30, y + 76, '900 64px ' + F_BRAND, FT.text);
     wrapText(TT && TT.lines ? fillIn(TT.lines[0], tv) : 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.', x + 32, y + 116, w - 64, 30, fTxt, FT.dim, 2);
-    LEVEL_LIST.forEach((id, i) => {
-      const yy = y + 182 + i * 66, on = i === app.level, q = quotaOf(id);
-      rr(x + 28, yy, w - 56, 56, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
+    LEVEL_LIST.forEach((id, i) => { // Edit 41: five districts, in order
+      const yy = y + 160 + i * 46, on = i === app.level, q = quotaOf(id);
+      rr(x + 28, yy, w - 56, 40, 10); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
       ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
-      txt(LEVELS[id].name, x + 48, yy + 40, fBig, on ? FT.selText : FT.text);
-      txt(q + ' WRITE-OFF' + (q === 1 ? '' : 'S'), x + w - 48, yy + 36, fLab, on ? FT.selText : FT.dim, 'right');
+      txt((i + 1) + '  ' + INFO(id).name, x + 48, yy + 30, fLab, on ? FT.selText : FT.text);
+      txt(q + ' WRITE-OFF' + (q === 1 ? '' : 'S'), x + w - 48, yy + 28, fLab, on ? FT.selText : FT.dim, 'right');
     });
     const dname = DIFFICULTIES[app.difficulty].name.toUpperCase(), dt = '◀  ' + dname + ' · ' + difficultyHealth(app.difficulty) + ' HEALTH  ▶';
     ctx.font = fKey; const dw = ctx.measureText(dt).width + 36;

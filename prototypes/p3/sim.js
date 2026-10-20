@@ -39,9 +39,18 @@
     // Edit 40 (20 Oct): Big battery (D26), surfaces (D18), districts (D24), city targets (7.9 clause 6).
     'upgrades.bigCapacity': 3, 'economy.price.battery': 1, 'movement.lowGripStopMultiplier': 2.5,
     'world.terrain.puddle.dummySpeed': 0.9, 'world.terrain.puddle.lunge': 0, 'world.terrain.puddle.grip': 'low', 'world.terrain.puddle.carBraking': 0.5,
+    'world.terrain.matting.lunge': 1.15, 'world.terrain.matting.grip': 'high', // the Interchange island: a springboard (7.3)
     'world.tileSize': 32, 'world.puddleShare': 0.02, 'world.puddleSpotMax': 2, 'world.barrierGapsMin': 3,
     'world.districtColumns': 3, 'world.districtRows': 3, 'world.gateWidth': 48, 'world.flipSeconds': 0.4,
     'world.blockShare': 0.25, 'world.jerseyShare': 0.08, 'world.occludedFractionMax': 0.3,
+    // Edit 41 (20 Oct): city districts. Rows of the registry's districts table, addressable as world.district.<id>.<field>.
+    'world.district.riverside.quota': 1, 'world.district.riverside.interval': 3, 'world.district.riverside.vanShare': 0.2, 'world.district.riverside.blockShare': 0.22, 'world.district.riverside.blockMax': 112, 'world.district.riverside.lowHeight': 60, 'world.district.riverside.towerShare': 0, 'world.district.riverside.puddleShare': 0.02, 'world.district.riverside.jerseyShare': 0.06, 'world.district.riverside.decks': 0,
+    'world.district.market.quota': 2, 'world.district.market.interval': 3, 'world.district.market.vanShare': 0.45, 'world.district.market.blockShare': 0.24, 'world.district.market.blockMax': 96, 'world.district.market.lowHeight': 50, 'world.district.market.towerShare': 0, 'world.district.market.puddleShare': 0.04, 'world.district.market.jerseyShare': 0.05, 'world.district.market.decks': 0,
+    'world.district.interchange.quota': 2, 'world.district.interchange.interval': 2.8, 'world.district.interchange.vanShare': 0.3, 'world.district.interchange.blockShare': 0.2, 'world.district.interchange.blockMax': 160, 'world.district.interchange.lowHeight': 100, 'world.district.interchange.towerShare': 0.15, 'world.district.interchange.puddleShare': 0.02, 'world.district.interchange.jerseyShare': 0.1, 'world.district.interchange.decks': 2,
+    'world.district.cbd.quota': 3, 'world.district.cbd.interval': 2.6, 'world.district.cbd.vanShare': 0.3, 'world.district.cbd.blockShare': 0.25, 'world.district.cbd.blockMax': 160, 'world.district.cbd.lowHeight': 120, 'world.district.cbd.towerShare': 0.5, 'world.district.cbd.puddleShare': 0.02, 'world.district.cbd.jerseyShare': 0.08, 'world.district.cbd.decks': 1,
+    'world.district.campus.quota': 4, 'world.district.campus.interval': 2.5, 'world.district.campus.vanShare': 0.4, 'world.district.campus.blockShare': 0.2, 'world.district.campus.blockMax': 160, 'world.district.campus.lowHeight': 80, 'world.district.campus.towerShare': 0.1, 'world.district.campus.puddleShare': 0.01, 'world.district.campus.jerseyShare': 0.08, 'world.district.campus.decks': 1,
+    'world.deckHeight': 60, 'world.deckStack': 60, 'world.deckWidth': 128, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
+    'world.towerHeightMin': 220, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 140, 'damage.plateMultiplier': 1.5,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
   const PROTO = {
@@ -63,7 +72,7 @@
     'proto.art.coneHeight': 14, 'proto.art.dummyHeight': 18, 'proto.art.droneHeight': 70,
     'proto.art.extrusion': 0.3, // P3: share of an object's height drawn as screen-up offset (three-quarter view)
     'proto.city': 1, // P3: city blocks and jersey barriers are level statics (Fix A). 0 restores the P2.2 roads.
-    'proto.district': 1, 'proto.district.seed': 0, // P3 (D24): 3 × 3 screens per road, Zelda-style. 0 = one static screen. Seed rerolls the generated screens.
+    'proto.district': 1, 'proto.district.seed': 0, 'proto.layout': 0, // proto.layout: baked layout 1–3 per city district (0 = 1; −1 = generate live) // P3 (D24): 3 × 3 screens per road, Zelda-style. 0 = one static screen. Seed rerolls the generated screens.
     // P3 locational damage: an impact's assessed damage picks the height (legs → torso/arms → head); shares of
     // damage.bodyHealth lost by one part mark it cracked, then broken. Presentation and reports only; health is one pool.
     'proto.parts.torsoFrom': 100, 'proto.parts.headFrom': 250, 'proto.parts.crackedShare': 0.2, 'proto.parts.brokenShare': 0.4,
@@ -201,7 +210,7 @@
       ],
     },
   };
-  const LEVEL_LIST = ['straight', 'barrier', 'corner'];
+  const ROADS = ['straight', 'barrier', 'corner']; // the P2.2 roads: legacy campaign and test fixtures
   // Body health is a difficulty setting, constant across roads. More health = harder contract.
   const DIFFICULTIES = [{ key: 'fragile', name: 'Fragile' }, { key: 'standard', name: 'Standard' }, { key: 'reinforced', name: 'Reinforced' }];
 
@@ -213,7 +222,7 @@
       statics: L.statics.concat(P['proto.city'] ? L.city || [] : []).map((s, i) => Object.assign({ id: 's' + i }, s)),
       coneHomes: L.cones.slice(), spawns: L.spawns.slice(), canal: true, gates: {}, theme: 'start',
     };
-    lv.patches = makePatches(lv, P, prng(5150 + LEVEL_LIST.indexOf(id) * 97 + Math.round(P['proto.district.seed'] || 0) * 131));
+    lv.patches = makePatches(lv, P, prng(5150 + ROADS.indexOf(id) * 97 + Math.round(P['proto.district.seed'] || 0) * 131));
     return lv;
   }
 
@@ -230,16 +239,17 @@
 
   // ---------- surfaces (D18, 20 Oct; GDD 11.3): one ground per tile, patches painted on top. Puddles on world.puddleShare of tiles.
   // Spots of 1 to world.puddleSpotMax tiles, alternating road and verge, never under a static, a spawn or a cone.
-  function makePatches(lv, P, r) {
+  function makePatches(lv, P, r, avoid, share) {
     const T = P['world.tileSize'], W = P['world.width'], H = P['world.height'], cols = Math.ceil(W / T), rows = Math.ceil(H / T);
-    const want = Math.round(P['world.puddleShare'] * cols * rows);
+    const want = Math.round((share != null ? share : P['world.puddleShare']) * cols * rows);
+    avoid = avoid || [];
     if (!(want > 0)) return [];
     const top = lv.canal ? 48 : 0, d = roadDist(lv.center), lw = P['world.laneWidth'];
     const ok = (i, j) => {
       const rc = { x: i * T, y: j * T, w: T, h: T };
       if (i < 0 || j < 0 || rc.x + T > W || rc.y + T > H || rc.y < top) return false;
       return lv.statics.every((st) => !overlapGap(rc, st, 4)) && lv.spawns.every((sp) => rectDist(sp.x, sp.y, rc) > 24) &&
-        lv.coneHomes.every((cn) => rectDist(cn[0], cn[1], rc) > 12);
+        lv.coneHomes.every((cn) => rectDist(cn[0], cn[1], rc) > 12) && avoid.every((q) => !overlapGap(rc, q, 0));
     };
     const onRoad = (i, j) => d((i + 0.5) * T, (j + 0.5) * T) < lw - 8;
     const out = [];
@@ -328,7 +338,7 @@
   }
   function planDistrict(levelId, P) {
     const C = Math.round(P['world.districtColumns']), R = Math.round(P['world.districtRows']), W = P['world.width'], H = P['world.height'];
-    const seed = 9001 + LEVEL_LIST.indexOf(levelId) * 7919 + Math.round(P['proto.district.seed']) * 104729, r = prng(seed);
+    const seed = 9001 + ROADS.indexOf(levelId) * 7919 + Math.round(P['proto.district.seed']) * 104729, r = prng(seed);
     const inside = (x, y) => x >= 0 && y >= 0 && x < C && y < R, xy = (k) => [k % C, Math.floor(k / C)];
     const outsides = (c) => SIDES.filter((sd) => !inside(c[0] + SIDE[sd][0], c[1] + SIDE[sd][1]));
     const fixed = edgeCrossings(LEVELS[levelId].center(), W, H); // the start screen keeps its handcrafted road
@@ -403,6 +413,13 @@
     const W = P['world.width'], H = P['world.height'], lw = P['world.laneWidth'], OUTER = lw + P['proto.shoulderWidth'];
     const BR = P['body.radius'], ALLEY = P['world.pedestrianGap'], top = cell.canal ? 48 : 0, c = cell.center, d = roadDist(c);
     const keep = gateZones(cell.gates, W, H), path = makePath(c), statics = [];
+    const city = D.kind === 'city', dp = (f, dflt) => (city ? dpar(P, D.levelId, f) : dflt), focalPatches = [];
+    const deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DECK_W / 2, w: W, h: DECK_W } : { x: dk.off - DECK_W / 2, y: 0, w: DECK_W, h: H });
+    if (cell.focal) { const lm = placeLandmark(cell, P, d, keep, top, W, H, r); statics.push(...lm.statics); focalPatches.push(...lm.patches); }
+    if (cell.focal === 'roundabout') focalPatches.push({ x: W / 2 - 32, y: H / 2 - 32, w: 64, h: 64, kind: 'matting' }); // the island: a springboard (7.3)
+    if (cell.focal === 'plate') focalPatches.push(...placePlates(c, P, top, W, H, 3, r));
+    statics.push(...deckPillars(cell, P, d, keep.concat(statics), W, H));
+    const nBase = statics.length;
     const inside = (rc, m) => rc.x >= m && rc.y >= top + m && rc.x + rc.w <= W - m && rc.y + rc.h <= H - m;
     const offRoad = (rc, m) => [[rc.x, rc.y], [rc.x + rc.w, rc.y], [rc.x, rc.y + rc.h], [rc.x + rc.w, rc.y + rc.h], [rc.x + rc.w / 2, rc.y + rc.h / 2]].every(([x, y]) => d(x, y) >= m);
     const clearKeep = (rc, m) => keep.every((k) => !overlapGap(rc, k, m));
@@ -422,7 +439,7 @@
         if (seg > 40 && inside(rc, 4) && offRoad(rc, OUTER) && clearKeep(rc, 8)) statics.push(rc);
       }
     }
-    if (cell.theme !== 'plain' && !statics.length) cell.theme = 'plain'; // too little straight road for the feature
+    if (cell.theme !== 'plain' && cell.theme !== 'focal' && statics.length === nBase) cell.theme = 'plain'; // too little straight road for the feature
     const verge = (dist, okFn) => { // points on both verges at a set distance from the centre line
       const out = [];
       for (let s = 0; s <= path.length; s += 24) {
@@ -449,7 +466,7 @@
     // jersey barriers, just off the pavement on straight runs
     let edgeLen = 0;
     for (let s = 0; s < path.length; s += 4) { const p = pathAt(path, s); if (p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H) edgeLen += 8; }
-    const want = Math.max(1, Math.round(edgeLen * P['world.jerseyShare'] / 44)), jc = [];
+    const want = Math.max(1, Math.round(edgeLen * dp('jerseyShare', P['world.jerseyShare']) / 44)), jc = [];
     for (const run of runs) for (const side of [-1, 1]) for (let p = run.a + 40; p < run.b - 40; p += 10) {
       const o = run.c + side * (OUTER + 4) - (side < 0 ? 8 : 0);
       const rc = run.hz ? { x: Math.round(p - 22), y: Math.round(o), w: 44, h: 8, kind: 'jersey' } : { x: Math.round(o), y: Math.round(p - 22), w: 8, h: 44, kind: 'jersey' };
@@ -468,7 +485,8 @@
     // city blocks: greedy, largest legal footprint first on a GRID-unit lattice; every open spot stays reachable
     const G = 8, GW = W / G, GH = H / G, forb = new Uint8Array(GW * GH);
     const tooNear = (x, y) => d(x, y) < OUTER + 16 + 4 || y < top || statics.some((st) => rectDist(x, y, st) < ALLEY + 4) ||
-      keep.some((k) => rectDist(x, y, k) < 4) || spawns.some((sp) => hyp(sp.x - x, sp.y - y) < 52) || cones.some((cn) => hyp(cn[0] - x, cn[1] - y) < 36);
+      keep.some((k) => rectDist(x, y, k) < 4) || spawns.some((sp) => hyp(sp.x - x, sp.y - y) < 52) || cones.some((cn) => hyp(cn[0] - x, cn[1] - y) < 36) ||
+      deckBands.some((k) => rectDist(x, y, k) < 8) || focalPatches.some((k) => rectDist(x, y, k) < 12); // no building under a flyover or on a plaza
     for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) forb[j * GW + i] = tooNear(i * G + G / 2, j * G + G / 2) ? 1 : 0;
     const mark = (b) => { for (let j = Math.max(0, Math.floor((b.y - ALLEY - G) / G)); j < Math.min(GH, Math.ceil((b.y + b.h + ALLEY + G) / G)); j++) for (let i = Math.max(0, Math.floor((b.x - ALLEY - G) / G)); i < Math.min(GW, Math.ceil((b.x + b.w + ALLEY + G) / G)); i++) if (rectDist(i * G + G / 2, j * G + G / 2, b) < ALLEY + 4) forb[j * GW + i] = 1; };
     const reachable = (list) => { // flood fill from the spawns over open ground: nothing walled off
@@ -481,12 +499,13 @@
     };
     const blocks = [], banned = new Set();
     let area = 0;
-    for (let iter = 0; iter < 60 && area < P['world.blockShare'] * W * H; iter++) {
+    const bMax = dp('blockMax', 160);
+    for (let iter = 0; iter < 60 && area < dp('blockShare', P['world.blockShare']) * W * H; iter++) {
       const sat = new Int32Array((GW + 1) * (GH + 1));
       for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) sat[(j + 1) * (GW + 1) + i + 1] = forb[j * GW + i] + sat[j * (GW + 1) + i + 1] + sat[(j + 1) * (GW + 1) + i] - sat[j * (GW + 1) + i];
       const bad = (x, y, w, h) => { const i0 = x / G, j0 = y / G, i1 = (x + w) / G, j1 = (y + h) / G; return sat[j1 * (GW + 1) + i1] - sat[j0 * (GW + 1) + i1] - sat[j1 * (GW + 1) + i0] + sat[j0 * (GW + 1) + i0]; };
       let best = null;
-      for (let w = 160; w >= 48; w -= GRID) for (let h = 128; h >= 48; h -= GRID) {
+      for (let w = Math.min(160, bMax); w >= 48; w -= GRID) for (let h = Math.min(128, bMax); h >= 48; h -= GRID) {
         if (best && w * h + 2400 < best.score) continue;
         for (let y = top; y + h <= H; y += GRID) for (let x = 0; x + w <= W; x += GRID) {
           if (!(x === 0 || x >= ALLEY) || !(x + w === W || W - (x + w) >= ALLEY) || !(y + h === H || H - (y + h) >= ALLEY) || !(y === top || y - top >= ALLEY)) continue;
@@ -498,12 +517,17 @@
       }
       if (!best) break;
       const blk = { x: best.x, y: best.y, w: best.w, h: best.h, kind: 'block', height: 60 + Math.round(r() * 8) * 10 };
+      if (city) { // building form: towers on a share of the larger footprints, low-rise below dp('lowHeight')
+        const tower = best.w >= 96 && best.h >= 80 && r() < dp('towerShare', 0), lo = 30, hi = dp('lowHeight', 140);
+        blk.height = tower ? Math.round((P['world.towerHeightMin'] + r() * (P['world.towerHeightMax'] - P['world.towerHeightMin'])) / 10) * 10 : lo + Math.round(r() * (hi - lo) / 10) * 10;
+        if (tower) blk.tower = true;
+      }
       if (!reachable(statics.concat(blocks, [blk]))) { banned.add(best.x + ',' + best.y + ',' + best.w + ',' + best.h); continue; }
       blocks.push(blk); mark(blk); area += blk.w * blk.h;
     }
-    const L = LEVELS[D.levelId];
-    return { id: D.levelId, name: L.name, blurb: L.blurb, center: c, lanes: lanesOf(c, P), statics: P['proto.city'] ? statics.concat(blocks) : statics.filter((st) => st.kind !== 'jersey'),
-      coneHomes: cones, spawns: spawns.length ? spawns : [{ x: 400, y: 120, f: 90 }] };
+    const info = INFO(D.levelId);
+    return { id: D.levelId, name: info.name, blurb: info.blurb, center: c, lanes: lanesOf(c, P), statics: P['proto.city'] ? statics.concat(blocks) : statics.filter((st) => st.kind !== 'jersey'),
+      coneHomes: cones, spawns: spawns.length ? spawns : [{ x: 400, y: 120, f: 90 }], focalPatches, decks: cell.decks || [] };
   }
   // The level for one screen of a district, built on first entry and kept.
   function cellLevel(D, c, P) {
@@ -514,7 +538,8 @@
     lv.statics = lv.statics.map((s, i) => Object.assign({}, s, { id: 's' + i }));
     const solid = SIDES.filter((sd) => { const x = c[0] + SIDE[sd][0], y = c[1] + SIDE[sd][1]; return x < 0 || y < 0 || x >= D.cols || y >= D.rows; });
     Object.assign(lv, { key: D.levelId + '@' + c[0] + ',' + c[1], cell: c.slice(), gates: cell.gates, solid, canal: cell.canal, theme: cell.theme, order: cell.order });
-    if (!cell.start) lv.patches = makePatches(lv, P, r);
+    if (!cell.start) { const base = lv.focalPatches || []; lv.patches = base.concat(makePatches(lv, P, r, base, D.kind === 'city' ? dpar(P, D.levelId, 'puddleShare') : null)); delete lv.focalPatches; }
+    lv.decks = cell.decks || []; lv.focal = cell.focal || null;
     cell.level = lv;
     return lv;
   }
@@ -542,6 +567,170 @@
     }
     cell.edgeSpans = out;
     return out;
+  }
+
+  // ---------- city districts (Edit 41, 20 Oct): five districts in a fixed, rising order. Each is 3 × 3 generated screens with
+  // a landmark on the centre screen, its own building form, flyovers, traffic and hazards. Layouts are baked in advance:
+  // three per district in content/districts/districts.json; a run picks one (proto.layout). The generator is the design tool.
+  const DISTRICT_LIST = ['riverside', 'market', 'interchange', 'cbd', 'campus'];
+  const DISTRICTS = {
+    riverside: { name: 'Riverside', blurb: 'Low-rise riverfront. A lantern monument marks the centre.', focal: 'monument', themes: ['plain', 'flyover', 'barrier'] },
+    market: { name: 'Old Market', blurb: 'Dense low-rise streets around a fountain square. Wet, and busy with vans.', focal: 'fountain', themes: ['plain', 'barrier', 'plain'] },
+    interchange: { name: 'Interchange', blurb: 'Two flyovers stacked over a roundabout. Its island is crash matting.', focal: 'roundabout', themes: ['flyover', 'barrier', 'plain'] },
+    cbd: { name: 'Central Business District', blurb: 'Towers and barriers. FARSIGHT Tower stands at the centre.', focal: 'tower', themes: ['barrier', 'plain'] },
+    campus: { name: 'FARSIGHT Campus', blurb: 'The test centre the city was modelled on. Calibrated plates score more.', focal: 'plate', themes: ['plain', 'barrier', 'flyover'] },
+  };
+  const INFO = (id) => LEVELS[id] || DISTRICTS[id];
+  const dpar = (P, id, f) => P['world.district.' + id + '.' + f];
+  const DECK_W = 128; // world.deckWidth: two lanes plus parapets
+  function chaikin(pts, n) {
+    for (let k = 0; k < n; k++) {
+      const out = [pts[0]];
+      for (let i = 0; i + 1 < pts.length; i++) { const [x0, y0] = pts[i], [x1, y1] = pts[i + 1]; out.push([x0 * 0.75 + x1 * 0.25, y0 * 0.75 + y1 * 0.25], [x0 * 0.25 + x1 * 0.75, y0 * 0.25 + y1 * 0.75]); }
+      out.push(pts[pts.length - 1]); pts = out;
+    }
+    return pts.map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]);
+  }
+  // Roundabout (Interchange): the road enters radially, loops round a central island and leaves radially. Smoothed corners.
+  function roundaboutCenter(a, b, W, H, lead, Rc, r) {
+    const ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 }, cx = W / 2, cy = H / 2;
+    const ta = ang[a.side], tb = ang[b.side];
+    let sweep = wrap(tb - ta);
+    if (Math.abs(Math.abs(sweep) - Math.PI) < 1e-6) sweep = r() < 0.5 ? Math.PI : -Math.PI; // opposite: round either side
+    else if (r() < 0.6) sweep = sweep > 0 ? sweep - 2 * Math.PI : sweep + 2 * Math.PI; // adjacent: the long way, like a roundabout
+    const pts = [edgePoint(a.side, a.off, W, H, lead), [cx + Math.cos(ta) * (Rc + 90), cy + Math.sin(ta) * (Rc + 90)]];
+    const n = Math.max(2, Math.round(Math.abs(sweep) / (Math.PI / 8)));
+    for (let i = 0; i <= n; i++) { const t = ta + sweep * i / n; pts.push([cx + Math.cos(t) * Rc, cy + Math.sin(t) * Rc]); }
+    pts.push([cx + Math.cos(tb) * (Rc + 90), cy + Math.sin(tb) * (Rc + 90)], edgePoint(b.side, b.off, W, H, lead));
+    return chaikin(pts, 3);
+  }
+  function planCity(id, P, seedIn) {
+    const C = Math.round(P['world.districtColumns']), R = Math.round(P['world.districtRows']), W = P['world.width'], H = P['world.height'];
+    const seed = seedIn != null ? seedIn : 7001 + DISTRICT_LIST.indexOf(id) * 7919 + Math.round(P['proto.district.seed']) * 104729, r = prng(seed);
+    const info = DISTRICTS[id], start = [Math.floor(C / 2), 0], centre = [Math.floor(C / 2), Math.floor(R / 2)];
+    const inside = (x, y) => x >= 0 && y >= 0 && x < C && y < R, xy = (k) => [k % C, Math.floor(k / C)];
+    const outsides = (c) => SIDES.filter((sd) => !inside(c[0] + SIDE[sd][0], c[1] + SIDE[sd][1]));
+    const isC = (c) => c[0] === centre[0] && c[1] === centre[1];
+    const paths = hamiltonPaths(C, R).filter((p) => [p[0], p[p.length - 1]].every((k) => outsides(xy(k)).length > 0));
+    const gw = P['world.gateWidth'], gap = P['world.pedestrianGap'], OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'];
+    for (let attempt = 0; attempt < 400; attempt++) {
+      const path = pick(r, paths).map(xy), ends = path.map(() => []);
+      for (let i = 0; i + 1 < path.length; i++) {
+        const a = path[i], b = path[i + 1], sa = sideOf(a, b), sb = OPP[sa];
+        const off = isC(a) || isC(b) ? (horiz(sa) ? H / 2 : W / 2) : pick(r, ACROSS[sa]); // roads meet the landmark square on
+        ends[i].push({ side: sa, off }); ends[i + 1].push({ side: sb, off });
+      }
+      for (const i of [0, path.length - 1]) {
+        const sd = pick(r, outsides(path[i])), e = { side: sd, off: pick(r, ACROSS[sd]), outer: true };
+        if (i === 0) ends[i].unshift(e); else ends[i].push(e);
+      }
+      if (ends.some(([a, b]) => horiz(a.side) === horiz(b.side) && Math.abs(a.off - b.off) > S_MAX)) continue;
+      // flyovers: the first crosses a row, the second a column, higher (world.deckHeight, + world.deckStack)
+      const decks = [], nd = Math.round(dpar(P, id, 'decks'));
+      if (nd >= 1) decks.push({ hz: true, line: info.focal === 'roundabout' ? centre[1] : Math.floor(r() * R), off: info.focal === 'roundabout' ? H / 2 : pick(r, [220, 300, 380]), height: P['world.deckHeight'] });
+      if (nd >= 2) decks.push({ hz: false, line: centre[0], off: W / 2, height: P['world.deckHeight'] + P['world.deckStack'] });
+      if (decks.some((dk) => dk.hz && dk.line === 0 && dk.off - DECK_W / 2 < 60)) continue; // keep the river row's deck off the water
+      const cells = Array.from({ length: R }, () => Array.from({ length: C }, () => null));
+      path.forEach((c, i) => {
+        const focal = isC(c) ? info.focal : null;
+        cells[c[1]][c[0]] = { cell: c, order: i, ends: ends[i], start: false, canal: c[1] === 0, gates: { N: [], E: [], S: [], W: [] }, focal,
+          theme: focal ? 'focal' : pick(r, info.themes), level: null, cones: null,
+          center: focal === 'roundabout' ? roundaboutCenter(ends[i][0], ends[i][1], W, H, P['world.spawnLeadIn'], P['world.roundaboutRadius'], r)
+            : roadCenter(ends[i][0], ends[i][1], W, H, P['world.spawnLeadIn']),
+          decks: decks.filter((dk) => (dk.hz ? c[1] : c[0]) === dk.line).map((dk) => ({ hz: dk.hz, off: dk.off, height: dk.height })) };
+      });
+      for (let y = 0; y < R; y++) for (let x = 0; x < C; x++) for (const sd of ['E', 'S']) {
+        const nx = x + SIDE[sd][0], ny = y + SIDE[sd][1];
+        if (!inside(nx, ny)) continue;
+        const A = cells[y][x], B = cells[ny][nx], len = horiz(sd) ? H : W, road = A.ends.find((e) => e.side === sd), spans = [];
+        if (road) spans.push([road.off - OUTER, road.off + OUTER]);
+        const cand = [];
+        for (let a = 48; a + gw <= len - 48; a += 8) if (spans.every(([s0, s1]) => a + gw + gap <= s0 || a >= s1 + gap) && !(horiz(sd) && (A.canal || B.canal) && a < 56)) cand.push(a);
+        if (cand.length && (!road || r() < 0.5)) { const a = pick(r, cand); spans.push([a, a + gw]); }
+        A.gates[sd] = spans.map((s) => s.slice()); B.gates[OPP[sd]] = spans.map((s) => s.slice());
+      }
+      return { kind: 'city', levelId: id, cols: C, rows: R, seed, start, cur: start.slice(), path, cells, decks, visited: new Set([start[1] * C + start[0]]), lastFlip: null };
+    }
+    return null;
+  }
+  // The centre screen's landmark: placed where it stands farthest from the road, with a plaza around it.
+  function placeLandmark(cell, P, d, keep, top, W, H, r) {
+    const T = P['world.tileSize'], OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], f = cell.focal;
+    const size = { monument: [40, 40, 220, 160], fountain: [72, 72, 20, 192], tower: [112, 96, 420, 192] }[f];
+    if (!size) return { statics: [], patches: [] };
+    const [w, h, height, pz] = size;
+    const deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DECK_W / 2, w: W, h: DECK_W } : { x: dk.off - DECK_W / 2, y: 0, w: DECK_W, h: H });
+    let best = null;
+    for (let y = top + pz / 2 + 8; y <= H - pz / 2 - 8; y += 8) for (let x = pz / 2 + 8; x <= W - pz / 2 - 8; x += 8) {
+      const plaza = { x: x - pz / 2, y: y - pz / 2, w: pz, h: pz };
+      const corners = [[plaza.x, plaza.y], [plaza.x + pz, plaza.y], [plaza.x, plaza.y + pz], [plaza.x + pz, plaza.y + pz], [x, y]];
+      const m = Math.min(...corners.map(([px, py]) => d(px, py)));
+      if (m < OUTER + 8 || keep.some((k) => overlapGap(plaza, k, 4)) || deckBands.some((k) => overlapGap(plaza, k, 4))) continue;
+      const sc = m - hyp(x - W / 2, y - H / 2) * 0.25 + r() * 4; // far from the road, near the middle
+      if (!best || sc > best.sc) best = { x, y, sc };
+    }
+    if (!best) return { statics: [], patches: [] };
+    const sx = Math.round((best.x - w / 2) / 8) * 8, sy = Math.round((best.y - h / 2) / 8) * 8;
+    const px = Math.round((best.x - pz / 2) / T) * T, py = Math.round((best.y - pz / 2) / T) * T;
+    return { statics: [{ x: sx, y: sy, w, h, kind: f === 'tower' ? 'block' : f, height, tower: f === 'tower' || undefined, landmark: f }],
+      patches: [{ x: px, y: py, w: pz, h: pz, kind: 'plaza' }] };
+  }
+  // Calibrated impact plates (Campus): 2 × 2-tile patches on the road. A hit taken on one scores damage.plateMultiplier.
+  function placePlates(c, P, top, W, H, n, r) {
+    const T = P['world.tileSize'], d = roadDist(c), lw = P['world.laneWidth'], path = makePath(c), out = [];
+    const onRoad = (x, y) => d(x + T / 2, y + T / 2) < lw - 6;
+    for (let s = 60 + r() * 120; s < path.length && out.length < n; s += 140 + r() * 80) {
+      const p = pathAt(path, s), x = Math.round((p.x - T) / T) * T, y = Math.round((p.y - T) / T) * T;
+      if (x < 0 || y < top || x + 2 * T > W || y + 2 * T > H) continue;
+      if (![[x, y], [x + T, y], [x, y + T], [x + T, y + T]].every(([qx, qy]) => onRoad(qx, qy))) continue;
+      if (out.some((q) => overlapGap(q, { x, y, w: 2 * T, h: 2 * T }, 2 * T))) continue;
+      out.push({ x, y, w: 2 * T, h: 2 * T, kind: 'plate' });
+    }
+    return out;
+  }
+  // Deck pillars (flyovers): one under the deck's centre line every world.deckPillarSpacing, never on the road or its pavement.
+  function deckPillars(cell, P, d, keep, W, H) {
+    const out = [], OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], sp = P['world.deckPillarSpacing'];
+    for (const dk of cell.decks || []) for (let p = sp / 2; p < (dk.hz ? W : H); p += sp) {
+      const rc = dk.hz ? { x: p - 12, y: dk.off - 12, w: 24, h: 24, kind: 'pillar', deck: true } : { x: dk.off - 12, y: p - 12, w: 24, h: 24, kind: 'pillar', deck: true };
+      const pts = [[rc.x, rc.y], [rc.x + 24, rc.y], [rc.x, rc.y + 24], [rc.x + 24, rc.y + 24], [rc.x + 12, rc.y + 12]];
+      if (pts.some(([x, y]) => d(x, y) < OUTER + 4) || keep.some((k) => overlapGap(rc, k, 4)) || out.some((q) => overlapGap(rc, q, 16))) continue;
+      if (rc.x < 4 || rc.y < 4 || rc.x + 24 > W - 4 || rc.y + 24 > H - 4) continue;
+      out.push(rc);
+    }
+    return out;
+  }
+  // A city district from baked data (content/districts/districts.json), or generated when there is none.
+  function bakedDB() {
+    if (typeof window !== 'undefined' && window.DISTRICT_DB) return window.DISTRICT_DB;
+    try { return typeof require === 'function' ? require('../../content/districts/districts.json') : null; } catch (e) { return null; }
+  }
+  function cityDistrict(id, P) {
+    const db = P['proto.layout'] >= 0 ? bakedDB() : null, list = db && db.districts && db.districts[id];
+    if (!list || !list.length) return planCity(id, P);
+    const k = clamp(Math.round(P['proto.layout']) || 1, 1, list.length) - 1, L = list[k], C = L.cols, R = L.rows;
+    const cells = L.cells.map((row) => row.map((q) => Object.assign({}, q, { level: null, cones: null })));
+    const D = { kind: 'city', levelId: id, cols: C, rows: R, seed: L.seed, layout: k + 1, start: L.start.slice(), cur: L.start.slice(), path: L.path, cells, decks: L.decks,
+      visited: new Set([L.start[1] * C + L.start[0]]), lastFlip: null, baked: true };
+    for (const row of cells) for (const q of row) {
+      const lv = { id, name: DISTRICTS[id].name, blurb: DISTRICTS[id].blurb, center: q.center, lanes: lanesOf(q.center, P),
+        statics: q.statics.map((s, i) => Object.assign({}, s, { id: 's' + i })), coneHomes: q.coneHomes, spawns: q.spawns, patches: q.patches, decks: q.decks || [] };
+      const solid = SIDES.filter((sd) => { const x = q.cell[0] + SIDE[sd][0], y = q.cell[1] + SIDE[sd][1]; return x < 0 || y < 0 || x >= C || y >= R; });
+      Object.assign(lv, { key: id + '#' + (k + 1) + '@' + q.cell[0] + ',' + q.cell[1], cell: q.cell.slice(), gates: q.gates, solid, canal: q.canal, theme: q.theme, focal: q.focal, order: q.order });
+      q.level = lv;
+    }
+    return D;
+  }
+  // Serialise a generated city for baking: every screen's geometry, so a layout plays the same after the generator changes.
+  function bakeCity(D, P) {
+    const r1 = (v) => Math.round(v * 10) / 10;
+    const cells = D.cells.map((row) => row.map((q) => {
+      const lv = cellLevel(D, q.cell, P);
+      return { cell: q.cell, order: q.order, ends: q.ends, canal: q.canal, gates: q.gates, theme: lv.theme, focal: q.focal || null,
+        center: lv.center.map(([x, y]) => [r1(x), r1(y)]), statics: lv.statics.map(({ id: _i, ...s }) => s), coneHomes: lv.coneHomes, spawns: lv.spawns,
+        patches: lv.patches, decks: lv.decks || [] };
+    }));
+    return { seed: D.seed, cols: D.cols, rows: D.rows, start: D.start, path: D.path, decks: D.decks, cells };
   }
 
   // ---------- geometry tests
@@ -632,9 +821,10 @@
     constructor(levelId, overrides, carry) {
       this.P = Object.assign({}, REG, PROTO, OVERRIDES, overrides || {});
       this.levelId = levelId; this.carry = carry || null;
-      this.roadIndex = LEVEL_LIST.indexOf(levelId); this.isFinal = this.roadIndex === LEVEL_LIST.length - 1;
+      this.isCity = !!DISTRICTS[levelId]; this.list = this.isCity ? DISTRICT_LIST : ROADS; // Edit 41: five city districts; the P2.2 roads stay as fixtures
+      this.roadIndex = this.list.indexOf(levelId); this.isFinal = this.roadIndex === this.list.length - 1;
       // D24: a road is a district of screens; the dummy starts on the handcrafted screen (top middle).
-      this.district = this.P['proto.district'] ? planDistrict(levelId, this.P) : null;
+      this.district = this.isCity ? cityDistrict(levelId, this.P) : this.P['proto.district'] ? planDistrict(levelId, this.P) : null;
       this.level = this.district ? cellLevel(this.district, this.district.start, this.P) : buildLevel(levelId, this.P);
       const dif = DIFFICULTIES[clamp(Math.round(this.P['proto.difficulty']), 0, DIFFICULTIES.length - 1)];
       this.difficulty = dif.name;
@@ -649,9 +839,10 @@
       const pat = ['sedan', 'van', 'sedan', 'sedan', 'van'];
       // Deterministic irregular traffic: golden-ratio lane choice and spacing.
       const g = (i, o) => ((i * 0.6180339887 + o) % 1);
-      this.schedule = Array.from({ length: P['run.appearances.road'] }, (_, i) => ({ i, cls: pat[i % 5], lane: g(i, 0.31) < 0.5 ? 0 : 1, mult: 1 + P['proto.traffic.jitter'] * (2 * g(i, 0.77) - 1) }));
+      const vs = this.isCity ? dpar(P, this.levelId, 'vanShare') : null; // a city district sets its own van share
+      this.schedule = Array.from({ length: P['run.appearances.road'] }, (_, i) => ({ i, cls: vs != null ? (g(i, 0.53) < vs ? 'van' : 'sedan') : pat[i % 5], lane: g(i, 0.31) < 0.5 ? 0 : 1, mult: 1 + P['proto.traffic.jitter'] * (2 * g(i, 0.77) - 1) }));
       this.cones = this.conesFor(this.level);
-      this.drones = []; this.droneSeq = 0;
+      this.drones = []; this.droneSeq = 0; this.deckCars = []; this.deckSeq = 0; this.deckNext = {};
       this.models = { sedan: { id: 'SEDAN-01', cls: 'sedan', applied: 0, standoffApplied: 0 }, van: { id: 'VAN-02', cls: 'van', applied: 0, standoffApplied: 0 } };
       const cy = this.carry || {};
       // The fleet remembers stop distances across roads.
@@ -659,9 +850,10 @@
       this.run = { writeOffs: 0, credits: cy.credits || 0, points: cy.points || 0, owned: Object.assign({}, cy.owned), chassis: cy.chassis || 0,
         ending: null, admitted: 0, exited: 0, purchases: (cy.purchases || []).slice(), priorWriteOffs: cy.writeOffs || 0 };
       this.tOffset = cy.t || 0;
-      this.quota = P['proto.quota.' + this.levelId] != null ? P['proto.quota.' + this.levelId] : P['run.quota.road'];
+      this.quota = this.isCity ? dpar(P, this.levelId, 'quota') : P['proto.quota.' + this.levelId] != null ? P['proto.quota.' + this.levelId] : P['run.quota.road'];
       this.events = []; this.effects = []; this.milestones = Object.assign({}, cy.milestones); this.report = null;
       this.turnHist = [];
+      this.fillDecks();
       this.spawnBody();
     }
 
@@ -1010,7 +1202,34 @@
     }
     // Learned stopping distance: each hit taken while stopped for the dummy pushes that model's stop line back.
     modelStandoff(m) { const P = this.P; return Math.min(P['proto.learn.standoffMax'], P['proto.standoffDistance'] + P['proto.learn.standoffStep'] * m.standoffApplied); }
-    admissionInterval() { const v = this.P['proto.traffic.' + this.levelId + '.interval']; return v != null ? v : this.P['run.admissionInterval']; }
+    admissionInterval() { const v = this.isCity ? dpar(this.P, this.levelId, 'interval') : this.P['proto.traffic.' + this.levelId + '.interval']; return v != null ? v : this.P['run.admissionInterval']; }
+    // ----- flyovers (Edit 41): deck traffic runs both ways on every deck of the active screen. It never meets the dummy.
+    deckLen(dk) { return dk.hz ? this.P['world.width'] : this.P['world.height']; }
+    deckSpawn(k, dir, s) {
+      const P = this.P, n = ++this.deckSeq, cls = ((n * 0.6180339887 + 0.21) % 1) < 0.3 ? 'van' : 'sedan';
+      this.deckCars.push({ id: 'deck' + n, k, dir, s, cls, L: P['vehicles.' + cls + '.length'], W: P['vehicles.' + cls + '.width'], v: P['vehicles.' + cls + '.cruiseSpeed'] });
+    }
+    fillDecks() { // a screen is entered with its flyovers already running
+      const P = this.P, decks = this.level.decks || [];
+      this.deckCars = []; this.deckNext = {};
+      decks.forEach((dk, k) => { for (const dir of [1, -1]) { const len = this.deckLen(dk), gap = P['world.deckInterval'] * P['vehicles.sedan.cruiseSpeed']; for (let s = gap * (0.3 + 0.4 * ((k + (dir > 0 ? 0.1 : 0.6)) % 1)); s < len; s += gap) this.deckSpawn(k, dir, dir > 0 ? s : len - s); } });
+    }
+    stepDecks(dt) {
+      const P = this.P, decks = this.level.decks || [], lead = 80;
+      if (!decks.length) return;
+      decks.forEach((dk, k) => { for (const dir of [1, -1]) {
+        const key = k + ':' + dir, len = this.deckLen(dk);
+        if (this.deckNext[key] == null) this.deckNext[key] = this.t + P['world.deckInterval'] * 0.5;
+        if (this.t >= this.deckNext[key]) { this.deckSpawn(k, dir, dir > 0 ? -lead : len + lead); this.deckNext[key] = this.t + P['world.deckInterval'] * (0.8 + 0.4 * ((this.deckSeq * 0.618) % 1)); }
+      } });
+      for (const c of this.deckCars) { // follow: never closer than a car length plus a gap
+        const ahead = this.deckCars.filter((o) => o !== c && o.k === c.k && o.dir === c.dir && (o.s - c.s) * c.dir > 0).sort((a, b) => Math.abs(a.s - c.s) - Math.abs(b.s - c.s))[0];
+        const want = P['vehicles.' + c.cls + '.cruiseSpeed'];
+        c.v = ahead && Math.abs(ahead.s - c.s) < (c.L + ahead.L) / 2 + 30 ? Math.min(want, ahead.v) : want;
+        c.s += c.dir * c.v * dt;
+      }
+      this.deckCars = this.deckCars.filter((c) => c.s > -lead - 1 && c.s < this.deckLen(decks[c.k]) + lead + 1);
+    }
     pose(c, h) {
       const p = pathAt(c.path, c.s);
       c.x = p.x + p.nx * c.d; c.y = p.y + p.ny * c.d;
@@ -1527,7 +1746,8 @@
         const lost = Math.min(b.health, assessed);
         b.health = Math.max(0, b.health - lost);
         c.spent = true;
-        this.run.points += assessed;
+        const plate = this.surfaceAt(b.x, b.y) === 'plate' ? P['damage.plateMultiplier'] : 1; // a calibrated plate scores more (7.3)
+        this.run.points += assessed * plate;
         const bait = ct.carState === 'committed' || ct.carState === 'expiring' || ct.carState === 'interrupted';
         let learned = null;
         if (P['proto.learningEnabled'] && lost > 0) {
@@ -1544,7 +1764,7 @@
         const ev = { car: c.id, model: c.model, cls: c.cls, zone: ct.zone, part, closing: +ct.closing.toFixed(3),
           angle: +ct.ph.angle.toFixed(1), dv: +ct.ph.dvd.toFixed(2), strike: +ct.ph.un.toFixed(2),
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
-          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff };
+          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1 };
         this.emit('impact', ev); b.hits.push(ev);
         this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed, t: this.t, zone: ct.zone, angle: ct.ph.angle });
         this.mile('firstHit');
@@ -1583,7 +1803,7 @@
         r.credits++;
         const b = this.body;
         this.report = { chassis: b.chassis, hits: b.hits.slice(), points: Math.round(r.points - b.points0), credits: r.credits,
-          roadCleared: cleared, nextRoad: cleared ? LEVEL_LIST[this.roadIndex + 1] : null };
+          roadCleared: cleared, nextRoad: cleared ? this.list[this.roadIndex + 1] : null };
         if (cleared) { this.emit('road-cleared', { road: this.roadIndex + 1 }); this.mile('road' + (this.roadIndex + 1) + 'Cleared'); }
         this.emit('credit', { credits: r.credits });
         this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
@@ -1627,6 +1847,7 @@
       const positive = this.account(contacts);
       this.retryPending();
       this.stepDrones(dt);
+      this.stepDecks(dt);
       this.exitCars();
       this.trackUse();
       this.checkTerminal();
@@ -1661,11 +1882,12 @@
       this.level = cellLevel(D, to, P);
       this.cones = this.conesFor(this.level);
       if (held) this.cones.push(held);
+      this.fillDecks();
       b.x -= SIDE[sd][0] * P['world.width']; b.y -= SIDE[sd][1] * P['world.height'];
       this.nextAt = this.t + 0.5; // traffic on the new screen arrives from its own road ends
       D.lastFlip = { side: sd, from, to, t: this.t };
       this.phase = 'scroll'; this.phaseT = P['world.flipSeconds'];
-      this.emit('screen', { from: cellName(from), to: cellName(to), side: sd, theme: this.level.theme });
+      this.emit('screen', { from: cellName(from), to: cellName(to), side: sd, theme: this.level.theme, focal: this.level.focal || null });
       this.mile('firstScreen', { to: cellName(to) });
       if (D.visited.size === D.cols * D.rows) this.mile('districtExplored', { road: this.roadIndex + 1 });
     }
@@ -1718,7 +1940,7 @@
     }
   }
 
-  const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
+  const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
     planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, roadCenter, makePatches, roadDist, SIDE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.DUMMIES = api;

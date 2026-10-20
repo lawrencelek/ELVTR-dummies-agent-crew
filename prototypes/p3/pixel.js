@@ -721,6 +721,10 @@
       const win = x % 2 === 1 && (y - face0) % 3 === 1;
       P(x, y, win ? (r() < 0.45 ? lit[Math.floor(r() * lit.length)] : K.bldgDark) : K.bldgFace);
     }
+    if (H >= 40) { // tower (Edit 41): an LED crown round the roof and lit seams down the face
+      for (let x = 1; x < wpx - 1; x++) { P(x, top + 1, led); if (x % 2) P(x, top + 2, led); }
+      for (let y = face0; y < hpx - 1; y += 1) if ((y - face0) % 6 < 4) { P(1, y, led); P(wpx - 2, y, led); }
+    }
     if (wpx >= 20 && H >= 12) { // vertical LED sign: glyph blocks meant as texture, not reading
       const sx = 3 + Math.floor(r() * (wpx - 10));
       for (let y = face0 + 1; y < hpx - 1; y++) for (let x = sx; x < sx + 5; x++) P(x, y, led);
@@ -744,6 +748,71 @@
     const k = P['proto.art.shadowScale'], ox = SUN.x * h * k / U, oy = SUN.y * h * k / U;
     const x = st.x / U, y = st.y / U, w = st.w / U, hh = st.h / U;
     fillPoly([[x + w, y], [x + w, y + hh], [x + w + ox, y + hh + oy], [x + ox, y + hh + oy], [x + ox, y + oy], [x, y]], (px, py) => B.shade(px, py, 0.72));
+  }
+
+  // ---------- Edit 41 landmarks and flyovers
+  // Monument (Riverside): a lantern obelisk on a plinth. Shaft rises H px; an LED seam runs up the lit face; a lantern crowns it.
+  function monument(wpx, hpx, H) {
+    const S = spr(wpx, hpx + H, 0, H), P = (x, y, c) => sput(S, x, y + H, c), o = K.bldgOutline, led = KX('bldgLed') ? KX('bldgLed')[0] : K.modGlow;
+    for (let y = hpx - 6; y < hpx; y++) for (let x = 0; x < wpx; x++) P(x, y, x === 0 || x === wpx - 1 || y === hpx - 1 ? o : K.bldgFace); // plinth
+    for (let y = 0; y < hpx - 6; y++) for (let x = 2; x < wpx - 2; x++) P(x, y, K.bldgRoof); // footprint top
+    const sw = Math.max(6, Math.round(wpx * 0.4)), sx = Math.round((wpx - sw) / 2);
+    for (let y = -H; y < hpx - 6; y++) for (let x = sx; x < sx + sw; x++) {
+      const t = (y + H) / (H + hpx), inset = y < -H + 6 ? Math.round((-H + 6 - y) / 2) : 0;
+      if (x < sx + inset || x >= sx + sw - inset) continue;
+      P(x, y, x === sx + inset || x === sx + sw - 1 - inset ? o : x === sx + sw - 2 ? K.bldgEdge : K.bldgFace);
+      if (x === sx + Math.floor(sw / 2) && y > -H + 8 && (y % 4 !== 0)) P(x, y, led);
+      void t;
+    }
+    for (let y = -H - 4; y < -H + 2; y++) for (let x = sx - 1; x < sx + sw + 1; x++) P(x, y, (x + y) % 2 ? led : K.white); // lantern
+    return edgeRim(S, o, K.bldgRim, K.bldgRimD);
+  }
+  // Fountain (Old Market): a round basin, a ring of water, a jet in the middle.
+  function fountain(wpx, hpx, H) {
+    const S = spr(wpx, hpx + H, 0, H), P = (x, y, c) => sput(S, x, y + H, c), o = K.bldgOutline;
+    const cx = (wpx - 1) / 2, cy = (hpx - 1) / 2, R = Math.min(wpx, hpx) / 2 - 0.5;
+    for (let y = 0; y < hpx; y++) for (let x = 0; x < wpx; x++) {
+      const r = Math.hypot(x - cx, y - cy);
+      if (r > R) continue;
+      P(x, y, r > R - 1 ? o : r > R - 3 ? K.jerseyTop : r < 3 ? K.bldgFace : ((x * 7 + y * 3) % 11 === 0 ? K.water2 : K.water));
+    }
+    for (let y = -H; y < cy; y++) P(Math.round(cx), Math.round(y), (y % 3) ? K.puddleHi : K.water2); // jet
+    for (let k = -2; k <= 2; k++) P(Math.round(cx) + k, Math.round(cy - H) - (2 - Math.abs(k)), K.puddleHi);
+    return edgeRim(S, o, K.bldgRim, K.bldgRimD);
+  }
+  // Flyover deck: the band seen from above, lifted by its height. Parapets with an LED line, two lanes, a girder face below.
+  function deck(dk, P) {
+    const ext = Math.round(dk.height * P['proto.art.extrusion'] / U), wpx = Math.round(P['world.deckWidth'] / U), face = Math.max(4, Math.round(ext / 2));
+    const along = dk.hz ? AW : AH, S = dk.hz ? spr(along, wpx + face, 0, 0) : spr(wpx, along + face, 0, 0), lane = Math.round(P['world.laneWidth'] / U);
+    const led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane;
+    for (let a = 0; a < along; a++) for (let b = 0; b < wpx + face; b++) {
+      let c;
+      if (b >= wpx) c = b === wpx + face - 1 ? K.bldgOutline : b === wpx ? K.jerseyTop : (a % 8 < 2 ? K.bldgDark : (b - wpx) % 2 ? K.bldgEdge : K.bldgFace); // girder face: lit lip, ribs
+      else if (b === 0 || b === wpx - 1) c = K.jerseyO;
+      else if (b === 1 || b === wpx - 2) c = (a % 6 < 3) ? led : K.jerseyTop; // parapet LED line
+      else if (b === 2 || b === wpx - 3) c = K.jersey;
+      else { const mid = Math.round(wpx / 2); c = (b === mid && a % 18 < 10) ? K.lane : (Math.abs(b - mid) === lane && a % 6 === 0) ? K.road2 : K.road; }
+      if (dk.hz) sput(S, a, b, c); else sput(S, b - (b >= wpx ? 0 : 0), a, c);
+    }
+    if (!dk.hz) { // the girder face of a north–south deck shows along its bottom only; recolour the right edge as parapet
+      const T = spr(wpx, along, 0, 0);
+      for (let a = 0; a < along; a++) for (let b = 0; b < wpx; b++) T.d[a * wpx + b] = S.d[a * wpx + b];
+      return { S: T, ext };
+    }
+    return { S, ext };
+  }
+  // Ground patches beyond puddles: plaza paving, rubber crash matting, calibrated impact plates.
+  function patchArt(B, p, r) {
+    const x0 = Math.round(p.x / U), y0 = Math.round(p.y / U), w = Math.round(p.w / U), h = Math.round(p.h / U);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const edge = x === 0 || y === 0 || x === w - 1 || y === h - 1;
+      let c = null;
+      if (p.kind === 'plaza') c = edge ? K.pave2 : (x % 8 === 0 || y % 8 === 0) ? K.pave2 : ((x * 13 + y * 7) % 23 === 0 ? K.kerb2 : K.pave);
+      else if (p.kind === 'matting') c = edge ? K.jerseyO : ((x + y) % 4 === 0 ? K.jersey : K.bldgDark);
+      else if (p.kind === 'plate') { const cx = w / 2 - 0.5, cy = h / 2 - 0.5, rr = Math.hypot(x - cx, y - cy); c = edge ? K.lane : (Math.abs(rr - w / 4) < 0.7 || Math.abs(x - cx) < 0.6 || Math.abs(y - cy) < 0.6) ? K.lane : ((x + y) % 2 ? K.road2 : K.road); }
+      if (c != null) B.put(x0 + x, y0 + y, c);
+    }
+    void r;
   }
   // Puddle (D18): standing water on its tile rectangle. An irregular blob filling most of the patch; sheen on the
   // far (top-left) lip, a dark near lip, and broken vertical reflections of the city lights, like the river's.
@@ -855,7 +924,11 @@
       trees.push([wx, wy]);
     }
     trees.sort((a, b) => a[1] - b[1]).forEach(([wx, wy]) => tree(B, Math.round(wx / U), Math.round(wy / U)));
-    for (const p of level.patches || []) if (p.kind === 'puddle') puddle(B, p, r);
+    for (const p of level.patches || []) if (p.kind === 'puddle') puddle(B, p, r); else patchArt(B, p, r);
+    for (const dk of level.decks || []) { // flyover shadows: the deck band swept down-left by its height
+      const band = dk.hz ? { x: 0, y: dk.off - P['world.deckWidth'] / 2, w: AW * U, h: P['world.deckWidth'] } : { x: dk.off - P['world.deckWidth'] / 2, y: 0, w: P['world.deckWidth'], h: AH * U };
+      rectShadow(B, band, dk.height, P);
+    }
     for (const st of level.statics) if (!PAL.spill || st.kind !== 'block') rectShadow(B, st, st.kind === 'block' ? st.height : P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
     edgeMarks(B, level);
     return B;
@@ -864,5 +937,6 @@
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
+    monument, fountain, deck,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

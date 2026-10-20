@@ -5,7 +5,8 @@
 P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber city as canon (Edit 39). Pixel-art field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 300 at (120, 30).
 
 - **Simulation changes:** solid city statics (city v2, ~25% buildings); part damage that cuts abilities; two dash charges, shortened by leg damage.
-- **Districts (Edit 40):** each road is 3 × 3 screens, Zelda-style. Walk off any open edge to flip to the next screen.
+- **City districts (Edit 41):** a run is five districts in order: Riverside → Old Market → Interchange → CBD → FARSIGHT Campus. Each has a landmark on its centre screen, its own building form, flyovers, traffic and hazards. Three baked layouts per district; a run picks one.
+- **Districts (Edit 40):** each district is 3 × 3 screens, Zelda-style. Walk off any open edge to flip to the next screen.
 - **Body health (Edit 40.1):** Standard 800; Fragile (easy) 600; Reinforced (difficult) 1000.
 - **Puddles (Edit 40):** water on 2% of tiles. No dash from water; cars brake late on it.
 - **Big battery (Edit 40):** three charges. Sold in the shop.
@@ -26,7 +27,7 @@ Open `dummies_p3.html` in a browser. No install, no server. **Full screen** fill
 | Pause and cue key | Esc |
 | Tuning panel | T |
 
-Campaign and quotas match P2.2. A quota counts write-offs on any screen of the district.
+Pick a district on the title screen (Up/Down). Quotas rise: 1, 2, 2, 3, 4. A quota counts write-offs on any screen of the district.
 
 | Difficulty (title screen, Left/Right) | Body health |
 |---|---|
@@ -95,6 +96,26 @@ A black outline vanishes on a dark field. The background owns the darkest values
 ![Before and after on the cyber deck: cars, blocks, pods, jersey barrier, cone, ×3](docs/p3_cyber_outlines.png)
 
 ![Rim outline on the cyber deck, 8× zoom](docs/p3_rim_zoom.png)
+
+## City districts (Edit 41; 20 October)
+
+| # | District | Centre landmark | Form | Flyovers | Quota | Traffic |
+|---|---|---|---|---|---|---|
+| 1 | Riverside | Lantern monument on a plaza | Low-rise | 0 | 1 | 3.0 s, 20% vans |
+| 2 | Old Market | Fountain square | Dense low-rise | 0 | 2 | 3.0 s, 45% vans |
+| 3 | Interchange | Roundabout with a crash-matting island (dash × 1.15) | Mid-rise | 2, stacked | 2 | 2.8 s, 30% vans |
+| 4 | Central Business District | FARSIGHT Tower | Towers | 1 | 3 | 2.6 s, 30% vans |
+| 5 | FARSIGHT Campus | Calibrated plates on the road (points × 1.5) | Campus halls | 1 | 4 | 2.5 s, 40% vans |
+
+- **Data:** `tables.districts` in the registry; `world.district.<id>.<field>` in `sim.js`.
+- **Flyovers:** decks on piers across a whole row or column (`world.deckHeight` 60; stacked +`world.deckStack` 60). Deck traffic runs both ways and never meets the dummy. Piers are solid ground statics. No buildings under a deck.
+- **Towers:** a share of large lots (`world.district.<id>.towerShare`) rise 220–380 units, with LED crowns.
+- **Layouts made in advance:** `node tools/district_bake.js` tries seeds and keeps the first three per district that pass the contract (`tools/district_check.js`) with different roads, and whose start screen gives the bot a write-off within 150 s. Output: `content/districts/districts.json` (15 layouts).
+- **Per run:** one layout per district at random. Tuning: `proto.layout` 1–3 fixes one; −1 generates live.
+
+![The five centre screens and a flyover screen](docs/p3_districts_sheet.png)
+
+![Interchange B2: a roundabout under stacked flyovers](docs/p3_interchange_B2.png)
 
 ## Districts (D24, `proto.district` = 1; 20 October)
 
@@ -271,6 +292,12 @@ Day version: `docs/p3_chassis_modules.png`.
 | `field.puddle*`, `field.gate` (palette roles) | Edit 40 | Proposed. Cyber and day |
 | `damage.bodyHealth` | 800 | Registry (`edit40.1-2026-10-20`); was 1600 (CR-004) |
 | `proto.health.fragile`, `.standard`, `.reinforced` | 600, 800, 1000 | Registry, prototype group (Edit 40.1) |
+| `world.district.<id>.*` (10 fields × 5 districts) | City districts table above | Registry `districts` table (Edit 41) |
+| `world.deckHeight`, `world.deckStack`, `world.deckWidth` | 60, 60, 128 units | Registry, Proposed |
+| `world.deckPillarSpacing`, `world.deckInterval` | 160 units, 2.4 s | Registry, Proposed |
+| `world.towerHeightMin`, `world.towerHeightMax`, `world.roundaboutRadius` | 220, 380, 140 units | Registry, Proposed |
+| `damage.plateMultiplier`, `world.terrain.matting.lunge` | 1.5, 1.15 | Registry values, now used |
+| `proto.layout` | 0 | Registry, prototype group. Baked layout 1–3; −1 = live |
 | `ui.typeFieldLabel` | 12 units | Registry. Tags and barks |
 | `battery.capacity` | 2 | Registry (D19) |
 | `proto.parts.legDashLoss` | 1.5 | Registry, prototype group. Dash reach per leg share |
@@ -299,7 +326,9 @@ Day version: `docs/p3_chassis_modules.png`.
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html`, with `content/db/fleet.json` as `window.FLEET_DB` |
 | `tools/city_gen.js` | City v2 generator: `node tools/city_gen.js .` prints block and barrier data |
-| `test_sim.js` | `node test_sim.js`: 56 checks: 8 for the city, 2 for body parts, 4 for part effects and the dash, 5 for districts, 2 for puddles, 1 for Big battery |
+| `test_sim.js` | `node test_sim.js`: 67 checks, incl. 11 for the city districts (contract on all 15 layouts, landmarks, flyovers, plates, matting, smoke runs) |
+| `tools/district_bake.js`, `tools/district_check.js` | Bake 3 layouts per district; the district contract and start-screen bot |
+| `../../content/districts/districts.json` | The 15 baked layouts, bundled as `window.DISTRICT_DB` |
 | `../../content/db/` | Fleet database and `check_lore.py` (lore consistency) |
 
 ## Open
@@ -313,3 +342,6 @@ Day version: `docs/p3_chassis_modules.png`.
 - **D28 exploration reward.** Exploration is optional today.
 - **Pacing at 800 health.** A reading bot clears L1 in 31.6 s (was 11.0 s at 300). Quotas 2 and 3 on L2 and L3 need a timed check against CARS LEFT.
 - **Junctions.** Generated screens have no T or cross pieces yet.
+- **D29 two-layer play.** Stairs, skybridges and drops. Decks carry traffic only.
+- **D30.** GDD 7.2's old level types against the districts.
+- **Interchange readability.** Stacked decks hide much of the roundabout.
