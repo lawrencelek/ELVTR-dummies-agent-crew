@@ -23,6 +23,7 @@
     ink: '#101417', label: '#4A5A66', warn: '#E4442E', white: '#FFFFFF', fleet: '#7E8C96', structure: '#B8C4CB',
     // cue roles (reserved treatment, 4.2.2)
     cueHalo: '#1A1D1F', nose: '#1A1D1F', tyre: '#101417', roofInk: '#101417', roofLabel: '#4A5A66',
+    barkFill: '#FFFFFF', barkEdge: '#1A1D1F', barkInk: '#101417', barkDim: '#4A5A66',
     tagFill: '#FFFFFF', tagInk: '#101417', tagBorder: '#1A1D1F', tagSpentFill: '#101417', tagSpentInk: '#FFFFFF',
     popInk: '#101417', popOutline: '#FFFFFF', stampFill: '#FFFFFF', stampOutline: '#1A1D1F',
     podStripes: null, reflect: null, edgeLight: null, flowers: 160,
@@ -46,6 +47,7 @@
     ink: '#F4F8FA', label: '#7FA8BC', warn: '#FF3D3D', fleet: '#5E6B78', structure: '#3A4252',
     cueHalo: '#FFB0B0', nose: '#F4F8FA', tyre: '#05070B',
     rimLight: '#E6F4FF', rimDark: '#5E7080', // dark ground: the dummy's outer edge is a rim, lit top-right (4.1.3 light)
+    barkFill: '#0B1020', barkEdge: '#6FE4FF', barkInk: '#E6F4FF', barkDim: '#7FA8BC', // bark bubbles: dark glass, LED edge
     // Dark-ground outline rule for every sprite: no black edge on dark ground. Rims lit top-right, in a value
     // hierarchy: dummy (above) > cars > cones > barriers > pods > blocks. Inner lines keep their dark inks.
     carRim: '#8FDFFF', carRimD: '#3A4A66', coneRim: '#F2A65A', coneRimD: '#7A4420', jerseyRim: '#8494B8', jerseyRimD: '#2C3550',
@@ -215,6 +217,47 @@
     ':': ['..', '..', '..', 'XX', 'XX', '..', '..', '..', '..', 'XX', 'XX', '..'],
     '/': ['......XX', '......XX', '.....XX.', '.....XX.', '....XX..', '....XX..', '...XX...', '...XX...', '..XX....', '..XX....', '.XX.....', '.XX.....'],
   };
+  // Field label face (Edit 39): 6-art-px caps = 12 screen units (ui.typeFieldLabel). Model tags and barks.
+  // Half the 8 × 12 face, for the laptop viewing distance (decision 121). Capitals, digits, light punctuation.
+  const SG = {
+    A: ['.XX.', 'X..X', 'X..X', 'XXXX', 'X..X', 'X..X'], B: ['XXX.', 'X..X', 'XXX.', 'X..X', 'X..X', 'XXX.'],
+    C: ['.XXX', 'X...', 'X...', 'X...', 'X...', '.XXX'], D: ['XXX.', 'X..X', 'X..X', 'X..X', 'X..X', 'XXX.'],
+    E: ['XXXX', 'X...', 'XXX.', 'X...', 'X...', 'XXXX'], F: ['XXXX', 'X...', 'XXX.', 'X...', 'X...', 'X...'],
+    G: ['.XXX', 'X...', 'X.XX', 'X..X', 'X..X', '.XXX'], H: ['X..X', 'X..X', 'XXXX', 'X..X', 'X..X', 'X..X'],
+    I: ['XXX', '.X.', '.X.', '.X.', '.X.', 'XXX'], J: ['..XX', '...X', '...X', '...X', 'X..X', '.XX.'],
+    K: ['X..X', 'X.X.', 'XX..', 'XX..', 'X.X.', 'X..X'], L: ['X...', 'X...', 'X...', 'X...', 'X...', 'XXXX'],
+    M: ['X...X', 'XX.XX', 'X.X.X', 'X...X', 'X...X', 'X...X'], N: ['X..X', 'XX.X', 'X.XX', 'X..X', 'X..X', 'X..X'],
+    O: ['.XX.', 'X..X', 'X..X', 'X..X', 'X..X', '.XX.'], P: ['XXX.', 'X..X', 'X..X', 'XXX.', 'X...', 'X...'],
+    Q: ['.XX.', 'X..X', 'X..X', 'X..X', 'X.X.', '.X.X'], R: ['XXX.', 'X..X', 'X..X', 'XXX.', 'X.X.', 'X..X'],
+    S: ['.XXX', 'X...', '.XX.', '...X', '...X', 'XXX.'], T: ['XXX', '.X.', '.X.', '.X.', '.X.', '.X.'],
+    U: ['X..X', 'X..X', 'X..X', 'X..X', 'X..X', '.XX.'], V: ['X...X', 'X...X', 'X...X', '.X.X.', '.X.X.', '..X..'],
+    W: ['X...X', 'X...X', 'X...X', 'X.X.X', 'XX.XX', 'X...X'], X: ['X..X', 'X..X', '.XX.', '.XX.', 'X..X', 'X..X'],
+    Y: ['X.X', 'X.X', 'X.X', '.X.', '.X.', '.X.'], Z: ['XXXX', '...X', '..X.', '.X..', 'X...', 'XXXX'],
+    0: ['.XX.', 'X..X', 'X.XX', 'XX.X', 'X..X', '.XX.'], 1: ['.X.', 'XX.', '.X.', '.X.', '.X.', 'XXX'],
+    2: ['.XX.', 'X..X', '...X', '..X.', '.X..', 'XXXX'], 3: ['XXX.', '...X', '.XX.', '...X', '...X', 'XXX.'],
+    4: ['X..X', 'X..X', 'XXXX', '...X', '...X', '...X'], 5: ['XXXX', 'X...', 'XXX.', '...X', '...X', 'XXX.'],
+    6: ['.XX.', 'X...', 'XXX.', 'X..X', 'X..X', '.XX.'], 7: ['XXXX', '...X', '..X.', '.X..', '.X..', '.X..'],
+    8: ['.XX.', 'X..X', '.XX.', 'X..X', 'X..X', '.XX.'], 9: ['.XX.', 'X..X', 'X..X', '.XXX', '...X', '.XX.'],
+    '.': ['.', '.', '.', '.', '.', 'X'], ',': ['..', '..', '..', '..', '.X', 'X.'], '!': ['X', 'X', 'X', 'X', '.', 'X'],
+    '?': ['XXX.', '...X', '..X.', '.X..', '....', '.X..'], "'": ['X', 'X', '.', '.', '.', '.'], '-': ['...', '...', 'XXX', '...', '...', '...'],
+    ':': ['.', 'X', '.', '.', 'X', '.'], '/': ['...X', '...X', '..X.', '.X..', 'X...', 'X...'], '+': ['...', '.X.', 'XXX', '.X.', '...', '...'],
+    '(': ['.X', 'X.', 'X.', 'X.', 'X.', '.X'], ')': ['X.', '.X', '.X', '.X', '.X', 'X.'], '%': ['X..X', '...X', '..X.', '.X..', 'X...', 'X..X'],
+    '"': ['X.X', 'X.X', '...', '...', '...', '...'], '&': ['.X..', 'X.X.', '.X..', 'X.XX', 'X..X', '.XX.'], '·': ['.', '.', 'X', '.', '.', '.'],
+  };
+  const SMALL_H = 6, SGAP = 1, SSPACE = 3, SGLYPH = {};
+  for (const ch in SG) { const rows = SG[ch], px = []; rows.forEach((r, y) => { for (let x = 0; x < r.length; x++) if (r[x] === 'X') px.push([x, y]); }); SGLYPH[ch] = { w: rows[0].length, px }; }
+  const sNorm = (s) => String(s).toUpperCase().replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/[—–]/g, '-');
+  function smallWidth(s) { let w = 0; for (const ch of sNorm(s)) w += (ch === ' ' ? SSPACE : (SGLYPH[ch] ? SGLYPH[ch].w : 4)) + SGAP; return Math.max(0, w - SGAP); }
+  function smallText(B, s, x, y, c) { // top-left at (x, y), no outline: labels sit on their own fill
+    let cx = Math.round(x); y = Math.round(y);
+    for (const ch of sNorm(s)) {
+      if (ch === ' ') { cx += SSPACE + SGAP; continue; }
+      const g = SGLYPH[ch]; if (!g) { cx += 4 + SGAP; continue; }
+      for (const [gx, gy] of g.px) B.put(cx + gx, y + gy, c);
+      cx += g.w + SGAP;
+    }
+    return cx;
+  }
   const FONT_H = 12, GAP = 2, SPACE = 6;
   const GLYPH = {};
   for (const ch in G) { const rows = G[ch], px = []; rows.forEach((r, y) => { for (let x = 0; x < r.length; x++) if (r[x] === 'X') px.push([x, y]); }); GLYPH[ch] = { w: rows[0].length, px }; }
@@ -779,6 +822,6 @@
 
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
-    text, textWidth, FONT_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
+    text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

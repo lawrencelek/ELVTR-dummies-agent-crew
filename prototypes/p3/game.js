@@ -44,6 +44,10 @@
   const CT = window.DUMMIES_CONTENT || {};
   const CJ = CT.juice || null, CI = CT.interface || null, CG = CT.graphics || null;
   const CB = CT.barks || null, CH = CT.hits || null, CTM = CT.terminal || null; // P2.1: humour, hit juice, FARSIGHT terminal skin
+  // Fleet database (content/db/fleet.json, decision 117): model names, tags and the bark bank, separate from other text.
+  const FLEET = window.FLEET_DB || null;
+  const FMODEL = new Map(); // sim model id → database model
+  if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
   const BUILD = 'P3';
@@ -71,7 +75,8 @@
     // P2.1
     zoom: { amt: 0, t0: -9, dur: 0.2, x: 0, y: 0 }, crumple: { amt: 0, t0: -9, dur: 0.3, ang: 0 }, stumble: { amp: 0, t0: -9, dur: 0.5 },
     rings: [], streaks: [], bubbles: new Map(), carBarkT: new Map(), cars: new Map(), nm: new Map(), nmDone: new Set(),
-    lungeWatch: null, lastImpact: null, pendingNodes: [], upgradeWatch: null, barkN: 0, juiceT: new Map() };
+    lungeWatch: null, lastImpact: null, pendingNodes: [], upgradeWatch: null, barkN: 0, juiceT: new Map(),
+    partWatch: null, partsSeen: new Set(), learnWatch: new Map(), pendingLearned: null };
   function kick(amp, dur) { const cur = fx.shake.amp * Math.max(0, 1 - (app.realT - fx.shake.t0) / fx.shake.dur); if (amp >= cur) fx.shake = { amp, t0: app.realT, dur }; }
   function shakeOffset() {
     const a = app.realT - fx.shake.t0;
@@ -99,7 +104,7 @@
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
-    fx.marks = []; fx.barks.clear(); fx.barked.clear();
+    fx.marks = []; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
     fx.rings = []; fx.streaks = []; fx.bubbles.clear(); fx.carBarkT.clear(); fx.cars.clear(); fx.nm.clear(); fx.nmDone.clear();
     fx.lungeWatch = null; fx.lastImpact = null; fx.upgradeWatch = null; if (!carry) fx.pendingNodes = [];
     app.present = [];
@@ -225,6 +230,9 @@
   function upm() { return (app.sim && app.sim.P['proto.scale.unitsPerMetre']) || 12.2; }
   function whenOk(when, e) {
     for (const [k, v] of Object.entries(when || {})) {
+      if (k === 'owns') { if (!(app.sim && app.sim.has(v))) return false; continue; } // the dummy's upgrades (lore tied to state, D23)
+      if (k === 'broken') { if (!brokenPart(v)) return false; continue; }              // the dummy's damage
+      if (Array.isArray(v)) { if (!v.includes(e[k])) return false; continue; }
       if (v && typeof v === 'object') { // bounds are numbers or parameter IDs
         const n = +e[k], lo = v.min == null ? -Infinity : typeof v.min === 'string' ? pv(v.min) : v.min, hi = v.max == null ? Infinity : typeof v.max === 'string' ? pv(v.max) : v.max;
         if (e[k] == null || !(n >= lo && n <= hi)) return false;
@@ -238,7 +246,12 @@
     const out = Object.assign({}, e);
     if (e.type === 'writeoff' && fx.lastImpact && fx.lastImpact.t === e.t) Object.assign(out, { car: fx.lastImpact.car, zone: fx.lastImpact.zone });
     const info = out.car && fx.cars.get(out.car);
-    if (info) Object.assign(out, { model: info.model, cls: info.cls, seniority: info.seniority });
+    if (info) {
+      const fm = FMODEL.get(info.model);
+      Object.assign(out, { model: fm ? fm.id : info.model, cls: info.cls, class: fm ? fm.class : info.cls, tier: fm ? fm.tier : null, seniority: info.seniority });
+    }
+    const sb = app.sim && app.sim.body;
+    if (sb) out.wear = +(1 - sb.health / app.sim.P['damage.bodyHealth']).toFixed(3);
     if (e.type === 'honk') out.at = e.at === 'body' ? 'body' : 'cone';
     return out;
   }
@@ -248,6 +261,7 @@
     app.present.push(e);
     const x = enrich(e);
     hitJuice(x, s);
+    barkLine(x, s);
   }
   function carGap(b, c, R) { // body edge to car edge, world units
     const ca = Math.cos(c.h), sa = Math.sin(c.h), dx = b.x - c.x, dy = b.y - c.y;
@@ -344,9 +358,90 @@
     if (e.type === 'writeoff') fx.stampT0 = now;
     return res;
   }
+  function brokenPart(v) {
+    const lv = app.sim ? partLevels(app.sim) : {};
+    if (v === 'legs') return lv.legL >= 3 && lv.legR >= 3;
+    if (v === 'arms') return lv.armL >= 3 && lv.armR >= 3;
+    return lv[v] >= 3;
+  }
+  // Barks from the fleet database: highest priority wins, then the most specific line; seeded pick among equals.
+  // Write-offs always speak; hits outrank chatter; chatter waits out the global and per-car cooldowns (proto.barks.*).
+  function barkLine(e, s) {
+    if (!FLEET || !e.car) return;
+    const info = fx.cars.get(e.car);
+    if (!info) return;
+    const pool = FLEET.barks.filter((ln) => ln.event === e.type && whenOk(ln.when, e));
+    if (!pool.length) return;
+    const pr = Math.max(...pool.map((ln) => ln.priority || 1)), now = app.realT, dur = pv('proto.barks.seconds') || 2.4;
+    const spec = (ln) => Object.keys(ln.when || {}).length, top = [], best = Math.max(...pool.filter((ln) => ln.priority === pr).map(spec));
+    for (const ln of pool) if ((ln.priority || 1) === pr && spec(ln) >= Math.min(best, 1)) { top.push(ln); if (spec(ln) >= best && best > 0) top.push(ln); }
+    const cur = fx.bubbles.get(e.car), last = fx.carBarkT.get(e.car);
+    if (cur && now - cur.t0 < dur && cur.priority > pr) return;
+    if (pr < 3) {
+      if (last && now - last.t < (pv('proto.barks.carCooldown') || 4) && last.pr >= pr) return;
+      if (pr === 1) {
+        if (now - fx.barkT < (pv('proto.barks.cooldown') || 0.8)) return;
+        let live = 0; for (const bk of fx.bubbles.values()) if (now - bk.t0 < dur) live++;
+        if (!cur && live >= (pv('proto.barks.maxOnScreen') || 3)) return;
+      }
+    }
+    const onScreen = new Set([...fx.bubbles.values()].filter((bk) => now - bk.t0 < dur).map((bk) => bk.id));
+    const fresh = top.filter((ln) => !onScreen.has(ln.id) && ln.id !== fx.lastLine), use = fresh.length ? fresh : top; // no line twice at once
+    const pick = use[(Math.round(e.t * 60) + info.slot * 7 + fx.barkN++) % use.length];
+    const text = fillIn(pick.text, e); fx.lastLine = pick.id;
+    fx.bubbles.set(e.car, { text, style: pick.style || 'speech', priority: pr, t0: now, car: e.car, id: pick.id });
+    fx.barkT = now; fx.carBarkT.set(e.car, { t: now, pr });
+    app.present.push({ t: +s.t.toFixed(4), type: 'bark', car: e.car, event: e.type, line: pick.id, text });
+  }
+  function wrapSmall(text, maxW) {
+    const out = []; let cur = '';
+    for (const word of String(text).split(/\s+/)) { const t = cur ? cur + ' ' + word : word; if (PIX.smallWidth(t) <= maxW || !cur) cur = t; else { out.push(cur); cur = word; } }
+    if (cur) out.push(cur);
+    return out;
+  }
+  // Pixel bubbles above the car's tag (or below the car), never over another car's tag. Styles: speech solid edge,
+  // shout double edge, mutter dashed edge and dim ink, thought dotted edge with trailing dots.
+  function drawBarks(s) {
+    if (!fx.bubbles.size) return;
+    const dur = pv('proto.barks.seconds') || 2.4, now = app.realT, placed = [];
+    for (const c of s.cars) { // tags and car bodies are cues: bubbles keep off them
+      const t = tagRect(c), r = Math.ceil(Math.max(c.L, c.W) / U / 2) + 1;
+      placed.push({ x: t.x0 - 1, y: t.y0 - 1, w: t.w + 10, h: t.h + 2, car: c.id }, { x: Math.round(c.x / U) - r, y: Math.round(c.y / U) - r - 4, w: 2 * r, h: 2 * r + 4, car: c.id });
+    }
+    if (s.body.alive) placed.push({ x: Math.round(s.body.x / U) - 12, y: Math.round(s.body.y / U) - 16, w: 24, h: 26, car: '_body' }); // never over the dummy
+    const hits = (r, own) => placed.some((q) => q.car !== own && r.x < q.x + q.w && r.x + r.w > q.x && r.y < q.y + q.h && r.y + r.h > q.y);
+    const order = [...fx.bubbles.entries()].sort((a, b2) => b2[1].priority - a[1].priority || b2[1].t0 - a[1].t0);
+    for (const [id, bk] of order) {
+      const live = s.cars.find((x) => x.id === id), c = live || fx.cars.get(id), age = now - bk.t0;
+      if (!c || age > dur) { fx.bubbles.delete(id); continue; }
+      const lines = wrapSmall(bk.text, 92), lh = PIX.SMALL_H + 2;
+      const w = Math.max(...lines.map((l) => PIX.smallWidth(l))) + 7, h = lines.length * lh + 4, cx = Math.round(c.x / U);
+      const t = tagRect(c), x = clamp(cx - (w >> 1), 1, AW - w - 1);
+      const up = t.y0 - 5 - h, down = Math.round(c.y / U) + Math.round(Math.max(c.L, c.W) / U / 2) + 5;
+      let y = up, below = false;
+      if (y < 1 || hits({ x, y, w, h }, id)) { y = Math.min(down, AH - h - 1); below = true; }
+      if (y < 1 || hits({ x, y, w, h }, id)) { if (bk.priority < 2) continue; y = clamp(up, 1, AH - h - 1); below = false; }
+      placed.push({ x, y, w, h, car: null });
+      const st = bk.style, edge = K.barkEdge;
+      for (let yy = y + 1; yy < y + h - 1; yy++) for (let xx = x + 1; xx < x + w - 1; xx++) FB.mix(xx, yy, K.barkFill, 0.94);
+      const dash = st === 'mutter' ? 2 : st === 'thought' ? 3 : 0;
+      let i = 0;
+      const ring = (ox, oy, ww, hh, f) => {
+        for (let xx = ox + 1; xx < ox + ww - 1; xx++) { f(xx, oy); f(xx, oy + hh - 1); }
+        for (let yy = oy + 1; yy < oy + hh - 1; yy++) { f(ox, yy); f(ox + ww - 1, yy); }
+      };
+      ring(x, y, w, h, (px, py) => { if (!dash || (i++ % dash) === 0) FB.put(px, py, edge); });
+      if (st === 'shout') ring(x - 1, y - 1, w + 2, h + 2, (px, py) => { if ((px + py) % 2 === 0) FB.put(px, py, edge); });
+      const ax = clamp(cx, x + 3, x + w - 4);
+      if (st === 'thought') { const ty = below ? y - 3 : y + h + 2; FB.put(ax, ty, edge); FB.put(ax + (below ? 0 : 1), ty + (below ? -2 : 2), edge); }
+      else for (let k = 0; k < 3; k++) { const ty = below ? y - 1 - k : y + h + k; for (let xx = ax - (2 - k); xx <= ax + (2 - k); xx++) FB.put(xx, ty, xx === ax - (2 - k) || xx === ax + (2 - k) || k === 2 ? edge : K.barkFill); }
+      lines.forEach((l, k) => PIX.smallText(FB, l, x + ((w - PIX.smallWidth(l)) >> 1), y + 2 + k * lh, K.barkInk)); // one ink: style lives in the edge
+    }
+  }
   function processEvents() {
     const s = app.sim;
     if (!s) return;
+    if (fx.pendingLearned && fx.cars.has(fx.pendingLearned.car)) { const pl = fx.pendingLearned; fx.pendingLearned = null; present(s, 'learned', pl); }
     const ev = s.events;
     trackCars(s);
     for (let i = app.lastEv; i < ev.length; i++) {
@@ -354,17 +449,29 @@
       if (e0.type === 'lunge') fx.lungeWatch = { contact: false };
       if (/^(impact|knock|touch|touch-spent|contact-ignored)$/.test(e0.type)) noteContact(e0);
       if (e0.type === 'impact') { fx.lastImpact = e0; if (e0.part) fx.lastPart = { part: e0.part, lost: e0.lost, t: app.realT }; }
-      if (e0.type === 'purchase') fx.pendingNodes.push(NODES[e0.node].name);
+      if (e0.type === 'purchase') fx.pendingNodes.push(e0.node); // node id, as the fleet database keys it
       if (e0.type === 'chassis' && fx.pendingNodes.length) { fx.upgradeWatch = fx.pendingNodes[fx.pendingNodes.length - 1]; fx.pendingNodes = []; }
       const e = enrich(e0);
       const hj = hitJuice(e, s);
       const juiced = hj.done || juice(e0, s);
       // P3: barks are not drawn. A legible bubble at ui.typeSecondary would cover the 400 × 300 field.
-      if (CB && fx.upgradeWatch && e.car && ((e0.type === 'commit' && e0.cause === 'body') || (e0.type === 'honk' && e0.at === 'body'))) {
+      // Lore tied to state (D23): a car that notices the dummy remarks on a new module or a broken part;
+      // a model that learned returns and says so. Lines come from the fleet database.
+      const notices = e.car && ((e0.type === 'commit' && e0.cause === 'body') || (e0.type === 'honk' && e0.at === 'body'));
+      if (FLEET && notices && fx.upgradeWatch) {
         const node = fx.upgradeWatch; fx.upgradeWatch = null;
         fx.carBarkT.delete(e.car); fx.barkT = -9;
         present(s, 'upgrade-seen', { car: e.car, node });
+      } else if (FLEET && notices && fx.partWatch) {
+        const part = fx.partWatch; fx.partWatch = null;
+        fx.carBarkT.delete(e.car); fx.barkT = -9;
+        present(s, 'part-seen', { car: e.car, part });
       }
+      if (e0.type === 'learn-standoff') fx.learnWatch.set(e0.model, { from: e0.from, to: e0.to });
+      if (e0.type === 'admit' && fx.learnWatch.has(e0.model)) { const lw = fx.learnWatch.get(e0.model); fx.learnWatch.delete(e0.model); fx.pendingLearned = { car: e0.car, from: lw.from, to: lw.to }; }
+      if (e0.type === 'impact' && e0.part && s.body.alive) { const lv = partLevels(s)[e0.part]; if (lv >= 3 && !fx.partsSeen.has(e0.part)) { fx.partsSeen.add(e0.part); fx.partWatch = e0.part; } }
+      if (e0.type === 'chassis') { fx.partsSeen.clear(); fx.partWatch = null; }
+      if (FLEET && e.car) barkLine(e, s);
       switch (e0.type) {
         case 'lunge': {
           if (!hj.sound) Snd.tone(220, 90, 0.12, 'triangle', 0.12);
@@ -583,7 +690,7 @@
   }
   function flush() { a32.set(FB.d); actx.putImageData(aimg, 0, 0); }
   function carSpr(s, c, braking) { return PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(s.P['vehicles.' + c.cls + '.height']), c.h, braking); }
-  function shortId(m) { const t = String(m).toUpperCase(), a = t.match(/[A-Z]/), d = t.match(/\d+/); return ((a ? a[0] : '') + (d ? d[0] : '')).slice(0, 3); } // GDD 4.2.2: three characters
+  function shortId(m) { const fm = FMODEL.get(m); if (fm) return fm.tag; const t = String(m).toUpperCase(), a = t.match(/[A-Z]/), d = t.match(/\d+/); return ((a ? a[0] : '') + (d ? d[0] : '')).slice(0, 3); } // GDD 4.2.2: three characters
   function coneLift(cn) { return cn.state === 'flight' ? 10 * Math.sin(Math.PI * clamp(1 - cn.flightT / (cn.flightDur || 1), 0, 1)) : 0; }
   function coneFn(s) { // the dummy's view cone, as an art-pixel predicate
     const P = s.P, b = s.body, R = P['sensing.coneReach'], hw = s.coneWidth() * DEG / 2; // head damage narrows it
@@ -837,21 +944,25 @@
     if (cue === 'intention') { if (!c.intent) return; side = c.intent.type === 'shift' ? Math.sign(c.intent.d1 - c.intent.d0) : 0; }
     pip(FB, cue, Math.round(c.x / U), Math.round(c.y / U) - hgt, loc, f, side);
   }
-  // Model ID tag: three characters at ui.typeLoadBearing (12-art-px caps = 24 units); seniority as square pips beside it.
-  function drawTag(s, c) {
-    const id = shortId(c.model), w = PIX.textWidth(id) + 6, h = PIX.FONT_H + 6;
+  // Model ID tag: three characters in the field label face (6-art-px caps = ui.typeFieldLabel 12 units, Edit 39);
+  // seniority as square pips beside it. Half the old 24-unit tag: the laptop sits at arm's length (decision 121).
+  function tagRect(c) {
+    const id = shortId(c.model), w = PIX.smallWidth(id) + 5, h = PIX.SMALL_H + 4;
     const top = c._top != null ? c._top : Math.round(c.y / U) - 12;
-    const x0 = clamp(Math.round(c.x / U) - (w >> 1), 1, AW - w - 1), y0 = clamp(top - 3 - h, 1, AH - h - 1);
+    return { id, w, h, x0: clamp(Math.round(c.x / U) - (w >> 1), 1, AW - w - 1), y0: clamp(top - 2 - h, 1, AH - h - 1) };
+  }
+  function drawTag(s, c) {
+    const { id, w, h, x0, y0 } = tagRect(c);
     FB.rect(x0 + 1, y0 + 1, x0 + w - 2, y0 + h - 2, c.spent ? K.tagSpentFill : K.tagFill);
     for (let x = x0 + 1; x < x0 + w - 1; x++) { FB.put(x, y0, K.tagBorder); FB.put(x, y0 + h - 1, K.tagBorder); }
     for (let y = y0 + 1; y < y0 + h - 1; y++) { FB.put(x0, y, K.tagBorder); FB.put(x0 + w - 1, y, K.tagBorder); }
-    PIX.text(FB, id, x0 + 3, y0 + 3, c.spent ? K.tagSpentInk : K.tagInk);
-    let rx = x0 + w + 2;
-    if (s.P['proto.learningEnabled']) for (let j = 0; j < seniorityOf(c); j++) { FB.rect(rx, y0 + 7, rx + 3, y0 + 10, K.ink); rx += 6; }
+    PIX.smallText(FB, id, x0 + 3, y0 + 2, c.spent ? K.tagSpentInk : K.tagInk);
+    let rx = x0 + w + 1;
+    if (s.P['proto.learningEnabled']) for (let j = 0; j < seniorityOf(c); j++) { FB.rect(rx, y0 + 4, rx + 1, y0 + 5, K.ink); rx += 3; }
     if (c.honking) {
       if (Math.floor(app.realT * 5) % 2 === 0) {
-        FB.rect(rx, y0, rx + 9, y0 + h - 1, K.tagBorder); FB.rect(rx + 1, y0 + 1, rx + 8, y0 + h - 2, K.tagFill);
-        PIX.text(FB, '!', rx + 4, y0 + 3, K.tagInk);
+        FB.rect(rx, y0, rx + 4, y0 + h - 1, K.tagBorder); FB.rect(rx + 1, y0 + 1, rx + 3, y0 + h - 2, K.tagFill);
+        PIX.smallText(FB, '!', rx + 2, y0 + 2, K.tagInk);
       }
       const last = fx.horn.get(c.id) || 0; if (c.honkAt === 'body' && app.realT - last > 1.4) { horn(); fx.horn.set(c.id, app.realT); }
     }
@@ -984,6 +1095,7 @@
     drawEffects(s); drawRingsStreaks(); drawParts(s);
     for (const d of s.drones) drawDrone(s, d);
     for (const c of s.cars) drawTag(s, c);
+    drawBarks(s);
     drawEffects(s, true);
     const fa = app.realT - fx.flash.t0;
     if (fa < fx.flash.dur) { const a = 0.55 * (1 - fa / fx.flash.dur) * (RM ? 0.4 : 1); for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) FB.mix(x, y, K.white, a); }

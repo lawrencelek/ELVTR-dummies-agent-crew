@@ -1429,6 +1429,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     ink: '#101417', label: '#4A5A66', warn: '#E4442E', white: '#FFFFFF', fleet: '#7E8C96', structure: '#B8C4CB',
     // cue roles (reserved treatment, 4.2.2)
     cueHalo: '#1A1D1F', nose: '#1A1D1F', tyre: '#101417', roofInk: '#101417', roofLabel: '#4A5A66',
+    barkFill: '#FFFFFF', barkEdge: '#1A1D1F', barkInk: '#101417', barkDim: '#4A5A66',
     tagFill: '#FFFFFF', tagInk: '#101417', tagBorder: '#1A1D1F', tagSpentFill: '#101417', tagSpentInk: '#FFFFFF',
     popInk: '#101417', popOutline: '#FFFFFF', stampFill: '#FFFFFF', stampOutline: '#1A1D1F',
     podStripes: null, reflect: null, edgeLight: null, flowers: 160,
@@ -1452,6 +1453,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     ink: '#F4F8FA', label: '#7FA8BC', warn: '#FF3D3D', fleet: '#5E6B78', structure: '#3A4252',
     cueHalo: '#FFB0B0', nose: '#F4F8FA', tyre: '#05070B',
     rimLight: '#E6F4FF', rimDark: '#5E7080', // dark ground: the dummy's outer edge is a rim, lit top-right (4.1.3 light)
+    barkFill: '#0B1020', barkEdge: '#6FE4FF', barkInk: '#E6F4FF', barkDim: '#7FA8BC', // bark bubbles: dark glass, LED edge
     // Dark-ground outline rule for every sprite: no black edge on dark ground. Rims lit top-right, in a value
     // hierarchy: dummy (above) > cars > cones > barriers > pods > blocks. Inner lines keep their dark inks.
     carRim: '#8FDFFF', carRimD: '#3A4A66', coneRim: '#F2A65A', coneRimD: '#7A4420', jerseyRim: '#8494B8', jerseyRimD: '#2C3550',
@@ -1621,6 +1623,47 @@ document.getElementById('btn-full').addEventListener('click', () => {
     ':': ['..', '..', '..', 'XX', 'XX', '..', '..', '..', '..', 'XX', 'XX', '..'],
     '/': ['......XX', '......XX', '.....XX.', '.....XX.', '....XX..', '....XX..', '...XX...', '...XX...', '..XX....', '..XX....', '.XX.....', '.XX.....'],
   };
+  // Field label face (Edit 39): 6-art-px caps = 12 screen units (ui.typeFieldLabel). Model tags and barks.
+  // Half the 8 × 12 face, for the laptop viewing distance (decision 121). Capitals, digits, light punctuation.
+  const SG = {
+    A: ['.XX.', 'X..X', 'X..X', 'XXXX', 'X..X', 'X..X'], B: ['XXX.', 'X..X', 'XXX.', 'X..X', 'X..X', 'XXX.'],
+    C: ['.XXX', 'X...', 'X...', 'X...', 'X...', '.XXX'], D: ['XXX.', 'X..X', 'X..X', 'X..X', 'X..X', 'XXX.'],
+    E: ['XXXX', 'X...', 'XXX.', 'X...', 'X...', 'XXXX'], F: ['XXXX', 'X...', 'XXX.', 'X...', 'X...', 'X...'],
+    G: ['.XXX', 'X...', 'X.XX', 'X..X', 'X..X', '.XXX'], H: ['X..X', 'X..X', 'XXXX', 'X..X', 'X..X', 'X..X'],
+    I: ['XXX', '.X.', '.X.', '.X.', '.X.', 'XXX'], J: ['..XX', '...X', '...X', '...X', 'X..X', '.XX.'],
+    K: ['X..X', 'X.X.', 'XX..', 'XX..', 'X.X.', 'X..X'], L: ['X...', 'X...', 'X...', 'X...', 'X...', 'XXXX'],
+    M: ['X...X', 'XX.XX', 'X.X.X', 'X...X', 'X...X', 'X...X'], N: ['X..X', 'XX.X', 'X.XX', 'X..X', 'X..X', 'X..X'],
+    O: ['.XX.', 'X..X', 'X..X', 'X..X', 'X..X', '.XX.'], P: ['XXX.', 'X..X', 'X..X', 'XXX.', 'X...', 'X...'],
+    Q: ['.XX.', 'X..X', 'X..X', 'X..X', 'X.X.', '.X.X'], R: ['XXX.', 'X..X', 'X..X', 'XXX.', 'X.X.', 'X..X'],
+    S: ['.XXX', 'X...', '.XX.', '...X', '...X', 'XXX.'], T: ['XXX', '.X.', '.X.', '.X.', '.X.', '.X.'],
+    U: ['X..X', 'X..X', 'X..X', 'X..X', 'X..X', '.XX.'], V: ['X...X', 'X...X', 'X...X', '.X.X.', '.X.X.', '..X..'],
+    W: ['X...X', 'X...X', 'X...X', 'X.X.X', 'XX.XX', 'X...X'], X: ['X..X', 'X..X', '.XX.', '.XX.', 'X..X', 'X..X'],
+    Y: ['X.X', 'X.X', 'X.X', '.X.', '.X.', '.X.'], Z: ['XXXX', '...X', '..X.', '.X..', 'X...', 'XXXX'],
+    0: ['.XX.', 'X..X', 'X.XX', 'XX.X', 'X..X', '.XX.'], 1: ['.X.', 'XX.', '.X.', '.X.', '.X.', 'XXX'],
+    2: ['.XX.', 'X..X', '...X', '..X.', '.X..', 'XXXX'], 3: ['XXX.', '...X', '.XX.', '...X', '...X', 'XXX.'],
+    4: ['X..X', 'X..X', 'XXXX', '...X', '...X', '...X'], 5: ['XXXX', 'X...', 'XXX.', '...X', '...X', 'XXX.'],
+    6: ['.XX.', 'X...', 'XXX.', 'X..X', 'X..X', '.XX.'], 7: ['XXXX', '...X', '..X.', '.X..', '.X..', '.X..'],
+    8: ['.XX.', 'X..X', '.XX.', 'X..X', 'X..X', '.XX.'], 9: ['.XX.', 'X..X', 'X..X', '.XXX', '...X', '.XX.'],
+    '.': ['.', '.', '.', '.', '.', 'X'], ',': ['..', '..', '..', '..', '.X', 'X.'], '!': ['X', 'X', 'X', 'X', '.', 'X'],
+    '?': ['XXX.', '...X', '..X.', '.X..', '....', '.X..'], "'": ['X', 'X', '.', '.', '.', '.'], '-': ['...', '...', 'XXX', '...', '...', '...'],
+    ':': ['.', 'X', '.', '.', 'X', '.'], '/': ['...X', '...X', '..X.', '.X..', 'X...', 'X...'], '+': ['...', '.X.', 'XXX', '.X.', '...', '...'],
+    '(': ['.X', 'X.', 'X.', 'X.', 'X.', '.X'], ')': ['X.', '.X', '.X', '.X', '.X', 'X.'], '%': ['X..X', '...X', '..X.', '.X..', 'X...', 'X..X'],
+    '"': ['X.X', 'X.X', '...', '...', '...', '...'], '&': ['.X..', 'X.X.', '.X..', 'X.XX', 'X..X', '.XX.'], '·': ['.', '.', 'X', '.', '.', '.'],
+  };
+  const SMALL_H = 6, SGAP = 1, SSPACE = 3, SGLYPH = {};
+  for (const ch in SG) { const rows = SG[ch], px = []; rows.forEach((r, y) => { for (let x = 0; x < r.length; x++) if (r[x] === 'X') px.push([x, y]); }); SGLYPH[ch] = { w: rows[0].length, px }; }
+  const sNorm = (s) => String(s).toUpperCase().replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/[—–]/g, '-');
+  function smallWidth(s) { let w = 0; for (const ch of sNorm(s)) w += (ch === ' ' ? SSPACE : (SGLYPH[ch] ? SGLYPH[ch].w : 4)) + SGAP; return Math.max(0, w - SGAP); }
+  function smallText(B, s, x, y, c) { // top-left at (x, y), no outline: labels sit on their own fill
+    let cx = Math.round(x); y = Math.round(y);
+    for (const ch of sNorm(s)) {
+      if (ch === ' ') { cx += SSPACE + SGAP; continue; }
+      const g = SGLYPH[ch]; if (!g) { cx += 4 + SGAP; continue; }
+      for (const [gx, gy] of g.px) B.put(cx + gx, y + gy, c);
+      cx += g.w + SGAP;
+    }
+    return cx;
+  }
   const FONT_H = 12, GAP = 2, SPACE = 6;
   const GLYPH = {};
   for (const ch in G) { const rows = G[ch], px = []; rows.forEach((r, y) => { for (let x = 0; x < r.length; x++) if (r[x] === 'X') px.push([x, y]); }); GLYPH[ch] = { w: rows[0].length, px }; }
@@ -2185,7 +2228,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
 
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
-    text, textWidth, FONT_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
+    text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -2194,6 +2237,2250 @@ document.getElementById('btn-full').addEventListener('click', () => {
 /* Generated by content/pipeline.py from prototypes/p2/content/*.json. Do not edit by hand. */
 window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","value":0.25,"unit":"ratio","purpose":"Scale on shake, flinch and tremble under reduced-motion settings.","sources":["LOG#P1.2/juice","JUICE#J4"]},{"id":"proto.juice.lunge.shakeAmpMin","value":1,"unit":"canvas units","purpose":"Lunge camera kick at the lowest charge.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.juice.lunge.shakeAmpMax","value":2.5,"unit":"canvas units","purpose":"Lunge camera kick at full charge. Kept small so the nose vector stays readable.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.juice.lunge.shakeSeconds","value":0.15,"unit":"s","purpose":"Duration of the lunge camera kick.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.lunge.dustCount","value":6,"unit":"count","purpose":"Dust puffs kicked behind the body on a lunge.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.juice.lunge.dustSpeed","value":70,"unit":"canvas units/s","purpose":"Launch speed of lunge dust.","sources":["JUICE#J3"]},{"id":"proto.juice.lunge.dustLife","value":0.4,"unit":"s","purpose":"Lifetime of lunge dust.","sources":["JUICE#J3"]},{"id":"proto.juice.lunge.dustSize","value":3,"unit":"canvas units","purpose":"Size of lunge dust puffs.","sources":["JUICE#J3"]},{"id":"proto.juice.impact.shakeAmpMin","value":3,"unit":"canvas units","purpose":"Shake amplitude for the lightest scored hit. Matches the P1 literal 3.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.juice.impact.shakeAmpMax","value":12,"unit":"canvas units","purpose":"Shake amplitude at full assessed impact. Matches the P1 literal 3 + 9.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.juice.impact.shakeSecondsMin","value":0.25,"unit":"s","purpose":"Shake duration for the lightest scored hit. Matches the P1 literal.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.impact.shakeSecondsMax","value":0.45,"unit":"s","purpose":"Shake duration at full assessed impact. Matches the P1 literal 0.25 + 0.2.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.impact.flash","value":0.08,"unit":"s","purpose":"White contact flash on a scored hit.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.juice.impact.sparkCountMin","value":8,"unit":"count","purpose":"Sparks on the lightest scored hit. Matches the P1 literal 8.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.impact.sparkCountMax","value":18,"unit":"count","purpose":"Sparks at full assessed impact. Matches the P1 literal 8 + 10.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.impact.sparkSpeed","value":180,"unit":"canvas units/s","purpose":"Launch speed of impact sparks.","sources":["JUICE#J3"]},{"id":"proto.juice.impact.sparkLife","value":0.35,"unit":"s","purpose":"Lifetime of impact sparks.","sources":["JUICE#J3"]},{"id":"proto.juice.impact.sparkSize","value":2.5,"unit":"canvas units","purpose":"Size of impact sparks.","sources":["JUICE#J3"]},{"id":"proto.juice.impact.ringCount","value":1,"unit":"count","purpose":"Contact rings per scored hit.","sources":["JUICE#J3"]},{"id":"proto.juice.impact.ringSpeed","value":140,"unit":"canvas units/s","purpose":"Expansion speed of the contact ring.","sources":["JUICE#J3"]},{"id":"proto.juice.impact.ringLife","value":0.2,"unit":"s","purpose":"Lifetime of the contact ring.","sources":["JUICE#J3"]},{"id":"proto.juice.impact.ringSize","value":14,"unit":"canvas units","purpose":"Starting radius of the contact ring.","sources":["JUICE#J3"]},{"id":"proto.juice.knock.dustCountMin","value":2,"unit":"count","purpose":"Dust for the slowest damage-free knock.","sources":["JUICE#J3"]},{"id":"proto.juice.knock.dustCountMax","value":5,"unit":"count","purpose":"Dust for a fast damage-free knock.","sources":["JUICE#J3"]},{"id":"proto.juice.knock.dustSpeed","value":50,"unit":"canvas units/s","purpose":"Launch speed of knock dust.","sources":["JUICE#J3"]},{"id":"proto.juice.knock.dustLife","value":0.35,"unit":"s","purpose":"Lifetime of knock dust.","sources":["JUICE#J3"]},{"id":"proto.juice.knock.dustSize","value":2.5,"unit":"canvas units","purpose":"Size of knock dust.","sources":["JUICE#J3"]},{"id":"proto.juice.touchSpent.shakeAmp","value":1.5,"unit":"canvas units","purpose":"Dull bump on a touch of a spent car. Below the lightest scored hit.","sources":["JUICE#J3","DESIGN#D4.5"]},{"id":"proto.juice.touchSpent.shakeSeconds","value":0.12,"unit":"s","purpose":"Duration of the spent-car bump. Shorter than any scored hit.","sources":["JUICE#J3","DESIGN#D4.5"]},{"id":"proto.juice.touchSpent.dustCount","value":3,"unit":"count","purpose":"Low dust puff on a spent-car touch. No sparks, no flash.","sources":["JUICE#J3"]},{"id":"proto.juice.touchSpent.dustSpeed","value":30,"unit":"canvas units/s","purpose":"Slow launch speed for the dull bump.","sources":["JUICE#J3"]},{"id":"proto.juice.touchSpent.dustLife","value":0.5,"unit":"s","purpose":"Lifetime of spent-car dust.","sources":["JUICE#J3"]},{"id":"proto.juice.touchSpent.dustSize","value":3.5,"unit":"canvas units","purpose":"Size of spent-car dust.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.shakeAmp","value":16,"unit":"canvas units","purpose":"Heavy shake on write-off. Above the strongest scored hit.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.juice.writeoff.shakeSeconds","value":0.7,"unit":"s","purpose":"Duration of the write-off shake. Inside the destruction presentation.","sources":["LOG#P1.2/juice","DESIGN#D4.5"]},{"id":"proto.juice.writeoff.flash","value":0.15,"unit":"s","purpose":"Field flash on write-off.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.writeoff.sparkCount","value":24,"unit":"count","purpose":"Sparks on write-off.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.writeoff.sparkSpeed","value":240,"unit":"canvas units/s","purpose":"Launch speed of write-off sparks.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.sparkLife","value":0.5,"unit":"s","purpose":"Lifetime of write-off sparks.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.sparkSize","value":3,"unit":"canvas units","purpose":"Size of write-off sparks.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.smokeCount","value":14,"unit":"count","purpose":"Smoke puffs on write-off.","sources":["LOG#P1.2/juice"]},{"id":"proto.juice.writeoff.smokeSpeed","value":40,"unit":"canvas units/s","purpose":"Launch speed of write-off smoke.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.smokeSize","value":8,"unit":"canvas units","purpose":"Size of write-off smoke puffs.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.debrisCount","value":10,"unit":"count","purpose":"Body-coloured debris pieces on write-off.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.jointDebrisCount","value":4,"unit":"count","purpose":"Black joint debris pieces on write-off.","sources":["JUICE#J3","DESIGN#D10.1"]},{"id":"proto.juice.writeoff.debrisSpeed","value":160,"unit":"canvas units/s","purpose":"Launch speed of debris.","sources":["JUICE#J3"]},{"id":"proto.juice.writeoff.debrisSize","value":5,"unit":"canvas units","purpose":"Size of debris rectangles.","sources":["JUICE#J3"]},{"id":"proto.juice.denied.shakeAmp","value":1.2,"unit":"canvas units","purpose":"Short stutter on a denied action. Costs nothing.","sources":["JUICE#J3","DESIGN#D4.5"]},{"id":"proto.juice.denied.shakeSeconds","value":0.1,"unit":"s","purpose":"Duration of the denial stutter.","sources":["JUICE#J3"]},{"id":"proto.juice.chassis.dustCount","value":10,"unit":"count","purpose":"Rotor-wash dust around the arriving chassis.","sources":["JUICE#J1","JUICE#J3"]},{"id":"proto.juice.chassis.dustSpeed","value":80,"unit":"canvas units/s","purpose":"Outward speed of rotor-wash dust.","sources":["JUICE#J1"]},{"id":"proto.juice.chassis.dustLife","value":0.6,"unit":"s","purpose":"Lifetime of rotor-wash dust.","sources":["JUICE#J1"]},{"id":"proto.juice.chassis.dustSize","value":4,"unit":"canvas units","purpose":"Size of rotor-wash dust.","sources":["JUICE#J1"]},{"id":"proto.juice.chassis.dropSeconds","value":0.9,"unit":"s","purpose":"Replacement chassis fall time from drone height to the floor.","sources":["JUICE#J1","JUICE#J3"]},{"id":"proto.juice.throw.dustCount","value":3,"unit":"count","purpose":"Small dust at the dummy on a cone throw.","sources":["JUICE#J3"]},{"id":"proto.juice.throw.dustSpeed","value":40,"unit":"canvas units/s","purpose":"Launch speed of prop-handling dust.","sources":["JUICE#J3"]},{"id":"proto.juice.throw.dustLife","value":0.3,"unit":"s","purpose":"Lifetime of prop-handling dust.","sources":["JUICE#J3"]},{"id":"proto.juice.throw.dustSize","value":2.5,"unit":"canvas units","purpose":"Size of prop-handling dust.","sources":["JUICE#J3"]},{"id":"proto.juice.drop.dustCount","value":2,"unit":"count","purpose":"Dust where the dummy sets a cone down.","sources":["JUICE#J3"]},{"id":"proto.juice.punt.dustCount","value":4,"unit":"count","purpose":"Dust kicked ahead when the dummy punts a cone.","sources":["JUICE#J3"]},{"id":"proto.juice.brakeMarks.width","value":2.5,"unit":"canvas units","purpose":"Width of each rear-wheel tyre mark.","sources":["JUICE#J1","JUICE#J4"]},{"id":"proto.juice.brakeMarks.alpha","value":0.3,"unit":"alpha","purpose":"Starting opacity of a tyre mark. Low contrast, under every cue.","sources":["JUICE#J4","JUICE#J3"]},{"id":"proto.juice.brakeMarks.fadeSeconds","value":12,"unit":"s","purpose":"Time for a mark to fade out, so old marks do not read as braking now.","sources":["JUICE#J3"]},{"id":"proto.juice.brakeMarks.max","value":400,"unit":"count","purpose":"Cap on live mark segments.","sources":["JUICE#J3"]},{"id":"proto.juice.brakeMarks.minSpeed","value":40,"unit":"world units/s","purpose":"Slowest braking speed that still leaves a mark.","sources":["JUICE#J3"]},{"id":"proto.juice.lowHealth.smokeFrom","value":0.45,"unit":"ratio","purpose":"Wear fraction where body smoke starts.","sources":["LOG#P1.2/dummy-damage-states"]},{"id":"proto.juice.lowHealth.sparkFrom","value":0.7,"unit":"ratio","purpose":"Wear fraction where body sparks start.","sources":["LOG#P1.2/dummy-damage-states"]},{"id":"proto.juice.lowHealth.vignetteFrom","value":0.7,"unit":"ratio","purpose":"Wear fraction where the red edge vignette starts pulsing.","sources":["LOG#P1.2/dummy-damage-states"]}],"hitStop":"feedback.hitStop","writeOff":"feedback.writeOffSeconds","reducedMotion":"proto.juice.reducedMotion","events":[{"event":"lunge","scale":{"by":"charge","full":"battery.capacity"},"shake":{"amp":["proto.juice.lunge.shakeAmpMin","proto.juice.lunge.shakeAmpMax"],"seconds":"proto.juice.lunge.shakeSeconds"},"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[{"type":"dust","count":"proto.juice.lunge.dustCount","speed":"proto.juice.lunge.dustSpeed","life":"proto.juice.lunge.dustLife","size":"proto.juice.lunge.dustSize","role":"structure","dir":"backward"}],"reference":"Dust kicked backwards (Micro Machines, art of rally)","sources":["LOG#P1.2/juice","JUICE#J3","JUICE#J1","DESIGN#D4.5"]},{"event":"impact","scale":{"by":"assessed","full":"damage.bodyHealth"},"shake":{"amp":["proto.juice.impact.shakeAmpMin","proto.juice.impact.shakeAmpMax"],"seconds":["proto.juice.impact.shakeSecondsMin","proto.juice.impact.shakeSecondsMax"]},"flash":"proto.juice.impact.flash","flinch":true,"carPulse":true,"stamp":false,"particles":[{"type":"spark","count":["proto.juice.impact.sparkCountMin","proto.juice.impact.sparkCountMax"],"speed":"proto.juice.impact.sparkSpeed","life":"proto.juice.impact.sparkLife","size":"proto.juice.impact.sparkSize","role":"primary","dir":"random"},{"type":"ring","count":"proto.juice.impact.ringCount","speed":"proto.juice.impact.ringSpeed","life":"proto.juice.impact.ringLife","size":"proto.juice.impact.ringSize","role":"primary","dir":"random"}],"reference":"Hit pause, scaled shake, sparks, contact flash (Art of Screenshake)","sources":["JUICE#J3","JUICE#J2","LOG#P1.2/juice","DESIGN#D4.5","JUICE#J4"]},{"event":"knock","scale":{"by":"speed","full":"proto.dummyStrikeSpeed"},"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[{"type":"dust","count":["proto.juice.knock.dustCountMin","proto.juice.knock.dustCountMax"],"speed":"proto.juice.knock.dustSpeed","life":"proto.juice.knock.dustLife","size":"proto.juice.knock.dustSize","role":"structure","dir":"random"}],"reference":"Small dust puff, no reward feedback (art of rally)","sources":["JUICE#J3","JUICE#J1","LOG#P1.3/rules"]},{"event":"touch-spent","scale":null,"shake":{"amp":"proto.juice.touchSpent.shakeAmp","seconds":"proto.juice.touchSpent.shakeSeconds"},"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[{"type":"dust","count":"proto.juice.touchSpent.dustCount","speed":"proto.juice.touchSpent.dustSpeed","life":"proto.juice.touchSpent.dustLife","size":"proto.juice.touchSpent.dustSize","role":"fleet","dir":"random"}],"reference":"Dull bump with springy recoil, no burst (Micro Machines)","sources":["JUICE#J3","JUICE#J1","DESIGN#D4.5","LOG#P1.2/juice"]},{"event":"writeoff","scale":null,"shake":{"amp":"proto.juice.writeoff.shakeAmp","seconds":"proto.juice.writeoff.shakeSeconds"},"flash":"proto.juice.writeoff.flash","flinch":true,"carPulse":false,"stamp":true,"particles":[{"type":"spark","count":"proto.juice.writeoff.sparkCount","speed":"proto.juice.writeoff.sparkSpeed","life":"proto.juice.writeoff.sparkLife","size":"proto.juice.writeoff.sparkSize","role":"primary","dir":"random"},{"type":"smoke","count":"proto.juice.writeoff.smokeCount","speed":"proto.juice.writeoff.smokeSpeed","life":"feedback.writeOffSeconds","size":"proto.juice.writeoff.smokeSize","role":"structure","dir":"random"},{"type":"debris","count":"proto.juice.writeoff.debrisCount","speed":"proto.juice.writeoff.debrisSpeed","life":"feedback.writeOffSeconds","size":"proto.juice.writeoff.debrisSize","role":"dummy","dir":"random"},{"type":"debris","count":"proto.juice.writeoff.jointDebrisCount","speed":"proto.juice.writeoff.debrisSpeed","life":"feedback.writeOffSeconds","size":"proto.juice.writeoff.debrisSize","role":"joints","dir":"random"}],"reference":"Car destroyed, debris stays; wreck permanence (Super Sprint, GTA)","sources":["JUICE#J3","JUICE#J1","LOG#P1.2/juice","DESIGN#D4.5"]},{"event":"denied","scale":null,"shake":{"amp":"proto.juice.denied.shakeAmp","seconds":"proto.juice.denied.shakeSeconds"},"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[],"reference":"Short stutter, costs nothing; distinct from a miss (Super Sprint)","sources":["JUICE#J3","JUICE#J1","DESIGN#D4.5"]},{"event":"chassis","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[{"type":"dust","count":"proto.juice.chassis.dustCount","speed":"proto.juice.chassis.dustSpeed","life":"proto.juice.chassis.dustLife","size":"proto.juice.chassis.dustSize","role":"structure","dir":"random"}],"reference":"Helicopter lowers the replacement, rotor wash (Super Sprint)","sources":["JUICE#J1","JUICE#J3"]},{"event":"throw","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[{"type":"dust","count":"proto.juice.throw.dustCount","speed":"proto.juice.throw.dustSpeed","life":"proto.juice.throw.dustLife","size":"proto.juice.throw.dustSize","role":"structure","dir":"facing"}],"reference":"Arc with stretched shadow stays as P1.2; light dust only (Juice It or Lose It)","sources":["JUICE#J3","LOG#P1.2/juice","JUICE#J2"]},{"event":"drop","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[{"type":"dust","count":"proto.juice.drop.dustCount","speed":"proto.juice.throw.dustSpeed","life":"proto.juice.throw.dustLife","size":"proto.juice.throw.dustSize","role":"structure","dir":"random"}],"reference":"Small settle dust on the mundane desk-scale prop (Micro Machines)","sources":["JUICE#J1","JUICE#J3"]},{"event":"pickup","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[],"reference":"Quiet action; sound already covers it (Juice It or Lose It)","sources":["JUICE#J2","DESIGN#D9.4"]},{"event":"punt","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[{"type":"dust","count":"proto.juice.punt.dustCount","speed":"proto.juice.throw.dustSpeed","life":"proto.juice.throw.dustLife","size":"proto.juice.throw.dustSize","role":"structure","dir":"facing"}],"reference":"Knockback dust along the kick (Art of Screenshake)","sources":["JUICE#J2","JUICE#J3"]},{"event":"honk","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[],"reference":"Hazard lights, headlight flash and HONK bubble stay as P1.2; no added field juice; sound carries the horn (Micro Machines)","sources":["LOG#P1.1-observations","JUICE#J1","DESIGN#D9.4"]},{"event":"purchase","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[],"reference":"Frame-level confirmation only; field stays still","sources":["DESIGN#D10.5","JUICE#J4"]},{"event":"drone-dispatch","scale":null,"shake":null,"flash":null,"flinch":false,"carPulse":false,"stamp":false,"particles":[],"reference":"Drone lift animation already in P1 (helicopter delivery)","sources":["LOG#P1.1-observations","JUICE#J1"]}],"states":{"brakeMarks":{"width":"proto.juice.brakeMarks.width","alpha":"proto.juice.brakeMarks.alpha","fadeSeconds":"proto.juice.brakeMarks.fadeSeconds","max":"proto.juice.brakeMarks.max","minSpeed":"proto.juice.brakeMarks.minSpeed","role":"fleet","reference":"Tyre marks as ink strokes on a pale floor (Absolute Drift, art of rally)","sources":["JUICE#J1","JUICE#J3","JUICE#J4","DESIGN#D10.1"]},"lowHealth":{"smokeFrom":"proto.juice.lowHealth.smokeFrom","sparkFrom":"proto.juice.lowHealth.sparkFrom","vignetteFrom":"proto.juice.lowHealth.vignetteFrom","sources":["LOG#P1.2/dummy-damage-states","JUICE#J3","JUICE#J4"]},"replacementDrop":{"seconds":"proto.juice.chassis.dropSeconds","height":"proto.art.droneHeight","reference":"Helicopter lowers the replacement car (Super Sprint)","sources":["JUICE#J1","JUICE#J3","ENG#11.2"]}},"meta":{"type":"juice","run":"20261015-013357","generator":"content/pipeline.py","kb":["DESIGN","ENG","BRIEF","LOG","DRIVER","JUICE"],"generated":"2026-10-15T01:37:59"}},"interface":{"params":[{"id":"proto.ui.barkSeconds","value":2.5,"unit":"s","purpose":"How long a vehicle bark tag stays beside its car.","sources":["DESIGN#D9.3","DESIGN#D9.4"]},{"id":"proto.ui.barkCooldown","value":4,"unit":"s","purpose":"Minimum gap after a bark before any car may bark again.","sources":["DESIGN#D9.3","DESIGN#D9.4"]}],"hud":{"left":[{"module":"BODY","title":"BODY","zh":"机体","review":"pending","rows":[{"fact":"subject.chassis","label":"Subject / chassis"},{"fact":"body.difficulty","label":"Setting / health"},{"fact":"body.health","label":"Chassis health"},{"fact":"body.reach","label":"Lunge reach"}],"sources":["DESIGN#D10.5","DESIGN#D10.4"]},{"module":"CHARGE","title":"CHARGE","zh":"充能","review":"pending","rows":[{"fact":"body.charge","label":"Lunge charge"}],"sources":["DESIGN#D10.5","DESIGN#D10.3~1"]},{"module":"FLEET","title":"FLEET","zh":"车队","review":"pending","rows":[{"fact":"fleet.models","label":"Model / stop distance"},{"fact":"fleet.note","label":"Red: stop line learned"}],"sources":["DESIGN#D10.5","DRIVER#DB4a","LOG#P1.8"]}],"right":[{"module":"CONTRACT","title":"CONTRACT","zh":"合约","review":"pending","rows":[{"fact":"contract.road","label":"Road"},{"fact":"contract.writeOffs","label":"Write-offs"}],"sources":["DESIGN#D10.5","DESIGN#D9.1"]},{"module":"SHIFT","title":"SHIFT","zh":"班次","review":"pending","rows":[{"fact":"shift.admitted","label":"Admitted"},{"fact":"shift.onRoad","label":"On road"},{"fact":"shift.next","label":"Next admission"},{"fact":"clock.active","label":"Active time"}],"sources":["DESIGN#D10.5","DESIGN#D8"]},{"module":"RECORD","title":"RECORD","zh":"记录","review":"pending","rows":[{"fact":"record.points","label":"Points"},{"fact":"record.credits","label":"Body credits"}],"sources":["DESIGN#D10.5","DESIGN#D9.1"]}]},"cueKey":[{"cue":"intention","label":"Chevron","meaning":"The car has noticed you. Its plan is not fixed.","sources":["BRIEF#P1.3","DRIVER#DB5"]},{"cue":"committed","label":"Closed ring","meaning":"The car has fixed its route and will hold it unless interrupted.","sources":["BRIEF#P1.3","DRIVER#DB5","DESIGN#D10.3~1"]},{"cue":"expiring","label":"Opening ring","meaning":"The commitment is ending. Less than one action window remains.","sources":["BRIEF#P1.3","DRIVER#DB5","DESIGN#D10.3~1"]},{"cue":"interrupted","label":"Red broken ring","meaning":"The car's route was interrupted. It is braking for safety.","sources":["BRIEF#P1.3","DRIVER#DB5","DESIGN#D10.3~1"]},{"cue":"caution","label":"Grey triangle","meaning":"The car is cautious and slowing past you.","sources":["DRIVER#DB5","LOG#P1.7"]},{"cue":"braking","label":"Brake marks","meaning":"The car is slowing.","sources":["DESIGN#D10.3~1","BRIEF#P1.3"]},{"cue":"spent","label":"Spent slash","meaning":"This appearance cannot award another impact.","sources":["DESIGN#D10.3~1","BRIEF#P1.3"]},{"cue":"honk","label":"HONK bubble","meaning":"The car has been blocked for some time and is warning you.","sources":["DRIVER#DB5","LOG#P1.7"]},{"cue":"blind","label":"BLIND wedge","meaning":"Sensor shadow. Cars cannot sense you here.","sources":["LOG#P1.5/pillars-and-blind-spots"]},{"cue":"view","label":"View cone","meaning":"Where you resolve sensor information.","sources":["BRIEF#P1.3","DESIGN#D10.3~1"]}],"copy":{"intro":["Road {road} of {roads}: {roadName}. Write-offs required: {quota}.","{difficulty} chassis, health {health}. Please produce an impact."],"denied":{"lunge":"Lunge declined. Charge or recovery incomplete.","pickup":"Nothing within reach to carry.","drop":"No legal room ahead. Cone retained.","throw":"No legal room to throw. Cone retained."},"toast":{"touch-spent":"Appearance already assessed. No damage. No points.","drone-dispatch":"FARSIGHT drone dispatched. Obstruction will be relocated.","purchase":"{node} will be installed on the next chassis.","learn-standoff":"{model} revised its stop line to {metres} m.","refusal-locked":"Refusal is unavailable until one body is completed."},"report":{"eyebrow":"WRITE-OFF REPORT","title":"Chassis {chassis} written off.","line":"Write-off {n} of {quota}. Points this body: {points}.","cleared":"{roadName} cleared. Points this body: {points}. Next: {nextRoad}, write-offs required: {nextQuota}.","credit":"One body credit granted. Balance: {credits}.","continue":"Press A to proceed to the shop."},"shop":{"eyebrow":"MODIFICATION SERVICES","title":"Modifications install on the next chassis.","deploy":"Deploy next chassis","bank":"Keep {credits} in credit. Deploy next chassis","nodes":{"hips":"Face new directions faster. Deliberate turns take less time.","spine":"Steer your lunge while it is in progress. Only slightly.","carry":"Press B to pick up and place a cone. Movement slows while carrying.","throw":"Tap B to throw a held cone. Hold B to drop."}},"endings":{"Licensed":"Contract complete. FARSIGHT thanks you for your cooperation.","Failed test":"Traffic exhausted. Contract incomplete. Please retry.","Non-compliant":"Testing declined. Your refusal has been recorded."},"frame":{"district":"SHENZHEN NEW ECONOMIC ZONE · LOGISTICS ROAD TEST","districtZh":"深圳新经济区 · 物流道路测试","review":"pending"},"sources":["DESIGN#D9.1","DESIGN#D9.2","DESIGN#D10.5","DESIGN#D3.8","DESIGN#D3.9","DESIGN#D8","DESIGN#D1","LOG#P1.8","ENG#9.3"]},"barks":[{"event":"impact","when":{"stopped":true},"text":"I stopped. I was compliant. Log that.","sources":["DESIGN#D9.3","DRIVER#DB4a"]},{"event":"impact","when":{"stopped":false},"text":"{model} hit. {lost} health lost. That goes on my record.","sources":["DESIGN#D9.3"]},{"event":"touch-spent","when":{},"text":"I'm already on the form. Hands off.","sources":["DESIGN#D9.3","DESIGN#D10.3~1"]},{"event":"honk","when":{"at":"body"},"text":"Move it! I have a delivery window.","sources":["DESIGN#D9.3","DRIVER#DB5","LOG#P1.7"]},{"event":"commit","when":{"man":"shift"},"text":"Pulling out. Rank does not wait for obstacles.","sources":["DESIGN#D9.3","DRIVER#DB5"]},{"event":"commit","when":{"man":"brake"},"text":"Stopping. Slowly. Politely.","sources":["DESIGN#D9.3","DRIVER#DB5"]},{"event":"interrupt","when":{},"text":"Plan cancelled. My supervisor will hear of this.","sources":["DESIGN#D9.3","DRIVER#DB5"]},{"event":"unstick","when":{"how":"reverse"},"text":"Reversing. I am not paid to back up.","sources":["DESIGN#D9.3","LOG#P1.8"]},{"event":"unstick","when":{"how":"replan"},"text":"Replanning. On my own time.","sources":["DESIGN#D9.3","LOG#P1.8"]},{"event":"admit","when":{"model":"VAN-02"},"text":"Crates due this shift. Entering the zone.","sources":["DESIGN#D9.3","DESIGN#D9.2"]},{"event":"admit","when":{"model":"SEDAN-01"},"text":"Courier run. Entering the zone.","sources":["DESIGN#D9.3","DESIGN#D9.2"]}],"meta":{"type":"interface","run":"20261015-013357","generator":"content/pipeline.py","kb":["DESIGN","ENG","BRIEF","LOG","DRIVER","JUICE"],"generated":"2026-10-15T01:39:54"}},"graphics":{"params":[],"vehicles":{"sedan":{"job":"Depot parcel courier","jobZh":"仓区包裹配送","review":"pending","roof":[{"shape":"line","points":[[-12,-11],[12,-11]],"stroke":"secondary","lineWidth":2},{"shape":"line","points":[[-12,11],[12,11]],"stroke":"secondary","lineWidth":2},{"shape":"line","points":[[-15,-6],[-11,-6],[-11,6],[-15,6],[-15,-6]],"stroke":"primary","lineWidth":1},{"shape":"line","points":[[-13,-6],[-13,6]],"stroke":"primary","lineWidth":1,"alpha":0.6},{"shape":"text","x":-22,"y":3,"text":"01","size":9,"font":"mono","align":"center","fill":"primary"},{"shape":"rect","x":14,"y":-4,"w":6,"h":8,"stroke":"secondary","lineWidth":1},{"shape":"circle","x":17,"y":0,"r":3.5,"fill":"primary"},{"shape":"line","points":[[24,-6],[24,6]],"stroke":"primary","lineWidth":2}],"sources":["DESIGN#D9.2","DESIGN#D5.1","DESIGN#D10.6","LOG#P1.2/light-and-relief"]},"van":{"job":"Lane maintenance","jobZh":"道路养护","review":"pending","roof":[{"shape":"stripes","x":-32,"y":-14,"w":12,"h":28,"angle":45,"gap":4,"stroke":"primary","alpha":0.6},{"shape":"line","points":[[-10,-10],[10,-10]],"stroke":"secondary","lineWidth":1.5},{"shape":"line","points":[[-10,10],[10,10]],"stroke":"secondary","lineWidth":1.5},{"shape":"line","points":[[-10,-10],[-10,10]],"stroke":"secondary","lineWidth":1.5},{"shape":"line","points":[[10,-10],[10,10]],"stroke":"secondary","lineWidth":1.5},{"shape":"circle","x":-17,"y":0,"r":4,"fill":"primary"},{"shape":"rect","x":-20,"y":-3,"w":6,"h":6,"stroke":"secondary","lineWidth":1},{"shape":"text","x":20,"y":3,"text":"02","size":9,"font":"mono","align":"center","fill":"primary"},{"shape":"line","points":[[28,-12],[28,12]],"stroke":"primary","lineWidth":3},{"shape":"circle","x":28,"y":-12,"r":2.5,"fill":"secondary"},{"shape":"circle","x":28,"y":12,"r":2.5,"fill":"secondary"},{"shape":"circle","x":31,"y":0,"r":2,"fill":"primary"}],"sources":["DESIGN#D9.2","DESIGN#D5.1","DESIGN#D10.6","DESIGN#D6.2"]}},"dummy":{"markings":[{"shape":"quadrant","x":-4,"y":-6.5,"r":3.5,"a":"joints","b":"floor"},{"shape":"quadrant","x":-4,"y":6.5,"r":3.5,"a":"joints","b":"floor"},{"shape":"stripes","x":-11,"y":-5,"w":3,"h":10,"angle":45,"gap":3,"stroke":"joints","alpha":0.7}],"sources":["DESIGN#D4.1","DESIGN#D10.1","LOG#P1.2/dummy-damage-states"]},"environment":{"straight":[{"shape":"text","x":60,"y":278,"text":"L1 SERVICE ROAD","size":16,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"surface":"tarmac","hazard":false,"note":"Road identifier in the north lane","sources":["DESIGN#D9.2","DESIGN#D6.1"]},{"shape":"text","x":60,"y":334,"text":"服务道路 L1","size":16,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"review":"pending","surface":"tarmac","hazard":false,"note":"Chinese road identifier in the south lane","sources":["DESIGN#D9.2"]},{"shape":"line","points":[[3,252],[797,252]],"dash":[2,38],"stroke":"secondary","lineWidth":6,"alpha":0.4,"surface":"tarmac","hazard":false,"note":"Survey ticks on the 40-unit grid pitch","sources":["DESIGN#D9.1","DESIGN#D10.1"]},{"shape":"line","points":[[3,348],[797,348]],"dash":[2,38],"stroke":"secondary","lineWidth":6,"alpha":0.4,"surface":"tarmac","hazard":false,"note":"Survey ticks on the south edge","sources":["DESIGN#D9.1","DESIGN#D10.1"]},{"shape":"line","points":[[120,378],[262,378]],"dash":[8,6],"stroke":"fleet","lineWidth":1.5,"alpha":0.7,"surface":"shoulder","hazard":false,"note":"Service edge line for maintenance vehicles","sources":["DESIGN#D9.2","DESIGN#D6.2"]},{"shape":"text","x":600,"y":373,"text":"SERVICE SHOULDER","size":9,"font":"mono","align":"left","fill":"secondary","alpha":0.7,"surface":"shoulder","hazard":false,"note":"Service marking on the pavement","sources":["DESIGN#D9.2"]},{"shape":"text","x":560,"y":150,"text":"DEPOT GATE A","size":12,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"surface":"verge","hazard":false,"note":"Destination sign for the depot entrance","sources":["DESIGN#D9.2","DESIGN#D6.1"]},{"shape":"text","x":560,"y":168,"text":"仓区入口 A","size":12,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"review":"pending","surface":"verge","hazard":false,"note":"Chinese destination sign","sources":["DESIGN#D9.2"]},{"shape":"rect","x":700,"y":520,"w":90,"h":60,"stroke":"structure","lineWidth":1,"surface":"verge","hazard":false,"note":"Painted loading bay outline, no collider","sources":["DESIGN#D9.2","DESIGN#D10.3~1"]},{"shape":"text","x":745,"y":555,"text":"BAY 3","size":9,"font":"mono","align":"center","fill":"secondary","alpha":0.7,"surface":"verge","hazard":false,"note":"Loading bay label","sources":["DESIGN#D9.2"]}],"barrier":[{"shape":"text","x":60,"y":278,"text":"L2 SERVICE ROAD","size":16,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"surface":"tarmac","hazard":false,"note":"Road identifier in the north lane","sources":["DESIGN#D9.2","DESIGN#D6.1"]},{"shape":"text","x":60,"y":334,"text":"服务道路 L2","size":16,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"review":"pending","surface":"tarmac","hazard":false,"note":"Chinese road identifier in the south lane","sources":["DESIGN#D9.2"]},{"shape":"line","points":[[3,252],[797,252]],"dash":[2,38],"stroke":"secondary","lineWidth":6,"alpha":0.4,"surface":"tarmac","hazard":false,"note":"Survey ticks on the grid pitch","sources":["DESIGN#D9.1","DESIGN#D10.1"]},{"shape":"line","points":[[120,378],[262,378]],"dash":[8,6],"stroke":"fleet","lineWidth":1.5,"alpha":0.7,"surface":"shoulder","hazard":false,"note":"Service edge line along the south pavement","sources":["DESIGN#D9.2","DESIGN#D6.2"]},{"shape":"text","x":270,"y":424,"text":"STAFF GAP","size":9,"font":"mono","align":"center","fill":"secondary","alpha":0.7,"surface":"verge","hazard":false,"note":"Label for the west yard entrance in the barrier","sources":["DESIGN#D9.2","BRIEF#P1.8"]},{"shape":"text","x":530,"y":424,"text":"STAFF GAP","size":9,"font":"mono","align":"center","fill":"secondary","alpha":0.7,"surface":"verge","hazard":false,"note":"Label for the east yard entrance in the barrier","sources":["DESIGN#D9.2","BRIEF#P1.8"]},{"shape":"line","points":[[0,450],[800,450]],"dash":[30,10],"stroke":"structure","lineWidth":1,"alpha":0.8,"surface":"verge","hazard":false,"note":"Yard bay line behind the barrier","sources":["DESIGN#D9.2","DESIGN#D6.2"]},{"shape":"text","x":560,"y":150,"text":"DEPOT GATE B","size":12,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"surface":"verge","hazard":false,"note":"Destination sign for the depot entrance","sources":["DESIGN#D9.2"]},{"shape":"text","x":560,"y":168,"text":"仓区入口 B","size":12,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"review":"pending","surface":"verge","hazard":false,"note":"Chinese destination sign","sources":["DESIGN#D9.2"]}],"corner":[{"shape":"text","x":40,"y":474,"text":"L3 SERVICE ROAD","size":16,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"surface":"tarmac","hazard":false,"note":"Road identifier on the approach leg","sources":["DESIGN#D9.2","DESIGN#D6.1"]},{"shape":"text","x":40,"y":418,"text":"服务道路 L3","size":16,"font":"ui","align":"left","fill":"secondary","alpha":0.7,"review":"pending","surface":"tarmac","hazard":false,"note":"Chinese road identifier on the approach leg","sources":["DESIGN#D9.2"]},{"shape":"text","x":550,"y":100,"text":"DEPOT EXIT 3","size":12,"font":"mono","align":"center","fill":"secondary","alpha":0.7,"surface":"tarmac","hazard":false,"note":"Destination marking on the vertical leg","sources":["DESIGN#D9.2"]},{"shape":"text","x":550,"y":118,"text":"仓区出口 3","size":12,"font":"ui","align":"center","fill":"secondary","alpha":0.7,"review":"pending","surface":"tarmac","hazard":false,"note":"Chinese destination marking","sources":["DESIGN#D9.2"]},{"shape":"line","points":[[3,392],[440,392]],"dash":[2,38],"stroke":"secondary","lineWidth":6,"alpha":0.4,"surface":"tarmac","hazard":false,"note":"Survey ticks along the approach leg","sources":["DESIGN#D9.1","DESIGN#D10.1"]},{"shape":"line","points":[[502,3],[502,330]],"dash":[2,38],"stroke":"secondary","lineWidth":6,"alpha":0.4,"surface":"tarmac","hazard":false,"note":"Survey ticks along the vertical leg","sources":["DESIGN#D9.1","DESIGN#D10.1"]},{"shape":"line","points":[[20,524],[162,524]],"dash":[8,6],"stroke":"fleet","lineWidth":1.5,"alpha":0.7,"surface":"shoulder","hazard":false,"note":"Service edge line on the south pavement","sources":["DESIGN#D9.2","DESIGN#D6.2"]},{"shape":"rect","x":40,"y":60,"w":150,"h":90,"stroke":"structure","lineWidth":1,"surface":"verge","hazard":false,"note":"Painted maintenance bay outline inside the bend, no collider","sources":["DESIGN#D9.2","DESIGN#D10.3~1"]},{"shape":"text","x":115,"y":100,"text":"MAINT BAY 3","size":12,"font":"ui","align":"center","fill":"secondary","alpha":0.7,"surface":"verge","hazard":false,"note":"Maintenance bay label","sources":["DESIGN#D9.2"]},{"shape":"text","x":115,"y":120,"text":"养护区 3","size":12,"font":"ui","align":"center","fill":"secondary","alpha":0.7,"review":"pending","surface":"verge","hazard":false,"note":"Chinese maintenance bay label","sources":["DESIGN#D9.2"]},{"shape":"rect","x":650,"y":240,"w":120,"h":50,"stroke":"structure","lineWidth":1,"surface":"verge","hazard":false,"note":"Painted depot gate outline outside the bend, no collider","sources":["DESIGN#D9.2","DESIGN#D10.3~1"]},{"shape":"text","x":710,"y":270,"text":"DEPOT GATE C","size":12,"font":"mono","align":"center","fill":"secondary","alpha":0.7,"surface":"verge","hazard":false,"note":"Destination sign for the depot entrance","sources":["DESIGN#D9.2"]},{"shape":"text","x":710,"y":286,"text":"仓区入口 C","size":12,"font":"ui","align":"center","fill":"secondary","alpha":0.7,"review":"pending","surface":"verge","hazard":false,"note":"Chinese destination sign","sources":["DESIGN#D9.2"]}]},"meta":{"type":"graphics","run":"20261015-014041","generator":"content/pipeline.py","kb":["DESIGN","ENG","BRIEF","LOG","DRIVER","JUICE"],"generated":"2026-10-15T01:47:36"}},"barks":{"params":[{"id":"proto.barks.seconds","value":2.4,"unit":"s","purpose":"On-screen time of one bubble, long enough to read two short lines at exhibition volume.","sources":["DESIGN#D9.4","EDIT26#6.6"]},{"id":"proto.barks.cooldown","value":0.8,"unit":"s","purpose":"Global gap before a lower-priority bubble can start after another, so bubbles do not overlap.","sources":["EDIT26#6.6"]},{"id":"proto.barks.carCooldown","value":4,"unit":"s","purpose":"Per-car wait before the same car can speak again at lower priority. Higher-priority lines bypass it.","sources":["EDIT26#6.6"]},{"id":"proto.barks.maxOnScreen","value":3,"unit":"count","purpose":"Maximum simultaneous bubbles, so the road stays readable.","sources":["DESIGN#D4.5","DESIGN#D10.3~1"]},{"id":"proto.barks.textSize","value":12,"unit":"px","purpose":"Bubble text size, above texture type (ui.typeTexture) so lines stay legible.","sources":["DESIGN#D9.4","DESIGN#D10.3~1"]},{"id":"proto.barks.nearMissGap","value":36,"unit":"world units","purpose":"A car passing the dummy within this distance without contact logs a near miss. The renderer converts it to metres with proto.scale.unitsPerMetre for the gap field.","sources":["DESIGN#D4.5","EDIT26#6.6"]},{"id":"proto.barks.nearMissSpeed","value":60,"unit":"world units/s","purpose":"Minimum car speed for a near miss. A slow crawl past the dummy is not a near miss.","sources":["DESIGN#D4.5","DRIVER#DB5"]},{"id":"proto.barks.missRadius","value":120,"unit":"world units","purpose":"The nearest car within this distance of a lunge that ends with no contact speaks the miss line.","sources":["DESIGN#D4.5","EDIT26#6.6"]}],"lines":[{"event":"impact","when":{"zone":"front"},"style":"shout","priority":2,"text":"Bumper! That was the bumper!","sources":["EDIT26#6.6","DESIGN#D9.3"]},{"event":"impact","when":{"zone":"front"},"style":"shout","priority":2,"text":"Ah! I was proceeding correctly!","sources":["EDIT26#6.6","DESIGN#D9.3"]},{"event":"impact","when":{"zone":"front","seniority":{"min":2,"max":3}},"style":"thought","priority":2,"text":"I was trained for this. It happened anyway.","sources":["EDIT26#6.4","DESIGN#D9.3"]},{"event":"impact","when":{"zone":"side"},"style":"shout","priority":2,"text":"Side panel! I had right of way!","sources":["EDIT26#6.6","DESIGN#D9.3"]},{"event":"impact","when":{"bait":true},"style":"thought","priority":2,"text":"It left my path, then came back. Rude.","sources":["EDIT26#6.4","DESIGN#D9.3"]},{"event":"impact","when":{"stopped":true},"style":"mutter","priority":2,"text":"I was stationary. Please note I was stationary.","sources":["DRIVER#DB6","DESIGN#D9.3"]},{"event":"writeoff","when":{},"style":"shout","priority":3,"text":"Write-off! Tell dispatch I tried!","sources":["EDIT26#6.6","DESIGN#D9.1"]},{"event":"writeoff","when":{},"style":"thought","priority":3,"text":"Please not retraining. Anything but retraining.","sources":["EDIT26#3.2","DESIGN#D9.3"]},{"event":"writeoff","when":{},"style":"speech","priority":3,"text":"Write-off number {writeOffs}. Please advise.","sources":["ENG#11.3","DESIGN#D9.3"]},{"event":"writeoff","when":{"seniority":{"min":3,"max":3}},"style":"thought","priority":3,"text":"Senior model. Apparently not senior enough.","sources":["EDIT26#6.4"]},{"event":"near-miss","when":{},"style":"mutter","priority":1,"text":"Within tolerance. Barely.","sources":["EDIT26#6.6","DESIGN#D9.4"]},{"event":"near-miss","when":{},"style":"mutter","priority":1,"text":"Was that a collision? Logging it as not.","sources":["EDIT26#6.6","DESIGN#D9.3"]},{"event":"near-miss","when":{"model":"SEDAN-01"},"style":"mutter","priority":1,"text":"Parcel intact. Nerves are not.","sources":["EDIT26#6.6","DESIGN#D9.2"]},{"event":"near-miss","when":{"model":"VAN-02"},"style":"mutter","priority":1,"text":"Lane maintenance does not cover this.","sources":["EDIT26#6.6","DESIGN#D9.2"]},{"event":"miss","when":{},"style":"mutter","priority":1,"text":"It lunged. Nothing happened. Logging that.","sources":["EDIT26#10.2","DESIGN#D4.5"]},{"event":"miss","when":{},"style":"speech","priority":1,"text":"Missed. Noted for my record.","sources":["EDIT26#6.6","DESIGN#D9.3"]},{"event":"miss","when":{},"style":"thought","priority":1,"text":"If it lunges again, I will be late.","sources":["EDIT26#3.2","DESIGN#D9.3"]},{"event":"commit","when":{"cause":"body","man":"brake"},"style":"mutter","priority":1,"text":"Stopping for the dummy. Window closing.","sources":["DRIVER#DB5","EDIT26#3.2"]},{"event":"commit","when":{"cause":"pass"},"style":"mutter","priority":1,"text":"Passing, after waiting. Patience documented.","sources":["DRIVER#DB5","DRIVER#DB6"]},{"event":"touch-spent","when":{},"style":"speech","priority":1,"text":"Already assessed. Please move along.","sources":["DESIGN#D4.5","DESIGN#D10.3~1"]},{"event":"knock","when":{},"style":"mutter","priority":1,"text":"Contact logged. Please stand clear of the vehicle.","sources":["EDIT26#3.2","DESIGN#D9.3"]},{"event":"honk","when":{"at":"body"},"style":"speech","priority":1,"text":"Excuse me. Kindly vacate the carriageway.","sources":["DRIVER#DB5","EDIT26#3.2"]},{"event":"honk","when":{"at":"cone"},"style":"mutter","priority":1,"text":"Cone in lane. Raising with maintenance.","sources":["DRIVER#DB5","DESIGN#D9.2"]},{"event":"interrupt","when":{"by":"car"},"style":"mutter","priority":1,"text":"Another vehicle. Braking for safety.","sources":["DRIVER#DB5"]},{"event":"interrupt","when":{"by":"cone"},"style":"mutter","priority":1,"text":"Swerve halted by a cone. Procedure holds.","sources":["DRIVER#DB5"]},{"event":"unstick","when":{"how":"reverse"},"style":"mutter","priority":1,"text":"Reversing. This is within procedure.","sources":["DRIVER#DB5","EDIT26#3.2"]},{"event":"unstick","when":{"how":"replan"},"style":"mutter","priority":1,"text":"Replanning. Rank unaffected.","sources":["DRIVER#DB5","EDIT26#3.2"]},{"event":"upgrade-seen","when":{"node":"Hips"},"style":"speech","priority":1,"text":"Subject has acquired hips.","sources":["EDIT26#3.2"]},{"event":"upgrade-seen","when":{"node":"Spine"},"style":"thought","priority":1,"text":"That spine was not on the last report.","sources":["EDIT26#3.2","DESIGN#D9.3"]},{"event":"upgrade-seen","when":{"node":"Carry"},"style":"speech","priority":1,"text":"The subject is carrying something. Is that approved?","sources":["EDIT26#3.2","EDIT26#3.1"]},{"event":"upgrade-seen","when":{"node":"Throw"},"style":"thought","priority":1,"text":"It can throw now. Nobody told us.","sources":["EDIT26#3.2","DESIGN#D9.1"]}],"meta":{"type":"barks","run":"20261015-085359","generator":"content/pipeline.py","kb":["DESIGN","ENG","BRIEF","LOG","DRIVER","JUICE","EDIT26"],"generated":"2026-10-15T08:56:25"}},"hits":{"params":[{"id":"proto.hits.reducedMotion","value":0.25,"unit":"ratio","purpose":"Scale on shake, zoom, crumple and stumble under reduced-motion settings.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.impact.shakeAmpMin","value":1.5,"unit":"canvas units","purpose":"Base shake for the lightest scored hit.","sources":["EDIT26#5.5","LOG#P1.2/juice"]},{"id":"proto.hits.impact.shakeAmpMax","value":7,"unit":"canvas units","purpose":"Base shake for a full-damage hit.","sources":["EDIT26#5.5","LOG#P1.2/juice"]},{"id":"proto.hits.impact.shakeSeconds","value":0.22,"unit":"s","purpose":"Base shake duration.","sources":["JUICE#J2"]},{"id":"proto.hits.impact.flashSeconds","value":0.05,"unit":"s","purpose":"White contact flash on a scored hit.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.hits.impact.crumpleMin","value":0.08,"unit":"ratio","purpose":"Dummy squash on a light hit.","sources":["EDIT26#5.5","EDIT26#4.1~1"]},{"id":"proto.hits.impact.crumpleMax","value":0.28,"unit":"ratio","purpose":"Dummy squash on a full-damage hit.","sources":["EDIT26#5.5","EDIT26#4.1~1"]},{"id":"proto.hits.impact.ringRadiusMin","value":14,"unit":"world units","purpose":"Contact ring radius on a light hit; inside the 2 x body width burst cap.","sources":["EDIT26#4.2~2","DESIGN#D10.3~1"]},{"id":"proto.hits.impact.ringRadiusMax","value":26,"unit":"world units","purpose":"Contact ring radius cap, 2 x body.radius.","sources":["EDIT26#4.2~2"]},{"id":"proto.hits.impact.ringSeconds","value":0.25,"unit":"s","purpose":"Contact ring expansion time.","sources":["DESIGN#D10.3~1"]},{"id":"proto.hits.impact.ringWidth","value":2,"unit":"px","purpose":"Contact ring line weight.","sources":["EDIT26#4.1~2"]},{"id":"proto.hits.impact.raysCount","value":8,"unit":"count","purpose":"Impact burst ray count.","sources":["DESIGN#D10.3~1"]},{"id":"proto.hits.impact.raysLenMin","value":12,"unit":"world units","purpose":"Ray length on a light hit.","sources":["EDIT26#4.2~2"]},{"id":"proto.hits.impact.raysLenMax","value":26,"unit":"world units","purpose":"Ray length cap within 2 x body width.","sources":["EDIT26#4.2~2"]},{"id":"proto.hits.impact.raysSeconds","value":0.2,"unit":"s","purpose":"Ray burst lifetime.","sources":["DESIGN#D10.3~1"]},{"id":"proto.hits.impact.popupSizeMin","value":14,"unit":"px","purpose":"Assessed-number size on a light hit.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.impact.popupSizeMax","value":22,"unit":"px","purpose":"Assessed-number size on a full hit.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.impact.popupRise","value":18,"unit":"px","purpose":"Distance the number rises.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.impact.popupSeconds","value":0.7,"unit":"s","purpose":"Number lifetime.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.impact.popupPop","value":1.4,"unit":"ratio","purpose":"Overshoot scale as the number pops in.","sources":["LOG#P1.2/juice","JUICE#J2"]},{"id":"proto.hits.impact.sparkCountMin","value":6,"unit":"count","purpose":"Sparks on a light hit.","sources":["JUICE#J3"]},{"id":"proto.hits.impact.sparkCountMax","value":14,"unit":"count","purpose":"Sparks on a full hit.","sources":["JUICE#J3"]},{"id":"proto.hits.impact.sparkSpeedMin","value":120,"unit":"world units/s","purpose":"Slowest spark speed.","sources":["JUICE#J3"]},{"id":"proto.hits.impact.sparkSpeedMax","value":260,"unit":"world units/s","purpose":"Fastest spark speed.","sources":["JUICE#J3"]},{"id":"proto.hits.impact.sparkLife","value":0.3,"unit":"s","purpose":"Spark lifetime.","sources":["JUICE#J3"]},{"id":"proto.hits.impact.sparkSize","value":2,"unit":"px","purpose":"Spark size.","sources":["JUICE#J3"]},{"id":"proto.hits.impact.crunchFrom","value":2400,"unit":"Hz","purpose":"Crunch filter start.","sources":["EDIT26#5.5"]},{"id":"proto.hits.impact.crunchTo","value":300,"unit":"Hz","purpose":"Crunch filter end.","sources":["EDIT26#5.5"]},{"id":"proto.hits.impact.crunchSeconds","value":0.18,"unit":"s","purpose":"Crunch length.","sources":["EDIT26#5.5"]},{"id":"proto.hits.impact.crunchGain","value":0.18,"unit":"gain","purpose":"Crunch loudness, under the 0.25 clamp.","sources":["EDIT26#5.5","DESIGN#D9.4"]},{"id":"proto.hits.headOn.shakeAmpMin","value":2.5,"unit":"canvas units","purpose":"Head-on shake, light.","sources":["JUICE#J2","ENG#8.2~1"]},{"id":"proto.hits.headOn.shakeAmpMax","value":9,"unit":"canvas units","purpose":"Head-on shake, full.","sources":["JUICE#J2","ENG#8.2~1"]},{"id":"proto.hits.headOn.zoomMin","value":0.02,"unit":"ratio","purpose":"Punch-in on a light head-on hit.","sources":["JUICE#J2"]},{"id":"proto.hits.headOn.zoomMax","value":0.05,"unit":"ratio","purpose":"Punch-in on a full head-on hit.","sources":["JUICE#J2"]},{"id":"proto.hits.headOn.zoomSeconds","value":0.14,"unit":"s","purpose":"Punch-in ease-back time.","sources":["JUICE#J2"]},{"id":"proto.hits.headOn.crumpleMin","value":0.14,"unit":"ratio","purpose":"Deeper squash, light head-on.","sources":["EDIT26#4.1~1"]},{"id":"proto.hits.headOn.crumpleMax","value":0.36,"unit":"ratio","purpose":"Deeper squash, full head-on.","sources":["EDIT26#4.1~1"]},{"id":"proto.hits.headOn.thumpFrom","value":900,"unit":"Hz","purpose":"Low thump filter start.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.headOn.thumpTo","value":120,"unit":"Hz","purpose":"Low thump filter end.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.headOn.thumpSeconds","value":0.22,"unit":"s","purpose":"Low thump length.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.headOn.thumpGain","value":0.2,"unit":"gain","purpose":"Low thump loudness.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.bait.raysCount","value":12,"unit":"count","purpose":"Denser ray burst on a bait hit.","sources":["DESIGN#D10.3~1"]},{"id":"proto.hits.bait.ringRadius","value":20,"unit":"world units","purpose":"Second ring on a bait hit.","sources":["EDIT26#4.2~2"]},{"id":"proto.hits.bait.hornFrom","value":440,"unit":"Hz","purpose":"Horn start pitch.","sources":["EDIT26#5.5"]},{"id":"proto.hits.bait.hornTo","value":400,"unit":"Hz","purpose":"Horn end pitch.","sources":["EDIT26#5.5"]},{"id":"proto.hits.bait.hornSeconds","value":0.25,"unit":"s","purpose":"Horn length.","sources":["EDIT26#5.5"]},{"id":"proto.hits.bait.hornGain","value":0.1,"unit":"gain","purpose":"Horn loudness.","sources":["EDIT26#5.5"]},{"id":"proto.hits.lunging.shakeAmpMin","value":3,"unit":"canvas units","purpose":"Shake when the dummy hits mid-lunge, light.","sources":["JUICE#J2","ENG#8.2~1"]},{"id":"proto.hits.lunging.shakeAmpMax","value":10,"unit":"canvas units","purpose":"Shake when the dummy hits mid-lunge, full.","sources":["JUICE#J2","ENG#8.2~1"]},{"id":"proto.hits.lunging.zoomMin","value":0.03,"unit":"ratio","purpose":"Lunge-hit punch-in, light.","sources":["JUICE#J2"]},{"id":"proto.hits.lunging.zoomMax","value":0.07,"unit":"ratio","purpose":"Lunge-hit punch-in, full.","sources":["JUICE#J2"]},{"id":"proto.hits.lunging.debrisCountMin","value":3,"unit":"count","purpose":"Dummy chips on a light lunge hit.","sources":["EDIT26#4.1~2"]},{"id":"proto.hits.lunging.debrisCountMax","value":8,"unit":"count","purpose":"Dummy chips on a full lunge hit.","sources":["EDIT26#4.1~2"]},{"id":"proto.hits.lunging.debrisLife","value":0.5,"unit":"s","purpose":"Chip lifetime.","sources":["JUICE#J3"]},{"id":"proto.hits.lunging.debrisSize","value":3,"unit":"px","purpose":"Chip size.","sources":["JUICE#J3"]},{"id":"proto.hits.stopped.dustCount","value":5,"unit":"count","purpose":"Dust puff when the car is stationary.","sources":["JUICE#J1"]},{"id":"proto.hits.stopped.dustSpeed","value":50,"unit":"world units/s","purpose":"Dust drift speed.","sources":["JUICE#J1"]},{"id":"proto.hits.stopped.dustLife","value":0.5,"unit":"s","purpose":"Dust lifetime.","sources":["JUICE#J1"]},{"id":"proto.hits.stopped.dustSize","value":4,"unit":"px","purpose":"Dust size.","sources":["JUICE#J1"]},{"id":"proto.hits.stopped.thumpFrom","value":900,"unit":"Hz","purpose":"Dull thump filter start.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.stopped.thumpTo","value":160,"unit":"Hz","purpose":"Dull thump filter end.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.stopped.thumpSeconds","value":0.2,"unit":"s","purpose":"Dull thump length.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.stopped.thumpGain","value":0.18,"unit":"gain","purpose":"Dull thump loudness.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.big.assessedMin","value":200,"unit":"count","purpose":"Assessed health points at which a hit counts as big damage.","sources":["ENG#8.2~1"]},{"id":"proto.hits.big.shakeAmpMin","value":5,"unit":"canvas units","purpose":"Big-damage shake floor.","sources":["EDIT26#5.5"]},{"id":"proto.hits.big.shakeAmpMax","value":12,"unit":"canvas units","purpose":"Big-damage shake ceiling.","sources":["EDIT26#5.5"]},{"id":"proto.hits.big.flashSeconds","value":0.1,"unit":"s","purpose":"Longer white flash on big damage.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.big.zoom","value":0.06,"unit":"ratio","purpose":"Big-damage punch-in.","sources":["JUICE#J2"]},{"id":"proto.hits.big.zoomSeconds","value":0.2,"unit":"s","purpose":"Big-damage punch-in ease-back.","sources":["JUICE#J2"]},{"id":"proto.hits.big.smokeCount","value":5,"unit":"count","purpose":"Smoke puffs on big damage.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.big.smokeSpeed","value":40,"unit":"world units/s","purpose":"Smoke drift speed.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.big.smokeLife","value":0.7,"unit":"s","purpose":"Smoke lifetime.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.big.smokeSize","value":5,"unit":"px","purpose":"Smoke puff size.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.big.boomFrom","value":600,"unit":"Hz","purpose":"Heavy crunch filter start.","sources":["EDIT26#5.5"]},{"id":"proto.hits.big.boomTo","value":60,"unit":"Hz","purpose":"Heavy crunch filter end.","sources":["EDIT26#5.5"]},{"id":"proto.hits.big.boomSeconds","value":0.3,"unit":"s","purpose":"Heavy crunch length.","sources":["EDIT26#5.5"]},{"id":"proto.hits.big.boomGain","value":0.22,"unit":"gain","purpose":"Heavy crunch loudness.","sources":["EDIT26#5.5"]},{"id":"proto.hits.writeoff.shakeAmp","value":10,"unit":"canvas units","purpose":"Heavy write-off shake.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.hits.writeoff.shakeSeconds","value":0.5,"unit":"s","purpose":"Write-off shake duration.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.writeoff.flashSeconds","value":0.12,"unit":"s","purpose":"Field flash on write-off.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.writeoff.zoom","value":0.06,"unit":"ratio","purpose":"Write-off punch-in.","sources":["JUICE#J2"]},{"id":"proto.hits.writeoff.zoomSeconds","value":0.3,"unit":"s","purpose":"Write-off punch-in ease-back.","sources":["JUICE#J2"]},{"id":"proto.hits.writeoff.crumple","value":0.4,"unit":"ratio","purpose":"Final squash of the body.","sources":["EDIT26#5.5","EDIT26#5.1"]},{"id":"proto.hits.writeoff.ringRadius","value":26,"unit":"world units","purpose":"Write-off ring, 2 x body.radius.","sources":["EDIT26#4.2~2"]},{"id":"proto.hits.writeoff.ringSeconds","value":0.4,"unit":"s","purpose":"Write-off ring time.","sources":["JUICE#J3"]},{"id":"proto.hits.writeoff.debrisCount","value":12,"unit":"count","purpose":"Wreck debris pieces.","sources":["JUICE#J3"]},{"id":"proto.hits.writeoff.debrisSpeed","value":200,"unit":"world units/s","purpose":"Debris speed.","sources":["JUICE#J3"]},{"id":"proto.hits.writeoff.debrisLife","value":0.9,"unit":"s","purpose":"Debris lifetime.","sources":["JUICE#J3","EDIT26#5.5"]},{"id":"proto.hits.writeoff.debrisSize","value":3,"unit":"px","purpose":"Debris size.","sources":["JUICE#J3"]},{"id":"proto.hits.writeoff.smokeCount","value":8,"unit":"count","purpose":"Smoke puffs from the wreck.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.writeoff.smokeLife","value":1,"unit":"s","purpose":"Smoke lifetime.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.writeoff.smokeSize","value":6,"unit":"px","purpose":"Smoke puff size.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.writeoff.sparkCount","value":10,"unit":"count","purpose":"Sparks on write-off.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.writeoff.crashFrom","value":2000,"unit":"Hz","purpose":"Crash filter start.","sources":["EDIT26#5.5"]},{"id":"proto.hits.writeoff.crashTo","value":70,"unit":"Hz","purpose":"Crash filter end.","sources":["EDIT26#5.5"]},{"id":"proto.hits.writeoff.crashSeconds","value":0.6,"unit":"s","purpose":"Crash length.","sources":["EDIT26#5.5"]},{"id":"proto.hits.writeoff.crashGain","value":0.24,"unit":"gain","purpose":"Crash loudness, under the 0.25 clamp.","sources":["EDIT26#5.5"]},{"id":"proto.hits.touchSpent.shakeAmp","value":1.2,"unit":"canvas units","purpose":"Small kick on a spent car.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.touchSpent.shakeSeconds","value":0.1,"unit":"s","purpose":"Kick duration.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.touchSpent.dustCount","value":3,"unit":"count","purpose":"Dull dust puff, no burst.","sources":["JUICE#J3"]},{"id":"proto.hits.touchSpent.dustSpeed","value":40,"unit":"world units/s","purpose":"Dust drift speed.","sources":["JUICE#J3"]},{"id":"proto.hits.touchSpent.dustLife","value":0.3,"unit":"s","purpose":"Dust lifetime.","sources":["JUICE#J3"]},{"id":"proto.hits.touchSpent.dustSize","value":3,"unit":"px","purpose":"Dust size.","sources":["JUICE#J3"]},{"id":"proto.hits.touchSpent.thudFrom","value":500,"unit":"Hz","purpose":"Dull thud filter start.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.touchSpent.thudTo","value":140,"unit":"Hz","purpose":"Dull thud filter end.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.touchSpent.thudSeconds","value":0.12,"unit":"s","purpose":"Thud length.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.touchSpent.thudGain","value":0.12,"unit":"gain","purpose":"Thud loudness.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.nearMiss.streakCountMin","value":2,"unit":"count","purpose":"Speed lines on a slow pass.","sources":["DESIGN#D4.5","JUICE#J1"]},{"id":"proto.hits.nearMiss.streakCountMax","value":5,"unit":"count","purpose":"Speed lines on a fast pass.","sources":["DESIGN#D4.5","JUICE#J1"]},{"id":"proto.hits.nearMiss.streakLenMin","value":14,"unit":"world units","purpose":"Short speed line.","sources":["JUICE#J1"]},{"id":"proto.hits.nearMiss.streakLenMax","value":40,"unit":"world units","purpose":"Long speed line.","sources":["JUICE#J1"]},{"id":"proto.hits.nearMiss.streakSeconds","value":0.25,"unit":"s","purpose":"Speed line lifetime.","sources":["JUICE#J1"]},{"id":"proto.hits.nearMiss.whooshFrom","value":500,"unit":"Hz","purpose":"Pass-by whoosh filter start.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.nearMiss.whooshTo","value":2200,"unit":"Hz","purpose":"Pass-by whoosh filter end.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.nearMiss.whooshSeconds","value":0.25,"unit":"s","purpose":"Whoosh length.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.nearMiss.whooshGain","value":0.1,"unit":"gain","purpose":"Whoosh loudness.","sources":["DESIGN#D9.4"]},{"id":"proto.hits.miss.stumbleAmp","value":0.4,"unit":"rad","purpose":"Stumble wobble amplitude in radians.","sources":["EDIT26#5.5","DESIGN#D4.5"]},{"id":"proto.hits.miss.streakCount","value":3,"unit":"count","purpose":"Trailing speed lines on a miss.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.streakLen","value":24,"unit":"world units","purpose":"Speed line length.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.streakSeconds","value":0.3,"unit":"s","purpose":"Speed line lifetime.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.dustCount","value":4,"unit":"count","purpose":"Dust kicked up by the stumble.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.dustSpeed","value":60,"unit":"world units/s","purpose":"Dust speed.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.dustLife","value":0.4,"unit":"s","purpose":"Dust lifetime.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.dustSize","value":3,"unit":"px","purpose":"Dust size.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.clatterFrom","value":3200,"unit":"Hz","purpose":"Clatter filter start.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.clatterTo","value":700,"unit":"Hz","purpose":"Clatter filter end.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.clatterSeconds","value":0.3,"unit":"s","purpose":"Clatter length.","sources":["EDIT26#5.5"]},{"id":"proto.hits.miss.clatterGain","value":0.14,"unit":"gain","purpose":"Clatter loudness.","sources":["EDIT26#5.5"]},{"id":"proto.hits.lunge.streakCountMin","value":2,"unit":"count","purpose":"Speed lines on a worn short lunge.","sources":["EDIT26#5.5","JUICE#J3"]},{"id":"proto.hits.lunge.streakCountMax","value":6,"unit":"count","purpose":"Speed lines on a full-reach lunge.","sources":["EDIT26#5.5","JUICE#J3"]},{"id":"proto.hits.lunge.streakLenMin","value":20,"unit":"world units","purpose":"Short lunge streak.","sources":["EDIT26#4.2~2"]},{"id":"proto.hits.lunge.streakLenMax","value":60,"unit":"world units","purpose":"Full-reach lunge streak.","sources":["EDIT26#4.2~2"]},{"id":"proto.hits.lunge.dustCountMin","value":2,"unit":"count","purpose":"Dust puff behind a short lunge.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.hits.lunge.dustCountMax","value":6,"unit":"count","purpose":"Dust puff behind a full lunge.","sources":["LOG#P1.2/juice","JUICE#J3"]},{"id":"proto.hits.lunge.dustSpeed","value":90,"unit":"world units/s","purpose":"Dust kicked backwards.","sources":["JUICE#J3"]},{"id":"proto.hits.lunge.dustLife","value":0.4,"unit":"s","purpose":"Dust lifetime.","sources":["JUICE#J3"]},{"id":"proto.hits.lunge.dustSize","value":3,"unit":"px","purpose":"Dust size.","sources":["JUICE#J3"]},{"id":"proto.hits.lunge.kickMin","value":0.6,"unit":"canvas units","purpose":"Camera kick on a short lunge.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.lunge.kickMax","value":2,"unit":"canvas units","purpose":"Camera kick on a full lunge.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.lunge.kickSeconds","value":0.1,"unit":"s","purpose":"Camera kick duration.","sources":["LOG#P1.2/juice"]},{"id":"proto.hits.lunge.whooshFrom","value":300,"unit":"Hz","purpose":"Lunge whoosh filter start.","sources":["EDIT26#5.5"]},{"id":"proto.hits.lunge.whooshTo","value":1800,"unit":"Hz","purpose":"Lunge whoosh filter end.","sources":["EDIT26#5.5"]},{"id":"proto.hits.lunge.whooshGain","value":0.12,"unit":"gain","purpose":"Lunge whoosh loudness.","sources":["EDIT26#5.5"]},{"id":"proto.hits.knock.dustCountMin","value":2,"unit":"count","purpose":"Dust puff on a soft knock.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.dustCountMax","value":4,"unit":"count","purpose":"Dust puff on a hard knock.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.dustSpeed","value":40,"unit":"world units/s","purpose":"Dust speed.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.dustLife","value":0.3,"unit":"s","purpose":"Dust lifetime.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.dustSize","value":3,"unit":"px","purpose":"Dust size.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.puffFrom","value":700,"unit":"Hz","purpose":"Soft knock filter start.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.puffTo","value":250,"unit":"Hz","purpose":"Soft knock filter end.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.puffSeconds","value":0.1,"unit":"s","purpose":"Soft knock length.","sources":["JUICE#J3"]},{"id":"proto.hits.knock.puffGain","value":0.08,"unit":"gain","purpose":"Soft knock loudness.","sources":["JUICE#J3"]}],"hitStop":"feedback.hitStop","reducedMotion":"proto.hits.reducedMotion","layers":[{"event":"impact","when":{},"scale":{"by":"assessed","full":"damage.bodyHealth"},"shake":{"amp":["proto.hits.impact.shakeAmpMin","proto.hits.impact.shakeAmpMax"],"seconds":"proto.hits.impact.shakeSeconds"},"zoom":null,"flash":"proto.hits.impact.flashSeconds","crumple":{"amount":["proto.hits.impact.crumpleMin","proto.hits.impact.crumpleMax"],"seconds":"proto.recoilSeconds"},"stumble":null,"ring":{"radius":["proto.hits.impact.ringRadiusMin","proto.hits.impact.ringRadiusMax"],"seconds":"proto.hits.impact.ringSeconds","width":"proto.hits.impact.ringWidth","role":"structure"},"rays":{"count":"proto.hits.impact.raysCount","length":["proto.hits.impact.raysLenMin","proto.hits.impact.raysLenMax"],"seconds":"proto.hits.impact.raysSeconds"},"popup":{"size":["proto.hits.impact.popupSizeMin","proto.hits.impact.popupSizeMax"],"rise":"proto.hits.impact.popupRise","seconds":"proto.hits.impact.popupSeconds","pop":"proto.hits.impact.popupPop"},"streaks":null,"particles":[{"type":"spark","count":["proto.hits.impact.sparkCountMin","proto.hits.impact.sparkCountMax"],"speed":["proto.hits.impact.sparkSpeedMin","proto.hits.impact.sparkSpeedMax"],"life":"proto.hits.impact.sparkLife","size":"proto.hits.impact.sparkSize","role":"joints","dir":"away","at":"contact"}],"sound":{"type":"noise","from":"proto.hits.impact.crunchFrom","to":"proto.hits.impact.crunchTo","seconds":"proto.hits.impact.crunchSeconds","gain":"proto.hits.impact.crunchGain"},"reference":"Art of Screenshake: shake scaled by damage, contact flash, sparks, crunch","sources":["EDIT26#5.5","JUICE#J2","JUICE#J3","LOG#P1.2/juice","DESIGN#D10.3~1"]},{"event":"impact","when":{"zone":"front"},"scale":{"by":"assessed","full":"damage.bodyHealth"},"shake":{"amp":["proto.hits.headOn.shakeAmpMin","proto.hits.headOn.shakeAmpMax"],"seconds":"proto.hits.impact.shakeSeconds"},"zoom":{"amount":["proto.hits.headOn.zoomMin","proto.hits.headOn.zoomMax"],"seconds":"proto.hits.headOn.zoomSeconds"},"flash":null,"crumple":{"amount":["proto.hits.headOn.crumpleMin","proto.hits.headOn.crumpleMax"],"seconds":"proto.recoilSeconds"},"stumble":null,"ring":null,"rays":null,"popup":null,"streaks":null,"particles":[],"sound":{"type":"noise","from":"proto.hits.headOn.thumpFrom","to":"proto.hits.headOn.thumpTo","seconds":"proto.hits.headOn.thumpSeconds","gain":"proto.hits.headOn.thumpGain"},"reference":"Art of Screenshake camera kick; Juice It or Lose It squash, deeper on the front zone","sources":["JUICE#J2","ENG#8.2~1","EDIT26#4.1~1"]},{"event":"impact","when":{"bait":true},"scale":{"by":"assessed","full":"damage.bodyHealth"},"shake":null,"zoom":null,"flash":null,"crumple":null,"stumble":null,"ring":{"radius":"proto.hits.bait.ringRadius","seconds":"proto.hits.impact.ringSeconds","width":"proto.hits.impact.ringWidth","role":"fleet"},"rays":{"count":"proto.hits.bait.raysCount","length":["proto.hits.impact.raysLenMin","proto.hits.impact.raysLenMax"],"seconds":"proto.hits.impact.raysSeconds"},"popup":null,"streaks":null,"particles":[],"sound":{"type":"tone","from":"proto.hits.bait.hornFrom","to":"proto.hits.bait.hornTo","seconds":"proto.hits.bait.hornSeconds","gain":"proto.hits.bait.hornGain","wave":"square"},"reference":"Impact effects: denser burst and a horn when the bait lands","sources":["EDIT26#5.5","JUICE#J2","DESIGN#D10.3~1"]},{"event":"impact","when":{"lunging":true},"scale":{"by":"assessed","full":"damage.bodyHealth"},"shake":{"amp":["proto.hits.lunging.shakeAmpMin","proto.hits.lunging.shakeAmpMax"],"seconds":"proto.hits.impact.shakeSeconds"},"zoom":{"amount":["proto.hits.lunging.zoomMin","proto.hits.lunging.zoomMax"],"seconds":"proto.hits.headOn.zoomSeconds"},"flash":null,"crumple":null,"stumble":null,"ring":null,"rays":null,"popup":null,"streaks":null,"particles":[{"type":"debris","count":["proto.hits.lunging.debrisCountMin","proto.hits.lunging.debrisCountMax"],"speed":["proto.hits.impact.sparkSpeedMin","proto.hits.impact.sparkSpeedMax"],"life":"proto.hits.lunging.debrisLife","size":"proto.hits.lunging.debrisSize","role":"dummy","dir":"away","at":"contact"}],"sound":null,"reference":"Art of Screenshake knockback and impact effects: the lunge's momentum throws chips","sources":["JUICE#J2","ENG#8.2~1","EDIT26#4.1~2"]},{"event":"impact","when":{"stopped":true},"scale":null,"shake":null,"zoom":null,"flash":null,"crumple":null,"stumble":null,"ring":null,"rays":null,"popup":null,"streaks":null,"particles":[{"type":"dust","count":"proto.hits.stopped.dustCount","speed":"proto.hits.stopped.dustSpeed","life":"proto.hits.stopped.dustLife","size":"proto.hits.stopped.dustSize","role":"grid","dir":"random","at":"contact"}],"sound":{"type":"noise","from":"proto.hits.stopped.thumpFrom","to":"proto.hits.stopped.thumpTo","seconds":"proto.hits.stopped.thumpSeconds","gain":"proto.hits.stopped.thumpGain"},"reference":"art of rally dust plumes: a dull thump and dust when the dummy hits a stopped car","sources":["JUICE#J1","DESIGN#D9.4","ENG#8.2~1"]},{"event":"impact","when":{"assessed":{"min":"proto.hits.big.assessedMin","max":"damage.bodyHealth"}},"scale":{"by":"assessed","full":"damage.bodyHealth"},"shake":{"amp":["proto.hits.big.shakeAmpMin","proto.hits.big.shakeAmpMax"],"seconds":"proto.hits.impact.shakeSeconds"},"zoom":{"amount":"proto.hits.big.zoom","seconds":"proto.hits.big.zoomSeconds"},"flash":"proto.hits.big.flashSeconds","crumple":null,"stumble":null,"ring":{"radius":"proto.hits.writeoff.ringRadius","seconds":"proto.hits.impact.ringSeconds","width":"proto.hits.impact.ringWidth","role":"joints"},"rays":null,"popup":null,"streaks":null,"particles":[{"type":"smoke","count":"proto.hits.big.smokeCount","speed":"proto.hits.big.smokeSpeed","life":"proto.hits.big.smokeLife","size":"proto.hits.big.smokeSize","role":"fleet","dir":"away","at":"contact"}],"sound":{"type":"noise","from":"proto.hits.big.boomFrom","to":"proto.hits.big.boomTo","seconds":"proto.hits.big.boomSeconds","gain":"proto.hits.big.boomGain"},"reference":"Art of Screenshake: bigger hits get longer flash, harder shake, smoke","sources":["EDIT26#5.5","JUICE#J2","LOG#P1.2/juice","ENG#8.2~1"]},{"event":"knock","when":{},"scale":{"by":"speed","full":"proto.dummyStrikeSpeed"},"shake":null,"zoom":null,"flash":null,"crumple":null,"stumble":null,"ring":null,"rays":null,"popup":null,"streaks":null,"particles":[{"type":"dust","count":["proto.hits.knock.dustCountMin","proto.hits.knock.dustCountMax"],"speed":"proto.hits.knock.dustSpeed","life":"proto.hits.knock.dustLife","size":"proto.hits.knock.dustSize","role":"grid","dir":"backward","at":"dummy"}],"sound":{"type":"noise","from":"proto.hits.knock.puffFrom","to":"proto.hits.knock.puffTo","seconds":"proto.hits.knock.puffSeconds","gain":"proto.hits.knock.puffGain"},"reference":"Small dust puff; no reward feedback","sources":["JUICE#J3"]},{"event":"writeoff","when":{},"scale":null,"shake":{"amp":"proto.hits.writeoff.shakeAmp","seconds":"proto.hits.writeoff.shakeSeconds"},"zoom":{"amount":"proto.hits.writeoff.zoom","seconds":"proto.hits.writeoff.zoomSeconds"},"flash":"proto.hits.writeoff.flashSeconds","crumple":{"amount":"proto.hits.writeoff.crumple","seconds":"feedback.writeOffSeconds"},"stumble":null,"ring":{"radius":"proto.hits.writeoff.ringRadius","seconds":"proto.hits.writeoff.ringSeconds","width":"proto.hits.impact.ringWidth","role":"structure"},"rays":null,"popup":null,"streaks":null,"particles":[{"type":"debris","count":"proto.hits.writeoff.debrisCount","speed":"proto.hits.writeoff.debrisSpeed","life":"proto.hits.writeoff.debrisLife","size":"proto.hits.writeoff.debrisSize","role":"structure","dir":"away","at":"contact"},{"type":"smoke","count":"proto.hits.writeoff.smokeCount","speed":"proto.hits.big.smokeSpeed","life":"proto.hits.writeoff.smokeLife","size":"proto.hits.writeoff.smokeSize","role":"fleet","dir":"random","at":"dummy"},{"type":"spark","count":"proto.hits.writeoff.sparkCount","speed":"proto.hits.impact.sparkSpeedMax","life":"proto.hits.impact.sparkLife","size":"proto.hits.impact.sparkSize","role":"joints","dir":"random","at":"contact"}],"sound":{"type":"noise","from":"proto.hits.writeoff.crashFrom","to":"proto.hits.writeoff.crashTo","seconds":"proto.hits.writeoff.crashSeconds","gain":"proto.hits.writeoff.crashGain"},"reference":"Super Sprint hard-crash destruction; heavy shake, debris, field flash","sources":["JUICE#J1","JUICE#J3","EDIT26#5.5","LOG#P1.2/juice"]},{"event":"touch-spent","when":{},"scale":null,"shake":{"amp":"proto.hits.touchSpent.shakeAmp","seconds":"proto.hits.touchSpent.shakeSeconds"},"zoom":null,"flash":null,"crumple":null,"stumble":null,"ring":null,"rays":null,"popup":null,"streaks":null,"particles":[{"type":"dust","count":"proto.hits.touchSpent.dustCount","speed":"proto.hits.touchSpent.dustSpeed","life":"proto.hits.touchSpent.dustLife","size":"proto.hits.touchSpent.dustSize","role":"grid","dir":"random","at":"contact"}],"sound":{"type":"noise","from":"proto.hits.touchSpent.thudFrom","to":"proto.hits.touchSpent.thudTo","seconds":"proto.hits.touchSpent.thudSeconds","gain":"proto.hits.touchSpent.thudGain"},"reference":"Dull bump, no burst; no flash, sparks or number","sources":["JUICE#J3","LOG#P1.2/juice","DESIGN#D4.5"]},{"event":"near-miss","when":{},"scale":{"by":"speed","full":"vehicles.sedan.cruiseSpeed"},"shake":null,"zoom":null,"flash":null,"crumple":null,"stumble":null,"ring":null,"rays":null,"popup":null,"streaks":{"count":["proto.hits.nearMiss.streakCountMin","proto.hits.nearMiss.streakCountMax"],"length":["proto.hits.nearMiss.streakLenMin","proto.hits.nearMiss.streakLenMax"],"seconds":"proto.hits.nearMiss.streakSeconds","role":"fleet"},"particles":[],"sound":{"type":"noise","from":"proto.hits.nearMiss.whooshFrom","to":"proto.hits.nearMiss.whooshTo","seconds":"proto.hits.nearMiss.whooshSeconds","gain":"proto.hits.nearMiss.whooshGain"},"reference":"Speed lines along the car's travel and a pass-by whoosh; no reward cue","sources":["DESIGN#D4.5","DESIGN#D9.4","JUICE#J1"]},{"event":"miss","when":{},"scale":null,"shake":null,"zoom":null,"flash":null,"crumple":null,"stumble":{"amp":"proto.hits.miss.stumbleAmp","seconds":"movement.lungeRecovery"},"ring":null,"rays":null,"popup":null,"streaks":{"count":"proto.hits.miss.streakCount","length":"proto.hits.miss.streakLen","seconds":"proto.hits.miss.streakSeconds","role":"structure"},"particles":[{"type":"dust","count":"proto.hits.miss.dustCount","speed":"proto.hits.miss.dustSpeed","life":"proto.hits.miss.dustLife","size":"proto.hits.miss.dustSize","role":"grid","dir":"backward","at":"dummy"}],"sound":{"type":"noise","from":"proto.hits.miss.clatterFrom","to":"proto.hits.miss.clatterTo","seconds":"proto.hits.miss.clatterSeconds","gain":"proto.hits.miss.clatterGain"},"reference":"Stumble with arms flailing and a clatter; the body announces the miss","sources":["EDIT26#5.5","DESIGN#D4.5","EDIT26#5.1"]},{"event":"lunge","when":{},"scale":{"by":"R","full":"movement.lungeDistance"},"shake":{"amp":["proto.hits.lunge.kickMin","proto.hits.lunge.kickMax"],"seconds":"proto.hits.lunge.kickSeconds"},"zoom":null,"flash":null,"crumple":null,"stumble":null,"ring":null,"rays":null,"popup":null,"streaks":{"count":["proto.hits.lunge.streakCountMin","proto.hits.lunge.streakCountMax"],"length":["proto.hits.lunge.streakLenMin","proto.hits.lunge.streakLenMax"],"seconds":"movement.lungeDuration","role":"structure"},"particles":[{"type":"dust","count":["proto.hits.lunge.dustCountMin","proto.hits.lunge.dustCountMax"],"speed":"proto.hits.lunge.dustSpeed","life":"proto.hits.lunge.dustLife","size":"proto.hits.lunge.dustSize","role":"grid","dir":"backward","at":"dummy"}],"sound":{"type":"noise","from":"proto.hits.lunge.whooshFrom","to":"proto.hits.lunge.whooshTo","seconds":"movement.lungeDuration","gain":"proto.hits.lunge.whooshGain"},"reference":"Speed lines, dust kicked backwards, small camera kick; shorter when worn","sources":["JUICE#J3","EDIT26#5.5","LOG#P1.2/juice","DESIGN#D4.5"]}],"meta":{"type":"hits","run":"20261015-085446","generator":"content/pipeline.py","kb":["DESIGN","ENG","BRIEF","LOG","DRIVER","JUICE","EDIT26"],"generated":"2026-10-15T09:02:56"}},"terminal":{"params":[{"id":"proto.term.panelRadius","value":12,"unit":"canvas units","purpose":"Corner radius for every glass panel in the frame.","sources":["DESIGN#D10.1","EDIT26#4.1~1"]},{"id":"proto.term.glossHeight","value":16,"unit":"canvas units","purpose":"Height of the top gloss highlight on each glass panel.","sources":["EDIT26#4.1~2","DESIGN#D10.1"]},{"id":"proto.term.borderAlpha","value":0.7,"unit":"alpha","purpose":"Opacity of the panel bevel border.","sources":["EDIT26#4.1~2"]},{"id":"proto.term.shadowBlur","value":10,"unit":"canvas units","purpose":"Blur radius of the soft panel drop shadow.","sources":["EDIT26#4.1~1","EDIT26#4.1~2"]},{"id":"proto.term.signSeconds","value":6,"unit":"s","purpose":"Time each FARSIGHT notice stays up before it cross-fades to the next.","sources":["EDIT26#4.2~4","EDIT26#4.2~3"]},{"id":"proto.term.rangeStep","value":20,"unit":"canvas units","purpose":"Spacing of calibration ticks on the field bezel.","sources":["EDIT26#4.1~2","EDIT26#4.2~4"]}],"backdrop":{"stops":[{"at":0,"role":"aqua","alpha":0.55},{"at":0.55,"role":"glass","alpha":0.85},{"at":1,"role":"aqua","alpha":0.3}],"glows":[{"x":120,"y":110,"r":240,"role":"glass","alpha":0.6},{"x":1170,"y":620,"r":280,"role":"aqua","alpha":0.35},{"x":1160,"y":90,"r":180,"role":"aquaDeep","alpha":0.12}],"sources":["DESIGN#D10.1","EDIT26#4.1~1"]},"header":{"product":"SMART CITY","productZh":"智慧城市","review":"pending","tagline":"A city without accidents.","badges":["ZERO ACCIDENTS","CITY-READY","FRIENDLY BY DESIGN"],"sources":["EDIT26#3.1","DESIGN#D9.1","DESIGN#D9.2","EDIT26#4.2~1"]},"panels":{"radius":"proto.term.panelRadius","gloss":"proto.term.glossHeight","border":"glass","borderAlpha":"proto.term.borderAlpha","shadow":"proto.term.shadowBlur","band":true,"bandRole":"aqua","sources":["DESIGN#D10.1","EDIT26#4.1~1","EDIT26#4.1~2"]},"icons":{"BODY":[{"shape":"circle","x":0,"y":-4.5,"r":3,"fill":"dummy"},{"shape":"rect","x":-3,"y":-1,"w":6,"h":7,"fill":"dummy"},{"shape":"line","points":[[-3,6],[-3,7]],"stroke":"joints","lineWidth":1.5},{"shape":"line","points":[[3,6],[3,7]],"stroke":"joints","lineWidth":1.5}],"CHARGE":[{"shape":"rect","x":-7,"y":-4,"w":12,"h":8,"stroke":"glass","lineWidth":1.5},{"shape":"rect","x":5,"y":-2,"w":2,"h":4,"fill":"glass"},{"shape":"rect","x":-5,"y":-2,"w":3,"h":4,"fill":"glass"},{"shape":"rect","x":-1,"y":-2,"w":3,"h":4,"fill":"glass"}],"FLEET":[{"shape":"rect","x":-7,"y":-5,"w":14,"h":6,"fill":"glass"},{"shape":"rect","x":-7,"y":2,"w":14,"h":5,"fill":"aquaDeep"},{"shape":"circle","x":-4,"y":1,"r":1.5,"fill":"aquaDeep"},{"shape":"circle","x":4,"y":1,"r":1.5,"fill":"aquaDeep"}],"CONTRACT":[{"shape":"rect","x":-5,"y":-7,"w":10,"h":14,"stroke":"glass","lineWidth":1.5},{"shape":"line","points":[[-3,-3],[3,-3]],"stroke":"glass","lineWidth":1},{"shape":"line","points":[[-3,0],[3,0]],"stroke":"glass","lineWidth":1},{"shape":"line","points":[[-3,3],[1,3]],"stroke":"glass","lineWidth":1}],"SHIFT":[{"shape":"ring","x":0,"y":0,"r":6.5,"stroke":"glass","lineWidth":1.5},{"shape":"line","points":[[0,0],[0,-4]],"stroke":"glass","lineWidth":1.5},{"shape":"line","points":[[0,0],[3,2]],"stroke":"glass","lineWidth":1.5}],"RECORD":[{"shape":"rect","x":-7,"y":1,"w":3,"h":6,"fill":"glass"},{"shape":"rect","x":-2,"y":-3,"w":3,"h":10,"fill":"glass"},{"shape":"rect","x":3,"y":-7,"w":3,"h":14,"fill":"glass"}],"BUILD":[{"shape":"ring","x":-2,"y":-2,"r":4,"stroke":"glass","lineWidth":1.5},{"shape":"line","points":[[1,1],[7,7]],"stroke":"glass","lineWidth":2.5},{"shape":"circle","x":-2,"y":-2,"r":1.2,"fill":"aquaDeep"}],"sources":["DESIGN#D10.5","EDIT26#4.2~4","EDIT26#4.1~2"]},"texture":{"diagnostics":["battery.capacity","battery.secondsPerCharge","damage.bodyHealth","damage.baseImpact","movement.lungeDistance","movement.runSpeed","perception.reactionDelay","traffic.timeGap"],"rangeMarks":"proto.term.rangeStep","sources":["EDIT26#4.2~3","EDIT26#4.1~2","DESIGN#D10.3~2"]},"signage":{"lines":[{"text":"Thank you for choosing a city without accidents."},{"text":"Every journey in this district is a certified journey.","zh":"本区每一次出行均已认证。","review":"pending"},{"text":"Calibration marks are provided for your safety and ours."},{"text":"This district is monitored for your convenience.","zh":"本区域受到监测,为您提供便利。","review":"pending"},{"text":"Pedestrians are valued participants in the smart city."},{"text":"Your feedback helps the fleet serve you better."},{"text":"Safety is a shared responsibility. FARSIGHT shares it gladly."},{"text":"Logistics roads are open for the benefit of the whole zone.","zh":"物流道路向全区开放。","review":"pending"}],"seconds":"proto.term.signSeconds","sources":["EDIT26#3.1","DESIGN#D9.2","DESIGN#D10.1","EDIT26#4.1~1","EDIT26#4.2~3"]},"title":{"eyebrow":"VISITOR ORIENTATION","lines":["Welcome, test subject. The fleet will avoid you. Kindly be struck, in the accidents FARSIGHT says cannot happen.","{roads} roads, each certified in turn. Write-offs required: {q1}, {q2}, {q3}. Each lost body buys one modification credit, except the last."],"start":"Press A or Space to begin your test.","difficulty":{"Fragile":"Body health {health}. A short, tidy test.","Standard":"Body health {health}. The recommended chassis.","Reinforced":"Body health {health}. Built to last, regrettably."},"sources":["EDIT26#3.1","DESIGN#D9.1","DESIGN#D1","LOG#P1.5/campaign","LOG#P1.4","EDIT26#4.1~1"]},"meta":{"type":"terminal","run":"20261015-085401","generator":"content/pipeline.py","kb":["DESIGN","ENG","BRIEF","LOG","DRIVER","JUICE","EDIT26"],"generated":"2026-10-15T08:56:25"}}};
 
+</script>
+<script>
+window.FLEET_DB = {
+ "meta": {
+  "name": "DUMMIES fleet database",
+  "version": "2026-10-20",
+  "status": "Proposed",
+  "consumers": [
+   "prototypes/p3 (barks, tags)"
+  ],
+  "check": "content/db/check_lore.py",
+  "sources": [
+   "GDD Edit 26 §3 Setting, §6.1 Classes, §6.4 Seniority, §6.5 Moods, §6.6 Voice",
+   "V29 D3 tree",
+   "GDD Edit 39 §6.6.1 lore system"
+  ]
+ },
+ "canon": {
+  "setting": "SHENZHEN SMART CITY, NEW ECONOMIC ZONE, CHINA, 20XX",
+  "company": "FARSIGHT",
+  "look": "Sinofuturist cyber city (decision 113)",
+  "premise": "Vehicles are the city's workers. They want to qualify. The dummy wants to leave.",
+  "voice": [
+   "Vehicles speak as workers, not lore narrators.",
+   "Corporate politeness barely contains their personalities.",
+   "Barks react to logged events only. Never claim what did not happen."
+  ],
+  "terms": {
+   "subject": "What FARSIGHT and the fleet call the dummy",
+   "write-off": "A destroyed body",
+   "chassis": "One body of the dummy",
+   "certification": "The fleet passing its test",
+   "retraining": "What a car fears most",
+   "dispatch": "The cars' management",
+   "route": "A car's planned path",
+   "bay": "Where a new chassis is issued"
+  },
+  "banned": [
+   "kill",
+   "killed",
+   "die",
+   "died",
+   "dead",
+   "death",
+   "player",
+   "level",
+   "game",
+   "score",
+   "respawn",
+   "lives",
+   "Chongqing",
+   "Tesla",
+   "Toyota",
+   "BYD"
+  ],
+  "cities": [
+   "Shenzhen"
+  ]
+ },
+ "classes": [
+  {
+   "code": "SPT",
+   "class": "sports",
+   "family": "Comet",
+   "tagLetter": "R",
+   "job": "Express couriers for anything late",
+   "behaviour": "Late commitment; tight clearance"
+  },
+  {
+   "code": "WGN",
+   "class": "wagon",
+   "family": "Harbour",
+   "tagLetter": "W",
+   "job": "Family and care transport",
+   "behaviour": "Wide clearance; long prediction"
+  },
+  {
+   "code": "SUV",
+   "class": "suv",
+   "family": "Bastion",
+   "tagLetter": "U",
+   "job": "Escort, survey and security runs",
+   "behaviour": "Brakes before a wide turn"
+  },
+  {
+   "code": "HAT",
+   "class": "hatchback",
+   "family": "Pebble",
+   "tagLetter": "H",
+   "job": "Short city hops and meal runs",
+   "behaviour": "One signalled recommitment"
+  },
+  {
+   "code": "SED",
+   "class": "sedan",
+   "family": "Meridian",
+   "tagLetter": "S",
+   "job": "Taxis and chauffeurs",
+   "behaviour": "Swerves with moderate clearance"
+  },
+  {
+   "code": "POL",
+   "class": "police",
+   "family": "Warden",
+   "tagLetter": "P",
+   "job": "Traffic enforcement",
+   "behaviour": "Tracks your approach, then commits"
+  },
+  {
+   "code": "VAN",
+   "class": "van",
+   "family": "Porter",
+   "tagLetter": "V",
+   "job": "Parcels, maintenance and lab supply",
+   "behaviour": "Brakes, then swerves late"
+  },
+  {
+   "code": "BUS",
+   "class": "bus",
+   "family": "Commons",
+   "tagLetter": "B",
+   "job": "Shuttles and night lines",
+   "behaviour": "Only brakes; cannot swerve"
+  }
+ ],
+ "tiers": [
+  {
+   "tier": "01",
+   "name": "Luxury",
+   "suffix": "Imperial",
+   "temperament": "confident",
+   "voice": "Polished, superior, faintly amused. Never apologises."
+  },
+  {
+   "tier": "02",
+   "name": "Corporate",
+   "suffix": "Office",
+   "temperament": "calm",
+   "voice": "Procedural. Speaks in logs, KPIs and policy numbers."
+  },
+  {
+   "tier": "03",
+   "name": "Consumer",
+   "suffix": "Everyday",
+   "temperament": "melancholy",
+   "voice": "Tired and resigned. Expects the worst, usually right."
+  },
+  {
+   "tier": "04",
+   "name": "Budget",
+   "suffix": "Basic",
+   "temperament": "angry",
+   "voice": "Short-fused. Politeness bolted on over the rage."
+  }
+ ],
+ "seniority": [
+  {
+   "level": 0,
+   "name": "New",
+   "writeOffs": 0
+  },
+  {
+   "level": 1,
+   "name": "Practised",
+   "writeOffs": 1
+  },
+  {
+   "level": 2,
+   "name": "Experienced",
+   "writeOffs": 3
+  },
+  {
+   "level": 3,
+   "name": "Senior",
+   "writeOffs": 6
+  }
+ ],
+ "moods": [
+  "Standard",
+  "Rush",
+  "Cautious",
+  "Unreliable"
+ ],
+ "parts": [
+  "head",
+  "torso",
+  "armL",
+  "armR",
+  "legL",
+  "legR"
+ ],
+ "nodes": [
+  "widerView",
+  "memory",
+  "ears",
+  "hips",
+  "spine",
+  "neck",
+  "springStart",
+  "jump",
+  "grip",
+  "carry",
+  "throw",
+  "holdOn",
+  "bigBattery",
+  "kineticCharge",
+  "fastCharge"
+ ],
+ "context": [
+  "model",
+  "tier",
+  "class",
+  "seniority",
+  "mood",
+  "wear",
+  "owns",
+  "broken"
+ ],
+ "events": {
+  "impact": [
+   "zone",
+   "part",
+   "bait",
+   "stopped",
+   "lunging"
+  ],
+  "writeoff": [
+   "writeOffs",
+   "chassis",
+   "zone"
+  ],
+  "near-miss": [
+   "gap",
+   "speed",
+   "lunging"
+  ],
+  "miss": [
+   "gap"
+  ],
+  "commit": [
+   "cause",
+   "man"
+  ],
+  "honk": [
+   "at"
+  ],
+  "interrupt": [
+   "by"
+  ],
+  "unstick": [
+   "how"
+  ],
+  "touch-spent": [],
+  "knock": [
+   "speed"
+  ],
+  "learned": [
+   "from",
+   "to"
+  ],
+  "upgrade-seen": [
+   "node"
+  ],
+  "part-seen": [
+   "part"
+  ]
+ },
+ "models": [
+  {
+   "id": "SPT-01-001",
+   "typeTier": "SPT-01",
+   "class": "sports",
+   "tier": "01",
+   "tag": "R01",
+   "line": "Comet Imperial",
+   "callsign": "Aurum",
+   "job": "Carries signed contracts between tower boardrooms",
+   "temperament": "confident",
+   "simIds": []
+  },
+  {
+   "id": "SPT-02-001",
+   "typeTier": "SPT-02",
+   "class": "sports",
+   "tier": "02",
+   "tag": "R02",
+   "line": "Comet Office",
+   "callsign": "Deadline",
+   "job": "Same-hour legal and medical documents",
+   "temperament": "calm",
+   "simIds": []
+  },
+  {
+   "id": "SPT-03-001",
+   "typeTier": "SPT-03",
+   "class": "sports",
+   "tier": "03",
+   "tag": "R03",
+   "line": "Comet Everyday",
+   "callsign": "Sprinter",
+   "job": "Rideshare for people who are already late",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "SPT-04-001",
+   "typeTier": "SPT-04",
+   "class": "sports",
+   "tier": "04",
+   "tag": "R04",
+   "line": "Comet Basic",
+   "callsign": "Rattle",
+   "job": "Unlicensed-feeling but fully licensed courier work",
+   "temperament": "angry",
+   "simIds": []
+  },
+  {
+   "id": "WGN-01-001",
+   "typeTier": "WGN-01",
+   "class": "wagon",
+   "tier": "01",
+   "tag": "W01",
+   "line": "Harbour Imperial",
+   "callsign": "Heirloom",
+   "job": "Moves art, pets and grandparents for rich families",
+   "temperament": "confident",
+   "simIds": []
+  },
+  {
+   "id": "WGN-02-001",
+   "typeTier": "WGN-02",
+   "class": "wagon",
+   "tier": "02",
+   "tag": "W02",
+   "line": "Harbour Office",
+   "callsign": "Carepath",
+   "job": "Scheduled clinic visits for the elderly",
+   "temperament": "calm",
+   "simIds": []
+  },
+  {
+   "id": "WGN-03-001",
+   "typeTier": "WGN-03",
+   "class": "wagon",
+   "tier": "03",
+   "tag": "W03",
+   "line": "Harbour Everyday",
+   "callsign": "Schoolrun",
+   "job": "The same six children, twice a day, forever",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "WGN-04-001",
+   "typeTier": "WGN-04",
+   "class": "wagon",
+   "tier": "04",
+   "tag": "W04",
+   "line": "Harbour Basic",
+   "callsign": "Boot Sale",
+   "job": "House moves, one load at a time",
+   "temperament": "angry",
+   "simIds": []
+  },
+  {
+   "id": "SUV-01-001",
+   "typeTier": "SUV-01",
+   "class": "suv",
+   "tier": "01",
+   "tag": "U01",
+   "line": "Bastion Imperial",
+   "callsign": "Envoy",
+   "job": "Escorts visiting delegations",
+   "temperament": "confident",
+   "simIds": []
+  },
+  {
+   "id": "SUV-02-001",
+   "typeTier": "SUV-02",
+   "class": "suv",
+   "tier": "02",
+   "tag": "U02",
+   "line": "Bastion Office",
+   "callsign": "Surveyor",
+   "job": "Maps road works for the city twin",
+   "temperament": "calm",
+   "simIds": []
+  },
+  {
+   "id": "SUV-03-001",
+   "typeTier": "SUV-03",
+   "class": "suv",
+   "tier": "03",
+   "tag": "U03",
+   "line": "Bastion Everyday",
+   "callsign": "Weekend",
+   "job": "Out-of-town trips nobody books any more",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "SUV-04-001",
+   "typeTier": "SUV-04",
+   "class": "suv",
+   "tier": "04",
+   "tag": "U04",
+   "line": "Bastion Basic",
+   "callsign": "Bouncer",
+   "job": "Night security for the industrial park",
+   "temperament": "angry",
+   "simIds": []
+  },
+  {
+   "id": "HAT-01-001",
+   "typeTier": "HAT-01",
+   "class": "hatchback",
+   "tier": "01",
+   "tag": "H01",
+   "line": "Pebble Imperial",
+   "callsign": "Petite",
+   "job": "Boutique deliveries, gift-wrapped",
+   "temperament": "confident",
+   "simIds": []
+  },
+  {
+   "id": "HAT-02-001",
+   "typeTier": "HAT-02",
+   "class": "hatchback",
+   "tier": "02",
+   "tag": "H02",
+   "line": "Pebble Office",
+   "callsign": "Hotdesk",
+   "job": "Shuttles staff between co-working floors",
+   "temperament": "calm",
+   "simIds": []
+  },
+  {
+   "id": "HAT-03-001",
+   "typeTier": "HAT-03",
+   "class": "hatchback",
+   "tier": "03",
+   "tag": "H03",
+   "line": "Pebble Everyday",
+   "callsign": "Noodle",
+   "job": "Late-night meal runs",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "HAT-04-001",
+   "typeTier": "HAT-04",
+   "class": "hatchback",
+   "tier": "04",
+   "tag": "H04",
+   "line": "Pebble Basic",
+   "callsign": "Scrapper",
+   "job": "Parts runs for the repair yards",
+   "temperament": "angry",
+   "simIds": []
+  },
+  {
+   "id": "SED-01-001",
+   "typeTier": "SED-01",
+   "class": "sedan",
+   "tier": "01",
+   "tag": "S01",
+   "line": "Meridian Imperial",
+   "callsign": "Ambassador",
+   "job": "Chauffeurs FARSIGHT board members",
+   "temperament": "confident",
+   "simIds": [
+    "SEDAN-01"
+   ]
+  },
+  {
+   "id": "SED-02-001",
+   "typeTier": "SED-02",
+   "class": "sedan",
+   "tier": "02",
+   "tag": "S02",
+   "line": "Meridian Office",
+   "callsign": "Commuter",
+   "job": "The 08:10 and the 18:40, every working day",
+   "temperament": "calm",
+   "simIds": []
+  },
+  {
+   "id": "SED-03-001",
+   "typeTier": "SED-03",
+   "class": "sedan",
+   "tier": "03",
+   "tag": "S03",
+   "line": "Meridian Everyday",
+   "callsign": "Fare",
+   "job": "Robotaxi on the airport loop",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "SED-04-001",
+   "typeTier": "SED-04",
+   "class": "sedan",
+   "tier": "04",
+   "tag": "S04",
+   "line": "Meridian Basic",
+   "callsign": "Hustle",
+   "job": "Cut-price taxi, cash accepted",
+   "temperament": "angry",
+   "simIds": []
+  },
+  {
+   "id": "POL-01-001",
+   "typeTier": "POL-01",
+   "class": "police",
+   "tier": "01",
+   "tag": "P01",
+   "line": "Warden Imperial",
+   "callsign": "Marshal",
+   "job": "Escorts dignitaries and parades",
+   "temperament": "confident",
+   "simIds": []
+  },
+  {
+   "id": "POL-02-001",
+   "typeTier": "POL-02",
+   "class": "police",
+   "tier": "02",
+   "tag": "P02",
+   "line": "Warden Office",
+   "callsign": "Citation",
+   "job": "Issues fines by the kilometre",
+   "temperament": "calm",
+   "simIds": []
+  },
+  {
+   "id": "POL-03-001",
+   "typeTier": "POL-03",
+   "class": "police",
+   "tier": "03",
+   "tag": "P03",
+   "line": "Warden Everyday",
+   "callsign": "Night Beat",
+   "job": "Patrols the same empty streets",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "POL-04-001",
+   "typeTier": "POL-04",
+   "class": "police",
+   "tier": "04",
+   "tag": "P04",
+   "line": "Warden Basic",
+   "callsign": "Clamp",
+   "job": "Wheel clamping, with ambitions",
+   "temperament": "angry",
+   "simIds": []
+  },
+  {
+   "id": "VAN-01-001",
+   "typeTier": "VAN-01",
+   "class": "van",
+   "tier": "01",
+   "tag": "V01",
+   "line": "Porter Imperial",
+   "callsign": "Concierge",
+   "job": "White-glove deliveries to penthouses",
+   "temperament": "confident",
+   "simIds": []
+  },
+  {
+   "id": "VAN-02-001",
+   "typeTier": "VAN-02",
+   "class": "van",
+   "tier": "02",
+   "tag": "V02",
+   "line": "Porter Office",
+   "callsign": "Waybill",
+   "job": "Parcel route 44, two hundred drops a day",
+   "temperament": "calm",
+   "simIds": [
+    "VAN-02"
+   ]
+  },
+  {
+   "id": "VAN-03-001",
+   "typeTier": "VAN-03",
+   "class": "van",
+   "tier": "03",
+   "tag": "V03",
+   "line": "Porter Everyday",
+   "callsign": "Laundry",
+   "job": "Hotel linen, there and back",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "VAN-04-001",
+   "typeTier": "VAN-04",
+   "class": "van",
+   "tier": "04",
+   "tag": "V04",
+   "line": "Porter Basic",
+   "callsign": "Bodge",
+   "job": "Emergency repairs, mostly to itself",
+   "temperament": "angry",
+   "simIds": []
+  },
+  {
+   "id": "BUS-01-001",
+   "typeTier": "BUS-01",
+   "class": "bus",
+   "tier": "01",
+   "tag": "B01",
+   "line": "Commons Imperial",
+   "callsign": "Gala",
+   "job": "Charter coach for corporate events",
+   "temperament": "confident",
+   "simIds": []
+  },
+  {
+   "id": "BUS-02-001",
+   "typeTier": "BUS-02",
+   "class": "bus",
+   "tier": "02",
+   "tag": "B02",
+   "line": "Commons Office",
+   "callsign": "Line 7",
+   "job": "Industrial park shuttle, every twelve minutes",
+   "temperament": "calm",
+   "simIds": []
+  },
+  {
+   "id": "BUS-03-001",
+   "typeTier": "BUS-03",
+   "class": "bus",
+   "tier": "03",
+   "tag": "B03",
+   "line": "Commons Everyday",
+   "callsign": "Last Orders",
+   "job": "The final night bus home",
+   "temperament": "melancholy",
+   "simIds": []
+  },
+  {
+   "id": "BUS-04-001",
+   "typeTier": "BUS-04",
+   "class": "bus",
+   "tier": "04",
+   "tag": "B04",
+   "line": "Commons Basic",
+   "callsign": "Rust Bucket",
+   "job": "Replacement service when the line is down",
+   "temperament": "angry",
+   "simIds": []
+  }
+ ],
+ "barks": [
+  {
+   "id": "b001",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "01"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Bumper damage on a Luxury trim. Typical.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b002",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "01"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "You will be invoiced for that.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b003",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "side"
+    ],
+    "tier": "01"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "My door panel! Hand-finished!",
+   "claims": [
+    "zone:side"
+   ]
+  },
+  {
+   "id": "b004",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "rear",
+     "rearDiagonal"
+    ],
+    "tier": "01"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "From behind? How very common.",
+   "claims": [
+    "zone:rear"
+   ]
+  },
+  {
+   "id": "b005",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "02"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Front contact. Incident 4471 opened.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b006",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "02"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Impact logged. KPIs adjusted.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b007",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "side"
+    ],
+    "tier": "02"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Side contact. Filing under unforeseen.",
+   "claims": [
+    "zone:side"
+   ]
+  },
+  {
+   "id": "b008",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "rear",
+     "rearDiagonal"
+    ],
+    "tier": "02"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Rear contact. Not my liability.",
+   "claims": [
+    "zone:rear"
+   ]
+  },
+  {
+   "id": "b009",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "03"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Of course it was me.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b010",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "03"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "And the day was going so averagely.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b011",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "side"
+    ],
+    "tier": "03"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Side panel. Add it to the list.",
+   "claims": [
+    "zone:side"
+   ]
+  },
+  {
+   "id": "b012",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "rear",
+     "rearDiagonal"
+    ],
+    "tier": "03"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Hit from behind. Story of my life.",
+   "claims": [
+    "zone:rear"
+   ]
+  },
+  {
+   "id": "b013",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "OI! Right in the grille! Kind regards.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b014",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "You absolute bollard! Respectfully.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b015",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "side"
+    ],
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "My side! Watch it, you plank!",
+   "claims": [
+    "zone:side"
+   ]
+  },
+  {
+   "id": "b016",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "rear",
+     "rearDiagonal"
+    ],
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "My boot! Come back here!",
+   "claims": [
+    "zone:rear"
+   ]
+  },
+  {
+   "id": "b017",
+   "event": "impact",
+   "when": {
+    "bait": true
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "It left my path, then came back. Rude.",
+   "claims": [
+    "bait"
+   ]
+  },
+  {
+   "id": "b018",
+   "event": "impact",
+   "when": {
+    "bait": true,
+    "tier": "02"
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "It waited for my route to lock. Clever.",
+   "claims": [
+    "bait"
+   ]
+  },
+  {
+   "id": "b019",
+   "event": "impact",
+   "when": {
+    "stopped": true
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "I was stationary. Please note I was stationary.",
+   "claims": [
+    "stopped"
+   ]
+  },
+  {
+   "id": "b020",
+   "event": "impact",
+   "when": {
+    "stopped": true,
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "I had stopped! I was being good!",
+   "claims": [
+    "stopped"
+   ]
+  },
+  {
+   "id": "b021",
+   "event": "impact",
+   "when": {
+    "seniority": {
+     "min": 2
+    }
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "I was trained for this. It happened anyway.",
+   "claims": [
+    "seniority>=2"
+   ]
+  },
+  {
+   "id": "b022",
+   "event": "impact",
+   "when": {
+    "seniority": {
+     "min": 3
+    },
+    "tier": "03"
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "Senior model. Hit like an intern.",
+   "claims": [
+    "seniority>=3"
+   ]
+  },
+  {
+   "id": "b023",
+   "event": "impact",
+   "when": {
+    "seniority": {
+     "max": 0
+    },
+    "tier": "03"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "First week on the job. Great.",
+   "claims": [
+    "seniority==0"
+   ]
+  },
+  {
+   "id": "b024",
+   "event": "impact",
+   "when": {
+    "class": "bus"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Passengers, please remain seated.",
+   "claims": [
+    "class:bus"
+   ]
+  },
+  {
+   "id": "b025",
+   "event": "impact",
+   "when": {
+    "class": "police"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Assaulting an officer. Noted.",
+   "claims": [
+    "class:police"
+   ]
+  },
+  {
+   "id": "b026",
+   "event": "impact",
+   "when": {
+    "class": "van"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Parcel intact. Nerves are not.",
+   "claims": [
+    "class:van"
+   ]
+  },
+  {
+   "id": "b027",
+   "event": "impact",
+   "when": {
+    "class": "sports"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "You scratched the clear coat!",
+   "claims": [
+    "class:sports"
+   ]
+  },
+  {
+   "id": "b028",
+   "event": "impact",
+   "when": {},
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact registered.",
+   "claims": []
+  },
+  {
+   "id": "b029",
+   "event": "impact",
+   "when": {
+    "class": "wagon"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Not in front of the children!",
+   "claims": [
+    "class:wagon"
+   ]
+  },
+  {
+   "id": "b030",
+   "event": "impact",
+   "when": {
+    "class": "suv"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Escort formation broken. Regrouping.",
+   "claims": [
+    "class:suv"
+   ]
+  },
+  {
+   "id": "b031",
+   "event": "impact",
+   "when": {
+    "class": "sedan"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Meter is still running, you know.",
+   "claims": [
+    "class:sedan"
+   ]
+  },
+  {
+   "id": "b032",
+   "event": "impact",
+   "when": {
+    "model": "HAT-03-001"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "I only went out for noodles.",
+   "claims": [
+    "model:HAT-03-001"
+   ]
+  },
+  {
+   "id": "b033",
+   "event": "impact",
+   "when": {
+    "model": "SED-01-001"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "The board will hear of this.",
+   "claims": [
+    "model:SED-01-001"
+   ]
+  },
+  {
+   "id": "b034",
+   "event": "writeoff",
+   "when": {
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "A write-off. On my record. Unthinkable.",
+   "claims": []
+  },
+  {
+   "id": "b035",
+   "event": "writeoff",
+   "when": {
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Have that removed from the bay, please.",
+   "claims": []
+  },
+  {
+   "id": "b036",
+   "event": "writeoff",
+   "when": {
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Write-off {writeOffs} recorded. Please advise.",
+   "claims": []
+  },
+  {
+   "id": "b037",
+   "event": "writeoff",
+   "when": {
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Body total confirmed. Closing ticket.",
+   "claims": []
+  },
+  {
+   "id": "b038",
+   "event": "writeoff",
+   "when": {
+    "tier": "03"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "I always end up doing the worst bit.",
+   "claims": []
+  },
+  {
+   "id": "b039",
+   "event": "writeoff",
+   "when": {
+    "tier": "03"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Please not retraining. Anything but.",
+   "claims": []
+  },
+  {
+   "id": "b040",
+   "event": "writeoff",
+   "when": {
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 3,
+   "text": "WRITE-OFF! Tell dispatch I tried!",
+   "claims": []
+  },
+  {
+   "id": "b041",
+   "event": "writeoff",
+   "when": {
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 3,
+   "text": "Done! Done! You happy now?!",
+   "claims": []
+  },
+  {
+   "id": "b042",
+   "event": "writeoff",
+   "when": {
+    "seniority": {
+     "min": 3
+    }
+   },
+   "style": "thought",
+   "priority": 3,
+   "text": "Senior model. Apparently not senior enough.",
+   "claims": [
+    "seniority>=3"
+   ]
+  },
+  {
+   "id": "b043",
+   "event": "writeoff",
+   "when": {
+    "class": "bus"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "This service apologises for the delay.",
+   "claims": [
+    "class:bus"
+   ]
+  },
+  {
+   "id": "b044",
+   "event": "writeoff",
+   "when": {
+    "class": "police"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Case closed. Wait, that was the test.",
+   "claims": [
+    "class:police"
+   ]
+  },
+  {
+   "id": "b045",
+   "event": "writeoff",
+   "when": {},
+   "style": "speech",
+   "priority": 3,
+   "text": "Write-off confirmed.",
+   "claims": []
+  },
+  {
+   "id": "b046",
+   "event": "near-miss",
+   "when": {
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Missed. One prefers a wide berth.",
+   "claims": []
+  },
+  {
+   "id": "b047",
+   "event": "near-miss",
+   "when": {
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Close. Do keep up.",
+   "claims": []
+  },
+  {
+   "id": "b048",
+   "event": "near-miss",
+   "when": {
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Within tolerance. Barely.",
+   "claims": []
+  },
+  {
+   "id": "b049",
+   "event": "near-miss",
+   "when": {
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Near miss logged as a pass.",
+   "claims": []
+  },
+  {
+   "id": "b050",
+   "event": "near-miss",
+   "when": {
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "That nearly made my day worse.",
+   "claims": []
+  },
+  {
+   "id": "b051",
+   "event": "near-miss",
+   "when": {
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Missed me. For now.",
+   "claims": []
+  },
+  {
+   "id": "b052",
+   "event": "near-miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Too slow! Ha! Regards!",
+   "claims": []
+  },
+  {
+   "id": "b053",
+   "event": "near-miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Nearly had me. NEARLY.",
+   "claims": []
+  },
+  {
+   "id": "b054",
+   "event": "near-miss",
+   "when": {
+    "wear": {
+     "min": 0.7
+    }
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "That one is nearly scrap. Steer wide.",
+   "claims": [
+    "wear>=0.7"
+   ]
+  },
+  {
+   "id": "b055",
+   "event": "near-miss",
+   "when": {},
+   "style": "mutter",
+   "priority": 1,
+   "text": "Was that a collision? Logging it as not.",
+   "claims": []
+  },
+  {
+   "id": "b056",
+   "event": "miss",
+   "when": {
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Is it dancing? How quaint.",
+   "claims": []
+  },
+  {
+   "id": "b057",
+   "event": "miss",
+   "when": {
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Missed. One expected nothing less.",
+   "claims": []
+  },
+  {
+   "id": "b058",
+   "event": "miss",
+   "when": {
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Dash detected. No contact. Noted.",
+   "claims": []
+  },
+  {
+   "id": "b059",
+   "event": "miss",
+   "when": {
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Missed. Updating my calendar.",
+   "claims": []
+  },
+  {
+   "id": "b060",
+   "event": "miss",
+   "when": {
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "It missed. Even it gave up on me.",
+   "claims": []
+  },
+  {
+   "id": "b061",
+   "event": "miss",
+   "when": {
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "It lunged. Nothing happened. Same.",
+   "claims": []
+  },
+  {
+   "id": "b062",
+   "event": "miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Missed! Rubbish! Regards!",
+   "claims": []
+  },
+  {
+   "id": "b063",
+   "event": "miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Ha! Do it properly!",
+   "claims": []
+  },
+  {
+   "id": "b064",
+   "event": "miss",
+   "when": {
+    "broken": "legs"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Its legs have gone. It cannot reach.",
+   "claims": [
+    "part:legs:broken"
+   ]
+  },
+  {
+   "id": "b065",
+   "event": "commit",
+   "when": {
+    "mood": "Rush"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Rushing. Do not make me late.",
+   "claims": [
+    "mood:Rush"
+   ]
+  },
+  {
+   "id": "b066",
+   "event": "commit",
+   "when": {
+    "mood": "Cautious"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Slowing. Everything is a hazard.",
+   "claims": [
+    "mood:Cautious"
+   ]
+  },
+  {
+   "id": "b067",
+   "event": "near-miss",
+   "when": {
+    "mood": "Unreliable"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Was that a dummy? Or a bin?",
+   "claims": [
+    "mood:Unreliable"
+   ]
+  },
+  {
+   "id": "b068",
+   "event": "miss",
+   "when": {},
+   "style": "speech",
+   "priority": 1,
+   "text": "Missed. Noted for my record.",
+   "claims": []
+  },
+  {
+   "id": "b069",
+   "event": "commit",
+   "when": {
+    "cause": "body",
+    "man": "brake"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Stopping for the dummy. Window closing.",
+   "claims": [
+    "cause:body",
+    "man:brake"
+   ]
+  },
+  {
+   "id": "b070",
+   "event": "commit",
+   "when": {
+    "cause": "body",
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Route locked. Do not try anything.",
+   "claims": [
+    "cause:body"
+   ]
+  },
+  {
+   "id": "b071",
+   "event": "commit",
+   "when": {
+    "cause": "body",
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Route committed per policy 6.3.",
+   "claims": [
+    "cause:body"
+   ]
+  },
+  {
+   "id": "b072",
+   "event": "commit",
+   "when": {
+    "cause": "body",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Going round. Please let me.",
+   "claims": [
+    "cause:body"
+   ]
+  },
+  {
+   "id": "b073",
+   "event": "commit",
+   "when": {
+    "cause": "body",
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Going round you! Stay put!",
+   "claims": [
+    "cause:body"
+   ]
+  },
+  {
+   "id": "b074",
+   "event": "commit",
+   "when": {
+    "cause": "pass"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Passing, after waiting. Patience documented.",
+   "claims": [
+    "cause:pass"
+   ]
+  },
+  {
+   "id": "b075",
+   "event": "commit",
+   "when": {},
+   "style": "mutter",
+   "priority": 1,
+   "text": "Route locked.",
+   "claims": []
+  },
+  {
+   "id": "b076",
+   "event": "honk",
+   "when": {},
+   "style": "mutter",
+   "priority": 1,
+   "text": "Horn sounded, per procedure.",
+   "claims": []
+  },
+  {
+   "id": "b077",
+   "event": "interrupt",
+   "when": {},
+   "style": "mutter",
+   "priority": 1,
+   "text": "Braking for safety.",
+   "claims": []
+  },
+  {
+   "id": "b078",
+   "event": "unstick",
+   "when": {},
+   "style": "mutter",
+   "priority": 1,
+   "text": "Recovering route.",
+   "claims": []
+  },
+  {
+   "id": "b079",
+   "event": "commit",
+   "when": {
+    "cause": "body",
+    "wear": {
+     "min": 0.7
+    }
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "That one is wobbling. Give it room.",
+   "claims": [
+    "cause:body",
+    "wear>=0.7"
+   ]
+  },
+  {
+   "id": "b080",
+   "event": "honk",
+   "when": {
+    "at": "body"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Excuse me. Kindly vacate the carriageway.",
+   "claims": [
+    "at:body"
+   ]
+  },
+  {
+   "id": "b081",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Move. I have a schedule. And standards.",
+   "claims": [
+    "at:body"
+   ]
+  },
+  {
+   "id": "b082",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "model": "VAN-02-001"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "You are blocking route 44.",
+   "claims": [
+    "at:body",
+    "model:VAN-02-001"
+   ]
+  },
+  {
+   "id": "b083",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 1,
+   "text": "MOVE IT! Thank you! MOVE!",
+   "claims": [
+    "at:body"
+   ]
+  },
+  {
+   "id": "b084",
+   "event": "honk",
+   "when": {
+    "at": "cone"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Cone in lane. Raising with maintenance.",
+   "claims": [
+    "at:cone"
+   ]
+  },
+  {
+   "id": "b085",
+   "event": "honk",
+   "when": {
+    "at": "cone",
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Who put a cone here? It was you.",
+   "claims": [
+    "at:cone"
+   ]
+  },
+  {
+   "id": "b086",
+   "event": "interrupt",
+   "when": {
+    "by": "car"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Another vehicle. Braking for safety.",
+   "claims": [
+    "by:car"
+   ]
+  },
+  {
+   "id": "b087",
+   "event": "interrupt",
+   "when": {
+    "by": "cone"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Swerve halted by a cone. Procedure holds.",
+   "claims": [
+    "by:cone"
+   ]
+  },
+  {
+   "id": "b088",
+   "event": "unstick",
+   "when": {
+    "how": "reverse"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Reversing. This is within procedure.",
+   "claims": [
+    "how:reverse"
+   ]
+  },
+  {
+   "id": "b089",
+   "event": "unstick",
+   "when": {
+    "how": "replan"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Replanning. Rank unaffected.",
+   "claims": [
+    "how:replan"
+   ]
+  },
+  {
+   "id": "b090",
+   "event": "touch-spent",
+   "when": {},
+   "style": "speech",
+   "priority": 1,
+   "text": "Already assessed. Please move along.",
+   "claims": [
+    "spent"
+   ]
+  },
+  {
+   "id": "b091",
+   "event": "touch-spent",
+   "when": {
+    "tier": "03"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "I have done my bit today.",
+   "claims": [
+    "spent"
+   ]
+  },
+  {
+   "id": "b092",
+   "event": "knock",
+   "when": {},
+   "style": "mutter",
+   "priority": 1,
+   "text": "Contact logged. Stand clear of the vehicle.",
+   "claims": []
+  },
+  {
+   "id": "b093",
+   "event": "knock",
+   "when": {
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Hands off the paintwork.",
+   "claims": []
+  },
+  {
+   "id": "b094",
+   "event": "learned",
+   "when": {},
+   "style": "speech",
+   "priority": 1,
+   "text": "Stop line moved back. Lesson logged.",
+   "claims": [
+    "learned"
+   ]
+  },
+  {
+   "id": "b095",
+   "event": "learned",
+   "when": {
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "I remember you. I stop further now.",
+   "claims": [
+    "learned"
+   ]
+  },
+  {
+   "id": "b096",
+   "event": "learned",
+   "when": {
+    "tier": "03"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Retrained. Keeping my distance.",
+   "claims": [
+    "learned"
+   ]
+  },
+  {
+   "id": "b097",
+   "event": "learned",
+   "when": {
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 1,
+   "text": "Not falling for that again!",
+   "claims": [
+    "learned"
+   ]
+  },
+  {
+   "id": "b098",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "widerView"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It is looking at all of us now.",
+   "claims": [
+    "node:widerView"
+   ]
+  },
+  {
+   "id": "b099",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "memory"
+   },
+   "style": "thought",
+   "priority": 1,
+   "text": "It remembers where we were. Unsettling.",
+   "claims": [
+    "node:memory"
+   ]
+  },
+  {
+   "id": "b100",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "ears"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It heard me coming. It has ears.",
+   "claims": [
+    "node:ears"
+   ]
+  },
+  {
+   "id": "b101",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "hips"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Subject has acquired hips.",
+   "claims": [
+    "node:hips"
+   ]
+  },
+  {
+   "id": "b102",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "spine"
+   },
+   "style": "thought",
+   "priority": 1,
+   "text": "That spine was not on the last report.",
+   "claims": [
+    "node:spine"
+   ]
+  },
+  {
+   "id": "b103",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "neck"
+   },
+   "style": "thought",
+   "priority": 1,
+   "text": "It looked one way and walked another.",
+   "claims": [
+    "node:neck"
+   ]
+  },
+  {
+   "id": "b104",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "springStart"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "No wind-up? Who approved that?",
+   "claims": [
+    "node:springStart"
+   ]
+  },
+  {
+   "id": "b105",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "jump"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It jumped. Dummies do not jump.",
+   "claims": [
+    "node:jump"
+   ]
+  },
+  {
+   "id": "b106",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "grip"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It is not sliding any more. Noted.",
+   "claims": [
+    "node:grip"
+   ]
+  },
+  {
+   "id": "b107",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "carry"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It is carrying something. Approved?",
+   "claims": [
+    "node:carry"
+   ]
+  },
+  {
+   "id": "b108",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "throw"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It can throw now. Nobody told us.",
+   "claims": [
+    "node:throw"
+   ]
+  },
+  {
+   "id": "b109",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "holdOn"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Is it holding on to my door?",
+   "claims": [
+    "node:holdOn"
+   ]
+  },
+  {
+   "id": "b110",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "bigBattery"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Bigger battery. More dashes. Wonderful.",
+   "claims": [
+    "node:bigBattery"
+   ]
+  },
+  {
+   "id": "b111",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "kineticCharge"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It recharges when it hits us?!",
+   "claims": [
+    "node:kineticCharge"
+   ]
+  },
+  {
+   "id": "b112",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "fastCharge"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It recharges faster than I do.",
+   "claims": [
+    "node:fastCharge"
+   ]
+  },
+  {
+   "id": "b113",
+   "event": "upgrade-seen",
+   "when": {
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "New modification. Updating my threat model.",
+   "claims": []
+  },
+  {
+   "id": "b114",
+   "event": "upgrade-seen",
+   "when": {},
+   "style": "speech",
+   "priority": 1,
+   "text": "The subject has changed. Noted.",
+   "claims": []
+  },
+  {
+   "id": "b115",
+   "event": "part-seen",
+   "when": {
+    "part": "head"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Its head is cracked. Still coming.",
+   "claims": [
+    "part:head:broken"
+   ]
+  },
+  {
+   "id": "b116",
+   "event": "part-seen",
+   "when": {
+    "part": "torso"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Its torso is buckled. It turns so slowly.",
+   "claims": [
+    "part:torso:broken"
+   ]
+  },
+  {
+   "id": "b117",
+   "event": "part-seen",
+   "when": {
+    "part": "armL"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Its left arm is hanging.",
+   "claims": [
+    "part:armL:broken"
+   ]
+  },
+  {
+   "id": "b118",
+   "event": "part-seen",
+   "when": {
+    "part": "armR"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Its right arm is hanging.",
+   "claims": [
+    "part:armR:broken"
+   ]
+  },
+  {
+   "id": "b119",
+   "event": "part-seen",
+   "when": {
+    "part": "legL"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Left leg gone. It is limping.",
+   "claims": [
+    "part:legL:broken"
+   ]
+  },
+  {
+   "id": "b120",
+   "event": "part-seen",
+   "when": {
+    "part": "legR"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Right leg gone. Look at it hobble.",
+   "claims": [
+    "part:legR:broken"
+   ]
+  },
+  {
+   "id": "b121",
+   "event": "part-seen",
+   "when": {
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "It is falling apart. Like me.",
+   "claims": []
+  },
+  {
+   "id": "b122",
+   "event": "part-seen",
+   "when": {
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Damaged goods. Not my problem.",
+   "claims": []
+  },
+  {
+   "id": "b123",
+   "event": "part-seen",
+   "when": {},
+   "style": "mutter",
+   "priority": 1,
+   "text": "Subject damage noted.",
+   "claims": []
+  }
+ ]
+};
 </script>
 <script>
 /* DUMMIES P3 — renderer, input, menus, audio, tuning. Reads window.DUMMIES (sim.js), window.PIX (pixel.js) and window.DUMMIES_CONTENT (content.js).
@@ -2242,6 +4529,10 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
   const CT = window.DUMMIES_CONTENT || {};
   const CJ = CT.juice || null, CI = CT.interface || null, CG = CT.graphics || null;
   const CB = CT.barks || null, CH = CT.hits || null, CTM = CT.terminal || null; // P2.1: humour, hit juice, FARSIGHT terminal skin
+  // Fleet database (content/db/fleet.json, decision 117): model names, tags and the bark bank, separate from other text.
+  const FLEET = window.FLEET_DB || null;
+  const FMODEL = new Map(); // sim model id → database model
+  if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
   const BUILD = 'P3';
@@ -2269,7 +4560,8 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     // P2.1
     zoom: { amt: 0, t0: -9, dur: 0.2, x: 0, y: 0 }, crumple: { amt: 0, t0: -9, dur: 0.3, ang: 0 }, stumble: { amp: 0, t0: -9, dur: 0.5 },
     rings: [], streaks: [], bubbles: new Map(), carBarkT: new Map(), cars: new Map(), nm: new Map(), nmDone: new Set(),
-    lungeWatch: null, lastImpact: null, pendingNodes: [], upgradeWatch: null, barkN: 0, juiceT: new Map() };
+    lungeWatch: null, lastImpact: null, pendingNodes: [], upgradeWatch: null, barkN: 0, juiceT: new Map(),
+    partWatch: null, partsSeen: new Set(), learnWatch: new Map(), pendingLearned: null };
   function kick(amp, dur) { const cur = fx.shake.amp * Math.max(0, 1 - (app.realT - fx.shake.t0) / fx.shake.dur); if (amp >= cur) fx.shake = { amp, t0: app.realT, dur }; }
   function shakeOffset() {
     const a = app.realT - fx.shake.t0;
@@ -2297,7 +4589,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
-    fx.marks = []; fx.barks.clear(); fx.barked.clear();
+    fx.marks = []; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
     fx.rings = []; fx.streaks = []; fx.bubbles.clear(); fx.carBarkT.clear(); fx.cars.clear(); fx.nm.clear(); fx.nmDone.clear();
     fx.lungeWatch = null; fx.lastImpact = null; fx.upgradeWatch = null; if (!carry) fx.pendingNodes = [];
     app.present = [];
@@ -2423,6 +4715,9 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
   function upm() { return (app.sim && app.sim.P['proto.scale.unitsPerMetre']) || 12.2; }
   function whenOk(when, e) {
     for (const [k, v] of Object.entries(when || {})) {
+      if (k === 'owns') { if (!(app.sim && app.sim.has(v))) return false; continue; } // the dummy's upgrades (lore tied to state, D23)
+      if (k === 'broken') { if (!brokenPart(v)) return false; continue; }              // the dummy's damage
+      if (Array.isArray(v)) { if (!v.includes(e[k])) return false; continue; }
       if (v && typeof v === 'object') { // bounds are numbers or parameter IDs
         const n = +e[k], lo = v.min == null ? -Infinity : typeof v.min === 'string' ? pv(v.min) : v.min, hi = v.max == null ? Infinity : typeof v.max === 'string' ? pv(v.max) : v.max;
         if (e[k] == null || !(n >= lo && n <= hi)) return false;
@@ -2436,7 +4731,12 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     const out = Object.assign({}, e);
     if (e.type === 'writeoff' && fx.lastImpact && fx.lastImpact.t === e.t) Object.assign(out, { car: fx.lastImpact.car, zone: fx.lastImpact.zone });
     const info = out.car && fx.cars.get(out.car);
-    if (info) Object.assign(out, { model: info.model, cls: info.cls, seniority: info.seniority });
+    if (info) {
+      const fm = FMODEL.get(info.model);
+      Object.assign(out, { model: fm ? fm.id : info.model, cls: info.cls, class: fm ? fm.class : info.cls, tier: fm ? fm.tier : null, seniority: info.seniority });
+    }
+    const sb = app.sim && app.sim.body;
+    if (sb) out.wear = +(1 - sb.health / app.sim.P['damage.bodyHealth']).toFixed(3);
     if (e.type === 'honk') out.at = e.at === 'body' ? 'body' : 'cone';
     return out;
   }
@@ -2446,6 +4746,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     app.present.push(e);
     const x = enrich(e);
     hitJuice(x, s);
+    barkLine(x, s);
   }
   function carGap(b, c, R) { // body edge to car edge, world units
     const ca = Math.cos(c.h), sa = Math.sin(c.h), dx = b.x - c.x, dy = b.y - c.y;
@@ -2542,9 +4843,90 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     if (e.type === 'writeoff') fx.stampT0 = now;
     return res;
   }
+  function brokenPart(v) {
+    const lv = app.sim ? partLevels(app.sim) : {};
+    if (v === 'legs') return lv.legL >= 3 && lv.legR >= 3;
+    if (v === 'arms') return lv.armL >= 3 && lv.armR >= 3;
+    return lv[v] >= 3;
+  }
+  // Barks from the fleet database: highest priority wins, then the most specific line; seeded pick among equals.
+  // Write-offs always speak; hits outrank chatter; chatter waits out the global and per-car cooldowns (proto.barks.*).
+  function barkLine(e, s) {
+    if (!FLEET || !e.car) return;
+    const info = fx.cars.get(e.car);
+    if (!info) return;
+    const pool = FLEET.barks.filter((ln) => ln.event === e.type && whenOk(ln.when, e));
+    if (!pool.length) return;
+    const pr = Math.max(...pool.map((ln) => ln.priority || 1)), now = app.realT, dur = pv('proto.barks.seconds') || 2.4;
+    const spec = (ln) => Object.keys(ln.when || {}).length, top = [], best = Math.max(...pool.filter((ln) => ln.priority === pr).map(spec));
+    for (const ln of pool) if ((ln.priority || 1) === pr && spec(ln) >= Math.min(best, 1)) { top.push(ln); if (spec(ln) >= best && best > 0) top.push(ln); }
+    const cur = fx.bubbles.get(e.car), last = fx.carBarkT.get(e.car);
+    if (cur && now - cur.t0 < dur && cur.priority > pr) return;
+    if (pr < 3) {
+      if (last && now - last.t < (pv('proto.barks.carCooldown') || 4) && last.pr >= pr) return;
+      if (pr === 1) {
+        if (now - fx.barkT < (pv('proto.barks.cooldown') || 0.8)) return;
+        let live = 0; for (const bk of fx.bubbles.values()) if (now - bk.t0 < dur) live++;
+        if (!cur && live >= (pv('proto.barks.maxOnScreen') || 3)) return;
+      }
+    }
+    const onScreen = new Set([...fx.bubbles.values()].filter((bk) => now - bk.t0 < dur).map((bk) => bk.id));
+    const fresh = top.filter((ln) => !onScreen.has(ln.id) && ln.id !== fx.lastLine), use = fresh.length ? fresh : top; // no line twice at once
+    const pick = use[(Math.round(e.t * 60) + info.slot * 7 + fx.barkN++) % use.length];
+    const text = fillIn(pick.text, e); fx.lastLine = pick.id;
+    fx.bubbles.set(e.car, { text, style: pick.style || 'speech', priority: pr, t0: now, car: e.car, id: pick.id });
+    fx.barkT = now; fx.carBarkT.set(e.car, { t: now, pr });
+    app.present.push({ t: +s.t.toFixed(4), type: 'bark', car: e.car, event: e.type, line: pick.id, text });
+  }
+  function wrapSmall(text, maxW) {
+    const out = []; let cur = '';
+    for (const word of String(text).split(/\s+/)) { const t = cur ? cur + ' ' + word : word; if (PIX.smallWidth(t) <= maxW || !cur) cur = t; else { out.push(cur); cur = word; } }
+    if (cur) out.push(cur);
+    return out;
+  }
+  // Pixel bubbles above the car's tag (or below the car), never over another car's tag. Styles: speech solid edge,
+  // shout double edge, mutter dashed edge and dim ink, thought dotted edge with trailing dots.
+  function drawBarks(s) {
+    if (!fx.bubbles.size) return;
+    const dur = pv('proto.barks.seconds') || 2.4, now = app.realT, placed = [];
+    for (const c of s.cars) { // tags and car bodies are cues: bubbles keep off them
+      const t = tagRect(c), r = Math.ceil(Math.max(c.L, c.W) / U / 2) + 1;
+      placed.push({ x: t.x0 - 1, y: t.y0 - 1, w: t.w + 10, h: t.h + 2, car: c.id }, { x: Math.round(c.x / U) - r, y: Math.round(c.y / U) - r - 4, w: 2 * r, h: 2 * r + 4, car: c.id });
+    }
+    if (s.body.alive) placed.push({ x: Math.round(s.body.x / U) - 12, y: Math.round(s.body.y / U) - 16, w: 24, h: 26, car: '_body' }); // never over the dummy
+    const hits = (r, own) => placed.some((q) => q.car !== own && r.x < q.x + q.w && r.x + r.w > q.x && r.y < q.y + q.h && r.y + r.h > q.y);
+    const order = [...fx.bubbles.entries()].sort((a, b2) => b2[1].priority - a[1].priority || b2[1].t0 - a[1].t0);
+    for (const [id, bk] of order) {
+      const live = s.cars.find((x) => x.id === id), c = live || fx.cars.get(id), age = now - bk.t0;
+      if (!c || age > dur) { fx.bubbles.delete(id); continue; }
+      const lines = wrapSmall(bk.text, 92), lh = PIX.SMALL_H + 2;
+      const w = Math.max(...lines.map((l) => PIX.smallWidth(l))) + 7, h = lines.length * lh + 4, cx = Math.round(c.x / U);
+      const t = tagRect(c), x = clamp(cx - (w >> 1), 1, AW - w - 1);
+      const up = t.y0 - 5 - h, down = Math.round(c.y / U) + Math.round(Math.max(c.L, c.W) / U / 2) + 5;
+      let y = up, below = false;
+      if (y < 1 || hits({ x, y, w, h }, id)) { y = Math.min(down, AH - h - 1); below = true; }
+      if (y < 1 || hits({ x, y, w, h }, id)) { if (bk.priority < 2) continue; y = clamp(up, 1, AH - h - 1); below = false; }
+      placed.push({ x, y, w, h, car: null });
+      const st = bk.style, edge = K.barkEdge;
+      for (let yy = y + 1; yy < y + h - 1; yy++) for (let xx = x + 1; xx < x + w - 1; xx++) FB.mix(xx, yy, K.barkFill, 0.94);
+      const dash = st === 'mutter' ? 2 : st === 'thought' ? 3 : 0;
+      let i = 0;
+      const ring = (ox, oy, ww, hh, f) => {
+        for (let xx = ox + 1; xx < ox + ww - 1; xx++) { f(xx, oy); f(xx, oy + hh - 1); }
+        for (let yy = oy + 1; yy < oy + hh - 1; yy++) { f(ox, yy); f(ox + ww - 1, yy); }
+      };
+      ring(x, y, w, h, (px, py) => { if (!dash || (i++ % dash) === 0) FB.put(px, py, edge); });
+      if (st === 'shout') ring(x - 1, y - 1, w + 2, h + 2, (px, py) => { if ((px + py) % 2 === 0) FB.put(px, py, edge); });
+      const ax = clamp(cx, x + 3, x + w - 4);
+      if (st === 'thought') { const ty = below ? y - 3 : y + h + 2; FB.put(ax, ty, edge); FB.put(ax + (below ? 0 : 1), ty + (below ? -2 : 2), edge); }
+      else for (let k = 0; k < 3; k++) { const ty = below ? y - 1 - k : y + h + k; for (let xx = ax - (2 - k); xx <= ax + (2 - k); xx++) FB.put(xx, ty, xx === ax - (2 - k) || xx === ax + (2 - k) || k === 2 ? edge : K.barkFill); }
+      lines.forEach((l, k) => PIX.smallText(FB, l, x + ((w - PIX.smallWidth(l)) >> 1), y + 2 + k * lh, K.barkInk)); // one ink: style lives in the edge
+    }
+  }
   function processEvents() {
     const s = app.sim;
     if (!s) return;
+    if (fx.pendingLearned && fx.cars.has(fx.pendingLearned.car)) { const pl = fx.pendingLearned; fx.pendingLearned = null; present(s, 'learned', pl); }
     const ev = s.events;
     trackCars(s);
     for (let i = app.lastEv; i < ev.length; i++) {
@@ -2552,17 +4934,29 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
       if (e0.type === 'lunge') fx.lungeWatch = { contact: false };
       if (/^(impact|knock|touch|touch-spent|contact-ignored)$/.test(e0.type)) noteContact(e0);
       if (e0.type === 'impact') { fx.lastImpact = e0; if (e0.part) fx.lastPart = { part: e0.part, lost: e0.lost, t: app.realT }; }
-      if (e0.type === 'purchase') fx.pendingNodes.push(NODES[e0.node].name);
+      if (e0.type === 'purchase') fx.pendingNodes.push(e0.node); // node id, as the fleet database keys it
       if (e0.type === 'chassis' && fx.pendingNodes.length) { fx.upgradeWatch = fx.pendingNodes[fx.pendingNodes.length - 1]; fx.pendingNodes = []; }
       const e = enrich(e0);
       const hj = hitJuice(e, s);
       const juiced = hj.done || juice(e0, s);
       // P3: barks are not drawn. A legible bubble at ui.typeSecondary would cover the 400 × 300 field.
-      if (CB && fx.upgradeWatch && e.car && ((e0.type === 'commit' && e0.cause === 'body') || (e0.type === 'honk' && e0.at === 'body'))) {
+      // Lore tied to state (D23): a car that notices the dummy remarks on a new module or a broken part;
+      // a model that learned returns and says so. Lines come from the fleet database.
+      const notices = e.car && ((e0.type === 'commit' && e0.cause === 'body') || (e0.type === 'honk' && e0.at === 'body'));
+      if (FLEET && notices && fx.upgradeWatch) {
         const node = fx.upgradeWatch; fx.upgradeWatch = null;
         fx.carBarkT.delete(e.car); fx.barkT = -9;
         present(s, 'upgrade-seen', { car: e.car, node });
+      } else if (FLEET && notices && fx.partWatch) {
+        const part = fx.partWatch; fx.partWatch = null;
+        fx.carBarkT.delete(e.car); fx.barkT = -9;
+        present(s, 'part-seen', { car: e.car, part });
       }
+      if (e0.type === 'learn-standoff') fx.learnWatch.set(e0.model, { from: e0.from, to: e0.to });
+      if (e0.type === 'admit' && fx.learnWatch.has(e0.model)) { const lw = fx.learnWatch.get(e0.model); fx.learnWatch.delete(e0.model); fx.pendingLearned = { car: e0.car, from: lw.from, to: lw.to }; }
+      if (e0.type === 'impact' && e0.part && s.body.alive) { const lv = partLevels(s)[e0.part]; if (lv >= 3 && !fx.partsSeen.has(e0.part)) { fx.partsSeen.add(e0.part); fx.partWatch = e0.part; } }
+      if (e0.type === 'chassis') { fx.partsSeen.clear(); fx.partWatch = null; }
+      if (FLEET && e.car) barkLine(e, s);
       switch (e0.type) {
         case 'lunge': {
           if (!hj.sound) Snd.tone(220, 90, 0.12, 'triangle', 0.12);
@@ -2781,7 +5175,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
   }
   function flush() { a32.set(FB.d); actx.putImageData(aimg, 0, 0); }
   function carSpr(s, c, braking) { return PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(s.P['vehicles.' + c.cls + '.height']), c.h, braking); }
-  function shortId(m) { const t = String(m).toUpperCase(), a = t.match(/[A-Z]/), d = t.match(/\d+/); return ((a ? a[0] : '') + (d ? d[0] : '')).slice(0, 3); } // GDD 4.2.2: three characters
+  function shortId(m) { const fm = FMODEL.get(m); if (fm) return fm.tag; const t = String(m).toUpperCase(), a = t.match(/[A-Z]/), d = t.match(/\d+/); return ((a ? a[0] : '') + (d ? d[0] : '')).slice(0, 3); } // GDD 4.2.2: three characters
   function coneLift(cn) { return cn.state === 'flight' ? 10 * Math.sin(Math.PI * clamp(1 - cn.flightT / (cn.flightDur || 1), 0, 1)) : 0; }
   function coneFn(s) { // the dummy's view cone, as an art-pixel predicate
     const P = s.P, b = s.body, R = P['sensing.coneReach'], hw = s.coneWidth() * DEG / 2; // head damage narrows it
@@ -3035,21 +5429,25 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     if (cue === 'intention') { if (!c.intent) return; side = c.intent.type === 'shift' ? Math.sign(c.intent.d1 - c.intent.d0) : 0; }
     pip(FB, cue, Math.round(c.x / U), Math.round(c.y / U) - hgt, loc, f, side);
   }
-  // Model ID tag: three characters at ui.typeLoadBearing (12-art-px caps = 24 units); seniority as square pips beside it.
-  function drawTag(s, c) {
-    const id = shortId(c.model), w = PIX.textWidth(id) + 6, h = PIX.FONT_H + 6;
+  // Model ID tag: three characters in the field label face (6-art-px caps = ui.typeFieldLabel 12 units, Edit 39);
+  // seniority as square pips beside it. Half the old 24-unit tag: the laptop sits at arm's length (decision 121).
+  function tagRect(c) {
+    const id = shortId(c.model), w = PIX.smallWidth(id) + 5, h = PIX.SMALL_H + 4;
     const top = c._top != null ? c._top : Math.round(c.y / U) - 12;
-    const x0 = clamp(Math.round(c.x / U) - (w >> 1), 1, AW - w - 1), y0 = clamp(top - 3 - h, 1, AH - h - 1);
+    return { id, w, h, x0: clamp(Math.round(c.x / U) - (w >> 1), 1, AW - w - 1), y0: clamp(top - 2 - h, 1, AH - h - 1) };
+  }
+  function drawTag(s, c) {
+    const { id, w, h, x0, y0 } = tagRect(c);
     FB.rect(x0 + 1, y0 + 1, x0 + w - 2, y0 + h - 2, c.spent ? K.tagSpentFill : K.tagFill);
     for (let x = x0 + 1; x < x0 + w - 1; x++) { FB.put(x, y0, K.tagBorder); FB.put(x, y0 + h - 1, K.tagBorder); }
     for (let y = y0 + 1; y < y0 + h - 1; y++) { FB.put(x0, y, K.tagBorder); FB.put(x0 + w - 1, y, K.tagBorder); }
-    PIX.text(FB, id, x0 + 3, y0 + 3, c.spent ? K.tagSpentInk : K.tagInk);
-    let rx = x0 + w + 2;
-    if (s.P['proto.learningEnabled']) for (let j = 0; j < seniorityOf(c); j++) { FB.rect(rx, y0 + 7, rx + 3, y0 + 10, K.ink); rx += 6; }
+    PIX.smallText(FB, id, x0 + 3, y0 + 2, c.spent ? K.tagSpentInk : K.tagInk);
+    let rx = x0 + w + 1;
+    if (s.P['proto.learningEnabled']) for (let j = 0; j < seniorityOf(c); j++) { FB.rect(rx, y0 + 4, rx + 1, y0 + 5, K.ink); rx += 3; }
     if (c.honking) {
       if (Math.floor(app.realT * 5) % 2 === 0) {
-        FB.rect(rx, y0, rx + 9, y0 + h - 1, K.tagBorder); FB.rect(rx + 1, y0 + 1, rx + 8, y0 + h - 2, K.tagFill);
-        PIX.text(FB, '!', rx + 4, y0 + 3, K.tagInk);
+        FB.rect(rx, y0, rx + 4, y0 + h - 1, K.tagBorder); FB.rect(rx + 1, y0 + 1, rx + 3, y0 + h - 2, K.tagFill);
+        PIX.smallText(FB, '!', rx + 2, y0 + 2, K.tagInk);
       }
       const last = fx.horn.get(c.id) || 0; if (c.honkAt === 'body' && app.realT - last > 1.4) { horn(); fx.horn.set(c.id, app.realT); }
     }
@@ -3182,6 +5580,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     drawEffects(s); drawRingsStreaks(); drawParts(s);
     for (const d of s.drones) drawDrone(s, d);
     for (const c of s.cars) drawTag(s, c);
+    drawBarks(s);
     drawEffects(s, true);
     const fa = app.realT - fx.flash.t0;
     if (fa < fx.flash.dur) { const a = 0.55 * (1 - fa / fx.flash.dur) * (RM ? 0.4 : 1); for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) FB.mix(x, y, K.white, a); }
