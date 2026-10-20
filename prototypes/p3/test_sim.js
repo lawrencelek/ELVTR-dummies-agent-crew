@@ -399,5 +399,25 @@ check('parts: height bands follow the assessed damage', () => {
   assert.strictEqual(s.partOf(320, 300, 150), 'torso');          // ahead, mid: torso
   assert.strictEqual(s.partOf(280, 300, 300), 'head');           // big hit: head
 });
+const H0 = (s) => s.P['damage.bodyHealth'];
+check('part effects: legs slow every ground speed, linearly to the floor', () => {
+  const run = (share) => { const s = empty(); s.body.x = 100; s.body.y = 300; s.body.facing = 0; s.body.parts.legL = share * H0(s); idle(s, 150, { mx: 1, my: 0 }); return s.body.x - 100; };
+  const d0 = run(0), d1 = run(0.25), d2 = run(0.9);
+  assert(near(d1 / d0, 0.75, 0.01), 'legs 0.25 → ' + (d1 / d0).toFixed(3));
+  assert(near(d2 / d0, 0.5, 0.01), 'floor → ' + (d2 / d0).toFixed(3));
+});
+check('part effects: torso cuts the turn rate; head narrows the view cone', () => {
+  const s = empty(); s.body.parts.torso = 0.2 * H0(s); s.body.parts.head = 0.2 * H0(s);
+  assert(near(s.partEffect('turn'), 1 - 1.5 * 0.2)); assert(near(s.coneWidth(), 90 * (1 - 1.5 * 0.2)));
+  s.body.parts.head = H0(s); assert(near(s.coneWidth(), 45), 'floor 45°');
+  s.P['proto.parts.effects'] = 0; assert(near(s.partEffect('turn'), 1) && near(s.coneWidth(), 90), 'toggle off');
+});
+check('part effects: both arms broken → cannot pick up a cone', () => {
+  const s = empty(); s.run.owned = { carry: true }; const cn = s.cones[0];
+  s.body.x = cn.x - (s.P['body.radius'] + s.P['props.cone.radius'] + 4); s.body.y = cn.y; s.body.facing = 0;
+  s.body.parts.armL = 0.4 * H0(s); s.body.parts.armR = 0.4 * H0(s);
+  s.step({ bPress: true }); assert(!s.body.held && s.events.some((e) => e.type === 'denied' && e.action === 'pickup'), 'denied with broken arms');
+  s.body.parts.armR = 0; s.step({}); s.step({ bPress: true }); assert(s.body.held, 'one good arm can carry');
+});
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

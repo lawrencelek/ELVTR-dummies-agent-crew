@@ -586,7 +586,7 @@
   function shortId(m) { const t = String(m).toUpperCase(), a = t.match(/[A-Z]/), d = t.match(/\d+/); return ((a ? a[0] : '') + (d ? d[0] : '')).slice(0, 3); } // GDD 4.2.2: three characters
   function coneLift(cn) { return cn.state === 'flight' ? 10 * Math.sin(Math.PI * clamp(1 - cn.flightT / (cn.flightDur || 1), 0, 1)) : 0; }
   function coneFn(s) { // the dummy's view cone, as an art-pixel predicate
-    const P = s.P, b = s.body, R = P['sensing.coneReach'], hw = P['sensing.coneWidth'] * DEG / 2;
+    const P = s.P, b = s.body, R = P['sensing.coneReach'], hw = s.coneWidth() * DEG / 2; // head damage narrows it
     return (x, y) => {
       const dx = (x + 0.5) * U - b.x, dy = (y + 0.5) * U - b.y;
       if (dx * dx + dy * dy > R * R) return false;
@@ -691,7 +691,7 @@
       .map((p) => [p[0] / U, p[1] / U]), (x, y) => FB.put(x, y, K.label));
   }
   function drawViewEdges(s) {
-    const b = s.body, hw = s.P['sensing.coneWidth'] * DEG / 2;
+    const b = s.body, hw = s.coneWidth() * DEG / 2;
     for (const sg of [-1, 1]) PIX.line(b.x / U, b.y / U, (b.x + Math.cos(b.facing + sg * hw) * 1200) / U, (b.y + Math.sin(b.facing + sg * hw) * 1200) / U,
       (x, y, i) => { if (i > 9 && i % 4 === 0) FB.mix(x, y, K.ink, 0.45); });
   }
@@ -1108,9 +1108,19 @@
     dollArt.set(key, cv2);
     return cv2;
   }
+  function partEffects(s) { // the abilities the damage has cut, as shown on the chassis panel
+    const out = [], pc = (v) => Math.round(v * 100) + '%';
+    const sp = s.partEffect('speed'), tu = s.partEffect('turn'), vw = s.partEffect('view'), th = s.partEffect('throw');
+    if (sp < 0.995) out.push(['SPEED', pc(sp)]);
+    if (tu < 0.995) out.push(['TURN', pc(tu)]);
+    if (vw < 0.995) out.push(['VIEW', Math.round(s.coneWidth()) + '°']);
+    if (s.armsBroken() && (s.has('carry') || s.has('throw'))) out.push(['CONE', 'NO GRIP']);
+    else if (th < 0.995 && s.has('throw')) out.push(['THROW', pc(th)]);
+    return out;
+  }
   function drawBodyPanel(s) {
-    const X = 1056, W = 208, Y = 62, b = s.body, k = 9;
-    panel(X, Y, W, 318);
+    const X = 1056, W = 208, Y = 62, b = s.body, k = 9, eff = b.alive ? partEffects(s) : [];
+    panel(X, Y, W, 318 + (eff.length ? 16 + eff.length * 32 : 0));
     txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);
     const lp = fx.lastPart, flash = lp && app.realT - lp.t < 0.3 && Math.floor(app.realT * 16) % 2 === 0 ? lp.part : '';
     const dx = Math.round(X + W / 2 - 13 * k / 2), dy = Y + 46;
@@ -1125,6 +1135,7 @@
     ctx.globalAlpha = 1;
     txt('LAST HIT', X + 14, Y + 254, fTxt, FT.dim);
     txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, Y + 292, fLab, lp ? FT.text : FT.dim);
+    eff.forEach(([k2, v], i) => { const y = Y + 340 + i * 32; txt(k2, X + 14, y, fTxt, FT.dim); txt(v, X + W - 14, y, fLab, C.warning, 'right'); });
   }
 
   // ---------- screens (frame layer). Facts at ui.typeLoadBearing, labels and lines at ui.typeSecondary.
@@ -1340,7 +1351,7 @@
       inp.addEventListener('input', () => setParam(id, parseFloat(inp.value)));
       row.append(nm, out, inp); grid.append(row);
     }
-    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits'], ['proto.stopCue', 'Show each car\'s stop bracket'], ['proto.city', 'City blocks and jersey barriers are solid (next road or restart)']]) {
+    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits'], ['proto.stopCue', 'Show each car\'s stop bracket'], ['proto.city', 'City blocks and jersey barriers are solid (next road or restart)'], ['proto.parts.effects', 'Damaged parts cut abilities (legs speed, torso turn, head view, arms throw)']]) {
       const row = document.createElement('label'); row.className = 'tcheck';
       const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-' + id.replace(/\./g, '-');
       inp.addEventListener('change', () => setParam(id, inp.checked ? 1 : 0));
@@ -1355,7 +1366,7 @@
       const v = current(id); if (document.activeElement !== inp) inp.value = v;
       inp.nextSibling; inp.parentNode.querySelector('output').textContent = (+v).toFixed(v % 1 ? 2 : 0) + (REG[id] != null && v !== REG[id] ? '  (registry ' + REG[id] + ')' : '');
     }
-    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue', 'proto.city']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
+    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue', 'proto.city', 'proto.parts.effects']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
   }
   function toggleTune() { tuneEl.open = !tuneEl.open; if (tuneEl.open) { syncTune(); tuneEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
   document.getElementById('btn-tune').addEventListener('click', toggleTune);

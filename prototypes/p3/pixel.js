@@ -44,6 +44,7 @@
     cone: '#FF8A1F',
     ink: '#F4F8FA', label: '#7FA8BC', warn: '#FF3D3D', fleet: '#5E6B78', structure: '#3A4252',
     cueHalo: '#FFB0B0', nose: '#F4F8FA', tyre: '#05070B',
+    rimLight: '#E6F4FF', rimDark: '#5E7080', // dark ground: the dummy's outer edge is a rim, lit top-right (4.1.3 light)
     tagFill: '#1840C8', tagInk: '#FFFFFF', tagBorder: '#6FE4FF', tagSpentFill: '#F4F8FA', tagSpentInk: '#1840C8',
     popInk: '#FFFFFF', popOutline: '#1840C8', stampFill: '#0B0E17', stampOutline: '#FFB0B0',
     podStripes: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#E6F4FF'], reflect: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], edgeLight: '#E6F4FF', flowers: 40,
@@ -316,6 +317,19 @@
     N: ['....KKKKK....', '...KWYYYyK...', '..KWYYYYYyK..', '..KYYYYYYyK..', '..KYYYYYYyK..', '..KYYYYYYyK..', '...KyYYYyK...', '....KKKKK....', '..KKWYYYyKK..', '.KYKWYKYyKyK.',
       '.KYKYYKYyKyK.', '.KYKYYKYyKyK.', '.KKKKKKKKKKK.', '...KYyKYyK...', '...KYyKYyK...', '...KKKKKKK...', '...KYyKYyK...', '...KYyKYyK...', '..KKKK.KKKK..'],
   };
+  // Dark-ground rule: an outline must be lighter than the ground it sits on. Only the outer silhouette edge changes;
+  // edges facing the light (up, right) take rimLight, the rest rimDark. Inner joints keep the black that makes a crash dummy.
+  function rim(S) {
+    if (!PAL.rimLight) return S;
+    const at = (x, y) => (x < 0 || y < 0 || x >= S.w || y >= S.h ? 0 : S.d[y * S.w + x]), out = new Uint32Array(S.d);
+    for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) {
+      if (S.d[y * S.w + x] !== K.joint) continue;
+      const up = !at(x, y - 1), right = !at(x + 1, y), down = !at(x, y + 1), left = !at(x - 1, y);
+      if (up || right) out[y * S.w + x] = K.rimLight; else if (down || left) out[y * S.w + x] = K.rimDark;
+    }
+    S.d = out;
+    return S;
+  }
   const dummyCache = new Map();
   function dummy(facing, wearStep) { // facing: radians; wearStep 0..5 shifts the yellow toward the worn tone
     const c = Math.cos(facing), s = Math.sin(facing);
@@ -324,7 +338,7 @@
     if (!dummyCache.has(key)) {
       const k = Math.min(1, wearStep / 5) * 0.75;
       const keys = { K: K.joint, Y: c32(mixHex(PAL.dummy, PAL.worn, k)), y: c32(mixHex(PAL.dummyD, PAL.worn, k * 0.8)), W: c32(mixHex(PAL.dummyL, PAL.worn, k)) };
-      dummyCache.set(key, fromRows(DUMMY[dir === 'E' ? 'W' : dir], keys, 6, 15, dir === 'E'));
+      dummyCache.set(key, rim(fromRows(DUMMY[dir === 'E' ? 'W' : dir], keys, 6, 15, dir === 'E')));
     }
     return dummyCache.get(key);
   }
@@ -334,10 +348,11 @@
   const CRACKS = { head: [[5, 2], [6, 3], [5, 4]], torso: [[6, 9], [5, 10], [6, 11]], armR: [[2, 10], [2, 11]], armL: [[10, 10], [10, 11]], legR: [[4, 14], [5, 16]], legL: [[8, 14], [7, 16]] };
   function doll(levels, flash) {
     const rows = DUMMY.S, S = spr(13, 19, 6, 15), base = { K: PAL.joint, Y: PAL.dummy, y: PAL.dummyD, W: PAL.dummyL };
+    const R = rim(fromRows(rows, { K: K.joint, Y: K.dummy, y: K.dummyD, W: K.dummyL }, 6, 15));
     for (let y = 0; y < 19; y++) for (let x = 0; x < 13; x++) {
       const k = rows[y][x]; if (!base[k]) continue;
-      const part = PART_AT(x, y), lv = levels[part] || 0;
-      let hex = base[k];
+      const part = PART_AT(x, y), lv = levels[part] || 0, rc = R.d[y * 13 + x];
+      let hex = k === 'K' && rc !== K.joint ? (rc === K.rimLight ? PAL.rimLight : PAL.rimDark) : base[k];
       if (k !== 'K' && lv > 0) hex = mixHex(hex, PAL.worn, [0, 0.35, 0.7, 1][lv]);
       if (k === 'K' && lv >= 3) hex = PAL.warn;
       if (flash === part) hex = '#FFFFFF';

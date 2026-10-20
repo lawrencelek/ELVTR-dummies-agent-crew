@@ -60,6 +60,11 @@
     // P3 locational damage: an impact's assessed damage picks the height (legs → torso/arms → head); shares of
     // damage.bodyHealth lost by one part mark it cracked, then broken. Presentation and reports only; health is one pool.
     'proto.parts.torsoFrom': 100, 'proto.parts.headFrom': 250, 'proto.parts.crackedShare': 0.2, 'proto.parts.brokenShare': 0.4,
+    // P3 part effects: each part's share of damage.bodyHealth lost cuts one ability, linearly, to a floor.
+    // Legs → walk and run speed. Torso → turn rate. Head → view cone width. Arms → throw distance; both arms broken → no cone handling.
+    'proto.parts.effects': 1,
+    'proto.parts.legSpeedLoss': 1, 'proto.parts.legSpeedFloor': 0.5, 'proto.parts.torsoTurnLoss': 1.5, 'proto.parts.torsoTurnFloor': 0.5,
+    'proto.parts.headConeLoss': 1.5, 'proto.parts.headConeFloor': 0.5, 'proto.parts.armThrowLoss': 1, 'proto.parts.armThrowFloor': 0.5,
   };
 
   // P1.2 prototype overrides of registry values (logged in DUMMIES_Prototype_Log.md).
@@ -377,8 +382,8 @@
       const facing0 = b.facing;
       const mx = cmd.mx || 0, my = cmd.my || 0, m = hyp(mx, my), has = m > 0.3;
       const ix = has ? mx / m : 0, iy = has ? my / m : 0, inAng = has ? Math.atan2(iy, ix) : 0;
-      const rate = (this.has('hips') ? P['upgrades.hipsTurnRate'] : P['movement.turnRate']) * DEG;
-      const carryF = b.held ? P['upgrades.carrySpeed'] : 1;
+      const rate = (this.has('hips') ? P['upgrades.hipsTurnRate'] : P['movement.turnRate']) * DEG * this.partEffect('turn');
+      const carryF = (b.held ? P['upgrades.carrySpeed'] : 1) * this.partEffect('speed'); // leg damage slows every ground speed
 
       if (cmd.aPress) {
         if (b.mode !== 'lunge' && b.mode !== 'recover' && b.charge >= P['battery.lungeCost'] - 1e-9) this.startLunge(facing0);
@@ -452,7 +457,7 @@
       if (cmd.bPress) {
         if (!b.held) {
           if (this.has('carry')) {
-            const cn = busy ? null : this.nearestCone();
+            const cn = busy || this.armsBroken() ? null : this.nearestCone();
             if (cn) { cn.state = 'held'; b.held = cn; this.emit('pickup', { cone: cn.id }); this.mile('use:carry'); }
             else this.deny('pickup');
           }
@@ -496,7 +501,7 @@
     throwHeld() {
       const P = this.P, b = this.body, cn = b.held, p = this.releasePoint();
       if (!this.coneSpotValid(p.x, p.y, cn)) return this.deny('throw');
-      const T = P['props.cone.throwSeconds'], X = P['upgrades.throwDistance'];
+      const T = P['props.cone.throwSeconds'], X = P['upgrades.throwDistance'] * this.partEffect('throw');
       const vx = b.vx + Math.cos(b.facing) * X / T, vy = b.vy + Math.sin(b.facing) * X / T;
       Object.assign(cn, { x: p.x, y: p.y, vx, vy, state: 'flight', flightT: T, flightDur: T, kind: 'throw', fx: p.x, fy: p.y });
       b.held = null;
@@ -650,6 +655,17 @@
     }
     // P3: which body part took the hit. Side from the contact point against the dummy's facing;
     // height from the hit's size: bumper height hits the legs, harder hits reach the torso and arms, the hardest the head.
+    partShare(k) { const b = this.body; return b && b.parts ? b.parts[k] / this.P['damage.bodyHealth'] : 0; }
+    // Ability multiplier from part damage, in [floor, 1]. 1 when proto.parts.effects is off.
+    partEffect(kind) {
+      const P = this.P;
+      if (!P['proto.parts.effects']) return 1;
+      const t = { speed: ['legSpeed', this.partShare('legL') + this.partShare('legR')], turn: ['torsoTurn', this.partShare('torso')],
+        view: ['headCone', this.partShare('head')], throw: ['armThrow', this.partShare('armL') + this.partShare('armR')] }[kind];
+      return Math.max(P['proto.parts.' + t[0] + 'Floor'], 1 - P['proto.parts.' + t[0] + 'Loss'] * t[1]);
+    }
+    armsBroken() { const P = this.P; return !!P['proto.parts.effects'] && this.partShare('armL') >= P['proto.parts.brokenShare'] && this.partShare('armR') >= P['proto.parts.brokenShare']; }
+    coneWidth() { return this.P['sensing.coneWidth'] * this.partEffect('view'); }
     partOf(px, py, assessed) {
       const P = this.P, b = this.body, a = Math.atan2(py - b.y, px - b.x) - b.facing, side = Math.sin(a) >= 0 ? 'R' : 'L';
       if (assessed >= P['proto.parts.headFrom']) return 'head';
