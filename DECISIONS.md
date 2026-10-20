@@ -122,6 +122,9 @@ All entries dated 6 October 2026 unless stated. Times are not recorded.
 | 106 | The dummy is cute and appealing, after the real crash-test dummy: dot eyes with a glint, brows, a small smile, visible ears with quartered decals, chrome joints. The field sprite gains eyes and ears | user-confirmed (20 October): "the dummy should be cute and appealing … eyes and ears should be visible", with two photos of a real dummy; the face design is the assistant's | Appeal makes the player care about the body they destroy | — | Chassis sheet |
 | 107 | Each of the 15 nodes has one visible component on the chassis, on its branch's body part, in the brand accent | user-confirmed (20 October): "design all the upgrade components to be visible in the UI enlarged model"; the 15 designs are the assistant's | The doll shows the build at a glance | With many nodes the doll reads as a robot, on purpose (pillar 4) | `prototypes/p3/docs/p3_chassis_modules.png` |
 | 108 | The shop blinks the selected node onto the chassis before purchase | proposed (assistant, 20 October) | Players see what they buy | — | — |
+| 109 | The cyberpunk scheme (Chongqing city blocks, neon on dark) is the build default. Day and night stay as options | user-directed (20 October): "now do the cyberpunk colour scheme"; making it the default is the assistant's reading; canon stays D22 | — | Row 88's eco-city becomes an option in the build | `prototypes/p3/docs/p3_play_cyber.png` |
+| 110 | On dark ground no sprite edge is black. Every outer edge becomes a rim, lit top-right, in a value hierarchy: dummy > cars > cones > jersey barriers > pods > blocks. Inner lines keep their inks | user-directed (20 October): "Note what I said about changing the outline colours"; the hierarchy and values are the assistant's proposal | The background owns the darkest values | Six palette role pairs | Light rims on road: 14.2, 10.7, 7.9, 5.2, 3.1, 2.2:1; old black edge 1.1–1.4:1 |
+| 111 | The chassis follows the V29 tree: Legs is Spring start → Jump, Grip. Grip shows as tread soles with cleats | proposed (assistant, 20 October), correcting row 107's first draft, which used the withdrawn Strafe node | V29 D3.2; Strafe withdrawn 12 October (Edit 24, R10) | — | `prototypes/p3/docs/p3_chassis_modules_cyber.png` |
 
 ## Open decisions (to make)
 
@@ -137,18 +140,18 @@ These are listed so nothing is lost. None is decided. Options marked *recommende
 | D6 | How upgrades are earned, and whether they persist across bodies | — | **Decided 9 October:** credits earned through points, kept separate from points (row 78). Persistence is D13. |
 | D7 | Pillar 1 wording | — | **Decided 9 October:** the pillars are re-evaluated (row 79). |
 | D8 | Branch name | — | **Decided 9 October:** Battery (row 80). |
-| D9 | Fix two likely exploits in today's build | Stuck cars brake to 30%; cars enter already aware | Code paths confirmed, not measured (skill-tree review 2). Awaiting "go". |
+| D9 | Fix two likely exploits in today's build | — | **Decided 12 October:** approved. A car with no room to swerve brakes to 30%; cars enter already aware (GDD Edit 24 §13.1). |
 | D10 | Neck's ability | — | **Decided 9 October:** keep looking (row 74). |
 | D11 | How far the fog of war goes | — | **Decided 9 October:** fog of war and memory become a feature to test, starting at about 50% of the screen and fading with time (row 81). |
 | D12 | The Head upgrades, given the view cone | — | **Decided 9 October:** Wider view, then Memory and Ears (row 76). |
-| D13 | Do upgrades last for the rest of a run, across bodies? | Proposed: yes. A new run starts stiff again. | Without this, buying an upgrade for a body you are about to destroy is pointless |
-| D14 | Credit earning rate and prices | Proposed: 1 credit per point; tier 1 costs 4,000; tier 2 costs 8,000 | Tune with the bot and playtests (GDD Edit 11, section 6) |
-| D15 | What spends stamina | Proposed: lunges and jumps only; walking and running are free | Keeps the first version simple |
-| D16 | Quotas and the certification target for four levels | Proposed: quotas of 2, 3, 4 and 5 bodies (14 in all); certification at 15 write-offs | The target must stay above the sum of the quotas (Edit 9 rule) |
-| D17 | What happens to the crash test centre | Proposed: keep it as a practice room or a later level; it stays in the build for testing | — |
+| D13 | Do upgrades last for the rest of a run, across bodies? | — | **Decided 12 October:** yes; a new run starts unmodified (GDD Edit 24 §13.1; V29 D3.1). |
+| D14 | Credit earning rate and prices | — | **Decided 12 October:** one credit per write-off; prices of 1 to 4 bodies (GDD Edit 24 §13.1). Pacing still gated by a build. |
+| D15 | What spends stamina | — | **Decided 12 October:** lunges and jumps only (GDD Edit 24 §13.1). |
+| D16 | Quotas and the certification target | — | **Decided 12 October:** 2, 2, 3, 3 and 4 bodies over five levels; certification at 15 (GDD Edit 24 §13.1). Final approval gated by R6 witnesses. The P1–P3 prototypes use three roads at 1, 2 and 3. |
+| D17 | What happens to the crash test centre | — | **Decided 12 October:** level 5, the final level (GDD Edit 24 §13.1). |
 | D18 | Surfaces: water and oil slicks where the dummy slides and cannot dash | Build now, or after 3 November | Raised by Lawrence, 20 October. Terrain table exists (GDD 7.3) |
 | D19 | Is the dash unlimited? | Today it is metered: `battery.capacity` 3, `battery.lungeCost` 1. Options: keep the meter; make the dash a power-up; let leg damage shorten it | Raised by Lawrence, 20 October |
 | D20 | Dummy states in the style of Super Mario World | Options: none (wear and parts carry state); chassis grades; module sets | Raised by Lawrence, 20 October. Relates to O1.3 chassis progression |
 | D21 | Heavy hits knock modules off | Not built | Proposed by the assistant, 20 October |
-| D22 | Does the Chongqing cyber city become canon? | Keep row 88's eco-city; adopt cyber; keep both as palettes | Built as options (rows 94–96) |
+| D22 | Does the Chongqing cyber city become canon? | Keep row 88's eco-city; adopt cyber; keep both as palettes | Cyber is the build default since 20 October (row 109). Canon not yet confirmed |
 | D23 | A system for lore and narrative consistency | — | Raised by Lawrence, 20 October |
