@@ -559,12 +559,15 @@ check('field (Edit 42, closes D27): 400 × 320 art px, 25 × 20 tiles; world 800
   assert.strictEqual(REG['ui.playWidth'], 800); assert.strictEqual(REG['ui.playHeight'], 640);
   assert.strictEqual(REG['world.width'] / REG['world.tileSize'], 25); assert.strictEqual(REG['world.height'] / REG['world.tileSize'], 20);
 });
-check('flyovers cross roads; they never run along one for more than a tile', () => {
+check('flyovers pass square over every road beneath them (Edit 43)', () => {
   const P = Object.assign({}, D.REG, D.PROTO, D.OVERRIDES);
   assert(D.deckCrossOK([[400, -200], [400, 800]], { hz: true, off: 300 }, P, 800, 600), 'perpendicular crossing');
   assert(!D.deckCrossOK([[-200, 300], [1000, 300]], { hz: true, off: 300 }, P, 800, 600), 'road under the deck');
   assert(!D.deckCrossOK([[-200, 380], [1000, 380]], { hz: true, off: 300 }, P, 800, 600), 'road alongside, one lane off the deck edge');
   assert(D.deckCrossOK([[-200, 520], [1000, 520]], { hz: true, off: 300 }, P, 800, 600), 'parallel road well clear');
+  assert(!D.deckCrossOK([[300, -200], [500, 800]], { hz: true, off: 300 }, P, 800, 600), 'a diagonal crossing is not square');
+  const ring = Array.from({ length: 49 }, (_, i) => [400 + 160 * Math.cos(i / 48 * 2 * Math.PI), 320 + 160 * Math.sin(i / 48 * 2 * Math.PI)]);
+  assert(!D.deckCrossOK(ring, { hz: true, off: 320 }, P, 800, 640), 'a ring cannot pass under a deck');
 });
 check('city: the centre screen holds the landmark; flyovers cross whole rows or columns on pillars', () => {
   const want = { riverside: 'monument', market: 'fountain', interchange: 'roundabout', cbd: 'tower', campus: 'plate' };
@@ -575,6 +578,7 @@ check('city: the centre screen holds the landmark; flyovers cross whole rows or 
   }
   const t = new Sim('interchange', { 'proto.layout': 1 }), dks = t.district.decks;
   assert(dks.length === 2 && dks.every((dk) => dk.hz && dk.height === t.P['world.deckHeight']) && dks[0].line !== dks[1].line, 'one overground level: two decks on different rows (Edit 42)');
+  assert(dks.every((dk) => dk.line !== 1), 'Interchange decks stay off the roundabout row (Edit 43)');
 });
 check('city: the same layout plays the same; the next district follows in order', () => {
   const run = () => { const s = new Sim('market', { 'proto.layout': 2 }); for (let i = 0; i < 1800; i++) s.step({ mx: Math.sin(i / 40), my: Math.cos(i / 60), aPress: i % 89 === 0 }); return JSON.stringify(s.events); };
@@ -703,6 +707,47 @@ check('campus: a hit taken on a calibrated plate scores damage.plateMultiplier',
   const before = s.run.points, ct = { k: 0, car: { id: 'carX', spent: false, model: 'SEDAN-01', cls: 'sedan' }, closing: 100, ph: { raw: 100, assessed: 100, angle: 0, dvd: 1, un: 1 }, px: s.body.x + 10, py: s.body.y, zone: 'front', carState: 'cruise', cause: null, lunging: false, stopped: false };
   s.account([ct]); assert(near(s.run.points - before, 150), 'points ' + (s.run.points - before));
   void c;
+});
+// ---------- Edit 43: turn styles, buildings by storey and frontage, corner speed
+const radii = (pts) => pts.map((q, i) => { const a = pts[i - 1], c = pts[i + 1]; if (!a || !c) return Infinity; const A = Math.hypot(q[0] - a[0], q[1] - a[1]), B = Math.hypot(c[0] - q[0], c[1] - q[1]), C = Math.hypot(c[0] - a[0], c[1] - a[1]), cr = Math.abs((q[0] - a[0]) * (c[1] - a[1]) - (q[1] - a[1]) * (c[0] - a[0])); return cr < 1e-6 ? Infinity : A * B * C / (2 * cr); });
+check('roads: tight, circular and stepped turns across the baked layouts; tight corners at world.turnRadiusTight', () => {
+  const seen = {}, Rt = REG['world.turnRadiusTight'];
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) for (const q of new Sim(id, { 'proto.layout': k }).district.cells.flat()) {
+    seen[q.turns] = (seen[q.turns] || 0) + 1;
+    if (q.turns === 'tight' && q.center.length > 2) { const m = Math.min(...radii(q.center)); assert(m <= Rt + 2, id + '/' + k + ' tight corner radius ' + m.toFixed(1)); }
+  }
+  for (const t of ['tight', 'circular', 'stepped']) assert(seen[t] > 0, 'no ' + t + ' screens');
+});
+check('buildings: single, double and tower storeys; none inside the setback; frontage rows face the road at one line', () => {
+  const st = REG['world.storeyHeight'], front = REG['world.laneWidth'] + D.PROTO['proto.shoulderWidth'] + REG['world.buildingSetback'], n = { 1: 0, 2: 0, tower: 0 };
+  let atLine = 0, near = 0;
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
+    const s = new Sim(id, { 'proto.layout': k });
+    for (const q of s.district.cells.flat()) {
+      const dist = D.roadDist(q.level.center);
+      for (const b of q.level.statics.filter((x) => x.kind === 'block' && !x.landmark)) {
+        assert.strictEqual(b.height % st, 0, 'whole storeys'); if (b.tower) n.tower++; else n[b.height / st]++;
+        let m = Infinity; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) m = Math.min(m, dist(b.x + b.w * i / 8, b.y + b.h * j / 8));
+        assert(m >= front - 1.5, id + '/' + k + ' block inside the setback ' + m.toFixed(1));
+        if (m < front + 40) { near++; if (m <= front + 1) atLine++; }
+      }
+    }
+  }
+  assert(n[1] > 0 && n[2] > 0 && n.tower > 0, 'tiers ' + JSON.stringify(n));
+  assert(atLine / near >= 0.8, 'frontage on the line: ' + atLine + ' of ' + near);
+});
+check('corner speed: a car takes a tight corner no faster than √(traffic.cornerAccel × radius)', () => {
+  let found = null;
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) { const sm = new Sim(id, { 'proto.layout': k }); for (const q of sm.district.cells.flat()) if (!found && q.turns === 'tight' && q.center.length > 2) found = { id, k, q }; }
+  assert(found, 'a tight screen');
+  const s = new Sim(found.id, { 'proto.layout': found.k, 'run.appearances.road': 0 }); s.checkTerminal = () => {};
+  const Dd = s.district; Dd.cur = found.q.cell.slice(); s.level = D.cellLevel(Dd, Dd.cur, s.P); s.cars = []; s.body.x = -500; s.body.y = -500;
+  const lane = s.level.lanes[0], rr = radii(lane.pts), i = rr.indexOf(Math.min(...rr)), sC = lane.cum[i];
+  const c = s.newCar('carC', 'sedan', 0, lane, 40, 1); s.cars.push(c);
+  let vAt = null;
+  for (let t = 0; t < 900 && vAt == null; t++) { s.step({}); if (c.s + c.L / 2 >= sC) vAt = c.v; }
+  const vMax = Math.sqrt(s.P['traffic.cornerAccel'] * rr[i]);
+  assert(vAt != null && vAt <= vMax + 2 && vMax < c.cruise, 'speed at the corner ' + (vAt && vAt.toFixed(1)) + ' vs ' + vMax.toFixed(1));
 });
 for (const id of D.DISTRICT_LIST) {
   check(`smoke ${id}: 5 min scripted play across screens, no NaN`, () => {

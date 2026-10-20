@@ -34,6 +34,9 @@
     jersey: '#C9D3DA', jerseyTop: '#EEF2F4', jerseyLed: '#9AA8B1', jerseyO: '#5E6F7B',
     // surfaces (D18): puddle patches; gates (D24): edge marks in cue.secondary
     puddle: '#93BFD3', puddleRim: '#DDF3FB', puddleLip: '#6F97AB', puddleHi: '#FFFFFF', gate: '#4A5A66',
+    // levels (Edit 43): the deck is pale concrete, the underground a tiled passage; car lights wash the ground
+    deck: '#D9DFE3', deck2: '#C2CBD1', deckJoint: '#A9B5BD', column: '#C9D3DA', columnD: '#9AA8B1', tile: '#CDEBF1', tile2: '#9FD3DF',
+    beam: '#FFF6DC', brakeGlow: '#E4442E', bldgRoof1: '#F4F8FA',
   };
   // Chongqing night: dark ground, LED towers, lime-uplit planting, river reflections. Cues turn light-on-dark.
   // Yellow stays the dummy's alone; red stays the warning's alone (no red or yellow décor in the field).
@@ -64,6 +67,8 @@
     bldgLed: ['#3FD0FF', '#2F6BFF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], bldgOutline: '#05070B', spill: true,
     jersey: '#3A4252', jerseyTop: '#6B7894', jerseyLed: '#3FD0FF', jerseyO: '#05070B',
     puddle: '#1B2B45', puddleRim: '#5B7BB0', puddleLip: '#0E1422', puddleHi: '#BFEFFF', gate: '#7FA8BC',
+    deck: '#3B4459', deck2: '#323A4D', deckJoint: '#262C3B', column: '#4A5470', columnD: '#262D40', tile: '#103A44', tile2: '#1E6170',
+    beam: '#E8F7FF', brakeGlow: '#FF3A3A', bldgRoof1: '#252E44',
   };
   // Cyber: the night palette with a city instead of parkland. Decks for lawns, blocks for trees, jersey barriers for hedges.
   const CYBER = { scenery: 'city', grass: '#10141D', grass2: '#161B26', grass3: '#1D2331', flowers: 0 };
@@ -84,6 +89,7 @@
       x = Math.floor(x); y = Math.floor(y);
       if (a <= 0 || x < 0 || y < 0 || x >= this.w || y >= this.h) return;
       const i = y * this.w + x;
+      if (this.layer && !this.d[i]) return; // a layer buffer keeps its empty pixels empty
       if (a >= 1) { this.d[i] = c; return; }
       const s = this.d[i], r = s & 255, g = (s >>> 8) & 255, b = (s >>> 16) & 255;
       this.d[i] = (0xFF000000 | (Math.round(b + (((c >>> 16) & 255) - b) * a) << 16) | (Math.round(g + (((c >>> 8) & 255) - g) * a) << 8) | Math.round(r + ((c & 255) - r) * a)) >>> 0;
@@ -92,6 +98,7 @@
       x = Math.floor(x); y = Math.floor(y);
       if (x < 0 || y < 0 || x >= this.w || y >= this.h) return;
       const i = y * this.w + x, s = this.d[i];
+      if (this.layer && !s) return;
       this.d[i] = (0xFF000000 | (Math.round(((s >>> 16) & 255) * k) << 16) | (Math.round(((s >>> 8) & 255) * k) << 8) | Math.round((s & 255) * k)) >>> 0;
     }
     rect(x0, y0, x1, y1, c) { for (let y = Math.floor(y0); y <= y1; y++) for (let x = Math.floor(x0); x <= x1; x++) this.put(x, y, c); }
@@ -705,36 +712,49 @@
       },
     };
   }
-  // City block (decoration): roof lifted by H, south face with lit windows and a vertical LED sign of abstract glyphs.
-  function building(wpx, hpx, H, r, led) {
+  // City block (Edit 43): drawn by storeys. H = storeys × the storey's extrusion. Single storey: a pale roof with plant and a
+  // lit shopfront. Double: a window row over the shopfront. Tower (3+ storeys): window rows, LED crown, lit seams, a sign.
+  function building(wpx, hpx, H, r, led, storeys) {
+    const n = Math.max(1, storeys || Math.round(H / 5)), tower = n >= 3, sh = H / n;
     const S = spr(wpx, hpx + H, 0, H), o = K.bldgOutline;
     const P = (x, y, c) => sput(S, x, y + H, c); // y relative to the footprint top; roof spans -H .. hpx - H - 1
-    const top = -H, face0 = hpx - H;
-    for (let y = top; y < face0; y++) for (let x = 0; x < wpx; x++) P(x, y, K.bldgRoof);
-    for (let x = 0; x < wpx; x++) { P(x, top, led); P(x, face0 - 1, K.bldgEdge); }
+    const top = -H, face0 = hpx - H, roof = n === 1 ? K.bldgRoof1 : K.bldgRoof;
+    for (let y = top; y < face0; y++) for (let x = 0; x < wpx; x++) P(x, y, n === 1 && (y - top) % 3 === 2 ? K.bldgEdge : roof); // single storey: a ribbed shed roof
+    for (let x = 0; x < wpx; x++) { P(x, top, n === 1 ? K.bldgEdge : led); P(x, face0 - 1, K.bldgEdge); }
     for (let y = top; y < face0; y++) { P(0, y, K.bldgEdge); P(wpx - 1, y, K.bldgEdge); }
-    for (let k = 0, n = 1 + Math.floor(r() * 3); k < n; k++) { // rooftop plant
+    if (n === 1) { // single storey: skylight strip and a row of AC units
+      const sy = top + 2 + Math.floor(r() * Math.max(1, face0 - top - 6));
+      for (let x = 3; x < wpx - 3; x++) if (x % 3) P(x, sy, K.bldgEdge);
+      for (let x = 3; x + 3 < wpx - 2; x += 6) if (r() < 0.7) for (let k = 0; k < 2; k++) { P(x, sy + 2 + k, K.bldgUnit); P(x + 1, sy + 2 + k, k ? K.bldgUnitD : K.bldgUnit); }
+    } else for (let k = 0, m = tower ? 1 : 1 + Math.floor(r() * 3); k < m; k++) { // rooftop plant
       const ux = 2 + Math.floor(r() * Math.max(1, wpx - 8)), uy = top + 2 + Math.floor(r() * Math.max(1, face0 - top - 6));
       for (let y = 0; y < 3; y++) for (let x = 0; x < 4; x++) P(ux + x, uy + y, y === 2 ? K.bldgUnitD : K.bldgUnit);
     }
     const lit = [led, led, K.white];
-    for (let y = face0; y < hpx; y++) for (let x = 0; x < wpx; x++) {
-      const win = x % 2 === 1 && (y - face0) % 3 === 1;
-      P(x, y, win ? (r() < 0.45 ? lit[Math.floor(r() * lit.length)] : K.bldgDark) : K.bldgFace);
+    for (let y = face0; y < hpx; y++) {
+      const up = hpx - 1 - y, k = Math.min(n - 1, Math.floor(up / sh)), u = up - Math.floor(k * sh); // storey k (0 = street), row u from its floor
+      for (let x = 0; x < wpx; x++) {
+        let c;
+        if (k === 0 && !tower) c = u === 0 ? K.bldgDark : u >= Math.round(sh) - 1 ? led : x % 5 === 0 ? K.bldgDark : (x % 5 === 2 && r() < 0.4 ? K.white : mixK(led, K.bldgFace, 0.55)); // shopfront
+        else if (u >= Math.round(sh) - 1) c = K.bldgEdge; // floor slab
+        else c = x % 2 === 1 && u === 2 ? (r() < 0.45 ? lit[Math.floor(r() * lit.length)] : K.bldgDark) : K.bldgFace;
+        P(x, y, c);
+      }
     }
-    if (H >= 40) { // tower (Edit 41): an LED crown round the roof and lit seams down the face
+    if (tower) { // LED crown round the roof and lit seams down the face
       for (let x = 1; x < wpx - 1; x++) { P(x, top + 1, led); if (x % 2) P(x, top + 2, led); }
       for (let y = face0; y < hpx - 1; y += 1) if ((y - face0) % 6 < 4) { P(1, y, led); P(wpx - 2, y, led); }
     }
-    if (wpx >= 20 && H >= 12) { // vertical LED sign: glyph blocks meant as texture, not reading
-      const sx = 3 + Math.floor(r() * (wpx - 10));
-      for (let y = face0 + 1; y < hpx - 1; y++) for (let x = sx; x < sx + 5; x++) P(x, y, led);
-      for (let gy = face0 + 2; gy + 3 < hpx - 1; gy += 5) for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) if (r() < 0.55) P(sx + 1 + x, gy + y, K.bldgDark);
+    if (n >= 2 && wpx >= 20) { // vertical LED sign: glyph blocks meant as texture, not reading
+      const sx = 3 + Math.floor(r() * (wpx - 10)), y0 = face0 + 1, y1 = tower ? hpx - 1 : hpx - Math.round(sh);
+      for (let y = y0; y < y1; y++) for (let x = sx; x < sx + 5; x++) P(x, y, led);
+      for (let gy = y0 + 1; gy + 3 < y1; gy += 5) for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) if (r() < 0.55) P(sx + 1 + x, gy + y, K.bldgDark);
     }
     for (let y = top; y < hpx; y++) { P(0, y, y < face0 ? K.bldgEdge : o); P(wpx - 1, y, y < face0 ? K.bldgEdge : o); }
     for (let x = 0; x < wpx; x++) P(x, hpx - 1, o);
     return edgeRim(S, o, K.bldgRim, K.bldgRimD);
   }
+  function mixK(a, b, k) { const p = [a & 255, (a >>> 8) & 255, (a >>> 16) & 255], q = [b & 255, (b >>> 8) & 255, (b >>> 16) & 255], m = p.map((v, i) => Math.round(v + (q[i] - v) * k)); return (0xFF000000 | (m[2] << 16) | (m[1] << 8) | m[0]) >>> 0; }
   function jersey(wpx, hpx, e) { // jersey barrier on its footprint (anchor = footprint top-left): lit top, face with LED dots
     const S = spr(wpx, hpx + e, 0, e), P = (x, y, c) => sput(S, x, y + e, c), horiz = wpx >= hpx;
     for (let y = -e; y < hpx; y++) for (let x = 0; x < wpx; x++) {
@@ -786,25 +806,26 @@
   // Hard shoulders outside solid edge lines; the girder face hangs below the south edge to show the height.
   const LAMP_H = 9;
   function deck(dk, P) {
-    const ext = Math.round(dk.height * P['proto.art.extrusion'] / U), wpx = Math.round(P['world.deckWidth'] / U), face = Math.max(4, Math.round(ext / 2));
+    const ext = Math.round(dk.height * P['proto.art.extrusion'] / U), wpx = Math.round(P['world.deckWidth'] / U), face = 4; // thin girder: the columns show below it
     const along = dk.hz ? AW : AH, lane = Math.round(P['world.laneWidth'] / U), pw = Math.max(2, Math.round(P['world.parapetWidth'] / U)), mid = Math.round(wpx / 2);
     const S = dk.hz ? spr(along, LAMP_H + wpx + face, 0, LAMP_H) : spr(wpx, along, 0, 0);
     const put = (a, b, c) => (dk.hz ? sput(S, a, b + LAMP_H, c) : sput(S, b, a, c)); // a along the deck, b across (0 = north / west)
-    const led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane, glow = c32(mixHex(PAL.road, PAL.head || PAL.white, 0.22));
+    const led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane, glow = c32(mixHex(PAL.deck2, PAL.head || PAL.white, 0.22));
     const gaps = (dk.gaps || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]);
     const inGap = (a, sd) => gaps.some(([g0, g1, s2]) => s2 === sd && a >= g0 && a < g1);
     const nearGap = (a, sd) => gaps.some(([g0, g1, s2]) => s2 === sd && a >= g0 - 12 && a < g1 + 12);
     for (let a = 0; a < along; a++) for (let b = 0; b < wpx + (dk.hz ? face : 0); b++) {
       let c;
       const sd = b < mid ? -1 : 1, pb = sd < 0 ? b : wpx - 1 - b; // depth into the parapet from the outer edge
-      if (b >= wpx) c = b === wpx + face - 1 ? K.bldgOutline : b === wpx ? K.jerseyTop : (a % 8 < 2 ? K.bldgDark : (b - wpx) % 2 ? K.bldgEdge : K.bldgFace); // girder face: lit lip, ribs
-      else if (pb < pw + 1 && inGap(a, sd)) c = pb === 0 ? ((a % 3) ? K.road2 : K.bldgDark) : K.road2; // broken parapet: the deck edge shows
+      if (b >= wpx) c = b === wpx + face - 1 ? K.bldgOutline : b === wpx ? K.jerseyTop : (a % 8 < 2 ? K.columnD : K.column); // girder face: lit lip, ribs
+      else if (pb < pw + 1 && inGap(a, sd)) c = pb === 0 ? ((a % 3) ? K.deckJoint : K.bldgDark) : K.deck2; // broken parapet: the deck edge shows
       else if (pb === 0) c = K.jerseyO;
       else if (pb === 1) c = (a % 6 < 3) ? led : K.jerseyTop; // parapet LED line
       else if (pb < pw + 1) c = K.jersey;
       else if (Math.abs(b - mid) === lane) c = K.lane; // solid edge lines: the hard shoulders lie outside them
-      else if (b === mid && a % 18 < 10) c = K.lane;
-      else c = Math.abs(b - mid) > lane ? K.road2 : K.road;
+      else if (b === mid && a % 24 < 14) c = K.lane; // long highway dashes
+      else if (a % 32 === 0) c = K.deckJoint; // expansion joints across the deck
+      else c = Math.abs(b - mid) > lane ? K.deck2 : K.deck; // pale concrete: the highway is never the asphalt below
       put(a, b, c);
       if (pb < pw + 1 && pb > 0 && !inGap(a, sd) && (inGap(a - 1, sd) || inGap(a + 1, sd))) put(a, b, K.white); // snapped ends (never warning red: canon)
     }
@@ -841,7 +862,8 @@
   }
   // Stairs (anchor = footprint top-left). Up to a deck: lit treads rising to the head. Down to an underpass: a subway
   // entrance, treads darkening into the passage, railings on both sides.
-  function stairs(st) {
+  function stairs(st, lift) {
+    if (st.to === 2 && st.axis === 'y' && lift) return stairsUp(st, lift);
     const w = Math.round(st.w / U), h = Math.round(st.h / U), S = spr(w, h, 0, 0), ay = st.axis === 'y', n = ay ? h : w, up = st.to === 2;
     const headAtStart = st.high < st.low; // the head (high end) lies at the low coordinate
     for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
@@ -985,15 +1007,35 @@
       const band = dk.hz ? { x: 0, y: dk.off - P['world.deckWidth'] / 2, w: AW * U, h: P['world.deckWidth'] } : { x: dk.off - P['world.deckWidth'] / 2, y: 0, w: P['world.deckWidth'], h: AH * U };
       rectShadow(B, band, dk.height, P);
     }
-    for (const st of level.statics) if (st.kind !== 'river' && (!PAL.spill || st.kind !== 'block')) rectShadow(B, st, st.height || P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
+    for (const st of level.statics) if (st.kind !== 'river' && !st.deck && (!PAL.spill || st.kind !== 'block' || st.storeys)) rectShadow(B, st, st.height || P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
     for (const st of level.stairs || []) if (st.to === 0) blit(B, stairs(st), Math.round(st.x / U), Math.round(st.y / U)); // subway entrances: below the ground line
     edgeMarks(B, level);
     return B;
   }
 
+  // An up-stair seen in the oblique view (Edit 43): the head rises by the deck's lift, so the flight stretches toward a deck to
+  // the north and steepens toward a deck to the south. Anchor = footprint top-left; sprite rows run from the lifted head.
+  function stairsUp(st, lift) {
+    const w = Math.round(st.w / U), h = Math.round(st.h / U), headTop = st.high < st.low, S = spr(w, h + lift, 0, lift), led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane;
+    const rowY = (j) => j - Math.round((headTop ? 1 - j / (h - 1) : j / (h - 1)) * lift);
+    for (let j = 0; j < h; j++) {
+      const t = headTop ? 1 - j / (h - 1) : j / (h - 1), y0 = rowY(j), y1 = j + 1 < h ? rowY(j + 1) : y0 + 1, tread = j % 3 === 0;
+      for (let y = Math.min(y0, y1 - 1); y <= Math.max(y0, y1 - 1); y++) for (let i = 0; i < w; i++) {
+        const rail = i === 0 || i === w - 1;
+        sput(S, i, y + lift, rail ? (j % 4 < 2 ? led : K.jerseyTop) : tread ? K.jerseyO : t > 0.66 ? K.deck : t > 0.33 ? K.deck2 : K.pave2);
+      }
+    }
+    return S;
+  }
+  // Deck column (Edit 43): concrete, lit on the left, from its footprint up to the deck's underside.
+  function column(wpx, hpx, lift) {
+    const S = spr(wpx, hpx + lift, 0, lift);
+    for (let y = -lift; y < hpx; y++) for (let x = 0; x < wpx; x++) sput(S, x, y + lift, x === 0 ? K.jerseyTop : x === wpx - 1 || y === hpx - 1 ? K.columnD : y < -lift + 2 ? K.columnD : K.column);
+    return S;
+  }
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
-    monument, fountain, deck, wall, booth, stairs, LAMP_H,
+    monument, fountain, deck, wall, booth, stairs, column, mixK, LAMP_H,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

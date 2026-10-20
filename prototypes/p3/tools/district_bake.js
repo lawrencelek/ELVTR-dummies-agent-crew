@@ -7,7 +7,7 @@ const BOT_SECS = 150; // the start screen must yield a write-off to the bot with
 const args = process.argv.slice(2), ki = args.indexOf('--keep');
 const N = +(args.find((a) => /^\d+$/.test(a)) || 40), KEEP = ki >= 0 ? +args[ki + 1] : 3;
 const P = Object.assign({}, sim.REG, sim.PROTO, sim.OVERRIDES);
-const out = { version: 'edit42-2026-10-20', size: [P['world.width'], P['world.height']], note: 'Layouts per district. Regenerate with tools/district_bake.js; playtest before replacing.', districts: {} };
+const out = { version: 'edit43-2026-10-21', size: [P['world.width'], P['world.height']], note: 'Layouts per district. Regenerate with tools/district_bake.js; playtest before replacing.', districts: {} };
 for (const id of sim.DISTRICT_LIST) {
   const kept = [], sigs = new Set(), report = [];
   for (let k = 0; k < N && kept.length < KEEP; k++) {

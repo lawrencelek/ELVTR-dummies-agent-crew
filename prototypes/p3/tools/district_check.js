@@ -1,4 +1,4 @@
-// City district contract (GDD Edit 41 §7.9 clauses 11–17; Edit 42 clauses 18–20). Used by the baking tool and by test_sim.js.
+// City district contract (GDD Edit 41 §7.9 clauses 11–17; Edit 42 clauses 18–20; Edit 43 clauses 17 and 21). Used by the baking tool and by test_sim.js.
 // Returns a list of problems; an empty list means the layout passes.
 const rdist = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
 function reach(lv, R, W, H) { // flood fill from the spawns over open ground, 4-unit grid
@@ -17,8 +17,8 @@ function checkCity(D, P, sim) {
   for (let y = 0; y < D.rows; y++) for (let x = 0; x < D.cols; x++) {
     const lv = sim.cellLevel(D, [x, y], P), tag = id + ' ' + name([x, y]);
     const blocks = lv.statics.filter((q) => q.kind === 'block'), built = blocks.reduce((n, q) => n + q.w * q.h, 0);
-    const open = W * H - (lv.decks || []).length * P['world.deckWidth'] * W, share = built / open; // outside flyover bands (Edit 42; decks are horizontal)
-    if (share < dp('blockShare') - 0.08 || built / (W * H) > P['world.occludedFractionMax']) out.push(tag + ' blocks ' + share.toFixed(3));
+    const open = sim.buildableArea(lv.center, lv.ring, lv.decks, lv.statics, P), share = built / Math.max(1, open); // Edit 43: share of buildable ground
+    if ((open >= 0.2 * W * H && share < dp('blockShare') - 0.15) || built / (W * H) > P['world.occludedFractionMax']) out.push(tag + ' blocks ' + share.toFixed(3) + ' of buildable');
     if (lv.spawns.length < 3) out.push(tag + ' spawns ' + lv.spawns.length);
     // stair sides and checkpoint zones stop the dummy on the ground (Edit 42)
     const ground = { statics: lv.statics.concat((lv.stairs || []).map((q) => ({ x: q.x, y: q.y, w: q.w, h: q.h })), (lv.checkpoints || []).filter((cp) => !cp.deck).map((cp) => sim.checkZone(cp, P, W, H))), spawns: lv.spawns };
@@ -43,7 +43,15 @@ function checkCity(D, P, sim) {
     if ((lv.decks || []).length) {
       deckCells++;
       if (!lv.statics.some((q) => q.deck)) out.push(tag + ' flyover without pillars');
-      for (const dk of lv.decks) if (!sim.deckCrossOK(lv.center, dk, P, W, H) || (lv.ring && !sim.deckCrossOK(lv.ring, dk, P, W, H))) out.push(tag + ' flyover runs along the road'); // clause 17 (Edit 41.1)
+      for (const dk of lv.decks) if (!sim.deckCrossOK(lv.center, dk, P, W, H) || (lv.ring && !sim.deckCrossOK(lv.ring, dk, P, W, H))) out.push(tag + ' a road under a flyover is not square'); // clause 17 (Edit 43: perpendicular)
+    }
+    // 21. Buildings (Edit 43): none nearer a road than the frontage setback; heights in whole storeys
+    const front = P['world.laneWidth'] + P['proto.shoulderWidth'] + P['world.buildingSetback'], dist = sim.roadDist(lv.center), st = P['world.storeyHeight'];
+    for (const b of blocks) {
+      if (b.landmark) continue;
+      let m = Infinity; for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) m = Math.min(m, dist(b.x + b.w * i / 4, b.y + b.h * j / 4));
+      if (m < front - 1.5) { out.push(tag + ' building inside the setback (' + m.toFixed(0) + ')'); break; }
+      if (Math.abs(b.height / st - Math.round(b.height / st)) > 1e-6) { out.push(tag + ' building height not whole storeys'); break; }
     }
     // 18. Bounded: every outer edge is wall or river; a road leaves through a checkpoint
     const cell = D.cells[y][x], outerRoads = (cell.ends || []).filter((e) => e.outer), cps = lv.checkpoints || [];

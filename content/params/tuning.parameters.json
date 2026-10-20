@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit42-2026-10-20",
+ "registryVersion": "edit43-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–42 (20 October 2026)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–43 (20–21 October 2026)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -4192,12 +4192,12 @@
    "group": "World",
    "owner": "World",
    "label": "Flyover height",
-   "description": "Height of a flyover deck: the one overground level. Shows as the girder face and shadow; the deck surface is drawn on its true footprint.",
+   "description": "Height of a flyover deck, about 10 m. The deck and everything on it draw lifted by height × proto.art.extrusion (18 art px); its columns show beneath.",
    "unit": "world units",
    "type": "number",
-   "default": 60,
+   "default": 120,
    "status": "proposed",
-   "source": "Edit 41; Edit 42 (20 October)",
+   "source": "Edit 41; Edit 43 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4206,7 +4206,7 @@
    },
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "A deck reads as lifted: 9 art px at 0.3 extrusion"
+   "purpose": "Lifted far enough that the south row of columns reads under the girder"
   },
   {
    "id": "world.deckWidth",
@@ -4234,12 +4234,12 @@
    "group": "World",
    "owner": "World",
    "label": "Flyover pier spacing",
-   "description": "One pier under the deck centre line per spacing, never on the road or its pavement.",
+   "description": "Column pairs, one under each deck edge, at this spacing. Never on the road or its pavement.",
    "unit": "world units",
    "type": "number",
    "default": 160,
    "status": "proposed",
-   "source": "Edit 41 (20 October)",
+   "source": "Edit 41; Edit 43 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4355,28 +4355,6 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Playtest a layout by number"
-  },
-  {
-   "id": "world.deckParallelAngle",
-   "group": "World",
-   "owner": "World",
-   "label": "Flyover parallel limit",
-   "description": "A road within this angle of a flyover's direction, within a lane of its edge, may run beside it for at most world.tileSize.",
-   "unit": "degrees",
-   "type": "number",
-   "default": 30,
-   "status": "proposed",
-   "source": "Edit 41.1 (20 October)",
-   "editable": true,
-   "protectedReason": null,
-   "applyAt": "checkpoint",
-   "validation": {
-    "min": 0,
-    "max": 90
-   },
-   "integrationStatus": "prototype-p3",
-   "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Flyovers cross roads; they never run along them"
   },
   {
    "id": "world.parapetWidth",
@@ -4632,6 +4610,241 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Lower than any building; reads as a boundary"
+  },
+  {
+   "id": "world.deckCrossAngle",
+   "group": "World",
+   "owner": "World",
+   "label": "Deck crossing angle",
+   "description": "Within the deck band and one road half-width either side, a road under a flyover runs within this angle of square.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 5,
+   "status": "author-decided",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 15
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Flyovers always pass perpendicular to the road beneath"
+  },
+  {
+   "id": "world.deckColumn",
+   "group": "World",
+   "owner": "World",
+   "label": "Deck column",
+   "description": "Side of a deck column footprint. Solid on the ground.",
+   "unit": "world units",
+   "type": "number",
+   "default": 24,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 8
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wide enough to read as a column below the girder"
+  },
+  {
+   "id": "world.turnRadiusTight",
+   "group": "World",
+   "owner": "World",
+   "label": "Tight turn radius",
+   "description": "Centre-line radius of a tight corner, and of each corner of a stepped turn.",
+   "unit": "world units",
+   "type": "number",
+   "default": 64,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A city corner: the inner kerb nearly square"
+  },
+  {
+   "id": "world.turnRadiusWide",
+   "group": "World",
+   "owner": "World",
+   "label": "Circular turn radius",
+   "description": "Centre-line radius of a circular turn, where the straights allow it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 224,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 64
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A sweeping bend: cars hold more speed"
+  },
+  {
+   "id": "world.buildingSetback",
+   "group": "World",
+   "owner": "World",
+   "label": "Building setback",
+   "description": "Forecourt between the pavement and every building front. Spawns stand in it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 48,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 30
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Buildings face the road at one line; the dummy fits beside the pavement"
+  },
+  {
+   "id": "world.storeyHeight",
+   "group": "World",
+   "owner": "Presentation",
+   "label": "Storey height",
+   "description": "One storey, about 3 m. Buildings are 1 or 2 storeys, or towers of world.towerHeightMin–Max rounded to storeys.",
+   "unit": "world units",
+   "type": "number",
+   "default": 36,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 12
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Single, double and tower read apart by face and shadow"
+  },
+  {
+   "id": "traffic.cornerAccel",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Corner acceleration",
+   "description": "Lateral limit in a bend: speed ≤ √(this × radius), braked for at traffic.comfortBraking.",
+   "unit": "world units/s²",
+   "type": "number",
+   "default": 60,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Cars slow for tight corners (about 50 at the tight radius): a target",
+   "designBound": "Above 150 tight corners no longer slow a sedan."
+  },
+  {
+   "id": "proto.art.beamLength",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Headlight reach",
+   "description": "Headlight beams follow the route ahead for this distance. They reach the screen before the car.",
+   "unit": "world units",
+   "type": "number",
+   "default": 200,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About 1.4 s of warning at cruise; objects in a beam cast shadows"
+  },
+  {
+   "id": "proto.art.beamAlpha",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Headlight strength",
+   "description": "Beam colour-math strength near the car, in three falloff bands. Day palette × 0.45.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.22,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 0.6
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Visible on dark ground, never brighter than a cue"
+  },
+  {
+   "id": "proto.art.brakeLength",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Brake glow length",
+   "description": "Red wash on the ground behind a braking car.",
+   "unit": "world units",
+   "type": "number",
+   "default": 48,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A braking car reads from behind, not only by its lamps"
+  },
+  {
+   "id": "proto.art.brakeAlpha",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Brake glow strength",
+   "description": "Strength of the brake wash nearest the car, in three bands.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.35,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 0.6
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A soft wash: the warning stays the only solid red"
   }
  ],
  "tables": {
@@ -5727,6 +5940,166 @@
      "layer": "play",
      "use": "Screen-edge gate marks (D24); cue.secondary value",
      "scheme": "day"
+    },
+    {
+     "role": "field.deck",
+     "hex": "#3B4459",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Flyover deck surface: pale concrete (Edit 43)",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.deck2",
+     "hex": "#323A4D",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck hard shoulder",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.deckJoint",
+     "hex": "#262C3B",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck expansion joints",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.column",
+     "hex": "#4A5470",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck column and girder face",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.columnD",
+     "hex": "#262D40",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Column shade, girder ribs",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.tile",
+     "hex": "#103A44",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Underpass floor",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.tile2",
+     "hex": "#1E6170",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Underpass tile grid",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.beam",
+     "hex": "#E8F7FF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Headlight beam (colour math)",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.brakeGlow",
+     "hex": "#FF3A3A",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Brake wash on the ground (soft only)",
+     "scheme": "cyber"
+    },
+    {
+     "role": "structure.bldgRoof1",
+     "hex": "#252E44",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Single-storey roof",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.deck",
+     "hex": "#D9DFE3",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Flyover deck surface: pale concrete (Edit 43)",
+     "scheme": "day"
+    },
+    {
+     "role": "field.deck2",
+     "hex": "#C2CBD1",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck hard shoulder",
+     "scheme": "day"
+    },
+    {
+     "role": "field.deckJoint",
+     "hex": "#A9B5BD",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck expansion joints",
+     "scheme": "day"
+    },
+    {
+     "role": "field.column",
+     "hex": "#C9D3DA",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck column and girder face",
+     "scheme": "day"
+    },
+    {
+     "role": "field.columnD",
+     "hex": "#9AA8B1",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Column shade, girder ribs",
+     "scheme": "day"
+    },
+    {
+     "role": "field.tile",
+     "hex": "#CDEBF1",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Underpass floor",
+     "scheme": "day"
+    },
+    {
+     "role": "field.tile2",
+     "hex": "#9FD3DF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Underpass tile grid",
+     "scheme": "day"
+    },
+    {
+     "role": "field.beam",
+     "hex": "#FFF6DC",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Headlight beam (colour math)",
+     "scheme": "day"
+    },
+    {
+     "role": "field.brakeGlow",
+     "hex": "#E4442E",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Brake wash on the ground (soft only)",
+     "scheme": "day"
+    },
+    {
+     "role": "structure.bldgRoof1",
+     "hex": "#F4F8FA",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Single-storey roof",
+     "scheme": "day"
     }
    ],
    "retired": [
@@ -5786,7 +6159,7 @@
      "name": "blockShare",
      "type": "number",
      "unit": "ratio",
-     "note": "Share of the ground outside flyover bands (Edit 42)"
+     "note": "Share of buildable ground: inside walls and river, outside flyover bands and the road setback (Edit 43)"
     },
     {
      "name": "blockMax",
@@ -5795,10 +6168,10 @@
      "note": "Largest block side"
     },
     {
-     "name": "lowHeight",
+     "name": "doubleShare",
      "type": "number",
-     "unit": "world units",
-     "note": "Tallest non-tower block"
+     "unit": "ratio",
+     "note": "Share of non-tower buildings with two storeys; the rest have one (Edit 43)"
     },
     {
      "name": "towerShare",
@@ -5832,13 +6205,13 @@
      "quota": 1,
      "interval": 3,
      "vanShare": 0.2,
-     "blockShare": 0.22,
+     "blockShare": 0.38,
      "blockMax": 112,
-     "lowHeight": 60,
      "towerShare": 0,
      "puddleShare": 0.02,
      "jerseyShare": 0.06,
-     "decks": 0
+     "decks": 0,
+     "doubleShare": 0.3
     },
     {
      "id": "market",
@@ -5849,13 +6222,13 @@
      "quota": 2,
      "interval": 3,
      "vanShare": 0.45,
-     "blockShare": 0.24,
+     "blockShare": 0.42,
      "blockMax": 96,
-     "lowHeight": 50,
      "towerShare": 0,
      "puddleShare": 0.04,
      "jerseyShare": 0.05,
-     "decks": 0
+     "decks": 0,
+     "doubleShare": 0.7
     },
     {
      "id": "interchange",
@@ -5866,13 +6239,13 @@
      "quota": 2,
      "interval": 2.8,
      "vanShare": 0.3,
-     "blockShare": 0.2,
+     "blockShare": 0.36,
      "blockMax": 160,
-     "lowHeight": 100,
      "towerShare": 0.15,
      "puddleShare": 0.02,
      "jerseyShare": 0.1,
-     "decks": 2
+     "decks": 2,
+     "doubleShare": 0.6
     },
     {
      "id": "cbd",
@@ -5883,13 +6256,13 @@
      "quota": 3,
      "interval": 2.6,
      "vanShare": 0.3,
-     "blockShare": 0.25,
+     "blockShare": 0.42,
      "blockMax": 160,
-     "lowHeight": 120,
      "towerShare": 0.5,
      "puddleShare": 0.02,
      "jerseyShare": 0.08,
-     "decks": 1
+     "decks": 1,
+     "doubleShare": 0.8
     },
     {
      "id": "campus",
@@ -5900,13 +6273,13 @@
      "quota": 4,
      "interval": 2.5,
      "vanShare": 0.4,
-     "blockShare": 0.2,
+     "blockShare": 0.36,
      "blockMax": 160,
-     "lowHeight": 80,
      "towerShare": 0.1,
      "puddleShare": 0.01,
      "jerseyShare": 0.08,
-     "decks": 1
+     "decks": 1,
+     "doubleShare": 0.9
     }
    ]
   }

@@ -44,16 +44,20 @@
     'world.districtColumns': 3, 'world.districtRows': 3, 'world.gateWidth': 48, 'world.flipSeconds': 0.4,
     'world.blockShare': 0.25, 'world.jerseyShare': 0.08, 'world.occludedFractionMax': 0.3,
     // Edit 41 (20 Oct): city districts. Rows of the registry's districts table, addressable as world.district.<id>.<field>.
-    'world.district.riverside.quota': 1, 'world.district.riverside.interval': 3, 'world.district.riverside.vanShare': 0.2, 'world.district.riverside.blockShare': 0.22, 'world.district.riverside.blockMax': 112, 'world.district.riverside.lowHeight': 60, 'world.district.riverside.towerShare': 0, 'world.district.riverside.puddleShare': 0.02, 'world.district.riverside.jerseyShare': 0.06, 'world.district.riverside.decks': 0,
-    'world.district.market.quota': 2, 'world.district.market.interval': 3, 'world.district.market.vanShare': 0.45, 'world.district.market.blockShare': 0.24, 'world.district.market.blockMax': 96, 'world.district.market.lowHeight': 50, 'world.district.market.towerShare': 0, 'world.district.market.puddleShare': 0.04, 'world.district.market.jerseyShare': 0.05, 'world.district.market.decks': 0,
-    'world.district.interchange.quota': 2, 'world.district.interchange.interval': 2.8, 'world.district.interchange.vanShare': 0.3, 'world.district.interchange.blockShare': 0.2, 'world.district.interchange.blockMax': 160, 'world.district.interchange.lowHeight': 100, 'world.district.interchange.towerShare': 0.15, 'world.district.interchange.puddleShare': 0.02, 'world.district.interchange.jerseyShare': 0.1, 'world.district.interchange.decks': 2,
-    'world.district.cbd.quota': 3, 'world.district.cbd.interval': 2.6, 'world.district.cbd.vanShare': 0.3, 'world.district.cbd.blockShare': 0.25, 'world.district.cbd.blockMax': 160, 'world.district.cbd.lowHeight': 120, 'world.district.cbd.towerShare': 0.5, 'world.district.cbd.puddleShare': 0.02, 'world.district.cbd.jerseyShare': 0.08, 'world.district.cbd.decks': 1,
-    'world.district.campus.quota': 4, 'world.district.campus.interval': 2.5, 'world.district.campus.vanShare': 0.4, 'world.district.campus.blockShare': 0.2, 'world.district.campus.blockMax': 160, 'world.district.campus.lowHeight': 80, 'world.district.campus.towerShare': 0.1, 'world.district.campus.puddleShare': 0.01, 'world.district.campus.jerseyShare': 0.08, 'world.district.campus.decks': 1,
-    'world.deckHeight': 60, 'world.deckWidth': 176, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
+    'world.district.riverside.quota': 1, 'world.district.riverside.interval': 3, 'world.district.riverside.vanShare': 0.2, 'world.district.riverside.blockShare': 0.38, 'world.district.riverside.blockMax': 112, 'world.district.riverside.doubleShare': 0.3, 'world.district.riverside.towerShare': 0, 'world.district.riverside.puddleShare': 0.02, 'world.district.riverside.jerseyShare': 0.06, 'world.district.riverside.decks': 0,
+    'world.district.market.quota': 2, 'world.district.market.interval': 3, 'world.district.market.vanShare': 0.45, 'world.district.market.blockShare': 0.42, 'world.district.market.blockMax': 96, 'world.district.market.doubleShare': 0.7, 'world.district.market.towerShare': 0, 'world.district.market.puddleShare': 0.04, 'world.district.market.jerseyShare': 0.05, 'world.district.market.decks': 0,
+    'world.district.interchange.quota': 2, 'world.district.interchange.interval': 2.8, 'world.district.interchange.vanShare': 0.3, 'world.district.interchange.blockShare': 0.36, 'world.district.interchange.blockMax': 160, 'world.district.interchange.doubleShare': 0.6, 'world.district.interchange.towerShare': 0.15, 'world.district.interchange.puddleShare': 0.02, 'world.district.interchange.jerseyShare': 0.1, 'world.district.interchange.decks': 2,
+    'world.district.cbd.quota': 3, 'world.district.cbd.interval': 2.6, 'world.district.cbd.vanShare': 0.3, 'world.district.cbd.blockShare': 0.42, 'world.district.cbd.blockMax': 160, 'world.district.cbd.doubleShare': 0.8, 'world.district.cbd.towerShare': 0.5, 'world.district.cbd.puddleShare': 0.02, 'world.district.cbd.jerseyShare': 0.08, 'world.district.cbd.decks': 1,
+    'world.district.campus.quota': 4, 'world.district.campus.interval': 2.5, 'world.district.campus.vanShare': 0.4, 'world.district.campus.blockShare': 0.36, 'world.district.campus.blockMax': 160, 'world.district.campus.doubleShare': 0.9, 'world.district.campus.towerShare': 0.1, 'world.district.campus.puddleShare': 0.01, 'world.district.campus.jerseyShare': 0.08, 'world.district.campus.decks': 1,
+    'world.deckHeight': 120, 'world.deckWidth': 176, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
     // Edit 42 (P3.1): three levels, bounded districts
     'world.parapetWidth': 8, 'world.deckLampSpacing': 128, 'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7,
     'world.dropSeconds': 0.35, 'damage.dropSpeed': 120, 'world.underpassChance': 0.5, 'world.wallThickness': 16, 'world.boomRange': 140, 'world.boomSeconds': 0.5,
-    'world.towerHeightMin': 220, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 160, 'damage.plateMultiplier': 1.5, 'world.deckParallelAngle': 30,
+    'world.towerHeightMin': 220, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 160, 'damage.plateMultiplier': 1.5,
+    // Edit 43 (P3.2): perpendicular crossings, turn styles, storeys and frontage, car lights
+    'world.deckCrossAngle': 5, 'world.turnRadiusTight': 64, 'world.turnRadiusWide': 224, 'world.buildingSetback': 48, 'world.storeyHeight': 36,
+    'traffic.cornerAccel': 60, 'world.deckColumn': 24,
+    'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
   const PROTO = {
@@ -474,7 +478,8 @@
       return got;
     };
     const keepDist = (x, y) => keep.reduce((m, k) => Math.min(m, rectDist(x, y, k)), Infinity);
-    const spawns = spread(verge(OUTER + 44, (x, y) => x >= B.l + 40 && x <= B.r - 40 && y >= B.t + 44 && y <= B.b - 40 && d(x, y) >= OUTER + 40 &&
+    const SB = P['world.buildingSetback'], FRONT = OUTER + SB, vSp = city ? OUTER + SB / 2 : OUTER + 44; // Edit 43: spawns stand in the forecourt
+    const spawns = spread(verge(vSp, (x, y) => x >= B.l + 40 && x <= B.r - 40 && y >= B.t + 44 && y <= B.b - 40 && d(x, y) >= vSp - 4 &&
       statics.every((st) => rectDist(x, y, st) >= 40) && keepDist(x, y) >= 20 && reserved.every((q) => rectDist(x, y, q) >= 32) && deckBands.every((q) => rectDist(x, y, q) >= 16)), 4)
       .map((q) => ({ x: Math.round(q.x), y: Math.round(q.y), f: Math.round(Math.atan2(q.py - q.y, q.px - q.x) / DEG) }));
     const cones = spread(verge(OUTER + 24, (x, y) => x >= B.l + 20 && x <= B.r - 20 && y >= B.t + 20 && y <= B.b - 20 && d(x, y) >= OUTER + 16 &&
@@ -487,7 +492,7 @@
       const o = run.c + side * (OUTER + 4) - (side < 0 ? 8 : 0);
       const rc = run.hz ? { x: Math.round(p - 22), y: Math.round(o), w: 44, h: 8, kind: 'jersey' } : { x: Math.round(o), y: Math.round(p - 22), w: 8, h: 44, kind: 'jersey' };
       if (!inside(rc, 4) || !offRoad(rc, OUTER + 2) || !clearKeep(rc, 8) || !statics.every((st) => !overlapGap(rc, st, 26))) continue;
-      if (!spawns.every((sp) => rectDist(sp.x, sp.y, rc) > 56) || !cones.every((cn) => rectDist(cn[0], cn[1], rc) > 26) || reserved.some((q) => overlapGap(rc, q, 8))) continue;
+      if (!spawns.every((sp) => rectDist(sp.x, sp.y, rc) > 56) || !cones.every((cn) => rectDist(cn[0], cn[1], rc) > 26) || reserved.some((q) => overlapGap(rc, q, 2 * BR + 6))) continue; // never across a stair foot
       jc.push(rc);
     }
     const jerseys = [];
@@ -514,10 +519,63 @@
       for (let k = 0; k < free.length; k++) if (free[k] && !seen[k]) return false;
       return true;
     };
-    const blocks = [], banned = new Set();
+    const blocks = [], banned = new Set(), storey = P['world.storeyHeight'];
     let area = 0;
-    const bMax = dp('blockMax', 160);
-    const ground = W * H - deckBands.reduce((n, q) => n + q.w * q.h, 0); // block share counts the ground outside flyover bands (Edit 42)
+    const bMax = dp('blockMax', 160), cap = P['world.occludedFractionMax'] * W * H; // never past the occlusion cap (7.9 clause 6)
+    const ground = city ? buildableArea(c, cell.ring, cell.decks, statics, P) : W * H - deckBands.reduce((n, q) => n + q.w * q.h, 0); // Edit 43: share of buildable ground
+    // building form (Edit 43): single- or double-storey (world.storeyHeight each; doubleShare), towers on a share of the larger lots
+    const form = (b) => {
+      if (!city) return { height: 60 + Math.round(r() * 8) * 10 };
+      if (b.w >= 96 && b.h >= 80 && r() < dp('towerShare', 0)) { const n = Math.round((P['world.towerHeightMin'] + r() * (P['world.towerHeightMax'] - P['world.towerHeightMin'])) / storey); return { height: n * storey, storeys: n, tower: true }; }
+      const n = r() < dp('doubleShare', 0.5) ? 2 : 1; return { height: n * storey, storeys: n };
+    };
+    const take = (rc) => { const blk = Object.assign({ x: rc.x, y: rc.y, w: rc.w, h: rc.h, kind: 'block' }, form(rc)); blocks.push(blk); mark(blk); area += blk.w * blk.h; return blk; };
+    // frontage rows (Edit 43, city): along every straight run, buildings face the road at one setback (FRONT from the centre line),
+    // world.pedestrianGap alleys between them. Lots from 64 to 160 wide, 64 to world.district.<id>.blockMax deep.
+    if (city) {
+      const thin = { jersey: 1, pillar: 1, barrier: 1 }, widths = [64, 80, 96, 112, 128, 160], depths = [64, 80, 96, 112, 128, 160].filter((v) => v <= bMax);
+      const lotOK = (rc) => {
+        if (rc.x < B.l || rc.y < B.t || rc.x + rc.w > B.r || rc.y + rc.h > B.b) return false;
+        if (!(rc.x === B.l || rc.x - B.l >= ALLEY) || !(rc.x + rc.w === B.r || B.r - rc.x - rc.w >= ALLEY) || !(rc.y === B.t || rc.y - B.t >= ALLEY) || !(rc.y + rc.h === B.b || B.b - rc.y - rc.h >= ALLEY)) return false;
+        for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) if (d(rc.x + rc.w * i / 4, rc.y + rc.h * j / 4) < FRONT - 1) return false;
+        if (keep.some((k) => overlapGap(rc, k, 4)) || stairRects.some((q) => overlapGap(rc, q, ALLEY)) || deckBands.some((q) => overlapGap(rc, q, 8)) || cpZones.some((q) => overlapGap(rc, q, 8))) return false;
+        if (focalPatches.some((q) => overlapGap(rc, q, 12)) || reserved.some((q) => overlapGap(rc, q, 12))) return false;
+        if (statics.some((st) => !edgeKinds[st.kind] && overlapGap(rc, st, thin[st.kind] ? 2 * BR + 2 : ALLEY))) return false;
+        if (spawns.some((sp) => rectDist(sp.x, sp.y, rc) < BR + 6) || cones.some((cn) => rectDist(cn[0], cn[1], rc) < 24)) return false;
+        return !blocks.some((q) => overlapGap(rc, q, ALLEY - 1));
+      };
+      const dMaxAll = Math.max(...depths);
+      const runs = straightRuns(c, W, H).sort((p, q) => (q.b - q.a) - (p.b - p.a));
+      for (const run of runs) for (const side of [-1, 1]) {
+        const lo = run.hz ? B.l : B.t, hi = run.hz ? B.r : B.b, back = side < 0 ? run.c - (run.hz ? B.t : B.l) : (run.hz ? B.b : B.r) - run.c;
+        const a0 = Math.max(run.a <= lo + ALLEY ? lo : run.a, lo), a1 = Math.min(run.b >= hi - ALLEY ? hi : run.b, hi);
+        for (let front = FRONT, k = 0; k < 4 && front + 48 <= back; k++) { // rows behind rows, a service lane (world.pedestrianGap) between them
+          const dRow = pick(r, depths);
+          let any = false;
+          for (let p = Math.ceil(a0 / 8) * 8; p + 48 <= a1;) {
+            const w0 = pick(r, widths);
+            let got = null;
+            for (const w of [w0].concat(widths.filter((v) => v < w0).reverse())) {
+              let e = Math.min(p + w, a1); if (e - p < 48) break;
+              if (a1 - e > 0 && a1 - e < ALLEY + 48) e = a1; // the last lot runs flush to the end
+              for (let dpt of depths.filter((v) => v <= dRow).reverse()) {
+                const rest = back - front - dpt; if (rest < 0) continue;
+                if (rest > 0 && rest < ALLEY && dpt + rest <= dMaxAll + ALLEY) dpt += rest; // flush to the wall or screen edge behind
+                const near = side < 0 ? run.c - front - dpt : run.c + front;
+                const rc = run.hz ? { x: p, y: near, w: e - p, h: dpt } : { x: near, y: p, w: dpt, h: e - p };
+                if (lotOK(rc) && reachable(statics.concat(blocks, [rc], stairRects, cpZones))) { got = rc; break; }
+              }
+              if (got) break;
+            }
+            if (got && area + got.w * got.h > cap) got = null;
+            if (got) { take(got); any = true; p = (run.hz ? got.x + got.w : got.y + got.h) + ALLEY; } else p += 16;
+          }
+          if ((!any && k > 0) || area >= dp('blockShare', P['world.blockShare']) * ground) break; // rows behind rows until the share is met
+          front += dRow + ALLEY;
+        }
+      }
+    }
+    // back lots: greedy, largest legal footprint first on a GRID-unit lattice, never nearer the road than the frontage line
     for (let iter = 0; iter < 60 && area < dp('blockShare', P['world.blockShare']) * ground; iter++) {
       const sat = new Int32Array((GW + 1) * (GH + 1));
       for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) sat[(j + 1) * (GW + 1) + i + 1] = forb[j * GW + i] + sat[j * (GW + 1) + i + 1] + sat[(j + 1) * (GW + 1) + i] - sat[j * (GW + 1) + i];
@@ -528,20 +586,15 @@
         for (let y = B.t; y + h <= B.b; y += GRID) for (let x = B.l; x + w <= B.r; x += GRID) {
           if (!(x === B.l || x - B.l >= ALLEY) || !(x + w === B.r || B.r - (x + w) >= ALLEY) || !(y + h === B.b || B.b - (y + h) >= ALLEY) || !(y === B.t || y - B.t >= ALLEY)) continue;
           if (bad(x, y, w, h) || banned.has(x + ',' + y + ',' + w + ',' + h)) continue;
+          if (city && [[x, y], [x + w, y], [x, y + h], [x + w, y + h], [x + w / 2, y], [x + w / 2, y + h], [x, y + h / 2], [x + w, y + h / 2]].some(([px, py]) => d(px, py) < FRONT + ALLEY)) continue; // back lots stand behind the frontage line
           const align = blocks.reduce((n, b) => n + (b.y === y || b.y + b.h === y + h ? 1 : 0) + (b.x === x || b.x + b.w === x + w ? 1 : 0), 0) + (x === B.l || x + w === B.r ? 1 : 0) + (y + h === B.b || y === B.t ? 1 : 0);
           const score = w * h + align * 400 + r() * 50;
           if (!best || score > best.score) best = { x, y, w, h, score };
         }
       }
-      if (!best) break;
-      const blk = { x: best.x, y: best.y, w: best.w, h: best.h, kind: 'block', height: 60 + Math.round(r() * 8) * 10 };
-      if (city) { // building form: towers on a share of the larger footprints, low-rise below dp('lowHeight')
-        const tower = best.w >= 96 && best.h >= 80 && r() < dp('towerShare', 0), lo = 30, hi = dp('lowHeight', 140);
-        blk.height = tower ? Math.round((P['world.towerHeightMin'] + r() * (P['world.towerHeightMax'] - P['world.towerHeightMin'])) / 10) * 10 : lo + Math.round(r() * (hi - lo) / 10) * 10;
-        if (tower) blk.tower = true;
-      }
-      if (!reachable(statics.concat(blocks, [blk], stairRects, cpZones))) { banned.add(best.x + ',' + best.y + ',' + best.w + ',' + best.h); continue; }
-      blocks.push(blk); mark(blk); area += blk.w * blk.h;
+      if (!best || area + best.w * best.h > cap) break;
+      if (!reachable(statics.concat(blocks, [best], stairRects, cpZones))) { banned.add(best.x + ',' + best.y + ',' + best.w + ',' + best.h); continue; }
+      take(best);
     }
     const info = INFO(D.levelId);
     return { id: D.levelId, name: info.name, blurb: info.blurb, center: c, lanes: lanesOf(c, P), statics: P['proto.city'] ? statics.concat(blocks) : statics.filter((st) => st.kind !== 'jersey'),
@@ -596,7 +649,7 @@
   const DISTRICTS = {
     riverside: { name: 'Riverside', blurb: 'Low-rise riverfront. A lantern monument marks the centre.', focal: 'monument', themes: ['plain', 'flyover', 'barrier'] },
     market: { name: 'Old Market', blurb: 'Dense low-rise streets around a fountain square. Wet, and busy with vans.', focal: 'fountain', themes: ['plain', 'barrier', 'plain'] },
-    interchange: { name: 'Interchange', blurb: 'Two flyovers stacked over a roundabout. Its island is crash matting.', focal: 'roundabout', themes: ['flyover', 'barrier', 'plain'] },
+    interchange: { name: 'Interchange', blurb: 'Two flyovers either side of a roundabout. Its island is crash matting.', focal: 'roundabout', themes: ['flyover', 'barrier', 'plain'] },
     cbd: { name: 'Central Business District', blurb: 'Towers and barriers. FARSIGHT Tower stands at the centre.', focal: 'tower', themes: ['barrier', 'plain'] },
     campus: { name: 'FARSIGHT Campus', blurb: 'The test centre the city was modelled on. Calibrated plates score more.', focal: 'plate', themes: ['plain', 'barrier', 'flyover'] },
   };
@@ -610,22 +663,88 @@
     }
     return pts.map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]);
   }
-  // A flyover may cross a ground road, not run along it (Edit 41.1). Along the deck, the road's centre line stays under the
-  // deck for at most one tile (world.tileSize); within a lane of the deck's edge, a road running within world.deckParallelAngle (30°) of the deck's
-  // direction also stays at most one tile. Checked per screen against every deck.
+  // Flyovers pass perpendicular to every road beneath them (Edit 43). Within the deck band and one road half-width
+  // (lane plus shoulder) either side, the road's centre line runs straight across: within world.deckCrossAngle of square.
+  // A curve (the roundabout ring) can never meet that, so it must miss the band.
   function deckCrossOK(center, dk, P, W, H) {
-    const T = P['world.tileSize'], half = P['world.deckWidth'] / 2, wide = half + P['world.laneWidth'], path = makePath(center), par = Math.sin(P['world.deckParallelAngle'] * DEG);
-    let core = null, side = null;
-    const long = (run) => !!run && run.max - run.min > T;
-    const grow = (run, a) => (run ? { min: Math.min(run.min, a), max: Math.max(run.max, a) } : { min: a, max: a });
+    const m = P['world.deckWidth'] / 2 + P['world.laneWidth'] + P['proto.shoulderWidth'], tol = Math.sin(P['world.deckCrossAngle'] * DEG), path = makePath(center);
     for (let s = 0; s <= path.length; s += 4) {
-      const p = pathAt(path, s), inside = p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H;
-      const dist = Math.abs(dk.hz ? p.y - dk.off : p.x - dk.off), along = dk.hz ? p.x : p.y, parallel = Math.abs(dk.hz ? p.ty : p.tx) < par;
-      if (inside && dist <= half) core = grow(core, along); else { if (long(core)) return false; core = null; }
-      if (inside && dist <= wide && parallel) side = grow(side, along); else { if (long(side)) return false; side = null; }
+      const p = pathAt(path, s);
+      if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) continue;
+      if (Math.abs(dk.hz ? p.y - dk.off : p.x - dk.off) <= m && Math.abs(dk.hz ? p.tx : p.ty) > tol) return false;
     }
-    return !long(core) && !long(side);
+    return true;
   }
+  // ---------- roads (Edit 43): a Manhattan skeleton between the two road ends, its corners rounded by the screen's turn style.
+  // Tight: world.turnRadiusTight. Circular: world.turnRadiusWide. Stepped: a dog-leg, two tight corners per turn with a jog between.
+  const TURN_STYLES = ['tight', 'circular', 'stepped'];
+  function fillet(pts, rad) {
+    const out = [pts[0]];
+    for (let i = 1; i + 1 < pts.length; i++) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], [x2, y2] = pts[i + 1], l1 = hyp(x1 - x0, y1 - y0), l2 = hyp(x2 - x1, y2 - y1);
+      if (l1 < 1e-6 || l2 < 1e-6) continue;
+      const ux = (x1 - x0) / l1, uy = (y1 - y0) / l1, vx = (x2 - x1) / l2, vy = (y2 - y1) / l2;
+      const R = Math.min(rad, i === 1 ? l1 : l1 / 2, i + 2 === pts.length ? l2 : l2 / 2);
+      if (R < 1 || Math.abs(ux * vy - uy * vx) < 1e-6) { out.push([x1, y1]); continue; }
+      const ax = x1 - ux * R, ay = y1 - uy * R, cx = ax + vx * R, cy = ay + vy * R, t0 = Math.atan2(-vy, -vx), sw = wrap(Math.atan2(uy, ux) - t0), n = Math.max(4, Math.round(R / 8));
+      for (let k = 0; k <= n; k++) { const t = t0 + sw * k / n; out.push([cx + Math.cos(t) * R, cy + Math.sin(t) * R]); }
+    }
+    out.push(pts[pts.length - 1]);
+    return out.map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]);
+  }
+  // Candidate skeletons for a screen's road, best first for the style. Every corner is a right angle.
+  function skeletons(a, b, style, W, H, P) {
+    const lead = P['world.spawnLeadIn'], Rt = P['world.turnRadiusTight'], A = edgePoint(a.side, a.off, W, H, lead), B = edgePoint(b.side, b.off, W, H, lead), out = [];
+    const snap = (v) => Math.round(v / 8) * 8, hzA = horiz(a.side), hzB = horiz(b.side);
+    if (hzA === hzB) { // opposite edges: straight, a Z, or a stepped Z
+      if (a.off === b.off) return [[A, B]];
+      const span = hzA ? W : H, dir = Math.sign((hzA ? B[0] - A[0] : B[1] - A[1])), lat = Math.abs(a.off - b.off);
+      const at = (al, la) => (hzA ? [al, la] : [la, al]);
+      const mids = []; for (let f = 0.25; f <= 0.751; f += 0.0625) mids.push(snap(span * f));
+      for (const m of mids) {
+        if (style === 'stepped' && lat >= 4 * Rt) { const jog = Math.max(2 * Rt, snap(span * 0.2)), lm = snap((a.off + b.off) / 2); out.push([A, at(m - dir * jog / 2, a.off), at(m - dir * jog / 2, lm), at(m + dir * jog / 2, lm), at(m + dir * jog / 2, b.off), B]); }
+        out.push([A, at(m, a.off), at(m, b.off), B]);
+      }
+      return out;
+    }
+    // adjacent edges: an L, or a stepped L (two steps)
+    const h = hzA ? a : b, v = hzA ? b : a, Hp = edgePoint(h.side, h.off, W, H, lead), Vp = edgePoint(v.side, v.off, W, H, lead);
+    const hx = h.side === 'W' ? 0 : W, vy = v.side === 'N' ? 0 : H, res = [];
+    if (style === 'stepped') for (const f of [0.35, 0.5, 0.65]) for (const g of [0.35, 0.5, 0.65]) {
+      const x1 = snap(hx + (v.off - hx) * f), y1 = snap(h.off + (vy - h.off) * g);
+      if (Math.abs(x1 - hx) >= 2 * Rt && Math.abs(v.off - x1) >= 2 * Rt && Math.abs(y1 - h.off) >= 2 * Rt && Math.abs(vy - y1) >= 2 * Rt) res.push([Hp, [x1, h.off], [x1, y1], [v.off, y1], Vp]);
+    }
+    res.push([Hp, [v.off, h.off], Vp]);
+    for (const k of res) out.push(h === a ? k : k.slice().reverse());
+    return out;
+  }
+  // Buildable ground (Edit 43): the screen inside its walls and river, outside every flyover band and outside the road's
+  // frontage setback (lane + shoulder + world.buildingSetback from the centre line). Block share is measured against it.
+  function buildableArea(center, ring, decks, statics, P) {
+    const W = P['world.width'], H = P['world.height'], half = P['world.deckWidth'] / 2, FRONT = P['world.laneWidth'] + P['proto.shoulderWidth'] + P['world.buildingSetback'];
+    const d0 = roadDist(center), dr = ring ? roadDist(ring) : null, edge = statics.filter((t) => t.kind === 'wall' || t.kind === 'river');
+    let n = 0;
+    for (let y = 4; y < H; y += 8) for (let x = 4; x < W; x += 8) {
+      if ((decks || []).some((dk) => Math.abs((dk.hz ? y : x) - dk.off) <= half)) continue;
+      if (Math.min(d0(x, y), dr ? dr(x, y) : Infinity) < FRONT) continue;
+      if (edge.some((t) => x >= t.x && x < t.x + t.w && y >= t.y && y < t.y + t.h)) continue;
+      n++;
+    }
+    return n * 64;
+  }
+  // The screen's road: the first skeleton, in random order within its style, whose rounded path crosses every deck square.
+  function routeCenter(a, b, style, decks, W, H, P, r) {
+    const Rt = P['world.turnRadiusTight'], Rs = style === 'circular' ? [P['world.turnRadiusWide'], P['world.turnRadiusWide'] / 2, Rt] : [Rt, Rt / 2];
+    const sk = skeletons(a, b, style, W, H, P);
+    const first = sk.filter((k) => k.length > 4 || style !== 'stepped'), rest = sk.filter((k) => !first.includes(k));
+    for (const group of [first, rest]) {
+      const order = group.map((k) => [r(), k]).sort((p, q) => p[0] - q[0]).map((q) => q[1]);
+      for (const R of Rs) for (const k of order) { const c = fillet(k, R); if (decks.every((dk) => deckCrossOK(c, dk, P, W, H))) return c; }
+    }
+    return null;
+  }
+  // Road crossing offsets on a city screen's edge: five per side, scaled with the screen.
+  const acrossCity = (sd, W, H) => (horiz(sd) ? [0.25, 0.3667, 0.5, 0.6333, 0.75].map((f) => Math.round(H * f / 4) * 4) : [0.25, 0.35, 0.5, 0.65, 0.75].map((f) => Math.round(W * f / 4) * 4));
   // Roundabout (Interchange): the road enters radially, loops round a central island and leaves radially. Smoothed corners.
   function roundaboutCenter(a, b, W, H, lead, Rc, r) {
     const ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 }, cx = W / 2, cy = H / 2;
@@ -648,45 +767,54 @@
     const isC = (c) => c[0] === centre[0] && c[1] === centre[1];
     const paths = hamiltonPaths(C, R).filter((p) => [p[0], p[p.length - 1]].every((k) => outsides(xy(k)).length > 0));
     const gw = P['world.gateWidth'], gap = P['world.pedestrianGap'], OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'];
+    const half = P['world.deckWidth'] / 2, Rt = P['world.turnRadiusTight'], nd = Math.round(dpar(P, id, 'decks'));
     for (let attempt = 0; attempt < 400; attempt++) {
       const path = pick(r, paths).map(xy), ends = path.map(() => []);
+      // flyovers first (Edit 43): horizontal, one overground level, on rows clear of the roundabout; each road crosses them square
+      const rows = [0, 1, 2].filter((y) => y < R && !(info.focal === 'roundabout' && y === centre[1])), decks = [];
+      for (let k = 0; k < nd && rows.length; k++) {
+        const line = rows.splice(Math.floor(r() * rows.length), 1)[0], cands = [];
+        for (let off = 120; off <= H - 120; off += 20) {
+          if (line === 0 && off - half < 60) continue; // keep the river row's deck off the water
+          if (acrossCity('W', W, H).some((o) => Math.abs(o - off) >= half + OUTER + Rt / 2)) cands.push(off); // room for a road along the row
+        }
+        if (cands.length) decks.push({ hz: true, line, off: pick(r, cands), height: P['world.deckHeight'] });
+      }
+      if (decks.length < nd) continue;
+      const rowDecks = (y) => decks.filter((dk) => dk.line === y);
+      const offsFor = (c, sd) => acrossCity(sd, W, H).filter((o) => !horiz(sd) || rowDecks(c[1]).every((dk) => Math.abs(o - dk.off) >= half + OUTER + Rt / 2));
+      let bad = false;
       for (let i = 0; i + 1 < path.length; i++) {
-        const a = path[i], b = path[i + 1], sa = sideOf(a, b), sb = OPP[sa];
-        const off = isC(a) || isC(b) ? (horiz(sa) ? H / 2 : W / 2) : pick(r, across(sa, W, H)); // roads meet the landmark square on
+        const a = path[i], b = path[i + 1], sa = sideOf(a, b), sb = OPP[sa], os = offsFor(a, sa);
+        const off = isC(a) || isC(b) ? (horiz(sa) ? H / 2 : W / 2) : os.length ? pick(r, os) : null; // roads meet the landmark square on
+        if (off == null || (horiz(sa) && rowDecks(a[1]).some((dk) => Math.abs(off - dk.off) < half + OUTER + Rt / 2))) { bad = true; break; }
         ends[i].push({ side: sa, off }); ends[i + 1].push({ side: sb, off });
       }
+      if (bad) continue;
       for (const i of [0, path.length - 1]) {
-        const sd = pick(r, outsides(path[i])), e = { side: sd, off: pick(r, across(sd, W, H)), outer: true };
+        const sd = pick(r, outsides(path[i])), os = offsFor(path[i], sd);
+        if (!os.length) { bad = true; break; }
+        const e = { side: sd, off: pick(r, os), outer: true };
         if (i === 0) ends[i].unshift(e); else ends[i].push(e);
       }
-      if (ends.some(([a, b]) => horiz(a.side) === horiz(b.side) && Math.abs(a.off - b.off) > S_MAX)) continue;
+      if (bad) continue;
       const cells = Array.from({ length: R }, () => Array.from({ length: C }, () => null));
       path.forEach((c, i) => {
-        const focal = isC(c) ? info.focal : null;
+        const focal = isC(c) ? info.focal : null, turns = pick(r, TURN_STYLES), dks = rowDecks(c[1]);
+        const center = focal === 'roundabout' ? roundaboutCenter(ends[i][0], ends[i][1], W, H, P['world.spawnLeadIn'], P['world.roundaboutRadius'], r)
+          : routeCenter(ends[i][0], ends[i][1], turns, dks, W, H, P, r);
+        if (!center) { bad = true; return; }
         cells[c[1]][c[0]] = { cell: c, order: i, ends: ends[i], start: false, canal: c[1] === 0, gates: { N: [], E: [], S: [], W: [] }, focal,
-          theme: focal ? 'focal' : pick(r, info.themes), level: null, cones: null,
-          center: focal === 'roundabout' ? roundaboutCenter(ends[i][0], ends[i][1], W, H, P['world.spawnLeadIn'], P['world.roundaboutRadius'], r)
-            : roadCenter(ends[i][0], ends[i][1], W, H, P['world.spawnLeadIn']),
+          theme: focal ? 'focal' : pick(r, info.themes), level: null, cones: null, turns: focal === 'roundabout' ? 'roundabout' : turns, center,
           // the whole ring is road; traffic uses the part on its route (Edit 41.1)
           ring: focal === 'roundabout' ? arcPts(W / 2, H / 2, P['world.roundaboutRadius'], 0, 2 * Math.PI, 48).map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]) : null,
           decks: [] };
       });
-      // flyovers (one overground level, Edit 42): the first crosses a row, the second another row; both at world.deckHeight.
-      // Each takes an offset where it crosses every road on its line, never runs along one (deckCrossOK), and stays off the river.
-      const decks = [], nd = Math.round(dpar(P, id, 'decks'));
-      const specs = [];
-      if (nd >= 1) specs.push({ hz: true, line: info.focal === 'roundabout' ? centre[1] : Math.floor(r() * R), height: P['world.deckHeight'] });
-      if (nd >= 2) { const other = [0, 1, 2].filter((y) => y < R && y !== specs[0].line); specs.push({ hz: true, line: pick(r, other), height: P['world.deckHeight'] }); } // Edit 42: one overground level; decks never cross
-      for (const sp of specs) {
-        const span = sp.hz ? H : W, line = cells.flat().filter((q) => (sp.hz ? q.cell[1] : q.cell[0]) === sp.line), cands = [];
-        for (let off = 120; off <= span - 120; off += 20) {
-          if (sp.hz && sp.line === 0 && off - P['world.deckWidth'] / 2 < 60) continue; // keep the river row's deck off the water
-          if (line.every((q) => deckCrossOK(q.center, { hz: sp.hz, off }, P, W, H) && (!q.ring || deckCrossOK(q.ring, { hz: sp.hz, off }, P, W, H)))) cands.push(off);
-        }
-        if (!cands.length) break;
-        decks.push({ hz: sp.hz, line: sp.line, off: pick(r, cands), height: sp.height });
-      }
-      if (decks.length < specs.length) continue;
+      if (bad) continue;
+      if (cells.flat().some((q) => q.ring && rowDecks(q.cell[1]).some((dk) => !deckCrossOK(q.ring, dk, P, W, H)))) continue;
+      // every flyover crosses at least one road on its row: that is where its parapet breaks (a drop point)
+      const crosses = (pts, dk) => pts.some((p, i) => i > 0 && p[0] >= 0 && p[0] <= W && Math.sign(pts[i - 1][1] - dk.off) !== Math.sign(p[1] - dk.off));
+      if (decks.some((dk) => !cells[dk.line].some((q) => crosses(q.center, dk)))) continue;
       for (const q of cells.flat()) q.decks = decks.filter((dk) => (dk.hz ? q.cell[1] : q.cell[0]) === dk.line).map((dk) => ({ hz: dk.hz, off: dk.off, height: dk.height }));
       for (let y = 0; y < R; y++) for (let x = 0; x < C; x++) for (const sd of ['E', 'S']) {
         const nx = x + SIDE[sd][0], ny = y + SIDE[sd][1];
@@ -737,14 +865,16 @@
     }
     return out;
   }
-  // Deck pillars (flyovers): one under the deck's centre line every world.deckPillarSpacing, never on the road or its pavement.
+  // Deck columns (Edit 43): a pair under the deck's two edges every world.deckPillarSpacing, world.deckColumn square, never on the
+  // road or its pavement. The south row shows below the raised deck; the north row stands hidden beneath it.
   function deckPillars(cell, P, d, keep, W, H) {
-    const out = [], OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], sp = P['world.deckPillarSpacing'];
-    for (const dk of cell.decks || []) for (let p = sp / 2; p < (dk.hz ? W : H); p += sp) {
-      const rc = dk.hz ? { x: p - 12, y: dk.off - 12, w: 24, h: 24, kind: 'pillar', deck: true } : { x: dk.off - 12, y: p - 12, w: 24, h: 24, kind: 'pillar', deck: true };
-      const pts = [[rc.x, rc.y], [rc.x + 24, rc.y], [rc.x, rc.y + 24], [rc.x + 24, rc.y + 24], [rc.x + 12, rc.y + 12]];
+    const out = [], OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], sp = P['world.deckPillarSpacing'], C = P['world.deckColumn'], half = P['world.deckWidth'] / 2;
+    for (const dk of cell.decks || []) for (let p = sp / 2; p < (dk.hz ? W : H); p += sp) for (const edge of [-1, 1]) {
+      const e = edge < 0 ? dk.off - half + 4 : dk.off + half - 4 - C;
+      const rc = dk.hz ? { x: p - C / 2, y: e, w: C, h: C, kind: 'pillar', deck: true, edge } : { x: e, y: p - C / 2, w: C, h: C, kind: 'pillar', deck: true, edge };
+      const pts = [[rc.x, rc.y], [rc.x + C, rc.y], [rc.x, rc.y + C], [rc.x + C, rc.y + C], [rc.x + C / 2, rc.y + C / 2]];
       if (pts.some(([x, y]) => d(x, y) < OUTER + 4) || keep.some((k) => overlapGap(rc, k, 4)) || out.some((q) => overlapGap(rc, q, 16))) continue;
-      if (rc.x < 4 || rc.y < 4 || rc.x + 24 > W - 4 || rc.y + 24 > H - 4) continue;
+      if (rc.x < 4 || rc.y < 4 || rc.x + C > W - 4 || rc.y + C > H - 4) continue;
       out.push(rc);
     }
     return out;
@@ -821,13 +951,14 @@
       for (let a0 = T; a0 + SWD <= len - T; a0 += T) for (const side of [-1, 1]) {
         const rc = dk.hz ? { x: a0, y: side > 0 ? dk.off + half : dk.off - half - SL, w: SWD, h: SL } : { x: side > 0 ? dk.off + half : dk.off - half - SL, y: a0, w: SL, h: SWD };
         const pts = [[rc.x, rc.y], [rc.x + rc.w, rc.y], [rc.x, rc.y + rc.h], [rc.x + rc.w, rc.y + rc.h], [rc.x + rc.w / 2, rc.y + rc.h / 2]];
-        if (!inB(rc) || pts.some(([x, y]) => d(x, y) < OUTER + 8) || keep.some((q) => overlapGap(rc, q, 4)) || !freeOf(rc, 12) || out.landing.some((q) => overlapGap(rc, q, 8))) continue;
+        const room = 2 * P['body.radius'] + 4, around = { x: rc.x - room, y: rc.y - room, w: rc.w + 2 * room, h: rc.h + 2 * room }; // a stair never pens ground against an edge
+        if (!inB(around) || pts.some(([x, y]) => d(x, y) < OUTER + 8) || keep.some((q) => overlapGap(rc, q, 4)) || !freeOf(rc, 12) || out.landing.some((q) => overlapGap(rc, q, 8))) continue;
         if (gaps.some(([g0, g1]) => a0 < g1 + T && a0 + SWD > g0 - T)) continue;
         cands.push({ rc, side, a0 });
       }
       let st = null;
       if (cands.length) {
-        const c0 = pick(r, cands), rc = c0.rc, sd = c0.side;
+        const south = cands.filter((q) => q.side > 0), c0 = pick(r, south.length ? south : cands), rc = c0.rc, sd = c0.side; // Edit 43: south of the deck the flight shows whole
         st = { x: rc.x, y: rc.y, w: rc.w, h: rc.h, axis: dk.hz ? 'y' : 'x', from: 1, to: 2, deck: k,
           low: dk.hz ? (sd > 0 ? rc.y + SL : rc.y) : (sd > 0 ? rc.x + SL : rc.x), high: dk.hz ? (sd > 0 ? rc.y : rc.y + SL) : (sd > 0 ? rc.x : rc.x + SL) };
         out.stairs.push(st);
@@ -840,7 +971,7 @@
   function buildUnderpass(c, P, d, keep, blockers, reserved, B, W, H, r) {
     const OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], SL = P['world.stairLength'], SWD = P['world.stairWidth'], cands = [];
     const corners = (rc) => [[rc.x, rc.y], [rc.x + rc.w, rc.y], [rc.x, rc.y + rc.h], [rc.x + rc.w, rc.y + rc.h]];
-    const ok = (rc) => rc.x >= B.l + 4 && rc.y >= B.t + 4 && rc.x + rc.w <= B.r - 4 && rc.y + rc.h <= B.b - 4 && keep.every((q) => !overlapGap(rc, q, 4)) &&
+    const m = 2 * P['body.radius'] + 4, ok = (rc) => rc.x >= B.l + m && rc.y >= B.t + m && rc.x + rc.w <= B.r - m && rc.y + rc.h <= B.b - m && keep.every((q) => !overlapGap(rc, q, 4)) &&
       blockers.every((q) => !overlapGap(rc, q, 12)) && reserved.every((q) => !overlapGap(rc, q, 16)) && corners(rc).every(([x, y]) => d(x, y) >= OUTER - 2);
     for (const run of straightRuns(c, W, H).filter((q) => q.b - q.a >= 280)) for (let p = run.a + 96; p <= run.b - 96; p += 32) {
       const A = run.hz ? { x: p - SWD / 2, y: run.c - OUTER - SL, w: SWD, h: SL } : { x: run.c - OUTER - SL, y: p - SWD / 2, w: SL, h: SWD };
@@ -890,7 +1021,7 @@
     const r1 = (v) => Math.round(v * 10) / 10;
     const cells = D.cells.map((row) => row.map((q) => {
       const lv = cellLevel(D, q.cell, P);
-      return { cell: q.cell, order: q.order, ends: q.ends, canal: q.canal, gates: q.gates, theme: lv.theme, focal: q.focal || null,
+      return { cell: q.cell, order: q.order, ends: q.ends, canal: q.canal, gates: q.gates, theme: lv.theme, focal: q.focal || null, turns: q.turns || null,
         center: lv.center.map(([x, y]) => [r1(x), r1(y)]), statics: lv.statics.map(({ id: _i, ...s }) => s), coneHomes: lv.coneHomes, spawns: lv.spawns,
         patches: lv.patches, decks: lv.decks || [], ring: q.ring || null, stairs: lv.stairs, corridors: lv.corridors, checkpoints: lv.checkpoints };
     }));
@@ -1761,6 +1892,23 @@
       const a = c.v * c.v / (2 * dist) > P['traffic.comfortBraking'] ? P['traffic.hardBraking'] : P['traffic.comfortBraking'];
       return { type: 'brake', v0: c.v, a, vTarget: 0, sStop: tg.s - c.L / 2 - margin };
     }
+    // Corner speed (Edit 43): ahead within braking reach, never faster than √(traffic.cornerAccel × radius) at each bend,
+    // braking for it at traffic.comfortBraking. Path radii are measured once per lane.
+    cornerSpeed(c) {
+      const P = this.P, path = c.path, a = P['traffic.cornerAccel'], b = P['traffic.comfortBraking'];
+      if (!(a > 0)) return Infinity;
+      if (!path.rad) path.rad = path.pts.map((q, i) => { const p0 = path.pts[i - 1], p2 = path.pts[i + 1]; if (!p0 || !p2) return Infinity; const A = hyp(q[0] - p0[0], q[1] - p0[1]), Bq = hyp(p2[0] - q[0], p2[1] - q[1]), Cq = hyp(p2[0] - p0[0], p2[1] - p0[1]), cr = Math.abs((q[0] - p0[0]) * (p2[1] - p0[1]) - (q[1] - p0[1]) * (p2[0] - p0[0])); return cr < 1e-6 ? Infinity : A * Bq * Cq / (2 * cr); });
+      const s0 = c.s + c.L / 2, reach = c.v * c.v / (2 * b) + c.L;
+      let v = Infinity;
+      for (let i = 0; i < path.pts.length; i++) {
+        const ds = path.cum[i] - s0;
+        if (ds < -c.L) continue;
+        if (ds > reach) break;
+        if (path.rad[i] === Infinity) continue;
+        v = Math.min(v, Math.sqrt(a * path.rad[i] + 2 * b * Math.max(0, ds)));
+      }
+      return v;
+    }
     manSpeed(c, man, tau, sAt) {
       const u = Math.max(0, tau - ((man.tv != null ? man.tv : man.t0) - man.t0));
       if (man.type === 'reverse') return -Math.min(this.P['proto.unstick.reverseSpeed'], this.P['traffic.acceleration'] * u);
@@ -1986,8 +2134,8 @@
           c.signal = null; c.intent = null; c.intentFor = null;
           c.state = c.state === 'released' && this.t - c.releasedT < 0.25 ? 'released' : 'cruise';
         }
-        // speed control: speed limit, caution near a pedestrian, two-second following gap
-        let vT = c.cruise, decel = null;
+        // speed control: speed limit, corners (Edit 43), caution near a pedestrian, two-second following gap
+        let vT = Math.min(c.cruise, this.cornerSpeed(c)), decel = null;
         if (hz && !inPath && c.nearT >= P['perception.reactionDelay'] - 1e-9 && !holdSpeed) {
           const vc = P['proto.driver.cautionSpeed'];
           vT = Math.min(vT, vc);
@@ -2099,7 +2247,7 @@
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
           carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, drop: !!ct.drop, deck: !!c.deck };
         this.emit('impact', ev); b.hits.push(ev);
-        this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed, t: this.t, zone: ct.zone, angle: ct.ph.angle });
+        this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed, t: this.t, zone: ct.zone, angle: ct.ph.angle, layer: c.layer || 1 });
         this.mile('firstHit');
         if (bait) this.mile('firstBaitHit');
         if (ct.cause === 'cone' && bait) this.mile('firstConeAssistHit');
@@ -2115,7 +2263,7 @@
       this.releaseHeldAtDeath();
       this.emit('writeoff', { chassis: b.chassis, writeOffs: this.run.writeOffs });
       this.mile('firstWriteOff');
-      this.effects.push({ type: 'wreck', x: b.x, y: b.y, t: this.t, facing: b.facing });
+      this.effects.push({ type: 'wreck', x: b.x, y: b.y, t: this.t, facing: b.facing, layer: b.level });
     }
     end(kind) {
       const r = this.run;
@@ -2278,7 +2426,7 @@
   }
 
   const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
-    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, LEVELS3, checkZone };
+    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, LEVELS3, checkZone, buildableArea };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.DUMMIES = api;
 })(typeof window !== 'undefined' ? window : globalThis);
