@@ -376,5 +376,28 @@ for (const lvl of D.LEVEL_LIST) {
     assert(!worst, worst);
   });
 }
+check('parts: every impact names a body part; parts sum to health lost', () => {
+  let s = new Sim('straight'), n = 0;
+  for (let i = 0; i < 60 * 300 && n < 5; i++) {
+    s.step({ mx: Math.sin(i / 37), my: Math.cos(i / 53), aPress: i % 41 === 0 });
+    if (s.phase === 'report') { const b = s.body; s.continueReport(); }
+    if (s.phase === 'shop') s.leaveShop();
+    if (s.phase === 'ending' || s.phase === 'next') s = new Sim('straight');
+    n = s.events.filter((e) => e.type === 'impact').length;
+  }
+  const imp = s.events.filter((e) => e.type === 'impact');
+  assert(imp.length > 0, 'no impacts');
+  for (const e of imp) assert(['head', 'torso', 'armL', 'armR', 'legL', 'legR'].includes(e.part), 'part ' + e.part);
+  const b = s.body, sum = Object.values(b.parts).reduce((x, y) => x + y, 0);
+  if (b.alive) assert(near(sum, s.P['damage.bodyHealth'] - b.health, 1e-6), 'sum ' + sum + ' lost ' + (s.P['damage.bodyHealth'] - b.health));
+});
+check('parts: height bands follow the assessed damage', () => {
+  const s = empty(); s.body.x = 300; s.body.y = 300; s.body.facing = 0;
+  assert.strictEqual(s.partOf(320, 300, 50), 'legR');            // ahead, small: legs (front hits pick a side)
+  assert.strictEqual(s.partOf(300, 320, 150), 'armR');           // from the right, mid: right arm
+  assert.strictEqual(s.partOf(300, 280, 150), 'armL');           // from the left, mid: left arm
+  assert.strictEqual(s.partOf(320, 300, 150), 'torso');          // ahead, mid: torso
+  assert.strictEqual(s.partOf(280, 300, 300), 'head');           // big hit: head
+});
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

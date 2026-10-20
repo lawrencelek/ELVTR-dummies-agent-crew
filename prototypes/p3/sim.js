@@ -57,6 +57,9 @@
     'proto.art.coneHeight': 14, 'proto.art.dummyHeight': 18, 'proto.art.droneHeight': 70,
     'proto.art.extrusion': 0.3, // P3: share of an object's height drawn as screen-up offset (three-quarter view)
     'proto.city': 1, // P3: city blocks and jersey barriers are level statics (Fix A). 0 restores the P2.2 roads.
+    // P3 locational damage: an impact's assessed damage picks the height (legs → torso/arms → head); shares of
+    // damage.bodyHealth lost by one part mark it cracked, then broken. Presentation and reports only; health is one pool.
+    'proto.parts.torsoFrom': 100, 'proto.parts.headFrom': 250, 'proto.parts.crackedShare': 0.2, 'proto.parts.brokenShare': 0.4,
   };
 
   // P1.2 prototype overrides of registry values (logged in DUMMIES_Prototype_Log.md).
@@ -342,7 +345,7 @@
       this.run.chassis++;
       this.body = {
         x: sp.x, y: sp.y, vx: 0, vy: 0, facing: sp.f * DEG, health: P['damage.bodyHealth'],
-        charge: P['battery.capacity'], refillDelay: 0, rampT: 0, mode: 'idle',
+        charge: P['battery.capacity'], refillDelay: 0, rampT: 0, mode: 'idle', parts: { head: 0, torso: 0, armL: 0, armR: 0, legL: 0, legR: 0 },
         coastVx: 0, coastVy: 0, coastT: 0, counterVx: 0, counterVy: 0, counterT: 0, counterDur: 0,
         lunge: null, recoverT: 0, held: null, gesture: null, alive: true, chassis: this.run.chassis,
         hits: [], denied: 0, points0: this.run.points,
@@ -644,6 +647,14 @@
       c.vx = (p.tx + p.nx * c.slope) * c.v; c.vy = (p.ty + p.ny * c.slope) * c.v;
       const target = Math.atan2(p.ty + p.ny * c.slope, p.tx + p.nx * c.slope);
       c.h = h ? turnTo(c.h, target, this.P['proto.carYawRate'] * DEG * h) : target;
+    }
+    // P3: which body part took the hit. Side from the contact point against the dummy's facing;
+    // height from the hit's size: bumper height hits the legs, harder hits reach the torso and arms, the hardest the head.
+    partOf(px, py, assessed) {
+      const P = this.P, b = this.body, a = Math.atan2(py - b.y, px - b.x) - b.facing, side = Math.sin(a) >= 0 ? 'R' : 'L';
+      if (assessed >= P['proto.parts.headFrom']) return 'head';
+      if (assessed >= P['proto.parts.torsoFrom']) return Math.abs(Math.sin(a)) >= 0.7 ? 'arm' + side : 'torso';
+      return 'leg' + side;
     }
     occluded(self, x0, y0, x1, y1) {
       if (this.level.statics.some((s) => segRect(x0, y0, x1, y1, s))) return true;
@@ -1136,7 +1147,9 @@
           const m = this.models[c.cls], before = this.modelStandoff(m);
           if (before < P['proto.learn.standoffMax']) { m.standoffApplied++; learnedStandoff = this.modelStandoff(m); this.emit('learn-standoff', { model: m.id, from: before, to: learnedStandoff }); }
         }
-        const ev = { car: c.id, model: c.model, cls: c.cls, zone: ct.zone, closing: +ct.closing.toFixed(3),
+        const part = this.partOf(ct.px, ct.py, assessed);
+        b.parts[part] += lost;
+        const ev = { car: c.id, model: c.model, cls: c.cls, zone: ct.zone, part, closing: +ct.closing.toFixed(3),
           angle: +ct.ph.angle.toFixed(1), dv: +ct.ph.dvd.toFixed(2), strike: +ct.ph.un.toFixed(2),
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
           carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff };

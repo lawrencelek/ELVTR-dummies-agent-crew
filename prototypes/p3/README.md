@@ -75,6 +75,23 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 - **`proto.city` = 0** restores the P2.2 roads (tuning panel; applies on the next road or restart).
 - **Not rebalanced.** Blocks add cover and sensor shadows. Quotas, traffic and pod layout are P2.2 values.
 
+## HUD v3 (20 October)
+
+| Place | Shows |
+|---|---|
+| Top bar | Road · WRITE-OFFS n / quota · POINTS · CARS LEFT (the shift's clock; no separate timer) |
+| Left | BODY: health at 48 px with its bar. DASH: charge blocks |
+| Right | CHASSIS: front-view doll at ×9. Each part shows its own damage. LAST HIT: part and health lost |
+| Bottom | Controls that apply now |
+
+- **Locational damage.** Every impact records `part` (head, torso, armL, armR, legL, legR); `body.parts` sums health lost per part.
+  - **Height** from the hit's size: below `proto.parts.torsoFrom` (100) the legs; up to `proto.parts.headFrom` (250) the torso, or an arm when the hit comes from the side; above, the head.
+  - **Side** from the contact point against the dummy's facing.
+  - **Doll levels:** any damage dents the part; `proto.parts.crackedShare` (0.2 of `damage.bodyHealth`) cracks it; `proto.parts.brokenShare` (0.4) turns its outline to the warning ink. The hit part flashes white.
+  - **Display and reports only.** Health stays one pool; parts change no ability.
+- **Modules** glow aqua on the doll. The full list lives in the shop and pause screens.
+- **DASH** is the on-screen name for the lunge. Registry IDs keep `movement.lunge*`.
+
 ## Type at registry size (GDD §4.2.3)
 
 | Class | Parameter | Cap height | P3 use |
@@ -103,6 +120,8 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 | `ui.typeLoadBearing`, `ui.typeSecondary`, `ui.typeTexture` | 24, 16, 9 | Registry values, now in `REG` |
 | `proto.art.extrusion` | 0.3 | Proposed. Share of height drawn as a screen-up offset |
 | `proto.city` | 1 | Proposed. City blocks and jersey barriers are statics; 0 = P2.2 roads |
+| `proto.parts.torsoFrom`, `proto.parts.headFrom` | 100, 250 | Proposed. Assessed damage that reaches the torso, then the head |
+| `proto.parts.crackedShare`, `proto.parts.brokenShare` | 0.2, 0.4 | Proposed. Share of body health lost by one part to crack, then break it |
 
 ## Files
 
@@ -113,7 +132,7 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 | `game.js` | Input, events, juice, HUD, screens, tuning. P2.2 logic; new renderer |
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html` |
-| `test_sim.js` | `node test_sim.js`: 42 checks, 8 for the city |
+| `test_sim.js` | `node test_sim.js`: 44 checks: 8 for the city, 2 for body parts |
 
 ## Open
 

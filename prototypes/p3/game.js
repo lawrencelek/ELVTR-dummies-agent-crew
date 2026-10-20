@@ -353,7 +353,7 @@
       const e0 = ev[i];
       if (e0.type === 'lunge') fx.lungeWatch = { contact: false };
       if (/^(impact|knock|touch|touch-spent|contact-ignored)$/.test(e0.type)) noteContact(e0);
-      if (e0.type === 'impact') fx.lastImpact = e0;
+      if (e0.type === 'impact') { fx.lastImpact = e0; if (e0.part) fx.lastPart = { part: e0.part, lost: e0.lost, t: app.realT }; }
       if (e0.type === 'purchase') fx.pendingNodes.push(NODES[e0.node].name);
       if (e0.type === 'chassis' && fx.pendingNodes.length) { fx.upgradeWatch = fx.pendingNodes[fx.pendingNodes.length - 1]; fx.pendingNodes = []; }
       const e = enrich(e0);
@@ -388,7 +388,7 @@
         case 'drone-dispatch': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); toast(copy('toast.drone-dispatch', 'FARSIGHT drone dispatched to clear a cone')); break;
         case 'drone-pickup': Snd.tone(320, 200, 0.08, 'square', 0.05); break;
         case 'drone-drop': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
-        case 'chassis': fx.dropT0 = app.realT; break;
+        case 'chassis': fx.dropT0 = app.realT; fx.lastPart = null; break;
         case 'writeoff': {
           if (!hj.sound) [392, 311, 233, 155].forEach((f, j) => Snd.tone(f, f * 0.98, 0.16, 'square', 0.07, j * 0.11));
           if (!juiced) {
@@ -1046,8 +1046,9 @@
     if (FT.neon) { ctx.save(); ctx.shadowColor = FT.brand; ctx.shadowBlur = 14; }
     txt('FARSIGHT', 24, 44, '900 30px ' + F_BRAND, FT.brand);
     if (FT.neon) ctx.restore();
-    const s = app.sim, title = app.screen === 'title' ? 'SELECT A ROAD' : s ? roadLabel(s.level.id) : '';
-    txt(title, FX + FW / 2, 40, fLab, FT.dim, 'center');
+    const s = app.sim;
+    if (app.screen === 'title' || !s) txt('SELECT A ROAD', FX + FW / 2, 40, fLab, FT.dim, 'center');
+    else drawTopBar(s);
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
     rr(FX - 6.5, FY - 6.5, FW + 13, FH + 13, 10); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
@@ -1057,60 +1058,64 @@
       drawKeys(keys, FX + FW / 2, 674);
     }
   }
-  // Left column: every fact the player acts on (V29 D10.3). Right column: the body and its modules.
+  // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
+  function drawTopBar(s) {
+    const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - s.cars.length));
+    const items = [[null, roadLabel(s.level.id)], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
+    const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
+    const gap = (1264 - FX - w.reduce((a, b) => a + b, 0)) / (items.length - 1);
+    let x = FX;
+    items.forEach(([k, v], i) => {
+      if (k) { txt(k, x, 42, fLab, FT.dim); ctx.font = fLab; x += ctx.measureText(k).width + 10; txt(v, x, 44, fNum, FT.text); ctx.font = fNum; x += ctx.measureText(v).width + gap; }
+      else { txt(v, x, 42, fLab, FT.text); ctx.font = fLab; x += ctx.measureText(v).width + gap; }
+    });
+  }
+  // Left: the body's numbers. Health first and largest; dash beneath.
   function drawHUD(s) {
-    const b = s.body, P = s.P, r = s.run, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
+    const b = s.body, P = s.P, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
     const X = 16, W = 208, TX = 30;
-    panel(X, 62, W, 114);
-    txt('BODY', TX, 92, fLab, FT.dim); txt(num(hp), TX, 132, fNum, FT.text);
-    rr(TX, 144, 180, 20, 5); ctx.fillStyle = FT.track; ctx.fill();
+    panel(X, 62, W, 150);
+    txt('BODY', TX, 92, fLab, FT.dim); txt(num(hp), TX, 146, '700 48px ' + F_MONO, frac < 0.3 && b.alive ? C.warning : FT.text);
+    rr(TX, 164, 180, 26, 6); ctx.fillStyle = FT.track; ctx.fill();
     if (frac > 0) {
       const low = frac < 0.3 && Math.floor(app.realT * 4) % 2 === 0;
-      rr(TX, 144, Math.max(12, 180 * frac), 20, 5); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
+      rr(TX, 164, Math.max(12, 180 * frac), 26, 6); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
     }
-    panel(X, 184, W, 84);
-    txt('DASH', TX, 214, fLab, FT.dim);
+    panel(X, 222, W, 86);
+    txt('DASH', TX, 252, fLab, FT.dim);
     const cap = P['battery.capacity'], pw = (180 - (cap - 1) * 10) / cap;
     for (let i = 0; i < cap; i++) {
       const x = TX + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
-      rr(x, 228, pw, 26, 6); ctx.fillStyle = FT.track; ctx.fill();
-      if (f > 0) { rr(x, 228, Math.max(6, pw * f), 26, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
+      rr(x, 266, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
+      if (f > 0) { rr(x, 266, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
-    const left = s.schedule.length - (r.admitted - s.cars.length);
-    [['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['CARS LEFT', String(Math.max(0, left))], ['POINTS', num(r.points)], ['CREDITS', String(r.credits)]].forEach(([k, v], i) => {
-      const y = 276 + i * 92;
-      panel(X, y, W, 84); txt(k, TX, y + 30, fLab, FT.dim); txt(v, TX, y + 68, fNum, FT.text);
-    });
     drawBodyPanel(s);
   }
-  // The chassis: its state and every module. Torso and Arms are the slice's branches (V29 D3.6); the rest wait for later tests.
-  const BRANCHES = [['TORSO', ['hips', 'spine']], ['ARMS', ['carry', 'throw']]];
+  // Right: the chassis. Each part shows the damage it took (sim: impact.part, body.parts); installed modules glow aqua.
+  const PART_NAME = { head: 'HEAD', torso: 'TORSO', armL: 'L ARM', armR: 'R ARM', legL: 'L LEG', legR: 'R LEG' };
   const dollArt = new Map();
-  function dollCanvas(step) {
-    if (dollArt.has(step)) return dollArt.get(step);
-    const S = PIX.dummy(Math.PI / 2, step), cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
+  function partLevels(s) {
+    const P = s.P, H = P['damage.bodyHealth'], out = {};
+    for (const [k, v] of Object.entries(s.body.parts || {})) { const sh = v / H; out[k] = v <= 0 ? 0 : sh >= P['proto.parts.brokenShare'] ? 3 : sh >= P['proto.parts.crackedShare'] ? 2 : 1; }
+    return out;
+  }
+  function dollCanvas(levels, flash) {
+    const key = JSON.stringify(levels) + flash;
+    if (dollArt.has(key)) return dollArt.get(key);
+    if (dollArt.size > 64) dollArt.clear();
+    const S = PIX.doll(levels, flash), cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
     const c2 = cv2.getContext('2d'), id = c2.createImageData(S.w, S.h); new Uint32Array(id.data.buffer).set(S.d); c2.putImageData(id, 0, 0);
-    dollArt.set(step, cv2);
+    dollArt.set(key, cv2);
     return cv2;
   }
-  function chassisState(s) { // named from the low-health juice thresholds (content/juice.json states.lowHealth)
-    const b = s.body;
-    if (!b.alive) return ['WRITTEN OFF', C.warning];
-    const wear = 1 - b.health / s.P['damage.bodyHealth'];
-    return wear >= lowHealth('sparkFrom', 0.7) ? ['CRITICAL', C.warning] : wear >= lowHealth('smokeFrom', 0.45) ? ['DAMAGED', FT.text] : ['INTACT', FT.text];
-  }
   function drawBodyPanel(s) {
-    const X = 1056, W = 208, b = s.body, P = s.P, Y = 62;
-    panel(X, Y, W, 598);
-    txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.accent);
-    const [state, sc] = chassisState(s);
-    txt(state, X + 14, Y + 58, fLab, sc);
-    // the doll: the field sprite, front view, ×7 (whole multiples keep it pixel-exact)
-    const k = 7, wear = clamp(1 - b.health / P['damage.bodyHealth'], 0, 1), dx = X + W / 2 - 13 * k / 2, dy = Y + 74;
-    ctx.imageSmoothingEnabled = false;
-    ctx.globalAlpha = b.alive ? 1 : 0.35;
-    ctx.drawImage(dollCanvas(Math.min(5, Math.round(wear * 5))), dx, dy, 13 * k, 19 * k);
-    // installed modules light up where they sit on the body (FARSIGHT aqua = FARSIGHT parts)
+    const X = 1056, W = 208, Y = 62, b = s.body, k = 9;
+    panel(X, Y, W, 318);
+    txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);
+    const lp = fx.lastPart, flash = lp && app.realT - lp.t < 0.3 && Math.floor(app.realT * 16) % 2 === 0 ? lp.part : '';
+    const dx = Math.round(X + W / 2 - 13 * k / 2), dy = Y + 46;
+    ctx.imageSmoothingEnabled = false; ctx.globalAlpha = b.alive ? 1 : 0.35;
+    ctx.drawImage(dollCanvas(partLevels(s), flash), dx, dy, 13 * k, 19 * k);
     const px = (cx, cy, w, h) => ctx.fillRect(dx + cx * k, dy + cy * k, w * k, h * k);
     ctx.fillStyle = FT.accent;
     if (s.has('hips')) px(4, 15, 5, 1);
@@ -1118,27 +1123,8 @@
     if (s.has('carry')) { px(2, 9, 1, 3); px(10, 9, 1, 3); }
     if (s.has('throw')) { px(1, 12, 2, 1); px(10, 12, 2, 1); }
     ctx.globalAlpha = 1;
-    // every module, with its state
-    let y = Y + 238;
-    for (const [branch, nodes] of BRANCHES) {
-      txt(branch, X + 14, y, fTxt, FT.dim); y += 32;
-      for (const n of nodes) {
-        const own = s.has(n), chk = s.canBuy(n), price = P[NODES[n].price], locked = !own && NODES[n].pre && !s.has(NODES[n].pre);
-        rr(X + 14, y - 17, 16, 16, 3);
-        if (own) { ctx.fillStyle = FT.accent; ctx.fill(); } else { ctx.strokeStyle = locked ? FT.off : FT.accent; ctx.lineWidth = 2; ctx.stroke(); }
-        txt(NODES[n].name, X + 40, y, fLab, own ? FT.text : locked ? FT.off : FT.dim);
-        if (!own) {
-          ctx.font = fLab; const pw2 = ctx.measureText(String(price)).width + 16, ok = chk.ok;
-          rr(X + W - 14 - pw2, y - 22, pw2, 28, 7); ctx.fillStyle = ok ? C.dummy : FT.track; ctx.fill();
-          txt(String(price), X + W - 14 - pw2 / 2, y - 1, fLab, ok ? C.primary : FT.off, 'center');
-        }
-        y += 32;
-      }
-      y += 12;
-    }
-    txt('LATER TESTS', X + 14, y + 8, fTxt, FT.dim);
-    txt('Head · Legs', X + 14, y + 38, fLab, FT.off);
-    txt('Battery', X + 14, y + 68, fLab, FT.off);
+    txt('LAST HIT', X + 14, Y + 254, fTxt, FT.dim);
+    txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, Y + 292, fLab, lp ? FT.text : FT.dim);
   }
 
   // ---------- screens (frame layer). Facts at ui.typeLoadBearing, labels and lines at ui.typeSecondary.

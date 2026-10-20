@@ -328,6 +328,24 @@
     }
     return dummyCache.get(key);
   }
+  // Front-view doll for the HUD: each pixel belongs to a body part; a part's damage level tints it toward the worn tone,
+  // cracks it, then turns its outline to the warning ink. The dummy's right side is on screen-left.
+  const PART_AT = (x, y) => (y <= 7 ? 'head' : y <= 12 ? (x <= 3 ? 'armR' : x >= 9 ? 'armL' : 'torso') : x <= 6 ? 'legR' : 'legL');
+  const CRACKS = { head: [[5, 2], [6, 3], [5, 4]], torso: [[6, 9], [5, 10], [6, 11]], armR: [[2, 10], [2, 11]], armL: [[10, 10], [10, 11]], legR: [[4, 14], [5, 16]], legL: [[8, 14], [7, 16]] };
+  function doll(levels, flash) {
+    const rows = DUMMY.S, S = spr(13, 19, 6, 15), base = { K: PAL.joint, Y: PAL.dummy, y: PAL.dummyD, W: PAL.dummyL };
+    for (let y = 0; y < 19; y++) for (let x = 0; x < 13; x++) {
+      const k = rows[y][x]; if (!base[k]) continue;
+      const part = PART_AT(x, y), lv = levels[part] || 0;
+      let hex = base[k];
+      if (k !== 'K' && lv > 0) hex = mixHex(hex, PAL.worn, [0, 0.35, 0.7, 1][lv]);
+      if (k === 'K' && lv >= 3) hex = PAL.warn;
+      if (flash === part) hex = '#FFFFFF';
+      sput(S, x, y, c32(hex));
+    }
+    for (const part in CRACKS) if ((levels[part] || 0) >= 2 && flash !== part) for (const [x, y] of CRACKS[part]) if (rows[y][x] !== '.') sput(S, x, y, K.joint);
+    return S;
+  }
   const CONE = fromRows(['...o...', '..oWo..', '..oOo..', '.oOOOo.', '.oWWWo.', 'oOOOOOo', 'ooooooo'], { o: K.coneO, O: K.cone, W: K.coneW }, 3, 5);
   const DRONE = (() => {
     const S = spr(21, 15, 10, 7);
@@ -525,6 +543,6 @@
 
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
-    text, textWidth, FONT_H, blit, car, dummy, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
+    text, textWidth, FONT_H, blit, car, dummy, doll, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
   };
 })(typeof window !== 'undefined' ? window : globalThis);
