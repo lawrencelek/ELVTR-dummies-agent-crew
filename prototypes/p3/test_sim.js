@@ -344,7 +344,7 @@ check('city: a block casts a sensor shadow; open ground does not', () => {
 });
 check('city: every open spot connects to a spawn, and the road is reachable', () => {
   for (const lvl of D.ROADS) {
-    const s = new Sim(lvl), S = 4, W = 800, H = 600, R = s.P['body.radius'], gw = W / S, gh = H / S, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh);
+    const s = new Sim(lvl), S = 4, W = s.P['world.width'], H = s.P['world.height'], R = s.P['body.radius'], gw = W / S, gh = H / S, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh);
     const rd = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
     for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const x = i * S + 2, y = j * S + 2; free[j * gw + i] = x > R && x < W - R && y > R && y < H - R && s.level.statics.every((st) => rd(x, y, st) > R + 0.5) ? 1 : 0; }
     const q = [];
@@ -439,7 +439,7 @@ check('district: one road through all nine screens; its ends leave the district;
     assert.strictEqual(new Set(Dd.path.map((c) => c.join())).size, 9, id + ': road misses a screen');
     for (let i = 0; i + 1 < Dd.path.length; i++) {
       const a = Dd.path[i], b = Dd.path[i + 1], sd = b[0] > a[0] ? 'E' : b[0] < a[0] ? 'W' : b[1] > a[1] ? 'S' : 'N';
-      const ca = edgeCrossings(Dd.cells[a[1]][a[0]].center, 800, 600).find((e) => e.side === sd), cb = edgeCrossings(Dd.cells[b[1]][b[0]].center, 800, 600).find((e) => e.side === OPPS[sd]);
+      const ca = edgeCrossings(Dd.cells[a[1]][a[0]].center, 800, 640).find((e) => e.side === sd), cb = edgeCrossings(Dd.cells[b[1]][b[0]].center, 800, 640).find((e) => e.side === OPPS[sd]);
       assert(ca && cb && Math.abs(ca.off - cb.off) <= 1, id + ': road breaks between ' + cellName(a) + ' and ' + cellName(b));
     }
     const st = Dd.cells[Dd.start[1]][Dd.start[0]];
@@ -451,17 +451,17 @@ check('district: every generated screen meets the city contract; every gate is o
     const s = new Sim(id, { 'proto.district.seed': seed }), Dd = s.district, R = s.P['body.radius'];
     for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
       const lv = cellLevel(Dd, [x, y], s.P), tag = id + '/' + seed + '/' + cellName([x, y]);
-      const share = lv.statics.filter((q) => q.kind === 'block').reduce((n, q) => n + q.w * q.h, 0) / 480000;
+      const share = lv.statics.filter((q) => q.kind === 'block').reduce((n, q) => n + q.w * q.h, 0) / (800 * 640);
       if (lv.theme !== 'start') assert(share >= 0.2 && share <= s.P['world.occludedFractionMax'], tag + ' blocks ' + share.toFixed(3));
       assert(lv.spawns.length >= 3, tag + ' spawns');
       // flood fill from the spawns on a 4-unit grid
-      const S = 4, gw = 200, gh = 150, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh), q = [];
-      for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const px = i * S + 2, py = j * S + 2; free[j * gw + i] = px > R && px < 800 - R && py > R && py < 600 - R && lv.statics.every((st) => rdist(px, py, st) > R + 0.5) ? 1 : 0; }
+      const S = 4, gw = 200, gh = 160, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh), q = [];
+      for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const px = i * S + 2, py = j * S + 2; free[j * gw + i] = px > R && px < 800 - R && py > R && py < 640 - R && lv.statics.every((st) => rdist(px, py, st) > R + 0.5) ? 1 : 0; }
       for (const sp of lv.spawns) { const k = Math.floor(sp.y / S) * gw + Math.floor(sp.x / S); if (free[k]) { seen[k] = 1; q.push(k); } }
       while (q.length) { const k = q.pop(), i = k % gw, j = (k - i) / gw; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ii = i + di, jj = j + dj; if (ii < 0 || jj < 0 || ii >= gw || jj >= gh) continue; const kk = jj * gw + ii; if (free[kk] && !seen[kk]) { seen[kk] = 1; q.push(kk); } } }
       for (const sd of ['N', 'E', 'S', 'W']) { const nx = x + SIDE[sd][0], ny = y + SIDE[sd][1]; if (nx >= 0 && ny >= 0 && nx < 3 && ny < 3) assert((lv.gates[sd] || []).length >= 1, tag + ' no gate ' + sd); }
       for (const sd of ['N', 'E', 'S', 'W']) for (const [a, b] of lv.gates[sd] || []) {
-        const m = (a + b) / 2, px = sd === 'W' ? R + 2 : sd === 'E' ? 800 - R - 2 : m, py = sd === 'N' ? R + 2 : sd === 'S' ? 600 - R - 2 : m;
+        const m = (a + b) / 2, px = sd === 'W' ? R + 2 : sd === 'E' ? 800 - R - 2 : m, py = sd === 'N' ? R + 2 : sd === 'S' ? 640 - R - 2 : m;
         assert(lv.statics.every((st) => rdist(px, py, st) > R), tag + ' gate ' + sd + ' blocked');
         assert(seen[Math.floor(py / S) * gw + Math.floor(px / S)], tag + ' gate ' + sd + ' unreachable');
         const nb = cellLevel(Dd, [x + SIDE[sd][0], y + SIDE[sd][1]], s.P);
@@ -493,8 +493,8 @@ check('district: marked edge stretches are exactly where an open-looking edge st
     for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
       Dd.cur = [x, y]; s.level = cellLevel(Dd, [x, y], s.P);
       const sp = D.edgeSpans(Dd, [x, y], s.P);
-      for (const sd of ['N', 'E', 'S', 'W']) for (let v = 16; v < (sd === 'E' || sd === 'W' ? 600 : 800) - R - 2; v += 4) { // the 4-unit lattice the spans are sampled on
-        const here = sd === 'E' ? [800 - R - 1, v] : sd === 'W' ? [R + 1, v] : sd === 'S' ? [v, 600 - R - 1] : [v, R + 1];
+      for (const sd of ['N', 'E', 'S', 'W']) for (let v = 16; v < (sd === 'E' || sd === 'W' ? 640 : 800) - R - 2; v += 4) { // the 4-unit lattice the spans are sampled on
+        const here = sd === 'E' ? [800 - R - 1, v] : sd === 'W' ? [R + 1, v] : sd === 'S' ? [v, 640 - R - 1] : [v, R + 1];
         if (!s.level.statics.every((st) => rdist(here[0], here[1], st) >= R)) continue; // this side is built up: visibly closed
         const marked = sp[sd].some(([a, z]) => v >= a && v < z);
         assert.strictEqual(marked, !s.edgeOpen(sd, v), id + ' ' + cellName([x, y]) + ' ' + sd + ' at ' + v);
@@ -515,7 +515,7 @@ check('puddles: world.puddleShare of tiles on every screen, never under a static
     const s = new Sim(id), Dd = s.district;
     for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
       const lv = cellLevel(Dd, [x, y], s.P), tiles = lv.patches.reduce((n, p) => n + p.w * p.h / 1024, 0);
-      assert.strictEqual(tiles, Math.round(0.02 * 25 * 19), id + ' ' + cellName([x, y]) + ' tiles ' + tiles);
+      assert.strictEqual(tiles, Math.round(0.02 * 25 * 20), id + ' ' + cellName([x, y]) + ' tiles ' + tiles);
       for (const p of lv.patches) assert(lv.statics.every((st) => !(p.x < st.x + st.w && p.x + p.w > st.x && p.y < st.y + st.h && p.y + p.h > st.y)), 'puddle under a static');
       assert(lv.patches.some((p) => D.roadDist(lv.center)(p.x + p.w / 2, p.y + p.h / 2) < 56), id + ' ' + cellName([x, y]) + ': none on the road');
     }
@@ -525,13 +525,13 @@ check('puddle: no dash from water; the slide runs movement.lowGripStopMultiplier
   const s = empty(); const p = s.level.patches[0]; s.body.x = p.x + p.w / 2; s.body.y = p.y + p.h / 2;
   s.step({ aPress: true });
   assert(s.body.mode !== 'lunge' && s.events.some((e) => e.type === 'slip') && s.events.some((e) => e.type === 'denied'), 'dash denied on water');
-  const coast = (wet) => { const t = empty(); t.level.patches = wet ? [{ x: 0, y: 0, w: 800, h: 600, kind: 'puddle' }] : []; t.body.x = 200; t.body.y = 300; t.body.facing = 0; idle(t, 90, { mx: 1, my: 0 }); const x0 = t.body.x; idle(t, 60, {}); return t.body.x - x0; };
+  const coast = (wet) => { const t = empty(); t.level.patches = wet ? [{ x: 0, y: 0, w: 800, h: 640, kind: 'puddle' }] : []; t.body.x = 200; t.body.y = 300; t.body.facing = 0; idle(t, 90, { mx: 1, my: 0 }); const x0 = t.body.x; idle(t, 60, {}); return t.body.x - x0; };
   const dry = coast(false), wet = coast(true);
   const sum = (n) => { let k = 0; for (let i = 1; i < n; i++) k += 1 - i / n; return k; }; // tick sums of the linear coast: 0.25 s and 0.625 s
   assert(near(wet / dry, 0.9 * sum(37.5) / sum(15), 0.02), 'slide ratio ' + (wet / dry).toFixed(3)); // 2.5× the time, 0.9× the speed
   const brake = (wet) => {
     const t = new Sim('straight', { 'run.appearances.road': 1 }); t.checkTerminal = () => {}; t.nextAt = 0; t.admit();
-    const c = t.cars[0]; c.s = 500; t.pose(c); c.v = 138; t.level.patches = wet ? [{ x: 0, y: 0, w: 800, h: 600, kind: 'puddle' }] : [];
+    const c = t.cars[0]; c.s = 500; t.pose(c); c.v = 138; t.level.patches = wet ? [{ x: 0, y: 0, w: 800, h: 640, kind: 'puddle' }] : [];
     c.man = { type: 'brake', v0: 138, a: t.P['traffic.hardBraking'], vTarget: 0, t0: t.t, halt: true, tv: t.t };
     t.moveCars(1 / 60, t.t + 1 / 60); return 138 - c.v;
   };
@@ -554,13 +554,10 @@ check('city: five districts in a fixed order, quotas rising, and three baked lay
     const probs = checkCity(Dd, s.P, D); assert.strictEqual(probs.length, 0, id + '/' + k + ': ' + probs.slice(0, 2).join('; '));
   }
 });
-check('field test (D27): the large layouts (1280 × 960) pass the same contract, flyover crossing rule included', () => {
-  const big = { 'world.width': 1280, 'world.height': 960, 'ui.playWidth': 1280, 'ui.playHeight': 960 };
-  for (const id of D.DISTRICT_LIST) for (const k of [1, 2]) {
-    const s = new Sim(id, Object.assign({ 'proto.layout': k }, big)), Dd = s.district;
-    assert(Dd.baked && Dd.cells.flat().some((q) => q.center.some(([x, y]) => x > 1000 || y > 760)), id + '/' + k + ' large layout not loaded');
-    const probs = checkCity(Dd, s.P, D); assert.strictEqual(probs.length, 0, id + '/' + k + ': ' + probs.slice(0, 2).join('; '));
-  }
+check('field (Edit 42, closes D27): 400 × 320 art px, 25 × 20 tiles; world 800 × 640', () => {
+  assert.strictEqual(REG['world.width'], 800); assert.strictEqual(REG['world.height'], 640);
+  assert.strictEqual(REG['ui.playWidth'], 800); assert.strictEqual(REG['ui.playHeight'], 640);
+  assert.strictEqual(REG['world.width'] / REG['world.tileSize'], 25); assert.strictEqual(REG['world.height'] / REG['world.tileSize'], 20);
 });
 check('flyovers cross roads; they never run along one for more than a tile', () => {
   const P = Object.assign({}, D.REG, D.PROTO, D.OVERRIDES);
@@ -576,8 +573,8 @@ check('city: the centre screen holds the landmark; flyovers cross whole rows or 
     assert.strictEqual(c.focal, want[id], id + ' focal');
     for (const dk of Dd.decks) { const cells = Dd.cells.flat().filter((q) => (q.decks || []).length && (dk.hz ? q.cell[1] === dk.line : q.cell[0] === dk.line)); assert.strictEqual(cells.length, 3, id + ' deck spans 3 screens'); }
   }
-  const t = new Sim('interchange', { 'proto.layout': 1 }), hs = t.district.decks.map((dk) => dk.height);
-  assert(hs.length === 2 && hs[1] > hs[0], 'stacked: the column deck is higher');
+  const t = new Sim('interchange', { 'proto.layout': 1 }), dks = t.district.decks;
+  assert(dks.length === 2 && dks.every((dk) => dk.hz && dk.height === t.P['world.deckHeight']) && dks[0].line !== dks[1].line, 'one overground level: two decks on different rows (Edit 42)');
 });
 check('city: the same layout plays the same; the next district follows in order', () => {
   const run = () => { const s = new Sim('market', { 'proto.layout': 2 }); for (let i = 0; i < 1800; i++) s.step({ mx: Math.sin(i / 40), my: Math.cos(i / 60), aPress: i % 89 === 0 }); return JSON.stringify(s.events); };
@@ -586,14 +583,108 @@ check('city: the same layout plays the same; the next district follows in order'
   assert(s.report && s.report.roadCleared && s.report.nextRoad === 'market', 'Riverside clears to Old Market');
   assert(new Sim('campus').isFinal, 'Campus is the last district');
 });
-check('flyovers: deck traffic runs both ways on the active screen and never touches the dummy', () => {
-  const s = new Sim('interchange', { 'proto.layout': 1, 'run.appearances.road': 0 }); s.checkTerminal = () => {};
-  const Dd = s.district, cell = Dd.cells.flat().find((q) => (q.decks || []).length);
-  Dd.cur = cell.cell.slice(); s.level = D.cellLevel(Dd, cell.cell, s.P); s.fillDecks();
-  assert(s.deckCars.length > 0 && s.deckCars.some((c) => c.dir > 0) && s.deckCars.some((c) => c.dir < 0), 'both directions');
-  const dk = s.level.decks[0]; s.body.x = dk.hz ? 400 : dk.off; s.body.y = dk.hz ? dk.off : 300; const h = s.body.health;
-  idle(s, 600, {});
-  assert.strictEqual(s.body.health, h, 'no hits from the deck'); assert(s.deckCars.length > 0, 'traffic keeps coming');
+// screen finder for the Edit 42 checks: a city screen whose level passes fn, made active with its own traffic
+function onScreen(fn, o) {
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
+    const s = new Sim(id, Object.assign({ 'proto.layout': k, 'run.appearances.road': 0 }, o || {})), Dd = s.district;
+    for (const q of Dd.cells.flat()) {
+      const lv = D.cellLevel(Dd, q.cell, s.P), hit = fn(lv, s);
+      if (!hit) continue;
+      s.checkTerminal = () => {}; Dd.cur = q.cell.slice(); s.level = lv; s.cones = s.conesFor(lv); s.cars = []; s.fillDeckCars();
+      return { s, lv, hit };
+    }
+  }
+  throw new Error('no screen found');
+}
+check('flyovers: deck cars are full drivers on level 2, both ways; they never meet a dummy on the ground', () => {
+  const { s, lv } = onScreen((lv) => lv.decks.length);
+  const deck = s.cars.filter((c) => c.deck);
+  assert(deck.length > 0 && deck.every((c) => c.layer === 2) && new Set(deck.map((c) => c.lane)).size === 2, 'both lanes run');
+  assert.strictEqual(s.run.admitted, 0, 'deck cars are off the schedule');
+  const dk = lv.decks[0]; s.body.x = 400; s.body.y = dk.off + 28; const h = s.body.health; // under a deck lane, on the ground
+  for (let i = 0; i < 600; i++) { s.step({}); for (const c of s.cars) if (c.deck) assert.strictEqual(c.hz, null, 'deck driver sensed the ground dummy'); }
+  assert.strictEqual(s.body.health, h, 'no hits through the deck'); assert(s.cars.some((c) => c.deck), 'traffic keeps coming');
+});
+check('stairs: up to the deck at world.stairSpeed and back down to the ground', () => {
+  const { s, hit: st } = onScreen((lv) => lv.stairs.find((q) => q.to === 2)), b = s.body, R = s.P['body.radius'], sg = Math.sign(st.low - st.high);
+  b.x = st.x + st.w / 2; b.y = st.low + sg * (R + 4); b.facing = -sg * Math.PI / 2;
+  let top = 0, onStair = 0;
+  for (let i = 0; i < 300 && b.level !== 2; i++) { s.step({ mx: 0, my: -sg }); if (b.stair) top = Math.max(top, Math.hypot(b.vx, b.vy)), onStair++; }
+  assert.strictEqual(b.level, 2, 'reached the deck'); assert(onStair > 0, 'climbed the stair');
+  assert(top <= s.P['movement.runSpeed'] * s.P['world.stairSpeed'] + 1e-6, 'stair speed ' + top.toFixed(1));
+  s.step({ aPress: true }); assert.strictEqual(b.mode, 'lunge', 'dash on the deck'); idle(s, 40, {});
+  b.x = st.x + st.w / 2; b.mode = 'idle'; b.lunge = null;
+  for (let i = 0; i < 400 && b.level !== 1; i++) s.step({ mx: 0, my: sg });
+  assert.strictEqual(b.level, 1, 'back on the ground');
+});
+check('deck: a deck car brakes for the dummy in its lane and takes a dash; a ground car passes under it', () => {
+  const { s, lv } = onScreen((lv) => lv.decks.length && lv.deckLanes.length), b = s.body, dk = lv.decks[0];
+  s.cars = []; const ln = lv.deckLanes[0], p = D.pathAt(ln.path, 600);
+  b.level = 2; b.deck = 0; b.x = p.x; b.y = p.y; b.facing = Math.atan2(-p.ty, -p.tx);
+  const c = s.newCar('deckT', 'sedan', 2, ln.path, 380, 2); s.cars.push(c);
+  const g = s.newCar('carT', 'sedan', 0, lv.lanes[0], 200, 1); s.cars.push(g);
+  let sensed = false, groundSensed = false;
+  for (let i = 0; i < 120; i++) { s.step({}); if (c.hz) sensed = true; if (g.hz) groundSensed = true; }
+  assert(sensed && c.v < c.cruise, 'deck driver sees and slows'); assert(!groundSensed, 'ground driver never sees the deck dummy');
+  void dk;
+  c.s = 600 - c.L / 2 - 30; c.v = 60; s.pose(c); b.facing = Math.atan2(c.y - b.y, c.x - b.x); b.mode = 'idle'; b.charge = 2;
+  s.step({ aPress: true }); idle(s, 30, {});
+  const ev = s.events.find((e) => e.type === 'impact' && e.car === 'deckT'); assert(ev && ev.deck, 'hit on the deck');
+});
+check('drop: a broken parapet drops the dummy to the road; landing on a car scores a hit to the legs', () => {
+  const { s, lv, hit: dk } = onScreen((lv) => lv.decks.find((q) => q.gaps.length)), b = s.body, R = s.P['body.radius'];
+  const [a0, a1, side] = dk.gaps[0], lim = s.P['world.deckWidth'] / 2 - s.P['world.parapetWidth'] - R;
+  s.cars = []; b.level = 2; b.deck = lv.decks.indexOf(dk);
+  if (dk.hz) { b.x = (a0 + a1) / 2; b.y = dk.off + side * (lim - 2); } else { b.y = (a0 + a1) / 2; b.x = dk.off + side * (lim - 2); }
+  for (let i = 0; i < 30 && b.mode !== 'drop'; i++) s.step(dk.hz ? { mx: 0, my: side } : { mx: side, my: 0 });
+  assert.strictEqual(b.mode, 'drop', 'dropped through the gap');
+  const T = s.P['world.dropSeconds'];
+  while (b.drop.t < T - 1 / 60 - 1e-9) s.step({});
+  const rest = T - b.drop.t, lx = b.x + b.drop.vx * rest, ly = b.y + b.drop.vy * rest, pr = D.pathProject(lv.lanes[0], lx, ly);
+  const c = s.newCar('carL', 'sedan', 0, lv.lanes[0], pr.s, 1); c.d = pr.lat; c.v = 40; s.pose(c); s.cars.push(c);
+  s.step({});
+  assert.strictEqual(b.level, 1, 'on the ground');
+  const ev = s.events.find((e) => e.type === 'impact' && e.drop);
+  assert(ev && /^leg[LR]$/.test(ev.part) && ev.assessed > 0, 'landing hit to the legs');
+  const want = D.dropImpact(s.P, 0, 0, { cls: 'sedan', vx: 0, vy: 0 }, { nx: 0, ny: 0 }).assessed;
+  assert(ev.assessed >= want - 1e-6, 'at least a drop onto a stopped car: ' + ev.assessed.toFixed(1) + ' vs ' + want.toFixed(1));
+});
+check('underpass: down, under the road, up the far side; no car senses the dummy below', () => {
+  const { s, lv } = onScreen((lv) => lv.corridors.length), b = s.body, R = s.P['body.radius'];
+  const [sA, sB] = lv.stairs.filter((q) => q.to === 0), sg = Math.sign(sA.low - sA.high), dir = -sg;
+  if (sA.axis === 'y') { b.x = sA.x + sA.w / 2; b.y = sA.low + sg * (R + 4); } else { b.y = sA.y + sA.h / 2; b.x = sA.low + sg * (R + 4); }
+  const cmd = sA.axis === 'y' ? { mx: 0, my: dir } : { mx: dir, my: 0 };
+  let under = false;
+  for (let i = 0; i < 600; i++) {
+    s.step(cmd);
+    if (b.level === 0 && !b.stair && !under) {
+      under = true;
+      const pr = D.pathProject(lv.lanes[0], b.x, b.y), c = s.newCar('carU', 'sedan', 0, lv.lanes[0], pr.s, 1); c.d = pr.lat; s.pose(c); s.cars.push(c);
+      s.step(cmd); assert(!c.hz && !c.det.side && !s.events.some((e) => e.type === 'impact'), 'unsensed and untouched below');
+      s.cars = [];
+    }
+    if (under && b.level === 1 && !b.stair) break;
+  }
+  assert(under, 'went under'); assert.strictEqual(b.level, 1, 'came up');
+  assert(sA.axis === 'y' ? Math.sign(b.y - sA.y) === dir : Math.sign(b.x - sA.x) === dir, 'on the far side');
+});
+check('bounded: walls hold the dummy; a checkpoint boom cannot be passed, and it lifts for a car', () => {
+  const { s, lv, hit: cp } = onScreen((lv) => lv.checkpoints.find((q) => !q.deck)), b = s.body, R = s.P['body.radius'], W = 800, H = 640;
+  const zone = D.checkZone(cp, s.P, W, H), out = { W: [-1, 0], E: [1, 0], N: [0, -1], S: [0, 1] }[cp.side], scr = s.screenName();
+  const rd = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
+  const bp = s.boomPoint(cp); b.x = bp.x - out[0] * 60; b.y = bp.y - out[1] * 60;
+  for (let i = 0; i < 180; i++) { s.step({ mx: out[0], my: out[1] }); assert(rd(b.x, b.y, zone) >= R - 0.5, 'inside the checkpoint zone'); }
+  assert.strictEqual(s.screenName(), scr, 'still on the screen');
+  const pr = D.pathProject(lv.lanes[0], bp.x, bp.y), c = s.newCar('carB', 'sedan', 0, lv.lanes[0], pr.s, 1); c.v = 0; c.cruise = 0; s.pose(c); s.cars.push(c);
+  const i0 = lv.checkpoints.indexOf(cp); idle(s, Math.ceil(s.P['world.boomSeconds'] * 60) + 2, {}); assert.strictEqual(s.booms[i0], 1, 'boom up');
+  s.cars = []; idle(s, Math.ceil(s.P['world.boomSeconds'] * 60) + 2, {}); assert.strictEqual(s.booms[i0], 0, 'boom down');
+  const wall = lv.statics.find((q) => q.kind === 'wall' && q.h > 120 && q.w < 40); // a side wall, if this screen has one
+  // a flyover leaving the district stops at its own boom
+  const dq = onScreen((l) => l.checkpoints.find((q) => q.deck)), dcp = dq.hit, ds = dq.s, db = ds.body, dz = D.checkZone(dcp, ds.P, W, H), dout = dcp.side === 'W' ? -1 : 1;
+  ds.cars = []; db.level = 2; db.deck = dq.lv.decks.findIndex((q) => q.off === dcp.off); db.x = dout < 0 ? dcp.line + 60 : W - dcp.line - 60; db.y = dcp.off + 50;
+  for (let i = 0; i < 120; i++) { ds.step({ mx: dout, my: 0 }); assert(rd(db.x, db.y, dz) >= R - 0.5, 'past the deck boom'); }
+  assert.strictEqual(db.level, 2, 'still on the deck');
+  if (wall) { const t = s; t.body.x = wall.x < 400 ? wall.x + wall.w + R + 20 : wall.x - R - 20; t.body.y = wall.y + wall.h / 2; idle(t, 120, { mx: wall.x < 400 ? -1 : 1, my: 0 }); assert(rd(t.body.x, t.body.y, wall) >= R - 0.5, 'through the wall'); }
 });
 check('interchange: the roundabout island is crash matting: dash × world.terrain.matting.lunge', () => {
   const s = new Sim('interchange', { 'proto.layout': 1, 'run.appearances.road': 0 }); s.checkTerminal = () => {};
@@ -605,7 +696,7 @@ check('interchange: the roundabout island is crash matting: dash × world.terrai
 });
 check('campus: a hit taken on a calibrated plate scores damage.plateMultiplier', () => {
   const s = new Sim('campus', { 'proto.layout': 1, 'run.appearances.road': 1 }); s.checkTerminal = () => {};
-  const Dd = s.district, c = Dd.cells[1][1]; Dd.cur = [1, 1]; s.level = D.cellLevel(Dd, [1, 1], s.P); s.fillDecks();
+  const Dd = s.district, c = Dd.cells[1][1]; Dd.cur = [1, 1]; s.level = D.cellLevel(Dd, [1, 1], s.P); s.cars = [];
   const plate = s.level.patches.find((p) => p.kind === 'plate'); assert(plate, 'a plate');
   s.body.x = plate.x + plate.w / 2; s.body.y = plate.y + plate.h / 2;
   assert.strictEqual(s.surfaceAt(s.body.x, s.body.y), 'plate');
@@ -621,7 +712,7 @@ for (const id of D.DISTRICT_LIST) {
       if (s.phase === 'report') s.continueReport();
       if (s.phase === 'shop') s.leaveShop();
       if (s.phase === 'ending' || s.phase === 'next') break;
-      for (const c of s.cars.concat(s.deckCars)) assert(Number.isFinite((c.x || 0) + (c.y || 0) + (c.s || 0) + c.v), 'NaN car');
+      for (const c of s.cars) assert(Number.isFinite((c.x || 0) + (c.y || 0) + (c.s || 0) + c.v), 'NaN car');
       assert(Number.isFinite(s.body.x + s.body.y), 'NaN body');
     }
   });

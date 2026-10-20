@@ -1,9 +1,10 @@
 # DUMMIES — P3 Prototype: 16-bit Aero
 
-**P3 · 20 October 2026 · Lawrence Lek**
+**P3.1 · 20 October 2026 · Lawrence Lek**
 
-P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber city as canon (Edit 39). Pixel-art field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 300 at (120, 30).
+P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber city as canon (Edit 39). Pixel-art field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 320 at (120, 20): 25 × 20 tiles, 5:4.
 
+- **P3.1 (Edit 42):** bounded districts (river, walls, checkpoints with booms); three levels: underpasses, ground, flyover decks. Stairs join them. Drop off a broken parapet onto the road, or onto a car.
 - **Simulation changes:** solid city statics (city v2, ~25% buildings); part damage that cuts abilities; two dash charges, shortened by leg damage.
 - **City districts (Edit 41):** a run is five districts in order: Riverside → Old Market → Interchange → CBD → FARSIGHT Campus. Each has a landmark on its centre screen, its own building form, flyovers, traffic and hazards. Three baked layouts per district; a run picks one.
 - **Districts (Edit 40):** each district is 3 × 3 screens, Zelda-style. Walk off any open edge to flip to the next screen.
@@ -13,21 +14,19 @@ P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber 
 - **Voice:** barks from `content/db/fleet.json`, checked by `check_lore.py`.
 - Everything else is P2.2.
 
-![P3: road 1, screen B1 at 720p: district map, puddles, two dash charges, half-size tags, a bark](docs/p3_play_cyber.png)
+![P3.1: Interchange A1 at 720p, the dummy on a flyover deck; deck traffic tagged, the road below](docs/p31_play.png)
 
 ## Play
 
 Open `dummies_p3.html` in a browser. No install, no server. **Full screen** fills the display at the largest whole scale.
-
-**Field-size test (D27):** the **Field** button (or `?field=large`) switches to a 640 × 480 art-px field (40 × 30 tiles of 16 px) on a 960 × 540 screen. Standard is 400 × 300 on 640 × 360.
-
-![Standard and large field side by side at the same physical size](docs/p3_field_compare.png)
 
 | Control | Keys |
 |---|---|
 | Move | WASD or arrows |
 | Dash (the lunge) | Space or J |
 | Cone (after Carry) | K or Shift |
+| Stairs | Walk into the foot (ground) or the head (deck, passage) |
+| Drop | Walk or dash through a broken parapet |
 | Pause and cue key | Esc |
 | Tuning panel | T |
 
@@ -43,13 +42,13 @@ Pick a district on the title screen (Up/Down). Quotas rise: 1, 2, 2, 3, 4. A quo
 
 | Grid | Size | Unit |
 |---|---|---|
-| Simulation | 800 × 600 | world units (`ui.playWidth` × `ui.playHeight`) |
-| Art | 400 × 300 field, 640 × 360 screen | 1 art px = 2 world units (`ui.artScale` = 2) |
+| Simulation | 800 × 640 | world units (`ui.playWidth` × `ui.playHeight`) |
+| Art | 400 × 320 field, 640 × 360 screen | 1 art px = 2 world units (`ui.artScale` = 2); 25 × 20 tiles of 16 px |
 | Reference | 1280 × 720 | HUD and screens; 1 reference unit = 1 world unit |
 | Device | 640 × 360 × k | k = whole number: 720p ×2, 1080p ×3, 1440p ×4, 4K ×6 |
 
 - **Integer only.** The canvas is always a whole multiple of 640 × 360. Spare space shows sky.
-- **Verified.** At 1080p every art pixel is a clean 3 × 3 block (120,000 of 120,000 cells).
+- **Verified (P3).** At 1080p every art pixel is a clean 3 × 3 block.
 - **Colliders unchanged.** `body.radius` 13 = dummy sprite 13 px wide. Sedan 28 × 14, van 34 × 16 art px.
 
 ## Pixel rules (Edit 37 §4.1.3)
@@ -107,26 +106,59 @@ A black outline vanishes on a dark field. The background owns the darkest values
 |---|---|---|---|---|---|---|
 | 1 | Riverside | Lantern monument on a plaza | Low-rise | 0 | 1 | 3.0 s, 20% vans |
 | 2 | Old Market | Fountain square | Dense low-rise | 0 | 2 | 3.0 s, 45% vans |
-| 3 | Interchange | Roundabout with a crash-matting island (dash × 1.15) | Mid-rise | 2, stacked | 2 | 2.8 s, 30% vans |
+| 3 | Interchange | Roundabout with a crash-matting island (dash × 1.15) | Mid-rise | 2, on different rows | 2 | 2.8 s, 30% vans |
 | 4 | Central Business District | FARSIGHT Tower | Towers | 1 | 3 | 2.6 s, 30% vans |
 | 5 | FARSIGHT Campus | Calibrated plates on the road (points × 1.5) | Campus halls | 1 | 4 | 2.5 s, 40% vans |
 
 - **Data:** `tables.districts` in the registry; `world.district.<id>.<field>` in `sim.js`.
-- **Flyovers:** decks on piers across a whole row or column (`world.deckHeight` 60; stacked +`world.deckStack` 60). Deck traffic runs both ways and never meets the dummy. Piers are solid ground statics. No buildings under a deck.
+- **Flyovers:** decks on piers across a whole row (`world.deckHeight` 60; one overground level). Piers are solid ground statics. No buildings under a deck. Levels and deck play: below.
 - **Flyovers cross roads (Edit 41.1):** under a deck, a road's centre line runs at most one tile along it; beside it, a road within `world.deckParallelAngle` (30°) of its direction runs at most one tile. Each deck takes an offset where every road on its line passes.
 - **Roundabout:** the whole ring is road; traffic uses the part on its route.
 - **Towers:** a share of large lots (`world.district.<id>.towerShare`) rise 220–380 units, with LED crowns.
 - **Layouts made in advance:** `node tools/district_bake.js` tries seeds and keeps the first three per district that pass the contract (`tools/district_check.js`) with different roads, and whose start screen gives the bot a write-off within 150 s. Output: `content/districts/districts.json` (15 layouts).
 - **Per run:** one layout per district at random. Tuning: `proto.layout` 1–3 fixes one; −1 generates live.
-- **Large field:** `node tools/district_bake.js 30 --large --keep 2` writes `content/districts/districts_large.json` (10 layouts at 1280 × 960 units).
 
-![The five centre screens and a flyover screen](docs/p3_districts_sheet.png)
+![The five centre screens and a deck screen, P3.1](docs/p31_districts_sheet.png)
 
-![Interchange B2: a roundabout under stacked flyovers](docs/p3_interchange_B2.png)
+## Levels and bounds (P3.1, Edit 42; 20 October)
+
+| Level | Name | Reached by | Cars | Bounds |
+|---|---|---|---|---|
+| 0 | Underground | Underpass stairs | None | The passage |
+| 1 | Ground (default) | Spawn, stair foot, landing | Ground traffic | Statics, walls, checkpoints |
+| 2 | Overground | Up-stair | Deck traffic | Parapets, deck checkpoint |
+
+- **Bounded districts.** Row 1's outer edge is the river; every other outer edge is a wall (`world.wallThickness` 16).
+- **Checkpoints.** A road leaving the district passes a booth and a boom. The boom lifts for a car within `world.boomRange` (140) over `world.boomSeconds` (0.5 s). The dummy cannot pass. Decks have their own boom at the district edge.
+- **Decks** (`world.deckWidth` 176): two lanes, a hard shoulder each side, parapets (`world.parapetWidth` 8) with a lamp every `world.deckLampSpacing` (128).
+  - **Deck traffic:** full drivers, one per lane every `world.deckInterval` (2.4 s). They sense only the deck. Off the schedule: not in CARS LEFT.
+  - **Broken parapets** over every road a deck crosses. Lamps beside them are down.
+- **Stairs:** `world.stairLength` 64 × `world.stairWidth` 32. Walked at × `world.stairSpeed` (0.7); no dash. Sides solid on the ground.
+- **Underpasses:** on `world.underpassChance` (0.5) of screens. Stairs down on both pavements; a passage under the road. No car senses the dummy there.
+- **Drop:** `world.dropSeconds` (0.35 s), no control. Landing on a car: closing speed is the hypotenuse of `damage.dropSpeed` (120) and the car's speed. Stopped sedan 76; sedan at cruise 176. The legs take it.
+- **Cones stay on the ground.** Carry one up; drop or throw it only on level 1.
+- **HUD:** `DECK`, `UNDERPASS` or `STAIRS` in the top bar. Cues and tags show for the dummy's level only.
+- **Contract (clauses 18–20):** walls or river on every outer edge; a checkpoint per road and deck exit; every stair foot reachable; every deck row with an up-stair and a drop point; paired underpass stairs.
+
+| District | Up-stairs | Parapet gaps | Underpasses | Checkpoints (road + deck) |
+|---|---|---|---|---|
+| Riverside | 0 | 0 | 3–4 | 2 + 0 |
+| Old Market | 0 | 0 | 1–5 | 2 + 0 |
+| Interchange | 6 | 9–14 | 2–3 | 2 + 4 |
+| CBD | 3 | 1–2 | 1–4 | 2 + 2 |
+| Campus | 2–3 | 2–6 | 2–3 | 2 + 2 |
+
+![On the deck: the shoulder, deck cars stopping for the dummy, the up-stair below](docs/p31_deck.png)
+
+![The drop: off a broken parapet onto the road below](docs/p31_drop.png)
+
+![Underpass: the passage as an x-ray band, the dummy as a checker](docs/p31_underpass.png)
+
+![Checkpoint: the boom across both lanes, the booth on the pavement](docs/p31_checkpoint.png)
 
 ## Districts (D24, `proto.district` = 1; 20 October)
 
-A road is a district of `world.districtColumns` × `world.districtRows` screens (3 × 3). Each screen is a full 800 × 600 play area. Spec: GDD Edit 40 §7.1.1.
+A road is a district of `world.districtColumns` × `world.districtRows` screens (3 × 3). Each screen is a full 800 × 640 play area. Spec: GDD Edit 40 §7.1.1.
 
 | Rule | Value |
 |---|---|
@@ -300,16 +332,22 @@ Day version: `docs/p3_chassis_modules.png`.
 | `damage.bodyHealth` | 800 | Registry (`edit40.1-2026-10-20`); was 1600 (CR-004) |
 | `proto.health.fragile`, `.standard`, `.reinforced` | 600, 800, 1000 | Registry, prototype group (Edit 40.1) |
 | `world.district.<id>.*` (10 fields × 5 districts) | City districts table above | Registry `districts` table (Edit 41) |
-| `world.deckHeight`, `world.deckStack`, `world.deckWidth` | 60, 60, 128 units | Registry, Proposed |
+| `world.deckHeight`, `world.deckWidth` | 60, 176 units | Registry, Proposed (`world.deckStack` retired, Edit 42) |
 | `world.deckPillarSpacing`, `world.deckInterval` | 160 units, 2.4 s | Registry, Proposed |
-| `world.towerHeightMin`, `world.towerHeightMax`, `world.roundaboutRadius` | 220, 380, 140 units | Registry, Proposed |
+| `world.towerHeightMin`, `world.towerHeightMax`, `world.roundaboutRadius` | 220, 380, 160 units | Registry, Proposed |
 | `damage.plateMultiplier`, `world.terrain.matting.lunge` | 1.5, 1.15 | Registry values, now used |
 | `proto.layout` | 0 | Registry, prototype group. Baked layout 1–3; −1 = live |
 | `world.deckParallelAngle` | 30° | Registry, Proposed (Edit 41.1) |
+| `world.parapetWidth`, `world.deckLampSpacing` | 8, 128 units | Registry, Proposed (Edit 42) |
+| `world.stairLength`, `world.stairWidth`, `world.stairSpeed` | 64, 32 units; 0.7 | Registry, Proposed (Edit 42) |
+| `world.dropSeconds`, `damage.dropSpeed` | 0.35 s, 120 units/s | Registry, Proposed (Edit 42) |
+| `world.underpassChance`, `world.wallThickness` | 0.5, 16 units | Registry, Proposed (Edit 42) |
+| `world.boomRange`, `world.boomSeconds` | 140 units, 0.5 s | Registry, Proposed (Edit 42) |
+| `proto.art.wallHeight` | 40 units | Registry, prototype group (Edit 42) |
 | `ui.typeFieldLabel` | 12 units | Registry. Tags and barks |
 | `battery.capacity` | 2 | Registry (D19) |
 | `proto.parts.legDashLoss` | 1.5 | Registry, prototype group. Dash reach per leg share |
-| `ui.playWidth`, `ui.playHeight` | 800, 600 | Registry values, now in `REG` |
+| `ui.playWidth`, `ui.playHeight` | 800, 640 | Registry (`edit42-2026-10-20`), in `REG` as `world.width`, `world.height` |
 | `ui.typeLoadBearing`, `ui.typeSecondary`, `ui.typeTexture` | 24, 16, 9 | Registry values, now in `REG` |
 | `proto.art.extrusion` | 0.3 | Proposed. Share of height drawn as a screen-up offset |
 | `proto.city` | 1 | Proposed. City blocks and jersey barriers are statics; 0 = P2.2 roads |
@@ -334,10 +372,9 @@ Day version: `docs/p3_chassis_modules.png`.
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html`, with `content/db/fleet.json` as `window.FLEET_DB` |
 | `tools/city_gen.js` | City v2 generator: `node tools/city_gen.js .` prints block and barrier data |
-| `test_sim.js` | `node test_sim.js`: 69 checks, incl. 13 for the city districts (contract on all 15 standard and 10 large layouts, crossings, landmarks, flyovers, plates, matting, smoke runs) |
+| `test_sim.js` | `node test_sim.js`: 74 checks, incl. 18 for the city districts (contract on all 15 layouts, crossings, landmarks, deck drivers, stairs, drop, underpass, walls and booms, plates, matting, smoke runs) |
 | `tools/district_bake.js`, `tools/district_check.js` | Bake 3 layouts per district; the district contract and start-screen bot |
-| `../../content/districts/districts.json` | The 15 baked layouts, bundled as `window.DISTRICT_DB` |
-| `../../content/districts/districts_large.json` | 10 layouts for the large-field test, bundled as `window.DISTRICT_DB_LARGE` |
+| `../../content/districts/districts.json` | The 15 baked layouts at 800 × 640, bundled as `window.DISTRICT_DB` |
 | `../../content/db/` | Fleet database and `check_lore.py` (lore consistency) |
 
 ## Open
@@ -347,10 +384,11 @@ Day version: `docs/p3_chassis_modules.png`.
 - **Seniority pips** need playtesting against `proto.learningEnabled` = 1.
 - **Fonts.** B612 and Nunito load from Google Fonts. The laptop build must embed them.
 - **Moods.** Lines exist in the database; the sim does not assign moods yet.
-- **D27 viewable area.** Keep 800 × 600 per screen (recommended), or widen to 960 × 600. Table in GDD Edit 40.
 - **D28 exploration reward.** Exploration is optional today.
 - **Pacing at 800 health.** A reading bot clears L1 in 31.6 s (was 11.0 s at 300). Quotas 2 and 3 on L2 and L3 need a timed check against CARS LEFT.
 - **Junctions.** Generated screens have no T or cross pieces yet.
-- **D29 two-layer play.** Stairs, skybridges and drops. Decks carry traffic only.
+- **D29 rest.** Skybridges between towers. Riverside and Old Market have no decks.
+- **Drop value.** 76–176 damage: a hit, or a getaway? Playtest.
+- **Deck tags.** Six tagged deck cars at once may crowd the field.
 - **D30.** GDD 7.2's old level types against the districts.
-- **Interchange readability.** Stacked decks hide much of the roundabout.
+- **Interchange readability.** A deck still crosses the roundabout.

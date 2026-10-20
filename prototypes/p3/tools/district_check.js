@@ -1,4 +1,4 @@
-// City district contract (GDD Edit 41 §7.9 clauses 11–16). Used by the baking tool and by test_sim.js.
+// City district contract (GDD Edit 41 §7.9 clauses 11–17; Edit 42 clauses 18–20). Used by the baking tool and by test_sim.js.
 // Returns a list of problems; an empty list means the layout passes.
 const rdist = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
 function reach(lv, R, W, H) { // flood fill from the spawns over open ground, 4-unit grid
@@ -16,10 +16,13 @@ function checkCity(D, P, sim) {
   let deckCells = 0;
   for (let y = 0; y < D.rows; y++) for (let x = 0; x < D.cols; x++) {
     const lv = sim.cellLevel(D, [x, y], P), tag = id + ' ' + name([x, y]);
-    const blocks = lv.statics.filter((q) => q.kind === 'block'), share = blocks.reduce((n, q) => n + q.w * q.h, 0) / (W * H);
-    if (share < dp('blockShare') - 0.08 || share > P['world.occludedFractionMax']) out.push(tag + ' blocks ' + share.toFixed(3));
+    const blocks = lv.statics.filter((q) => q.kind === 'block'), built = blocks.reduce((n, q) => n + q.w * q.h, 0);
+    const open = W * H - (lv.decks || []).length * P['world.deckWidth'] * W, share = built / open; // outside flyover bands (Edit 42; decks are horizontal)
+    if (share < dp('blockShare') - 0.08 || built / (W * H) > P['world.occludedFractionMax']) out.push(tag + ' blocks ' + share.toFixed(3));
     if (lv.spawns.length < 3) out.push(tag + ' spawns ' + lv.spawns.length);
-    const rc = reach(lv, R, W, H);
+    // stair sides and checkpoint zones stop the dummy on the ground (Edit 42)
+    const ground = { statics: lv.statics.concat((lv.stairs || []).map((q) => ({ x: q.x, y: q.y, w: q.w, h: q.h })), (lv.checkpoints || []).filter((cp) => !cp.deck).map((cp) => sim.checkZone(cp, P, W, H))), spawns: lv.spawns };
+    const rc = reach(ground, R, W, H);
     if (rc.lost) out.push(tag + ' walled-off ground ' + rc.lost);
     for (const sd of ['N', 'E', 'S', 'W']) {
       const nx = x + { N: 0, E: 1, S: 0, W: -1 }[sd], ny = y + { N: -1, E: 0, S: 1, W: 0 }[sd];
@@ -42,8 +45,39 @@ function checkCity(D, P, sim) {
       if (!lv.statics.some((q) => q.deck)) out.push(tag + ' flyover without pillars');
       for (const dk of lv.decks) if (!sim.deckCrossOK(lv.center, dk, P, W, H) || (lv.ring && !sim.deckCrossOK(lv.ring, dk, P, W, H))) out.push(tag + ' flyover runs along the road'); // clause 17 (Edit 41.1)
     }
+    // 18. Bounded: every outer edge is wall or river; a road leaves through a checkpoint
+    const cell = D.cells[y][x], outerRoads = (cell.ends || []).filter((e) => e.outer), cps = lv.checkpoints || [];
+    if (cps.filter((cp) => !cp.deck).length !== outerRoads.length) out.push(tag + ' checkpoints ' + cps.length + ' for ' + outerRoads.length + ' road exits');
+    for (const dk of lv.decks || []) for (const sd of dk.hz ? ['W', 'E'] : ['N', 'S']) {
+      const nx = x + { N: 0, E: 1, S: 0, W: -1 }[sd], ny = y + { N: -1, E: 0, S: 1, W: 0 }[sd];
+      if ((nx < 0 || ny < 0 || nx >= D.cols || ny >= D.rows) && !cps.some((cp) => cp.deck && cp.side === sd && cp.off === dk.off)) out.push(tag + ' flyover leaves without a checkpoint');
+    }
+    for (const sd of ['N', 'E', 'S', 'W']) {
+      const nx = x + { N: 0, E: 1, S: 0, W: -1 }[sd], ny = y + { N: -1, E: 0, S: 1, W: 0 }[sd];
+      if (nx >= 0 && ny >= 0 && nx < D.cols && ny < D.rows) continue;
+      const len = sd === 'E' || sd === 'W' ? H : W, zones = (lv.checkpoints || []).filter((cp) => cp.side === sd && !cp.deck).map((cp) => sim.checkZone(cp, P, W, H));
+      for (let v = 4; v < len; v += 8) {
+        const px = sd === 'W' ? 4 : sd === 'E' ? W - 4 : v, py = sd === 'N' ? 4 : sd === 'S' ? H - 4 : v;
+        if (!lv.statics.some((q) => (q.kind === 'wall' || q.kind === 'river') && rdist(px, py, q) === 0) && !zones.some((q) => rdist(px, py, q) === 0)) { out.push(tag + ' open district edge ' + sd + ' at ' + v); break; }
+      }
+    }
+    // 19–20. Stairs: each foot is reachable; underpass stairs come in pairs with their passage
+    for (const st of lv.stairs || []) {
+      const sg = Math.sign(st.low - st.high), fx = st.axis === 'y' ? st.x + st.w / 2 : st.low + sg * (R + 4), fy = st.axis === 'y' ? st.low + sg * (R + 4) : st.y + st.h / 2;
+      if (!rc.at(fx, fy)) out.push(tag + ' stair foot unreachable');
+    }
+    const down = (lv.stairs || []).filter((q) => q.to === 0).length;
+    if (down !== 2 * (lv.corridors || []).length) out.push(tag + ' underpass stairs ' + down + ' for ' + (lv.corridors || []).length + ' passages');
+    for (const dk of lv.decks || []) for (const [a0, a1] of dk.gaps) if (a1 - a0 < 2 * R) out.push(tag + ' parapet gap too narrow');
   }
   if (deckCells < Math.round(dp('decks')) * 3 - (dp('decks') >= 2 ? 1 : 0)) out.push(id + ' flyover screens ' + deckCells);
+  // 19. Every flyover has a stair up and a broken parapet somewhere along it
+  for (const dk of D.decks || []) {
+    const line = D.cells.flat().filter((q) => (dk.hz ? q.cell[1] : q.cell[0]) === dk.line).map((q) => sim.cellLevel(D, q.cell, P));
+    const k = (lv) => (lv.decks || []).findIndex((q) => q.hz === dk.hz && q.off === dk.off);
+    if (!line.some((lv) => (lv.stairs || []).some((st) => st.to === 2 && st.deck === k(lv)))) out.push(id + ' flyover ' + dk.line + ' has no stair');
+    if (!line.some((lv) => k(lv) >= 0 && lv.decks[k(lv)].gaps.length)) out.push(id + ' flyover ' + dk.line + ' has no drop point');
+  }
   return out;
 }
 // Start-screen bot (automated, not human evidence): walks to the nearest reachable verge, reads approaching cars, dashes

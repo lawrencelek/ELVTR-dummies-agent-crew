@@ -1,11 +1,11 @@
 /* DUMMIES P3 — pixel art layer.
-   The field is a 400 × 300 art grid: ui.playWidth ÷ ui.artScale by ui.playHeight ÷ ui.artScale.
+   The field is a 400 × 320 art grid (25 × 20 tiles): ui.playWidth ÷ ui.artScale by ui.playHeight ÷ ui.artScale.
    Rules (GDD Edit 37 §4.1.3): whole art pixels only, no anti-aliasing, 1-px outlines, ramps of three tones,
    hard shadows down-left. Translucency is SNES-style colour math on whole pixels. Exposes window.PIX. */
 (function (root) {
   'use strict';
-  // Field size (D27 test, Edit 41.1): 400 × 300 art px by default; ?field=large gives 640 × 480 (40 × 30 tiles of 16 px).
-  const BIG = root.PIX_FIELD === 'large', AW = BIG ? 640 : 400, AH = BIG ? 480 : 300, U = 2, TAU = Math.PI * 2;
+  // Field (Edit 42, D27): 400 × 320 art px, 25 × 20 tiles of 16 px, 5:4. One art px = 2 world units (ui.artScale).
+  const AW = 400, AH = 320, U = 2, TAU = Math.PI * 2;
   const SUN = { x: -Math.SQRT1_2, y: Math.SQRT1_2 }; // light from 1:30, shadows fall to 7:30
 
   // ---------- palettes (Edit 37 §4.1.4 roles; placeholders registered as data). One is chosen at load.
@@ -781,26 +781,80 @@
     for (let k = -2; k <= 2; k++) P(Math.round(cx) + k, Math.round(cy - H) - (2 - Math.abs(k)), K.puddleHi);
     return edgeRim(S, o, K.bldgRim, K.bldgRimD);
   }
-  // Flyover deck: the band seen from above, lifted by its height. Parapets with an LED line, two lanes, a girder face below.
+  // Flyover deck (Edit 42): drawn on its true footprint, so actors on it sit where the sim has them. Parapet modules with an
+  // LED line and a street light every world.deckLampSpacing; broken where a gap opens over a road (the lamps there are down).
+  // Hard shoulders outside solid edge lines; the girder face hangs below the south edge to show the height.
+  const LAMP_H = 9;
   function deck(dk, P) {
     const ext = Math.round(dk.height * P['proto.art.extrusion'] / U), wpx = Math.round(P['world.deckWidth'] / U), face = Math.max(4, Math.round(ext / 2));
-    const along = dk.hz ? AW : AH, S = dk.hz ? spr(along, wpx + face, 0, 0) : spr(wpx, along + face, 0, 0), lane = Math.round(P['world.laneWidth'] / U);
-    const led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane;
-    for (let a = 0; a < along; a++) for (let b = 0; b < wpx + face; b++) {
+    const along = dk.hz ? AW : AH, lane = Math.round(P['world.laneWidth'] / U), pw = Math.max(2, Math.round(P['world.parapetWidth'] / U)), mid = Math.round(wpx / 2);
+    const S = dk.hz ? spr(along, LAMP_H + wpx + face, 0, LAMP_H) : spr(wpx, along, 0, 0);
+    const put = (a, b, c) => (dk.hz ? sput(S, a, b + LAMP_H, c) : sput(S, b, a, c)); // a along the deck, b across (0 = north / west)
+    const led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane, glow = c32(mixHex(PAL.road, PAL.head || PAL.white, 0.22));
+    const gaps = (dk.gaps || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]);
+    const inGap = (a, sd) => gaps.some(([g0, g1, s2]) => s2 === sd && a >= g0 && a < g1);
+    const nearGap = (a, sd) => gaps.some(([g0, g1, s2]) => s2 === sd && a >= g0 - 12 && a < g1 + 12);
+    for (let a = 0; a < along; a++) for (let b = 0; b < wpx + (dk.hz ? face : 0); b++) {
       let c;
+      const sd = b < mid ? -1 : 1, pb = sd < 0 ? b : wpx - 1 - b; // depth into the parapet from the outer edge
       if (b >= wpx) c = b === wpx + face - 1 ? K.bldgOutline : b === wpx ? K.jerseyTop : (a % 8 < 2 ? K.bldgDark : (b - wpx) % 2 ? K.bldgEdge : K.bldgFace); // girder face: lit lip, ribs
-      else if (b === 0 || b === wpx - 1) c = K.jerseyO;
-      else if (b === 1 || b === wpx - 2) c = (a % 6 < 3) ? led : K.jerseyTop; // parapet LED line
-      else if (b === 2 || b === wpx - 3) c = K.jersey;
-      else { const mid = Math.round(wpx / 2); c = (b === mid && a % 18 < 10) ? K.lane : (Math.abs(b - mid) === lane && a % 6 === 0) ? K.road2 : K.road; }
-      if (dk.hz) sput(S, a, b, c); else sput(S, b - (b >= wpx ? 0 : 0), a, c);
+      else if (pb < pw + 1 && inGap(a, sd)) c = pb === 0 ? ((a % 3) ? K.road2 : K.bldgDark) : K.road2; // broken parapet: the deck edge shows
+      else if (pb === 0) c = K.jerseyO;
+      else if (pb === 1) c = (a % 6 < 3) ? led : K.jerseyTop; // parapet LED line
+      else if (pb < pw + 1) c = K.jersey;
+      else if (Math.abs(b - mid) === lane) c = K.lane; // solid edge lines: the hard shoulders lie outside them
+      else if (b === mid && a % 18 < 10) c = K.lane;
+      else c = Math.abs(b - mid) > lane ? K.road2 : K.road;
+      put(a, b, c);
+      if (pb < pw + 1 && pb > 0 && !inGap(a, sd) && (inGap(a - 1, sd) || inGap(a + 1, sd))) put(a, b, K.white); // snapped ends (never warning red: canon)
     }
-    if (!dk.hz) { // the girder face of a north–south deck shows along its bottom only; recolour the right edge as parapet
-      const T = spr(wpx, along, 0, 0);
-      for (let a = 0; a < along; a++) for (let b = 0; b < wpx; b++) T.d[a * wpx + b] = S.d[a * wpx + b];
-      return { S: T, ext };
+    const sp = Math.round(P['world.deckLampSpacing'] / U);
+    if (dk.hz) for (const sd of [-1, 1]) for (let a = Math.round(sp / 2) + (sd > 0 ? Math.round(sp / 2) : 0); a < along; a += sp) {
+      if (inGap(a, sd)) continue;
+      const b0 = sd < 0 ? 1 : wpx - 2;
+      if (nearGap(a, sd)) { for (let k = 0; k < 5; k++) put(a + k, b0 - k * sd, k === 4 ? K.bldgDark : K.bldgOutline); continue; } // broken: the pole lies across the shoulder, unlit
+      for (let k = 1; k <= 3; k++) for (let j = -1; j <= 1; j++) put(a + j, b0 - sd * (pw + k), glow); // light pool on the shoulder
+      for (let k = 1; k < LAMP_H; k++) sput(S, a, b0 + LAMP_H - k, K.bldgOutline); // the pole rises screen-up from the parapet
+      for (let j = -1; j <= 1; j++) sput(S, a + j, b0 + 1, j ? K.head : K.white);
     }
     return { S, ext };
+  }
+  // Perimeter wall (anchor = footprint top-left): capped top with an LED seam, panelled face toward the viewer.
+  function wall(wpx, hpx, e) {
+    const S = spr(wpx, hpx + e, 0, e), P = (x, y, c) => sput(S, x, y + e, c), led = KX('bldgLed') ? KX('bldgLed')[0] : K.lane, horiz = wpx >= hpx;
+    for (let y = -e; y < hpx; y++) for (let x = 0; x < wpx; x++) {
+      const edge = x === 0 || x === wpx - 1 || y === -e || y === hpx - 1, face = y >= hpx - e;
+      const seam = horiz ? y === -e + Math.floor((hpx) / 2) && x % 4 < 2 : x === Math.floor(wpx / 2) && y % 4 < 2;
+      P(x, y, edge ? K.bldgOutline : face ? ((horiz ? x : y) % 12 === 0 ? K.bldgDark : K.bldgFace) : seam ? led : K.bldgRoof);
+    }
+    return edgeRim(S, K.bldgOutline, K.bldgRim, K.bldgRimD);
+  }
+  // Checkpoint booth: a cabin with a lit window band and an amber beacon on the roof.
+  function booth(wpx, hpx, e) {
+    const S = spr(wpx, hpx + e + 3, 0, e + 3), P = (x, y, c) => sput(S, x, y + e + 3, c), o = K.bldgOutline;
+    for (let y = -e; y < hpx; y++) for (let x = 0; x < wpx; x++) {
+      const edge = x === 0 || x === wpx - 1 || y === -e || y === hpx - 1, face = y >= hpx - e;
+      P(x, y, edge ? o : face ? ((y - (hpx - e)) % 3 === 1 && x % 3 ? K.white : K.bldgFace) : K.bldgRoof);
+    }
+    const cx = wpx >> 1; for (let k = 1; k <= 3; k++) P(cx, -e - k, k === 3 ? K.amber : o);
+    return edgeRim(S, o, K.bldgRim, K.bldgRimD);
+  }
+  // Stairs (anchor = footprint top-left). Up to a deck: lit treads rising to the head. Down to an underpass: a subway
+  // entrance, treads darkening into the passage, railings on both sides.
+  function stairs(st) {
+    const w = Math.round(st.w / U), h = Math.round(st.h / U), S = spr(w, h, 0, 0), ay = st.axis === 'y', n = ay ? h : w, up = st.to === 2;
+    const headAtStart = st.high < st.low; // the head (high end) lies at the low coordinate
+    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+      const along = ay ? j : i, across = ay ? i : j, wide = ay ? w : h, t = headAtStart ? 1 - along / (n - 1) : along / (n - 1); // 0 foot, 1 head
+      const rail = across === 0 || across === wide - 1, tread = along % 3 === 0;
+      let c;
+      if (rail) c = up ? (along % 4 < 2 ? (KX('bldgLed') ? KX('bldgLed')[1] : K.lane) : K.jerseyTop) : K.railO;
+      else if (up) c = tread ? K.jerseyO : t > 0.66 ? K.jerseyTop : t > 0.33 ? K.pave2 : K.pave;
+      else c = t > 0.8 ? K.bldgDark : tread ? K.bldgDark : t > 0.5 ? K.road : t > 0.25 ? K.road2 : K.pave2;
+      sput(S, i, j, c);
+    }
+    if (!up) { const fa = headAtStart ? n - 1 : 0; for (const k of [0, (ay ? w : h) - 1]) sput(S, ay ? k : fa, ay ? fa : k, K.podCrown); } // lit posts at the entrance
+    return S;
   }
   // Ground patches beyond puddles: plaza paving, rubber crash matting, calibrated impact plates.
   function patchArt(B, p, r) {
@@ -931,14 +985,15 @@
       const band = dk.hz ? { x: 0, y: dk.off - P['world.deckWidth'] / 2, w: AW * U, h: P['world.deckWidth'] } : { x: dk.off - P['world.deckWidth'] / 2, y: 0, w: P['world.deckWidth'], h: AH * U };
       rectShadow(B, band, dk.height, P);
     }
-    for (const st of level.statics) if (!PAL.spill || st.kind !== 'block') rectShadow(B, st, st.kind === 'block' ? st.height : P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
+    for (const st of level.statics) if (st.kind !== 'river' && (!PAL.spill || st.kind !== 'block')) rectShadow(B, st, st.height || P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
+    for (const st of level.stairs || []) if (st.to === 0) blit(B, stairs(st), Math.round(st.x / U), Math.round(st.y / U)); // subway entrances: below the ground line
     edgeMarks(B, level);
     return B;
   }
 
   root.PIX = {
-    AW, AH, U, BIG, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
+    AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
-    monument, fountain, deck,
+    monument, fountain, deck, wall, booth, stairs, LAMP_H,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

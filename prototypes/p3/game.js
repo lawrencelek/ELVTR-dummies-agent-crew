@@ -14,17 +14,16 @@
   const F_UI = '"B612", "Segoe UI", system-ui, sans-serif';
   const F_MONO = '"B612 Mono", ui-monospace, Menlo, monospace';
   const F_BRAND = '"Nunito", "Segoe UI", system-ui, sans-serif';
-  // Reference canvas 1280 × 720 for the frame and HUD. The field is AW × AH art px; RA reference units per art px.
-  // Standard: 640 × 360 screen, 400 × 300 field at (120, 30), RA 2. Large (?field=large, D27 test): 960 × 540 screen,
-  // 640 × 480 field at (160, 30), RA 4/3. The HUD keeps its physical size; the field shows more city at a smaller pixel.
-  const BIG = !!PIX.BIG, VW = 1280, VH = 720, RA = VW / (BIG ? 960 : 640);
-  const FX = (BIG ? 160 : 120) * RA, FY = 30 * RA, FW = PIX.AW * RA, FH = PIX.AH * RA;
-  const TOPY = BIG ? 31 : 43; // top-bar baseline: inside the strip above the field
+  // Reference canvas 1280 × 720 for the frame and HUD; RA reference units per art px. Edit 42 (D27): the 640 × 360 screen
+  // holds a 400 × 320 field (25 × 20 tiles, 5:4) at (120, 20). Top and bottom strips are 20 art px.
+  const VW = 1280, VH = 720, RA = VW / 640;
+  const FX = 120 * RA, FY = 20 * RA, FW = PIX.AW * RA, FH = PIX.AH * RA;
+  const TOPY = 31; // top-bar baseline: inside the strip above the field
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
   // Integer scaling: the canvas is always a whole multiple of the 640 × 360 art screen (ui.artScale = 2 reference units per art pixel).
-  const SW = BIG ? 960 : 640, SH = BIG ? 540 : 360;
+  const SW = 640, SH = 360;
   let scale = 1, kpx = 2;
   function resize() {
     const st = cv.parentElement, dpr = window.devicePixelRatio || 1;
@@ -42,8 +41,7 @@
     screen: 'title', level: 0, difficulty: 1, sim: null, paused: false, pauseSel: 0, confirmRefuse: false,
     shopCol: 0, shopRow: 0, endSel: 0, tune: {}, lastEv: 0, toast: null, realT: 0, sound: true, tuned: false,
   };
-  // Large field (D27 test): the world grows with the field (1 art px = 2 units). Layouts come from districts_large.json.
-  const FIELD = PIX.BIG ? { 'world.width': PIX.AW * PIX.U, 'world.height': PIX.AH * PIX.U, 'ui.playWidth': PIX.AW * PIX.U, 'ui.playHeight': PIX.AH * PIX.U } : {};
+  const FIELD = {};
   const previews = LEVEL_LIST.map((id) => new Sim(id, Object.assign({ 'run.appearances.road': 0 }, FIELD)));
   const TAU = Math.PI * 2;
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -57,7 +55,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P3';
+  const BUILD = 'P3.1';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -108,7 +106,7 @@
     if (!carry) app.roads = [];
     app.level = i; app.roadCarry = carry || null;
     // Edit 41: each run plays one of the three baked layouts per district, at random (tuning: proto.layout fixes one)
-    const nL = (((PIX.BIG ? window.DISTRICT_DB_LARGE : window.DISTRICT_DB) || {}).districts || {})[LEVEL_LIST[i]], nLay = nL && nL.length ? nL.length : 1;
+    const nL = ((window.DISTRICT_DB || {}).districts || {})[LEVEL_LIST[i]], nLay = nL && nL.length ? nL.length : 1;
     const layout = app.tune['proto.layout'] != null ? app.tune['proto.layout'] : 1 + Math.floor(Math.random() * nLay);
     app.sim = new Sim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty, 'proto.layout': layout }, app.tune, FIELD), carry);
     app.tuned = Object.keys(app.tune).length > 0;
@@ -535,6 +533,14 @@
         case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODES[e.node].name })); break;
         case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
+        case 'stair': Snd.tone(260, 300, 0.05, 'triangle', 0.03); break;
+        case 'level': { // Edit 42: first time up or down says what the level does
+          const key = 'level' + e.level;
+          if (e.level !== 1 && !fx.seenScreens.has(key)) { fx.seenScreens.add(key); toast(e.level === 2 ? copy('toast.deck', 'Deck: highway traffic up here. A broken barrier drops you to the road.') : copy('toast.underpass', 'Underpass: no car can sense you down here.')); }
+          break;
+        }
+        case 'deck-drop': Snd.tone(700, 200, 0.3, 'triangle', 0.06); break;
+        case 'land': { const b = s.body; Snd.tone(110, 80, 0.12, 'square', 0.06); puff(b.x, b.y + 6, 8, { type: 'dust', speed: 70, life: 0.4, size: 3 }); if (!e.car) kick(2, 0.12); break; }
         case 'throw': Snd.tone(620, 180, 0.16, 'triangle', 0.07); break;
         case 'punt': Snd.tone(420, 300, 0.05, 'triangle', 0.04); break;
         case 'ending': if (e.kind === 'Licensed') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
@@ -692,7 +698,7 @@
 
   // ---------- pixel field: 400 × 300 art grid, composited at ×2 reference units, so whole device pixels per art pixel
   const U = PIX.U, K = PIX.K, AW = PIX.AW, AH = PIX.AH;
-  if (pv('ui.artScale') !== U || pv('ui.playWidth') / U !== AW) console.warn('P3 art grid expects ui.artScale = 2 and a 400 × 300 field');
+  if (pv('ui.artScale') !== U || pv('ui.playWidth') / U !== AW) console.warn('P3 art grid expects ui.artScale = 2 and a 400 × 320 field');
   const art = document.createElement('canvas'); art.width = AW; art.height = AH;
   const actx = art.getContext('2d'), aimg = actx.createImageData(AW, AH), a32 = new Uint32Array(aimg.data.buffer);
   const FB = new PIX.Buf(AW, AH);
@@ -712,9 +718,13 @@
         if (st.kind === 'fountain') return PIX.fountain(w, h, EXT(st.height));
         if (st.kind === 'jersey') return PIX.jersey(w, h, EXT(P['proto.art.barrierHeight']));
         if (st.kind === 'barrier') return PIX.barrier(w, h, EXT(P['proto.art.barrierHeight']));
+        if (st.kind === 'wall') return PIX.wall(w, h, EXT(st.height)); // Edit 42: the district's bounds
+        if (st.kind === 'booth') return PIX.booth(w, h, EXT(st.height));
+        if (st.kind === 'river') return null; // the canal in the ground art is the river
         return PIX.pod(w, h, EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i);
       };
-      artCache.set(id, { ground: gr, statics: L.statics.map((st, i) => ({ st, spr: sprite(st, i) })), decks: (L.decks || []).map((dk) => Object.assign({ dk }, PIX.deck(dk, P))) });
+      artCache.set(id, { ground: gr, statics: L.statics.map((st, i) => ({ st, spr: sprite(st, i) })).filter((o) => o.spr), decks: (L.decks || []).map((dk) => Object.assign({ dk }, PIX.deck(dk, P))),
+        up: (L.stairs || []).filter((st) => st.to === 2).map((st) => ({ st, spr: PIX.stairs(st) })) });
     }
     return artCache.get(id);
   }
@@ -851,15 +861,27 @@
     fx.marks = fx.marks.filter((m) => app.realT - m.t < fade);
     for (const m of fx.marks) PIX.line(m.a[0] / U, m.a[1] / U, m.b[0] / U, m.b[1] / U, (x, y) => FB.mix(x, y, K.tyre, al * (1 - (app.realT - m.t) / fade)));
   }
-  function dynShadows(s) { // hard shadows, down-left (multiply)
+  // ----- Edit 42 levels: which level the dummy is on for drawing and cues
+  const lay = (c) => c.layer || 1;
+  function onDeck(s) { const b = s.body; return b.alive && ((b.level === 2 && b.mode !== 'drop') || (b.stair && b.stair.to === 2)); }
+  function bodyDeck(s) { const b = s.body; return b.stair && b.stair.to === 2 ? b.stair.deck : b.deck; }
+  function cueLevel(s) { // cues and tags show for cars on the dummy's level; on a stair, the level it is nearer
+    const b = s.body;
+    if (!b.alive) return 1;
+    if (b.stair) return s.stairT(b.stair, b.x, b.y) > 0.5 ? Math.max(1, b.stair.to) : 1;
+    return b.mode === 'drop' ? 1 : Math.max(1, b.level);
+  }
+  function deckOf(s, c) { const ln = s.level.deckLanes && s.level.deckLanes[c.lane - 2]; return ln ? ln.deck : -1; }
+  function carShadow(s, c) { const P = s.P, k = P['proto.art.shadowScale'], h = P['vehicles.' + c.cls + '.height']; PIX.fillPoly(toA(rotRect(c.x + PIX.SUN.x * h * k, c.y + PIX.SUN.y * h * k, c.h, c.L, c.W)), (x, y) => FB.shade(x, y, 0.72)); }
+  function dynShadows(s) { // hard shadows, down-left (multiply); deck actors cast theirs on the deck (drawDeck)
     const P = s.P, k = P['proto.art.shadowScale'], b = s.body, sh = (x, y) => FB.shade(x, y, 0.72);
     const off = (h) => [PIX.SUN.x * h * k, PIX.SUN.y * h * k];
     for (const cn of s.cones) {
       if (cn.state !== 'free' && cn.state !== 'flight') continue;
       const o = off(P['proto.art.coneHeight'] + coneLift(cn)); PIX.disc((cn.x + o[0]) / U, (cn.y + o[1]) / U, Math.round(P['props.cone.radius'] / U), sh);
     }
-    for (const c of s.cars) { const o = off(P['vehicles.' + c.cls + '.height']); PIX.fillPoly(toA(rotRect(c.x + o[0], c.y + o[1], c.h, c.L, c.W)), sh); }
-    if (b.alive) { const o = off(P['proto.art.dummyHeight']); PIX.ellipse(b.x / U + o[0] / U, b.y / U + 3, 5.5, 2.2, sh); }
+    for (const c of s.cars) if (lay(c) === 1) carShadow(s, c);
+    if (b.alive && !onDeck(s) && !(b.level === 0 && !b.stair)) { const o = off(P['proto.art.dummyHeight']); PIX.ellipse(b.x / U + o[0] / U, b.y / U + 3, 5.5, 2.2, sh); }
     for (const d of s.drones) {
       const o = off(P['proto.art.droneHeight'] * d.alt), x = (d.x + o[0]) / U, y = (d.y + o[1]) / U, pts = [];
       PIX.line(x - 7, y - 4, x + 7, y + 4, (px, py) => pts.push([px, py])); PIX.line(x - 7, y + 4, x + 7, y - 4, (px, py) => pts.push([px, py]));
@@ -877,7 +899,7 @@
     let d = 0;
     for (; d < R; d += 3) {
       const x = b.x + cx * d, y = b.y + cy * d;
-      if (s.level.statics.some((st) => x + r > st.x && x - r < st.x + st.w && y + r > st.y && y - r < st.y + st.h)) { d = Math.max(0, d - 3); break; }
+      if (s.onGround() && s.level.statics.some((st) => x + r > st.x && x - r < st.x + st.w && y + r > st.y && y - r < st.y + st.h)) { d = Math.max(0, d - 3); break; }
     }
     d = Math.min(d, R);
     return { x: b.x + cx * d, y: b.y + cy * d, short: d < R - 1 };
@@ -904,7 +926,7 @@
     }
     if (b.denied > 0) for (const p of PIX.circle(12)) FB.put(cx + p[0], cy + p[1], K.warn);
   }
-  function drawBodySprite(s) {
+  function drawBodySprite(s, ghostOnly) {
     const b = s.body, P = s.P;
     const wear = clamp(1 - b.health / P['damage.bodyHealth'], 0, 1), fl = app.realT - fx.flinchT0;
     let jx = 0, jy = 0;
@@ -915,11 +937,14 @@
     if (b.mode === 'knock') jx += Math.round(Math.sin(b.knockT * 38) * 1.5 * MOTION);
     if (b.mode === 'lunge') { jx += Math.round(Math.cos(b.facing)); jy += Math.round(Math.sin(b.facing)); }
     const dk = dropK(), lift = dk ? Math.round(jv(CJ.states.replacementDrop.height) * dk / U / 2) : 0;
-    const cx = Math.round(b.x / U) + jx, cy = Math.round(b.y / U) + jy - lift;
+    const hop = b.mode === 'drop' && b.drop ? Math.round(EXT(s.level.decks[b.drop.deck] ? s.level.decks[b.drop.deck].height : 60) * Math.sin(Math.PI * clamp(b.drop.t / b.drop.T, 0, 1)) * 0.8) : 0; // off a deck: a hop down
+    const cx = Math.round(b.x / U) + jx, cy = Math.round(b.y / U) + jy - lift - hop;
+    if (hop) PIX.ellipse(b.x / U, b.y / U + 3, 5.5, 2.2, (x, y) => FB.shade(x, y, 0.6));
     if (dk) PIX.line(cx, cy - 16, cx, -1, (x, y) => FB.mix(x, y, K.ink, 0.5 * dk));
     const S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
-    PIX.blit(FB, S, cx, cy, fl < 0.12 ? K.white : 0);
     b._spr = S; b._sx = cx; b._sy = cy;
+    if (ghostOnly) return;
+    PIX.blit(FB, S, cx, cy, fl < 0.12 ? K.white : 0);
     if (fl >= 0.12) {
       for (let i = 0; i < Math.floor(wear * 5); i++) { const a = (b.chassis * 2.1 + i * 1.9) % TAU; FB.put(cx + Math.round(Math.cos(a) * 3), cy - 5 + Math.round(Math.sin(a) * 2), K.joint); } // dents
       if (wear > 0.7) { FB.put(cx + 1, cy - 13, K.joint); FB.put(cx, cy - 12, K.joint); FB.put(cx + 1, cy - 11, K.joint); } // cracked head
@@ -1004,34 +1029,59 @@
     FB.put(x, y - 1, Math.floor(app.realT * 4) % 2 ? K.warn : K.podCrown);
     for (const [rx, ry] of [[-7, -4], [7, -4], [-7, 4], [7, 4]]) { const a = app.realT * 40 + rx; FB.put(Math.round(x + rx + Math.cos(a) * 2), Math.round(y + ry + Math.sin(a) * 1.2), K.ink); }
   }
-  function deckCarPose(s, c) { // a deck car's world position and heading (Edit 41)
-    const dk = s.level.decks[c.k], lw = s.P['world.laneWidth'] / 2;
-    return dk.hz ? { x: c.s, y: dk.off + c.dir * lw, h: c.dir > 0 ? 0 : Math.PI } : { x: dk.off - c.dir * lw, y: c.s, h: c.dir > 0 ? Math.PI / 2 : -Math.PI / 2 };
+  // A flyover on its true footprint (Edit 42), then its stairs up, then what happens on it: shadows, the cues when the dummy
+  // is up here, and its actors in depth order. Ground actors under it show through as x-ray checkers (drawSprites).
+  function drawDeck(s, d, k, cues) {
+    const P = s.P, half = P['world.deckWidth'] / 2, b = s.body, still = cues === false;
+    PIX.blit(FB, d.S, d.dk.hz ? 0 : Math.round((d.dk.off - half) / U), d.dk.hz ? Math.round((d.dk.off - half) / U) : 0);
+    for (const u of d.up || []) PIX.blit(FB, u.spr, Math.round(u.st.x / U), Math.round(u.st.y / U));
+    (s.level.checkpoints || []).forEach((cp, i) => { if (cp.deck && cp.off === d.dk.off) drawBoom(s, cp, i); }); // the deck's own checkpoint
+    if (still) return;
+    const cars = s.cars.filter((c) => lay(c) === 2 && deckOf(s, c) === k), mine = onDeck(s) && bodyDeck(s) === k;
+    for (const c of cars) carShadow(s, c);
+    if (mine) { const o = P['proto.art.dummyHeight'] * P['proto.art.shadowScale']; PIX.ellipse((b.x + PIX.SUN.x * o) / U, b.y / U + 3, 5.5, 2.2, (x, y) => FB.shade(x, y, 0.72)); }
+    if (mine && cues) cues();
+    if (mine) drawBodyGround(s);
+    const list = cars.map((c) => [c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
+    if (mine) list.push([b.y + P['body.radius'], () => drawBodySprite(s)]);
+    list.sort((p, q) => p[0] - q[0]); for (const it of list) it[1]();
   }
-  function drawDeck(s, d, k) { // the flyover, then its traffic, lifted by the deck's height
-    PIX.blit(FB, d.S, d.dk.hz ? 0 : Math.round((d.dk.off - s.P['world.deckWidth'] / 2) / U), d.dk.hz ? Math.round((d.dk.off - s.P['world.deckWidth'] / 2) / U) - d.ext : -d.ext);
-    for (const c of s.deckCars || []) {
-      if (c.k !== k) continue;
-      const q = deckCarPose(s, c);
-      PIX.blit(FB, PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(s.P['vehicles.' + c.cls + '.height']), q.h, false), q.x / U, q.y / U - d.ext);
-    }
+  // Checkpoint boom (Edit 42): a striped arm across both lanes from the booth's side. It swings up for a car.
+  function drawBoom(s, cp, i) {
+    const P = s.P, lw = P['world.laneWidth'], p = s.boomPoint(cp), lift = (s.booms && s.booms[i]) || 0, th = lift * Math.PI / 2 * 0.92;
+    const hz = cp.side === 'N' || cp.side === 'S'; // the arm runs along x when the road leaves north or south
+    const px = (hz ? p.x + lw : p.x) / U, py = (hz ? p.y : p.y + lw) / U - 3, L = 2 * lw / U * Math.cos(th), up = 2 * lw / U * Math.sin(th) * 0.6;
+    const tx = hz ? px - L : px, ty = (hz ? py : py - L) - up;
+    FB.rect(Math.round(px) - 1, Math.round(py), Math.round(px), Math.round(py) + 4, K.bldgOutline);
+    PIX.line(px, py, tx, ty, (x, y, j) => { const c = Math.floor(j / 3) % 2 ? K.white : K.bldgOutline; FB.put(x, y, c); FB.put(x, y + 1, K.bldgOutline); }); // white and black: red is the warning alone
   }
-  function drawSprites(s, la, still) { // depth-sorted by the ground line of each object
-    const list = [];
+  function drawSprites(s, la, still, deckCues) { // depth-sorted by the ground line of each object
+    const list = [], b = s.body, up = onDeck(s), under = b.alive && b.level === 0 && !b.stair;
     for (const o of la.statics) list.push([o.st.y + o.st.h, () => PIX.blit(FB, o.spr, Math.round(o.st.x / U), Math.round(o.st.y / U))]);
-    (la.decks || []).forEach((d, k) => list.push([d.dk.hz ? d.dk.off + s.P['world.deckWidth'] / 2 : s.P['world.height'] + d.dk.height / 1000, () => drawDeck(s, d, k)])); // flyovers sort by their south edge
+    (la.decks || []).forEach((d, k) => { d.up = la.up.filter((u) => u.st.deck === k); list.push([d.dk.hz ? d.dk.off + s.P['world.deckWidth'] / 2 : s.P['world.height'] + d.dk.height / 1000, () => drawDeck(s, d, k, still ? false : deckCues)]); }); // flyovers sort by their south edge
+    (s.level.checkpoints || []).forEach((cp, i) => { if (!cp.deck) list.push([s.boomPoint(cp).y + 2, () => drawBoom(s, cp, i)]); });
     for (const cn of s.cones) if (cn.state === 'free' || cn.state === 'flight') list.push([cn.y + 6, () => PIX.blit(FB, PIX.CONE, cn.x / U, (cn.y - coneLift(cn) * 1.2) / U)]);
     if (!still) {
-      for (const c of s.cars) list.push([c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
-      if (s.body.alive) list.push([s.body.y + s.P['body.radius'], () => drawBodySprite(s)]);
+      for (const c of s.cars) if (lay(c) === 1) list.push([c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
+      if (b.alive && !up && !under) list.push([b.y + s.P['body.radius'], () => drawBodySprite(s)]);
     }
-    list.sort((a, b) => a[0] - b[0]);
+    list.sort((a, b2) => a[0] - b2[0]);
     for (const it of list) it[1]();
     if (!still) { // x-ray pass: a checker of each actor's own pixels, so an occluded car or dummy still reads (4.2.4 tier 1)
       for (const c of s.cars) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U);
-      const b = s.body;
+      if (under) drawUnder(s);
       if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
     }
+  }
+  // Underground (Edit 42): the passage shows as a dark x-ray band under the road; the dummy as a checker inside it.
+  function drawUnder(s) {
+    for (const cr of s.level.corridors || []) {
+      const x0 = Math.round(cr.x / U), y0 = Math.round(cr.y / U), x1 = Math.round((cr.x + cr.w) / U) - 1, y1 = Math.round((cr.y + cr.h) / U) - 1;
+      mixRect(x0, y0, x1, y1, K.bldgDark, 0.55);
+      for (let x = x0; x <= x1; x++) for (const y of [y0, y1]) if ((x + y) % 3 === 0) FB.put(x, y, K.podCrown);
+      for (let y = y0; y <= y1; y++) for (const x of [x0, x1]) if ((x + y) % 3 === 0) FB.put(x, y, K.podCrown);
+    }
+    drawBodySprite(s, true);
   }
   function ghost(S, ax, ay) {
     const x0 = Math.round(ax) - S.ox, y0 = Math.round(ay) - S.oy;
@@ -1125,19 +1175,22 @@
     const P = s.P, b = s.body;
     for (const c of s.cars) { c._brk = (c.man && c.man.type === 'brake') || c.state === 'interrupted' || (c._pv != null && c.v < c._pv - 0.4); c._pv = c.v; markCar(c, c._brk); }
     drawMarks();
-    const inCone = coneFn(s);
-    if (b.alive || P['proto.zonesEverywhere']) for (const c of s.cars) drawZones(s, c, P['proto.zonesEverywhere'] ? ALL : inCone);
-    if (b.alive || P['proto.pathsEverywhere']) for (const c of s.cars) drawPath(s, c, P['proto.pathsEverywhere'] ? ALL : inCone);
-    if (b.alive) { for (const c of s.cars) drawStopCue(s, c); drawViewEdges(s); }
+    const inCone = coneFn(s), lvl = cueLevel(s), mine = s.cars.filter((c) => lay(c) === lvl); // Edit 42: cues for the dummy's level only
+    const cues = () => {
+      if (b.alive || P['proto.zonesEverywhere']) for (const c of mine) drawZones(s, c, P['proto.zonesEverywhere'] ? ALL : inCone);
+      if (b.alive || P['proto.pathsEverywhere']) for (const c of mine) drawPath(s, c, P['proto.pathsEverywhere'] ? ALL : inCone);
+      if (b.alive) { for (const c of mine) drawStopCue(s, c); drawViewEdges(s); }
+    };
+    if (lvl !== 2) cues(); // on a deck they are drawn on its surface (drawDeck)
     dynShadows(s);
-    drawBodyGround(s);
-    drawSprites(s, la, false);
+    if (!onDeck(s) && !(b.level === 0 && !b.stair)) drawBodyGround(s);
+    drawSprites(s, la, false, lvl === 2 ? cues : null);
     if (b.alive && b.held) { const p = s.releasePoint(); PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4); }
-    for (const c of s.cars) drawCarMarks(s, c);
+    for (const c of mine) drawCarMarks(s, c);
     drawNose(s);
     drawEffects(s); drawRingsStreaks(); drawParts(s);
     for (const d of s.drones) drawDrone(s, d);
-    for (const c of s.cars) drawTag(s, c);
+    for (const c of mine) drawTag(s, c);
     drawBarks(s);
     drawEffects(s, true);
     const fa = app.realT - fx.flash.t0;
@@ -1229,13 +1282,14 @@
     if (s && app.screen === 'game' && !app.paused && s.phase === 'play') { // controls only while they apply
       const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']];
       if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']);
-      drawKeys(keys, FX + FW / 2, BIG ? FY + FH + 4 : 674);
+      drawKeys(keys, FX + FW / 2, FY + FH + 4);
     }
   }
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function drawTopBar(s) {
-    const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - s.cars.length));
-    const items = [[null, roadLabel(s.level.id) + (s.district ? ' · ' + s.screenName() : '')], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
+    const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - s.cars.filter((c) => !c.deck).length)); // deck traffic is off the shift's clock
+    const b = s.body, where = !b.alive ? '' : b.stair ? ' · STAIRS' : b.level === 2 ? ' · DECK' : b.level === 0 ? ' · UNDERPASS' : '';
+    const items = [[null, roadLabel(s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
     const gap = (1264 - FX - w.reduce((a, b) => a + b, 0)) / (items.length - 1);
     let x = FX;

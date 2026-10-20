@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit41.1-2026-10-20",
+ "registryVersion": "edit42-2026-10-20",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–41 (20 October 2026)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–42 (20 October 2026)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -2044,12 +2044,12 @@
    "group": "Interface",
    "owner": "Presentation",
    "label": "playWidth",
-   "description": "4:3 play area; equalises vertical and horizontal approach warning",
+   "description": "5:4 play area: 400 × 320 art px, 25 × 20 tiles of world.tileSize.",
    "unit": "units",
    "type": "number",
    "default": 800,
-   "status": "proposed",
-   "source": "GDD §§4.2.1, 4.2.3",
+   "status": "author-decided",
+   "source": "GDD §§4.2.1, 4.2.3; Edit 42 (D27)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -2065,12 +2065,12 @@
    "group": "Interface",
    "owner": "Presentation",
    "label": "playHeight",
-   "description": "4:3 play area; equalises vertical and horizontal approach warning",
+   "description": "5:4 play area: 400 × 320 art px, 25 × 20 tiles of world.tileSize.",
    "unit": "units",
    "type": "number",
-   "default": 600,
-   "status": "proposed",
-   "source": "GDD §§4.2.1, 4.2.3",
+   "default": 640,
+   "status": "author-decided",
+   "source": "GDD §§4.2.1, 4.2.3; Edit 42 (D27)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -2079,7 +2079,7 @@
    },
    "integrationStatus": "not-connected-to-game",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "4:3 play area; equalises vertical and horizontal approach warning"
+   "purpose": "A whole number of tile rows; closes D27"
   },
   {
    "id": "ui.sideColumn",
@@ -4192,12 +4192,12 @@
    "group": "World",
    "owner": "World",
    "label": "Flyover height",
-   "description": "Height of a flyover deck. Drawn as a screen-up offset (proto.art.extrusion).",
+   "description": "Height of a flyover deck: the one overground level. Shows as the girder face and shadow; the deck surface is drawn on its true footprint.",
    "unit": "world units",
    "type": "number",
    "default": 60,
    "status": "proposed",
-   "source": "Edit 41 (20 October)",
+   "source": "Edit 41; Edit 42 (20 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4209,37 +4209,16 @@
    "purpose": "A deck reads as lifted: 9 art px at 0.3 extrusion"
   },
   {
-   "id": "world.deckStack",
-   "group": "World",
-   "owner": "World",
-   "label": "Stacked flyover rise",
-   "description": "Extra height of a flyover crossing another.",
-   "unit": "world units",
-   "type": "number",
-   "default": 60,
-   "status": "proposed",
-   "source": "Edit 41 (20 October)",
-   "editable": true,
-   "protectedReason": null,
-   "applyAt": "checkpoint",
-   "validation": {
-    "min": 0
-   },
-   "integrationStatus": "prototype-p3",
-   "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "The column deck passes over the row deck"
-  },
-  {
    "id": "world.deckWidth",
    "group": "World",
    "owner": "World",
    "label": "Flyover width",
-   "description": "Two lanes plus parapets.",
+   "description": "Two lanes, a hard shoulder each side, parapets (world.parapetWidth).",
    "unit": "world units",
    "type": "number",
-   "default": 128,
+   "default": 176,
    "status": "proposed",
-   "source": "Edit 41 (20 October)",
+   "source": "Edit 41; Edit 42 (20 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4248,7 +4227,7 @@
    },
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Matches two world.laneWidth lanes"
+   "purpose": "The dummy walks the shoulders outside the lanes"
   },
   {
    "id": "world.deckPillarSpacing",
@@ -4342,9 +4321,9 @@
    "description": "Centre-line radius of the Interchange roundabout.",
    "unit": "world units",
    "type": "number",
-   "default": 140,
+   "default": 160,
    "status": "proposed",
-   "source": "Edit 41 (20 October)",
+   "source": "Edit 41; Edit 42 (20 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4353,7 +4332,7 @@
    },
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Island of about 60 units: crash matting at its centre"
+   "purpose": "Keeps the ring clear of the wider deck bands"
   },
   {
    "id": "proto.layout",
@@ -4398,6 +4377,261 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Flyovers cross roads; they never run along them"
+  },
+  {
+   "id": "world.parapetWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Parapet width",
+   "description": "Deck parapet module, each side. The dummy stands inside it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 8,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A barrier tile the dummy cannot cross except at a gap"
+  },
+  {
+   "id": "world.deckLampSpacing",
+   "group": "World",
+   "owner": "Presentation",
+   "label": "Deck lamp spacing",
+   "description": "One street light per parapet module run. Lamps beside a gap are down.",
+   "unit": "world units",
+   "type": "number",
+   "default": 128,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Reads as a highway; the downed lamps mark the drop points"
+  },
+  {
+   "id": "world.stairLength",
+   "group": "World",
+   "owner": "World",
+   "label": "Stair length",
+   "description": "Run of a stair module, foot to head.",
+   "unit": "world units",
+   "type": "number",
+   "default": 64,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two tiles: long enough to read as stairs"
+  },
+  {
+   "id": "world.stairWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Stair width",
+   "description": "Width of a stair module and of an underpass passage.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 28
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One tile; wider than the dummy (26)"
+  },
+  {
+   "id": "world.stairSpeed",
+   "group": "Dummy movement",
+   "owner": "Dummy",
+   "label": "Stair speed",
+   "description": "Ground speed multiplier on a stair. No dash on a stair.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.7,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.1,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Changing level costs time"
+  },
+  {
+   "id": "world.dropSeconds",
+   "group": "Dummy movement",
+   "owner": "Dummy",
+   "label": "Drop time",
+   "description": "Fall from a deck gap to the road. No control, no contact until the landing.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.35,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A short hop: readable, not a dead stop"
+  },
+  {
+   "id": "damage.dropSpeed",
+   "group": "Damage and rewards",
+   "owner": "Damage",
+   "label": "Drop speed",
+   "description": "Downward speed at the landing. Closing speed on a car is its hypotenuse with the car's speed across.",
+   "unit": "world units/s",
+   "type": "number",
+   "default": 120,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A landing on a stopped sedan scores 76; on a sedan at cruise, 176. The legs take it",
+   "designBound": "Above 200 a drop onto a stopped car outscores a full-speed dash."
+  },
+  {
+   "id": "world.underpassChance",
+   "group": "World",
+   "owner": "World",
+   "label": "Underpass chance",
+   "description": "Chance that a generated screen gets a pedestrian underpass under a straight run.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About half the screens have a way under the road"
+  },
+  {
+   "id": "world.wallThickness",
+   "group": "World",
+   "owner": "World",
+   "label": "Perimeter wall",
+   "description": "Thickness of the wall on a district's outer edges (the river closes row 1).",
+   "unit": "world units",
+   "type": "number",
+   "default": 16,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 8
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Half a tile: the district is bounded"
+  },
+  {
+   "id": "world.boomRange",
+   "group": "World",
+   "owner": "World",
+   "label": "Boom range",
+   "description": "A checkpoint boom lifts when a car on its level comes this close.",
+   "unit": "world units",
+   "type": "number",
+   "default": 140,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About a second at cruise: cars never stop"
+  },
+  {
+   "id": "world.boomSeconds",
+   "group": "World",
+   "owner": "Presentation",
+   "label": "Boom swing",
+   "description": "Time for a boom to swing fully up or down.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.05
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Up before the car arrives"
+  },
+  {
+   "id": "proto.art.wallHeight",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Wall height",
+   "description": "Drawn height of perimeter walls and checkpoint booths.",
+   "unit": "world units",
+   "type": "number",
+   "default": 40,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Lower than any building; reads as a boundary"
   }
  ],
  "tables": {
@@ -5551,7 +5785,8 @@
     {
      "name": "blockShare",
      "type": "number",
-     "unit": "ratio"
+     "unit": "ratio",
+     "note": "Share of the ground outside flyover bands (Edit 42)"
     },
     {
      "name": "blockMax",

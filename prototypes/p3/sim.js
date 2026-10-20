@@ -25,7 +25,7 @@
     'vehicles.sedan.mass': 1.0, 'vehicles.sedan.length': 56, 'vehicles.sedan.width': 28, 'vehicles.sedan.cruiseSpeed': 138,
     'vehicles.sedan.height': 22, 'vehicles.van.height': 34,
     'vehicles.van.mass': 1.5, 'vehicles.van.length': 68, 'vehicles.van.width': 32, 'vehicles.van.cruiseSpeed': 120,
-    'world.laneWidth': 56, 'world.pedestrianGap': 40, 'world.spawnLeadIn': 200, 'world.width': 800, 'world.height': 600,
+    'world.laneWidth': 56, 'world.pedestrianGap': 40, 'world.spawnLeadIn': 200, 'world.width': 800, 'world.height': 640,
     'body.radius': 13, 'simulation.tickRate': 60,
     'run.quota.road': 5, 'run.appearances.road': 40, 'run.admissionInterval': 12,
     'economy.price.torso.hips': 1, 'economy.price.arms.carry': 1,
@@ -34,7 +34,7 @@
     'props.cone.throwSeconds': 0.2, 'props.cone.puntDistance': 24, 'props.cone.puntSeconds': 0.2,
     'learning.playerHitStep': 0.08, 'learning.playerHitCap': 0.4, 'input.dropHoldSeconds': 0.25,
     // Presentation (GDD §4.2.3 legibility budget; Edit 37 §4.1.3 pixel grid). Reference units: 1280 × 720 canvas.
-    'ui.playWidth': 800, 'ui.playHeight': 600, 'ui.typeLoadBearing': 24, 'ui.typeSecondary': 16, 'ui.typeTexture': 9,
+    'ui.playWidth': 800, 'ui.playHeight': 640, 'ui.typeLoadBearing': 24, 'ui.typeSecondary': 16, 'ui.typeTexture': 9, // Edit 42 (D27): field 400 × 320 art px, 25 × 20 tiles
     'ui.artScale': 3,
     // Edit 40 (20 Oct): Big battery (D26), surfaces (D18), districts (D24), city targets (7.9 clause 6).
     'upgrades.bigCapacity': 3, 'economy.price.battery': 1, 'movement.lowGripStopMultiplier': 2.5,
@@ -49,8 +49,11 @@
     'world.district.interchange.quota': 2, 'world.district.interchange.interval': 2.8, 'world.district.interchange.vanShare': 0.3, 'world.district.interchange.blockShare': 0.2, 'world.district.interchange.blockMax': 160, 'world.district.interchange.lowHeight': 100, 'world.district.interchange.towerShare': 0.15, 'world.district.interchange.puddleShare': 0.02, 'world.district.interchange.jerseyShare': 0.1, 'world.district.interchange.decks': 2,
     'world.district.cbd.quota': 3, 'world.district.cbd.interval': 2.6, 'world.district.cbd.vanShare': 0.3, 'world.district.cbd.blockShare': 0.25, 'world.district.cbd.blockMax': 160, 'world.district.cbd.lowHeight': 120, 'world.district.cbd.towerShare': 0.5, 'world.district.cbd.puddleShare': 0.02, 'world.district.cbd.jerseyShare': 0.08, 'world.district.cbd.decks': 1,
     'world.district.campus.quota': 4, 'world.district.campus.interval': 2.5, 'world.district.campus.vanShare': 0.4, 'world.district.campus.blockShare': 0.2, 'world.district.campus.blockMax': 160, 'world.district.campus.lowHeight': 80, 'world.district.campus.towerShare': 0.1, 'world.district.campus.puddleShare': 0.01, 'world.district.campus.jerseyShare': 0.08, 'world.district.campus.decks': 1,
-    'world.deckHeight': 60, 'world.deckStack': 60, 'world.deckWidth': 128, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
-    'world.towerHeightMin': 220, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 140, 'damage.plateMultiplier': 1.5, 'world.deckParallelAngle': 30,
+    'world.deckHeight': 60, 'world.deckWidth': 176, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
+    // Edit 42 (P3.1): three levels, bounded districts
+    'world.parapetWidth': 8, 'world.deckLampSpacing': 128, 'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7,
+    'world.dropSeconds': 0.35, 'damage.dropSpeed': 120, 'world.underpassChance': 0.5, 'world.wallThickness': 16, 'world.boomRange': 140, 'world.boomSeconds': 0.5,
+    'world.towerHeightMin': 220, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 160, 'damage.plateMultiplier': 1.5, 'world.deckParallelAngle': 30,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
   const PROTO = {
@@ -72,6 +75,7 @@
     'proto.art.coneHeight': 14, 'proto.art.dummyHeight': 18, 'proto.art.droneHeight': 70,
     'proto.art.extrusion': 0.3, // P3: share of an object's height drawn as screen-up offset (three-quarter view)
     'proto.city': 1, // P3: city blocks and jersey barriers are level statics (Fix A). 0 restores the P2.2 roads.
+    'proto.art.wallHeight': 40, // P3.1: perimeter walls and checkpoint booths, drawn height
     'proto.district': 1, 'proto.district.seed': 0, 'proto.layout': 0, // proto.layout: baked layout 1–3 per city district (0 = 1; −1 = generate live) // P3 (D24): 3 × 3 screens per road, Zelda-style. 0 = one static screen. Seed rerolls the generated screens.
     // P3 locational damage: an impact's assessed damage picks the height (legs → torso/arms → head); shares of
     // damage.bodyHealth lost by one part mark it cracked, then broken. Presentation and reports only; health is one pool.
@@ -416,13 +420,22 @@
     const d = dr ? (x, y) => Math.min(d0(x, y), dr(x, y)) : d0; // the roundabout ring counts as road
     const keep = gateZones(cell.gates, W, H), path = makePath(c), statics = [];
     const city = D.kind === 'city', dp = (f, dflt) => (city ? dpar(P, D.levelId, f) : dflt), focalPatches = [];
-    const deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DECK_W / 2, w: W, h: DECK_W } : { x: dk.off - DECK_W / 2, y: 0, w: DECK_W, h: H });
-    if (cell.focal) { const lm = placeLandmark(cell, P, d, keep, top, W, H, r); statics.push(...lm.statics); focalPatches.push(...lm.patches); }
+    const DW = P['world.deckWidth'], deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DW / 2, w: W, h: DW } : { x: dk.off - DW / 2, y: 0, w: DW, h: H });
+    const per = perimeter(D, cell, P, W, H, top), B = per.bounds; // Edit 42: walls, river, checkpoints
+    statics.push(...per.statics);
+    if (cell.focal) { const lm = placeLandmark(cell, P, d, keep, B, W, H, r); statics.push(...lm.statics); focalPatches.push(...lm.patches); }
     if (cell.focal === 'roundabout') focalPatches.push({ x: W / 2 - 32, y: H / 2 - 32, w: 64, h: 64, kind: 'matting' }); // the island: a springboard (7.3)
     if (cell.focal === 'plate') focalPatches.push(...placePlates(c, P, top, W, H, 3, r));
-    statics.push(...deckPillars(cell, P, d, keep.concat(statics), W, H));
+    const roadsHere = [c].concat(cell.ring ? [cell.ring] : []);
+    const dk = buildDecks(cell, P, d, roadsHere, keep, statics.concat(focalPatches), B, W, H, r);
+    statics.push(...dk.statics);
+    const reserved = dk.stairs.concat(dk.landing); // stairs and drop landings stay open ground
+    const up = city && r() < P['world.underpassChance'] ? buildUnderpass(c, P, d, keep, statics.concat(focalPatches), reserved.concat(deckBands), B, W, H, r) : null;
+    if (up) reserved.push(...up.stairs);
+    // stair sides and checkpoint zones stop the dummy on the ground: blocks keep an alley from them, and the flood fill counts them
+    const stairRects = dk.stairs.concat(up ? up.stairs : []).map((q) => ({ x: q.x, y: q.y, w: q.w, h: q.h })), cpZones = per.checkpoints.filter((cp) => !cp.deck).map((cp) => checkZone(cp, P, W, H));
     const nBase = statics.length;
-    const inside = (rc, m) => rc.x >= m && rc.y >= top + m && rc.x + rc.w <= W - m && rc.y + rc.h <= H - m;
+    const inside = (rc, m) => rc.x >= B.l + m && rc.y >= B.t + m && rc.x + rc.w <= B.r - m && rc.y + rc.h <= B.b - m;
     const offRoad = (rc, m) => [[rc.x, rc.y], [rc.x + rc.w, rc.y], [rc.x, rc.y + rc.h], [rc.x + rc.w, rc.y + rc.h], [rc.x + rc.w / 2, rc.y + rc.h / 2]].every(([x, y]) => d(x, y) >= m);
     const clearKeep = (rc, m) => keep.every((k) => !overlapGap(rc, k, m));
     const runs = straightRuns(c, W, H).sort((p, q) => (q.b - q.a) - (p.b - p.a));
@@ -461,10 +474,11 @@
       return got;
     };
     const keepDist = (x, y) => keep.reduce((m, k) => Math.min(m, rectDist(x, y, k)), Infinity);
-    const spawns = spread(verge(OUTER + 44, (x, y) => x >= 40 && x <= W - 40 && y >= top + 44 && y <= H - 40 && d(x, y) >= OUTER + 40 &&
-      statics.every((st) => rectDist(x, y, st) >= 40) && keepDist(x, y) >= 20), 4).map((q) => ({ x: Math.round(q.x), y: Math.round(q.y), f: Math.round(Math.atan2(q.py - q.y, q.px - q.x) / DEG) }));
-    const cones = spread(verge(OUTER + 24, (x, y) => x >= 20 && x <= W - 20 && y >= top + 20 && y <= H - 20 && d(x, y) >= OUTER + 16 &&
-      statics.every((st) => rectDist(x, y, st) >= 24) && spawns.every((sp) => hyp(sp.x - x, sp.y - y) >= 60)), 3, spawns).map((q) => [Math.round(q.x), Math.round(q.y)]);
+    const spawns = spread(verge(OUTER + 44, (x, y) => x >= B.l + 40 && x <= B.r - 40 && y >= B.t + 44 && y <= B.b - 40 && d(x, y) >= OUTER + 40 &&
+      statics.every((st) => rectDist(x, y, st) >= 40) && keepDist(x, y) >= 20 && reserved.every((q) => rectDist(x, y, q) >= 32) && deckBands.every((q) => rectDist(x, y, q) >= 16)), 4)
+      .map((q) => ({ x: Math.round(q.x), y: Math.round(q.y), f: Math.round(Math.atan2(q.py - q.y, q.px - q.x) / DEG) }));
+    const cones = spread(verge(OUTER + 24, (x, y) => x >= B.l + 20 && x <= B.r - 20 && y >= B.t + 20 && y <= B.b - 20 && d(x, y) >= OUTER + 16 &&
+      statics.every((st) => rectDist(x, y, st) >= 24) && spawns.every((sp) => hyp(sp.x - x, sp.y - y) >= 60) && reserved.every((q) => rectDist(x, y, q) >= 24)), 3, spawns).map((q) => [Math.round(q.x), Math.round(q.y)]);
     // jersey barriers, just off the pavement on straight runs
     let edgeLen = 0;
     for (let s = 0; s < path.length; s += 4) { const p = pathAt(path, s); if (p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H) edgeLen += 8; }
@@ -473,7 +487,7 @@
       const o = run.c + side * (OUTER + 4) - (side < 0 ? 8 : 0);
       const rc = run.hz ? { x: Math.round(p - 22), y: Math.round(o), w: 44, h: 8, kind: 'jersey' } : { x: Math.round(o), y: Math.round(p - 22), w: 8, h: 44, kind: 'jersey' };
       if (!inside(rc, 4) || !offRoad(rc, OUTER + 2) || !clearKeep(rc, 8) || !statics.every((st) => !overlapGap(rc, st, 26))) continue;
-      if (!spawns.every((sp) => rectDist(sp.x, sp.y, rc) > 56) || !cones.every((cn) => rectDist(cn[0], cn[1], rc) > 26)) continue;
+      if (!spawns.every((sp) => rectDist(sp.x, sp.y, rc) > 56) || !cones.every((cn) => rectDist(cn[0], cn[1], rc) > 26) || reserved.some((q) => overlapGap(rc, q, 8))) continue;
       jc.push(rc);
     }
     const jerseys = [];
@@ -486,8 +500,9 @@
     statics.push(...jerseys);
     // city blocks: greedy, largest legal footprint first on a GRID-unit lattice; every open spot stays reachable
     const G = 8, GW = W / G, GH = H / G, forb = new Uint8Array(GW * GH);
-    const tooNear = (x, y) => d(x, y) < OUTER + 16 + 4 || y < top || statics.some((st) => rectDist(x, y, st) < ALLEY + 4) ||
-      keep.some((k) => rectDist(x, y, k) < 4) || spawns.some((sp) => hyp(sp.x - x, sp.y - y) < 52) || cones.some((cn) => hyp(cn[0] - x, cn[1] - y) < 36) ||
+    const edgeKinds = { wall: 1, river: 1 }, inner = statics.filter((st) => !edgeKinds[st.kind]); // blocks may stand flush against the perimeter
+    const tooNear = (x, y) => d(x, y) < OUTER + 16 + 4 || y < B.t || x < B.l || x > B.r || y > B.b || inner.some((st) => rectDist(x, y, st) < ALLEY + 4) || reserved.some((q) => rectDist(x, y, q) < 12) ||
+      stairRects.some((q) => rectDist(x, y, q) < ALLEY + 4) || keep.some((k) => rectDist(x, y, k) < 4) || spawns.some((sp) => hyp(sp.x - x, sp.y - y) < 52) || cones.some((cn) => hyp(cn[0] - x, cn[1] - y) < 36) ||
       deckBands.some((k) => rectDist(x, y, k) < 8) || focalPatches.some((k) => rectDist(x, y, k) < 12); // no building under a flyover or on a plaza
     for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) forb[j * GW + i] = tooNear(i * G + G / 2, j * G + G / 2) ? 1 : 0;
     const mark = (b) => { for (let j = Math.max(0, Math.floor((b.y - ALLEY - G) / G)); j < Math.min(GH, Math.ceil((b.y + b.h + ALLEY + G) / G)); j++) for (let i = Math.max(0, Math.floor((b.x - ALLEY - G) / G)); i < Math.min(GW, Math.ceil((b.x + b.w + ALLEY + G) / G)); i++) if (rectDist(i * G + G / 2, j * G + G / 2, b) < ALLEY + 4) forb[j * GW + i] = 1; };
@@ -502,17 +517,18 @@
     const blocks = [], banned = new Set();
     let area = 0;
     const bMax = dp('blockMax', 160);
-    for (let iter = 0; iter < 60 && area < dp('blockShare', P['world.blockShare']) * W * H; iter++) {
+    const ground = W * H - deckBands.reduce((n, q) => n + q.w * q.h, 0); // block share counts the ground outside flyover bands (Edit 42)
+    for (let iter = 0; iter < 60 && area < dp('blockShare', P['world.blockShare']) * ground; iter++) {
       const sat = new Int32Array((GW + 1) * (GH + 1));
       for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) sat[(j + 1) * (GW + 1) + i + 1] = forb[j * GW + i] + sat[j * (GW + 1) + i + 1] + sat[(j + 1) * (GW + 1) + i] - sat[j * (GW + 1) + i];
       const bad = (x, y, w, h) => { const i0 = x / G, j0 = y / G, i1 = (x + w) / G, j1 = (y + h) / G; return sat[j1 * (GW + 1) + i1] - sat[j0 * (GW + 1) + i1] - sat[j1 * (GW + 1) + i0] + sat[j0 * (GW + 1) + i0]; };
       let best = null;
       for (let w = Math.min(160, bMax); w >= 48; w -= GRID) for (let h = Math.min(128, bMax); h >= 48; h -= GRID) {
         if (best && w * h + 2400 < best.score) continue;
-        for (let y = top; y + h <= H; y += GRID) for (let x = 0; x + w <= W; x += GRID) {
-          if (!(x === 0 || x >= ALLEY) || !(x + w === W || W - (x + w) >= ALLEY) || !(y + h === H || H - (y + h) >= ALLEY) || !(y === top || y - top >= ALLEY)) continue;
+        for (let y = B.t; y + h <= B.b; y += GRID) for (let x = B.l; x + w <= B.r; x += GRID) {
+          if (!(x === B.l || x - B.l >= ALLEY) || !(x + w === B.r || B.r - (x + w) >= ALLEY) || !(y + h === B.b || B.b - (y + h) >= ALLEY) || !(y === B.t || y - B.t >= ALLEY)) continue;
           if (bad(x, y, w, h) || banned.has(x + ',' + y + ',' + w + ',' + h)) continue;
-          const align = blocks.reduce((n, b) => n + (b.y === y || b.y + b.h === y + h ? 1 : 0) + (b.x === x || b.x + b.w === x + w ? 1 : 0), 0) + (x === 0 || x + w === W ? 1 : 0) + (y + h === H || y === top ? 1 : 0);
+          const align = blocks.reduce((n, b) => n + (b.y === y || b.y + b.h === y + h ? 1 : 0) + (b.x === x || b.x + b.w === x + w ? 1 : 0), 0) + (x === B.l || x + w === B.r ? 1 : 0) + (y + h === B.b || y === B.t ? 1 : 0);
           const score = w * h + align * 400 + r() * 50;
           if (!best || score > best.score) best = { x, y, w, h, score };
         }
@@ -524,12 +540,13 @@
         blk.height = tower ? Math.round((P['world.towerHeightMin'] + r() * (P['world.towerHeightMax'] - P['world.towerHeightMin'])) / 10) * 10 : lo + Math.round(r() * (hi - lo) / 10) * 10;
         if (tower) blk.tower = true;
       }
-      if (!reachable(statics.concat(blocks, [blk]))) { banned.add(best.x + ',' + best.y + ',' + best.w + ',' + best.h); continue; }
+      if (!reachable(statics.concat(blocks, [blk], stairRects, cpZones))) { banned.add(best.x + ',' + best.y + ',' + best.w + ',' + best.h); continue; }
       blocks.push(blk); mark(blk); area += blk.w * blk.h;
     }
     const info = INFO(D.levelId);
     return { id: D.levelId, name: info.name, blurb: info.blurb, center: c, lanes: lanesOf(c, P), statics: P['proto.city'] ? statics.concat(blocks) : statics.filter((st) => st.kind !== 'jersey'),
-      coneHomes: cones, spawns: spawns.length ? spawns : [{ x: 400, y: 120, f: 90 }], focalPatches, decks: cell.decks || [], ring: cell.ring || null };
+      coneHomes: cones, spawns: spawns.length ? spawns : [{ x: 400, y: 120, f: 90 }], focalPatches, decks: dk.decks, ring: cell.ring || null,
+      stairs: dk.stairs.concat(up ? up.stairs : []), corridors: up ? [up.corridor] : [], checkpoints: per.checkpoints, reserved };
   }
   // The level for one screen of a district, built on first entry and kept.
   function cellLevel(D, c, P) {
@@ -540,8 +557,9 @@
     lv.statics = lv.statics.map((s, i) => Object.assign({}, s, { id: 's' + i }));
     const solid = SIDES.filter((sd) => { const x = c[0] + SIDE[sd][0], y = c[1] + SIDE[sd][1]; return x < 0 || y < 0 || x >= D.cols || y >= D.rows; });
     Object.assign(lv, { key: D.levelId + '@' + c[0] + ',' + c[1], cell: c.slice(), gates: cell.gates, solid, canal: cell.canal, theme: cell.theme, order: cell.order });
-    if (!cell.start) { const base = lv.focalPatches || []; lv.patches = base.concat(makePatches(lv, P, r, base, D.kind === 'city' ? dpar(P, D.levelId, 'puddleShare') : null)); delete lv.focalPatches; }
-    lv.decks = cell.decks || []; lv.focal = cell.focal || null;
+    if (!cell.start) { const base = lv.focalPatches || []; lv.patches = base.concat(makePatches(lv, P, r, base.concat(lv.reserved || []), D.kind === 'city' ? dpar(P, D.levelId, 'puddleShare') : null)); delete lv.focalPatches; delete lv.reserved; }
+    lv.decks = lv.decks || []; lv.focal = cell.focal || null; lv.stairs = lv.stairs || []; lv.corridors = lv.corridors || []; lv.checkpoints = lv.checkpoints || [];
+    lv.deckLanes = deckLanesOf(lv.decks, P);
     cell.level = lv;
     return lv;
   }
@@ -584,7 +602,6 @@
   };
   const INFO = (id) => LEVELS[id] || DISTRICTS[id];
   const dpar = (P, id, f) => P['world.district.' + id + '.' + f];
-  const DECK_W = 128; // world.deckWidth: two lanes plus parapets
   function chaikin(pts, n) {
     for (let k = 0; k < n; k++) {
       const out = [pts[0]];
@@ -597,7 +614,7 @@
   // deck for at most one tile (world.tileSize); within a lane of the deck's edge, a road running within world.deckParallelAngle (30°) of the deck's
   // direction also stays at most one tile. Checked per screen against every deck.
   function deckCrossOK(center, dk, P, W, H) {
-    const T = P['world.tileSize'], half = DECK_W / 2, wide = half + P['world.laneWidth'], path = makePath(center), par = Math.sin(P['world.deckParallelAngle'] * DEG);
+    const T = P['world.tileSize'], half = P['world.deckWidth'] / 2, wide = half + P['world.laneWidth'], path = makePath(center), par = Math.sin(P['world.deckParallelAngle'] * DEG);
     let core = null, side = null;
     const long = (run) => !!run && run.max - run.min > T;
     const grow = (run, a) => (run ? { min: Math.min(run.min, a), max: Math.max(run.max, a) } : { min: a, max: a });
@@ -654,16 +671,16 @@
           ring: focal === 'roundabout' ? arcPts(W / 2, H / 2, P['world.roundaboutRadius'], 0, 2 * Math.PI, 48).map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]) : null,
           decks: [] };
       });
-      // flyovers: the first crosses a row, the second a column, higher (world.deckHeight, + world.deckStack).
+      // flyovers (one overground level, Edit 42): the first crosses a row, the second another row; both at world.deckHeight.
       // Each takes an offset where it crosses every road on its line, never runs along one (deckCrossOK), and stays off the river.
       const decks = [], nd = Math.round(dpar(P, id, 'decks'));
       const specs = [];
       if (nd >= 1) specs.push({ hz: true, line: info.focal === 'roundabout' ? centre[1] : Math.floor(r() * R), height: P['world.deckHeight'] });
-      if (nd >= 2) specs.push({ hz: false, line: centre[0], height: P['world.deckHeight'] + P['world.deckStack'] });
+      if (nd >= 2) { const other = [0, 1, 2].filter((y) => y < R && y !== specs[0].line); specs.push({ hz: true, line: pick(r, other), height: P['world.deckHeight'] }); } // Edit 42: one overground level; decks never cross
       for (const sp of specs) {
         const span = sp.hz ? H : W, line = cells.flat().filter((q) => (sp.hz ? q.cell[1] : q.cell[0]) === sp.line), cands = [];
         for (let off = 120; off <= span - 120; off += 20) {
-          if (sp.hz && sp.line === 0 && off - DECK_W / 2 < 60) continue; // keep the river row's deck off the water
+          if (sp.hz && sp.line === 0 && off - P['world.deckWidth'] / 2 < 60) continue; // keep the river row's deck off the water
           if (line.every((q) => deckCrossOK(q.center, { hz: sp.hz, off }, P, W, H) && (!q.ring || deckCrossOK(q.ring, { hz: sp.hz, off }, P, W, H)))) cands.push(off);
         }
         if (!cands.length) break;
@@ -686,14 +703,14 @@
     return null;
   }
   // The centre screen's landmark: placed where it stands farthest from the road, with a plaza around it.
-  function placeLandmark(cell, P, d, keep, top, W, H, r) {
+  function placeLandmark(cell, P, d, keep, B, W, H, r) {
     const T = P['world.tileSize'], OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], f = cell.focal;
     const size = { monument: [40, 40, 220, 160], fountain: [72, 72, 20, 192], tower: [112, 96, 420, 192] }[f];
     if (!size) return { statics: [], patches: [] };
     const [w, h, height, pz] = size;
-    const deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DECK_W / 2, w: W, h: DECK_W } : { x: dk.off - DECK_W / 2, y: 0, w: DECK_W, h: H });
+    const DW = P['world.deckWidth'], deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DW / 2, w: W, h: DW } : { x: dk.off - DW / 2, y: 0, w: DW, h: H });
     let best = null;
-    for (let y = top + pz / 2 + 8; y <= H - pz / 2 - 8; y += 8) for (let x = pz / 2 + 8; x <= W - pz / 2 - 8; x += 8) {
+    for (let y = B.t + pz / 2 + 8; y <= B.b - pz / 2 - 8; y += 8) for (let x = B.l + pz / 2 + 8; x <= B.r - pz / 2 - 8; x += 8) {
       const plaza = { x: x - pz / 2, y: y - pz / 2, w: pz, h: pz };
       const corners = [[plaza.x, plaza.y], [plaza.x + pz, plaza.y], [plaza.x, plaza.y + pz], [plaza.x + pz, plaza.y + pz], [x, y]];
       const m = Math.min(...corners.map(([px, py]) => d(px, py)));
@@ -732,12 +749,123 @@
     }
     return out;
   }
+
+  // ---------- Edit 42 (P3.1): bounded districts and three levels
+  // Levels: 0 underground, 1 ground (default), 2 overground. Statics are ground-level. The overground is the flyover decks;
+  // the underground is pedestrian underpasses. Stairs join the levels; broken parapets let the dummy drop from a deck.
+  const LEVELS3 = { UNDER: 0, GROUND: 1, OVER: 2 };
+  // The district's outer edges: the river on the top row, a wall elsewhere. A road leaving the district passes a checkpoint:
+  // a booth on the pavement and a boom across both lanes. The dummy cannot cross either.
+  function perimeter(D, cell, P, W, H, top) {
+    const out = { statics: [], checkpoints: [], bounds: { l: 0, t: top, r: W, b: H } };
+    if (D.kind !== 'city') return out;
+    const WT = P['world.wallThickness'], lw = P['world.laneWidth'], OUTER = lw + P['proto.shoulderWidth'], half = P['world.deckWidth'] / 2, bd = 32;
+    const outside = (sd) => { const nx = cell.cell[0] + SIDE[sd][0], ny = cell.cell[1] + SIDE[sd][1]; return nx < 0 || ny < 0 || nx >= D.cols || ny >= D.rows; };
+    for (const sd of SIDES) {
+      if (!outside(sd)) continue;
+      const road = cell.ends.find((e) => e.outer && e.side === sd), len = horiz(sd) ? H : W, river = sd === 'N' && cell.canal;
+      let segs = road ? [[0, road.off - OUTER], [road.off + OUTER, len]] : [[0, len]];
+      for (const dk of cell.decks || []) if (dk.hz === horiz(sd)) { // the wall under a flyover is its own module, so the deck draws over it
+        const cut = [dk.off - half, dk.off + half];
+        segs = segs.flatMap(([a, b]) => [[a, Math.min(b, cut[0])], [Math.max(a, cut[0]), Math.min(b, cut[1])], [Math.max(a, cut[1]), b]].filter(([p, q]) => q - p >= 1));
+      }
+      for (const [a, b] of segs) {
+        if (b - a < 1) continue;
+        if (river) out.statics.push({ x: a, y: 0, w: b - a, h: 46, kind: 'river' });
+        else out.statics.push(Object.assign(sd === 'W' ? { x: 0, y: a, w: WT, h: b - a } : sd === 'E' ? { x: W - WT, y: a, w: WT, h: b - a }
+          : sd === 'N' ? { x: a, y: 0, w: b - a, h: WT } : { x: a, y: H - WT, w: b - a, h: WT }, { kind: 'wall', height: P['proto.art.wallHeight'] }));
+      }
+      if (!river) { if (sd === 'W') out.bounds.l = WT; if (sd === 'E') out.bounds.r = W - WT; if (sd === 'N') out.bounds.t = Math.max(out.bounds.t, WT); if (sd === 'S') out.bounds.b = H - WT; }
+      if (road) {
+        const depth = river ? 48 : 8, pv = road.off + lw;
+        const bx = sd === 'W' ? { x: depth, y: pv, w: bd, h: OUTER - lw } : sd === 'E' ? { x: W - depth - bd, y: pv, w: bd, h: OUTER - lw }
+          : sd === 'N' ? { x: pv, y: depth, w: OUTER - lw, h: bd } : { x: pv, y: H - depth - bd, w: OUTER - lw, h: bd };
+        out.statics.push(Object.assign(bx, { kind: 'booth', height: P['proto.art.wallHeight'] }));
+        out.checkpoints.push({ side: sd, off: road.off, line: depth + bd / 2 });
+      }
+      // a flyover leaving the district passes its own checkpoint: a boom across the deck at the same line
+      for (const dk of cell.decks || []) if (dk.hz === horiz(sd)) out.checkpoints.push({ side: sd, off: dk.off, line: 8 + bd / 2, deck: true });
+    }
+    return out;
+  }
+  // Between a checkpoint's boom and the district edge, across the road and both pavements: closed to the dummy.
+  function checkZone(cp, P, W, H) {
+    const o = cp.deck ? P['world.deckWidth'] / 2 : P['world.laneWidth'] + P['proto.shoulderWidth'];
+    return cp.side === 'W' ? { x: 0, y: cp.off - o, w: cp.line, h: 2 * o } : cp.side === 'E' ? { x: W - cp.line, y: cp.off - o, w: cp.line, h: 2 * o }
+      : cp.side === 'N' ? { x: cp.off - o, y: 0, w: 2 * o, h: cp.line } : { x: cp.off - o, y: H - cp.line, w: 2 * o, h: cp.line };
+  }
+  // A flyover on this screen: piers, parapet modules broken over each road it crosses (drop points with a clear landing),
+  // and one stair module up from open ground beside it.
+  function buildDecks(cell, P, d, roads, keep, blockers, B, W, H, r) {
+    const out = { statics: [], decks: [], stairs: [], landing: [] }, T = P['world.tileSize'], half = P['world.deckWidth'] / 2;
+    const OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], SL = P['world.stairLength'], SWD = P['world.stairWidth'];
+    out.statics.push(...deckPillars(cell, P, d, keep.concat(blockers), W, H));
+    const inB = (rc) => rc.x >= B.l && rc.y >= B.t && rc.x + rc.w <= B.r && rc.y + rc.h <= B.b;
+    const freeOf = (rc, m) => blockers.concat(out.statics).every((st) => !overlapGap(rc, st, m));
+    (cell.decks || []).forEach((dk, k) => {
+      const len = dk.hz ? W : H, gaps = [], xs = [];
+      for (const poly of roads) {
+        const pth = makePath(poly); let prev = null;
+        for (let s = 0; s <= pth.length; s += 2) {
+          const p = pathAt(pth, s), v = dk.hz ? p.y - dk.off : p.x - dk.off, a = dk.hz ? p.x : p.y;
+          if (prev && Math.sign(prev.v) !== Math.sign(v) && a >= 0 && a <= len) xs.push((prev.a + a) / 2);
+          prev = { v, a };
+        }
+      }
+      const landingOf = (a0, side) => dk.hz ? { x: a0, y: side > 0 ? dk.off + half : dk.off - half - 48, w: T, h: 48 } : { x: side > 0 ? dk.off + half : dk.off - half - 48, y: a0, w: 48, h: T };
+      for (const a of xs) {
+        const a0 = Math.floor(a / T) * T;
+        for (const side of [-1, 1]) { const L = landingOf(a0, side); if (inB(L) && freeOf(L, 2) && !gaps.some((g) => g[0] === a0 && g[2] === side)) { gaps.push([a0, a0 + T, side]); out.landing.push(L); } }
+      }
+      const cands = [];
+      for (let a0 = T; a0 + SWD <= len - T; a0 += T) for (const side of [-1, 1]) {
+        const rc = dk.hz ? { x: a0, y: side > 0 ? dk.off + half : dk.off - half - SL, w: SWD, h: SL } : { x: side > 0 ? dk.off + half : dk.off - half - SL, y: a0, w: SL, h: SWD };
+        const pts = [[rc.x, rc.y], [rc.x + rc.w, rc.y], [rc.x, rc.y + rc.h], [rc.x + rc.w, rc.y + rc.h], [rc.x + rc.w / 2, rc.y + rc.h / 2]];
+        if (!inB(rc) || pts.some(([x, y]) => d(x, y) < OUTER + 8) || keep.some((q) => overlapGap(rc, q, 4)) || !freeOf(rc, 12) || out.landing.some((q) => overlapGap(rc, q, 8))) continue;
+        if (gaps.some(([g0, g1]) => a0 < g1 + T && a0 + SWD > g0 - T)) continue;
+        cands.push({ rc, side, a0 });
+      }
+      let st = null;
+      if (cands.length) {
+        const c0 = pick(r, cands), rc = c0.rc, sd = c0.side;
+        st = { x: rc.x, y: rc.y, w: rc.w, h: rc.h, axis: dk.hz ? 'y' : 'x', from: 1, to: 2, deck: k,
+          low: dk.hz ? (sd > 0 ? rc.y + SL : rc.y) : (sd > 0 ? rc.x + SL : rc.x), high: dk.hz ? (sd > 0 ? rc.y : rc.y + SL) : (sd > 0 ? rc.x : rc.x + SL) };
+        out.stairs.push(st);
+      }
+      out.decks.push({ hz: dk.hz, off: dk.off, height: dk.height, gaps, stair: st ? { a0: dk.hz ? st.x : st.y, side: (st.low > st.high ? 1 : -1) } : null });
+    });
+    return out;
+  }
+  // An underpass: stairs down on both pavements of a straight run, a passage under the road (the underground level).
+  function buildUnderpass(c, P, d, keep, blockers, reserved, B, W, H, r) {
+    const OUTER = P['world.laneWidth'] + P['proto.shoulderWidth'], SL = P['world.stairLength'], SWD = P['world.stairWidth'], cands = [];
+    const corners = (rc) => [[rc.x, rc.y], [rc.x + rc.w, rc.y], [rc.x, rc.y + rc.h], [rc.x + rc.w, rc.y + rc.h]];
+    const ok = (rc) => rc.x >= B.l + 4 && rc.y >= B.t + 4 && rc.x + rc.w <= B.r - 4 && rc.y + rc.h <= B.b - 4 && keep.every((q) => !overlapGap(rc, q, 4)) &&
+      blockers.every((q) => !overlapGap(rc, q, 12)) && reserved.every((q) => !overlapGap(rc, q, 16)) && corners(rc).every(([x, y]) => d(x, y) >= OUTER - 2);
+    for (const run of straightRuns(c, W, H).filter((q) => q.b - q.a >= 280)) for (let p = run.a + 96; p <= run.b - 96; p += 32) {
+      const A = run.hz ? { x: p - SWD / 2, y: run.c - OUTER - SL, w: SWD, h: SL } : { x: run.c - OUTER - SL, y: p - SWD / 2, w: SL, h: SWD };
+      const Bq = run.hz ? { x: p - SWD / 2, y: run.c + OUTER, w: SWD, h: SL } : { x: run.c + OUTER, y: p - SWD / 2, w: SL, h: SWD };
+      if (ok(A) && ok(Bq)) cands.push({ A, Bq, run, corr: run.hz ? { x: p - SWD / 2, y: run.c - OUTER, w: SWD, h: 2 * OUTER } : { x: run.c - OUTER, y: p - SWD / 2, w: 2 * OUTER, h: SWD } });
+    }
+    if (!cands.length) return null;
+    const q = pick(r, cands), hz = q.run.hz;
+    const sA = Object.assign({}, q.A, { axis: hz ? 'y' : 'x', from: 1, to: 0, low: hz ? q.A.y : q.A.x, high: hz ? q.A.y + SL : q.A.x + SL });
+    const sB = Object.assign({}, q.Bq, { axis: hz ? 'y' : 'x', from: 1, to: 0, low: hz ? q.Bq.y + SL : q.Bq.x + SL, high: hz ? q.Bq.y : q.Bq.x });
+    return { stairs: [sA, sB], corridor: q.corr };
+  }
+  // The centre line of a deck's road (two lanes, one each way), lead-in beyond both edges like a ground road.
+  const deckCenter = (dk, W, H, lead) => (dk.hz ? [[-lead, dk.off], [W + lead, dk.off]] : [[dk.off, -lead], [dk.off, H + lead]]);
+  function deckLanesOf(decks, P) { // per deck: two lanes on the overground level
+    const out = [];
+    (decks || []).forEach((dk, k) => lanesOf(deckCenter(dk, P['world.width'], P['world.height'], P['world.spawnLeadIn']), P).forEach((path, j) => out.push({ path, deck: k, dir: j })));
+    return out;
+  }
   // A city district from baked data (content/districts/districts.json), or generated when there is none.
-  // Baked layouts for this world size: districts.json (800 × 600) or districts_large.json (1280 × 960, the D27 test).
+  // Baked layouts for this world size (districts.json carries its size; 800 × 640 since Edit 42).
   function bakedDB(P) {
     const W = P['world.width'], H = P['world.height'], fit = (db) => { const sz = db && (db.size || [800, 600]); return sz && sz[0] === W && sz[1] === H ? db : null; };
-    if (typeof window !== 'undefined') return fit(window.DISTRICT_DB) || fit(window.DISTRICT_DB_LARGE);
-    try { return typeof require === 'function' ? fit(require('../../content/districts/districts.json')) || fit(require('../../content/districts/districts_large.json')) : null; } catch (e) { return null; }
+    if (typeof window !== 'undefined') return fit(window.DISTRICT_DB);
+    try { return typeof require === 'function' ? fit(require('../../content/districts/districts.json')) : null; } catch (e) { return null; }
   }
   function cityDistrict(id, P) {
     const db = P['proto.layout'] >= 0 ? bakedDB(P) : null, list = db && db.districts && db.districts[id];
@@ -748,7 +876,9 @@
       visited: new Set([L.start[1] * C + L.start[0]]), lastFlip: null, baked: true };
     for (const row of cells) for (const q of row) {
       const lv = { id, name: DISTRICTS[id].name, blurb: DISTRICTS[id].blurb, center: q.center, lanes: lanesOf(q.center, P),
-        statics: q.statics.map((s, i) => Object.assign({}, s, { id: 's' + i })), coneHomes: q.coneHomes, spawns: q.spawns, patches: q.patches, decks: q.decks || [], ring: q.ring || null };
+        statics: q.statics.map((s, i) => Object.assign({}, s, { id: 's' + i })), coneHomes: q.coneHomes, spawns: q.spawns, patches: q.patches, decks: q.decks || [], ring: q.ring || null,
+        stairs: q.stairs || [], corridors: q.corridors || [], checkpoints: q.checkpoints || [] };
+      lv.deckLanes = deckLanesOf(lv.decks, P);
       const solid = SIDES.filter((sd) => { const x = q.cell[0] + SIDE[sd][0], y = q.cell[1] + SIDE[sd][1]; return x < 0 || y < 0 || x >= C || y >= R; });
       Object.assign(lv, { key: id + '#' + (k + 1) + '@' + q.cell[0] + ',' + q.cell[1], cell: q.cell.slice(), gates: q.gates, solid, canal: q.canal, theme: q.theme, focal: q.focal, order: q.order });
       q.level = lv;
@@ -762,7 +892,7 @@
       const lv = cellLevel(D, q.cell, P);
       return { cell: q.cell, order: q.order, ends: q.ends, canal: q.canal, gates: q.gates, theme: lv.theme, focal: q.focal || null,
         center: lv.center.map(([x, y]) => [r1(x), r1(y)]), statics: lv.statics.map(({ id: _i, ...s }) => s), coneHomes: lv.coneHomes, spawns: lv.spawns,
-        patches: lv.patches, decks: lv.decks || [], ring: q.ring || null };
+        patches: lv.patches, decks: lv.decks || [], ring: q.ring || null, stairs: lv.stairs, corridors: lv.corridors, checkpoints: lv.checkpoints };
     }));
     return { seed: D.seed, cols: D.cols, rows: D.rows, start: D.start, path: D.path, decks: D.decks, cells };
   }
@@ -843,6 +973,17 @@
     const kx = nx * kn + (vdtx + tdx * dvt) * sc, ky = ny * kn + (vdty + tdy * dvt) * sc;
     return { raw, assessed: Math.min(raw, P['damage.bodyHealth']), un, dvd, dvt, angle, knock: { x: kx, y: ky } };
   }
+  // Edit 42: landing on a car from a deck. The dummy meets the car at damage.dropSpeed downward and the car's speed across.
+  // Same impulse model as a strike (no sprint cap: gravity does the work). Recoil throws the dummy off the car's side.
+  function dropImpact(P, dvx, dvy, c, res) {
+    const md = P['proto.dummyMass'], mc = P['vehicles.' + c.cls + '.mass'], ms = P['vehicles.sedan.mass'], e = P['proto.restitution'], vd = P['damage.dropSpeed'];
+    const across = hyp(c.vx - dvx, c.vy - dvy), un = hyp(vd, across);
+    const mu = md * mc / (md + mc), J = (1 + e) * mu * un, dvd = J / md;
+    const ref = (1 + e) * (ms / (md + ms)) * P['damage.referenceSpeed'];
+    const raw = P['damage.baseImpact'] * Math.pow(dvd / ref, P['proto.damageExponent']), sc = P['proto.recoilScale'];
+    return { raw, assessed: Math.min(raw, P['damage.bodyHealth']), un, dvd, dvt: 0, angle: Math.atan2(across, vd) / DEG,
+      knock: { x: c.vx * sc + res.nx * vd * sc, y: c.vy * sc + res.ny * vd * sc } };
+  }
   function assess(P, closing, zone, cls) {
     const raw = P['damage.baseImpact'] * P['damage.zone.' + zone] * P['vehicles.' + cls + '.mass'] *
       closing / P['damage.referenceSpeed'];
@@ -876,7 +1017,7 @@
       const vs = this.isCity ? dpar(P, this.levelId, 'vanShare') : null; // a city district sets its own van share
       this.schedule = Array.from({ length: P['run.appearances.road'] }, (_, i) => ({ i, cls: vs != null ? (g(i, 0.53) < vs ? 'van' : 'sedan') : pat[i % 5], lane: g(i, 0.31) < 0.5 ? 0 : 1, mult: 1 + P['proto.traffic.jitter'] * (2 * g(i, 0.77) - 1) }));
       this.cones = this.conesFor(this.level);
-      this.drones = []; this.droneSeq = 0; this.deckCars = []; this.deckSeq = 0; this.deckNext = {};
+      this.drones = []; this.droneSeq = 0; this.deckSeq = 0; this.deckNext = {}; this.booms = {};
       this.models = { sedan: { id: 'SEDAN-01', cls: 'sedan', applied: 0, standoffApplied: 0 }, van: { id: 'VAN-02', cls: 'van', applied: 0, standoffApplied: 0 } };
       const cy = this.carry || {};
       // The fleet remembers stop distances across roads.
@@ -887,8 +1028,8 @@
       this.quota = this.isCity ? dpar(P, this.levelId, 'quota') : P['proto.quota.' + this.levelId] != null ? P['proto.quota.' + this.levelId] : P['run.quota.road'];
       this.events = []; this.effects = []; this.milestones = Object.assign({}, cy.milestones); this.report = null;
       this.turnHist = [];
-      this.fillDecks();
       this.spawnBody();
+      this.fillDeckCars();
     }
 
     has(n) { return !!this.run.owned[n]; }
@@ -911,6 +1052,12 @@
     terrain(x, y, field) { const k = this.surfaceAt(x, y), v = k ? this.P['world.terrain.' + k + '.' + field] : null; return v == null ? 1 : v; }
     // Low grip: the dummy coasts movement.lowGripStopMultiplier further. Grip (Legs) removes the slide.
     gripK(x, y) { const k = this.surfaceAt(x, y), g = k && this.P['world.terrain.' + k + '.grip']; return (g === 'low' || g === 'very low') && !this.has('grip') ? this.P['movement.lowGripStopMultiplier'] : 1; }
+    // Edit 42: surfaces lie on the ground. On a deck, a stair or underground the dummy stands on plain concrete.
+    onGround() { const b = this.body; return b.level === 1 && !b.stair && b.mode !== 'drop'; }
+    underfoot(field) { const b = this.body; return this.onGround() ? this.terrain(b.x, b.y, field) : 1; }
+    // The level the dummy can be met on: none while on a stair or in the air. Cars meet it only on their own level.
+    bodyLayer() { const b = this.body; return b && b.alive && !b.stair && b.mode !== 'drop' ? b.level : null; }
+    meets(c) { return this.bodyLayer() === (c.layer || 1); }
     emit(type, data) { this.events.push(Object.assign({ t: +this.t.toFixed(4), type }, data || {})); }
     mile(key, data) { if (!this.milestones[key]) { this.milestones[key] = Object.assign({ t: +(this.tOffset + this.t).toFixed(3), road: this.roadIndex + 1 }, data || {}); this.emit('milestone', { key }); } }
     totalWriteOffs() { return this.run.priorWriteOffs + this.run.writeOffs; }
@@ -923,7 +1070,7 @@
 
     // ----- body
     pickSpawn() {
-      for (const sp of this.level.spawns) if (this.cars.every((c) => hyp(c.x - sp.x, c.y - sp.y) > 80)) return sp;
+      for (const sp of this.level.spawns) if (this.cars.every((c) => (c.layer || 1) !== 1 || hyp(c.x - sp.x, c.y - sp.y) > 80)) return sp;
       return this.level.spawns[0];
     }
     spawnBody() {
@@ -934,6 +1081,7 @@
         charge: this.capacity(), refillDelay: 0, rampT: 0, mode: 'idle', parts: { head: 0, torso: 0, armL: 0, armR: 0, legL: 0, legR: 0 },
         coastVx: 0, coastVy: 0, coastT: 0, counterVx: 0, counterVy: 0, counterT: 0, counterDur: 0,
         lunge: null, recoverT: 0, held: null, gesture: null, alive: true, chassis: this.run.chassis,
+        level: 1, stair: null, deck: null, corr: null, drop: null, // Edit 42: 0 underground, 1 ground, 2 deck
         hits: [], denied: 0, points0: this.run.points,
       };
       this.emit('chassis', { chassis: this.run.chassis, x: sp.x, y: sp.y });
@@ -963,16 +1111,17 @@
       if (b.refillDelay > 0) { b.refillDelay -= dt; if (b.refillDelay < 1e-9) b.refillDelay = 0; }
       else b.charge = Math.min(this.capacity(), b.charge + dt / P['battery.secondsPerCharge']);
       b.denied = Math.max(0, b.denied - dt);
+      if (b.mode === 'drop') return; // in the air: no control until the landing
       const facing0 = b.facing;
       const mx = cmd.mx || 0, my = cmd.my || 0, m = hyp(mx, my), has = m > 0.3;
       const ix = has ? mx / m : 0, iy = has ? my / m : 0, inAng = has ? Math.atan2(iy, ix) : 0;
       const rate = (this.has('hips') ? P['upgrades.hipsTurnRate'] : P['movement.turnRate']) * DEG * this.partEffect('turn');
       // leg damage slows every ground speed; so does the surface underfoot (world.terrain.<id>.dummySpeed)
-      const carryF = (b.held ? P['upgrades.carrySpeed'] : 1) * this.partEffect('speed') * this.terrain(b.x, b.y, 'dummySpeed');
+      const carryF = (b.held ? P['upgrades.carrySpeed'] : 1) * this.partEffect('speed') * this.underfoot('dummySpeed') * (b.stair ? P['world.stairSpeed'] : 1);
 
       if (cmd.aPress) {
-        const lk = this.terrain(b.x, b.y, 'lunge');
-        if (b.mode !== 'lunge' && b.mode !== 'recover' && b.charge >= P['battery.lungeCost'] - 1e-9 && lk > 0) this.startLunge(facing0, lk);
+        const lk = this.underfoot('lunge');
+        if (b.mode !== 'lunge' && b.mode !== 'recover' && !b.stair && b.charge >= P['battery.lungeCost'] - 1e-9 && lk > 0) this.startLunge(facing0, lk);
         else { if (lk <= 0 && b.mode !== 'lunge' && b.mode !== 'recover') this.emit('slip', { surface: this.surfaceAt(b.x, b.y), x: +b.x.toFixed(1), y: +b.y.toFixed(1) }); this.deny('lunge'); }
         if (cmd.bRelease) b.gesture = null; // suppressed gesture cannot fire later
       } else this.handleB(cmd, dt);
@@ -1014,7 +1163,7 @@
       const sp = hyp(b.vx, b.vy);
       if (has) {
         if (sp > 1 && Math.abs(wrap(inAng - Math.atan2(b.vy, b.vx))) > P['movement.counterPressAngle'] * DEG) {
-          b.mode = 'counter'; b.counterT = 0; b.counterDur = P['movement.stopSeconds'] * P['movement.counterPressStop'] * this.gripK(b.x, b.y);
+          b.mode = 'counter'; b.counterT = 0; b.counterDur = P['movement.stopSeconds'] * P['movement.counterPressStop'] * (this.onGround() ? this.gripK(b.x, b.y) : 1);
           b.counterVx = b.vx; b.counterVy = b.vy; b.rampT = 0;
           b.facing = turnTo(b.facing, inAng, rate * dt);
           return;
@@ -1028,7 +1177,7 @@
         spd *= carryF;
         b.vx = ix * spd; b.vy = iy * spd;
       } else {
-        if (b.mode === 'move') { b.mode = 'coast'; b.coastT = 0; b.coastVx = b.vx; b.coastVy = b.vy; b.rampT = 0; b.coastDur = P['movement.stopSeconds'] * this.gripK(b.x, b.y); }
+        if (b.mode === 'move') { b.mode = 'coast'; b.coastT = 0; b.coastVx = b.vx; b.coastVy = b.vy; b.rampT = 0; b.coastDur = P['movement.stopSeconds'] * (this.onGround() ? this.gripK(b.x, b.y) : 1); }
         if (b.mode === 'coast') {
           b.coastT += dt;
           const k = Math.max(0, 1 - b.coastT / (b.coastDur || P['movement.stopSeconds'])); // a puddle stretches the slide
@@ -1043,7 +1192,7 @@
       if (cmd.bPress) {
         if (!b.held) {
           if (this.has('carry')) {
-            const cn = busy || this.armsBroken() ? null : this.nearestCone();
+            const cn = busy || this.armsBroken() || !this.onGround() ? null : this.nearestCone();
             if (cn) { cn.state = 'held'; b.held = cn; this.emit('pickup', { cone: cn.id }); this.mile('use:carry'); }
             else this.deny('pickup');
           }
@@ -1070,7 +1219,7 @@
       const P = this.P, r = P['props.cone.radius'];
       if (x < r || y < r || x > P['world.width'] - r || y > P['world.height'] - r) return false;
       if (this.level.statics.some((s) => circleRect(x, y, r, s))) return false;
-      if (this.cars.some((c) => circleCar(x, y, r, c))) return false;
+      if (this.cars.some((c) => (c.layer || 1) === 1 && circleCar(x, y, r, c))) return false;
       if (this.drones.some((d) => d.target && d.cone !== (ignore && ignore.id) && hyp(d.target.x - x, d.target.y - y) < 2 * r)) return false;
       return !this.cones.some((c) => c !== ignore && (c.state === 'free' || c.state === 'flight') && hyp(c.x - x, c.y - y) < 2 * r);
     }
@@ -1080,13 +1229,13 @@
     }
     dropHeld() {
       const b = this.body, cn = b.held, p = this.releasePoint();
-      if (!this.coneSpotValid(p.x, p.y, cn)) return this.deny('drop');
+      if (!this.onGround() || !this.coneSpotValid(p.x, p.y, cn)) return this.deny('drop'); // cones stay on the ground (Edit 42)
       Object.assign(cn, { x: p.x, y: p.y, vx: 0, vy: 0, state: 'free' }); b.held = null;
       this.emit('drop', { cone: cn.id, x: +p.x.toFixed(2), y: +p.y.toFixed(2) });
     }
     throwHeld() {
       const P = this.P, b = this.body, cn = b.held, p = this.releasePoint();
-      if (!this.coneSpotValid(p.x, p.y, cn)) return this.deny('throw');
+      if (!this.onGround() || !this.coneSpotValid(p.x, p.y, cn)) return this.deny('throw');
       const T = P['props.cone.throwSeconds'], X = P['upgrades.throwDistance'] * this.partEffect('throw');
       const vx = b.vx + Math.cos(b.facing) * X / T, vy = b.vy + Math.sin(b.facing) * X / T;
       Object.assign(cn, { x: p.x, y: p.y, vx, vy, state: 'flight', flightT: T, flightDur: T, kind: 'throw', fx: p.x, fy: p.y });
@@ -1116,6 +1265,7 @@
     moveBody(h) {
       const b = this.body;
       if (!b.alive) return;
+      if (b.mode === 'drop') { b.x += b.drop.vx * h; b.y += b.drop.vy * h; b.drop.t += h; return; }
       if (b.mode === 'lunge') {
         const L = b.lunge;
         const spd = L.t < L.tf - 1e-9 ? L.R * L.df / L.tf : L.R * (1 - L.df) / (L.T - L.tf);
@@ -1131,9 +1281,11 @@
 
     collideBody(contacts, k) {
       const P = this.P, b = this.body, r = P['body.radius'];
-      if (!b.alive) return;
+      if (!b.alive || b.stair || b.mode === 'drop') return;
       const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; };
-      for (const s of this.level.statics) {
+      const ground = b.level === 1; // statics, stair sides, checkpoints, cones and screen edges are ground-level
+      const solids = ground ? this.level.statics.concat((this.level.stairs || []).filter((st) => !this.stairFoot(st)), (this.level.checkpoints || []).filter((cp) => !cp.deck).map((cp) => this.checkZone(cp))) : [];
+      for (const s of solids) {
         const res = circleRect(b.x, b.y, r, s);
         if (!res) continue;
         b.x += res.nx * res.pen; b.y += res.ny * res.pen;
@@ -1145,10 +1297,11 @@
       // A building or barrier across the edge stops the dummy; so does the district's outer edge. The flip follows in step().
       const W = P['world.width'], H = P['world.height'];
       let ex = clamp(b.x, r, W - r), ey = clamp(b.y, r, H - r);
-      if ((b.x < r && this.edgeOpen('W', b.y)) || (b.x > W - r && this.edgeOpen('E', b.y))) ex = b.x;
-      if ((b.y < r && this.edgeOpen('N', b.x)) || (b.y > H - r && this.edgeOpen('S', b.x))) ey = b.y;
+      if (!ground || (b.x < r && this.edgeOpen('W', b.y)) || (b.x > W - r && this.edgeOpen('E', b.y))) ex = b.x;
+      if (!ground || (b.y < r && this.edgeOpen('N', b.x)) || (b.y > H - r && this.edgeOpen('S', b.x))) ey = b.y;
       if (ex !== b.x || ey !== b.y) { b.x = ex; b.y = ey; block(); }
       for (const c of this.cars) {
+        if ((c.layer || 1) !== b.level) continue; // cars meet the dummy on their own level only
         const res = circleCar(b.x, b.y, r, c);
         if (!res) continue;
         c.touched = true;
@@ -1170,7 +1323,7 @@
         block();
       }
       const rr = r + P['props.cone.radius'];
-      for (const cn of this.cones) {
+      for (const cn of ground ? this.cones : []) {
         if (cn.state !== 'free') continue;
         const dx = cn.x - b.x, dy = cn.y - b.y, d = hyp(dx, dy);
         if (d >= rr || d < 1e-9) continue;
@@ -1182,6 +1335,140 @@
         }
         cn.x = b.x + ux * rr; cn.y = b.y + uy * rr;
       }
+      if (b.level === 2 && b.mode !== 'drop' && !b.stair) this.deckStep(); // a car's shove obeys the parapet too, and can push the dummy through a gap
+    }
+
+    // ----- levels (Edit 42): stairs join the ground to a deck or an underpass; a broken parapet lets the dummy drop
+    stairT(st, x, y) { return ((st.axis === 'y' ? y : x) - st.low) / (st.high - st.low); }
+    stairSpan(st) { const y = st.axis === 'y', l0 = y ? st.x : st.y; return [l0, l0 + (y ? st.w : st.h)]; }
+    // The foot of a stair is open to the ground; its sides and head are solid there.
+    stairFoot(st) {
+      const b = this.body, [l0, l1] = this.stairSpan(st), lat = st.axis === 'y' ? b.x : b.y;
+      return st.from === 1 && lat >= l0 + 2 && lat <= l1 - 2 && this.stairT(st, b.x, b.y) < 0.35;
+    }
+    checkZone(cp) { return checkZone(cp, this.P, this.P['world.width'], this.P['world.height']); } // boom up or down
+    boomPoint(cp) { const W = this.P['world.width'], H = this.P['world.height']; return cp.side === 'W' ? { x: cp.line, y: cp.off } : cp.side === 'E' ? { x: W - cp.line, y: cp.off } : cp.side === 'N' ? { x: cp.off, y: cp.line } : { x: cp.off, y: H - cp.line }; }
+    stepBooms(dt) { // a boom lifts for a ground car within world.boomRange, over world.boomSeconds
+      const P = this.P;
+      (this.level.checkpoints || []).forEach((cp, i) => {
+        const p = this.boomPoint(cp), near = this.cars.some((c) => (c.layer || 1) === (cp.deck ? 2 : 1) && hyp(c.x - p.x, c.y - p.y) < P['world.boomRange']);
+        this.booms[i] = clamp((this.booms[i] || 0) + (near ? 1 : -1) * dt / P['world.boomSeconds'], 0, 1);
+      });
+    }
+    enterStair(st, how) {
+      const b = this.body;
+      if (b.mode === 'lunge' || b.mode === 'knock') return false; // stairs are walked, not dashed into
+      b.stair = st; b.corr = null;
+      this.emit('stair', { from: b.level, toward: how === 'foot' ? st.to : st.from });
+      return true;
+    }
+    floorStep(contacts, k) {
+      const b = this.body;
+      if (!b.alive) return;
+      if (b.mode === 'drop') { if (b.drop.t >= b.drop.T - 1e-9) this.land(contacts, k); return; }
+      if (b.stair) return this.stairStep();
+      if (b.level === 2) return this.deckStep();
+      if (b.level === 0) return this.underStep();
+      for (const st of this.level.stairs || []) {
+        const t = this.stairT(st, b.x, b.y);
+        if (st.from === 1 && t >= 0 && t < 0.35 && this.stairFoot(st) && this.enterStair(st, 'foot')) return;
+      }
+    }
+    stairStep() {
+      const P = this.P, b = this.body, st = b.stair, r = P['body.radius'], [l0, l1] = this.stairSpan(st), m = Math.min(r, (l1 - l0) / 4);
+      if (st.axis === 'y') b.x = clamp(b.x, l0 + m, l1 - m); else b.y = clamp(b.y, l0 + m, l1 - m);
+      const len = Math.abs(st.high - st.low), t = this.stairT(st, b.x, b.y), top = 1 + (st.to === 2 ? (P['world.parapetWidth'] + r) / len : 0);
+      if (t < 0) { b.stair = null; b.level = st.from; this.emit('level', { level: b.level }); }
+      else if (t > top) {
+        b.stair = null; b.level = st.to;
+        if (st.to === 2) b.deck = st.deck;
+        if (st.to === 0) b.corr = this.corridorAt(b.x, b.y);
+        this.emit('level', { level: b.level }); this.mile(st.to === 2 ? 'firstDeck' : 'firstUnderpass');
+      }
+    }
+    corridorAt(x, y) {
+      let best = null, bd = Infinity;
+      for (const cr of this.level.corridors || []) { const d = rectDist(x, y, cr); if (d < bd) { bd = d; best = cr; } }
+      return best;
+    }
+    // On a deck: the hard shoulders and lanes between the parapets. A stair head or a broken parapet is the way off.
+    deckStep() {
+      const P = this.P, b = this.body, r = P['body.radius'], dk = (this.level.decks || [])[b.deck];
+      if (!dk) { b.level = 1; b.deck = null; return; }
+      const lim = P['world.deckWidth'] / 2 - P['world.parapetWidth'] - r, across = dk.hz ? b.y - dk.off : b.x - dk.off, along = dk.hz ? b.x : b.y;
+      const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; };
+      if (Math.abs(across) > lim) {
+        const side = Math.sign(across);
+        const st = (this.level.stairs || []).find((q) => q.to === 2 && q.deck === b.deck && Math.sign(q.low - q.high) === side &&
+          along >= this.stairSpan(q)[0] + 2 && along <= this.stairSpan(q)[1] - 2);
+        if (st && this.enterStair(st, 'head')) return;
+        if (dk.gaps.some(([a0, a1, sd]) => sd === side && along >= a0 && along <= a1)) return this.startDrop(dk, side);
+        if (dk.hz) { b.y = dk.off + side * lim; if (b.vy * side > 0) b.vy = 0; } else { b.x = dk.off + side * lim; if (b.vx * side > 0) b.vx = 0; }
+        block();
+      }
+      for (const cp of this.level.checkpoints || []) { // the deck's own checkpoint at the district edge
+        if (!cp.deck || cp.off !== dk.off) continue;
+        const res = circleRect(b.x, b.y, r, this.checkZone(cp));
+        if (res) { b.x += res.nx * res.pen; b.y += res.ny * res.pen; block(); }
+      }
+      // the deck runs on into the next screen where that screen carries it
+      const W = P['world.width'], H = P['world.height'];
+      if (dk.hz && ((b.x < r && !this.deckEdgeOpen('W', dk)) || (b.x > W - r && !this.deckEdgeOpen('E', dk)))) { b.x = clamp(b.x, r, W - r); block(); }
+      if (!dk.hz && ((b.y < r && !this.deckEdgeOpen('N', dk)) || (b.y > H - r && !this.deckEdgeOpen('S', dk)))) { b.y = clamp(b.y, r, H - r); block(); }
+    }
+    deckEdgeOpen(sd, dk) {
+      const D = this.district;
+      if (!D || dk.hz !== horiz(sd)) return false;
+      const nx = D.cur[0] + SIDE[sd][0], ny = D.cur[1] + SIDE[sd][1];
+      if (nx < 0 || ny < 0 || nx >= D.cols || ny >= D.rows) return false;
+      return (cellLevel(D, [nx, ny], this.P).decks || []).some((q) => q.hz === dk.hz && q.off === dk.off);
+    }
+    // Underground: the passage under the road. Its stairs lead up at both ends.
+    underStep() {
+      const P = this.P, b = this.body, cr = b.corr || this.corridorAt(b.x, b.y);
+      if (!cr) { b.level = 1; return; }
+      b.corr = cr;
+      for (const st of this.level.stairs || []) {
+        if (st.to !== 0) continue;
+        const [l0, l1] = this.stairSpan(st), lat = st.axis === 'y' ? b.x : b.y, t = this.stairT(st, b.x, b.y);
+        if (t <= 1 && t > 0.65 && lat >= l0 + 2 && lat <= l1 - 2 && this.enterStair(st, 'head')) return;
+      }
+      const m = Math.min(P['body.radius'], Math.min(cr.w, cr.h) / 4), nx = clamp(b.x, cr.x + m, cr.x + cr.w - m), ny = clamp(b.y, cr.y + m, cr.y + cr.h - m);
+      const ax = cr.h > cr.w ? 'y' : 'x'; // the passage runs across the road; its ends are the stairs
+      const cx = ax === 'y' ? nx : clamp(b.x, cr.x, cr.x + cr.w), cy = ax === 'x' ? ny : clamp(b.y, cr.y, cr.y + cr.h);
+      if (cx !== b.x || cy !== b.y) { b.x = cx; b.y = cy; if (b.mode === 'lunge') b.lunge.blocked = true; }
+    }
+    // Off a broken parapet: velocity carries on, outward at least far enough to clear the deck edge.
+    startDrop(dk, side) {
+      const P = this.P, b = this.body, T = P['world.dropSeconds'], r = P['body.radius'], vmax = P['movement.runSpeed'];
+      let vx = b.vx, vy = b.vy;
+      const sp = hyp(vx, vy);
+      if (sp > vmax) { vx *= vmax / sp; vy *= vmax / sp; }
+      const out = Math.max((dk.hz ? vy : vx) * side, (P['world.parapetWidth'] + 2 * r) / T) * side;
+      if (dk.hz) vy = out; else vx = out;
+      b.mode = 'drop'; b.lunge = null; b.stair = null; b.drop = { t: 0, T, vx, vy, x0: b.x, y0: b.y, deck: b.deck }; b.vx = vx; b.vy = vy;
+      this.emit('deck-drop', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), side });
+      this.mile('firstDeckDrop');
+    }
+    // Landing: on open ground the dummy recovers; on a car it scores a hit from above (dropImpact) to the legs.
+    land(contacts, k) {
+      const P = this.P, b = this.body, r = P['body.radius'], d = b.drop;
+      b.level = 1; b.deck = null; b.drop = null; b.vx = 0; b.vy = 0;
+      for (const c of this.cars) {
+        if ((c.layer || 1) !== 1) continue;
+        const res = circleCar(b.x, b.y, r, c);
+        if (!res) continue;
+        c.touched = true; c.inEpisode = true;
+        const ph = dropImpact(P, d.vx, d.vy, c, res);
+        contacts.push({ k, car: c, closing: ph.un, ph, px: b.x, py: b.y, zone: zoneOf(res.qx, res.qy, c), carState: this.carCue(c), cause: c.cause, lunging: false,
+          bodySpeed: P['damage.dropSpeed'], carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), drop: true });
+        b.x += res.nx * res.pen; b.y += res.ny * res.pen;
+        this.emit('land', { car: c.id, x: +b.x.toFixed(1), y: +b.y.toFixed(1) });
+        b.mode = 'knock'; b.lunge = null; b.knockT = 0; b.knockVx = ph.knock.x; b.knockVy = ph.knock.y; b.vx = ph.knock.x; b.vy = ph.knock.y;
+        return;
+      }
+      this.emit('land', { car: null, x: +b.x.toFixed(1), y: +b.y.toFixed(1) });
+      b.mode = 'recover'; b.recoverT = 0;
     }
 
     moveCones(h) {
@@ -1192,12 +1479,13 @@
           const ox = cn.x, oy = cn.y;
           cn.x += cn.vx * h; cn.y += cn.vy * h; cn.flightT -= h;
           const hit = cn.x < r || cn.y < r || cn.x > P['world.width'] - r || cn.y > P['world.height'] - r ||
-            this.level.statics.some((s) => circleRect(cn.x, cn.y, r, s)) || this.cars.some((c) => circleCar(cn.x, cn.y, r, c));
+            this.level.statics.some((s) => circleRect(cn.x, cn.y, r, s)) || this.cars.some((c) => (c.layer || 1) === 1 && circleCar(cn.x, cn.y, r, c));
           if (hit) { cn.x = ox; cn.y = oy; cn.state = 'free'; cn.vx = cn.vy = 0; this.emit('cone-stop', { cone: cn.id }); }
           else if (cn.flightT <= 1e-9) { cn.state = 'free'; cn.vx = cn.vy = 0; this.emit('cone-rest', { cone: cn.id, x: +cn.x.toFixed(2), y: +cn.y.toFixed(2) }); }
           continue;
         }
         for (const c of this.cars) {
+          if ((c.layer || 1) !== 1) continue;
           const res = circleCar(cn.x, cn.y, r, c);
           if (!res) continue;
           // Cars shove cones sideways, never ahead of themselves.
@@ -1217,52 +1505,60 @@
       const sl = this.schedule[this.slot], L = P['vehicles.' + sl.cls + '.length'];
       const room = L * P['traffic.entryRoomLengths'] + P['traffic.minimumGap'] + L / 2;
       if (this.cars.some((c) => c.lane === sl.lane && c.s - c.L / 2 < room)) return;
-      const m = this.models[sl.cls], step = P['learning.playerHitStep'];
-      const path = this.level.lanes[sl.lane];
+      const c = this.newCar('car' + (++this.carSeq), sl.cls, sl.lane, this.level.lanes[sl.lane], L / 2, 1);
+      c.slot = sl.i;
+      this.cars.push(c); this.slot++; this.lastAdmit = this.t; this.run.admitted++;
+      const nx = this.schedule[this.slot];
+      this.nextAt = this.t + this.admissionInterval() * (nx ? nx.mult : 1);
+      this.emit('admit', { car: c.id, cls: c.cls, model: c.model, lane: c.lane, fwdLen: +c.fwdLen.toFixed(2) });
+    }
+    // One car of a model on a lane path. layer: 1 ground, 2 deck (Edit 42). Deck cars run the same driver.
+    newCar(id, cls, lane, path, s, layer) {
+      const P = this.P, m = this.models[cls], step = P['learning.playerHitStep'], cruise = P['vehicles.' + cls + '.cruiseSpeed'];
       const c = {
-        id: 'car' + (++this.carSeq), slot: sl.i, cls: sl.cls, model: m.id, lane: sl.lane, path,
-        L, W: P['vehicles.' + sl.cls + '.width'], cruise: P['vehicles.' + sl.cls + '.cruiseSpeed'],
-        s: L / 2, d: 0, v: P['vehicles.' + sl.cls + '.cruiseSpeed'], slope: 0,
+        id, slot: -1, cls, model: m.id, lane, path, layer, deck: layer === 2,
+        L: P['vehicles.' + cls + '.length'], W: P['vehicles.' + cls + '.width'], cruise,
+        s, d: 0, v: cruise, slope: 0,
         applied: m.applied, fwdLen: P['perception.forwardLength'] * (1 + step * m.applied), standoff: this.modelStandoff(m), standoffApplied: m.standoffApplied,
         state: 'cruise', senseT: 0, man: null, cause: null, spent: false, inEpisode: false, touched: false,
         clearT: 0, interruptT: 0, det: { fwd: null, side: false }, intent: null, intentFor: null, signal: null, dodge: null,
         x: 0, y: 0, h: 0, vx: 0, vy: 0,
       };
       this.pose(c);
-      this.cars.push(c); this.slot++; this.lastAdmit = this.t; this.run.admitted++;
-      const nx = this.schedule[this.slot];
-      this.nextAt = this.t + this.admissionInterval() * (nx ? nx.mult : 1);
-      this.emit('admit', { car: c.id, cls: c.cls, model: c.model, lane: c.lane, fwdLen: +c.fwdLen.toFixed(2) });
+      return c;
     }
     // Learned stopping distance: each hit taken while stopped for the dummy pushes that model's stop line back.
     modelStandoff(m) { const P = this.P; return Math.min(P['proto.learn.standoffMax'], P['proto.standoffDistance'] + P['proto.learn.standoffStep'] * m.standoffApplied); }
     admissionInterval() { const v = this.isCity ? dpar(this.P, this.levelId, 'interval') : this.P['proto.traffic.' + this.levelId + '.interval']; return v != null ? v : this.P['run.admissionInterval']; }
-    // ----- flyovers (Edit 41): deck traffic runs both ways on every deck of the active screen. It never meets the dummy.
-    deckLen(dk) { return dk.hz ? this.P['world.width'] : this.P['world.height']; }
-    deckSpawn(k, dir, s) {
-      const P = this.P, n = ++this.deckSeq, cls = ((n * 0.6180339887 + 0.21) % 1) < 0.3 ? 'van' : 'sedan';
-      this.deckCars.push({ id: 'deck' + n, k, dir, s, cls, L: P['vehicles.' + cls + '.length'], W: P['vehicles.' + cls + '.width'], v: P['vehicles.' + cls + '.cruiseSpeed'] });
+    // ----- overground traffic (Edit 42): full drivers on each deck lane (level 2), one car every world.deckInterval.
+    // They are off the run's schedule: not admitted, not counted in CARS LEFT, and gone when they leave the screen.
+    deckCls(n) { const vs = this.isCity ? dpar(this.P, this.levelId, 'vanShare') : 0; return ((n * 0.6180339887 + 0.21) % 1) < vs ? 'van' : 'sedan'; }
+    addDeckCar(i, s) {
+      const n = ++this.deckSeq, ln = this.level.deckLanes[i], c = this.newCar('deck' + n, this.deckCls(n), 2 + i, ln.path, s, 2);
+      this.cars.push(c);
+      return c;
     }
-    fillDecks() { // a screen is entered with its flyovers already running
-      const P = this.P, decks = this.level.decks || [];
-      this.deckCars = []; this.deckNext = {};
-      decks.forEach((dk, k) => { for (const dir of [1, -1]) { const len = this.deckLen(dk), gap = P['world.deckInterval'] * P['vehicles.sedan.cruiseSpeed']; for (let s = gap * (0.3 + 0.4 * ((k + (dir > 0 ? 0.1 : 0.6)) % 1)); s < len; s += gap) this.deckSpawn(k, dir, dir > 0 ? s : len - s); } });
+    fillDeckCars() { // a screen is entered with its flyovers already running; never on top of a dummy on the deck
+      const P = this.P, b = this.body, gap = P['world.deckInterval'] * P['vehicles.sedan.cruiseSpeed'], lanes = this.level.deckLanes || [];
+      this.deckNext = {};
+      lanes.forEach((ln, i) => {
+        for (let s = ln.path.length - P['vehicles.van.length'] - gap * (0.3 + 0.4 * ((i * 0.618 + 0.1) % 1)); s > P['vehicles.van.length']; s -= gap) {
+          const p = pathAt(ln.path, s);
+          if (b && b.alive && b.level === 2 && hyp(p.x - b.x, p.y - b.y) < P['vehicles.van.length'] * 2) continue;
+          this.addDeckCar(i, s);
+        }
+        this.deckNext[i] = this.t + P['world.deckInterval'] * (0.4 + 0.5 * ((i * 0.618 + 0.3) % 1));
+      });
     }
-    stepDecks(dt) {
-      const P = this.P, decks = this.level.decks || [], lead = 80;
-      if (!decks.length) return;
-      decks.forEach((dk, k) => { for (const dir of [1, -1]) {
-        const key = k + ':' + dir, len = this.deckLen(dk);
-        if (this.deckNext[key] == null) this.deckNext[key] = this.t + P['world.deckInterval'] * 0.5;
-        if (this.t >= this.deckNext[key]) { this.deckSpawn(k, dir, dir > 0 ? -lead : len + lead); this.deckNext[key] = this.t + P['world.deckInterval'] * (0.8 + 0.4 * ((this.deckSeq * 0.618) % 1)); }
-      } });
-      for (const c of this.deckCars) { // follow: never closer than a car length plus a gap
-        const ahead = this.deckCars.filter((o) => o !== c && o.k === c.k && o.dir === c.dir && (o.s - c.s) * c.dir > 0).sort((a, b) => Math.abs(a.s - c.s) - Math.abs(b.s - c.s))[0];
-        const want = P['vehicles.' + c.cls + '.cruiseSpeed'];
-        c.v = ahead && Math.abs(ahead.s - c.s) < (c.L + ahead.L) / 2 + 30 ? Math.min(want, ahead.v) : want;
-        c.s += c.dir * c.v * dt;
-      }
-      this.deckCars = this.deckCars.filter((c) => c.s > -lead - 1 && c.s < this.deckLen(decks[c.k]) + lead + 1);
+    admitDeck() {
+      const P = this.P;
+      (this.level.deckLanes || []).forEach((ln, i) => {
+        if (this.t + 1e-9 < this.deckNext[i]) return;
+        const L = P['vehicles.van.length'], room = L * P['traffic.entryRoomLengths'] + P['traffic.minimumGap'] + L / 2;
+        if (this.cars.some((c) => c.lane === 2 + i && c.s - c.L / 2 < room)) return;
+        const c = this.addDeckCar(i, 0); c.s = c.L / 2; this.pose(c);
+        this.deckNext[i] = this.t + P['world.deckInterval'] * (0.8 + 0.4 * ((this.deckSeq * 0.618) % 1));
+      });
     }
     pose(c, h) {
       const p = pathAt(c.path, c.s);
@@ -1285,15 +1581,17 @@
     }
     armsBroken() { const P = this.P; return !!P['proto.parts.effects'] && this.partShare('armL') >= P['proto.parts.brokenShare'] && this.partShare('armR') >= P['proto.parts.brokenShare']; }
     coneWidth() { return this.P['sensing.coneWidth'] * this.partEffect('view'); }
-    partOf(px, py, assessed) {
+    partOf(px, py, assessed, legs) {
       const P = this.P, b = this.body, a = Math.atan2(py - b.y, px - b.x) - b.facing, side = Math.sin(a) >= 0 ? 'R' : 'L';
+      if (legs) return 'leg' + side;
       if (assessed >= P['proto.parts.headFrom']) return 'head';
       if (assessed >= P['proto.parts.torsoFrom']) return Math.abs(Math.sin(a)) >= 0.7 ? 'arm' + side : 'torso';
       return 'leg' + side;
     }
-    occluded(self, x0, y0, x1, y1) {
-      if (this.level.statics.some((s) => segRect(x0, y0, x1, y1, s))) return true;
-      return this.cars.some((c) => c !== self && c.cls === 'van' && segCar(x0, y0, x1, y1, c));
+    occluded(self, x0, y0, x1, y1) { // ground statics hide only from ground cars; vans hide on their own level
+      const l = self ? self.layer || 1 : 1;
+      if (l === 1 && this.level.statics.some((s) => segRect(x0, y0, x1, y1, s))) return true;
+      return this.cars.some((c) => c !== self && (c.layer || 1) === l && c.cls === 'van' && segCar(x0, y0, x1, y1, c));
     }
     // Lateral offset the car will hold at path coordinate s under its current plan.
     plannedD(c, s) {
@@ -1305,8 +1603,8 @@
       const P = this.P, b = this.body, res = { fwd: null, side: false };
       const ca = Math.cos(c.h), sa = Math.sin(c.h), nx = c.x + ca * c.L / 2, ny = c.y + sa * c.L / 2;
       const targets = [];
-      if (b.alive) targets.push({ kind: 'body', id: 'body', x: b.x, y: b.y, r: P['body.radius'] });
-      for (const cn of this.cones) if (cn.state === 'free' || cn.state === 'flight') targets.push({ kind: 'cone', id: cn.id, x: cn.x, y: cn.y, r: P['props.cone.radius'] });
+      if (this.meets(c)) targets.push({ kind: 'body', id: 'body', x: b.x, y: b.y, r: P['body.radius'] });
+      if ((c.layer || 1) === 1) for (const cn of this.cones) if (cn.state === 'free' || cn.state === 'flight') targets.push({ kind: 'cone', id: cn.id, x: cn.x, y: cn.y, r: P['props.cone.radius'] });
       for (const tg of targets) {
         const pr = pathProject(c.path, tg.x, tg.y), ahead = pr.s - c.s - c.L / 2, lat = pr.lat - c.d;
         const dx = tg.x - nx, dy = tg.y - ny, d = hyp(dx, dy), lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca;
@@ -1328,7 +1626,7 @@
     // Straight sensor: the driver sees a straight field ahead; the stop needs the dummy in the forward beam.
     assessBody(c) {
       const P = this.P, b = this.body;
-      if (!b.alive) return null;
+      if (!this.meets(c)) return null; // a dummy on another level, on a stair or in the air is out of the driver's world
       const pr = pathProject(c.path, b.x, b.y), ahead = pr.s - c.s - c.L / 2;
       if (ahead < -c.L || ahead > c.fwdLen) return null;
       const lat = pr.lat - c.d, gapLat = Math.abs(lat) - c.W / 2 - P['body.radius'];
@@ -1347,7 +1645,7 @@
       let best = null;
       const ca = Math.cos(c.h), sa = Math.sin(c.h);
       for (const o of this.cars) {
-        if (o === c) continue;
+        if (o === c || (o.layer || 1) !== (c.layer || 1)) continue;
         let gap = null, v = 0;
         if (o.lane === c.lane) {
           if (o.s > c.s && Math.abs(o.d - c.d) < (c.W + o.W) / 2 + 6) { gap = o.s - c.s - (c.L + o.L) / 2; v = o.v; }
@@ -1363,7 +1661,7 @@
     corridorBlocked(c, dShift, crosses) {
       const ca = Math.cos(c.h), sa = Math.sin(c.h);
       return this.cars.some((o) => {
-        if (o === c) return false;
+        if (o === c || (o.layer || 1) !== (c.layer || 1)) return false;
         const dx = o.x - c.x, dy = o.y - c.y, lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca;
         const oncoming = Math.cos(o.h - c.h) < -0.5;
         return lx > -c.L && lx < (oncoming && crosses ? 900 : 280) && Math.abs(ly - dShift) < (c.W + o.W) / 2 + 6;
@@ -1372,7 +1670,7 @@
     oncomingAhead(c, range) {
       const ca = Math.cos(c.h), sa = Math.sin(c.h);
       return this.cars.some((o) => {
-        if (o === c || Math.cos(o.h - c.h) > -0.5) return false;
+        if (o === c || (o.layer || 1) !== (c.layer || 1) || Math.cos(o.h - c.h) > -0.5) return false;
         const dx = o.x - c.x, dy = o.y - c.y, lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca;
         return lx > 0 && lx < range && Math.abs(ly) < (c.W + o.W) / 2 + 6;
       });
@@ -1380,14 +1678,14 @@
     carBeside(c, shift) {
       const ca = Math.cos(c.h), sa = Math.sin(c.h);
       return this.cars.some((o) => {
-        if (o === c) return false;
+        if (o === c || (o.layer || 1) !== (c.layer || 1)) return false;
         const dx = o.x - c.x, dy = o.y - c.y, lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca;
         return Math.abs(lx) < (c.L + o.L) / 2 + 10 && Math.abs(ly - shift) < (c.W + o.W) / 2 + 4;
       });
     }
     bodyBeside(c, shift) {
       const b = this.body;
-      if (!b.alive) return false;
+      if (!this.meets(c)) return false;
       const ca = Math.cos(c.h), sa = Math.sin(c.h), dx = b.x - c.x, dy = b.y - c.y;
       const lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca;
       return lx > -c.L / 2 - 40 && lx < c.L / 2 + 60 && Math.abs(ly - shift) < c.W / 2 + this.P['body.radius'] + 8;
@@ -1411,17 +1709,18 @@
         if (sHard - (tg.s - c.L / 2 - c.standoff) < 24) return { type: 'brake', v0: c.v, a: P['traffic.hardBraking'], vTarget: 0, sStop: sHard, standoff: true };
         return { type: 'brake', v0: c.v, a: P['traffic.hardBraking'], vTarget: 0, emergency: true };
       }
-      const clear = passing ? P['proto.driver.passClearance'] : 4;
-      const dMin = -lw, dMax = P['proto.swerveOuter'], need = c.W / 2 + tg.r + clear;
+      const clear = passing ? P['proto.driver.passClearance'] : 4, ground = (c.layer || 1) === 1;
+      // on a deck the parapet bounds the swerve: the car's outer side stays on the hard shoulder
+      const dMin = -lw, dMax = ground ? P['proto.swerveOuter'] : Math.min(P['proto.swerveOuter'], P['world.deckWidth'] / 2 - P['world.parapetWidth'] - lw / 2 - c.W / 2), need = c.W / 2 + tg.r + clear;
       // A pass from a close stop pulls out steeply at walking pace.
       const len = passing ? clamp(tg.lx * 1.1, 40, P['proto.swerveLength']) : P['proto.swerveLength'];
       const cones = [];
-      for (const cn of this.cones) {
+      for (const cn of ground ? this.cones : []) {
         if (cn.state !== 'free') continue;
         const pr = pathProject(c.path, cn.x, cn.y);
         if (pr.s > c.s - c.L && pr.s < c.s + c.L / 2 + len + 160) cones.push(pr);
       }
-      const statics = this.level.statics.filter((st) => hyp(st.x + st.w / 2 - c.x, st.y + st.h / 2 - c.y) < len + 260);
+      const statics = !ground ? [] : this.level.statics.filter((st) => hyp(st.x + st.w / 2 - c.x, st.y + st.h / 2 - c.y) < len + 260);
       const staticsClear = (d1) => {
         if (!statics.length) return true;
         for (let ds = 0; ds <= len + 60; ds += 12) {
@@ -1501,7 +1800,7 @@
       const stop = c.v * c.v / (2 * P['traffic.comfortBraking']) + P['traffic.minimumGap'] + 4;
       const ahead = this.leadGap(c);
       if (ahead && ahead.gap < stop + Math.max(0, -ahead.v) * 0.3) return 'car';
-      for (const cn of this.cones) {
+      for (const cn of (c.layer || 1) === 1 ? this.cones : []) {
         if (cn.state !== 'free') continue;
         const pr = pathProject(c.path, cn.x, cn.y), ds = pr.s - c.s - c.L / 2;
         if (ds > 0 && ds < stop + r && Math.abs(pr.lat - this.plannedD(c, pr.s)) < c.W / 2 + r + 1) return 'cone';
@@ -1511,9 +1810,9 @@
     rearBlocked(c) {
       const ca = Math.cos(c.h), sa = Math.sin(c.h), r = this.P['props.cone.radius'];
       const behind = (x, y, len, half) => { const dx = x - c.x, dy = y - c.y, lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca; return lx < 0 && lx > -c.L / 2 - len - 12 && Math.abs(ly) < c.W / 2 + half + 6; };
-      if (this.cars.some((o) => o !== c && behind(o.x, o.y, o.L / 2, o.W / 2))) return true;
-      if (this.cones.some((cn) => cn.state === 'free' && behind(cn.x, cn.y, r, r))) return true;
-      const b = this.body; return !!(b.alive && behind(b.x, b.y, this.P['body.radius'] + 20, this.P['body.radius']));
+      if (this.cars.some((o) => o !== c && (o.layer || 1) === (c.layer || 1) && behind(o.x, o.y, o.L / 2, o.W / 2))) return true;
+      if ((c.layer || 1) === 1 && this.cones.some((cn) => cn.state === 'free' && behind(cn.x, cn.y, r, r))) return true;
+      const b = this.body; return !!(this.meets(c) && behind(b.x, b.y, this.P['body.radius'] + 20, this.P['body.radius']));
     }
     reasonToWait(c, det, hz) {
       if ((hz && hz.inPath) || det.fwd || this.blockingCone(c) || this.obstacleAhead(c)) return true;
@@ -1523,7 +1822,7 @@
     blockingCone(c) {
       const r = this.P['props.cone.radius'];
       let best = null;
-      for (const cn of this.cones) {
+      for (const cn of (c.layer || 1) === 1 ? this.cones : []) {
         if (cn.state !== 'free') continue;
         const pr = pathProject(c.path, cn.x, cn.y), ds = pr.s - c.s - c.L / 2;
         if (ds > -r && ds < 70 && Math.abs(pr.lat - this.plannedD(c, pr.s)) < c.W / 2 + r + 2 && (!best || ds < best.ds)) best = { cn, ds };
@@ -1703,7 +2002,7 @@
           if (ahead.gap < P['traffic.minimumGap'] || Math.cos(ahead.car.h - c.h) < -0.5) vT = 0;
           hard = ahead.gap < P['traffic.minimumGap'] + c.v * c.v / (2 * P['traffic.comfortBraking']);
         }
-        const kb = this.terrain(c.x, c.y, 'carBraking'); // wet tarmac: braking × world.terrain.puddle.carBraking
+        const kb = (c.layer || 1) === 1 ? this.terrain(c.x, c.y, 'carBraking') : 1; // wet tarmac: braking × world.terrain.puddle.carBraking
         if (c.v < vT) c.v = Math.min(vT, c.v + P['traffic.acceleration'] * dt);
         else c.v = Math.max(vT, c.v - Math.min(hard ? P['traffic.hardBraking'] : decel != null ? decel : P['traffic.comfortBraking'], P['traffic.hardBraking'] * kb) * dt);
       }
@@ -1713,7 +2012,7 @@
       for (const c of this.cars) {
         if (c.man) {
           let v = this.manSpeed(c, c.man, ts - c.man.t0);
-          const kb = this.terrain(c.x, c.y, 'carBraking'); // on a puddle the plan asks for more braking than the tyres give
+          const kb = (c.layer || 1) === 1 ? this.terrain(c.x, c.y, 'carBraking') : 1; // on a puddle the plan asks for more braking than the tyres give
           if (kb < 1 && c.man.type !== 'reverse' && c.v > 0 && v < c.v - P['traffic.hardBraking'] * kb * h) {
             v = c.v - P['traffic.hardBraking'] * kb * h;
             if (!c.skid) { c.skid = true; this.emit('skid', { car: c.id, surface: this.surfaceAt(c.x, c.y) }); }
@@ -1761,7 +2060,7 @@
     exitCars() {
       this.cars = this.cars.filter((c) => {
         if (c.s - c.L / 2 <= c.path.length) return true;
-        this.run.exited++; this.emit('exit', { car: c.id, spent: c.spent });
+        if (!c.deck) { this.run.exited++; this.emit('exit', { car: c.id, spent: c.spent }); }
         return false;
       });
     }
@@ -1780,7 +2079,7 @@
         const lost = Math.min(b.health, assessed);
         b.health = Math.max(0, b.health - lost);
         c.spent = true;
-        const plate = this.surfaceAt(b.x, b.y) === 'plate' ? P['damage.plateMultiplier'] : 1; // a calibrated plate scores more (7.3)
+        const plate = b.level === 1 && this.surfaceAt(b.x, b.y) === 'plate' ? P['damage.plateMultiplier'] : 1; // a calibrated plate scores more (7.3)
         this.run.points += assessed * plate;
         const bait = ct.carState === 'committed' || ct.carState === 'expiring' || ct.carState === 'interrupted';
         let learned = null;
@@ -1793,12 +2092,12 @@
           const m = this.models[c.cls], before = this.modelStandoff(m);
           if (before < P['proto.learn.standoffMax']) { m.standoffApplied++; learnedStandoff = this.modelStandoff(m); this.emit('learn-standoff', { model: m.id, from: before, to: learnedStandoff }); }
         }
-        const part = this.partOf(ct.px, ct.py, assessed);
+        const part = this.partOf(ct.px, ct.py, assessed, ct.drop); // a landing takes the legs (Edit 42)
         b.parts[part] += lost;
         const ev = { car: c.id, model: c.model, cls: c.cls, zone: ct.zone, part, closing: +ct.closing.toFixed(3),
           angle: +ct.ph.angle.toFixed(1), dv: +ct.ph.dvd.toFixed(2), strike: +ct.ph.un.toFixed(2),
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
-          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1 };
+          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, drop: !!ct.drop, deck: !!c.deck };
         this.emit('impact', ev); b.hits.push(ev);
         this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed, t: this.t, zone: ct.zone, angle: ct.ph.angle });
         this.mile('firstHit');
@@ -1832,7 +2131,7 @@
       if (r.ending) return;
       const cleared = r.writeOffs >= this.quota;
       if (cleared && this.isFinal) return this.end('Licensed');
-      if (!cleared && this.slot >= this.schedule.length && this.cars.every((c) => c.spent)) return this.end('Failed test');
+      if (!cleared && this.slot >= this.schedule.length && this.cars.every((c) => c.spent || c.deck)) return this.end('Failed test');
       if (!this.body.alive) {
         r.credits++;
         const b = this.body;
@@ -1866,6 +2165,7 @@
       if (this.phase !== 'play') return;
       this.tick++; this.t += dt;
       this.admit();
+      this.admitDeck();
       this.carAI(dt);
       for (const c of this.cars) c.touched = false;
       this.bodyControl(cmd, dt);
@@ -1874,6 +2174,7 @@
         const ts = this.t - dt + (k + 1) * h;
         this.moveCars(h, ts);
         this.moveBody(h);
+        this.floorStep(contacts, k);
         this.collideBody(contacts, k);
         this.moveCones(h);
       }
@@ -1881,7 +2182,7 @@
       const positive = this.account(contacts);
       this.retryPending();
       this.stepDrones(dt);
-      this.stepDecks(dt);
+      this.stepBooms(dt);
       this.exitCars();
       this.trackUse();
       this.checkTerminal();
@@ -1893,7 +2194,7 @@
     // ----- districts (D24): crossing a gate flips to the next screen, Zelda-style
     checkFlip() {
       const D = this.district, b = this.body, P = this.P;
-      if (!D || !b.alive) return;
+      if (!D || !b.alive || b.stair || b.mode === 'drop' || b.level === 0) return;
       const W = P['world.width'], H = P['world.height'];
       const sd = b.x > W ? 'E' : b.x < 0 ? 'W' : b.y > H ? 'S' : b.y < 0 ? 'N' : null;
       if (!sd) return;
@@ -1911,17 +2212,19 @@
       const held = b.held;
       if (held) { const old = D.cells[from[1]][from[0]]; old.cones = old.cones.filter((c) => c !== held); }
       // only the active screen runs: its traffic, drones and effects end here
-      this.cars = []; this.drones = []; this.effects = [];
+      this.cars = []; this.drones = []; this.effects = []; this.booms = {};
+      const dk0 = b.level === 2 ? this.level.decks[b.deck] : null;
       D.cur = to; D.visited.add(to[1] * D.cols + to[0]);
       this.level = cellLevel(D, to, P);
       this.cones = this.conesFor(this.level);
       if (held) this.cones.push(held);
-      this.fillDecks();
       b.x -= SIDE[sd][0] * P['world.width']; b.y -= SIDE[sd][1] * P['world.height'];
+      if (dk0) { const k = this.level.decks.findIndex((q) => q.hz === dk0.hz && q.off === dk0.off); if (k >= 0) b.deck = k; else { b.level = 1; b.deck = null; } } // the level carries over
+      this.fillDeckCars();
       this.nextAt = this.t + 0.5; // traffic on the new screen arrives from its own road ends
       D.lastFlip = { side: sd, from, to, t: this.t };
       this.phase = 'scroll'; this.phaseT = P['world.flipSeconds'];
-      this.emit('screen', { from: cellName(from), to: cellName(to), side: sd, theme: this.level.theme, focal: this.level.focal || null });
+      this.emit('screen', { from: cellName(from), to: cellName(to), side: sd, theme: this.level.theme, focal: this.level.focal || null, level: b.level });
       this.mile('firstScreen', { to: cellName(to) });
       if (D.visited.size === D.cols * D.rows) this.mile('districtExplored', { road: this.roadIndex + 1 });
     }
@@ -1975,7 +2278,7 @@
   }
 
   const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
-    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, deckCrossOK, roadCenter, makePatches, roadDist, SIDE };
+    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, LEVELS3, checkZone };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.DUMMIES = api;
 })(typeof window !== 'undefined' ? window : globalThis);

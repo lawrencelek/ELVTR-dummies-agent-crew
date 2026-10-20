@@ -60,7 +60,6 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
   <div class="bar">
     <p class="keys"><kbd>WASD</kbd> move · <kbd>Space</kbd> dash · <kbd>K</kbd> cone · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · gamepad works · <span id="status"></span></p>
     <button id="btn-pal" type="button">Night palette</button>
-    <button id="btn-field" type="button">Field size</button>
     <button id="btn-full" type="button">Full screen</button>
     <button id="btn-tune" type="button">Tuning</button>
     <button id="btn-sound" type="button" aria-pressed="true">Sound on</button>
@@ -92,12 +91,6 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
 window.PIX_PALETTE_NAME = { day: 'day', night: 'night', cyber: 'cyber' }[new URLSearchParams(location.search).get('palette')] || 'cyber'; // cyber is the default scheme
 document.documentElement.dataset.palette = window.PIX_PALETTE_NAME;
 const PAL_NEXT = { cyber: 'day', day: 'night', night: 'cyber' };
-// Field size (D27 test, Edit 41.1): ?field=large → 640 × 480 art px field (40 × 30 tiles) on a 960 × 540 screen. Default 400 × 300.
-window.PIX_FIELD = new URLSearchParams(location.search).get('field') === 'large' ? 'large' : 'standard';
-document.getElementById('btn-field').textContent = window.PIX_FIELD === 'large' ? 'Field: 640 × 480 → 400 × 300' : 'Field: 400 × 300 → 640 × 480';
-document.getElementById('btn-field').addEventListener('click', () => {
-  const u = new URL(location.href); if (window.PIX_FIELD === 'large') u.searchParams.delete('field'); else u.searchParams.set('field', 'large'); location.href = u.toString();
-});
 document.getElementById('btn-pal').textContent = 'Palette: ' + window.PIX_PALETTE_NAME + ' → ' + PAL_NEXT[window.PIX_PALETTE_NAME];
 document.getElementById('btn-pal').addEventListener('click', () => {
   const u = new URL(location.href); u.searchParams.set('palette', PAL_NEXT[window.PIX_PALETTE_NAME]); location.href = u.toString();
