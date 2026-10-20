@@ -489,7 +489,7 @@
   const fLab = '700 ' + TY.sec + 'px ' + F_UI, fTxt = '400 ' + TY.sec + 'px ' + F_UI, fKey = '700 ' + TY.sec + 'px ' + F_MONO;
 
   // ---------- frame theme: FARSIGHT glass by day; dark glass and LED edges by night (same layout, same type)
-  const FT = PIX.NAME === 'night' ? {
+  const FT = PIX.NAME !== 'day' ? {
     bg: ['#05070D', '#0A0F1C', '#121B33'], glow: 'rgba(63,208,255,0.22)', glow2: 'rgba(155,107,255,0.18)', panelTop: 'rgba(20,30,56,0.94)', panelBot: 'rgba(8,12,24,0.94)',
     edge: 'rgba(63,208,255,0.85)', gloss: 'rgba(255,255,255,0.12)', text: '#F4F8FA', dim: '#9FB8C8', accent: '#3FD0FF', brand: '#3FD0FF', bezel: '#0B0F1A',
     keyTop: '#1C2A4A', keyBot: '#0E1528', veil: 'rgba(5,8,16,0.62)', track: '#1E2638', sel: '#1840C8', selText: '#FFFFFF', item: 'rgba(255,255,255,0.06)',
@@ -568,11 +568,12 @@
     const id = s.level.id;
     if (!artCache.has(id)) {
       const P = s.P, L = s.level;
+      const gr = PIX.ground(L, P, 7 + LEVEL_LIST.indexOf(id) * 31);
       artCache.set(id, {
-        ground: PIX.ground(L, P, 7 + LEVEL_LIST.indexOf(id) * 31),
-        statics: L.statics.map((st, i) => ({ st, spr: st.kind === 'barrier'
+        ground: gr,
+        statics: (gr.props || []).map((p) => ({ st: { x: p.x * U, y: p.y * U, w: p.w * U, h: p.h * U }, spr: p.spr, decor: true })).concat(L.statics.map((st, i) => ({ st, spr: st.kind === 'barrier'
           ? PIX.barrier(Math.round(st.w / U), Math.round(st.h / U), EXT(P['proto.art.barrierHeight']))
-          : PIX.pod(Math.round(st.w / U), Math.round(st.h / U), EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i) })),
+          : PIX.pod(Math.round(st.w / U), Math.round(st.h / U), EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i) }))),
       });
     }
     return artCache.get(id);
@@ -776,7 +777,9 @@
     const dk = dropK(), lift = dk ? Math.round(jv(CJ.states.replacementDrop.height) * dk / U / 2) : 0;
     const cx = Math.round(b.x / U) + jx, cy = Math.round(b.y / U) + jy - lift;
     if (dk) PIX.line(cx, cy - 16, cx, -1, (x, y) => FB.mix(x, y, K.ink, 0.5 * dk));
-    PIX.blit(FB, PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5))), cx, cy, fl < 0.12 ? K.white : 0);
+    const S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
+    PIX.blit(FB, S, cx, cy, fl < 0.12 ? K.white : 0);
+    b._spr = S; b._sx = cx; b._sy = cy;
     if (fl >= 0.12) {
       for (let i = 0; i < Math.floor(wear * 5); i++) { const a = (b.chassis * 2.1 + i * 1.9) % TAU; FB.put(cx + Math.round(Math.cos(a) * 3), cy - 5 + Math.round(Math.sin(a) * 2), K.joint); } // dents
       if (wear > 0.7) { FB.put(cx + 1, cy - 13, K.joint); FB.put(cx, cy - 12, K.joint); FB.put(cx + 1, cy - 11, K.joint); } // cracked head
@@ -867,6 +870,15 @@
     }
     list.sort((a, b) => a[0] - b[0]);
     for (const it of list) it[1]();
+    if (!still) { // x-ray pass: a checker of each actor's own pixels, so an occluded car or dummy still reads (4.2.4 tier 1)
+      for (const c of s.cars) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U);
+      const b = s.body;
+      if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
+    }
+  }
+  function ghost(S, ax, ay) {
+    const x0 = Math.round(ax) - S.ox, y0 = Math.round(ay) - S.oy;
+    for (let j = 0; j < S.h; j++) for (let i = 0; i < S.w; i++) { const c = S.d[j * S.w + i]; if (c && ((x0 + i + y0 + j) & 1) === 0) FB.put(x0 + i, y0 + j, c); }
   }
   function drawEffects(s, popups) { // popups: second pass, above tags, so the value is never covered
     for (const e of s.effects) {

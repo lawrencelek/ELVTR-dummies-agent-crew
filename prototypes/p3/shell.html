@@ -19,9 +19,9 @@ html, body { margin: 0; min-height: 100%; }
 body { background: linear-gradient(#EAF6FB, #C3E1EC) fixed; color: var(--ink); font-family: var(--font-ui); }
 .stage { height: calc(100vh - 56px); min-height: 360px; display: grid; place-items: center; overflow: hidden; }
 .stage:fullscreen { height: 100vh; background: #C3E1EC; }
-[data-palette="night"] body { background: linear-gradient(#05070D, #121B33) fixed; color: #F4F8FA; }
-[data-palette="night"] .keys, [data-palette="night"] #status { color: #9FB8C8; }
-[data-palette="night"] .stage:fullscreen { background: #05070D; }
+[data-palette="night"] body, [data-palette="cyber"] body { background: linear-gradient(#05070D, #121B33) fixed; color: #F4F8FA; }
+[data-palette="night"] .keys, [data-palette="night"] #status, [data-palette="cyber"] .keys, [data-palette="cyber"] #status { color: #9FB8C8; }
+[data-palette="night"] .stage:fullscreen, [data-palette="cyber"] .stage:fullscreen { background: #05070D; }
 #game { display: block; image-rendering: pixelated; image-rendering: crisp-edges; outline: none; box-shadow: 0 10px 30px rgba(16, 40, 56, 0.18); }
 #game:focus-visible { box-shadow: 0 0 0 3px var(--aqua), 0 10px 30px rgba(16, 40, 56, 0.18); }
 .wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 0 16px; display: grid; gap: 12px; }
@@ -87,12 +87,13 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
   </div>
 </div>
 <script>
-// Palette: day (Edit 37 eco-city) or night (Chongqing). Chosen at load: ?palette=night
-window.PIX_PALETTE_NAME = new URLSearchParams(location.search).get('palette') === 'night' ? 'night' : 'day';
+// Palette: day (Edit 37 eco-city), night (Chongqing parkland) or cyber (Chongqing city blocks). Chosen at load: ?palette=
+window.PIX_PALETTE_NAME = { night: 'night', cyber: 'cyber' }[new URLSearchParams(location.search).get('palette')] || 'day';
 document.documentElement.dataset.palette = window.PIX_PALETTE_NAME;
-document.getElementById('btn-pal').textContent = window.PIX_PALETTE_NAME === 'night' ? 'Day palette' : 'Night palette';
+const PAL_NEXT = { day: 'night', night: 'cyber', cyber: 'day' };
+document.getElementById('btn-pal').textContent = 'Palette: ' + window.PIX_PALETTE_NAME + ' → ' + PAL_NEXT[window.PIX_PALETTE_NAME];
 document.getElementById('btn-pal').addEventListener('click', () => {
-  const u = new URL(location.href); u.searchParams.set('palette', window.PIX_PALETTE_NAME === 'night' ? 'day' : 'night'); location.href = u.toString();
+  const u = new URL(location.href); u.searchParams.set('palette', PAL_NEXT[window.PIX_PALETTE_NAME]); location.href = u.toString();
 });
 document.getElementById('btn-full').addEventListener('click', () => {
   const st = document.getElementById('stage');

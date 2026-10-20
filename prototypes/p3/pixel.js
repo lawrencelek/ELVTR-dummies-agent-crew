@@ -44,8 +44,14 @@
     popInk: '#FFFFFF', popOutline: '#1840C8', stampFill: '#0B0E17', stampOutline: '#FFB0B0',
     podStripes: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#E6F4FF'], reflect: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], edgeLight: '#E6F4FF', flowers: 40,
   };
-  const NAME = root.PIX_PALETTE_NAME === 'night' ? 'night' : 'day';
-  const PAL = Object.assign({}, DAY, NAME === 'night' ? NIGHT : {});
+  // Cyber: the night palette with a city instead of parkland. Decks for lawns, blocks for trees, jersey barriers for hedges.
+  const CYBER = {
+    scenery: 'city', grass: '#10141D', grass2: '#161B26', grass3: '#1D2331', flowers: 0,
+    bldgRoof: '#1A2133', bldgEdge: '#2C3650', bldgFace: '#0D1220', bldgDark: '#080C16', bldgUnit: '#3A4560', bldgUnitD: '#222A3C',
+    bldgLed: ['#3FD0FF', '#2F6BFF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], jersey: '#2C3240', jerseyTop: '#4A5468', jerseyLed: '#3FD0FF',
+  };
+  const NAME = { night: 'night', cyber: 'cyber' }[root.PIX_PALETTE_NAME] || 'day';
+  const PAL = Object.assign({}, DAY, NAME !== 'day' ? NIGHT : {}, NAME === 'cyber' ? CYBER : {});
   function rgb(hex) { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
   function c32(hex) { const [r, g, b] = rgb(hex); return (0xFF000000 | (b << 16) | (g << 8) | r) >>> 0; }
   function mixHex(a, b, k) { const p = rgb(a), q = rgb(b); return '#' + p.map((v, i) => Math.round(v + (q[i] - v) * k).toString(16).padStart(2, '0')).join(''); }
@@ -395,6 +401,35 @@
       },
     };
   }
+  // City block (decoration): roof lifted by H, south face with lit windows and a vertical LED sign of abstract glyphs.
+  function building(wpx, hpx, H, r, led) {
+    const S = spr(wpx, hpx + H, 0, H), o = K.podO;
+    const P = (x, y, c) => sput(S, x, y + H, c); // y relative to the footprint top; roof spans -H .. hpx - H - 1
+    const top = -H, face0 = hpx - H;
+    for (let y = top; y < face0; y++) for (let x = 0; x < wpx; x++) P(x, y, K.bldgRoof);
+    for (let x = 0; x < wpx; x++) { P(x, top, led); P(x, face0 - 1, K.bldgEdge); }
+    for (let y = top; y < face0; y++) { P(0, y, K.bldgEdge); P(wpx - 1, y, K.bldgEdge); }
+    for (let k = 0, n = 1 + Math.floor(r() * 3); k < n; k++) { // rooftop plant
+      const ux = 2 + Math.floor(r() * Math.max(1, wpx - 8)), uy = top + 2 + Math.floor(r() * Math.max(1, face0 - top - 6));
+      for (let y = 0; y < 3; y++) for (let x = 0; x < 4; x++) P(ux + x, uy + y, y === 2 ? K.bldgUnitD : K.bldgUnit);
+    }
+    const lit = [led, led, K.white];
+    for (let y = face0; y < hpx; y++) for (let x = 0; x < wpx; x++) {
+      const win = x % 2 === 1 && (y - face0) % 3 === 1;
+      P(x, y, win ? (r() < 0.45 ? lit[Math.floor(r() * lit.length)] : K.bldgDark) : K.bldgFace);
+    }
+    if (wpx >= 20 && H >= 12) { // vertical LED sign: glyph blocks meant as texture, not reading
+      const sx = 3 + Math.floor(r() * (wpx - 10));
+      for (let y = face0 + 1; y < hpx - 1; y++) for (let x = sx; x < sx + 5; x++) P(x, y, led);
+      for (let gy = face0 + 2; gy + 3 < hpx - 1; gy += 5) for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) if (r() < 0.55) P(sx + 1 + x, gy + y, K.bldgDark);
+    }
+    for (let y = top; y < hpx; y++) { P(0, y, y < face0 ? K.bldgEdge : o); P(wpx - 1, y, y < face0 ? K.bldgEdge : o); }
+    for (let x = 0; x < wpx; x++) P(x, hpx - 1, o);
+    return S;
+  }
+  function jersey(B, ax, ay, bx, by) { // low barrier segment along a line (art px): lit top, dark face, LED dots
+    line(ax, ay, bx, by, (x, y, i) => { B.put(x, y - 1, K.jerseyTop); B.put(x, y, i % 3 === 0 ? K.jerseyLed : K.jersey); B.put(x, y + 1, K.podO); });
+  }
   // Static shadow: the footprint swept down-left by its height (hard edge, multiply).
   function rectShadow(B, st, h, P) {
     const k = P['proto.art.shadowScale'], ox = SUN.x * h * k / U, oy = SUN.y * h * k / U;
@@ -405,8 +440,14 @@
   function ground(level, P, seed) {
     const B = new Buf(AW, AH), r = rng(seed || 7);
     B.fill(K.grass);
-    for (let i = 0; i < 2000; i++) { const x = Math.floor(r() * AW), y = Math.floor(r() * AH); B.put(x, y, K.grass2); B.put(x + 1, y - 1, K.grass2); }
-    for (let i = 0; i < 650; i++) B.put(Math.floor(r() * AW), Math.floor(r() * AH), K.grass3);
+    const city = PAL.scenery === 'city';
+    if (city) { // deck plates with seams, grates and drains
+      for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) if (x % 16 === 0 || y % 16 === 0) B.put(x, y, K.grass2);
+      for (let i = 0; i < 90; i++) { const x = Math.floor(r() * 25) * 16 + 4, y = Math.floor(r() * 19) * 16 + 4, w = 3 + Math.floor(r() * 6); for (let k = 0; k < w; k += 2) { B.put(x + k, y, K.grass3); B.put(x + k, y + 1, K.grass3); } }
+    } else {
+      for (let i = 0; i < 2000; i++) { const x = Math.floor(r() * AW), y = Math.floor(r() * AH); B.put(x, y, K.grass2); B.put(x + 1, y - 1, K.grass2); }
+      for (let i = 0; i < 650; i++) B.put(Math.floor(r() * AW), Math.floor(r() * AH), K.grass3);
+    }
     const cb = Math.round(34 / U); // canal along the top edge
     B.rect(0, 0, AW - 1, cb, K.water);
     for (const y of [3, 7, 11, 15]) for (let x = Math.floor(r() * 8); x < AW; x += 31) for (let i = 0; i < 8; i++) B.put(x + i, y + (i > 3 ? 1 : 0), K.water2);
@@ -443,8 +484,32 @@
       if (near[y * AW + x] < outer + 12) continue;
       const c = r() < 0.6 ? K.flower : K.flower2; B.put(x, y, c); B.put(x + 1, y + 1, c);
     }
+    B.props = [];
+    if (city) {
+      // jersey barriers just outside the pavement, with gaps
+      for (let s = 30; s < geo.length; s += 34) for (const side of [-1, 1]) {
+        const qa = geo.at(s), qb = geo.at(s + 20); if (!qa || !qb) continue;
+        const a = [qa.x + qa.nx * side * (outer + 8), qa.y + qa.ny * side * (outer + 8)], b = [qb.x + qb.nx * side * (outer + 8), qb.y + qb.ny * side * (outer + 8)];
+        if ([a, b].some(([wx, wy]) => wy < 46 || roadD(wx, wy) < outer + 4 || !clearOf(wx, wy, 10))) continue;
+        jersey(B, a[0] / U, a[1] / U, b[0] / U, b[1] / U);
+      }
+      // city blocks on the decks, clear of the road band, spawns, pods and cones
+      const blocks = [], leds = KX('bldgLed');
+      for (let t = 0; t < 600 && blocks.length < 10; t++) {
+        const w = 56 + Math.floor(r() * 70), h = 40 + Math.floor(r() * 40), wx = -20 + r() * (AW * U + 20 - w), wy = 60 + r() * (AH * U - 40 - h);
+        const pts = [[wx, wy], [wx + w, wy], [wx, wy + h], [wx + w, wy + h], [wx + w / 2, wy + h / 2]];
+        if (pts.some(([px, py]) => roadD(px, py) < outer + 30 || !clearOf(px, py, 40))) continue;
+        if (blocks.some((q) => wx < q.wx + q.w + 16 && wx + w + 16 > q.wx && wy < q.wy + q.h + 16 && wy + h + 16 > q.wy)) continue;
+        blocks.push({ wx, wy, w, h });
+      }
+      blocks.forEach((q, i) => {
+        const x = Math.round(q.wx / U), y = Math.round(q.wy / U), w = Math.round(q.w / U), h = Math.round(q.h / U), H = 10 + Math.floor(r() * 13), led = leds[i % leds.length];
+        for (let k = 0; k < 4; k++) for (let xx = x; xx < x + w; xx++) B.mix(xx, y + h + k, led, [0.28, 0.18, 0.1, 0.05][k]); // neon spill on the deck
+        B.props.push({ x, y, w, h, spr: building(w, h, H, r, led) });
+      });
+    }
     // hedges just outside the pavement, in runs of three, kept clear of pods, spawns and cones
-    for (let s = 40; s < geo.length; s += 150) for (const side of [-1, 1]) {
+    if (!city) for (let s = 40; s < geo.length; s += 150) for (const side of [-1, 1]) {
       if (r() < 0.25) continue;
       for (let k = 0; k < 3; k++) {
         const q = geo.at(s + k * 22); if (!q) continue;
@@ -455,7 +520,7 @@
     }
     // trees on open lawn
     const trees = [];
-    for (let t = 0; t < 400 && trees.length < 12; t++) {
+    for (let t = 0; t < (city ? 0 : 400) && trees.length < 12; t++) {
       const wx = 30 + r() * (AW * U - 60), wy = 70 + r() * (AH * U - 100);
       if (roadD(wx, wy) < outer + 34 || roadD(wx, wy + 24) < outer + 20 || !clearOf(wx, wy, 34) || trees.some((q) => Math.hypot(q[0] - wx, q[1] - wy) < 90)) continue;
       trees.push([wx, wy]);
