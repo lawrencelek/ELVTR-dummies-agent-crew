@@ -42,6 +42,17 @@ Campaign, difficulty and quotas match P2.2.
 - **Dummy:** 13 × 19, four facings, six wear tints, dents and a cracked head. The nose vector gives the exact facing.
 - **Ground:** road, kerbs, dashes and paving from each level's centre line. Canal, lawns, flowers, hedges, trees. Hard shadows down-left (`proto.art.shadowScale`).
 
+## Palettes
+
+| Switch | Field | Frame | Cues |
+|---|---|---|---|
+| Default | Edit 37 eco-city: lawns, canal, white pods | FARSIGHT light glass | Dark on light |
+| `?palette=night` | Chongqing night: dark lawns, lime-lit trees, LED-striped towers, river reflections, light strings | Dark glass, cyan LED edges | Light on dark. Blue LED model tags. Red STOP line with a pink halo |
+
+- **Exclusive hues hold in both.** Yellow is the dummy alone. Red is the warning alone.
+- **Night contrast (on road):** `cue.primary` 14.9:1 · `cue.secondary` 6.2:1 · `cue.warning` 4.5:1 (halo 9.2:1) · `dummy.body` 9.8:1.
+- **Option, not decided.** Decision 88 still names the eco-city field.
+
 ## Type at registry size (GDD §4.2.3)
 
 | Class | Parameter | Cap height | P3 use |

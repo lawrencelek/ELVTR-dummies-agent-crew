@@ -7,25 +7,50 @@
   const AW = 400, AH = 300, U = 2, TAU = Math.PI * 2;
   const SUN = { x: -Math.SQRT1_2, y: Math.SQRT1_2 }; // light from 1:30, shadows fall to 7:30
 
-  // ---------- palette (Edit 37 §4.1.4 roles; placeholders registered as data)
-  const PAL = {
+  // ---------- palettes (Edit 37 §4.1.4 roles; placeholders registered as data). One is chosen at load.
+  const DAY = {
     grass: '#8ED45A', grass2: '#6DBE48', grass3: '#B6E87E', road: '#B9C6CF', road2: '#A9B7C1',
-    pave: '#F2EEE2', pave2: '#DCD5C2', kerb: '#FFFFFF', kerb2: '#9AA8B1',
+    pave: '#F2EEE2', pave2: '#DCD5C2', kerb: '#FFFFFF', kerb2: '#9AA8B1', lane: '#FFFFFF', bubble: '#FFFFFF',
     water: '#4FC3E8', water2: '#8FE0F5', water3: '#2A9CC8', flower: '#FFFFFF', flower2: '#F7A8C8',
     foliage: '#5DBB46', foliageL: '#A6E06A', foliageD: '#3E9A3A', foliageO: '#1F5A2E', trunk: '#8A6A44', trunkD: '#5E4630',
     fleetTop: '#F4F8FA', fleetRoof: '#FFFFFF', fleetSide: '#C3D0D8', fleetSide2: '#A9B7C1', fleetLine: '#9AA8B1', fleetO: '#2E3A43',
     glass: '#1A7FA7', glint: '#8FE0F5', head: '#FFF1C9', tail: '#8A3A30', amber: '#F2A33A',
-    podO: '#4A6F86', pod2: '#DCE8EE', pod3: '#B9CCD6', podCrown: '#4FC3E8', podHi: '#BDEBFA',
+    podBody: '#FFFFFF', podO: '#4A6F86', pod2: '#DCE8EE', pod3: '#B9CCD6', podCrown: '#4FC3E8', podHi: '#BDEBFA',
     rail: '#E2E8EC', railSide: '#B8C4CB', railO: '#5E6F7B',
     dummy: '#F5C542', dummyD: '#C9961C', dummyL: '#FFE9A0', joint: '#1A1D1F', worn: '#9C9070',
     cone: '#F28C28', coneO: '#7A3B12', coneW: '#FFFFFF',
     ink: '#101417', label: '#4A5A66', warn: '#E4442E', white: '#FFFFFF', fleet: '#7E8C96', structure: '#B8C4CB',
-    dark: '#1A3A20',
+    // cue roles (reserved treatment, 4.2.2)
+    cueHalo: '#1A1D1F', nose: '#1A1D1F', tyre: '#101417', roofInk: '#101417', roofLabel: '#4A5A66',
+    tagFill: '#FFFFFF', tagInk: '#101417', tagBorder: '#1A1D1F', tagSpentFill: '#101417', tagSpentInk: '#FFFFFF',
+    popInk: '#101417', popOutline: '#FFFFFF', stampFill: '#FFFFFF', stampOutline: '#1A1D1F',
+    podStripes: null, reflect: null, edgeLight: null, flowers: 160,
   };
+  // Chongqing night: dark ground, LED towers, lime-uplit planting, river reflections. Cues turn light-on-dark.
+  // Yellow stays the dummy's alone; red stays the warning's alone (no red or yellow décor in the field).
+  const NIGHT = {
+    grass: '#0E1712', grass2: '#13211A', grass3: '#1C3024', road: '#1E222C', road2: '#272C38',
+    pave: '#262B36', pave2: '#313847', kerb: '#E6F4FF', kerb2: '#3A4252', lane: '#C9E9FF', bubble: '#7FF0FF',
+    water: '#08101E', water2: '#13234A', water3: '#0C1830', flower: '#5FE3FF', flower2: '#FF5FD2',
+    foliage: '#5ED13A', foliageL: '#B8F25E', foliageD: '#2E7D2C', foliageO: '#0A1A0C', trunk: '#3B2A1E', trunkD: '#22180F',
+    fleetTop: '#DDE6EE', fleetRoof: '#F4F8FB', fleetSide: '#8C9AA8', fleetSide2: '#5E6B78', fleetLine: '#6F7D8B', fleetO: '#05070B',
+    glass: '#0E3A4F', glint: '#7FF0FF', head: '#CFF6FF', tail: '#7A2424', amber: '#FF9A1F',
+    podBody: '#18213A', podO: '#05070B', pod2: '#121A2E', pod3: '#0E1424', podCrown: '#3FD0FF', podHi: '#B6F0FF',
+    rail: '#2B3446', railSide: '#1A2131', railO: '#3FD0FF',
+    cone: '#FF8A1F',
+    ink: '#F4F8FA', label: '#7FA8BC', warn: '#FF3D3D', fleet: '#5E6B78', structure: '#3A4252',
+    cueHalo: '#FFB0B0', nose: '#F4F8FA', tyre: '#05070B',
+    tagFill: '#1840C8', tagInk: '#FFFFFF', tagBorder: '#6FE4FF', tagSpentFill: '#F4F8FA', tagSpentInk: '#1840C8',
+    popInk: '#FFFFFF', popOutline: '#1840C8', stampFill: '#0B0E17', stampOutline: '#FFB0B0',
+    podStripes: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#E6F4FF'], reflect: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], edgeLight: '#E6F4FF', flowers: 40,
+  };
+  const NAME = root.PIX_PALETTE_NAME === 'night' ? 'night' : 'day';
+  const PAL = Object.assign({}, DAY, NAME === 'night' ? NIGHT : {});
   function rgb(hex) { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
   function c32(hex) { const [r, g, b] = rgb(hex); return (0xFF000000 | (b << 16) | (g << 8) | r) >>> 0; }
   function mixHex(a, b, k) { const p = rgb(a), q = rgb(b); return '#' + p.map((v, i) => Math.round(v + (q[i] - v) * k).toString(16).padStart(2, '0')).join(''); }
-  const K = {}; for (const k in PAL) K[k] = c32(PAL[k]);
+  const K = {}; for (const k in PAL) if (typeof PAL[k] === 'string') K[k] = c32(PAL[k]);
+  const KX = (k) => (PAL[k] ? PAL[k].map(c32) : null); // palette lists (LED stripes, reflections)
 
   // ---------- buffer
   class Buf {
@@ -303,14 +328,14 @@
     for (let y = -2; y <= 2; y++) for (let x = -4; x <= 4; x++) P(x, y, Math.abs(y) === 2 || Math.abs(x) === 4 ? K.label : y === 0 ? K.podCrown : K.white);
     return S;
   })();
-  function pod(wpx, hpx, H) { // white glass tower on its footprint (anchor = footprint top-left)
-    const S = spr(wpx + 1, hpx + H + 4, 0, H + 3), o = K.podO;
+  function pod(wpx, hpx, H, idx) { // glass tower on its footprint (anchor = footprint top-left); LED stripes at night
+    const S = spr(wpx + 1, hpx + H + 4, 0, H + 3), o = K.podO, st = KX('podStripes'), led = st ? st[(idx || 0) % st.length] : 0;
     const P = (x, y, c) => sput(S, x, y + H + 3, c);
     for (let y = -H; y < hpx; y++) {
-      for (let x = 0; x < wpx; x++) { const f = x / (wpx - 1); P(x, y, f > 0.78 ? K.pod3 : f > 0.55 ? K.pod2 : K.white); }
+      for (let x = 0; x < wpx; x++) { const f = x / (wpx - 1); P(x, y, led && x % 2 === 1 && f < 0.8 ? led : f > 0.78 ? K.pod3 : f > 0.55 ? K.pod2 : K.podBody); }
       P(0, y, o); P(wpx - 1, y, o);
     }
-    for (let y = -H; y < -H + 4; y++) for (let x = 1; x < wpx - 1; x++) P(x, y, K.podCrown);
+    for (let y = -H; y < -H + 4; y++) for (let x = 1; x < wpx - 1; x++) P(x, y, led && y === -H + 3 ? led : K.podCrown);
     for (let x = 2; x < Math.min(6, wpx - 1); x++) P(x, -H + 1, K.podHi);
     for (let x = 1; x < wpx - 1; x++) { P(x, -H - 1, o); P(x, hpx - 1, o); P(x, -H + 4, K.pod3); }
     P(wpx >> 1, -H - 2, o); P(wpx >> 1, -H - 3, o);
@@ -385,8 +410,14 @@
     const cb = Math.round(34 / U); // canal along the top edge
     B.rect(0, 0, AW - 1, cb, K.water);
     for (const y of [3, 7, 11, 15]) for (let x = Math.floor(r() * 8); x < AW; x += 31) for (let i = 0; i < 8; i++) B.put(x + i, y + (i > 3 ? 1 : 0), K.water2);
-    B.rect(0, cb + 1, AW - 1, cb + 1, K.white); B.rect(0, cb + 2, AW - 1, cb + 2, K.kerb2);
-    for (const [bx, by, br] of [[40, 8, 2], [170, 5, 3], [300, 10, 2], [372, 4, 1]]) { for (const p of circle(br)) B.put(bx + p[0], by + p[1], K.white); B.put(bx - 1, by - 1, K.white); }
+    B.rect(0, cb + 1, AW - 1, cb + 1, K.kerb); B.rect(0, cb + 2, AW - 1, cb + 2, K.kerb2);
+    const refl = KX('reflect');
+    if (refl) { // night river: the towers' light falls on the water as broken vertical columns
+      for (let i = 0, x = 6; x < AW; x += 17 + Math.floor(r() * 12), i++) {
+        const c = refl[i % refl.length];
+        for (let y = 1; y < cb; y += 2) if (r() < 0.75) { const j = Math.round((r() - 0.5) * 3), w = 2 + Math.floor(r() * 4); for (let k = 0; k < w; k++) B.put(x + j + k, y, c); }
+      }
+    } else for (const [bx, by, br] of [[40, 8, 2], [170, 5, 3], [300, 10, 2], [372, 4, 1]]) { for (const p of circle(br)) B.put(bx + p[0], by + p[1], K.bubble); B.put(bx - 1, by - 1, K.bubble); }
     // road and pavement from the distance to the centre line
     const geo = pathGeom(level.center), lw = P['world.laneWidth'], outer = lw + P['proto.shoulderWidth'];
     const near = new Float32Array(AW * AH);
@@ -398,15 +429,16 @@
         let c = K.road;
         if ((Math.imul(x * 73856093 ^ y * 19349663, 2654435761) >>> 0) % 100 < 7) c = K.road2;
         if (n.d >= lw - U) c = K.kerb; else if (n.d >= lw - 2 * U) c = K.kerb2;
-        if (n.sd >= 0 && n.sd < U && ((n.s % 36) + 36) % 36 < 20) c = K.white; // lane dashes
+        if (n.sd >= 0 && n.sd < U && ((n.s % 36) + 36) % 36 < 20) c = K.lane; // lane dashes
         B.put(x, y, c);
-      } else B.put(x, y, n.d >= outer - U || ((n.s % 12) + 12) % 12 < U ? K.pave2 : K.pave);
+      } else if (K.edgeLight && n.d >= outer - U && ((n.s % 16) + 16) % 16 < U) B.put(x, y, K.edgeLight); // riverside light string
+      else B.put(x, y, n.d >= outer - U || ((n.s % 12) + 12) % 12 < U ? K.pave2 : K.pave);
     }
     const clearOf = (wx, wy, m) => level.statics.every((st) => wx < st.x - m || wx > st.x + st.w + m || wy < st.y - m || wy > st.y + st.h + m)
       && level.spawns.every((sp) => Math.hypot(sp.x - wx, sp.y - wy) > m + 20) && (level.coneHomes || []).every((cn) => Math.hypot(cn[0] - wx, cn[1] - wy) > m);
     const roadD = (wx, wy) => { const x = Math.floor(wx / U), y = Math.floor(wy / U); return x < 0 || y < 0 || x >= AW || y >= AH ? 999 : near[y * AW + x]; };
     // flowers, never yellow
-    for (let i = 0; i < 160; i++) {
+    for (let i = 0; i < PAL.flowers; i++) {
       const x = Math.floor(r() * AW), y = cb + 4 + Math.floor(r() * (AH - cb - 4));
       if (near[y * AW + x] < outer + 12) continue;
       const c = r() < 0.6 ? K.flower : K.flower2; B.put(x, y, c); B.put(x + 1, y + 1, c);
@@ -434,7 +466,7 @@
   }
 
   root.PIX = {
-    AW, AH, U, SUN, PAL, K, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
+    AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, blit, car, dummy, CONE, DRONE, pod, barrier, ground, pathGeom, rng, HEADINGS,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

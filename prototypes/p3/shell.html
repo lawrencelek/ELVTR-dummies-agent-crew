@@ -19,6 +19,9 @@ html, body { margin: 0; min-height: 100%; }
 body { background: linear-gradient(#EAF6FB, #C3E1EC) fixed; color: var(--ink); font-family: var(--font-ui); }
 .stage { height: calc(100vh - 56px); min-height: 360px; display: grid; place-items: center; overflow: hidden; }
 .stage:fullscreen { height: 100vh; background: #C3E1EC; }
+[data-palette="night"] body { background: linear-gradient(#05070D, #121B33) fixed; color: #F4F8FA; }
+[data-palette="night"] .keys, [data-palette="night"] #status { color: #9FB8C8; }
+[data-palette="night"] .stage:fullscreen { background: #05070D; }
 #game { display: block; image-rendering: pixelated; image-rendering: crisp-edges; outline: none; box-shadow: 0 10px 30px rgba(16, 40, 56, 0.18); }
 #game:focus-visible { box-shadow: 0 0 0 3px var(--aqua), 0 10px 30px rgba(16, 40, 56, 0.18); }
 .wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 0 16px; display: grid; gap: 12px; }
@@ -56,6 +59,7 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
 <div class="wrap">
   <div class="bar">
     <p class="keys"><kbd>WASD</kbd> move · <kbd>Space</kbd> lunge · <kbd>K</kbd> cone · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · gamepad works · <span id="status"></span></p>
+    <button id="btn-pal" type="button">Night palette</button>
     <button id="btn-full" type="button">Full screen</button>
     <button id="btn-tune" type="button">Tuning</button>
     <button id="btn-sound" type="button" aria-pressed="true">Sound on</button>
@@ -83,6 +87,13 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
   </div>
 </div>
 <script>
+// Palette: day (Edit 37 eco-city) or night (Chongqing). Chosen at load: ?palette=night
+window.PIX_PALETTE_NAME = new URLSearchParams(location.search).get('palette') === 'night' ? 'night' : 'day';
+document.documentElement.dataset.palette = window.PIX_PALETTE_NAME;
+document.getElementById('btn-pal').textContent = window.PIX_PALETTE_NAME === 'night' ? 'Day palette' : 'Night palette';
+document.getElementById('btn-pal').addEventListener('click', () => {
+  const u = new URL(location.href); u.searchParams.set('palette', window.PIX_PALETTE_NAME === 'night' ? 'day' : 'night'); location.href = u.toString();
+});
 document.getElementById('btn-full').addEventListener('click', () => {
   const st = document.getElementById('stage');
   try { (document.fullscreenElement ? document.exitFullscreen() : st.requestFullscreen()).catch(() => {}); } catch (e) { /* fullscreen blocked */ }

@@ -488,6 +488,18 @@
   const fNum = '700 ' + TY.lb + 'px ' + F_MONO, fBig = '700 ' + TY.lb + 'px ' + F_UI;
   const fLab = '700 ' + TY.sec + 'px ' + F_UI, fTxt = '400 ' + TY.sec + 'px ' + F_UI, fKey = '700 ' + TY.sec + 'px ' + F_MONO;
 
+  // ---------- frame theme: FARSIGHT glass by day; dark glass and LED edges by night (same layout, same type)
+  const FT = PIX.NAME === 'night' ? {
+    bg: ['#05070D', '#0A0F1C', '#121B33'], glow: 'rgba(63,208,255,0.22)', glow2: 'rgba(155,107,255,0.18)', panelTop: 'rgba(20,30,56,0.94)', panelBot: 'rgba(8,12,24,0.94)',
+    edge: 'rgba(63,208,255,0.85)', gloss: 'rgba(255,255,255,0.12)', text: '#F4F8FA', dim: '#9FB8C8', accent: '#3FD0FF', brand: '#3FD0FF', bezel: '#0B0F1A',
+    keyTop: '#1C2A4A', keyBot: '#0E1528', veil: 'rgba(5,8,16,0.62)', track: '#1E2638', sel: '#1840C8', selText: '#FFFFFF', item: 'rgba(255,255,255,0.06)',
+    itemEdge: 'rgba(127,168,188,0.5)', off: '#5E7080', banner: 'rgba(10,16,32,0.94)', toast: 'rgba(24,64,200,0.92)', credit: 'rgba(245,197,66,0.16)', neon: true,
+  } : {
+    bg: ['#EAF6FB', '#D6ECF4', '#C3E1EC'], glow: 'rgba(255,255,255,0.8)', glow2: null, panelTop: 'rgba(255,255,255,0.97)', panelBot: 'rgba(236,247,252,0.95)',
+    edge: 'rgba(79,195,232,0.8)', gloss: 'rgba(255,255,255,0.9)', text: C.primary, dim: C.ink2, accent: C.aquaDeep, brand: C.aquaDeep, bezel: '#F7FBFD',
+    keyTop: '#FFFFFF', keyBot: '#DCEFF6', veil: 'rgba(232,244,249,0.62)', track: '#E2EAEE', sel: C.aqua, selText: '#06202B', item: 'rgba(255,255,255,0.8)',
+    itemEdge: '#C9D5DB', off: '#8C9AA4', banner: 'rgba(255,255,255,0.94)', toast: 'rgba(16,20,23,0.86)', credit: 'rgba(245,197,66,0.3)', neon: false,
+  };
   // ---------- drawing helpers (frame layer, reference units)
   function rr(x, y, w, h, r) {
     ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
@@ -497,24 +509,26 @@
     ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'left'; ctx.textBaseline = base || 'alphabetic'; ctx.fillText(s, x, y);
   }
   function rgba(hex, a) { const h = (i) => parseInt(hex.slice(i, i + 2), 16); return 'rgba(' + h(1) + ',' + h(3) + ',' + h(5) + ',' + Math.max(0, a) + ')'; }
-  function roleC(r) { return r === 'glass' ? '#FFFFFF' : r === 'aquaDeep' ? C.aquaDeep : C[r] || null; }
+  function roleC(r) { return r === 'glass' ? '#FFFFFF' : r === 'aquaDeep' ? FT.accent : C[r] || null; }
   function panel(x, y, w, h, opts) { // FARSIGHT glass (frame layer only)
     const R = 12;
     ctx.save();
     ctx.shadowColor = 'rgba(16,40,56,0.16)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 5;
     rr(x, y, w, h, R);
     const g = ctx.createLinearGradient(0, y, 0, y + h);
-    g.addColorStop(0, 'rgba(255,255,255,0.97)'); g.addColorStop(1, (opts && opts.tint) || 'rgba(236,247,252,0.95)');
+    g.addColorStop(0, FT.panelTop); g.addColorStop(1, (opts && opts.tint && !FT.neon && opts.tint) || FT.panelBot);
     ctx.fillStyle = g; ctx.fill(); ctx.restore();
-    rr(x + 0.75, y + 0.75, w - 1.5, h - 1.5, R); ctx.strokeStyle = 'rgba(79,195,232,0.8)'; ctx.lineWidth = 1.5; ctx.stroke();
+    if (FT.neon) { ctx.save(); ctx.shadowColor = FT.edge; ctx.shadowBlur = 10; }
+    rr(x + 0.75, y + 0.75, w - 1.5, h - 1.5, R); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
+    if (FT.neon) ctx.restore();
     ctx.save(); rr(x + 2, y + 2, w - 4, Math.min(22, h / 3), R - 2); ctx.clip();
-    const hg = ctx.createLinearGradient(0, y, 0, y + 22); hg.addColorStop(0, 'rgba(255,255,255,0.9)'); hg.addColorStop(1, 'rgba(255,255,255,0)');
+    const hg = ctx.createLinearGradient(0, y, 0, y + 22); hg.addColorStop(0, FT.gloss); hg.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = hg; ctx.fillRect(x, y, w, 24); ctx.restore();
   }
   function glassKey(x, y, w, h) {
     rr(x, y, w, h, 8);
-    const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, '#FFFFFF'); g.addColorStop(1, '#DCEFF6');
-    ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = 'rgba(79,195,232,0.9)'; ctx.lineWidth = 1.5; ctx.stroke();
+    const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, FT.keyTop); g.addColorStop(1, FT.keyBot);
+    ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
   }
   function fmtT(t) { const m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + String(s).padStart(2, '0'); }
   function num(v) { return Math.round(v).toLocaleString('en-GB'); }
@@ -535,8 +549,8 @@
     const gap = 10, sep = 30, total = kw.reduce((a, b) => a + b, 0) + aw.reduce((a, b) => a + b, 0) + items.length * gap + (items.length - 1) * sep;
     let x = cx - total / 2;
     items.forEach((it, i) => {
-      glassKey(x, y, kw[i], 32); txt(it[0], x + kw[i] / 2, y + 24, fKey, C.primary, 'center'); x += kw[i] + gap;
-      txt(it[1], x, y + 24, fLab, C.ink2); x += aw[i] + sep;
+      glassKey(x, y, kw[i], 32); txt(it[0], x + kw[i] / 2, y + 24, fKey, FT.text, 'center'); x += kw[i] + gap;
+      txt(it[1], x, y + 24, fLab, FT.dim); x += aw[i] + sep;
     });
   }
 
@@ -556,9 +570,9 @@
       const P = s.P, L = s.level;
       artCache.set(id, {
         ground: PIX.ground(L, P, 7 + LEVEL_LIST.indexOf(id) * 31),
-        statics: L.statics.map((st) => ({ st, spr: st.kind === 'barrier'
+        statics: L.statics.map((st, i) => ({ st, spr: st.kind === 'barrier'
           ? PIX.barrier(Math.round(st.w / U), Math.round(st.h / U), EXT(P['proto.art.barrierHeight']))
-          : PIX.pod(Math.round(st.w / U), Math.round(st.h / U), EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'])) })),
+          : PIX.pod(Math.round(st.w / U), Math.round(st.h / U), EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i) })),
       });
     }
     return artCache.get(id);
@@ -655,7 +669,7 @@
     if (!provisional && c.man && c.man.standoff) { // STOP line: warning ink with a dark outline (Edit 37 §4.1.4)
       const q = pathAt(c.path, c.man.sStop + c.L / 2), hw = c.W / 2 + 10;
       const pa = PIX.collectLine((q.x + q.nx * (c.d - hw)) / U, (q.y + q.ny * (c.d - hw)) / U, (q.x + q.nx * (c.d + hw)) / U, (q.y + q.ny * (c.d + hw)) / U);
-      PIX.stamp(FB, pa.filter(([x, y]) => clip(x, y)), K.warn, K.joint);
+      PIX.stamp(FB, pa.filter(([x, y]) => clip(x, y)), K.warn, K.cueHalo);
     }
   }
   // P2.2 stop bracket: where the nose stops if the dummy steps in now and the car sees it.
@@ -694,7 +708,7 @@
     if (!bm || !fx.marks.length) return;
     const fade = jv(bm.fadeSeconds) || 1, al = jv(bm.alpha);
     fx.marks = fx.marks.filter((m) => app.realT - m.t < fade);
-    for (const m of fx.marks) PIX.line(m.a[0] / U, m.a[1] / U, m.b[0] / U, m.b[1] / U, (x, y) => FB.mix(x, y, K.ink, al * (1 - (app.realT - m.t) / fade)));
+    for (const m of fx.marks) PIX.line(m.a[0] / U, m.a[1] / U, m.b[0] / U, m.b[1] / U, (x, y) => FB.mix(x, y, K.tyre, al * (1 - (app.realT - m.t) / fade)));
   }
   function dynShadows(s) { // hard shadows, down-left (multiply)
     const P = s.P, k = P['proto.art.shadowScale'], b = s.body, sh = (x, y) => FB.shade(x, y, 0.72);
@@ -778,7 +792,7 @@
     const len = 1.5 * 2 * s.P['body.radius'] / U, tx = cx + ca * len, ty = cy + sa * len;
     add(cx + ca * 11, cy + sa * 11, tx, ty);
     for (const sg of [-1, 1]) add(tx, ty, tx - ca * 5 - sa * sg * 4, ty - sa * 5 + ca * sg * 4);
-    for (const [x, y] of pts) FB.put(x, y, K.joint);
+    for (const [x, y] of pts) FB.put(x, y, K.nose);
   }
   function drawCarSprite(s, c) {
     const S = carSpr(s, c, c._brk), cx = c.x / U, cy = c.y / U;
@@ -795,22 +809,22 @@
   function pip(Bf, cue, cx, cy, loc, f, side) {
     if (cue === 'committed' || cue === 'expiring') {
       PIX.disc(cx, cy, 3, (x, y) => Bf.put(x, y, K.white));
-      for (const [x, y, a] of PIX.circle(3)) if ((a + Math.PI / 2) % TAU <= f * TAU + 1e-6) Bf.put(cx + x, cy + y, K.ink);
+      for (const [x, y, a] of PIX.circle(3)) if ((a + Math.PI / 2) % TAU <= f * TAU + 1e-6) Bf.put(cx + x, cy + y, K.roofInk);
     } else if (cue === 'intention') {
       const pts = side ? [[-6, -side * 2], [0, side * 6], [6, -side * 2]] : [[-3, -6], [4, 0], [-3, 6]];
-      PIX.polyline(pts.map(([u, v]) => loc(u, v)), (x, y) => Bf.put(x, y, K.label));
+      PIX.polyline(pts.map(([u, v]) => loc(u, v)), (x, y) => Bf.put(x, y, K.roofLabel));
     } else if (cue === 'caution') {
-      PIX.polyline([[cx, cy - 4], [cx + 4, cy + 3], [cx - 4, cy + 3], [cx, cy - 4]], (x, y) => Bf.put(x, y, K.label));
-      Bf.put(cx, cy - 1, K.label); Bf.put(cx, cy, K.label); Bf.put(cx, cy + 2, K.label);
+      PIX.polyline([[cx, cy - 4], [cx + 4, cy + 3], [cx - 4, cy + 3], [cx, cy - 4]], (x, y) => Bf.put(x, y, K.roofLabel));
+      Bf.put(cx, cy - 1, K.roofLabel); Bf.put(cx, cy, K.roofLabel); Bf.put(cx, cy + 2, K.roofLabel);
     } else if (cue === 'interrupted') {
-      PIX.stamp(Bf, PIX.circle(5).filter((p) => Math.floor(p[2] / (TAU / 12)) % 2 === 0).map((p) => [cx + p[0], cy + p[1]]), K.warn, K.joint);
-      Bf.put(cx, cy - 2, K.joint); Bf.put(cx, cy - 1, K.joint); Bf.put(cx, cy, K.joint); Bf.put(cx, cy + 2, K.joint);
+      PIX.stamp(Bf, PIX.circle(5).filter((p) => Math.floor(p[2] / (TAU / 12)) % 2 === 0).map((p) => [cx + p[0], cy + p[1]]), K.warn, K.roofInk);
+      Bf.put(cx, cy - 2, K.roofInk); Bf.put(cx, cy - 1, K.roofInk); Bf.put(cx, cy, K.roofInk); Bf.put(cx, cy + 2, K.roofInk);
     }
   }
   function drawCarMarks(s, c) {
     const P = s.P, hgt = EXT(P['vehicles.' + c.cls + '.height']), ca = Math.cos(c.h), sa = Math.sin(c.h);
     const loc = (u, v) => [c.x / U + (u * ca - v * sa) / U, c.y / U - hgt + (u * sa + v * ca) / U];
-    if (c.spent) { const a = loc(-c.L / 2 + 6, c.W / 2 - 3), e = loc(c.L / 2 - 6, -c.W / 2 + 3); PIX.line(a[0], a[1], e[0], e[1], (x, y) => { FB.put(x, y, K.ink); FB.put(x, y + 1, K.ink); }); }
+    if (c.spent) { const a = loc(-c.L / 2 + 6, c.W / 2 - 3), e = loc(c.L / 2 - 6, -c.W / 2 + 3); PIX.line(a[0], a[1], e[0], e[1], (x, y) => { FB.put(x, y, K.roofInk); FB.put(x, y + 1, K.roofInk); }); }
     const cue = s.carCue(c);
     let f = 1, side = 0;
     if (cue === 'expiring') f = Math.max(0, (c.man.until - s.t) / (P['movement.lungeDuration'] + P['movement.lungeRecovery']));
@@ -822,16 +836,16 @@
     const id = shortId(c.model), w = PIX.textWidth(id) + 6, h = PIX.FONT_H + 6;
     const top = c._top != null ? c._top : Math.round(c.y / U) - 12;
     const x0 = clamp(Math.round(c.x / U) - (w >> 1), 1, AW - w - 1), y0 = clamp(top - 3 - h, 1, AH - h - 1);
-    FB.rect(x0 + 1, y0 + 1, x0 + w - 2, y0 + h - 2, c.spent ? K.ink : K.white);
-    for (let x = x0 + 1; x < x0 + w - 1; x++) { FB.put(x, y0, K.joint); FB.put(x, y0 + h - 1, K.joint); }
-    for (let y = y0 + 1; y < y0 + h - 1; y++) { FB.put(x0, y, K.joint); FB.put(x0 + w - 1, y, K.joint); }
-    PIX.text(FB, id, x0 + 3, y0 + 3, c.spent ? K.white : K.ink);
+    FB.rect(x0 + 1, y0 + 1, x0 + w - 2, y0 + h - 2, c.spent ? K.tagSpentFill : K.tagFill);
+    for (let x = x0 + 1; x < x0 + w - 1; x++) { FB.put(x, y0, K.tagBorder); FB.put(x, y0 + h - 1, K.tagBorder); }
+    for (let y = y0 + 1; y < y0 + h - 1; y++) { FB.put(x0, y, K.tagBorder); FB.put(x0 + w - 1, y, K.tagBorder); }
+    PIX.text(FB, id, x0 + 3, y0 + 3, c.spent ? K.tagSpentInk : K.tagInk);
     let rx = x0 + w + 2;
     if (s.P['proto.learningEnabled']) for (let j = 0; j < seniorityOf(c); j++) { FB.rect(rx, y0 + 7, rx + 3, y0 + 10, K.ink); rx += 6; }
     if (c.honking) {
       if (Math.floor(app.realT * 5) % 2 === 0) {
-        FB.rect(rx, y0, rx + 9, y0 + h - 1, K.joint); FB.rect(rx + 1, y0 + 1, rx + 8, y0 + h - 2, K.white);
-        PIX.text(FB, '!', rx + 4, y0 + 3, K.ink);
+        FB.rect(rx, y0, rx + 9, y0 + h - 1, K.tagBorder); FB.rect(rx + 1, y0 + 1, rx + 8, y0 + h - 2, K.tagFill);
+        PIX.text(FB, '!', rx + 4, y0 + 3, K.tagInk);
       }
       const last = fx.horn.get(c.id) || 0; if (c.honkAt === 'body' && app.realT - last > 1.4) { horn(); fx.horn.set(c.id, app.realT); }
     }
@@ -875,7 +889,7 @@
           const rise = (pu ? jv(pu.v.rise, pu.k) : 30 * popDur) * Math.min(1, age / popDur);
           const bd = s.body, axp = bd.alive ? bd.x / U : ex, ayp = bd.alive ? bd.y / U - 16 : ey; // beside the dummy's head, away from the car and its tag
           const x = clamp(axp + (cf.nx || 0) * (w / 2 + 8) - w / 2, 2, AW - w - 2), y = clamp(ayp - rise / U - PIX.FONT_H * sc, 2, AH - PIX.FONT_H * sc - 2);
-          if (age < popDur * 0.8 || Math.floor(app.realT * 20) % 2) PIX.text(FB, label, x, y, K.ink, K.white, sc);
+          if (age < popDur * 0.8 || Math.floor(app.realT * 20) % 2) PIX.text(FB, label, x, y, K.popInk, K.popOutline, sc);
         }
       } else if (popups) continue;
       else if (e.type === 'touch' && age < 0.5) {
@@ -893,18 +907,20 @@
     const now = app.realT;
     fx.rings = fx.rings.filter((r) => now - r.t0 < r.dur);
     for (const r of fx.rings) {
-      const u = (now - r.t0) / r.dur, rad = r.r * (0.25 + 0.75 * (1 - Math.pow(1 - u, 3))) / U, col = PIX.c32(C[r.role] || C.primary);
+      const u = (now - r.t0) / r.dur, rad = r.r * (0.25 + 0.75 * (1 - Math.pow(1 - u, 3))) / U, col = roleK(r.role, K.ink);
       for (const p of PIX.circle(rad)) if (u < 0.5 || Math.floor(p[2] * 8) % 2 === 0) FB.put(Math.round(r.x / U) + p[0], Math.round(r.y / U) + p[1], col);
     }
     fx.streaks = fx.streaks.filter((st) => now - st.t0 < st.dur);
     for (const st of fx.streaks) {
-      const u = (now - st.t0) / st.dur, cx = Math.cos(st.dir), cy = Math.sin(st.dir), px = -cy, py = cx, col = PIX.c32(C[st.role] || C.secondary);
+      const u = (now - st.t0) / st.dur, cx = Math.cos(st.dir), cy = Math.sin(st.dir), px = -cy, py = cx, col = roleK(st.role, K.label);
       for (const ln of st.lines) {
         const s0 = 10 + ln.lag + u * 26, x0 = st.x + px * ln.off + cx * s0, y0 = st.y + py * ln.off + cy * s0, L = ln.len * (1 - u * 0.5);
         PIX.line(x0 / U, y0 / U, (x0 + cx * L) / U, (y0 + cy * L) / U, (x, y) => FB.put(x, y, col));
       }
     }
   }
+  const ROLE_K = { primary: 'ink', secondary: 'label', warning: 'warn', dummy: 'dummy', joints: 'joint', structure: 'structure', fleet: 'fleet', aqua: 'podCrown' };
+  function roleK(r, fb) { return (r && K[ROLE_K[r] || r]) || fb; }
   function lowHealth(key, fallback) { const st = CJ && CJ.states && CJ.states.lowHealth; return st && st[key] ? jv(st[key]) : fallback; }
   function drawParts(s) {
     const b = s.body, P = s.P, now = app.realT;
@@ -916,7 +932,7 @@
     const dt = Math.min(0.05, now - (fx.lastPartT || now)); fx.lastPartT = now;
     fx.parts = fx.parts.filter((p) => now - p.t0 < p.life);
     for (const p of fx.parts) {
-      const a = (now - p.t0) / p.life, col = p.role && C[p.role] ? PIX.c32(C[p.role]) : null;
+      const a = (now - p.t0) / p.life, col = p.role ? roleK(p.role, null) : null;
       p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 0.93; p.vy *= 0.93;
       const x = Math.round(p.x / U), y = Math.round(p.y / U), r = Math.max(0, Math.round(p.size * (1 + a * 1.5) / U / 2));
       if (p.type === 'dust') mixRect(x - r, y - r, x + r, y + r, col || K.fleet, 0.4 * (1 - a));
@@ -933,8 +949,8 @@
     const sc = sa < 0.15 ? 2 : 1, label = 'WRITTEN OFF', w = PIX.textWidth(label, sc) + 10 * sc, h = (PIX.FONT_H + 10) * sc;
     const wr = s.effects.find((e) => e.type === 'wreck'), cx = wr ? wr.x / U : AW / 2, cy = wr ? wr.y / U - 32 : AH / 2;
     const x0 = Math.round(clamp(cx - w / 2, 3, AW - w - 3)), y0 = Math.round(clamp(cy - h / 2, 3, AH - h - 3));
-    FB.rect(x0 - 1, y0 - 1, x0 + w, y0 + h, K.joint); FB.rect(x0, y0, x0 + w - 1, y0 + h - 1, K.warn); FB.rect(x0 + 2 * sc, y0 + 2 * sc, x0 + w - 1 - 2 * sc, y0 + h - 1 - 2 * sc, K.white);
-    PIX.text(FB, label, x0 + 5 * sc, y0 + 5 * sc, K.warn, K.joint, sc);
+    FB.rect(x0 - 1, y0 - 1, x0 + w, y0 + h, K.stampOutline); FB.rect(x0, y0, x0 + w - 1, y0 + h - 1, K.warn); FB.rect(x0 + 2 * sc, y0 + 2 * sc, x0 + w - 1 - 2 * sc, y0 + h - 1 - 2 * sc, K.stampFill);
+    PIX.text(FB, label, x0 + 5 * sc, y0 + 5 * sc, K.warn, K.stampOutline, sc);
   }
   function drawLive(s, la) {
     const P = s.P, b = s.body;
@@ -988,14 +1004,14 @@
       const intro = CI && CI.copy && CI.copy.intro, msg = intro ? fillIn(intro[0], iv) : 'Road ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. Write-offs required: ' + iv.quota + '.';
       const lines = wrapLines(msg, FW - 88, fLab), h = 22 + lines.length * 30;
       ctx.globalAlpha = Math.min(1, (4 - s.t) / 0.6);
-      rr(FX + 20, FY + 16, FW - 40, h, 12); ctx.fillStyle = 'rgba(255,255,255,0.94)'; ctx.fill(); ctx.strokeStyle = C.aqua; ctx.lineWidth = 1.5; ctx.stroke();
-      lines.forEach((l, i) => txt(l, FX + FW / 2, FY + 16 + 38 + i * 30, fLab, C.primary, 'center'));
+      rr(FX + 20, FY + 16, FW - 40, h, 12); ctx.fillStyle = FT.banner; ctx.fill(); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
+      lines.forEach((l, i) => txt(l, FX + FW / 2, FY + 16 + 38 + i * 30, fLab, FT.text, 'center'));
       ctx.globalAlpha = 1;
     }
     if (app.toast && app.realT - app.toast.t < 1.6) {
       ctx.globalAlpha = Math.min(1, 3 * (1.6 - (app.realT - app.toast.t)));
       const lines = wrapLines(app.toast.msg, FW - 88, fLab), h = 22 + lines.length * 30;
-      rr(FX + 20, FY + FH - 16 - h, FW - 40, h, 12); ctx.fillStyle = 'rgba(16,20,23,0.86)'; ctx.fill();
+      rr(FX + 20, FY + FH - 16 - h, FW - 40, h, 12); ctx.fillStyle = FT.toast; ctx.fill();
       lines.forEach((l, i) => txt(l, FX + FW / 2, FY + FH - 16 - h + 38 + i * 30, fLab, '#FFFFFF', 'center'));
       ctx.globalAlpha = 1;
     }
@@ -1005,17 +1021,21 @@
   function roadLabel(id) { return 'ROAD ' + (LEVEL_LIST.indexOf(id) + 1) + ' · ' + LEVELS[id].name.replace(/^L\d+\s*/, '').toUpperCase(); }
   function drawFrame() {
     const g = ctx.createLinearGradient(0, 0, 0, VH);
-    g.addColorStop(0, '#EAF6FB'); g.addColorStop(0.5, '#D6ECF4'); g.addColorStop(1, '#C3E1EC');
+    g.addColorStop(0, FT.bg[0]); g.addColorStop(0.5, FT.bg[1]); g.addColorStop(1, FT.bg[2]);
     ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
-    const o = ctx.createRadialGradient(1140, 20, 10, 1140, 20, 300);
-    o.addColorStop(0, 'rgba(255,255,255,0.8)'); o.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
-    txt('FARSIGHT', 24, 44, '900 30px ' + F_BRAND, C.aquaDeep);
+    for (const [gx, gy, gr, gc] of [[1140, 20, 300, FT.glow], [120, 700, 320, FT.glow2]]) {
+      if (!gc) continue;
+      const o = ctx.createRadialGradient(gx, gy, 10, gx, gy, gr); o.addColorStop(0, gc); o.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
+    }
+    if (FT.neon) { ctx.save(); ctx.shadowColor = FT.brand; ctx.shadowBlur = 14; }
+    txt('FARSIGHT', 24, 44, '900 30px ' + F_BRAND, FT.brand);
+    if (FT.neon) ctx.restore();
     const s = app.sim, title = app.screen === 'title' ? 'SELECT A ROAD' : s ? roadLabel(s.level.id) : '';
-    txt(title, FX + FW / 2, 40, fLab, C.ink2, 'center');
+    txt(title, FX + FW / 2, 40, fLab, FT.dim, 'center');
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
-    rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = '#F7FBFD'; ctx.fill(); ctx.restore();
-    rr(FX - 6.5, FY - 6.5, FW + 13, FH + 13, 10); ctx.strokeStyle = 'rgba(79,195,232,0.9)'; ctx.lineWidth = 1.5; ctx.stroke();
+    rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
+    rr(FX - 6.5, FY - 6.5, FW + 13, FH + 13, 10); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
     if (s && app.screen === 'game' && !app.paused && s.phase === 'play') { // controls only while they apply
       const keys = [['WASD', 'MOVE'], ['SPACE', 'LUNGE']];
       if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']);
@@ -1025,36 +1045,36 @@
   function drawHUD(s) {
     const b = s.body, P = s.P, r = s.run, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
     panel(16, 76, 208, 126);
-    txt('BODY', 30, 110, fLab, C.ink2); txt(num(hp), 30, 152, fNum, C.primary);
-    rr(30, 166, 180, 22, 5); ctx.fillStyle = '#E2EAEE'; ctx.fill();
+    txt('BODY', 30, 110, fLab, FT.dim); txt(num(hp), 30, 152, fNum, FT.text);
+    rr(30, 166, 180, 22, 5); ctx.fillStyle = FT.track; ctx.fill();
     if (frac > 0) {
       const low = frac < 0.3 && Math.floor(app.realT * 4) % 2 === 0;
       rr(30, 166, Math.max(12, 180 * frac), 22, 5); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
     }
     panel(16, 218, 208, 94);
-    txt('CHARGE', 30, 252, fLab, C.ink2);
+    txt('CHARGE', 30, 252, fLab, FT.dim);
     const cap = P['battery.capacity'], pw = (180 - (cap - 1) * 10) / cap;
     for (let i = 0; i < cap; i++) {
       const x = 30 + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
-      rr(x, 268, pw, 28, 6); ctx.fillStyle = '#E2EAEE'; ctx.fill();
-      if (f > 0) { rr(x, 268, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? C.primary : C.secondary; ctx.fill(); }
+      rr(x, 268, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
+      if (f > 0) { rr(x, 268, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
     const left = s.schedule.length - (r.admitted - s.cars.length);
     [['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['CARS LEFT', String(Math.max(0, left))], ['POINTS', num(r.points)], ['CREDITS', String(r.credits)]].forEach(([k, v], i) => {
       const y = 76 + i * 110;
-      panel(1056, y, 208, 94); txt(k, 1070, y + 34, fLab, C.ink2); txt(v, 1070, y + 76, fNum, C.primary);
+      panel(1056, y, 208, 94); txt(k, 1070, y + 34, fLab, FT.dim); txt(v, 1070, y + 76, fNum, FT.text);
     });
   }
 
   // ---------- screens (frame layer). Facts at ui.typeLoadBearing, labels and lines at ui.typeSecondary.
-  function veil() { ctx.fillStyle = 'rgba(232,244,249,0.62)'; ctx.fillRect(FX, FY, FW, FH); }
+  function veil() { ctx.fillStyle = FT.veil; ctx.fillRect(FX, FY, FW, FH); }
   function menuList(items, sel, x, y, w, disabled, rowH) {
     rowH = rowH || 54;
     items.forEach((it, i) => {
       const yy = y + i * rowH, on = i === sel, off = disabled && disabled(i);
-      rr(x, yy, w, rowH - 10, 10); ctx.fillStyle = on ? C.aqua : 'rgba(255,255,255,0.8)'; ctx.fill();
-      ctx.strokeStyle = on ? C.aquaDeep : '#C9D5DB'; ctx.lineWidth = 1.5; ctx.stroke();
-      txt(it, x + 18, yy + (rowH - 10) / 2 + 8, fLab, off ? '#8C9AA4' : on ? '#06202B' : C.primary);
+      rr(x, yy, w, rowH - 10, 10); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
+      ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+      txt(it, x + 18, yy + (rowH - 10) / 2 + 8, fLab, off ? FT.off : on ? FT.selText : FT.text);
     });
   }
   function difficultyHealth(i) { const k = 'proto.health.' + DIFFICULTIES[i].key; return app.tune[k] != null ? app.tune[k] : PROTO[k]; }
@@ -1066,62 +1086,62 @@
     const x = FX + 30, y = FY + 22, w = FW - 60, h = FH - 44;
     panel(x, y, w, h);
     const TT = CTM && CTM.title, tv = { roads: LEVEL_LIST.length, q1: quotaOf(LEVEL_LIST[0]), q2: quotaOf(LEVEL_LIST[1]), q3: quotaOf(LEVEL_LIST[2]) };
-    txt('DUMMIES', x + 30, y + 76, '900 64px ' + F_BRAND, C.primary);
-    wrapText(TT && TT.lines ? fillIn(TT.lines[0], tv) : 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.', x + 32, y + 116, w - 64, 30, fTxt, C.ink2, 2);
+    txt('DUMMIES', x + 30, y + 76, '900 64px ' + F_BRAND, FT.text);
+    wrapText(TT && TT.lines ? fillIn(TT.lines[0], tv) : 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.', x + 32, y + 116, w - 64, 30, fTxt, FT.dim, 2);
     LEVEL_LIST.forEach((id, i) => {
       const yy = y + 182 + i * 66, on = i === app.level, q = quotaOf(id);
-      rr(x + 28, yy, w - 56, 56, 12); ctx.fillStyle = on ? C.aqua : 'rgba(255,255,255,0.8)'; ctx.fill();
-      ctx.strokeStyle = on ? C.aquaDeep : '#C9D5DB'; ctx.lineWidth = 1.5; ctx.stroke();
-      txt(LEVELS[id].name, x + 48, yy + 40, fBig, on ? '#06202B' : C.primary);
-      txt(q + ' WRITE-OFF' + (q === 1 ? '' : 'S'), x + w - 48, yy + 36, fLab, on ? '#06202B' : C.ink2, 'right');
+      rr(x + 28, yy, w - 56, 56, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
+      ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+      txt(LEVELS[id].name, x + 48, yy + 40, fBig, on ? FT.selText : FT.text);
+      txt(q + ' WRITE-OFF' + (q === 1 ? '' : 'S'), x + w - 48, yy + 36, fLab, on ? FT.selText : FT.dim, 'right');
     });
     const dname = DIFFICULTIES[app.difficulty].name.toUpperCase(), dt = '◀  ' + dname + ' · ' + difficultyHealth(app.difficulty) + ' HEALTH  ▶';
     ctx.font = fKey; const dw = ctx.measureText(dt).width + 36;
-    rr(x + w / 2 - dw / 2, y + 392, dw, 40, 20); ctx.fillStyle = app.difficulty === 1 ? 'rgba(255,255,255,0.85)' : 'rgba(245,197,66,0.35)'; ctx.fill();
-    ctx.strokeStyle = C.aquaDeep; ctx.lineWidth = 1.5; ctx.stroke();
-    txt(dt, x + w / 2, y + 420, fKey, C.primary, 'center');
+    rr(x + w / 2 - dw / 2, y + 392, dw, 40, 20); ctx.fillStyle = app.difficulty === 1 ? FT.item : 'rgba(245,197,66,0.35)'; ctx.fill();
+    ctx.strokeStyle = FT.accent; ctx.lineWidth = 1.5; ctx.stroke();
+    txt(dt, x + w / 2, y + 420, fKey, FT.text, 'center');
     drawKeys([['WASD', 'MOVE'], ['SPACE', 'LUNGE'], ['ESC', 'PAUSE']], x + w / 2, y + 450);
-    txt(TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, C.aquaDeep, 'center');
+    txt(TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
   }
   function drawReport(s) {
     veil();
     const rp = s.report, x = FX + 40, y = FY + 36, w = FW - 80, h = FH - 72;
     panel(x, y, w, h);
-    txt(rp.roadCleared ? roadLabel(s.level.id) + ' CLEARED' : copy('report.eyebrow', 'WRITE-OFF REPORT').toUpperCase(), x + 30, y + 44, fLab, C.aquaDeep);
+    txt(rp.roadCleared ? roadLabel(s.level.id) + ' CLEARED' : copy('report.eyebrow', 'WRITE-OFF REPORT').toUpperCase(), x + 30, y + 44, fLab, FT.accent);
     const chs = String(rp.chassis).padStart(2, '0');
-    txt(copy('report.title', 'Chassis {chassis} written off.', { chassis: chs }), x + 30, y + 92, '900 36px ' + F_BRAND, C.primary);
-    txt('Write-off ' + s.run.writeOffs + ' of ' + s.quota + ' · points this body ' + num(rp.points), x + 30, y + 132, fTxt, C.ink2);
+    txt(copy('report.title', 'Chassis {chassis} written off.', { chassis: chs }), x + 30, y + 92, '900 36px ' + F_BRAND, FT.text);
+    txt('Write-off ' + s.run.writeOffs + ' of ' + s.quota + ' · points this body ' + num(rp.points), x + 30, y + 132, fTxt, FT.dim);
     const cols = [['CAR', 0], ['ANGLE', 130], ['POINTS', 290], ['HEALTH LOST', 470]];
-    cols.forEach(([c, dx]) => txt(c, x + 30 + dx, y + 190, fLab, C.ink2));
+    cols.forEach(([c, dx]) => txt(c, x + 30 + dx, y + 190, fLab, FT.dim));
     rp.hits.slice(-3).forEach((hh, j) => {
       const yy = y + 236 + j * 44;
-      [shortId(hh.model), hh.angle != null ? Math.round(hh.angle) + '°' : '—', num(hh.assessed), num(hh.lost)].forEach((v, i) => txt(String(v), x + 30 + cols[i][1], yy, fNum, C.primary));
+      [shortId(hh.model), hh.angle != null ? Math.round(hh.angle) + '°' : '—', num(hh.assessed), num(hh.lost)].forEach((v, i) => txt(String(v), x + 30 + cols[i][1], yy, fNum, FT.text));
     });
-    rr(x + 28, y + h - 116, w - 56, 52, 12); ctx.fillStyle = 'rgba(245,197,66,0.3)'; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke();
-    txt(copy('report.credit', 'One body credit granted. Balance: {credits}.', { credits: s.run.credits }), x + 46, y + h - 82, fLab, C.primary);
-    txt('SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, C.aquaDeep, 'right');
+    rr(x + 28, y + h - 116, w - 56, 52, 12); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke();
+    txt(copy('report.credit', 'One body credit granted. Balance: {credits}.', { credits: s.run.credits }), x + 46, y + h - 82, fLab, FT.text);
+    txt('SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, FT.accent, 'right');
   }
   function drawShop(s) {
     veil();
     const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36;
     panel(x, y, w, h);
-    txt(copy('shop.eyebrow', 'MODIFICATION SERVICES').toUpperCase(), x + 28, y + 46, fLab, C.aquaDeep);
+    txt(copy('shop.eyebrow', 'MODIFICATION SERVICES').toUpperCase(), x + 28, y + 46, fLab, FT.accent);
     const ct = s.run.credits + ' CREDIT' + (s.run.credits === 1 ? '' : 'S');
     ctx.font = fLab; const cw = ctx.measureText(ct).width + 36;
     rr(x + w - 28 - cw, y + 16, cw, 44, 12); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.5; ctx.stroke();
-    txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center');
+    txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center'); // dark on safety yellow in both palettes
     const colW = (w - 84) / 2;
     [0, 1].forEach((ci) => {
       const cx = x + 28 + ci * (colW + 28);
       SHOP_GRID[ci].forEach((n, ri) => {
         const yy = y + 78 + ri * 142, node = NODES[n], own = s.has(n), chk = s.canBuy(n), on = app.shopCol === ci && app.shopRow === ri;
         rr(cx, yy, colW, 128, 12);
-        ctx.fillStyle = own ? 'rgba(79,195,232,0.28)' : on ? '#FFFFFF' : 'rgba(255,255,255,0.65)'; ctx.fill();
-        ctx.strokeStyle = on ? C.aquaDeep : '#C9D5DB'; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
-        txt(node.name, cx + 18, yy + 42, '900 30px ' + F_BRAND, C.primary);
+        ctx.fillStyle = own ? 'rgba(79,195,232,0.28)' : on ? FT.keyTop : FT.item; ctx.fill();
+        ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
+        txt(node.name, cx + 18, yy + 42, '900 30px ' + F_BRAND, FT.text);
         const price = s.P[node.price];
-        txt(own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase(), cx + colW - 18, yy + 40, fLab, own ? C.aquaDeep : chk.ok ? C.primary : '#8C9AA4', 'right');
-        wrapText(node.desc.split('. ')[0].replace(/\.?$/, '.'), cx + 18, yy + 80, colW - 36, 28, fTxt, C.ink2, 2);
+        txt(own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase(), cx + colW - 18, yy + 40, fLab, own ? FT.accent : chk.ok ? FT.text : FT.off, 'right');
+        wrapText(node.desc.split('. ')[0].replace(/\.?$/, '.'), cx + 18, yy + 80, colW - 36, 28, fTxt, FT.dim, 2);
         if (ri === 0) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 34, yy + 128); ctx.lineTo(cx + 34, yy + 142); ctx.stroke(); }
       });
     });
@@ -1131,13 +1151,13 @@
       if (s.has(n)) msg = NODES[n].name + ' is installed.';
       else if (!chk.ok) msg = NODES[n].name + ': ' + chk.why + '.';
       else { const left = s.run.credits - chk.price; msg = 'Buying ' + NODES[n].name + ' leaves ' + left + ' credit' + (left === 1 ? '' : 's') + '.'; }
-      wrapText(msg, x + 28, y + 386, w - 56, 28, fLab, C.primary, 2);
+      wrapText(msg, x + 28, y + 386, w - 56, 28, fLab, FT.text, 2);
     }
     const on = app.shopRow === 2;
-    rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? C.aqua : 'rgba(255,255,255,0.8)'; ctx.fill();
-    ctx.strokeStyle = on ? C.aquaDeep : '#C9D5DB'; ctx.lineWidth = 1.5; ctx.stroke();
-    txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? '#06202B' : C.primary, 'center');
-    txt('ARROWS SELECT · SPACE BUY · K DEPLOY', x + w / 2, y + h - 24, fLab, C.ink2, 'center');
+    rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
+    ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+    txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
+    txt('ARROWS SELECT · SPACE BUY · K DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
   }
   // Cue key: the field's own pixel marks, shown at field scale, with what each means.
   const CUE_KEY = [
@@ -1155,12 +1175,12 @@
     if (['intention', 'committed', 'expiring', 'interrupted', 'caution'].includes(cue)) { const r = car(false); pip(B, cue, r.cx, r.cy, loc(r.cx, r.cy), cue === 'expiring' ? 0.6 : 1, 0); }
     else if (cue === 'braking') car(true);
     else if (cue === 'stoppoint') { car(false); PIX.polyline([[33, 4], [36, 4], [36, 18], [33, 18]], (x, y) => B.put(x, y, K.label)); }
-    else if (cue === 'spent') { const r = car(false); PIX.line(r.cx - 4, r.cy + 3, r.cx + 4, r.cy - 3, (x, y) => { B.put(x, y, K.ink); B.put(x, y + 1, K.ink); }); }
-    else if (cue === 'honk') { B.rect(15, 1, 24, 18, K.joint); B.rect(16, 2, 23, 17, K.white); PIX.text(B, '!', 19, 4, K.ink); }
+    else if (cue === 'spent') { const r = car(false); PIX.line(r.cx - 4, r.cy + 3, r.cx + 4, r.cy - 3, (x, y) => { B.put(x, y, K.roofInk); B.put(x, y + 1, K.roofInk); }); }
+    else if (cue === 'honk') { B.rect(15, 1, 24, 18, K.tagBorder); B.rect(16, 2, 23, 17, K.tagFill); PIX.text(B, '!', 19, 4, K.tagInk); }
     else if (cue === 'blind') {
       PIX.fillPoly([[2, 3], [38, 3], [38, 17], [2, 17]], (x, y) => { if ((x + y) % 4 === 0 && !(x > 16 && y > 6 && y < 14)) B.put(x, y, K.label); }, w, h);
       PIX.polyline([[16, 7], [38, 7]], (x, y, i) => { if (i % 3 === 0) B.put(x, y, K.ink); }); PIX.polyline([[16, 13], [38, 13]], (x, y, i) => { if (i % 3 === 0) B.put(x, y, K.ink); });
-    } else if (cue === 'view') { for (const [x1, y1] of [[38, 1], [38, 19]]) PIX.line(4, 10, x1, y1, (x, y, i) => { if (i % 4 === 0) B.mix(x, y, K.ink, 0.6); }); B.rect(3, 9, 4, 10, K.joint); }
+    } else if (cue === 'view') { for (const [x1, y1] of [[38, 1], [38, 19]]) PIX.line(4, 10, x1, y1, (x, y, i) => { if (i % 4 === 0) B.mix(x, y, K.ink, 0.6); }); B.rect(3, 9, 4, 10, K.nose); }
     const cvs = document.createElement('canvas'); cvs.width = w; cvs.height = h;
     const c2 = cvs.getContext('2d'), id = c2.createImageData(w, h); new Uint32Array(id.data.buffer).set(B.d); c2.putImageData(id, 0, 0);
     cueArt.set(cue, cvs);
@@ -1168,37 +1188,37 @@
   }
   function drawCueKey(x, y, w, h) {
     panel(x, y, w, h);
-    txt(copy('cueKeyTitle', 'CUE KEY').toUpperCase(), x + 22, y + 40, fLab, C.aquaDeep);
+    txt(copy('cueKeyTitle', 'CUE KEY').toUpperCase(), x + 22, y + 40, fLab, FT.accent);
     const keys = CUE_KEY.filter(([c]) => c !== 'stoppoint' || (app.sim && app.sim.P['proto.stopCue']));
     keys.forEach(([cue, meaning], i) => {
       const yy = y + 58 + i * 44;
       ctx.imageSmoothingEnabled = false; ctx.drawImage(cueCanvas(cue), x + 20, yy, 80, 40);
-      txt(meaning, x + 116, yy + 28, fLab, C.primary);
+      txt(meaning, x + 116, yy + 28, fLab, FT.text);
     });
   }
   function drawPause(s) {
     veil();
     const x = FX + 18, y = FY + 18, w = 300, h = FH - 36;
     panel(x, y, w, h);
-    txt('PAUSED', x + 22, y + 40, fLab, C.aquaDeep);
+    txt('PAUSED', x + 22, y + 40, fLab, FT.accent);
     const items = PAUSE_ITEMS.slice();
     if (app.confirmRefuse) items[2] = 'Confirm refusal';
     menuList(items, app.pauseSel, x + 18, y + 62, w - 36, (i) => i === 2 && s.run.writeOffs < 1);
-    wrapText(s.run.writeOffs < 1 ? 'Refusal opens after one completed body.' : 'Refusal is a deliberate ending.', x + 22, y + 362, w - 44, 28, fTxt, C.ink2, 4);
+    wrapText(s.run.writeOffs < 1 ? 'Refusal opens after one completed body.' : 'Refusal is a deliberate ending.', x + 22, y + 362, w - 44, 28, fTxt, FT.dim, 4);
     drawCueKey(x + w + 16, y, FW - 36 - w - 16, h);
   }
   function drawEnding(s) {
     veil();
     const e = s.run.ending, x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36;
     panel(x, y, w, h, { tint: e.kind === 'Licensed' ? 'rgba(232,248,238,0.95)' : 'rgba(236,247,252,0.95)' });
-    txt('CONTRACT RESULT', x + 28, y + 44, fLab, C.aquaDeep);
+    txt('CONTRACT RESULT', x + 28, y + 44, fLab, FT.accent);
     const title = { Licensed: 'LICENSED', 'Failed test': 'FAILED TEST', 'Non-compliant': 'NON-COMPLIANT' }[e.kind] || e.kind;
-    txt(title, x + 26, y + 104, '900 54px ' + F_BRAND, e.kind === 'Licensed' ? C.primary : e.kind === 'Failed test' ? C.warning : C.secondary);
-    wrapText(copy('endings.' + e.kind, ''), x + 28, y + 146, w - 56, 28, fTxt, C.ink2, 2);
+    txt(title, x + 26, y + 104, '900 54px ' + F_BRAND, e.kind === 'Licensed' ? FT.text : e.kind === 'Failed test' ? C.warning : FT.dim);
+    wrapText(copy('endings.' + e.kind, ''), x + 28, y + 146, w - 56, 28, fTxt, FT.dim, 2);
     const imp = s.events.filter((v) => v.type === 'impact');
     const stats = [['TIME', fmtT(e.t)], ['WRITE-OFFS', String(e.writeOffs)], ['POINTS', num(e.points)], ['BEST HIT', imp.length ? num(Math.max(...imp.map((v) => v.assessed))) : '—']];
     const cw = (w - 56) / stats.length;
-    stats.forEach(([k, v], i) => { txt(k, x + 28 + i * cw, y + 222, fLab, C.ink2); txt(v, x + 28 + i * cw, y + 262, fNum, C.primary); });
+    stats.forEach(([k, v], i) => { txt(k, x + 28 + i * cw, y + 222, fLab, FT.dim); txt(v, x + 28 + i * cw, y + 262, fNum, FT.text); });
     const items = endItems(s);
     menuList(items, app.endSel, x + 28, y + h - 20 - items.length * 54, 460);
   }
