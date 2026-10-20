@@ -118,6 +118,10 @@ All entries dated 6 October 2026 unless stated. Times are not recorded.
 | 102 | Barks off in the P3 field | proposed (assistant, 20 October) | A bubble at `ui.typeSecondary` covers play | Drivers lose their voice; events still log | — |
 | 103 | X-ray pass: an occluded car or dummy shows as a checker of its own pixels | proposed (assistant, 20 October) | Solid blocks hide actors | — | Canvas board "CyberRoads" |
 | 104 | Level generation parked. Three static roads stay | user-confirmed (20 October): "this is one to park for later" | — | — | — |
+| 105 | The HUD chassis is drawn at native art resolution (64 × 108 art px on the field's grid), never upscaled | user-confirmed (20 October): "it should have the same 'resolution' as the rest of the screen" | The ×9 doll was "super blocky" | The doll is smaller on screen than the ×9 version; detail replaces size | `prototypes/p3/docs/p3_chassis_hud.png` |
+| 106 | The dummy is cute and appealing, after the real crash-test dummy: dot eyes with a glint, brows, a small smile, visible ears with quartered decals, chrome joints. The field sprite gains eyes and ears | user-confirmed (20 October): "the dummy should be cute and appealing … eyes and ears should be visible", with two photos of a real dummy; the face design is the assistant's | Appeal makes the player care about the body they destroy | — | Chassis sheet |
+| 107 | Each of the 15 nodes has one visible component on the chassis, on its branch's body part, in the brand accent | user-confirmed (20 October): "design all the upgrade components to be visible in the UI enlarged model"; the 15 designs are the assistant's | The doll shows the build at a glance | With many nodes the doll reads as a robot, on purpose (pillar 4) | `prototypes/p3/docs/p3_chassis_modules.png` |
+| 108 | The shop blinks the selected node onto the chassis before purchase | proposed (assistant, 20 October) | Players see what they buy | — | — |
 
 ## Open decisions (to make)
 
