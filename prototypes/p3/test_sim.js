@@ -29,8 +29,8 @@ check('impact: Van mass 1.5, side zone 0.3', () => {
 });
 
 for (const [hp, want] of [[800, 164], [400, 82], [100, 73.8]]) {
-  check(`lunge reach at health ${hp} = ${want}`, () => {
-    const s = empty(); s.body.health = hp; s.body.facing = 0;
+  check(`lunge reach (part effects off: total wear) at health ${hp} = ${want}`, () => {
+    const s = empty(); s.P['proto.parts.effects'] = 0; s.body.health = hp; s.body.facing = 0;
     const x0 = s.body.x; s.body.y = 300; s.body.x = 300;
     s.step({ aPress: true }); idle(s, 17);
     assert(near(s.body.x - 300, want, 0.05), 'got ' + (s.body.x - 300));
@@ -44,10 +44,10 @@ check('lunge speeds: 1148 early, 246 late', () => {
   idle(s, 8);
   assert(near(s.body.vx, 246, 0.01), 'late ' + s.body.vx);
 });
-check('battery: three lunges then denied; one refill after delay + period', () => {
+check('battery: two lunges then denied; one refill after delay + period', () => {
   const s = empty(); s.body.facing = 0; s.body.x = 100; s.body.y = 300;
-  for (let i = 0; i < 3; i++) { s.step({ aPress: true }); idle(s, 40); s.body.x = 100; }
-  // 3 lunges spent with partial refills; force empty to test the rule cleanly
+  for (let i = 0; i < 2; i++) { s.step({ aPress: true }); idle(s, 40); s.body.x = 100; }
+  // 2 lunges spent with partial refills; force empty to test the rule cleanly
   s.body.charge = 0.5; s.body.refillDelay = 0;
   s.step({ aPress: true });
   assert(s.events.some((e) => e.type === 'denied' && e.action === 'lunge'));
@@ -59,7 +59,7 @@ check('throw: standing displacement 120; walking 81 → 136.2', () => {
   for (const [v, want] of [[0, 120], [81, 136.2]]) {
     const s = empty(); s.run.owned = { carry: true, throw: true };
     const cn = s.cones[0]; cn.state = 'held'; s.body.held = cn;
-    s.body.x = 300; s.body.y = 480; s.body.facing = 0; s.body.vx = v; s.body.vy = 0;
+    s.body.x = 300; s.body.y = 300; s.body.facing = 0; s.body.vx = v; s.body.vy = 0; // on the road: no city block in the throw line
     const p = s.releasePoint(); s.throwHeld();
     s.body.vx = 0; s.body.alive = false; // isolate the cone flight
     idle(s, 20);
@@ -69,7 +69,7 @@ check('throw: standing displacement 120; walking 81 → 136.2', () => {
 });
 check('throw gesture: hold to threshold drops close instead', () => {
   const s = empty(); s.run.owned = { carry: true, throw: true };
-  const cn = s.cones[0]; cn.state = 'held'; s.body.held = cn; s.body.x = 300; s.body.y = 480; s.body.facing = 0;
+  const cn = s.cones[0]; cn.state = 'held'; s.body.held = cn; s.body.x = 300; s.body.y = 300; s.body.facing = 0; // on the road: no city block in the throw line
   s.step({ bPress: true }); idle(s, 16, { bHeld: true });
   assert.strictEqual(cn.state, 'free'); const want = s.P['body.radius'] + s.P['props.cone.radius'] + s.P['props.cone.placementClearance']; assert(near(cn.x - 300, want, 0.01), 'drop at ' + (cn.x - 300));
 });
@@ -325,8 +325,8 @@ check('city: every road gains solid blocks and jersey barriers; proto.city 0 rem
   }
 });
 check('city: the dummy cannot walk into a block', () => {
-  const s = empty('straight'), bk = s.level.statics.find((st) => st.kind === 'block' && st.x === 488 && st.y === 548);
-  assert(bk, 'block 488,548');
+  const s = empty('straight'), bk = s.level.statics.find((st) => st.kind === 'block' && st.y > 360 && st.y - 60 > 0);
+  assert(bk, 'a block south of the road');
   s.body.x = bk.x + bk.w / 2; s.body.y = bk.y - 40; s.body.facing = Math.PI / 2;
   idle(s, 240, { mx: 0, my: 1 });
   assert(s.body.y + s.P['body.radius'] <= bk.y + 0.5, 'body bottom ' + (s.body.y + 13).toFixed(2) + ' block top ' + bk.y);
@@ -338,9 +338,9 @@ check('city: the dummy cannot walk through a jersey barrier', () => {
   assert(s.body.y - s.P['body.radius'] >= jb.y + jb.h - 0.5, 'body top ' + (s.body.y - 13).toFixed(2) + ' barrier bottom ' + (jb.y + jb.h));
 });
 check('city: a block casts a sensor shadow; open ground does not', () => {
-  const s = empty('straight'), bk = s.level.statics.find((st) => st.kind === 'block' && st.x === 168 && st.y === 94);
-  assert(s.occluded(null, bk.x + bk.w / 2, bk.y - 20, bk.x + bk.w / 2, bk.y + bk.h + 20), 'line through the block');
-  assert(!s.occluded(null, 120, 60, 120, 190), 'line over open deck');
+  const s = empty('straight'), bk = s.level.statics.find((st) => st.kind === 'block');
+  assert(s.occluded(null, bk.x - 20, bk.y + bk.h / 2, bk.x + bk.w + 20, bk.y + bk.h / 2), 'line through the block');
+  assert(!s.occluded(null, 20, 300, 780, 300), 'line along the open road');
 });
 check('city: every open spot connects to a spawn, and the road is reachable', () => {
   for (const lvl of D.LEVEL_LIST) {
@@ -405,6 +405,15 @@ check('part effects: legs slow every ground speed, linearly to the floor', () =>
   const d0 = run(0), d1 = run(0.25), d2 = run(0.9);
   assert(near(d1 / d0, 0.75, 0.01), 'legs 0.25 → ' + (d1 / d0).toFixed(3));
   assert(near(d2 / d0, 0.5, 0.01), 'floor → ' + (d2 / d0).toFixed(3));
+});
+check('dash: two charges; leg damage alone shortens reach, to movement.wearFloor', () => {
+  const s = empty();
+  assert.strictEqual(s.P['battery.capacity'], 2); assert.strictEqual(s.body.charge, 2);
+  assert(near(s.reach(), 164));
+  s.body.health = H0(s) * 0.2; s.body.parts.torso = H0(s) * 0.8; assert(near(s.reach(), 164), 'torso damage leaves the dash alone');
+  s.body.parts.legL = 0.2 * H0(s); assert(near(s.reach(), 164 * (1 - 1.5 * 0.2)), 'legs 0.2 → ' + s.reach().toFixed(1));
+  s.body.parts.legR = 0.6 * H0(s); assert(near(s.reach(), 164 * 0.45), 'floor ' + s.reach().toFixed(1));
+  s.P['proto.parts.effects'] = 0; assert(near(s.reach(), 164 * 0.45), 'toggle off: total wear, same floor');
 });
 check('part effects: torso cuts the turn rate; head narrows the view cone', () => {
   const s = empty(); s.body.parts.torso = 0.2 * H0(s); s.body.parts.head = 0.2 * H0(s);

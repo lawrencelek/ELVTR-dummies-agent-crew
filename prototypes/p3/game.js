@@ -1118,7 +1118,9 @@
   function partEffects(s) { // the abilities the damage has cut, as shown on the chassis panel
     const out = [], pc = (v) => Math.round(v * 100) + '%';
     const sp = s.partEffect('speed'), tu = s.partEffect('turn'), vw = s.partEffect('view'), th = s.partEffect('throw');
+    const da = s.partEffect('dash');
     if (sp < 0.995) out.push(['SPEED', pc(sp)]);
+    if (da < 0.995) out.push(['DASH', pc(da)]);
     if (tu < 0.995) out.push(['TURN', pc(tu)]);
     if (vw < 0.995) out.push(['VIEW', Math.round(s.coneWidth()) + '°']);
     if (s.armsBroken() && (s.has('carry') || s.has('throw'))) out.push(['CONE', 'NO GRIP']);

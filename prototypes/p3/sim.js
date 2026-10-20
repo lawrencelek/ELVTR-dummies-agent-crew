@@ -9,7 +9,7 @@
     'movement.stopSeconds': 0.25, 'movement.counterPressAngle': 135, 'movement.counterPressStop': 0.4,
     'movement.lungeDistance': 164, 'movement.lungeDuration': 0.3, 'movement.lungeRecovery': 0.35,
     'movement.wearFloor': 0.45, 'movement.lungeFastTimeFraction': 1 / 3, 'movement.lungeFastDistanceFraction': 0.7,
-    'battery.capacity': 3, 'battery.secondsPerCharge': 0.8, 'battery.refillDelaySeconds': 0.3, 'battery.lungeCost': 1,
+    'battery.capacity': 2, 'battery.secondsPerCharge': 0.8, 'battery.refillDelaySeconds': 0.3, 'battery.lungeCost': 1,
     'sensing.coneWidth': 90, 'sensing.coneReach': 900,
     'upgrades.hipsTurnRate': 360, 'upgrades.spineLimit': 45, 'upgrades.spineRate': 540,
     'upgrades.carrySpeed': 0.85, 'upgrades.throwDistance': 120,
@@ -63,7 +63,7 @@
     // P3 part effects: each part's share of damage.bodyHealth lost cuts one ability, linearly, to a floor.
     // Legs → walk and run speed. Torso → turn rate. Head → view cone width. Arms → throw distance; both arms broken → no cone handling.
     'proto.parts.effects': 1,
-    'proto.parts.legSpeedLoss': 1, 'proto.parts.legSpeedFloor': 0.5, 'proto.parts.torsoTurnLoss': 1.5, 'proto.parts.torsoTurnFloor': 0.5,
+    'proto.parts.legSpeedLoss': 1, 'proto.parts.legSpeedFloor': 0.5, 'proto.parts.legDashLoss': 1.5, 'proto.parts.torsoTurnLoss': 1.5, 'proto.parts.torsoTurnFloor': 0.5,
     'proto.parts.headConeLoss': 1.5, 'proto.parts.headConeFloor': 0.5, 'proto.parts.armThrowLoss': 1, 'proto.parts.armThrowFloor': 0.5,
   };
 
@@ -150,14 +150,11 @@
       cones: [[110, 196], [310, 190], [500, 414], [690, 420]],
       spawns: [{ x: 400, y: 480, f: -90 }, { x: 160, y: 480, f: -90 }, { x: 640, y: 480, f: -90 }, { x: 400, y: 120, f: 90 }],
       // P3 city (proto.city): jersey barriers and blocks are solid. They collide and cast sensor shadows like any static.
-      city: [
-        { x: 588, y: 208, w: 44, h: 8, kind: 'jersey' }, { x: 738, y: 208, w: 44, h: 8, kind: 'jersey' },
-        { x: 58, y: 384, w: 44, h: 8, kind: 'jersey' }, { x: 358, y: 384, w: 44, h: 8, kind: 'jersey' },
-        { x: 658, y: 384, w: 44, h: 8, kind: 'jersey' }, { x: 168, y: 94, w: 100, h: 56, kind: 'block', height: 130 },
-        { x: 0, y: 474, w: 60, h: 48, kind: 'block', height: 110 }, { x: 576, y: 96, w: 80, h: 60, kind: 'block', height: 140 },
-        { x: 110, y: 556, w: 76, h: 44, kind: 'block', height: 90 }, { x: 488, y: 548, w: 116, h: 52, kind: 'block', height: 90 },
-        { x: 288, y: 556, w: 60, h: 44, kind: 'block', height: 60 }, { x: 0, y: 102, w: 64, h: 64, kind: 'block', height: 130 },
-        { x: 656, y: 556, w: 80, h: 44, kind: 'block', height: 130 },
+      city: [ // city v2 (20 Oct): blocks 27% of the level, jerseys 8% of the road edge
+        { x: 148, y: 384, w: 44, h: 8, kind: 'jersey' }, { x: 748, y: 208, w: 44, h: 8, kind: 'jersey' }, { x: 438, y: 384, w: 44, h: 8, kind: 'jersey' },
+        { x: 640, y: 48, w: 160, h: 120, kind: 'block', height: 80 }, { x: 128, y: 48, w: 160, h: 120, kind: 'block', height: 100 }, { x: 448, y: 48, w: 152, h: 120, kind: 'block', height: 130 },
+        { x: 448, y: 480, w: 144, h: 120, kind: 'block', height: 90 }, { x: 208, y: 480, w: 144, h: 120, kind: 'block', height: 100 }, { x: 688, y: 480, w: 112, h: 120, kind: 'block', height: 120 },
+        { x: 0, y: 480, w: 112, h: 120, kind: 'block', height: 120 }, { x: 0, y: 48, w: 88, h: 120, kind: 'block', height: 130 },
       ],
     },
     barrier: {
@@ -171,12 +168,11 @@
       cones: [[90, 202], [260, 198], [540, 202], [150, 428], [700, 428]],
       spawns: [{ x: 400, y: 500, f: -90 }, { x: 140, y: 500, f: -90 }, { x: 660, y: 500, f: -90 }, { x: 300, y: 110, f: 90 }],
       // P3 city (proto.city): jersey barriers and blocks are solid. They collide and cast sensor shadows like any static.
-      city: [
-        { x: 288, y: 208, w: 44, h: 8, kind: 'jersey' }, { x: 588, y: 208, w: 44, h: 8, kind: 'jersey' },
-        { x: 110, y: 90, w: 80, h: 44, kind: 'block', height: 100 }, { x: 526, y: 476, w: 56, h: 76, kind: 'block', height: 100 },
-        { x: 504, y: 92, w: 60, h: 56, kind: 'block', height: 110 }, { x: 614, y: 98, w: 68, h: 44, kind: 'block', height: 130 },
-        { x: 248, y: 500, w: 64, h: 52, kind: 'block', height: 100 }, { x: 0, y: 454, w: 64, h: 40, kind: 'block', height: 60 },
-        { x: 0, y: 552, w: 68, h: 48, kind: 'block', height: 110 },
+      city: [ // city v2 (20 Oct): blocks 26% of the level, jerseys 8% of the road edge
+        { x: 388, y: 208, w: 44, h: 8, kind: 'jersey' }, { x: 8, y: 208, w: 44, h: 8, kind: 'jersey' }, { x: 748, y: 208, w: 44, h: 8, kind: 'jersey' },
+        { x: 0, y: 48, w: 160, h: 120, kind: 'block', height: 70 }, { x: 640, y: 48, w: 160, h: 120, kind: 'block', height: 110 }, { x: 424, y: 48, w: 160, h: 120, kind: 'block', height: 120 },
+        { x: 192, y: 480, w: 160, h: 120, kind: 'block', height: 80 }, { x: 448, y: 480, w: 160, h: 120, kind: 'block', height: 80 }, { x: 712, y: 480, w: 88, h: 120, kind: 'block', height: 90 },
+        { x: 0, y: 480, w: 88, h: 120, kind: 'block', height: 120 }, { x: 200, y: 48, w: 48, h: 120, kind: 'block', height: 70 },
       ],
     },
     corner: {
@@ -187,12 +183,12 @@
       cones: [[200, 330], [320, 552], [660, 220], [420, 120]],
       spawns: [{ x: 300, y: 560, f: -90 }, { x: 700, y: 400, f: 180 }, { x: 200, y: 160, f: 0 }, { x: 720, y: 140, f: 180 }],
       // P3 city (proto.city): jersey barriers and blocks are solid. They collide and cast sensor shadows like any static.
-      city: [
-        { x: 58, y: 524, w: 44, h: 8, kind: 'jersey' }, { x: 358, y: 524, w: 44, h: 8, kind: 'jersey' },
-        { x: 458, y: 108, w: 8, h: 44, kind: 'jersey' }, { x: 498, y: 560, w: 60, h: 40, kind: 'block', height: 110 },
-        { x: 294, y: 178, w: 60, h: 52, kind: 'block', height: 120 }, { x: 640, y: 556, w: 64, h: 44, kind: 'block', height: 110 },
-        { x: 0, y: 238, w: 68, h: 48, kind: 'block', height: 120 }, { x: 0, y: 144, w: 88, h: 40, kind: 'block', height: 60 },
-        { x: 676, y: 272, w: 68, h: 48, kind: 'block', height: 70 }, { x: 150, y: 552, w: 64, h: 48, kind: 'block', height: 130 },
+      city: [ // city v2 (20 Oct): blocks 25% of the level, jerseys 7% of the road edge
+        { x: 634, y: 248, w: 8, h: 44, kind: 'jersey' }, { x: 8, y: 524, w: 44, h: 8, kind: 'jersey' }, { x: 378, y: 524, w: 44, h: 8, kind: 'jersey' },
+        { x: 0, y: 216, w: 160, h: 120, kind: 'block', height: 70 }, { x: 0, y: 48, w: 152, h: 120, kind: 'block', height: 120 }, { x: 248, y: 48, w: 136, h: 120, kind: 'block', height: 110 },
+        { x: 688, y: 232, w: 112, h: 120, kind: 'block', height: 130 }, { x: 696, y: 480, w: 104, h: 120, kind: 'block', height: 60 }, { x: 200, y: 208, w: 144, h: 88, kind: 'block', height: 130 },
+        { x: 504, y: 528, w: 152, h: 72, kind: 'block', height: 80 }, { x: 96, y: 536, w: 152, h: 64, kind: 'block', height: 80 }, { x: 648, y: 48, w: 152, h: 40, kind: 'block', height: 120 },
+        { x: 752, y: 392, w: 48, h: 48, kind: 'block', height: 110 },
       ],
     },
   };
@@ -357,9 +353,12 @@
       };
       this.emit('chassis', { chassis: this.run.chassis, x: sp.x, y: sp.y });
     }
+    // Dash reach. With part effects on, leg damage alone shortens it (D19, 20 Oct); otherwise total wear does.
+    // Either way it never falls below movement.wearFloor, so a worn body still reaches a passing flank (pillar 1).
     reach() {
       const P = this.P, b = this.body;
-      return P['movement.lungeDistance'] * Math.max(P['movement.wearFloor'], Math.min(1, b.health / P['damage.bodyHealth']));
+      return P['movement.lungeDistance'] * (P['proto.parts.effects'] ? this.partEffect('dash')
+        : Math.max(P['movement.wearFloor'], Math.min(1, b.health / P['damage.bodyHealth'])));
     }
     deny(action) { this.body.denied = 0.25; this.emit('denied', { action }); }
 
@@ -660,6 +659,7 @@
     partEffect(kind) {
       const P = this.P;
       if (!P['proto.parts.effects']) return 1;
+      if (kind === 'dash') return Math.max(P['movement.wearFloor'], 1 - P['proto.parts.legDashLoss'] * (this.partShare('legL') + this.partShare('legR')));
       const t = { speed: ['legSpeed', this.partShare('legL') + this.partShare('legR')], turn: ['torsoTurn', this.partShare('torso')],
         view: ['headCone', this.partShare('head')], throw: ['armThrow', this.partShare('armL') + this.partShare('armR')] }[kind];
       return Math.max(P['proto.parts.' + t[0] + 'Floor'], 1 - P['proto.parts.' + t[0] + 'Loss'] * t[1]);
