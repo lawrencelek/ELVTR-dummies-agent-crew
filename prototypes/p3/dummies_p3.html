@@ -58,7 +58,7 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
 </div>
 <div class="wrap">
   <div class="bar">
-    <p class="keys"><kbd>WASD</kbd> move · <kbd>Space</kbd> lunge · <kbd>K</kbd> cone · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · gamepad works · <span id="status"></span></p>
+    <p class="keys"><kbd>WASD</kbd> move · <kbd>Space</kbd> dash · <kbd>K</kbd> cone · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · gamepad works · <span id="status"></span></p>
     <button id="btn-pal" type="button">Night palette</button>
     <button id="btn-full" type="button">Full screen</button>
     <button id="btn-tune" type="button">Tuning</button>
@@ -2326,7 +2326,8 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     deriveCases(s);
   }
   function horn() { Snd.tone(440, 430, 0.16, 'square', 0.05); Snd.tone(349, 340, 0.22, 'square', 0.05, 0.18); }
-  function toast(msg) { app.toast = { msg, t: app.realT }; }
+  function dashify(str) { return String(str).replace(/lunge/gi, (m) => (m[0] === 'L' ? (m === 'LUNGE' ? 'DASH' : 'Dash') : 'dash')); } // display name only
+  function toast(msg) { app.toast = { msg: dashify(msg), t: app.realT }; }
 
   // ---------- menus
   const PAUSE_ITEMS = ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title'];
@@ -2966,33 +2967,93 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
     rr(FX - 6.5, FY - 6.5, FW + 13, FH + 13, 10); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
     if (s && app.screen === 'game' && !app.paused && s.phase === 'play') { // controls only while they apply
-      const keys = [['WASD', 'MOVE'], ['SPACE', 'LUNGE']];
+      const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']];
       if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']);
       drawKeys(keys, FX + FW / 2, 674);
     }
   }
+  // Left column: every fact the player acts on (V29 D10.3). Right column: the body and its modules.
   function drawHUD(s) {
     const b = s.body, P = s.P, r = s.run, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
-    panel(16, 76, 208, 126);
-    txt('BODY', 30, 110, fLab, FT.dim); txt(num(hp), 30, 152, fNum, FT.text);
-    rr(30, 166, 180, 22, 5); ctx.fillStyle = FT.track; ctx.fill();
+    const X = 16, W = 208, TX = 30;
+    panel(X, 62, W, 114);
+    txt('BODY', TX, 92, fLab, FT.dim); txt(num(hp), TX, 132, fNum, FT.text);
+    rr(TX, 144, 180, 20, 5); ctx.fillStyle = FT.track; ctx.fill();
     if (frac > 0) {
       const low = frac < 0.3 && Math.floor(app.realT * 4) % 2 === 0;
-      rr(30, 166, Math.max(12, 180 * frac), 22, 5); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
+      rr(TX, 144, Math.max(12, 180 * frac), 20, 5); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
     }
-    panel(16, 218, 208, 94);
-    txt('CHARGE', 30, 252, fLab, FT.dim);
+    panel(X, 184, W, 84);
+    txt('DASH', TX, 214, fLab, FT.dim);
     const cap = P['battery.capacity'], pw = (180 - (cap - 1) * 10) / cap;
     for (let i = 0; i < cap; i++) {
-      const x = 30 + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
-      rr(x, 268, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
-      if (f > 0) { rr(x, 268, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
+      const x = TX + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
+      rr(x, 228, pw, 26, 6); ctx.fillStyle = FT.track; ctx.fill();
+      if (f > 0) { rr(x, 228, Math.max(6, pw * f), 26, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
     const left = s.schedule.length - (r.admitted - s.cars.length);
     [['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['CARS LEFT', String(Math.max(0, left))], ['POINTS', num(r.points)], ['CREDITS', String(r.credits)]].forEach(([k, v], i) => {
-      const y = 76 + i * 110;
-      panel(1056, y, 208, 94); txt(k, 1070, y + 34, fLab, FT.dim); txt(v, 1070, y + 76, fNum, FT.text);
+      const y = 276 + i * 92;
+      panel(X, y, W, 84); txt(k, TX, y + 30, fLab, FT.dim); txt(v, TX, y + 68, fNum, FT.text);
     });
+    drawBodyPanel(s);
+  }
+  // The chassis: its state and every module. Torso and Arms are the slice's branches (V29 D3.6); the rest wait for later tests.
+  const BRANCHES = [['TORSO', ['hips', 'spine']], ['ARMS', ['carry', 'throw']]];
+  const dollArt = new Map();
+  function dollCanvas(step) {
+    if (dollArt.has(step)) return dollArt.get(step);
+    const S = PIX.dummy(Math.PI / 2, step), cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
+    const c2 = cv2.getContext('2d'), id = c2.createImageData(S.w, S.h); new Uint32Array(id.data.buffer).set(S.d); c2.putImageData(id, 0, 0);
+    dollArt.set(step, cv2);
+    return cv2;
+  }
+  function chassisState(s) { // named from the low-health juice thresholds (content/juice.json states.lowHealth)
+    const b = s.body;
+    if (!b.alive) return ['WRITTEN OFF', C.warning];
+    const wear = 1 - b.health / s.P['damage.bodyHealth'];
+    return wear >= lowHealth('sparkFrom', 0.7) ? ['CRITICAL', C.warning] : wear >= lowHealth('smokeFrom', 0.45) ? ['DAMAGED', FT.text] : ['INTACT', FT.text];
+  }
+  function drawBodyPanel(s) {
+    const X = 1056, W = 208, b = s.body, P = s.P, Y = 62;
+    panel(X, Y, W, 598);
+    txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.accent);
+    const [state, sc] = chassisState(s);
+    txt(state, X + 14, Y + 58, fLab, sc);
+    // the doll: the field sprite, front view, ×7 (whole multiples keep it pixel-exact)
+    const k = 7, wear = clamp(1 - b.health / P['damage.bodyHealth'], 0, 1), dx = X + W / 2 - 13 * k / 2, dy = Y + 74;
+    ctx.imageSmoothingEnabled = false;
+    ctx.globalAlpha = b.alive ? 1 : 0.35;
+    ctx.drawImage(dollCanvas(Math.min(5, Math.round(wear * 5))), dx, dy, 13 * k, 19 * k);
+    // installed modules light up where they sit on the body (FARSIGHT aqua = FARSIGHT parts)
+    const px = (cx, cy, w, h) => ctx.fillRect(dx + cx * k, dy + cy * k, w * k, h * k);
+    ctx.fillStyle = FT.accent;
+    if (s.has('hips')) px(4, 15, 5, 1);
+    if (s.has('spine')) px(6, 8, 1, 4);
+    if (s.has('carry')) { px(2, 9, 1, 3); px(10, 9, 1, 3); }
+    if (s.has('throw')) { px(1, 12, 2, 1); px(10, 12, 2, 1); }
+    ctx.globalAlpha = 1;
+    // every module, with its state
+    let y = Y + 238;
+    for (const [branch, nodes] of BRANCHES) {
+      txt(branch, X + 14, y, fTxt, FT.dim); y += 32;
+      for (const n of nodes) {
+        const own = s.has(n), chk = s.canBuy(n), price = P[NODES[n].price], locked = !own && NODES[n].pre && !s.has(NODES[n].pre);
+        rr(X + 14, y - 17, 16, 16, 3);
+        if (own) { ctx.fillStyle = FT.accent; ctx.fill(); } else { ctx.strokeStyle = locked ? FT.off : FT.accent; ctx.lineWidth = 2; ctx.stroke(); }
+        txt(NODES[n].name, X + 40, y, fLab, own ? FT.text : locked ? FT.off : FT.dim);
+        if (!own) {
+          ctx.font = fLab; const pw2 = ctx.measureText(String(price)).width + 16, ok = chk.ok;
+          rr(X + W - 14 - pw2, y - 22, pw2, 28, 7); ctx.fillStyle = ok ? C.dummy : FT.track; ctx.fill();
+          txt(String(price), X + W - 14 - pw2 / 2, y - 1, fLab, ok ? C.primary : FT.off, 'center');
+        }
+        y += 32;
+      }
+      y += 12;
+    }
+    txt('LATER TESTS', X + 14, y + 8, fTxt, FT.dim);
+    txt('Head · Legs', X + 14, y + 38, fLab, FT.off);
+    txt('Battery', X + 14, y + 68, fLab, FT.off);
   }
 
   // ---------- screens (frame layer). Facts at ui.typeLoadBearing, labels and lines at ui.typeSecondary.
@@ -3029,7 +3090,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
     rr(x + w / 2 - dw / 2, y + 392, dw, 40, 20); ctx.fillStyle = app.difficulty === 1 ? FT.item : 'rgba(245,197,66,0.35)'; ctx.fill();
     ctx.strokeStyle = FT.accent; ctx.lineWidth = 1.5; ctx.stroke();
     txt(dt, x + w / 2, y + 420, fKey, FT.text, 'center');
-    drawKeys([['WASD', 'MOVE'], ['SPACE', 'LUNGE'], ['ESC', 'PAUSE']], x + w / 2, y + 450);
+    drawKeys([['WASD', 'MOVE'], ['SPACE', 'DASH'], ['ESC', 'PAUSE']], x + w / 2, y + 450);
     txt(TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
   }
   function drawReport(s) {
@@ -3070,7 +3131,7 @@ window.DUMMIES_CONTENT = {"juice":{"params":[{"id":"proto.juice.reducedMotion","
         txt(node.name, cx + 18, yy + 42, '900 30px ' + F_BRAND, FT.text);
         const price = s.P[node.price];
         txt(own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase(), cx + colW - 18, yy + 40, fLab, own ? FT.accent : chk.ok ? FT.text : FT.off, 'right');
-        wrapText(node.desc.split('. ')[0].replace(/\.?$/, '.'), cx + 18, yy + 80, colW - 36, 28, fTxt, FT.dim, 2);
+        wrapText(dashify(node.desc.split('. ')[0].replace(/\.?$/, '.')), cx + 18, yy + 80, colW - 36, 28, fTxt, FT.dim, 2);
         if (ri === 0) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 34, yy + 128); ctx.lineTo(cx + 34, yy + 142); ctx.stroke(); }
       });
     });
