@@ -144,6 +144,8 @@ All entries dated 6 October 2026 unless stated. Times are not recorded.
 | 128 | Shenzhen is the setting. Chongqing is a visual reference only | user-confirmed (20 October): "Chongqing is just a visual reference" | Closes D25 | — | `fleet.json` canon unchanged |
 | 129 | Big battery: 3 charges against a base of 2 (`upgrades.bigCapacity` 5 → 3). P3 sells it for 1 credit (`economy.price.battery`) | user-confirmed (20 October): "Big battery means capacity up to 3 from 2"; adding it to the P3 shop is the assistant's | Closes D26 | — | 1 check in `test_sim.js` |
 | 130 | The registry takes Edit 40: version `edit40-2026-10-20` | proposed (assistant, 20 October) | Every new statistic has an ID | 11 new entries, 2 changes, 10 palette rows | `content/params/tuning.parameters.json` |
+| 131 | Screen edges are open wherever the ground is open on both sides, as in Zelda. A building just across the edge, or the district's outer edge, stops the dummy; a dotted line marks those stretches. Revises row 126's solid edges | proposed (assistant, 20 October), from Lawrence's playtest: "I can't actually move when I'm at the edge of the screen" | Gates were too narrow to find | Crossing points depend on the neighbour's layout | 2 checks in `test_sim.js`; browser walk B1 → B2 by an alley |
+| 132 | Body health: base 800; easy (Fragile) 600; difficult (Reinforced) 1000. `damage.bodyHealth` 1600 → 800 | user-confirmed (20 October): "the base health should be 800, with easy 600 and difficult 1000"; changing the registry base is the assistant's reading | Supersedes CR-004's 1600 and P3's 200/300/600 | L1 takes about 3× longer for a reading bot; L2 and L3 quotas need a timed check | Policy check at 600/800/1000 |
 
 ## Open decisions (to make)
 

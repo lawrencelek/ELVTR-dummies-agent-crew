@@ -5,7 +5,8 @@
 P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber city as canon (Edit 39). Pixel-art field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 300 at (120, 30).
 
 - **Simulation changes:** solid city statics (city v2, ~25% buildings); part damage that cuts abilities; two dash charges, shortened by leg damage.
-- **Districts (Edit 40):** each road is 3 × 3 screens, Zelda-style. Walk off a gate to flip to the next screen.
+- **Districts (Edit 40):** each road is 3 × 3 screens, Zelda-style. Walk off any open edge to flip to the next screen.
+- **Body health (Edit 40.1):** Standard 800; Fragile (easy) 600; Reinforced (difficult) 1000.
 - **Puddles (Edit 40):** water on 2% of tiles. No dash from water; cars brake late on it.
 - **Big battery (Edit 40):** three charges. Sold in the shop.
 - **Voice:** barks from `content/db/fleet.json`, checked by `check_lore.py`.
@@ -25,7 +26,13 @@ Open `dummies_p3.html` in a browser. No install, no server. **Full screen** fill
 | Pause and cue key | Esc |
 | Tuning panel | T |
 
-Campaign, difficulty and quotas match P2.2. A quota counts write-offs on any screen of the district.
+Campaign and quotas match P2.2. A quota counts write-offs on any screen of the district.
+
+| Difficulty (title screen, Left/Right) | Body health |
+|---|---|
+| Fragile (easy) | 600 (`proto.health.fragile`) |
+| Standard (base) | 800 (`proto.health.standard`, `damage.bodyHealth`) |
+| Reinforced (difficult) | 1000 (`proto.health.reinforced`) |
 
 ## Display grids
 
@@ -97,9 +104,9 @@ A road is a district of `world.districtColumns` × `world.districtRows` screens 
 |---|---|
 | Road | One road through all nine screens; both ends leave the district |
 | Start screen | Top row, on the river: the road's handcrafted screen (B1; L3 starts in C1) |
-| Gates | Road crossing (kerb to kerb), plus one pedestrian gate (`world.gateWidth` 48) on every shared edge |
-| Other edges | Solid. District edges have no gates |
-| Flip | Centre crosses a gate → slide over `world.flipSeconds` 0.4 s; play pauses |
+| Edges (Edit 40.1) | Open wherever the ground is open on both sides. A building just across the edge stops you; so does the district's outer edge |
+| Gates | Generator guarantee: the road crossing, plus one 48-unit opening (`world.gateWidth`) on every shared edge |
+| Flip | Centre crosses the edge → slide over `world.flipSeconds` 0.4 s; play pauses |
 | Carried | Health, parts, charge, momentum, a held cone |
 | Runs | Only the active screen. Its cars, drones and effects end at the flip |
 | Traffic | Enters from the new screen's road ends after 0.5 s |
@@ -113,10 +120,10 @@ A road is a district of `world.districtColumns` × `world.districtRows` screens 
   - Jerseys on `world.jerseyShare` of the road edge; blocks to `world.blockShare`; spawns and cones on the verges.
   - Flood fill: every open spot and every gate reachable.
 - **HUD.** Top bar adds the screen (`B2`). Left column adds the district map. A toast names each new screen.
-- **Gate marks.** Ticks at each opening; chevrons point out of pedestrian gates (`field.gate`).
+- **Edge marks.** A dotted line where an open-looking edge stops you: the district edge, or a building just across it (`field.gate`). Unmarked edges are open.
 - **Load.** All nine screens build when the road starts (20–100 ms each).
 
-![Road 1, screen B2: flyover pillars, puddles, gates; district map at left](docs/p3_district_B2.png)
+![Road 1, screen B2: flyover pillars, puddles; district map at left](docs/p3_district_B2.png)
 
 ![The flip: B1 slides out as C1 slides in; the road meets across the edge](docs/p3_district_flip.png)
 
@@ -184,7 +191,7 @@ Share = health lost by the part ÷ `damage.bodyHealth`. Each ability falls linea
 | Arms (L + R shares) | Throw distance (`upgrades.throwDistance`) | × (1 − loss × share) | `proto.parts.armThrowLoss` 1 | `proto.parts.armThrowFloor` 0.5 |
 | Both arms broken | Pick up a cone | Denied while each arm ≥ `proto.parts.brokenShare` | — | — |
 
-- **Examples (Standard 300):** 75 lost to the legs → speed 75%. 40 lost to the head → cone 72° of 90°. Floors: speed 50%, cone 45°.
+- **Examples (Standard 800):** 200 lost to the legs → speed 75%. 107 lost to the head → cone 72° of 90°. Floors: speed 50%, cone 45°.
 - **On screen:** the chassis panel lists each cut ability: SPEED %, TURN %, VIEW °, THROW %, or CONE NO GRIP. The view cone narrows in the field.
 - **Dash reach** shrinks with leg damage only: × max(`movement.wearFloor` 0.45, 1 − `proto.parts.legDashLoss` 1.5 × leg share). Torso, arm and head damage leave it alone. With part effects off, total wear shortens it as before (D19).
 - **Two charges** (`battery.capacity` 2, decision 112). The battery limit stays.
@@ -262,6 +269,8 @@ Day version: `docs/p3_chassis_modules.png`.
 | `upgrades.bigCapacity`, `economy.price.battery` | 3, 1 | Registry (D26) |
 | `proto.district`, `proto.district.seed` | 1, 0 | Registry, prototype group |
 | `field.puddle*`, `field.gate` (palette roles) | Edit 40 | Proposed. Cyber and day |
+| `damage.bodyHealth` | 800 | Registry (`edit40.1-2026-10-20`); was 1600 (CR-004) |
+| `proto.health.fragile`, `.standard`, `.reinforced` | 600, 800, 1000 | Registry, prototype group (Edit 40.1) |
 | `ui.typeFieldLabel` | 12 units | Registry. Tags and barks |
 | `battery.capacity` | 2 | Registry (D19) |
 | `proto.parts.legDashLoss` | 1.5 | Registry, prototype group. Dash reach per leg share |
@@ -290,7 +299,7 @@ Day version: `docs/p3_chassis_modules.png`.
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html`, with `content/db/fleet.json` as `window.FLEET_DB` |
 | `tools/city_gen.js` | City v2 generator: `node tools/city_gen.js .` prints block and barrier data |
-| `test_sim.js` | `node test_sim.js`: 55 checks: 8 for the city, 2 for body parts, 4 for part effects and the dash, 4 for districts, 2 for puddles, 1 for Big battery |
+| `test_sim.js` | `node test_sim.js`: 56 checks: 8 for the city, 2 for body parts, 4 for part effects and the dash, 5 for districts, 2 for puddles, 1 for Big battery |
 | `../../content/db/` | Fleet database and `check_lore.py` (lore consistency) |
 
 ## Open
@@ -302,5 +311,5 @@ Day version: `docs/p3_chassis_modules.png`.
 - **Moods.** Lines exist in the database; the sim does not assign moods yet.
 - **D27 viewable area.** Keep 800 × 600 per screen (recommended), or widen to 960 × 600. Table in GDD Edit 40.
 - **D28 exploration reward.** Exploration is optional today.
-- **Puddles and blind play.** Wet tarmac lets the blind bot clear L1 (46 s). Watch in playtest.
+- **Pacing at 800 health.** A reading bot clears L1 in 31.6 s (was 11.0 s at 300). Quotas 2 and 3 on L2 and L3 need a timed check against CARS LEFT.
 - **Junctions.** Generated screens have no T or cross pieces yet.

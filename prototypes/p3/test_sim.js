@@ -113,10 +113,10 @@ check('impulse model: hand-computed cases (m_d 0.056, e 0.3, cap 100, p 2)', () 
   assert(near(I(P, 0, 0, -120, 0, 1, 0, 'van').assessed, 78.36, 1e-2), 'van 120');
   assert.strictEqual(I(P, 0, 0, 138, 0, 1, 0, 'sedan').assessed, 0, 'separating car');
 });
-check('difficulty: constant health across roads; Standard 300 default, Fragile 200, Reinforced 600', () => {
-  for (const lvl of D.LEVEL_LIST) { const s = new Sim(lvl); assert.strictEqual(s.body.health, 300); assert(near(s.reach(), 164)); }
-  assert.strictEqual(new Sim('corner', { 'proto.difficulty': 0 }).body.health, 200);
-  assert.strictEqual(new Sim('straight', { 'proto.difficulty': 2 }).body.health, 600);
+check('difficulty: constant health across roads; Standard 800 default, Fragile 600, Reinforced 1000 (Edit 40.1)', () => {
+  for (const lvl of D.LEVEL_LIST) { const s = new Sim(lvl); assert.strictEqual(s.body.health, 800); assert(near(s.reach(), 164)); }
+  assert.strictEqual(new Sim('corner', { 'proto.difficulty': 0 }).body.health, 600);
+  assert.strictEqual(new Sim('straight', { 'proto.difficulty': 2 }).body.health, 1000);
 });
 check('car swerve around a cone: no heading snap, path fixed in space', () => {
   const s = new Sim('straight', { 'run.appearances.road': 1 });
@@ -470,15 +470,37 @@ check('district: every generated screen meets the city contract; every gate is o
     }
   }
 });
-check('district: a gate lets the dummy through and flips the screen; elsewhere the edge holds', () => {
+check('district: open ground crosses any edge and flips the screen; a building across the edge or the district edge holds', () => {
   const s = empty(); s.body.x = 780; s.body.y = 340; s.body.facing = 0;
   const h = s.body.health;
   for (let i = 0; i < 60 && s.screenName() === 'B1'; i++) s.step({ mx: 1, my: 0 });
-  assert.strictEqual(s.screenName(), 'C1', 'flipped east'); assert(s.phase === 'scroll' && s.body.x < 20 && s.body.health === h, 'body carried over');
+  assert.strictEqual(s.screenName(), 'C1', 'flipped east on the road'); assert(s.phase === 'scroll' && s.body.x < 20 && s.body.health === h, 'body carried over');
   idle(s, 40, {}); assert.strictEqual(s.phase, 'play');
-  const t = empty(); t.body.x = 770; t.body.y = 440; t.body.facing = 0;
-  idle(t, 60, { mx: 1, my: 0 });
-  assert.strictEqual(t.screenName(), 'B1'); assert(near(t.body.x, 800 - t.P['body.radius'], 0.5), 'clamped at the edge');
+  const R = s.P['body.radius'], push = (x, y, cmd) => { const t = empty(); t.body.x = x; t.body.y = y; idle(t, 90, cmd); return t; };
+  // open ground off the road: crosses too (Edit 40.1)
+  const c1 = cellLevel(s.district, [2, 0], s.P), clear = (y) => c1.statics.every((st) => rdist(R + 1, y, st) > R) && cellLevel(s.district, [1, 0], s.P).statics.every((st) => rdist(800 - R - 1, y, st) > R);
+  const yOpen = [440, 450, 460, 470, 120, 130, 140, 150].find((y) => clear(y) && !(y > 220 && y < 380));
+  assert(yOpen != null, 'an open spot off the road'); assert.strictEqual(push(770, yOpen, { mx: 1, my: 0 }).screenName(), 'C1', 'crossed at y ' + yOpen);
+  // a building flush against the far side of the edge stops it
+  const yBlk = Array.from({ length: 140 }, (_, k) => 20 + k * 4).find((y) => c1.statics.some((st) => rdist(R + 1, y, st) <= R - 2) && cellLevel(s.district, [1, 0], s.P).statics.every((st) => rdist(800 - R - 1, y, st) > R + 2));
+  if (yBlk != null) { const t = push(770, yBlk, { mx: 1, my: 0 }); assert.strictEqual(t.screenName(), 'B1', 'blocked at y ' + yBlk); assert(near(t.body.x, 800 - R, 0.5)); }
+  // the district edge (the river, row 1) holds
+  const n = push(420, 30, { mx: 0, my: -1 }); assert.strictEqual(n.screenName(), 'B1'); assert(near(n.body.y, R, 0.5), 'river edge holds');
+});
+check('district: marked edge stretches are exactly where an open-looking edge stops the dummy', () => {
+  for (const id of D.LEVEL_LIST) {
+    const s = new Sim(id), Dd = s.district, R = s.P['body.radius'];
+    for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
+      Dd.cur = [x, y]; s.level = cellLevel(Dd, [x, y], s.P);
+      const sp = D.edgeSpans(Dd, [x, y], s.P);
+      for (const sd of ['N', 'E', 'S', 'W']) for (let v = 16; v < (sd === 'E' || sd === 'W' ? 600 : 800) - R - 2; v += 4) { // the 4-unit lattice the spans are sampled on
+        const here = sd === 'E' ? [800 - R - 1, v] : sd === 'W' ? [R + 1, v] : sd === 'S' ? [v, 600 - R - 1] : [v, R + 1];
+        if (!s.level.statics.every((st) => rdist(here[0], here[1], st) >= R)) continue; // this side is built up: visibly closed
+        const marked = sp[sd].some(([a, z]) => v >= a && v < z);
+        assert.strictEqual(marked, !s.edgeOpen(sd, v), id + ' ' + cellName([x, y]) + ' ' + sd + ' at ' + v);
+      }
+    }
+  }
 });
 check('district: cones stay on their screen; a held cone travels with the dummy', () => {
   const s = empty(); s.run.owned = { carry: true };

@@ -766,24 +766,17 @@
       for (let i = 0; i < len; i += 1) if (inS(xx, yy + i) && inS(xx, yy + i + 1) && inS(xx, yy + i - 1) && (i % 3 !== 2)) B.put(x0 + xx, y0 + yy + i, c);
     }
   }
-  // Gates (D24): where the dummy may walk off the screen. Ticks mark each opening's ends; chevrons point out of pedestrian gates.
-  function gateMarks(B, level) {
-    const g = level.gates || {}, roads = [];
-    const segs = level.center;
-    for (let i = 1; i < segs.length; i++) { // where the road crosses an edge (that opening needs no chevron: the road says it)
-      const [x0, y0] = segs[i - 1], [x1, y1] = segs[i];
-      for (const [sd, t] of [['W', x1 !== x0 ? -x0 / (x1 - x0) : -1], ['E', x1 !== x0 ? (AW * U - x0) / (x1 - x0) : -1], ['N', y1 !== y0 ? -y0 / (y1 - y0) : -1], ['S', y1 !== y0 ? (AH * U - y0) / (y1 - y0) : -1]]) {
-        if (t >= 0 && t <= 1) roads.push([sd, sd === 'W' || sd === 'E' ? y0 + (y1 - y0) * t : x0 + (x1 - x0) * t]);
+  // Screen edges (D24, Edit 40.1) are open. A dotted line marks where one stops the dummy though this side looks open:
+  // the district's outer edge, or a building just across it.
+  function edgeMarks(B, level) {
+    const c = K.gate, spans = level.blockedEdges || Object.fromEntries((level.solid || []).map((sd) => [sd, [[0, sd === 'N' || sd === 'S' ? AW * U : AH * U]]]));
+    for (const sd of ['N', 'E', 'S', 'W']) for (const [a, z] of spans[sd] || []) {
+      for (let i = Math.round(a / U); i < Math.round(z / U); i++) {
+        if (i % 3) continue;
+        const [x, y] = sd === 'W' ? [0, i] : sd === 'E' ? [AW - 1, i] : sd === 'N' ? [i, 0] : [i, AH - 1];
+        B.put(x, y, c);
+        B.put(sd === 'W' ? x + 1 : sd === 'E' ? x - 1 : x, sd === 'N' ? y + 1 : sd === 'S' ? y - 1 : y, c);
       }
-    }
-    const c = K.gate;
-    for (const sd of ['N', 'E', 'S', 'W']) for (const [a, b] of g[sd] || []) {
-      const hz = sd === 'W' || sd === 'E', A = Math.round(a / U), Bn = Math.round(b / U) - 1, mid = Math.round((a + b) / 2 / U);
-      const at = (along, depth) => (sd === 'W' ? [depth, along] : sd === 'E' ? [AW - 1 - depth, along] : sd === 'N' ? [along, depth] : [along, AH - 1 - depth]);
-      for (const e of [A, Bn]) for (let dd = 0; dd < 3; dd++) { const [x, y] = at(e, dd); B.put(x, y, c); }
-      if (roads.some(([rs, off]) => rs === sd && off > a && off < b)) continue;
-      for (const k of [0, 3]) for (let j = -2; j <= 2; j++) { const [x, y] = at(mid + j, 2 + k + (2 - Math.abs(j))); B.put(x, y, c); }
-      void hz;
     }
   }
   // The level's ground, drawn once: grass, canal, road from the centre line, pavement, planting, static shadows.
@@ -864,7 +857,7 @@
     trees.sort((a, b) => a[1] - b[1]).forEach(([wx, wy]) => tree(B, Math.round(wx / U), Math.round(wy / U)));
     for (const p of level.patches || []) if (p.kind === 'puddle') puddle(B, p, r);
     for (const st of level.statics) if (!PAL.spill || st.kind !== 'block') rectShadow(B, st, st.kind === 'block' ? st.height : P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
-    gateMarks(B, level);
+    edgeMarks(B, level);
     return B;
   }
 

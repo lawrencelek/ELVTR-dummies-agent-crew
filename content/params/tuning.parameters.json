@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit40-2026-10-20",
+ "registryVersion": "edit40.1-2026-10-20",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–40 (20 October 2026)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–40.1 (20 October 2026)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -572,24 +572,24 @@
    "group": "Damage and rewards",
    "owner": "Damage / Economy",
    "label": "Fresh body health",
-   "description": "Lawrence CR-004. Reference field protected in normal tuning.",
+   "description": "Base (Standard) body health. Edit 40.1 supersedes CR-004 (1600). Difficulty picks proto.health.*.",
    "unit": "health units",
    "type": "number",
-   "default": 1600,
+   "default": 800,
    "status": "author-decided",
-   "source": "GDD §8.3",
+   "source": "GDD §8.3; Edit 40.1",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-tick",
    "validation": {
     "min": 0,
-    "designMin": 800,
+    "designMin": 600,
     "designMax": 2400
    },
    "integrationStatus": "not-connected-to-game",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "About four head-on sedan lunges, so a body is spent deliberately rather than lost",
-   "designBound": "Below 800 a body dies in two sedan hits and the body horizon collapses. Above 2400 a five-minute visit never reaches a write-off."
+   "purpose": "Base 800: a body takes several deliberate hits before a write-off",
+   "designBound": "Below 600 two late sedan lunges (278 each) nearly write a body off. Above 2400 a five-minute visit never reaches a write-off."
   },
   {
    "id": "damage.baseImpact",
@@ -4123,6 +4123,69 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Fixed layouts are learnable; a new seed gives a new street view"
+  },
+  {
+   "id": "proto.health.fragile",
+   "group": "Prototype P3",
+   "owner": "Damage",
+   "label": "Fragile health",
+   "description": "Body health on the easy setting (Fragile).",
+   "unit": "health units",
+   "type": "number",
+   "default": 600,
+   "status": "author-decided",
+   "source": "Edit 40.1 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-chassis",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Easy: fewer hits per write-off"
+  },
+  {
+   "id": "proto.health.standard",
+   "group": "Prototype P3",
+   "owner": "Damage",
+   "label": "Standard health",
+   "description": "Body health on the base setting (Standard). Equals damage.bodyHealth.",
+   "unit": "health units",
+   "type": "number",
+   "default": 800,
+   "status": "author-decided",
+   "source": "Edit 40.1 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-chassis",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The base contract"
+  },
+  {
+   "id": "proto.health.reinforced",
+   "group": "Prototype P3",
+   "owner": "Damage",
+   "label": "Reinforced health",
+   "description": "Body health on the difficult setting (Reinforced).",
+   "unit": "health units",
+   "type": "number",
+   "default": 1000,
+   "status": "author-decided",
+   "source": "Edit 40.1 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-chassis",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Difficult: more hits per write-off"
   }
  ],
  "tables": {

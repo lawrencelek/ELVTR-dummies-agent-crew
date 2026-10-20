@@ -49,7 +49,7 @@
     'proto.substeps': 4,
     'proto.learningEnabled': 0, 'proto.zonesEverywhere': 0, 'proto.pathsEverywhere': 1, 'proto.stopCue': 1,
     'proto.returnSignalSeconds': 0.5, 'proto.returnClearance': 30, 'proto.carYawRate': 240,
-    'proto.difficulty': 1, 'proto.health.fragile': 200, 'proto.health.standard': 300, 'proto.health.reinforced': 600,
+    'proto.difficulty': 1, 'proto.health.fragile': 600, 'proto.health.standard': 800, 'proto.health.reinforced': 1000, // Edit 40.1: base 800; easy 600; difficult 1000
     'proto.quota.straight': 1, 'proto.quota.barrier': 2, 'proto.quota.corner': 3,
     'proto.traffic.straight.interval': 3, 'proto.traffic.barrier.interval': 3, 'proto.traffic.corner.interval': 3.5,
     'proto.traffic.jitter': 0.4, 'proto.art.pillarHeight': 60,
@@ -512,12 +512,37 @@
     const r = prng(D.seed + (c[1] * 31 + c[0]) * 7477);
     const lv = cell.start ? buildLevel(D.levelId, P) : generateScreen(D, cell, P, r);
     lv.statics = lv.statics.map((s, i) => Object.assign({}, s, { id: 's' + i }));
-    Object.assign(lv, { key: D.levelId + '@' + c[0] + ',' + c[1], cell: c.slice(), gates: cell.gates, canal: cell.canal, theme: cell.theme, order: cell.order });
+    const solid = SIDES.filter((sd) => { const x = c[0] + SIDE[sd][0], y = c[1] + SIDE[sd][1]; return x < 0 || y < 0 || x >= D.cols || y >= D.rows; });
+    Object.assign(lv, { key: D.levelId + '@' + c[0] + ',' + c[1], cell: c.slice(), gates: cell.gates, solid, canal: cell.canal, theme: cell.theme, order: cell.order });
     if (!cell.start) lv.patches = makePatches(lv, P, r);
     cell.level = lv;
     return lv;
   }
   const cellName = (c) => 'ABCDEFGH'[c[0]] + (c[1] + 1); // columns A–C, rows 1–3 from the river
+  // Edge stretches that stop the dummy although this side is open: the far side is built up, or it is the district edge.
+  // The renderer marks them, so a wall the player cannot see yet still reads (Edit 40.1).
+  function edgeSpans(D, c, P) {
+    const cell = D.cells[c[1]][c[0]];
+    if (cell.edgeSpans) return cell.edgeSpans;
+    const W = P['world.width'], H = P['world.height'], r = P['body.radius'], lv = cellLevel(D, c, P), out = {};
+    for (const sd of SIDES) {
+      const nx = c[0] + SIDE[sd][0], ny = c[1] + SIDE[sd][1], outside = nx < 0 || ny < 0 || nx >= D.cols || ny >= D.rows;
+      const nb = outside ? null : cellLevel(D, [nx, ny], P), len = horiz(sd) ? H : W, spans = [];
+      let a = null;
+      for (let v = 0; v <= len; v += 4) {
+        const here = sd === 'E' ? [W - r - 1, v] : sd === 'W' ? [r + 1, v] : sd === 'S' ? [v, H - r - 1] : [v, r + 1];
+        const there = sd === 'E' ? [r + 1, v] : sd === 'W' ? [W - r - 1, v] : sd === 'S' ? [v, r + 1] : [v, H - r - 1];
+        const open = (q, list) => list.every((st) => !circleRect(q[0], q[1], r, st));
+        const stop = open(here, lv.statics) && (outside || !open(there, nb.statics));
+        if (stop && a == null) a = v;
+        if (!stop && a != null) { spans.push([a, v]); a = null; }
+      }
+      if (a != null) spans.push([a, len]);
+      out[sd] = spans;
+    }
+    cell.edgeSpans = out;
+    return out;
+  }
 
   // ---------- geometry tests
   function circleRect(px, py, r, s) {
@@ -890,12 +915,12 @@
         if (vn < 0) { b.vx -= vn * res.nx; b.vy -= vn * res.ny; }
         block();
       }
-      // Screen edges are solid except at gates (D24). Inside a gate span the dummy may cross; the flip follows in step().
-      const W = P['world.width'], H = P['world.height'], gates = this.level.gates || {};
-      const inGate = (sd, v) => (gates[sd] || []).some(([a, z]) => v - r >= a - 1e-6 && v + r <= z + 1e-6);
+      // Screen edges (D24, Edit 40.1): open wherever the ground is open on both sides, as in Zelda.
+      // A building or barrier across the edge stops the dummy; so does the district's outer edge. The flip follows in step().
+      const W = P['world.width'], H = P['world.height'];
       let ex = clamp(b.x, r, W - r), ey = clamp(b.y, r, H - r);
-      if ((b.x < r && inGate('W', b.y)) || (b.x > W - r && inGate('E', b.y))) ex = b.x;
-      if ((b.y < r && inGate('N', b.x)) || (b.y > H - r && inGate('S', b.x))) ey = b.y;
+      if ((b.x < r && this.edgeOpen('W', b.y)) || (b.x > W - r && this.edgeOpen('E', b.y))) ex = b.x;
+      if ((b.y < r && this.edgeOpen('N', b.x)) || (b.y > H - r && this.edgeOpen('S', b.x))) ey = b.y;
       if (ex !== b.x || ey !== b.y) { b.x = ex; b.y = ey; block(); }
       for (const c of this.cars) {
         const res = circleCar(b.x, b.y, r, c);
@@ -1645,6 +1670,16 @@
       if (D.visited.size === D.cols * D.rows) this.mile('districtExplored', { road: this.roadIndex + 1 });
     }
     screenName() { return this.district ? cellName(this.district.cur) : null; }
+    // Can the dummy cross this edge at this point? Only inside the district, and only onto open ground on the far side.
+    edgeOpen(sd, v) {
+      const D = this.district;
+      if (!D) return false;
+      const nx = D.cur[0] + SIDE[sd][0], ny = D.cur[1] + SIDE[sd][1];
+      if (nx < 0 || ny < 0 || nx >= D.cols || ny >= D.rows) return false;
+      const P = this.P, r = P['body.radius'], W = P['world.width'], H = P['world.height'], nb = cellLevel(D, [nx, ny], P);
+      const lx = sd === 'E' ? r + 1 : sd === 'W' ? W - r - 1 : v, ly = sd === 'S' ? r + 1 : sd === 'N' ? H - r - 1 : v;
+      return lx >= r && lx <= W - r && ly >= r && ly <= H - r && nb.statics.every((st) => !circleRect(lx, ly, r, st));
+    }
 
     // ----- menus
     continueReport() { if (this.phase === 'report') { this.phase = 'shop'; this.emit('shop-open', { credits: this.run.credits }); } }
@@ -1684,7 +1719,7 @@
   }
 
   const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
-    planDistrict, cellLevel, cellName, edgeCrossings, roadCenter, makePatches, roadDist, SIDE };
+    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, roadCenter, makePatches, roadDist, SIDE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.DUMMIES = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -110,7 +110,11 @@
     app.present = [];
     // D24: build every screen of the district now (a short pause at the start, none at the edges)
     const D = app.sim.district;
-    if (D) for (let y = 0; y < D.rows; y++) for (let x = 0; x < D.cols; x++) { const lv = window.DUMMIES.cellLevel(D, [x, y], app.sim.P); levelArt({ level: lv, P: app.sim.P }); }
+    if (D) {
+      const all = [];
+      for (let y = 0; y < D.rows; y++) for (let x = 0; x < D.cols; x++) all.push([x, y, window.DUMMIES.cellLevel(D, [x, y], app.sim.P)]);
+      for (const [x, y, lv] of all) { lv.blockedEdges = window.DUMMIES.edgeSpans(D, [x, y], app.sim.P); levelArt({ level: lv, P: app.sim.P }); }
+    }
     fx.seenScreens = new Set(D ? [app.sim.screenName()] : []);
   }
 
@@ -686,7 +690,7 @@
   const EXT = (h) => Math.round(h * pv('proto.art.extrusion') / U); // object height drawn as a screen-up offset, art px
   const artCache = new Map();
   function levelArt(s) {
-    const id = (s.level.key || s.level.id) + (s.P['proto.city'] ? ':city' : '') + ':' + (s.P['proto.district.seed'] || 0) + ':' + (s.P['world.puddleShare']);
+    const id = (s.level.key || s.level.id) + (s.P['proto.city'] ? ':city' : '') + ':' + (s.P['proto.district.seed'] || 0) + ':' + (s.P['world.puddleShare']) + (s.level.blockedEdges ? ':edges' : '');
     if (!artCache.has(id)) {
       const P = s.P, L = s.level, gen = L.cell && L.theme !== 'start';
       const gr = PIX.ground(L, P, gen ? 1000 + L.cell[0] * 37 + L.cell[1] * 101 + LEVEL_LIST.indexOf(L.id) * 7 : 7 + LEVEL_LIST.indexOf(id) * 31), leds = PIX.PAL.bldgLed;
