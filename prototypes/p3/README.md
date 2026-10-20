@@ -2,7 +2,7 @@
 
 **P3 · 20 October 2026 · Lawrence Lek**
 
-P2.2's simulation in the GDD Edit 37 art direction: a pixel-art eco-city field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 300 at (120, 30). The simulation is unchanged; only presentation moved.
+P2.2's simulation in the GDD Edit 37 art direction: a pixel-art eco-city field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 300 at (120, 30). Two simulation changes: solid city statics and part damage that cuts abilities. Everything else is P2.2.
 
 ![P3: road 1 at 720p](docs/p3_play_l1.png)
 
@@ -13,7 +13,7 @@ Open `dummies_p3.html` in a browser. No install, no server. **Full screen** fill
 | Control | Keys |
 |---|---|
 | Move | WASD or arrows |
-| Lunge | Space or J |
+| Dash (the lunge) | Space or J |
 | Cone (after Carry) | K or Shift |
 | Pause and cue key | Esc |
 | Tuning panel | T |
@@ -39,7 +39,7 @@ Campaign, difficulty and quotas match P2.2.
 - **Generated, not painted.** `pixel.js` builds every sprite and ground at load. No image files.
 - **Cars:** footprint extruded by `vehicles.<cls>.height` × `proto.art.extrusion` ÷ `ui.artScale`. 32 headings (11.25°). South face, 1-px outline, white roof, blue glass. Tail lights brighten when braking.
 - **Pods:** 9-px towers, depth-sorted with cars and the dummy.
-- **Dummy:** 13 × 19, four facings, six wear tints, dents and a cracked head. The nose vector gives the exact facing.
+- **Dummy:** 13 × 19, four facings, six wear tints, dents and a cracked head. The nose vector gives the exact facing. Rim outline on dark ground (below).
 - **Ground:** road, kerbs, dashes and paving from each level's centre line. Canal, lawns, flowers, hedges, trees. Hard shadows down-left (`proto.art.shadowScale`).
 
 ## Palettes
@@ -55,6 +55,18 @@ Campaign, difficulty and quotas match P2.2.
 - **Palettes never change play.** The city below is the same in all three.
 - **X-ray pass (all palettes).** An occluded car or dummy shows as a checker of its own pixels.
 - **Options, not decided.** Decision 88 still names the eco-city field.
+
+### Outline on dark ground (night and cyber)
+
+A black outline vanishes on a dark field. The background owns the darkest values, so key actors take a light edge.
+
+- **Rim, not ink.** Outer silhouette pixels of the dummy become a rim. Edges facing up or right (toward the sun) take `dummy.rimLight` `#E6F4FF`. Other edges take `dummy.rimDark` `#5E7080`.
+- **Inner lines stay black.** Joints inside the silhouette keep `dummy.joint`. The body still reads as a dummy.
+- **Same rule on the HUD doll.** A broken part's outline still turns `cue.warning`.
+- **Day keeps the black outline.** Dark on light needs no change.
+- **Field sprite and doll only.** Cars keep their outline; white roofs already separate from dark tarmac.
+
+![Rim outline on the cyber deck, 8× zoom](docs/p3_rim_zoom.png)
 
 ## City (Fix A, `proto.city` = 1)
 
@@ -74,6 +86,7 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 - **X-ray pass.** An occluded car or dummy shows as a checker of its own pixels (tier 1: never occluded).
 - **`proto.city` = 0** restores the P2.2 roads (tuning panel; applies on the next road or restart).
 - **Not rebalanced.** Blocks add cover and sensor shadows. Quotas, traffic and pod layout are P2.2 values.
+- **Cover share:** solids cover 8.0% (L1), 7.3% (L2), 5.5% (L3) of the play area. GDD 7.9 clause 6 asks for at least 0.10 (`world.occludedFractionMax` caps it at 0.25).
 
 ## HUD v3 (20 October)
 
@@ -81,15 +94,35 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 |---|---|
 | Top bar | Road · WRITE-OFFS n / quota · POINTS · CARS LEFT (the shift's clock; no separate timer) |
 | Left | BODY: health at 48 px with its bar. DASH: charge blocks |
-| Right | CHASSIS: front-view doll at ×9. Each part shows its own damage. LAST HIT: part and health lost |
+| Right | CHASSIS: front-view doll at ×9. Each part shows its own damage. LAST HIT: part and health lost. Cut abilities in `cue.warning` |
 | Bottom | Controls that apply now |
 
 - **Locational damage.** Every impact records `part` (head, torso, armL, armR, legL, legR); `body.parts` sums health lost per part.
   - **Height** from the hit's size: below `proto.parts.torsoFrom` (100) the legs; up to `proto.parts.headFrom` (250) the torso, or an arm when the hit comes from the side; above, the head.
   - **Side** from the contact point against the dummy's facing.
   - **Doll levels:** any damage dents the part; `proto.parts.crackedShare` (0.2 of `damage.bodyHealth`) cracks it; `proto.parts.brokenShare` (0.4) turns its outline to the warning ink. The hit part flashes white.
-  - **Display and reports only.** Health stays one pool; parts change no ability.
-- **Modules** glow aqua on the doll. The full list lives in the shop and pause screens.
+  - **Health stays one pool.** Parts only decide which ability the damage cuts.
+- **Modules** glow aqua on the doll. The full list lives in the shop.
+
+### Part damage cuts abilities (`proto.parts.effects` = 1)
+
+Share = health lost by the part ÷ `damage.bodyHealth`. Each ability falls linearly to a floor.
+
+| Part | Ability | Rule | Loss | Floor |
+|---|---|---|---:|---:|
+| Legs (L + R shares) | Ground speed: walk, run, carry | × (1 − loss × share) | `proto.parts.legSpeedLoss` 1 | `proto.parts.legSpeedFloor` 0.5 |
+| Torso | Turn rate | × (1 − loss × share) | `proto.parts.torsoTurnLoss` 1.5 | `proto.parts.torsoTurnFloor` 0.5 |
+| Head | View cone width (`sensing.coneWidth`) | × (1 − loss × share) | `proto.parts.headConeLoss` 1.5 | `proto.parts.headConeFloor` 0.5 |
+| Arms (L + R shares) | Throw distance (`upgrades.throwDistance`) | × (1 − loss × share) | `proto.parts.armThrowLoss` 1 | `proto.parts.armThrowFloor` 0.5 |
+| Both arms broken | Pick up a cone | Denied while each arm ≥ `proto.parts.brokenShare` | — | — |
+
+- **Examples (Standard 300):** 75 lost to the legs → speed 75%. 40 lost to the head → cone 72° of 90°. Floors: speed 50%, cone 45°.
+- **On screen:** the chassis panel lists each cut ability: SPEED %, TURN %, VIEW °, THROW %, or CONE NO GRIP. The view cone narrows in the field.
+- **Dash reach** still shrinks with total wear to `movement.wearFloor` (0.45). Part damage adds no dash loss. Charge is unchanged.
+- **New chassis resets every part.**
+- **`proto.parts.effects` = 0** restores display-only parts (tuning panel).
+
+![Cyber palette, staged: four parts hit, cut abilities listed under the doll](docs/p3_parts_cyber.png)
 - **DASH** is the on-screen name for the lunge. Registry IDs keep `movement.lunge*`.
 
 ## Type at registry size (GDD §4.2.3)
@@ -102,9 +135,9 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 
 ## Essentials only (V29 D10.3)
 
-- **Left:** BODY (health and bar), CHARGE (three blocks).
-- **Right:** WRITE-OFFS, CARS LEFT, POINTS, CREDITS.
-- **Top:** FARSIGHT, road name. **Bottom:** move and lunge keys during play; cone appears after Carry.
+- **Top:** road, WRITE-OFFS, POINTS, CARS LEFT. **Left:** BODY, DASH. **Right:** CHASSIS doll, LAST HIT, cut abilities.
+- **Credits** show on the report and shop screens only.
+- **Bottom:** move and dash keys during play; cone appears after Carry.
 - **Field:** three-character tags (`S01`, `V02`, 4.2.2), seniority as square pips, roof pips, stop line, stop bracket, nose vector, charge ring.
 - **Cut from P2.2:** slogan, badges, notice band, micro-type, bezel range marks, FLEET panel, active time, chassis number, ghost car, STOP word, BLIND word, zoom punch.
 - **Barks off.** A bubble at `ui.typeSecondary` would cover the field. Events still log.
@@ -122,6 +155,12 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 | `proto.city` | 1 | Proposed. City blocks and jersey barriers are statics; 0 = P2.2 roads |
 | `proto.parts.torsoFrom`, `proto.parts.headFrom` | 100, 250 | Proposed. Assessed damage that reaches the torso, then the head |
 | `proto.parts.crackedShare`, `proto.parts.brokenShare` | 0.2, 0.4 | Proposed. Share of body health lost by one part to crack, then break it |
+| `proto.parts.effects` | 1 | Proposed. Part damage cuts abilities; 0 = display only |
+| `proto.parts.legSpeedLoss`, `proto.parts.legSpeedFloor` | 1, 0.5 | Proposed. Ground speed per leg share; lowest multiplier |
+| `proto.parts.torsoTurnLoss`, `proto.parts.torsoTurnFloor` | 1.5, 0.5 | Proposed. Turn rate per torso share; lowest multiplier |
+| `proto.parts.headConeLoss`, `proto.parts.headConeFloor` | 1.5, 0.5 | Proposed. View cone per head share; lowest multiplier |
+| `proto.parts.armThrowLoss`, `proto.parts.armThrowFloor` | 1, 0.5 | Proposed. Throw distance per arm share; lowest multiplier |
+| `dummy.rimLight`, `dummy.rimDark` (palette roles) | `#E6F4FF`, `#5E7080` | Proposed. Night and cyber only. Dummy rim on dark ground |
 
 ## Files
 
@@ -132,7 +171,7 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 | `game.js` | Input, events, juice, HUD, screens, tuning. P2.2 logic; new renderer |
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html` |
-| `test_sim.js` | `node test_sim.js`: 44 checks: 8 for the city, 2 for body parts |
+| `test_sim.js` | `node test_sim.js`: 47 checks: 8 for the city, 2 for body parts, 3 for part effects |
 
 ## Open
 
