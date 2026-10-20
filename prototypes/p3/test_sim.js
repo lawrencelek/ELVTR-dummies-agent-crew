@@ -428,5 +428,97 @@ check('part effects: both arms broken → cannot pick up a cone', () => {
   s.step({ bPress: true }); assert(!s.body.held && s.events.some((e) => e.type === 'denied' && e.action === 'pickup'), 'denied with broken arms');
   s.body.parts.armR = 0; s.step({}); s.step({ bPress: true }); assert(s.body.held, 'one good arm can carry');
 });
+// ---------- Edit 40 (20 Oct): districts (D24), puddles (D18), Big battery (D26)
+const { planDistrict, cellLevel, cellName, edgeCrossings, SIDE } = D;
+const OPPS = { N: 'S', E: 'W', S: 'N', W: 'E' };
+function rdist(x, y, r) { return Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h))); }
+check('district: one road through all nine screens; its ends leave the district; crossings match on shared edges', () => {
+  for (const id of D.LEVEL_LIST) {
+    const s = new Sim(id), Dd = s.district;
+    assert(Dd, id + ': no district');
+    assert.strictEqual(new Set(Dd.path.map((c) => c.join())).size, 9, id + ': road misses a screen');
+    for (let i = 0; i + 1 < Dd.path.length; i++) {
+      const a = Dd.path[i], b = Dd.path[i + 1], sd = b[0] > a[0] ? 'E' : b[0] < a[0] ? 'W' : b[1] > a[1] ? 'S' : 'N';
+      const ca = edgeCrossings(Dd.cells[a[1]][a[0]].center, 800, 600).find((e) => e.side === sd), cb = edgeCrossings(Dd.cells[b[1]][b[0]].center, 800, 600).find((e) => e.side === OPPS[sd]);
+      assert(ca && cb && Math.abs(ca.off - cb.off) <= 1, id + ': road breaks between ' + cellName(a) + ' and ' + cellName(b));
+    }
+    const st = Dd.cells[Dd.start[1]][Dd.start[0]];
+    assert.strictEqual(st.theme, 'start'); assert.strictEqual(JSON.stringify(st.center), JSON.stringify(D.LEVELS[id].center()), id + ': start screen keeps its road');
+  }
+});
+check('district: every generated screen meets the city contract; every gate is open on both sides and reachable', () => {
+  for (const id of D.LEVEL_LIST) for (const seed of [0, 1]) {
+    const s = new Sim(id, { 'proto.district.seed': seed }), Dd = s.district, R = s.P['body.radius'];
+    for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
+      const lv = cellLevel(Dd, [x, y], s.P), tag = id + '/' + seed + '/' + cellName([x, y]);
+      const share = lv.statics.filter((q) => q.kind === 'block').reduce((n, q) => n + q.w * q.h, 0) / 480000;
+      if (lv.theme !== 'start') assert(share >= 0.2 && share <= s.P['world.occludedFractionMax'], tag + ' blocks ' + share.toFixed(3));
+      assert(lv.spawns.length >= 3, tag + ' spawns');
+      // flood fill from the spawns on a 4-unit grid
+      const S = 4, gw = 200, gh = 150, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh), q = [];
+      for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const px = i * S + 2, py = j * S + 2; free[j * gw + i] = px > R && px < 800 - R && py > R && py < 600 - R && lv.statics.every((st) => rdist(px, py, st) > R + 0.5) ? 1 : 0; }
+      for (const sp of lv.spawns) { const k = Math.floor(sp.y / S) * gw + Math.floor(sp.x / S); if (free[k]) { seen[k] = 1; q.push(k); } }
+      while (q.length) { const k = q.pop(), i = k % gw, j = (k - i) / gw; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ii = i + di, jj = j + dj; if (ii < 0 || jj < 0 || ii >= gw || jj >= gh) continue; const kk = jj * gw + ii; if (free[kk] && !seen[kk]) { seen[kk] = 1; q.push(kk); } } }
+      for (const sd of ['N', 'E', 'S', 'W']) { const nx = x + SIDE[sd][0], ny = y + SIDE[sd][1]; if (nx >= 0 && ny >= 0 && nx < 3 && ny < 3) assert((lv.gates[sd] || []).length >= 1, tag + ' no gate ' + sd); }
+      for (const sd of ['N', 'E', 'S', 'W']) for (const [a, b] of lv.gates[sd] || []) {
+        const m = (a + b) / 2, px = sd === 'W' ? R + 2 : sd === 'E' ? 800 - R - 2 : m, py = sd === 'N' ? R + 2 : sd === 'S' ? 600 - R - 2 : m;
+        assert(lv.statics.every((st) => rdist(px, py, st) > R), tag + ' gate ' + sd + ' blocked');
+        assert(seen[Math.floor(py / S) * gw + Math.floor(px / S)], tag + ' gate ' + sd + ' unreachable');
+        const nb = cellLevel(Dd, [x + SIDE[sd][0], y + SIDE[sd][1]], s.P);
+        assert(JSON.stringify(nb.gates[OPPS[sd]]) === JSON.stringify(lv.gates[sd]), tag + ' gate ' + sd + ' differs across the edge');
+      }
+    }
+  }
+});
+check('district: a gate lets the dummy through and flips the screen; elsewhere the edge holds', () => {
+  const s = empty(); s.body.x = 780; s.body.y = 340; s.body.facing = 0;
+  const h = s.body.health;
+  for (let i = 0; i < 60 && s.screenName() === 'B1'; i++) s.step({ mx: 1, my: 0 });
+  assert.strictEqual(s.screenName(), 'C1', 'flipped east'); assert(s.phase === 'scroll' && s.body.x < 20 && s.body.health === h, 'body carried over');
+  idle(s, 40, {}); assert.strictEqual(s.phase, 'play');
+  const t = empty(); t.body.x = 770; t.body.y = 440; t.body.facing = 0;
+  idle(t, 60, { mx: 1, my: 0 });
+  assert.strictEqual(t.screenName(), 'B1'); assert(near(t.body.x, 800 - t.P['body.radius'], 0.5), 'clamped at the edge');
+});
+check('district: cones stay on their screen; a held cone travels with the dummy', () => {
+  const s = empty(); s.run.owned = { carry: true };
+  const first = s.cones.slice(), cn = s.cones[0];
+  s.body.x = cn.x - (s.P['body.radius'] + s.P['props.cone.radius'] + 4); s.body.y = cn.y; s.body.facing = 0; s.step({ bPress: true });
+  assert(s.body.held === cn);
+  s.body.x = 780; s.body.y = 340; for (let i = 0; i < 60 && s.screenName() === 'B1'; i++) s.step({ mx: 1, my: 0 });
+  assert.strictEqual(s.screenName(), 'C1'); assert(s.cones.includes(cn) && !first.slice(1).some((c) => s.cones.includes(c)), 'new screen: its cones plus the held one');
+});
+check('puddles: world.puddleShare of tiles on every screen, never under a static, spawn or cone', () => {
+  for (const id of D.LEVEL_LIST) {
+    const s = new Sim(id), Dd = s.district;
+    for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
+      const lv = cellLevel(Dd, [x, y], s.P), tiles = lv.patches.reduce((n, p) => n + p.w * p.h / 1024, 0);
+      assert.strictEqual(tiles, Math.round(0.02 * 25 * 19), id + ' ' + cellName([x, y]) + ' tiles ' + tiles);
+      for (const p of lv.patches) assert(lv.statics.every((st) => !(p.x < st.x + st.w && p.x + p.w > st.x && p.y < st.y + st.h && p.y + p.h > st.y)), 'puddle under a static');
+      assert(lv.patches.some((p) => D.roadDist(lv.center)(p.x + p.w / 2, p.y + p.h / 2) < 56), id + ' ' + cellName([x, y]) + ': none on the road');
+    }
+  }
+});
+check('puddle: no dash from water; the slide runs movement.lowGripStopMultiplier longer; cars brake at half', () => {
+  const s = empty(); const p = s.level.patches[0]; s.body.x = p.x + p.w / 2; s.body.y = p.y + p.h / 2;
+  s.step({ aPress: true });
+  assert(s.body.mode !== 'lunge' && s.events.some((e) => e.type === 'slip') && s.events.some((e) => e.type === 'denied'), 'dash denied on water');
+  const coast = (wet) => { const t = empty(); t.level.patches = wet ? [{ x: 0, y: 0, w: 800, h: 600, kind: 'puddle' }] : []; t.body.x = 200; t.body.y = 300; t.body.facing = 0; idle(t, 90, { mx: 1, my: 0 }); const x0 = t.body.x; idle(t, 60, {}); return t.body.x - x0; };
+  const dry = coast(false), wet = coast(true);
+  const sum = (n) => { let k = 0; for (let i = 1; i < n; i++) k += 1 - i / n; return k; }; // tick sums of the linear coast: 0.25 s and 0.625 s
+  assert(near(wet / dry, 0.9 * sum(37.5) / sum(15), 0.02), 'slide ratio ' + (wet / dry).toFixed(3)); // 2.5× the time, 0.9× the speed
+  const brake = (wet) => {
+    const t = new Sim('straight', { 'run.appearances.road': 1 }); t.checkTerminal = () => {}; t.nextAt = 0; t.admit();
+    const c = t.cars[0]; c.s = 500; t.pose(c); c.v = 138; t.level.patches = wet ? [{ x: 0, y: 0, w: 800, h: 600, kind: 'puddle' }] : [];
+    c.man = { type: 'brake', v0: 138, a: t.P['traffic.hardBraking'], vTarget: 0, t0: t.t, halt: true, tv: t.t };
+    t.moveCars(1 / 60, t.t + 1 / 60); return 138 - c.v;
+  };
+  assert(near(brake(true) / brake(false), 0.5, 0.01), 'braking ratio ' + (brake(true) / brake(false)).toFixed(3));
+});
+check('Big battery: three charges when owned (D26); base two', () => {
+  const s = empty(); assert.strictEqual(s.capacity(), 2);
+  s.run.credits = 1; s.phase = 'shop'; const r = s.buy('bigBattery'); assert(r.ok && r.price === 1, 'one credit');
+  s.leaveShop(); assert.strictEqual(s.capacity(), 3); assert.strictEqual(s.body.charge, 3);
+});
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

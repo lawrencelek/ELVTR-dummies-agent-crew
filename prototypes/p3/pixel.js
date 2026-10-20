@@ -31,6 +31,8 @@
     bldgRoof: '#E9F1F4', bldgEdge: '#B9CCD6', bldgFace: '#DCE8EE', bldgDark: '#9FB6C2', bldgUnit: '#5DBB46', bldgUnitD: '#3E9A3A',
     bldgLed: ['#4FC3E8', '#1A7FA7', '#8FE0F5'], bldgOutline: '#4A6F86', spill: false,
     jersey: '#C9D3DA', jerseyTop: '#EEF2F4', jerseyLed: '#9AA8B1', jerseyO: '#5E6F7B',
+    // surfaces (D18): puddle patches; gates (D24): edge marks in cue.secondary
+    puddle: '#93BFD3', puddleRim: '#DDF3FB', puddleLip: '#6F97AB', puddleHi: '#FFFFFF', gate: '#4A5A66',
   };
   // Chongqing night: dark ground, LED towers, lime-uplit planting, river reflections. Cues turn light-on-dark.
   // Yellow stays the dummy's alone; red stays the warning's alone (no red or yellow décor in the field).
@@ -60,6 +62,7 @@
     bldgRoof: '#1A2133', bldgEdge: '#2C3650', bldgFace: '#0D1220', bldgDark: '#080C16', bldgUnit: '#3A4560', bldgUnitD: '#222A3C',
     bldgLed: ['#3FD0FF', '#2F6BFF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], bldgOutline: '#05070B', spill: true,
     jersey: '#3A4252', jerseyTop: '#6B7894', jerseyLed: '#3FD0FF', jerseyO: '#05070B',
+    puddle: '#1B2B45', puddleRim: '#5B7BB0', puddleLip: '#0E1422', puddleHi: '#BFEFFF', gate: '#7FA8BC',
   };
   // Cyber: the night palette with a city instead of parkland. Decks for lawns, blocks for trees, jersey barriers for hedges.
   const CYBER = { scenery: 'city', grass: '#10141D', grass2: '#161B26', grass3: '#1D2331', flowers: 0 };
@@ -742,6 +745,47 @@
     const x = st.x / U, y = st.y / U, w = st.w / U, hh = st.h / U;
     fillPoly([[x + w, y], [x + w, y + hh], [x + w + ox, y + hh + oy], [x + ox, y + hh + oy], [x + ox, y + oy], [x, y]], (px, py) => B.shade(px, py, 0.72));
   }
+  // Puddle (D18): standing water on its tile rectangle. An irregular blob filling most of the patch; sheen on the
+  // far (top-left) lip, a dark near lip, and broken vertical reflections of the city lights, like the river's.
+  function puddle(B, p, r) {
+    const x0 = Math.round(p.x / U), y0 = Math.round(p.y / U), w = Math.round(p.w / U), h = Math.round(p.h / U), ph = r() * TAU;
+    const inS = (x, y) => {
+      if (x < 0 || y < 0 || x >= w || y >= h) return false;
+      const u = (x + 0.5 - w / 2) / (w / 2), v = (y + 0.5 - h / 2) / (h / 2), a = Math.atan2(v, u);
+      return Math.abs(u) ** 2.6 + Math.abs(v) ** 2.6 <= 1 - 0.14 * (0.5 + 0.5 * Math.sin(3 * a + ph));
+    };
+    const refl = KX('reflect');
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      if (!inS(x, y)) continue;
+      const far = !inS(x, y - 1) || !inS(x - 1, y), near = !inS(x, y + 1) || !inS(x + 1, y);
+      B.put(x0 + x, y0 + y, far ? K.puddleRim : near ? K.puddleLip : K.puddle);
+    }
+    for (let k = 0, n = 2 + Math.round(w * h / 160); k < n; k++) { // reflections: short vertical columns
+      const xx = 2 + Math.floor(r() * Math.max(1, w - 4)), yy = 2 + Math.floor(r() * Math.max(1, h - 6)), len = 2 + Math.floor(r() * 3);
+      const c = refl && r() < 0.6 ? refl[Math.floor(r() * refl.length)] : K.puddleHi;
+      for (let i = 0; i < len; i += 1) if (inS(xx, yy + i) && inS(xx, yy + i + 1) && inS(xx, yy + i - 1) && (i % 3 !== 2)) B.put(x0 + xx, y0 + yy + i, c);
+    }
+  }
+  // Gates (D24): where the dummy may walk off the screen. Ticks mark each opening's ends; chevrons point out of pedestrian gates.
+  function gateMarks(B, level) {
+    const g = level.gates || {}, roads = [];
+    const segs = level.center;
+    for (let i = 1; i < segs.length; i++) { // where the road crosses an edge (that opening needs no chevron: the road says it)
+      const [x0, y0] = segs[i - 1], [x1, y1] = segs[i];
+      for (const [sd, t] of [['W', x1 !== x0 ? -x0 / (x1 - x0) : -1], ['E', x1 !== x0 ? (AW * U - x0) / (x1 - x0) : -1], ['N', y1 !== y0 ? -y0 / (y1 - y0) : -1], ['S', y1 !== y0 ? (AH * U - y0) / (y1 - y0) : -1]]) {
+        if (t >= 0 && t <= 1) roads.push([sd, sd === 'W' || sd === 'E' ? y0 + (y1 - y0) * t : x0 + (x1 - x0) * t]);
+      }
+    }
+    const c = K.gate;
+    for (const sd of ['N', 'E', 'S', 'W']) for (const [a, b] of g[sd] || []) {
+      const hz = sd === 'W' || sd === 'E', A = Math.round(a / U), Bn = Math.round(b / U) - 1, mid = Math.round((a + b) / 2 / U);
+      const at = (along, depth) => (sd === 'W' ? [depth, along] : sd === 'E' ? [AW - 1 - depth, along] : sd === 'N' ? [along, depth] : [along, AH - 1 - depth]);
+      for (const e of [A, Bn]) for (let dd = 0; dd < 3; dd++) { const [x, y] = at(e, dd); B.put(x, y, c); }
+      if (roads.some(([rs, off]) => rs === sd && off > a && off < b)) continue;
+      for (const k of [0, 3]) for (let j = -2; j <= 2; j++) { const [x, y] = at(mid + j, 2 + k + (2 - Math.abs(j))); B.put(x, y, c); }
+      void hz;
+    }
+  }
   // The level's ground, drawn once: grass, canal, road from the centre line, pavement, planting, static shadows.
   function ground(level, P, seed) {
     const B = new Buf(AW, AH), r = rng(seed || 7);
@@ -754,12 +798,14 @@
       for (let i = 0; i < 2000; i++) { const x = Math.floor(r() * AW), y = Math.floor(r() * AH); B.put(x, y, K.grass2); B.put(x + 1, y - 1, K.grass2); }
       for (let i = 0; i < 650; i++) B.put(Math.floor(r() * AW), Math.floor(r() * AH), K.grass3);
     }
-    const cb = Math.round(34 / U); // canal along the top edge
-    B.rect(0, 0, AW - 1, cb, K.water);
-    for (const y of [3, 7, 11, 15]) for (let x = Math.floor(r() * 8); x < AW; x += 31) for (let i = 0; i < 8; i++) B.put(x + i, y + (i > 3 ? 1 : 0), K.water2);
-    B.rect(0, cb + 1, AW - 1, cb + 1, K.kerb); B.rect(0, cb + 2, AW - 1, cb + 2, K.kerb2);
+    const canal = level.canal !== false, cb = canal ? Math.round(34 / U) : -3; // canal along the top edge: the river screens only (D24)
+    if (canal) {
+      B.rect(0, 0, AW - 1, cb, K.water);
+      for (const y of [3, 7, 11, 15]) for (let x = Math.floor(r() * 8); x < AW; x += 31) for (let i = 0; i < 8; i++) B.put(x + i, y + (i > 3 ? 1 : 0), K.water2);
+      B.rect(0, cb + 1, AW - 1, cb + 1, K.kerb); B.rect(0, cb + 2, AW - 1, cb + 2, K.kerb2);
+    }
     const refl = KX('reflect');
-    if (refl) { // night river: the towers' light falls on the water as broken vertical columns
+    if (!canal) { /* no river on inland screens */ } else if (refl) { // night river: the towers' light falls on the water as broken vertical columns
       for (let i = 0, x = 6; x < AW; x += 17 + Math.floor(r() * 12), i++) {
         const c = refl[i % refl.length];
         for (let y = 1; y < cb; y += 2) if (r() < 0.75) { const j = Math.round((r() - 0.5) * 3), w = 2 + Math.floor(r() * 4); for (let k = 0; k < w; k++) B.put(x + j + k, y, c); }
@@ -816,7 +862,9 @@
       trees.push([wx, wy]);
     }
     trees.sort((a, b) => a[1] - b[1]).forEach(([wx, wy]) => tree(B, Math.round(wx / U), Math.round(wy / U)));
+    for (const p of level.patches || []) if (p.kind === 'puddle') puddle(B, p, r);
     for (const st of level.statics) if (!PAL.spill || st.kind !== 'block') rectShadow(B, st, st.kind === 'block' ? st.height : P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
+    gateMarks(B, level);
     return B;
   }
 

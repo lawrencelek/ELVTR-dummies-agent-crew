@@ -108,6 +108,10 @@
     fx.rings = []; fx.streaks = []; fx.bubbles.clear(); fx.carBarkT.clear(); fx.cars.clear(); fx.nm.clear(); fx.nmDone.clear();
     fx.lungeWatch = null; fx.lastImpact = null; fx.upgradeWatch = null; if (!carry) fx.pendingNodes = [];
     app.present = [];
+    // D24: build every screen of the district now (a short pause at the start, none at the edges)
+    const D = app.sim.district;
+    if (D) for (let y = 0; y < D.rows; y++) for (let x = 0; x < D.cols; x++) { const lv = window.DUMMIES.cellLevel(D, [x, y], app.sim.P); levelArt({ level: lv, P: app.sim.P }); }
+    fx.seenScreens = new Set(D ? [app.sim.screenName()] : []);
   }
 
   // ---------- input
@@ -199,6 +203,7 @@
       src.connect(bp); bp.connect(g); g.connect(c.destination); src.start(t); src.stop(t + dur + 0.03);
     },
   };
+  const THEME_NAME = { start: 'Start screen', flyover: 'Flyover pillars', barrier: 'Barrier run', plain: 'Open street' };
   const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone' };
   // Generated juice (content/juice.json): one entry per sim event, every value a parameter ID. Returns false if absent.
   function juice(e, s) {
@@ -504,7 +509,14 @@
           }
           break;
         }
-        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); toast(copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
+        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
+        case 'slip': { fx.slipT = e.t; const b = s.body; puff(b.x, b.y + 8, 8, { type: 'spark', role: 'puddleHi', speed: 90, life: 0.3, size: 2 }); toast(copy('toast.slip', 'No dash on water. Step off the puddle.')); break; } // D18
+        case 'skid': { const c = s.cars.find((q) => q.id === e.car); if (c) puff(c.x, c.y, 10, { type: 'spark', role: 'puddleHi', dir: c.h + Math.PI, spread: 2.2, speed: 120, life: 0.35, size: 2 }); Snd.tone(1800, 900, 0.18, 'sawtooth', 0.02); break; }
+        case 'screen': { // D24: first visit names the screen
+          Snd.tone(300, 520, 0.12, 'triangle', 0.04);
+          if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (THEME_NAME[e.theme] || '')); }
+          break;
+        }
         case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODES[e.node].name })); break;
         case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
@@ -524,10 +536,10 @@
   // ---------- menus
   const PAUSE_ITEMS = ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title'];
   const END_ITEMS = ['Play again from road 1', 'Choose a road', 'Show trace'];
-  const SHOP_GRID = [['hips', 'spine'], ['carry', 'throw']];
+  const SHOP_GRID = [['hips', 'spine'], ['carry', 'throw'], ['bigBattery']];
   function handleMenus() {
     const s = app.sim;
-    const live = app.screen === 'game' && !app.paused && s && (s.phase === 'play' || s.phase === 'hitstop' || s.phase === 'writeoff');
+    const live = app.screen === 'game' && !app.paused && s && (s.phase === 'play' || s.phase === 'hitstop' || s.phase === 'writeoff' || s.phase === 'scroll');
     if (live) {
       for (const m of menuQ) if (m === 'pause' && s.phase === 'play') { app.paused = true; app.pauseSel = 0; app.confirmRefuse = false; }
       menuQ.length = 0;
@@ -563,9 +575,10 @@
       if (!s) continue;
       if (s.phase === 'report' && m === 'ok') s.continueReport();
       else if (s.phase === 'shop') {
-        if (m === 'left' || m === 'right') { app.shopCol = 1 - app.shopCol; if (app.shopRow > 1) app.shopRow = 1; }
-        else if (m === 'up') app.shopRow = Math.max(0, app.shopRow - 1);
-        else if (m === 'down') app.shopRow = Math.min(2, app.shopRow + 1);
+        const nc = SHOP_GRID.length, colLen = () => SHOP_GRID[app.shopCol].length;
+        if (m === 'left' || m === 'right') { app.shopCol = (app.shopCol + (m === 'right' ? 1 : -1) + nc) % nc; if (app.shopRow < 2 && app.shopRow >= colLen()) app.shopRow = colLen() - 1; }
+        else if (m === 'up') app.shopRow = app.shopRow === 2 ? colLen() - 1 : Math.max(0, app.shopRow - 1);
+        else if (m === 'down') app.shopRow = app.shopRow + 1 >= colLen() ? 2 : app.shopRow + 1;
         else if (m === 'back') { s.leaveShop(); clearEdges(); return; }
         else if (m === 'ok') {
           if (app.shopRow === 2) { s.leaveShop(); clearEdges(); return; }
@@ -673,10 +686,10 @@
   const EXT = (h) => Math.round(h * pv('proto.art.extrusion') / U); // object height drawn as a screen-up offset, art px
   const artCache = new Map();
   function levelArt(s) {
-    const id = s.level.id + (s.P['proto.city'] ? ':city' : '');
+    const id = (s.level.key || s.level.id) + (s.P['proto.city'] ? ':city' : '') + ':' + (s.P['proto.district.seed'] || 0) + ':' + (s.P['world.puddleShare']);
     if (!artCache.has(id)) {
-      const P = s.P, L = s.level;
-      const gr = PIX.ground(L, P, 7 + LEVEL_LIST.indexOf(id) * 31), leds = PIX.PAL.bldgLed;
+      const P = s.P, L = s.level, gen = L.cell && L.theme !== 'start';
+      const gr = PIX.ground(L, P, gen ? 1000 + L.cell[0] * 37 + L.cell[1] * 101 + LEVEL_LIST.indexOf(L.id) * 7 : 7 + LEVEL_LIST.indexOf(id) * 31), leds = PIX.PAL.bldgLed;
       const sprite = (st, i) => {
         const w = Math.round(st.w / U), h = Math.round(st.h / U);
         if (st.kind === 'block') return PIX.building(w, h, EXT(st.height), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]));
@@ -1111,10 +1124,26 @@
       }
     }
   }
+  // D24 screen flip: the old screen slides out as the new one slides in (world.flipSeconds; play is paused).
+  const prevFB = new Uint32Array(AW * AH), scrollBuf = new Uint32Array(AW * AH);
+  let prevOk = false;
+  function composeScroll(s) {
+    const sd = s.district.lastFlip.side, f = clamp(1 - s.phaseT / s.P['world.flipSeconds'], 0, 1), k = (1 - Math.cos(Math.PI * f)) / 2;
+    const old = prevFB, nw = FB.d, out = scrollBuf;
+    if (sd === 'E' || sd === 'W') {
+      const o = Math.round(k * AW);
+      for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const sx = sd === 'E' ? x + o : x - o; out[y * AW + x] = sx >= 0 && sx < AW ? old[y * AW + sx] : nw[y * AW + (sd === 'E' ? sx - AW : sx + AW)]; }
+    } else {
+      const o = Math.round(k * AH);
+      for (let y = 0; y < AH; y++) { const sy = sd === 'S' ? y + o : y - o; for (let x = 0; x < AW; x++) out[y * AW + x] = sy >= 0 && sy < AH ? old[sy * AW + x] : nw[(sd === 'S' ? sy - AH : sy + AH) * AW + x]; }
+    }
+    nw.set(out);
+  }
   function drawField(s, still) {
-    const la = levelArt(s);
+    const la = levelArt(s), scroll = !still && s.phase === 'scroll' && s.district && s.district.lastFlip;
     FB.copyFrom(la.ground);
-    if (still) drawSprites(s, la, true); else drawLive(s, la);
+    if (still || scroll) { drawSprites(s, la, true); if (scroll && s.body.alive) drawBodySprite(s); } else drawLive(s, la);
+    if (scroll && prevOk) composeScroll(s); else if (!still) { prevFB.set(FB.d); prevOk = true; }
     flush();
     const sh = still ? { x: 0, y: 0 } : shakeOffset(), ox = Math.round(sh.x / U) * U, oy = Math.round(sh.y / U) * U;
     ctx.save(); ctx.beginPath(); ctx.rect(FX, FY, FW, FH); ctx.clip();
@@ -1128,7 +1157,8 @@
     const P = s.P;
     if (s.t < 4 && s.phase === 'play') {
       const iv = { road: s.roadIndex + 1, roads: LEVEL_LIST.length, roadName: LEVELS[s.levelId].name, quota: s.quota, difficulty: s.difficulty, health: P['damage.bodyHealth'] };
-      const intro = CI && CI.copy && CI.copy.intro, msg = intro ? fillIn(intro[0], iv) : 'Road ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. Write-offs required: ' + iv.quota + '.';
+      const intro = CI && CI.copy && CI.copy.intro, msg = (intro ? fillIn(intro[0], iv) : 'Road ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. Write-offs required: ' + iv.quota + '.') +
+        (s.district ? ' ' + s.district.cols * s.district.rows + ' screens: walk off a marked edge to explore.' : '');
       const lines = wrapLines(msg, FW - 88, fLab), h = 22 + lines.length * 30;
       ctx.globalAlpha = Math.min(1, (4 - s.t) / 0.6);
       rr(FX + 20, FY + 16, FW - 40, h, 12); ctx.fillStyle = FT.banner; ctx.fill(); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
@@ -1173,7 +1203,7 @@
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function drawTopBar(s) {
     const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - s.cars.length));
-    const items = [[null, roadLabel(s.level.id)], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
+    const items = [[null, roadLabel(s.level.id) + (s.district ? ' · ' + s.screenName() : '')], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
     const gap = (1264 - FX - w.reduce((a, b) => a + b, 0)) / (items.length - 1);
     let x = FX;
@@ -1195,13 +1225,35 @@
     }
     panel(X, 222, W, 86);
     txt('DASH', TX, 252, fLab, FT.dim);
-    const cap = P['battery.capacity'], pw = (180 - (cap - 1) * 10) / cap;
+    const cap = s.capacity(), pw = (180 - (cap - 1) * 10) / cap; // Big battery: 3 (D26)
     for (let i = 0; i < cap; i++) {
       const x = TX + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
       rr(x, 266, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
       if (f > 0) { rr(x, 266, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
+    drawDistrict(s);
     drawBodyPanel(s);
+  }
+  // Left, below the dash: the district map (D24). The road through all nine screens; visited screens lit; the dummy's dot.
+  function drawDistrict(s) {
+    const D = s.district;
+    if (!D) return;
+    const X = 16, Y = 318, W = 208, cw = 56, ch = 42, g = 6, gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
+    panel(X, Y, W, 50 + D.rows * ch + (D.rows - 1) * g + 16);
+    txt('DISTRICT', 30, Y + 32, fLab, FT.dim); txt(s.screenName(), X + W - 14, Y + 32, fLab, FT.text, 'right');
+    const Wd = s.P['world.width'], Hd = s.P['world.height'];
+    for (let iy = 0; iy < D.rows; iy++) for (let ix = 0; ix < D.cols; ix++) {
+      const x = gx + ix * (cw + g), y = gy + iy * (ch + g), cur = D.cur[0] === ix && D.cur[1] === iy, seen = D.visited.has(iy * D.cols + ix), cell = D.cells[iy][ix];
+      rr(x, y, cw, ch, 5); ctx.fillStyle = cur ? FT.sel : seen ? FT.item : FT.track; ctx.fill();
+      ctx.strokeStyle = cur ? FT.accent : FT.itemEdge; ctx.lineWidth = cur ? 2 : 1; ctx.stroke();
+      ctx.save(); rr(x, y, cw, ch, 5); ctx.clip();
+      if (iy === 0) { ctx.fillStyle = rgba(PIX.PAL.water.length === 7 ? PIX.PAL.water : '#4FC3E8', 0.9); ctx.fillRect(x, y, cw, 4); }
+      ctx.beginPath(); cell.center.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
+      ctx.strokeStyle = seen ? (cur ? FT.selText : FT.text) : FT.off; ctx.lineWidth = seen ? 5 : 3; ctx.lineJoin = 'round'; ctx.stroke();
+      ctx.restore();
+    }
+    const b = s.body;
+    if (b.alive) { const x = gx + D.cur[0] * (cw + g) + clamp(b.x / Wd, 0, 1) * cw, y = gy + D.cur[1] * (ch + g) + clamp(b.y / Hd, 0, 1) * ch; ctx.beginPath(); ctx.arc(x, y, 5, 0, TAU); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke(); }
   }
   // Right: the chassis. Each part shows the damage it took (sim: impact.part, body.parts); installed modules glow aqua.
   const PART_NAME = { head: 'HEAD', torso: 'TORSO', armL: 'L ARM', armR: 'R ARM', legL: 'L LEG', legR: 'R LEG' };
@@ -1214,7 +1266,7 @@
   // Owned nodes; in the shop the selected node is tried on (blinking); the tuning preview shows all 15.
   function dollMods(s) {
     if (app.previewMods) return PIX.MODULES;
-    const sel = s.phase === 'shop' && app.shopRow < 2 ? SHOP_GRID[app.shopCol][app.shopRow] : null;
+    const sel = s.phase === 'shop' && app.shopRow < 2 ? SHOP_GRID[app.shopCol][app.shopRow] || null : null;
     const tryOn = sel && !s.has(sel) && Math.floor(app.realT * 3) % 2 === 0;
     return PIX.MODULES.filter((m) => s.has(m) || (tryOn && m === sel));
   }
@@ -1319,28 +1371,28 @@
     ctx.font = fLab; const cw = ctx.measureText(ct).width + 36;
     rr(x + w - 28 - cw, y + 16, cw, 44, 12); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.5; ctx.stroke();
     txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center'); // dark on safety yellow in both palettes
-    const colW = (w - 84) / 2;
-    [0, 1].forEach((ci) => {
+    const nc = SHOP_GRID.length, colW = (w - 28 * (nc + 1)) / nc; // Torso, Arms, Battery (D26)
+    SHOP_GRID.forEach((col, ci) => {
       const cx = x + 28 + ci * (colW + 28);
-      SHOP_GRID[ci].forEach((n, ri) => {
-        const yy = y + 78 + ri * 142, node = NODES[n], own = s.has(n), chk = s.canBuy(n), on = app.shopCol === ci && app.shopRow === ri;
-        rr(cx, yy, colW, 128, 12);
+      col.forEach((n, ri) => {
+        const yy = y + 78 + ri * 150, node = NODES[n], own = s.has(n), chk = s.canBuy(n), on = app.shopCol === ci && app.shopRow === ri;
+        rr(cx, yy, colW, 140, 12);
         ctx.fillStyle = own ? 'rgba(79,195,232,0.28)' : on ? FT.keyTop : FT.item; ctx.fill();
         ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
-        txt(node.name, cx + 18, yy + 42, '900 30px ' + F_BRAND, FT.text);
+        txt(node.name, cx + 18, yy + 34, '900 26px ' + F_BRAND, FT.text);
         const price = s.P[node.price];
-        txt(own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase(), cx + colW - 18, yy + 40, fLab, own ? FT.accent : chk.ok ? FT.text : FT.off, 'right');
-        wrapText(dashify(node.desc.split('. ')[0].replace(/\.?$/, '.')), cx + 18, yy + 80, colW - 36, 28, fTxt, FT.dim, 2);
-        if (ri === 0) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 34, yy + 128); ctx.lineTo(cx + 34, yy + 142); ctx.stroke(); }
+        txt(own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase(), cx + 18, yy + 60, fLab, own ? FT.accent : chk.ok ? FT.text : FT.off);
+        wrapText(dashify(node.desc.split('. ')[0].replace(/\.?$/, '.')), cx + 18, yy + 86, colW - 36, 24, fTxt, FT.dim, 3);
+        if (ri === 0 && col.length > 1) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 34, yy + 140); ctx.lineTo(cx + 34, yy + 150); ctx.stroke(); }
       });
     });
-    if (app.shopRow < 2) {
+    if (app.shopRow < 2 && SHOP_GRID[app.shopCol][app.shopRow]) {
       const n = SHOP_GRID[app.shopCol][app.shopRow], chk = s.canBuy(n);
       let msg = '';
       if (s.has(n)) msg = NODES[n].name + ' is installed.';
       else if (!chk.ok) msg = NODES[n].name + ': ' + chk.why + '.';
       else { const left = s.run.credits - chk.price; msg = 'Buying ' + NODES[n].name + ' leaves ' + left + ' credit' + (left === 1 ? '' : 's') + '.'; }
-      wrapText(msg, x + 28, y + 386, w - 56, 28, fLab, FT.text, 2);
+      wrapText(msg, x + 28, y + 400, w - 56, 28, fLab, FT.text, 2);
     }
     const on = app.shopRow === 2;
     rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
@@ -1443,7 +1495,7 @@
     ['proto.driver.passClearance', 0, 80, 2], ['proto.driver.passSpeed', 10, 160, 2], ['proto.driver.patienceSeconds', 0, 30, 0.5],
     ['traffic.comfortBraking', 10, 200, 1], ['traffic.hardBraking', 20, 300, 1], ['traffic.acceleration', 10, 200, 1], ['traffic.timeGap', 0.5, 4, 0.1], ['proto.swerveLength', 40, 300, 5], ['proto.returnSignalSeconds', 0, 2, 0.05],
     ['vehicles.sedan.cruiseSpeed', 60, 260, 2], ['vehicles.van.cruiseSpeed', 60, 260, 2], ['upgrades.throwDistance', 40, 300, 5],
-    ['upgrades.spineLimit', 10, 90, 1],
+    ['upgrades.spineLimit', 10, 90, 1], ['upgrades.bigCapacity', 2, 6, 1], ['world.puddleShare', 0, 0.1, 0.005], ['proto.district.seed', 0, 20, 1], ['world.flipSeconds', 0, 1, 0.05],
     ['proto.damageExponent', 1, 3, 0.1], ['proto.dummyStrikeSpeed', 0, 400, 5], ['proto.dummyMass', 0.01, 1, 0.005],
     ['proto.restitution', 0, 1, 0.05], ['proto.contactFriction', 0, 1, 0.05], ['proto.recoilScale', 0, 2, 0.05], ['proto.recoilSeconds', 0, 1, 0.05],
   ];
@@ -1468,7 +1520,7 @@
       inp.addEventListener('input', () => setParam(id, parseFloat(inp.value)));
       row.append(nm, out, inp); grid.append(row);
     }
-    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits'], ['proto.stopCue', 'Show each car\'s stop bracket'], ['proto.city', 'City blocks and jersey barriers are solid (next road or restart)'], ['proto.parts.effects', 'Damaged parts cut abilities (legs speed, torso turn, head view, arms throw)']]) {
+    for (const [id, text] of [['proto.damageModel', 'Newtonian impulse damage and recoil (off = V29 formula)'], ['proto.pathsEverywhere', 'Show committed car paths outside the view cone'], ['proto.zonesEverywhere', 'Show car scanners outside the view cone'], ['proto.learningEnabled', 'Cars learn from player hits'], ['proto.stopCue', 'Show each car\'s stop bracket'], ['proto.city', 'City blocks and jersey barriers are solid (next road or restart)'], ['proto.parts.effects', 'Damaged parts cut abilities (legs speed, torso turn, head view, arms throw)'], ['proto.district', '3 × 3 screens per road, Zelda-style (next road or restart)']]) {
       const row = document.createElement('label'); row.className = 'tcheck';
       const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-' + id.replace(/\./g, '-');
       inp.addEventListener('change', () => setParam(id, inp.checked ? 1 : 0));
@@ -1490,7 +1542,7 @@
       const v = current(id); if (document.activeElement !== inp) inp.value = v;
       inp.nextSibling; inp.parentNode.querySelector('output').textContent = (+v).toFixed(v % 1 ? 2 : 0) + (REG[id] != null && v !== REG[id] ? '  (registry ' + REG[id] + ')' : '');
     }
-    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue', 'proto.city', 'proto.parts.effects']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
+    for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue', 'proto.city', 'proto.parts.effects', 'proto.district']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
   }
   function toggleTune() { tuneEl.open = !tuneEl.open; if (tuneEl.open) { syncTune(); tuneEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
   document.getElementById('btn-tune').addEventListener('click', toggleTune);
