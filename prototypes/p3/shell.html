@@ -87,10 +87,10 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
   </div>
 </div>
 <script>
-// Palette: day (Edit 37 eco-city), night (Chongqing parkland) or cyber (Chongqing city blocks). Chosen at load: ?palette=
-window.PIX_PALETTE_NAME = { night: 'night', cyber: 'cyber' }[new URLSearchParams(location.search).get('palette')] || 'day';
+// Palette: cyber (default: Chongqing city blocks), day (Edit 37 eco-city) or night (Chongqing parkland). Chosen at load: ?palette=
+window.PIX_PALETTE_NAME = { day: 'day', night: 'night', cyber: 'cyber' }[new URLSearchParams(location.search).get('palette')] || 'cyber'; // cyber is the default scheme
 document.documentElement.dataset.palette = window.PIX_PALETTE_NAME;
-const PAL_NEXT = { day: 'night', night: 'cyber', cyber: 'day' };
+const PAL_NEXT = { cyber: 'day', day: 'night', night: 'cyber' };
 document.getElementById('btn-pal').textContent = 'Palette: ' + window.PIX_PALETTE_NAME + ' → ' + PAL_NEXT[window.PIX_PALETTE_NAME];
 document.getElementById('btn-pal').addEventListener('click', () => {
   const u = new URL(location.href); u.searchParams.set('palette', PAL_NEXT[window.PIX_PALETTE_NAME]); location.href = u.toString();

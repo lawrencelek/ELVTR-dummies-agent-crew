@@ -4,7 +4,7 @@
 
 P2.2's simulation in the GDD Edit 37 art direction: a pixel-art eco-city field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 300 at (120, 30). Two simulation changes: solid city statics and part damage that cuts abilities. Everything else is P2.2.
 
-![P3: road 1 at 720p](docs/p3_play_l1.png)
+![P3: road 1 at 720p, cyber scheme (default)](docs/p3_play_cyber.png)
 
 ## Play
 
@@ -46,25 +46,39 @@ Campaign, difficulty and quotas match P2.2.
 
 | Switch | Field | Frame | Cues |
 |---|---|---|---|
-| Default | Edit 37 eco-city: lawns, canal, white pods | FARSIGHT light glass | Dark on light |
-| `?palette=night` | Chongqing night: dark lawns, lime-lit trees, LED-striped towers, river reflections, light strings | Dark glass, cyan LED edges | Light on dark. Blue LED model tags. Red STOP line with a pink halo |
-| `?palette=cyber` | Night colours, city scenery: deck plates instead of lawns and trees | As night | As night |
+| Default, `?palette=cyber` | Chongqing cyberpunk: dark deck plates, LED city blocks, neon spill, jersey barriers | Dark glass, cyan LED edges | Light on dark. Blue LED model tags. Red STOP line with a pink halo |
+| `?palette=day` | Edit 37 eco-city: lawns, canal, white pods | FARSIGHT light glass | Dark on light |
+| `?palette=night` | Chongqing night: dark lawns, lime-lit trees, LED-striped towers, river reflections, light strings | As cyber | As cyber |
 
 - **Exclusive hues hold in both.** Yellow is the dummy alone. Red is the warning alone.
 - **Night contrast (on road):** `cue.primary` 14.9:1 · `cue.secondary` 6.2:1 · `cue.warning` 4.5:1 (halo 9.2:1) · `dummy.body` 9.8:1.
 - **Palettes never change play.** The city below is the same in all three.
 - **X-ray pass (all palettes).** An occluded car or dummy shows as a checker of its own pixels.
-- **Options, not decided.** Decision 88 still names the eco-city field.
+- **Cyber is the default scheme** (20 October). Day and night stay as options. Canon is open (D22).
 
-### Outline on dark ground (night and cyber)
+### Outline on dark ground (cyber and night)
 
-A black outline vanishes on a dark field. The background owns the darkest values, so key actors take a light edge.
+A black outline vanishes on a dark field. The background owns the darkest values. No sprite edge is black on dark ground.
 
-- **Rim, not ink.** Outer silhouette pixels of the dummy become a rim. Edges facing up or right (toward the sun) take `dummy.rimLight` `#E6F4FF`. Other edges take `dummy.rimDark` `#5E7080`.
-- **Inner lines stay black.** Joints inside the silhouette keep `dummy.joint`. The body still reads as a dummy.
-- **Same rule on the HUD doll.** A broken part's outline still turns `cue.warning`.
+- **Rim, not ink.** Every sprite's outer silhouette pixels become a rim. Edges facing up or right (the sun) take the light rim; others take the dark rim.
+- **Inner lines stay dark.** Joints, seams and inner details keep their inks.
+- **Value hierarchy.** The brighter the rim, the more the actor matters:
+
+| Sprite | Light rim | Dark rim | Light rim on road |
+|---|---|---|---:|
+| Dummy, field and HUD | `dummy.rimLight` `#E6F4FF` | `dummy.rimDark` `#5E7080` | 14.2:1 |
+| Cars | `fleet.rim` `#8FDFFF` | `fleet.rimD` `#3A4A66` | 10.7:1 |
+| Cones | `prop.coneRim` `#F2A65A` | `prop.coneRimD` `#7A4420` | 7.9:1 |
+| Jersey barriers | `structure.jerseyRim` `#8494B8` | `structure.jerseyRimD` `#2C3550` | 5.2:1 |
+| Pods | `structure.podRim` `#5B6E9C` | `structure.podRimD` `#262F48` | 3.1:1 |
+| City blocks | `structure.bldgRim` `#46557D` | `structure.bldgRimD` `#1E263B` | 2.2:1 |
+
+- **Every rim is lighter than the ground** (road `#1E222C`, deck `#10141D`, pavement `#262B36`). The old black edge was 1.1–1.4:1.
+- **A broken HUD part's outline still turns `cue.warning`.**
+- **Night trees:** foliage outline `#1F4A22`, lighter than the lawn.
 - **Day keeps the black outline.** Dark on light needs no change.
-- **Field sprite and doll only.** Cars keep their outline; white roofs already separate from dark tarmac.
+
+![Before and after on the cyber deck: cars, blocks, pods, jersey barrier, cone, ×3](docs/p3_cyber_outlines.png)
 
 ![Rim outline on the cyber deck, 8× zoom](docs/p3_rim_zoom.png)
 
@@ -136,16 +150,20 @@ Share = health lost by the part ÷ `damage.bodyHealth`. Each ability falls linea
 |---|---|---|---|
 | Head | Wider view: goggles | Memory: crown cartridge | Ears: dish ears, antennae |
 | Torso | Hips: swivel bearing | Spine: ribbed bellows | Neck: gimbal collar |
-| Legs | Strafe: omni wheels | Jump: thigh pistons | Spring start: ankle coils |
+| Legs | Spring start: ankle coils | Jump: thigh pistons | Grip: tread soles, cleats |
 | Arms | Carry: grip gloves | Throw: shoulder pistons | Hold on: forearm clamps |
 | Battery | Big battery: five-cell chest pack | Kinetic charge: flank plates | Fast charge: belt port, plugged cable |
 
 - **Components use the brand accent** (`mod` ramp). Each sits on its branch's body part.
+- **Cyber ramps:** gunmetal chrome (`#7D8AA3`, `#D6F6FF`, `#353D52`); module LEDs glow magenta `#FF5FD2` (battery cells, cartridge, bolt glyphs). Day LEDs `#E8FAFF`.
+- **Tree per V29 D3.2.** Legs is Spring start → Jump, Grip. Strafe was withdrawn on 12 October (R10).
 - **Owned nodes show.** P3 sells Hips, Spine, Carry and Throw; the other eleven are designed and drawn.
 - **Shop try-on.** The selected node blinks onto the doll before you buy.
 - **Preview:** tuning panel, "Preview all 15 modules" (display only; the run is untouched).
 
-![Chassis sheet: stock, all 15 modules, each module alone, damage states](docs/p3_chassis_modules.png)
+![Chassis sheet, cyber: stock, all 15 modules, each module alone, damage states](docs/p3_chassis_modules_cyber.png)
+
+Day version: `docs/p3_chassis_modules.png`.
 - **DASH** is the on-screen name for the lunge. Registry IDs keep `movement.lunge*`.
 
 ## Type at registry size (GDD §4.2.3)
@@ -184,6 +202,8 @@ Share = health lost by the part ÷ `damage.bodyHealth`. Each ability falls linea
 | `proto.parts.headConeLoss`, `proto.parts.headConeFloor` | 1.5, 0.5 | Proposed. View cone per head share; lowest multiplier |
 | `proto.parts.armThrowLoss`, `proto.parts.armThrowFloor` | 1, 0.5 | Proposed. Throw distance per arm share; lowest multiplier |
 | `dummy.rimLight`, `dummy.rimDark` (palette roles) | `#E6F4FF`, `#5E7080` | Proposed. Night and cyber only. Dummy rim on dark ground |
+| `fleet.rim*`, `prop.coneRim*`, `structure.jerseyRim*`, `structure.podRim*`, `structure.bldgRim*` (palette roles) | Outline table above | Proposed. Night and cyber only |
+| `chassis.chrome*`, `chassis.mod*`, `chassis.modGlow` (palette roles) | Chassis doll above | Proposed. Day and cyber ramps |
 
 ## Files
 

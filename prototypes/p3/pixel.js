@@ -18,7 +18,7 @@
     podBody: '#FFFFFF', podO: '#4A6F86', pod2: '#DCE8EE', pod3: '#B9CCD6', podCrown: '#4FC3E8', podHi: '#BDEBFA',
     rail: '#E2E8EC', railSide: '#B8C4CB', railO: '#5E6F7B',
     dummy: '#F5C542', dummyD: '#C9961C', dummyL: '#FFE9A0', joint: '#1A1D1F', worn: '#9C9070',
-    chrome: '#B9C3CA', chromeL: '#F4F7F9', chromeD: '#6E7C87', mod: '#4FC3E8', modL: '#BDEBFA', modD: '#1E8FB8', // HUD chassis: joints, modules
+    chrome: '#B9C3CA', chromeL: '#F4F7F9', chromeD: '#6E7C87', mod: '#4FC3E8', modL: '#BDEBFA', modD: '#1E8FB8', modGlow: '#E8FAFF', // HUD chassis: joints, modules, LED details
     cone: '#F28C28', coneO: '#7A3B12', coneW: '#FFFFFF',
     ink: '#101417', label: '#4A5A66', warn: '#E4442E', white: '#FFFFFF', fleet: '#7E8C96', structure: '#B8C4CB',
     // cue roles (reserved treatment, 4.2.2)
@@ -45,8 +45,13 @@
     cone: '#FF8A1F',
     ink: '#F4F8FA', label: '#7FA8BC', warn: '#FF3D3D', fleet: '#5E6B78', structure: '#3A4252',
     cueHalo: '#FFB0B0', nose: '#F4F8FA', tyre: '#05070B',
-    rimLight: '#E6F4FF', rimDark: '#5E7080',
-    mod: '#3FD0FF', modL: '#B6F0FF', modD: '#1A6FA0', // dark ground: the dummy's outer edge is a rim, lit top-right (4.1.3 light)
+    rimLight: '#E6F4FF', rimDark: '#5E7080', // dark ground: the dummy's outer edge is a rim, lit top-right (4.1.3 light)
+    // Dark-ground outline rule for every sprite: no black edge on dark ground. Rims lit top-right, in a value
+    // hierarchy: dummy (above) > cars > cones > barriers > pods > blocks. Inner lines keep their dark inks.
+    carRim: '#8FDFFF', carRimD: '#3A4A66', coneRim: '#F2A65A', coneRimD: '#7A4420', jerseyRim: '#8494B8', jerseyRimD: '#2C3550',
+    podRim: '#5B6E9C', podRimD: '#262F48', bldgRim: '#46557D', bldgRimD: '#1E263B', foliageO: '#1F4A22',
+    mod: '#3FD0FF', modL: '#B6F0FF', modD: '#1A6FA0', // HUD chassis modules
+    chrome: '#7D8AA3', chromeL: '#D6F6FF', chromeD: '#353D52', modGlow: '#FF5FD2', // HUD chassis: gunmetal joints, neon LEDs
     tagFill: '#1840C8', tagInk: '#FFFFFF', tagBorder: '#6FE4FF', tagSpentFill: '#F4F8FA', tagSpentInk: '#1840C8',
     popInk: '#FFFFFF', popOutline: '#1840C8', stampFill: '#0B0E17', stampOutline: '#FFB0B0',
     podStripes: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#E6F4FF'], reflect: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], edgeLight: '#E6F4FF', flowers: 40,
@@ -56,7 +61,7 @@
   };
   // Cyber: the night palette with a city instead of parkland. Decks for lawns, blocks for trees, jersey barriers for hedges.
   const CYBER = { scenery: 'city', grass: '#10141D', grass2: '#161B26', grass3: '#1D2331', flowers: 0 };
-  const NAME = { night: 'night', cyber: 'cyber' }[root.PIX_PALETTE_NAME] || 'day';
+  const NAME = { day: 'day', night: 'night', cyber: 'cyber' }[root.PIX_PALETTE_NAME] || 'cyber'; // cyber is the default scheme (20 Oct)
   const PAL = Object.assign({}, DAY, NAME !== 'day' ? NIGHT : {}, NAME === 'cyber' ? CYBER : {});
   function rgb(hex) { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
   function c32(hex) { const [r, g, b] = rgb(hex); return (0xFF000000 | (b << 16) | (g << 8) | r) >>> 0; }
@@ -273,7 +278,9 @@
     for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
       const c = at(i, j), x = x0 + i + 0.5, y = y0 + j + 0.5;
       if (!c) {
-        if (at(i + 1, j) || at(i - 1, j) || at(i, j + 1) || at(i, j - 1)) { sput(S, i, j, K.fleetO); top = Math.min(top, j); }
+        if (at(i + 1, j) || at(i - 1, j) || at(i, j + 1) || at(i, j - 1)) { // body below or left: this edge faces the light
+          sput(S, i, j, K.carRim ? (at(i, j + 1) || at(i - 1, j) ? K.carRim : K.carRimD) : K.fleetO); top = Math.min(top, j);
+        }
         continue;
       }
       top = Math.min(top, j);
@@ -321,17 +328,18 @@
   };
   // Dark-ground rule: an outline must be lighter than the ground it sits on. Only the outer silhouette edge changes;
   // edges facing the light (up, right) take rimLight, the rest rimDark. Inner joints keep the black that makes a crash dummy.
-  function rim(S) {
-    if (!PAL.rimLight) return S;
+  function edgeRim(S, from, hi, lo) { // outline pixels on the silhouette take hi (exposed up or right) or lo; inner ones keep from
+    if (!PAL.rimLight || !hi) return S;
     const at = (x, y) => (x < 0 || y < 0 || x >= S.w || y >= S.h ? 0 : S.d[y * S.w + x]), out = new Uint32Array(S.d);
     for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) {
-      if (S.d[y * S.w + x] !== K.joint) continue;
+      if (S.d[y * S.w + x] !== from) continue;
       const up = !at(x, y - 1), right = !at(x + 1, y), down = !at(x, y + 1), left = !at(x - 1, y);
-      if (up || right) out[y * S.w + x] = K.rimLight; else if (down || left) out[y * S.w + x] = K.rimDark;
+      if (up || right) out[y * S.w + x] = hi; else if (down || left) out[y * S.w + x] = lo;
     }
     S.d = out;
     return S;
   }
+  function rim(S) { return edgeRim(S, K.joint, K.rimLight, K.rimDark); }
   const dummyCache = new Map();
   function dummy(facing, wearStep) { // facing: radians; wearStep 0..5 shifts the yellow toward the worn tone
     const c = Math.cos(facing), s = Math.sin(facing);
@@ -351,7 +359,7 @@
   // Owned modules (the 15 nodes of the tree) draw on top in the brand accent. The dummy's right is screen-left.
   const DOLL_W = 64, DOLL_H = 108, DOY = 3;
   const MODULES = [ // branch order: Head, Torso, Legs, Arms, Battery; tier 1 first
-    'widerView', 'memory', 'ears', 'hips', 'spine', 'neck', 'strafe', 'jump', 'springStart',
+    'widerView', 'memory', 'ears', 'hips', 'spine', 'neck', 'springStart', 'jump', 'grip',
     'carry', 'throw', 'holdOn', 'bigBattery', 'kineticCharge', 'fastCharge'];
   const LIT = (() => { const v = [0.45, -0.55, 0.75], m = Math.hypot(v[0], v[1], v[2]); return v.map((a) => a / m); })(); // sun top right, front
   const DENTS = { head: [[36, 8], [24, 23], [37, 26]], torso: [[23, 46], [41, 44], [36, 55]], armR: [[14, 45], [14, 60]], armL: [[49, 47], [49, 61]],
@@ -443,7 +451,7 @@
     }
     if (has('memory')) { // a memory cartridge in the crown
       blob(26, -2, 38, 5, 1.5, 1.5, MOD, 'mod');
-      for (const y of [0, 2]) dots(Array.from({ length: 8 }, (_, i) => [28 + i, y]), FLAT, 'mod', 1, PAL.modL);
+      for (const y of [0, 2]) dots(Array.from({ length: 8 }, (_, i) => [28 + i, y]), FLAT, 'mod', 1, PAL.modGlow);
     }
     if (has('ears')) { // dish ears with antenna stalks
       mirror((ox, sx) => {
@@ -467,13 +475,13 @@
       mirror((ox, sx) => {
         const X = (x) => ox + sx * x;
         blob(...pair(M(ox, sx, 19.5, 25), 40, 51), 1.5, 1.5, MOD, 'mod');
-        dots([[23, 42], [22, 43], [21, 44], [22, 45], [23, 45], [22, 46], [21, 47], [22, 47], [21, 48]].map(([x, y]) => [X(x), y]), FLAT, 'mod', 1, '#FFFFFF');
+        dots([[23, 42], [22, 43], [21, 44], [22, 45], [23, 45], [22, 46], [21, 47], [22, 47], [21, 48]].map(([x, y]) => [X(x), y]), FLAT, 'mod', 1, PAL.modGlow);
       });
     }
     if (has('bigBattery')) { // chest pack: five cells, a terminal on top
       blob(30, 36, 34, 39, 0.5, 0.5, CHROME, 'mod');
       blob(26, 38, 38, 50, 2, 2, MOD, 'mod');
-      for (let c = 0; c < 5; c++) dots(Array.from({ length: 8 }, (_, i) => [28 + i, 40 + c * 2]), FLAT, 'mod', 1, PAL.modL);
+      for (let c = 0; c < 5; c++) dots(Array.from({ length: 8 }, (_, i) => [28 + i, 40 + c * 2]), FLAT, 'mod', 1, PAL.modGlow);
     }
     if (has('spine')) { // flexible bellows: the lumbar segment in the accent, ribbed
       blob(25, 50, 39, 59, 2, 1.5, MOD, 'mod');
@@ -497,10 +505,11 @@
     if (has('springStart')) { // coil springs at the ankles
       mirror((ox, sx) => { for (let k = 0; k < 3; k++) blob(...pair(M(ox, sx, 22.5, 31.5), 89.5 + k * 2, 91.5 + k * 2), 4.5, 1, MOD, 'mod'); });
     }
-    if (has('strafe')) { // omni wheels outside each foot
+    if (has('grip')) { // tread soles with cleats: no slide on oil, mud, gravel, puddles
       mirror((ox, sx) => {
-        blob(...pair(M(ox, sx, 14, 21), 93, 100), 3.5, 3.5, CHROME, 'mod');
-        blob(...pair(M(ox, sx, 16, 19), 95, 98), 1.5, 1.5, MOD, 'mod');
+        const X = (x) => ox + sx * x;
+        blob(...pair(M(ox, sx, 19, 32), 99, 103), 2, 1.5, JOINT, 'mod');
+        dots([[21, 102], [24, 102], [27, 102], [30, 102]].map(([x, y]) => [X(x), y]), MOD, 'mod', 2);
       });
     }
     if (has('holdOn')) { // forearm bracers with clamp jaws
@@ -573,7 +582,7 @@
     return S;
   }
   function pair(xs, y0, y1) { return [xs[0], y0, xs[1], y1]; }
-  const CONE = fromRows(['...o...', '..oWo..', '..oOo..', '.oOOOo.', '.oWWWo.', 'oOOOOOo', 'ooooooo'], { o: K.coneO, O: K.cone, W: K.coneW }, 3, 5);
+  const CONE = edgeRim(fromRows(['...o...', '..oWo..', '..oOo..', '.oOOOo.', '.oWWWo.', 'oOOOOOo', 'ooooooo'], { o: K.coneO, O: K.cone, W: K.coneW }, 3, 5), K.coneO, K.coneRim, K.coneRimD);
   const DRONE = (() => {
     const S = spr(21, 15, 10, 7);
     const P = (x, y, c) => sput(S, x + 10, y + 7, c);
@@ -593,7 +602,7 @@
     for (let x = 2; x < Math.min(6, wpx - 1); x++) P(x, -H + 1, K.podHi);
     for (let x = 1; x < wpx - 1; x++) { P(x, -H - 1, o); P(x, hpx - 1, o); P(x, -H + 4, K.pod3); }
     P(wpx >> 1, -H - 2, o); P(wpx >> 1, -H - 3, o);
-    return S;
+    return edgeRim(S, o, K.podRim, K.podRimD);
   }
   function barrier(wpx, hpx, e) { // galvanised crash barrier: rail on top, posts on the face (anchor = footprint top-left)
     const S = spr(wpx, hpx + e + 1, 0, e), o = K.railO;
@@ -673,7 +682,7 @@
     }
     for (let y = top; y < hpx; y++) { P(0, y, y < face0 ? K.bldgEdge : o); P(wpx - 1, y, y < face0 ? K.bldgEdge : o); }
     for (let x = 0; x < wpx; x++) P(x, hpx - 1, o);
-    return S;
+    return edgeRim(S, o, K.bldgRim, K.bldgRimD);
   }
   function jersey(wpx, hpx, e) { // jersey barrier on its footprint (anchor = footprint top-left): lit top, face with LED dots
     const S = spr(wpx, hpx + e, 0, e), P = (x, y, c) => sput(S, x, y + e, c), horiz = wpx >= hpx;
@@ -682,7 +691,7 @@
       const dot = face && (horiz ? x % 3 === 1 : y % 3 === 1);
       P(x, y, edge ? K.jerseyO : face ? (dot ? K.jerseyLed : K.jersey) : K.jerseyTop);
     }
-    return S;
+    return edgeRim(S, K.jerseyO, K.jerseyRim, K.jerseyRimD);
   }
   // Static shadow: the footprint swept down-left by its height (hard edge, multiply).
   function rectShadow(B, st, h, P) {
