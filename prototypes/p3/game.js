@@ -1099,11 +1099,18 @@
     for (const [k, v] of Object.entries(s.body.parts || {})) { const sh = v / H; out[k] = v <= 0 ? 0 : sh >= P['proto.parts.brokenShare'] ? 3 : sh >= P['proto.parts.crackedShare'] ? 2 : 1; }
     return out;
   }
-  function dollCanvas(levels, flash) {
-    const key = JSON.stringify(levels) + flash;
+  // Owned nodes; in the shop the selected node is tried on (blinking); the tuning preview shows all 15.
+  function dollMods(s) {
+    if (app.previewMods) return PIX.MODULES;
+    const sel = s.phase === 'shop' && app.shopRow < 2 ? SHOP_GRID[app.shopCol][app.shopRow] : null;
+    const tryOn = sel && !s.has(sel) && Math.floor(app.realT * 3) % 2 === 0;
+    return PIX.MODULES.filter((m) => s.has(m) || (tryOn && m === sel));
+  }
+  function dollCanvas(levels, flash, mods) {
+    const key = JSON.stringify(levels) + flash + mods.join();
     if (dollArt.has(key)) return dollArt.get(key);
     if (dollArt.size > 64) dollArt.clear();
-    const S = PIX.doll(levels, flash), cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
+    const S = PIX.doll(levels, flash, mods), cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
     const c2 = cv2.getContext('2d'), id = c2.createImageData(S.w, S.h); new Uint32Array(id.data.buffer).set(S.d); c2.putImageData(id, 0, 0);
     dollArt.set(key, cv2);
     return cv2;
@@ -1118,24 +1125,20 @@
     else if (th < 0.995 && s.has('throw')) out.push(['THROW', pc(th)]);
     return out;
   }
+  // The chassis doll is drawn at ui.artScale like the field: one doll pixel = one art pixel, on the art grid.
   function drawBodyPanel(s) {
-    const X = 1056, W = 208, Y = 62, b = s.body, k = 9, eff = b.alive ? partEffects(s) : [];
-    panel(X, Y, W, 318 + (eff.length ? 16 + eff.length * 32 : 0));
+    const X = 1056, W = 208, Y = 62, b = s.body, U = PIX.U, eff = b.alive ? partEffects(s) : [];
+    const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + 36;
+    panel(X, Y, W, yHit - Y + 66 + (eff.length ? 16 + eff.length * 32 : 0));
     txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);
     const lp = fx.lastPart, flash = lp && app.realT - lp.t < 0.3 && Math.floor(app.realT * 16) % 2 === 0 ? lp.part : '';
-    const dx = Math.round(X + W / 2 - 13 * k / 2), dy = Y + 46;
+    const dx = Math.round((X + W / 2 - DW / 2) / U) * U, dy = Math.round(top / U) * U;
     ctx.imageSmoothingEnabled = false; ctx.globalAlpha = b.alive ? 1 : 0.35;
-    ctx.drawImage(dollCanvas(partLevels(s), flash), dx, dy, 13 * k, 19 * k);
-    const px = (cx, cy, w, h) => ctx.fillRect(dx + cx * k, dy + cy * k, w * k, h * k);
-    ctx.fillStyle = FT.accent;
-    if (s.has('hips')) px(4, 15, 5, 1);
-    if (s.has('spine')) px(6, 8, 1, 4);
-    if (s.has('carry')) { px(2, 9, 1, 3); px(10, 9, 1, 3); }
-    if (s.has('throw')) { px(1, 12, 2, 1); px(10, 12, 2, 1); }
+    ctx.drawImage(dollCanvas(partLevels(s), flash, dollMods(s)), dx, dy, DW, DH);
     ctx.globalAlpha = 1;
-    txt('LAST HIT', X + 14, Y + 254, fTxt, FT.dim);
-    txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, Y + 292, fLab, lp ? FT.text : FT.dim);
-    eff.forEach(([k2, v], i) => { const y = Y + 340 + i * 32; txt(k2, X + 14, y, fTxt, FT.dim); txt(v, X + W - 14, y, fLab, C.warning, 'right'); });
+    txt('LAST HIT', X + 14, yHit, fTxt, FT.dim);
+    txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, yHit + 38, fLab, lp ? FT.text : FT.dim);
+    eff.forEach(([k2, v], i) => { const y = yHit + 86 + i * 32; txt(k2, X + 14, y, fTxt, FT.dim); txt(v, X + W - 14, y, fLab, C.warning, 'right'); });
   }
 
   // ---------- screens (frame layer). Facts at ui.typeLoadBearing, labels and lines at ui.typeSecondary.
@@ -1356,6 +1359,13 @@
       const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-' + id.replace(/\./g, '-');
       inp.addEventListener('change', () => setParam(id, inp.checked ? 1 : 0));
       const sp = document.createElement('span'); sp.innerHTML = text + ' <code>' + id + '</code>';
+      row.append(inp, sp); grid.append(row);
+    }
+    { // display only: dress the chassis doll in every module of the tree (not a parameter; the run is untouched)
+      const row = document.createElement('label'); row.className = 'tcheck';
+      const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-preview-mods'; inp.checked = !!app.previewMods;
+      inp.addEventListener('change', () => { app.previewMods = inp.checked; });
+      const sp = document.createElement('span'); sp.textContent = 'Preview all 15 modules on the chassis doll (display only)';
       row.append(inp, sp); grid.append(row);
     }
     syncTune();

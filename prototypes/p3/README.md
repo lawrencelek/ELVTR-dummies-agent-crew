@@ -39,7 +39,7 @@ Campaign, difficulty and quotas match P2.2.
 - **Generated, not painted.** `pixel.js` builds every sprite and ground at load. No image files.
 - **Cars:** footprint extruded by `vehicles.<cls>.height` × `proto.art.extrusion` ÷ `ui.artScale`. 32 headings (11.25°). South face, 1-px outline, white roof, blue glass. Tail lights brighten when braking.
 - **Pods:** 9-px towers, depth-sorted with cars and the dummy.
-- **Dummy:** 13 × 19, four facings, six wear tints, dents and a cracked head. The nose vector gives the exact facing. Rim outline on dark ground (below).
+- **Dummy:** 13 × 19, four facings, six wear tints, dents and a cracked head. Eyes and ear nubs face south; one eye in profile. The nose vector gives the exact facing. Rim outline on dark ground (below).
 - **Ground:** road, kerbs, dashes and paving from each level's centre line. Canal, lawns, flowers, hedges, trees. Hard shadows down-left (`proto.art.shadowScale`).
 
 ## Palettes
@@ -94,7 +94,7 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
 |---|---|
 | Top bar | Road · WRITE-OFFS n / quota · POINTS · CARS LEFT (the shift's clock; no separate timer) |
 | Left | BODY: health at 48 px with its bar. DASH: charge blocks |
-| Right | CHASSIS: front-view doll at ×9. Each part shows its own damage. LAST HIT: part and health lost. Cut abilities in `cue.warning` |
+| Right | CHASSIS: front-view doll, 64 × 108 art px on the field's grid. Each part shows its own damage; owned modules show. LAST HIT: part and health lost. Cut abilities in `cue.warning` |
 | Bottom | Controls that apply now |
 
 - **Locational damage.** Every impact records `part` (head, torso, armL, armR, legL, legR); `body.parts` sums health lost per part.
@@ -102,7 +102,7 @@ Blocks and jersey barriers are level statics in `sim.js` (`LEVELS.<road>.city`).
   - **Side** from the contact point against the dummy's facing.
   - **Doll levels:** any damage dents the part; `proto.parts.crackedShare` (0.2 of `damage.bodyHealth`) cracks it; `proto.parts.brokenShare` (0.4) turns its outline to the warning ink. The hit part flashes white.
   - **Health stays one pool.** Parts only decide which ability the damage cuts.
-- **Modules** glow aqua on the doll. The full list lives in the shop.
+- **Modules** show on the doll as components (below).
 
 ### Part damage cuts abilities (`proto.parts.effects` = 1)
 
@@ -123,6 +123,29 @@ Share = health lost by the part ÷ `damage.bodyHealth`. Each ability falls linea
 - **`proto.parts.effects` = 0** restores display-only parts (tuning panel).
 
 ![Cyber palette, staged: four parts hit, cut abilities listed under the doll](docs/p3_parts_cyber.png)
+
+### Chassis doll (20 October)
+
+- **Native resolution.** 64 × 108 art px, drawn at `ui.artScale` on the art grid. Never upscaled.
+- **Appeal from the real dummy:** glossy yellow, dot eyes with a glint, arched brows, small smile, ears with quartered decals, black neck, chrome collar, elbows, wrists, knees and ankles.
+- **Built from shapes, not painted.** Each shape is a shaded rounded box tagged with a body part. Sun top right: three tones plus one glint.
+- **Seams** fall on the shape underneath. The outer edge is the 1-px outline, or the rim on dark ground.
+- **Damage per part:** worn tint and dents on any loss, cracks at `proto.parts.crackedShare`, a warning outline and spark at `proto.parts.brokenShare`. The hit part flashes white.
+
+| Branch | Tier 1 | Tier 2 | Tier 2 |
+|---|---|---|---|
+| Head | Wider view: goggles | Memory: crown cartridge | Ears: dish ears, antennae |
+| Torso | Hips: swivel bearing | Spine: ribbed bellows | Neck: gimbal collar |
+| Legs | Strafe: omni wheels | Jump: thigh pistons | Spring start: ankle coils |
+| Arms | Carry: grip gloves | Throw: shoulder pistons | Hold on: forearm clamps |
+| Battery | Big battery: five-cell chest pack | Kinetic charge: flank plates | Fast charge: belt port, plugged cable |
+
+- **Components use the brand accent** (`mod` ramp). Each sits on its branch's body part.
+- **Owned nodes show.** P3 sells Hips, Spine, Carry and Throw; the other eleven are designed and drawn.
+- **Shop try-on.** The selected node blinks onto the doll before you buy.
+- **Preview:** tuning panel, "Preview all 15 modules" (display only; the run is untouched).
+
+![Chassis sheet: stock, all 15 modules, each module alone, damage states](docs/p3_chassis_modules.png)
 - **DASH** is the on-screen name for the lunge. Registry IDs keep `movement.lunge*`.
 
 ## Type at registry size (GDD §4.2.3)

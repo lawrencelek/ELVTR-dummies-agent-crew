@@ -18,6 +18,7 @@
     podBody: '#FFFFFF', podO: '#4A6F86', pod2: '#DCE8EE', pod3: '#B9CCD6', podCrown: '#4FC3E8', podHi: '#BDEBFA',
     rail: '#E2E8EC', railSide: '#B8C4CB', railO: '#5E6F7B',
     dummy: '#F5C542', dummyD: '#C9961C', dummyL: '#FFE9A0', joint: '#1A1D1F', worn: '#9C9070',
+    chrome: '#B9C3CA', chromeL: '#F4F7F9', chromeD: '#6E7C87', mod: '#4FC3E8', modL: '#BDEBFA', modD: '#1E8FB8', // HUD chassis: joints, modules
     cone: '#F28C28', coneO: '#7A3B12', coneW: '#FFFFFF',
     ink: '#101417', label: '#4A5A66', warn: '#E4442E', white: '#FFFFFF', fleet: '#7E8C96', structure: '#B8C4CB',
     // cue roles (reserved treatment, 4.2.2)
@@ -44,7 +45,8 @@
     cone: '#FF8A1F',
     ink: '#F4F8FA', label: '#7FA8BC', warn: '#FF3D3D', fleet: '#5E6B78', structure: '#3A4252',
     cueHalo: '#FFB0B0', nose: '#F4F8FA', tyre: '#05070B',
-    rimLight: '#E6F4FF', rimDark: '#5E7080', // dark ground: the dummy's outer edge is a rim, lit top-right (4.1.3 light)
+    rimLight: '#E6F4FF', rimDark: '#5E7080',
+    mod: '#3FD0FF', modL: '#B6F0FF', modD: '#1A6FA0', // dark ground: the dummy's outer edge is a rim, lit top-right (4.1.3 light)
     tagFill: '#1840C8', tagInk: '#FFFFFF', tagBorder: '#6FE4FF', tagSpentFill: '#F4F8FA', tagSpentInk: '#1840C8',
     popInk: '#FFFFFF', popOutline: '#1840C8', stampFill: '#0B0E17', stampOutline: '#FFB0B0',
     podStripes: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#E6F4FF'], reflect: ['#2F6BFF', '#3FD0FF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], edgeLight: '#E6F4FF', flowers: 40,
@@ -310,11 +312,11 @@
 
   // The dummy: 13 × 19, anchor at its feet-centre (6, 15). West is drawn; east mirrors it.
   const DUMMY = {
-    W: ['....KKKKK....', '...KWWYYYK...', '..KWWYYYYYK..', '..KWYYYKYYyK.', '..KYYYYYKYyK.', '..KYYYYYYYyK.', '...KyYYYYyK..', '....KKKKKK...', '...KWYYYYyK..', '..KKWYYYYyKK.',
+    W: ['....KKKKK....', '...KWWYYYK...', '..KWWYYYYYK..', '..KWYYYYYYyK.', '..KYKYYYYYyK.', '..KYYYYYYYyK.', '...KyYYYYyK..', '....KKKKKK...', '...KWYYYYyK..', '..KKWYYYYyKK.',
       '.KYKWYYYYyKyK', '.KYKYYYYYyKyK', '.KKKYYYYYyKKK', '...KKKKKKKK..', '...KYyKKYyK..', '...KYyKKYyK..', '...KKKKKKKK..', '...KYyK.KYyK.', '..KKKKK.KKKKK'],
-    S: ['....KKKKK....', '...KWYYYyK...', '..KWYYYYYyK..', '..KWYYKYYyK..', '..KYYYYKYyK..', '..KYYYYYYyK..', '...KyYYYyK...', '....KKKKK....', '..KKWYYYyKK..', '.KYKWYYYyKyK.',
+    S: ['....KKKKK....', '...KWYYYyK...', '..KWYYYYYyK..', '.KKWYYYYYyKK.', 'KyKYYKYKYyKyK', '.KKYYYYYYyKK.', '...KyYYYyK...', '....KKKKK....', '..KKWYYYyKK..', '.KYKWYYYyKyK.',
       '.KYKYYYYyKyK.', '.KYKYYYYyKyK.', '.KKKKKKKKKKK.', '...KYyKYyK...', '...KYyKYyK...', '...KKKKKKK...', '...KYyKYyK...', '...KYyKYyK...', '..KKKK.KKKK..'],
-    N: ['....KKKKK....', '...KWYYYyK...', '..KWYYYYYyK..', '..KYYYYYYyK..', '..KYYYYYYyK..', '..KYYYYYYyK..', '...KyYYYyK...', '....KKKKK....', '..KKWYYYyKK..', '.KYKWYKYyKyK.',
+    N: ['....KKKKK....', '...KWYYYyK...', '..KWYYYYYyK..', '.KKYYYYYYyKK.', 'KyKYYYYYYyKyK', '.KKYYYYYYyKK.', '...KyYYYyK...', '....KKKKK....', '..KKWYYYyKK..', '.KYKWYKYyKyK.',
       '.KYKYYKYyKyK.', '.KYKYYKYyKyK.', '.KKKKKKKKKKK.', '...KYyKYyK...', '...KYyKYyK...', '...KKKKKKK...', '...KYyKYyK...', '...KYyKYyK...', '..KKKK.KKKK..'],
   };
   // Dark-ground rule: an outline must be lighter than the ground it sits on. Only the outer silhouette edge changes;
@@ -342,25 +344,235 @@
     }
     return dummyCache.get(key);
   }
-  // Front-view doll for the HUD: each pixel belongs to a body part; a part's damage level tints it toward the worn tone,
-  // cracks it, then turns its outline to the warning ink. The dummy's right side is on screen-left.
-  const PART_AT = (x, y) => (y <= 7 ? 'head' : y <= 12 ? (x <= 3 ? 'armR' : x >= 9 ? 'armL' : 'torso') : x <= 6 ? 'legR' : 'legL');
-  const CRACKS = { head: [[5, 2], [6, 3], [5, 4]], torso: [[6, 9], [5, 10], [6, 11]], armR: [[2, 10], [2, 11]], armL: [[10, 10], [10, 11]], legR: [[4, 14], [5, 16]], legL: [[8, 14], [7, 16]] };
-  function doll(levels, flash) {
-    const rows = DUMMY.S, S = spr(13, 19, 6, 15), base = { K: PAL.joint, Y: PAL.dummy, y: PAL.dummyD, W: PAL.dummyL };
-    const R = rim(fromRows(rows, { K: K.joint, Y: K.dummy, y: K.dummyD, W: K.dummyL }, 6, 15));
-    for (let y = 0; y < 19; y++) for (let x = 0; x < 13; x++) {
-      const k = rows[y][x]; if (!base[k]) continue;
-      const part = PART_AT(x, y), lv = levels[part] || 0, rc = R.d[y * 13 + x];
-      let hex = k === 'K' && rc !== K.joint ? (rc === K.rimLight ? PAL.rimLight : PAL.rimDark) : base[k];
-      if (k !== 'K' && lv > 0) hex = mixHex(hex, PAL.worn, [0, 0.35, 0.7, 1][lv]);
-      if (k === 'K' && lv >= 3) hex = PAL.warn;
-      if (flash === part) hex = '#FFFFFF';
-      sput(S, x, y, c32(hex));
+  // ---------- HUD chassis (GDD Edit 38 §4.5): a front view drawn at native art resolution, 64 × 108 art px.
+  // It sits on the same grid as the field (1 px = ui.artScale screen units) and is never upscaled.
+  // Every shape is a shaded rounded box tagged with a body part. Seams fall on the shape underneath; the outer
+  // edge is the 1-px outline (rim on dark ground, 4.1.2). Damage: tint, dents, cracks, then a warning outline.
+  // Owned modules (the 15 nodes of the tree) draw on top in the brand accent. The dummy's right is screen-left.
+  const DOLL_W = 64, DOLL_H = 108, DOY = 3;
+  const MODULES = [ // branch order: Head, Torso, Legs, Arms, Battery; tier 1 first
+    'widerView', 'memory', 'ears', 'hips', 'spine', 'neck', 'strafe', 'jump', 'springStart',
+    'carry', 'throw', 'holdOn', 'bigBattery', 'kineticCharge', 'fastCharge'];
+  const LIT = (() => { const v = [0.45, -0.55, 0.75], m = Math.hypot(v[0], v[1], v[2]); return v.map((a) => a / m); })(); // sun top right, front
+  const DENTS = { head: [[36, 8], [24, 23], [37, 26]], torso: [[23, 46], [41, 44], [36, 55]], armR: [[14, 45], [14, 60]], armL: [[49, 47], [49, 61]],
+    legR: [[26, 72], [27, 88]], legL: [[37, 74], [36, 89]] };
+  const CRACK = { head: [[38, 5], [37, 7], [39, 9], [37, 11], [38, 13]], torso: [[21, 38], [24, 40], [23, 43], [26, 45], [25, 48]],
+    armR: [[16, 39], [14, 42], [16, 45], [14, 48]], armL: [[48, 39], [50, 42], [48, 45], [50, 48]],
+    legR: [[29, 68], [26, 71], [28, 74], [26, 77]], legL: [[35, 83], [38, 86], [36, 89], [38, 92]] };
+  function doll(levels, flash, mods) {
+    levels = levels || {}; const has = (m) => !!mods && (mods.includes ? mods.includes(m) : mods.has(m));
+    const W = DOLL_W, H = DOLL_H, N = W * H;
+    const role = new Uint8Array(N), sid = new Int32Array(N).fill(-1), part = new Array(N), seamy = new Uint8Array(N), tone = new Uint8Array(N), flat = new Array(N);
+    const BODY = 1, CHROME = 2, JOINT = 3, MOD = 4, FLAT = 5;
+    let next = 0;
+    const set = (x, y, rl, pt, t, id, sm, hex) => {
+      if (x < 0 || y < 0 || x >= W || y >= H) return;
+      const i = y * W + x; role[i] = rl; part[i] = pt; tone[i] = t; sid[i] = id; seamy[i] = sm; flat[i] = hex;
+    };
+    // blob: rounded box over [x0,x1) × [y0,y1) with corner radii rx, ry. Its own normal picks one of three tones.
+    function blob(x0, y0, x1, y1, rx, ry, rl, pt, o) {
+      o = o || {}; const id = next++; y0 += DOY; y1 += DOY;
+      const ix0 = x0 + rx, ix1 = x1 - rx, iy0 = y0 + ry, iy1 = y1 - ry;
+      for (let y = Math.floor(y0); y < Math.ceil(y1); y++) for (let x = Math.floor(x0); x < Math.ceil(x1); x++) {
+        const px = x + 0.5, py = y + 0.5;
+        const dx = px - Math.max(ix0, Math.min(ix1, px)), dy = py - Math.max(iy0, Math.min(iy1, py));
+        const nx = rx ? dx / rx : 0, ny = ry ? dy / ry : 0, d2 = nx * nx + ny * ny;
+        if (d2 > 1 || (o.ring && d2 < o.ring * o.ring)) continue;
+        const I = nx * LIT[0] + ny * LIT[1] + Math.sqrt(1 - d2) * LIT[2];
+        const t = o.tone != null ? o.tone : o.spec && I > 0.955 ? 3 : I > 0.8 ? 2 : I > 0.3 ? 1 : 0;
+        set(x, y, rl, pt, t, id, o.seam === false ? 0 : 1, o.hex);
+      }
+      return id;
     }
-    for (const part in CRACKS) if ((levels[part] || 0) >= 2 && flash !== part) for (const [x, y] of CRACKS[part]) if (rows[y][x] !== '.') sput(S, x, y, K.joint);
+    const dot = (x, y, rl, pt, t, hex) => set(x, y + DOY, rl, pt, t == null ? 1 : t, next++, 0, hex);
+    const dots = (pts, rl, pt, t, hex) => { for (const [x, y] of pts) dot(x, y, rl, pt, t, hex); };
+    // quartered crash-test decal, painted only onto the shape it marks
+    const decal = (cx, cy, onSid, r2) => {
+      for (let y = Math.floor(cy - 3); y <= cy + 3; y++) for (let x = Math.floor(cx - 3); x <= cx + 3; x++) {
+        const dx = x + 0.5 - cx, dy = y + 0.5 - cy, i = (y + DOY) * W + x;
+        if (dx * dx + dy * dy <= (r2 || 5.5) && (dx < 0) === (dy < 0) && sid[i] === onSid) { role[i] = FLAT; flat[i] = PAL.joint; }
+      }
+    };
+    const mirror = (f) => { f(0, 1); f(64, -1); }; // f(ox, sx): x' = ox + sx·x for the dummy's right (screen-left) and left
+    const M = (ox, sx, x0, x1) => (sx > 0 ? [ox + x0, ox + x1] : [ox - x1, ox - x0]);
+    const side = (sx, r, l) => (sx > 0 ? r : l);
+
+    // --- body, back to front: legs, pelvis, abdomen, chest, arms, neck, ears, head
+    mirror((ox, sx) => {
+      const L = side(sx, 'legR', 'legL');
+      blob(...pair(M(ox, sx, 20, 31), 95, 101), 4, 3, BODY, L);           // foot
+      blob(...pair(M(ox, sx, 24, 30), 92, 96), 2, 1.5, CHROME, L);        // ankle
+      blob(...pair(M(ox, sx, 23, 31), 82, 94), 4, 3, BODY, L);            // shin
+      blob(...pair(M(ox, sx, 22, 31), 79, 84), 3, 2, CHROME, L);          // knee
+      blob(...pair(M(ox, sx, 22, 31), 65, 81), 4.5, 3, BODY, L);          // thigh
+    });
+    blob(21, 58, 43, 69, 5, 4, BODY, 'torso');                             // pelvis
+    blob(23, 59, 41, 62, 1, 1, JOINT, 'torso');                            // lumbar joint
+    blob(22, 47, 42, 60, 6, 4, BODY, 'torso');                             // abdomen
+    const chest = blob(18, 34, 46, 53, 9, 7, BODY, 'torso', { spec: true }); // chest: broad, rounded shoulders
+    decal(40, 40, chest);                                                  // calibration mark
+    mirror((ox, sx) => {
+      const A = side(sx, 'armR', 'armL');
+      blob(...pair(M(ox, sx, 10, 19), 35, 54), 4.5, 4.5, BODY, A, { spec: true }); // upper arm, shoulder cap
+      blob(...pair(M(ox, sx, 10, 19), 52, 56), 3, 1.5, CHROME, A);        // elbow
+      blob(...pair(M(ox, sx, 10, 19), 55, 67), 4.5, 3, BODY, A);          // forearm
+      blob(...pair(M(ox, sx, 11, 18), 66, 69), 2.5, 1.5, CHROME, A);      // wrist
+      blob(...pair(M(ox, sx, 9, 19), 68, 77), 5, 4.5, BODY, A);           // mitten hand
+    });
+    blob(28, 27, 36, 35, 2, 1, JOINT, 'head');                             // neck
+    blob(26, 31, 38, 36, 3, 2, CHROME, 'torso');                           // neck collar
+    mirror((ox, sx) => decal(ox + sx * 19, 20, blob(...pair(M(ox, sx, 16.5, 22.5), 15, 25), 3, 4.5, BODY, 'head'), 3.2)); // ears with decals
+    blob(22, 14, 42, 30, 10, 8, BODY, 'head');                             // jaw
+    blob(19.5, 3, 44.5, 26, 12.5, 11.5, BODY, 'head', { spec: true, seam: false }); // cranium: an egg with the jaw
+    // face: brows, eyes with a glint, a small nose shadow, a small smile
+    mirror((ox, sx) => {
+      const X = (x) => ox + sx * x;
+      dots([[24, 14], [25, 13], [26, 13], [27, 13], [28, 14]].map(([x, y]) => [X(x), y]), FLAT, 'head', 1, PAL.joint);
+      blob(...pair(M(ox, sx, 24.5, 29.5), 16, 21.5), 2.5, 2.75, FLAT, 'head', { seam: false, hex: PAL.joint, tone: 1 });
+      dot(X(27) + 1, 17, FLAT, 'head', 1, '#FFFFFF'); // glint on the sun side of each eye
+    });
+    const lineInk = mixHex(PAL.dummyD, PAL.joint, 0.45);
+    dots([[31, 23], [31, 24]], BODY, 'head', 0);
+    dots([[29, 26], [30, 27], [31, 27], [32, 27], [33, 27], [34, 26]], FLAT, 'head', 1, lineInk);
+
+    // --- modules: one visible component per node, in the brand accent
+    if (has('widerView')) { // wide-angle goggles around the eyes
+      mirror((ox, sx) => blob(...pair(M(ox, sx, 22.5, 31.5), 14.25, 23.25), 4.5, 4.5, MOD, 'mod', { ring: 0.62 }));
+      blob(31, 17, 33, 20, 0, 0, MOD, 'mod');
+      mirror((ox, sx) => blob(...pair(M(ox, sx, 19, 23), 17, 20), 0.5, 0.5, MOD, 'mod'));
+    }
+    if (has('memory')) { // a memory cartridge in the crown
+      blob(26, -2, 38, 5, 1.5, 1.5, MOD, 'mod');
+      for (const y of [0, 2]) dots(Array.from({ length: 8 }, (_, i) => [28 + i, y]), FLAT, 'mod', 1, PAL.modL);
+    }
+    if (has('ears')) { // dish ears with antenna stalks
+      mirror((ox, sx) => {
+        const X = (x) => ox + sx * x;
+        blob(...pair(M(ox, sx, 13, 22), 12.5, 26.5), 4.5, 7, MOD, 'mod', { ring: 0.5 });
+        blob(...pair(M(ox, sx, 15, 16.5), 7, 13), 0.5, 0.5, CHROME, 'mod');
+        blob(...pair(M(ox, sx, 13.5, 18), 3.5, 8), 2.25, 2.25, MOD, 'mod');
+      });
+    }
+    if (has('throw')) { // shoulder actuators, a piston down each arm
+      mirror((ox, sx) => {
+        blob(...pair(M(ox, sx, 8, 19), 33, 41), 5, 4, MOD, 'mod');
+        blob(...pair(M(ox, sx, 7, 10), 40, 53), 1.5, 0.5, CHROME, 'mod');
+      });
+    }
+    if (has('neck')) { // gimbal collar with pivot bolts
+      blob(25, 30, 39, 37, 3, 2.5, MOD, 'mod');
+      mirror((ox, sx) => blob(...pair(M(ox, sx, 23, 27), 31, 35), 2, 2, CHROME, 'mod'));
+    }
+    if (has('kineticCharge')) { // impact plates on the flanks, bolt glyphs
+      mirror((ox, sx) => {
+        const X = (x) => ox + sx * x;
+        blob(...pair(M(ox, sx, 19.5, 25), 40, 51), 1.5, 1.5, MOD, 'mod');
+        dots([[23, 42], [22, 43], [21, 44], [22, 45], [23, 45], [22, 46], [21, 47], [22, 47], [21, 48]].map(([x, y]) => [X(x), y]), FLAT, 'mod', 1, '#FFFFFF');
+      });
+    }
+    if (has('bigBattery')) { // chest pack: five cells, a terminal on top
+      blob(30, 36, 34, 39, 0.5, 0.5, CHROME, 'mod');
+      blob(26, 38, 38, 50, 2, 2, MOD, 'mod');
+      for (let c = 0; c < 5; c++) dots(Array.from({ length: 8 }, (_, i) => [28 + i, 40 + c * 2]), FLAT, 'mod', 1, PAL.modL);
+    }
+    if (has('spine')) { // flexible bellows: the lumbar segment in the accent, ribbed
+      blob(25, 50, 39, 59, 2, 1.5, MOD, 'mod');
+      for (const y of [51, 53, 55, 57]) dots(Array.from({ length: 12 }, (_, i) => [26 + i, y]), FLAT, 'mod', 1, PAL.modD);
+    }
+    if (has('hips')) { // swivel bearing with bolts
+      blob(21, 58, 43, 63, 2.5, 2.5, MOD, 'mod');
+      dots([[24, 60], [28, 60], [32, 60], [36, 60], [40, 60]], CHROME, 'mod', 2);
+    }
+    if (has('fastCharge')) { // charge port on the pelvis, a plugged cable
+      blob(29, 62, 36, 69, 3.5, 3.5, MOD, 'mod');
+      dots([[31, 65], [33, 65]], FLAT, 'mod', 1, PAL.joint);
+      blob(31.5, 68, 33.5, 81, 1, 0.5, CHROME, 'mod');                  // the cable hangs between the legs
+    }
+    if (has('jump')) { // pistons on the thighs
+      mirror((ox, sx) => {
+        blob(...pair(M(ox, sx, 21.5, 25.5), 66, 79), 2, 1.5, MOD, 'mod');
+        blob(...pair(M(ox, sx, 22.5, 24.5), 78, 86), 1, 0.5, CHROME, 'mod');
+      });
+    }
+    if (has('springStart')) { // coil springs at the ankles
+      mirror((ox, sx) => { for (let k = 0; k < 3; k++) blob(...pair(M(ox, sx, 22.5, 31.5), 89.5 + k * 2, 91.5 + k * 2), 4.5, 1, MOD, 'mod'); });
+    }
+    if (has('strafe')) { // omni wheels outside each foot
+      mirror((ox, sx) => {
+        blob(...pair(M(ox, sx, 14, 21), 93, 100), 3.5, 3.5, CHROME, 'mod');
+        blob(...pair(M(ox, sx, 16, 19), 95, 98), 1.5, 1.5, MOD, 'mod');
+      });
+    }
+    if (has('holdOn')) { // forearm bracers with clamp jaws
+      mirror((ox, sx) => {
+        blob(...pair(M(ox, sx, 9, 20), 60, 65.5), 2, 2, MOD, 'mod');
+        blob(...pair(M(ox, sx, 5, 9.5), 58.5, 62.5), 1, 1, CHROME, 'mod');
+        blob(...pair(M(ox, sx, 5, 9.5), 63.5, 67.5), 1, 1, CHROME, 'mod');
+      });
+    }
+    if (has('carry')) { // grip gloves: the mitts take the accent, with finger lines
+      mirror((ox, sx) => {
+        const X = (x) => ox + sx * x;
+        blob(...pair(M(ox, sx, 9, 19), 68, 77), 5, 4.5, MOD, 'mod');
+        for (const x of [12, 14, 16]) dots([[x, 73], [x, 74], [x, 75]].map(([a, y]) => [X(a), y]), FLAT, 'mod', 1, PAL.modD);
+      });
+    }
+    // --- shade, damage, seams, outline
+    const lv = (pt) => levels[pt] || 0;
+    const ramps = {
+      [BODY]: [PAL.dummyD, PAL.dummy, PAL.dummyL, '#FFF7D6'], [CHROME]: [PAL.chromeD, PAL.chrome, PAL.chromeL, '#FFFFFF'],
+      [JOINT]: [PAL.joint, PAL.joint, '#3A4148', '#3A4148'], [MOD]: [PAL.modD, PAL.mod, PAL.modL, '#FFFFFF'] };
+    const col = new Array(N);
+    for (let i = 0; i < N; i++) {
+      if (!role[i]) continue;
+      let hex = role[i] === FLAT ? flat[i] : ramps[role[i]][tone[i]];
+      const l = part[i] === 'mod' ? 0 : lv(part[i]);
+      if (role[i] === BODY && l) hex = mixHex(hex, PAL.worn, [0, 0.18, 0.4, 0.62][l]);
+      col[i] = hex;
+    }
+    const onPart = (x, y, pt) => { const yy = y + DOY; return x >= 0 && yy >= 0 && x < W && yy < H && part[yy * W + x] === pt && (role[yy * W + x] === BODY || role[yy * W + x] === CHROME); };
+    const paint = (x, y, hex) => { col[(y + DOY) * W + x] = hex; };
+    for (const pt in DENTS) {
+      const l = lv(pt); if (!l) continue;
+      DENTS[pt].slice(0, l).forEach(([x, y]) => {
+        if (onPart(x, y, pt)) paint(x, y, mixHex(PAL.dummyD, PAL.worn, 0.4));
+        if (onPart(x + 1, y, pt)) paint(x + 1, y, mixHex(PAL.dummyD, PAL.worn, 0.4));
+        if (onPart(x - 1, y + 1, pt)) paint(x - 1, y + 1, mixHex(PAL.dummyL, PAL.worn, 0.3));
+      });
+      if (l < 2) continue;
+      const pts = CRACK[pt].slice(0, l >= 3 ? 5 : 3);
+      for (let k = 1; k < pts.length; k++) {
+        const [a, b] = [pts[k - 1], pts[k]], n = Math.max(Math.abs(b[0] - a[0]), Math.abs(b[1] - a[1]));
+        for (let s = 0; s <= n; s++) {
+          const x = Math.round(a[0] + (b[0] - a[0]) * s / n), y = Math.round(a[1] + (b[1] - a[1]) * s / n);
+          if (onPart(x, y, pt)) paint(x, y, PAL.joint);
+        }
+      }
+      if (l >= 3) { const [x, y] = pts[pts.length - 1]; for (const [ax, ay] of [[1, 0], [0, 1]]) if (onPart(x + ax, y + ay, pt)) paint(x + ax, y + ay, PAL.warn); }
+    }
+    const S = spr(W, H, W >> 1, H - 4), dark = !!PAL.rimLight;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y * W + x, nb = [[x, y - 1], [x + 1, y], [x, y + 1], [x - 1, y]].map(([a, b]) => (a < 0 || b < 0 || a >= W || b >= H ? -1 : b * W + a));
+      if (role[i]) {
+        let hex = col[i];
+        if (flash && part[i] === flash) hex = '#FFFFFF';
+        else if (role[i] !== JOINT) for (const j of nb) {
+          if (j < 0 || !role[j] || sid[j] <= sid[i] || !seamy[j]) continue;
+          hex = lv(part[i]) >= 3 || (part[j] !== 'mod' && lv(part[j]) >= 3) ? PAL.warn : PAL.joint; break;
+        }
+        S.d[i] = c32(hex);
+        continue;
+      }
+      // empty: outline if it touches the silhouette. Dark ground takes a rim, lit from the top right.
+      const hit = nb.map((j) => (j >= 0 && role[j] ? j : -1));
+      if (hit.every((j) => j < 0)) continue;
+      const broken = hit.some((j) => j >= 0 && part[j] !== 'mod' && lv(part[j]) >= 3);
+      const litSide = hit[2] >= 0 || hit[3] >= 0; // the body is below or left: this edge faces up or right
+      S.d[i] = c32(broken ? PAL.warn : !dark ? PAL.joint : litSide ? PAL.rimLight : PAL.rimDark);
+    }
     return S;
   }
+  function pair(xs, y0, y1) { return [xs[0], y0, xs[1], y1]; }
   const CONE = fromRows(['...o...', '..oWo..', '..oOo..', '.oOOOo.', '.oWWWo.', 'oOOOOOo', 'ooooooo'], { o: K.coneO, O: K.cone, W: K.coneW }, 3, 5);
   const DRONE = (() => {
     const S = spr(21, 15, 10, 7);
@@ -558,6 +770,6 @@
 
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
-    text, textWidth, FONT_H, blit, car, dummy, doll, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
+    text, textWidth, FONT_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
   };
 })(typeof window !== 'undefined' ? window : globalThis);
