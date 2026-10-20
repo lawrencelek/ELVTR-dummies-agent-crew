@@ -1,6 +1,6 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Assignment #4 (Dynamic Content Pipeline)** lives in [`content/`](content/README.md). It generates juice, interface and graphics content from the GDD. The playable result is [`prototypes/p2/`](prototypes/p2/README.md); [`prototypes/p1/`](prototypes/p1/README.md) stays frozen at P1.9.
+> **Assignment #4 (Dynamic Content Pipeline)** lives in [`content/`](content/README.md). It generates juice, interface and graphics content from the GDD. The playable result is [`prototypes/p3/`](prototypes/p3/README.md) (pixel art, 640 × 360). [`prototypes/p2/`](prototypes/p2/README.md) stays at P2.2; [`prototypes/p1/`](prototypes/p1/README.md) stays frozen at P1.9.
 
 **Capstone game:** DUMMIES, by Lawrence Lek.
 
