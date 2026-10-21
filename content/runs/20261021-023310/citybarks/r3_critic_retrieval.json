@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 22.739
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 16.362
+      }
+    ]
+  },
+  {
+    "query": "Luxury never apologises Corporate speaks in logs KPIs policy numbers",
+    "results": [
+      {
+        "id": "EDIT26#6.1~1",
+        "score": 7.93
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 7.716
+      }
+    ]
+  },
+  {
+    "query": "banned terms setting Shenzhen smart city FARSIGHT capitals",
+    "results": [
+      {
+        "id": "FLEET#F1",
+        "score": 25.78
+      },
+      {
+        "id": "EDIT26#3.1",
+        "score": 17.991
+      }
+    ]
+  },
+  {
+    "query": "mockery game-show cheer generic science fiction commentary interchangeable",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 27.556
+      },
+      {
+        "id": "EDIT37#decisions",
+        "score": 10.621
+      }
+    ]
+  },
+  {
+    "query": "roofs are Z2 platform buildings low highway Z1 high highway Interchange CBD",
+    "results": [
+      {
+        "id": "EDIT44#7.1.1",
+        "score": 45.988
+      },
+      {
+        "id": "EDIT44#evidence",
+        "score": 39.22
+      }
+    ]
+  },
+  {
+    "query": "plates on the road FARSIGHT Campus only",
+    "results": [
+      {
+        "id": "EDIT26#7.2~2",
+        "score": 9.725
+      },
+      {
+        "id": "EDIT41#10.3",
+        "score": 9.567
+      }
+    ]
+  },
+  {
+    "query": "The Central Business District. How very public.",
+    "results": [
+      {
+        "id": "EDIT40#open-items",
+        "score": 6.984
+      },
+      {
+        "id": "EDIT26#7.3~1",
+        "score": 6.564
+      }
+    ]
+  },
+  {
+    "query": "Roof arrival. No policy covers roof arrivals.",
+    "results": [
+      {
+        "id": "ENG#6.3",
+        "score": 13.926
+      },
+      {
+        "id": "EDIT44#open-items",
+        "score": 12.275
+      }
+    ]
+  },
+  {
+    "query": "Highway write-off. Incident filed and closed.",
+    "results": [
+      {
+        "id": "EDIT44#evidence",
+        "score": 9.003
+      },
+      {
+        "id": "LOG#P1.5/campaign",
+        "score": 8.091
+      }
+    ]
+  },
+  {
+    "query": "Dropped from a rooftop. How very provincial.",
+    "results": [
+      {
+        "id": "EDIT40#open-items",
+        "score": 6.984
+      },
+      {
+        "id": "DECISIONS#rows-61-70~2",
+        "score": 4.412
+      }
+    ]
+  },
+  {
+    "query": "Off the highway, onto me. Quite uncivilised.",
+    "results": [
+      {
+        "id": "LOG#P3.3/questions-for-the-p3-3-session",
+        "score": 9.328
+      },
+      {
+        "id": "LOG#P1.2/juice",
+        "score": 6.676
+      }
+    ]
+  },
+  {
+    "query": "Highway drop filed. Form 9, load from above.",
+    "results": [
+      {
+        "id": "EDIT44#evidence",
+        "score": 8.225
+      },
+      {
+        "id": "EDIT44#7.4",
+        "score": 7.522
+      }
+    ]
+  }
+]

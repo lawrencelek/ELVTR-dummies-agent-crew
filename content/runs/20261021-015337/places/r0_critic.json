@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The content sounds like DUMMIES: plain FARSIGHT instruction in the toasts, calm concrete street names, no cheer or jokes. Two truth problems remain besides the validator's: a Riverside name that promises a waterside on a screen that is not on the river, and a Z2 toast that promises a drop to the street, which is not guaranteed where a Z1 deck sits beneath.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "fix",
+      "path": "districts.riverside.screens.A3",
+      "found": "Dockside Road",
+      "canon": "BRIEF: Game data",
+      "rule": "A name may promise only what all three layouts have; only row 1 is on the river, and A3 is row 3, so 'Dockside' promises a waterside it lacks.",
+      "fix": "Ropemaker Lane"
+    },
+    {
+      "id": "C2",
+      "kind": "truth",
+      "severity": "block",
+      "path": "levels.z2Highway",
+      "found": "High highway: fast deck traffic. A broken parapet is a long drop to the street.",
+      "canon": "DECISIONS#rows-161-170~2",
+      "rule": "A drop lands on the nearest level below, a deck beneath else the ground (row 168), and Interchange stacks a deck over a deck (EDIT41#7.1.1). The toast cannot promise the street.",
+      "fix": "High highway: fast deck traffic. A broken parapet is a long drop to whatever lies below."
+    }
+  ]
+}

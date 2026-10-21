@@ -1,0 +1,6368 @@
+{
+ "schemaVersion": 3,
+ "registryVersion": "edit44-2026-10-21",
+ "purpose": "Starter parameter catalog, not a runtime-connected configuration",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44 (20–21 October 2026)",
+ "entries": [
+  {
+   "id": "movement.walkSpeed",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Walk speed",
+   "description": "Ground speed before run buildup, before terrain modifiers.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 81,
+   "status": "reported-built",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Baseline approach speed; slow enough to read a car's chevron before committing"
+  },
+  {
+   "id": "movement.runSpeed",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Run speed",
+   "description": "Full ground run speed before modifiers.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 162,
+   "status": "reported-built",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Twice walk, so crossing a lane costs about one second"
+  },
+  {
+   "id": "movement.rampSeconds",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Walk-to-run buildup",
+   "description": "Spring start changes the effective value, not this default.",
+   "unit": "s",
+   "type": "number",
+   "default": 1,
+   "status": "reported-built",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The cost of starting; removed by Spring start, which is what makes that node felt"
+  },
+  {
+   "id": "movement.turnRate",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Turn rate",
+   "description": "Rotation is proportional: 45° costs one unit, 180° four. The central feel knob",
+   "unit": "degrees/s",
+   "type": "number",
+   "default": 180,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 90,
+    "designMax": 540
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Rotation is proportional: 45° costs one unit, 180° four. The central feel knob",
+   "designBound": "Below 90°/s a 180° reversal costs over two seconds and the dummy reads as broken. Above 540°/s turning stops costing time and decision 75 is void."
+  },
+  {
+   "id": "movement.turningSpeedFraction",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "turningSpeedFraction",
+   "description": "Ground speed while still turning into line; the visible cost of changing direction",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.6,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1,
+    "designMin": 0.4,
+    "designMax": 0.85
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Ground speed while still turning into line; the visible cost of changing direction",
+   "designBound": "Below 0.4 the dummy stalls while turning and reads as unresponsive. Above 0.85 rotation costs nothing and the scheme collapses to eight-direction."
+  },
+  {
+   "id": "movement.alignThreshold",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "alignThreshold",
+   "description": "Within this angle of the pressed direction the dummy runs at full speed",
+   "unit": "°",
+   "type": "number",
+   "default": 30,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 10,
+    "designMax": 60
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Within this angle of the pressed direction the dummy runs at full speed",
+   "designBound": "Below 10° full speed almost never engages. Above 60° the dummy runs sideways at full speed and facing stops mattering."
+  },
+  {
+   "id": "movement.turnStartup",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Turn startup",
+   "description": "Time to reach full turn rate.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.1,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Short enough that rotation feels responsive, long enough to read as mechanical"
+  },
+  {
+   "id": "movement.stopSeconds",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Stopping time",
+   "description": "The coast after the direction input is released. The dummy has mass and does not stop dead.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.25,
+   "status": "proposed",
+   "source": "GDD §5.2 stopping and drift",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0,
+    "designMin": 0.1,
+    "designMax": 0.6
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The coast after the input is released; the dummy has mass and does not stop dead",
+   "designBound": "Below 0.1 s the coast is under the threshold of perception and the body reads as weightless. Above 0.6 s the player overshoots into traffic they did not choose, and pillar 1 reads as drift rather than a read."
+  },
+  {
+   "id": "movement.lowGripStopMultiplier",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Low-grip stop multiplier",
+   "description": "How much further the dummy coasts on a low-grip surface. Removed by Grip (Legs, tier 2).",
+   "unit": "multiplier",
+   "type": "number",
+   "default": 2.5,
+   "status": "proposed",
+   "source": "GDD §§5.2, 7.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 1,
+    "designMin": 1.5,
+    "designMax": 4.0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "How much further the dummy coasts on low grip; removed by Grip",
+   "designBound": "Below 1.5 the diesel spill is not felt and Grip has nothing to sell. Above 4.0 a low-grip surface is a trap rather than a bait, and the player avoids the one place the level wants them to stand."
+  },
+  {
+   "id": "movement.counterPressAngle",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Counter-press angle",
+   "description": "A press this far or further from the current heading reads as braking rather than steering.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 135,
+   "status": "proposed",
+   "source": "GDD §5.2 stopping and drift",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 180,
+    "designMin": 90,
+    "designMax": 180
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "How far from the heading a press must be to brake rather than steer",
+   "designBound": "Below 90° every sideways correction brakes and the dummy never flows. At 180° only an exact reversal brakes, so the skill is unusable under pressure."
+  },
+  {
+   "id": "movement.counterPressStop",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Counter-press stop",
+   "description": "Fraction of the coast remaining when the player presses back. Applied before the low-grip multiplier.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.4,
+   "status": "proposed",
+   "source": "GDD §5.2 stopping and drift",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1,
+    "designMin": 0.2,
+    "designMax": 0.8
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "How much of the coast remains when the player presses back",
+   "designBound": "Below 0.2 pressing back is an instant stop and the body's mass disappears on demand. Above 0.8 it is not worth the turn it costs."
+  },
+  {
+   "id": "movement.lungeDistance",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Lunge distance",
+   "description": "Fresh-body distance before terrain and wear.",
+   "unit": "px",
+   "type": "number",
+   "default": 164,
+   "status": "reported-built",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0,
+    "designMin": 120,
+    "designMax": 240
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Reaches a lane from the hard shoulder on a fresh body",
+   "designBound": "Must reach a lane from the hard shoulder at full health, and must not reach across two lanes, which would remove the need to approach."
+  },
+  {
+   "id": "movement.lungeDuration",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Lunge duration",
+   "description": "Duration of nominal lunge motion.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.3,
+   "status": "reported-built",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "exclusiveMin": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Too short to abort, which is what makes the commitment matter"
+  },
+  {
+   "id": "movement.lungeRecovery",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Lunge recovery",
+   "description": "Recovery following every lunge.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.35,
+   "status": "reported-built",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Longer than the lunge itself; a missed lunge is punished by exposure"
+  },
+  {
+   "id": "movement.wearFloor",
+   "group": "Dummy movement",
+   "owner": "Body",
+   "label": "Minimum reach fraction",
+   "description": "Lower bound for damage-shortened lunge reach.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.45,
+   "status": "reported-built",
+   "source": "GDD §§5.2, 5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0,
+    "max": 1,
+    "designMin": 0.35,
+    "designMax": 0.6
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A fully worn body still reaches a passing car's flank, so pillar 1 holds at any damage",
+   "designBound": "A fully worn body must still reach a passing car's flank (pillar 1). Above 0.6 wear stops being felt."
+  },
+  {
+   "id": "battery.capacity",
+   "group": "Battery",
+   "owner": "Body",
+   "label": "Capacity",
+   "description": "Unupgraded capacity; one dash consumes one unit.",
+   "unit": "charge units",
+   "type": "number",
+   "default": 2,
+   "status": "author-decided",
+   "source": "GDD §5.4; Edit 39 (D19)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 2,
+    "designMax": 5
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two dashes before waiting (D19, 20 October)",
+   "designBound": "Below 2 no bait sequence is possible. At 5 the baseline equals Big battery and that node has nothing to sell."
+  },
+  {
+   "id": "battery.secondsPerCharge",
+   "group": "Battery",
+   "owner": "Body",
+   "label": "Refill time per unit",
+   "description": "Continuous rate is the inverse of this value.",
+   "unit": "s/charge unit",
+   "type": "number",
+   "default": 0.8,
+   "status": "proposed",
+   "source": "GDD §§5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "exclusiveMin": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A full refill takes about as long as a car takes to cross the level"
+  },
+  {
+   "id": "battery.refillDelaySeconds",
+   "group": "Battery",
+   "owner": "Body",
+   "label": "Refill delay",
+   "description": "Delay after a successful charge spend.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.3,
+   "status": "proposed",
+   "source": "GDD §§5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Stops a spent charge refilling mid-lunge"
+  },
+  {
+   "id": "battery.lungeCost",
+   "group": "Battery",
+   "owner": "Body",
+   "label": "Lunge cost",
+   "description": "D15 remains open.",
+   "unit": "charge units",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "GDD §§5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One attempt, one charge; the unit the player counts in"
+  },
+  {
+   "id": "battery.jumpCost",
+   "group": "Battery",
+   "owner": "Body",
+   "label": "Additional jump cost",
+   "description": "Paid in addition to the initiating lunge; D15 remains open.",
+   "unit": "charge units",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "GDD §§5.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A jump costs a second attempt, so traversal competes with attacking"
+  },
+  {
+   "id": "sensing.coneWidth",
+   "group": "Sensing and cues",
+   "owner": "Sensing / Body",
+   "label": "Baseline cone width",
+   "description": "Body owns the effective width; Sensing reads it.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 90,
+   "status": "proposed",
+   "source": "GDD §§5.3, 5.8",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 45,
+    "designMax": 150
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Narrower than human vision; the dummy must turn its whole body to scan",
+   "designBound": "Below 45° scanning is punitive. At or above 160° — the Wider view value — the upgrade has nothing to sell."
+  },
+  {
+   "id": "sensing.zoneFadeIn",
+   "group": "Sensing and cues",
+   "owner": "Sensing / Body",
+   "label": "Zone fade-in",
+   "description": "Presentation fade when zones enter the view cone.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.15,
+   "status": "proposed",
+   "source": "GDD §§5.3, 5.8",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Zones resolve as the cone sweeps, so looking reads as scanning rather than switching"
+  },
+  {
+   "id": "sensing.zoneOpacity",
+   "group": "Sensing and cues",
+   "owner": "Sensing / Body",
+   "label": "Zone opacity",
+   "description": "Nominal zone drawing opacity.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.25,
+   "status": "proposed",
+   "source": "GDD §§5.3, 5.8",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Visible without competing with tier-1 cues (4.2)"
+  },
+  {
+   "id": "upgrades.memorySeconds",
+   "group": "Sensing and cues",
+   "owner": "Sensing / Body",
+   "label": "Memory duration",
+   "description": "Lifetime of proposed last-seen zone snapshots.",
+   "unit": "s",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §§5.3, 5.8",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Long enough to turn away and act on what was seen; short enough to stay a memory"
+  },
+  {
+   "id": "upgrades.earsForecast",
+   "group": "Sensing and cues",
+   "owner": "Sensing / Body",
+   "label": "Ears forecast",
+   "description": "Target lead time for planned entry, subject to admission delay.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "GDD §§5.3, 5.8",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Warns before a car enters the cone, so the player can turn toward it in time"
+  },
+  {
+   "id": "damage.bodyHealth",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Fresh body health",
+   "description": "Base (Standard) body health. Edit 40.1 supersedes CR-004 (1600). Difficulty picks proto.health.*.",
+   "unit": "health units",
+   "type": "number",
+   "default": 800,
+   "status": "author-decided",
+   "source": "GDD §8.3; Edit 40.1",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 600,
+    "designMax": 2400
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Base 800: a body takes several deliberate hits before a write-off",
+   "designBound": "Below 600 two late sedan lunges (278 each) nearly write a body off. Above 2400 a five-minute visit never reaches a write-off."
+  },
+  {
+   "id": "damage.baseImpact",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Base impact",
+   "description": "Base before zone, lunge, speed and mass factors.",
+   "unit": "damage units",
+   "type": "number",
+   "default": 100,
+   "status": "author-decided",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The reference unit; every other damage figure is a multiple of it"
+  },
+  {
+   "id": "damage.lungeMultiplier",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Lunge multiplier",
+   "description": "Also applies to an eligible jump.",
+   "unit": "multiplier",
+   "type": "number",
+   "default": 5,
+   "status": "author-decided",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "designMin": 3,
+    "designMax": 8
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Lunging pays five times standing, which is the anti-standing rule in arithmetic",
+   "designBound": "Below 3 standing earns more than 45% of a lunge and pillar 1's anti-standing check fails."
+  },
+  {
+   "id": "damage.zone.front",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Head-on share",
+   "description": "Front impact zone.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1,
+   "status": "author-decided",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Head-on pays full; the hardest approach pays the most"
+  },
+  {
+   "id": "damage.zone.frontDiagonal",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Diagonal-front share",
+   "description": "Diagonal front impact zone.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.6,
+   "status": "author-decided",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Rewards intercepting a committed route rather than meeting it square"
+  },
+  {
+   "id": "damage.zone.side",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Side share",
+   "description": "Side impact zone.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.3,
+   "status": "author-decided",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A flank hit on a braking car; reachable but cheap"
+  },
+  {
+   "id": "damage.zone.rearDiagonal",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Diagonal-rear share",
+   "description": "Diagonal rear impact zone.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.15,
+   "status": "author-decided",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Near-worthless, to stop players chasing departing cars"
+  },
+  {
+   "id": "damage.zone.rear",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Rear share",
+   "description": "Rear impact zone.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.05,
+   "status": "author-decided",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Counts as contact for Non-compliant, pays almost nothing"
+  },
+  {
+   "id": "rewards.writeOff",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Write-off bonus",
+   "description": "Score reward only, never chassis damage.",
+   "unit": "points",
+   "type": "number",
+   "default": 2500,
+   "status": "reported-built",
+   "source": "GDD §8.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Larger than any single impact, so finishing a body always beats farming one"
+  },
+  {
+   "id": "upgrades.widerView",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Wider view width",
+   "description": "Effective cone width when owned.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 160,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Roughly human binocular plus near peripheral; the first sense returned"
+  },
+  {
+   "id": "upgrades.hipsTurnRate",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Hips turn rate",
+   "description": "Effective turn rate when owned.",
+   "unit": "degrees/s",
+   "type": "number",
+   "default": 360,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Halves the cost of looking without removing it"
+  },
+  {
+   "id": "upgrades.spineLimit",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Spine steering limit",
+   "description": "Maximum lunge bend.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 45,
+   "status": "author-decided",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Enough to correct a misread, not enough to home in"
+  },
+  {
+   "id": "upgrades.spineRate",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Spine steering rate",
+   "description": "Maximum rate within the bend limit.",
+   "unit": "degrees/s",
+   "type": "number",
+   "default": 540,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The full 45° bend fits inside the lunge duration"
+  },
+  {
+   "id": "upgrades.neckSpeed",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Neck decoupled-cone speed fraction",
+   "description": "Movement rate while the view cone is held off the facing; Neck no longer governs sidestep, which is Strafe.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.8,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Moving while looking elsewhere costs speed"
+  },
+  {
+   "id": "upgrades.jumpWindow",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Jump input window",
+   "description": "Time from lunge start for second A press.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.2,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Early in the lunge only; jumping is a decision, not a correction"
+  },
+  {
+   "id": "upgrades.jumpDistance",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Jump extension",
+   "description": "Extra before wear and terrain composition.",
+   "unit": "px",
+   "type": "number",
+   "default": 60,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Clears a standard roadwork hole on a fresh body; shrinks with wear"
+  },
+  {
+   "id": "upgrades.jumpAirtime",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Jump airtime",
+   "description": "Airborne interval.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.35,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Long enough to read as airborne against the ground shadow"
+  },
+  {
+   "id": "upgrades.jumpRecovery",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Jump landing recovery",
+   "description": "Combined with the lunge recovery deadline.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.1,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Added to lunge recovery, so jumping is the most exposed action"
+  },
+  {
+   "id": "upgrades.carrySpeed",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Carry speed fraction",
+   "description": "Ground-travel modifier while carrying a cone.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.85,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Carrying a cone is a visible, minor handicap"
+  },
+  {
+   "id": "upgrades.holdSeconds",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Nominal ride limit",
+   "description": "Safe-detachment exception remains a design/testing issue.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About one block of travel; a repositioning tool, not a free ride"
+  },
+  {
+   "id": "upgrades.throwDistance",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Throw distance",
+   "description": "Prop travel; wear scaling remains open.",
+   "unit": "px",
+   "type": "number",
+   "default": 120,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Places a cone across one lane from the hard shoulder"
+  },
+  {
+   "id": "upgrades.bigCapacity",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Big battery capacity",
+   "description": "Effective capacity when Big battery is owned. Base is battery.capacity (2).",
+   "unit": "charge units",
+   "type": "number",
+   "default": 3,
+   "status": "author-decided",
+   "source": "GDD §5.2, 5.6, 9.2; Edit 40 (D26)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One dash more than base: a feint and a strike (D26)"
+  },
+  {
+   "id": "upgrades.kineticThreshold",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Kinetic charge threshold",
+   "description": "Candidate uses pre-bonus impact damage.",
+   "unit": "damage units",
+   "type": "number",
+   "default": 300,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Only a committed hit refills; glancing contact does not"
+  },
+  {
+   "id": "upgrades.kineticFraction",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Kinetic refill fraction",
+   "description": "Fraction of effective capacity.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Half a battery back, so a good hit buys the next attempt"
+  },
+  {
+   "id": "upgrades.fastChargeMultiplier",
+   "group": "Upgrades",
+   "owner": "Body / Economy",
+   "label": "Fast charge rate multiplier",
+   "description": "Multiplies rate, not seconds per unit.",
+   "unit": "multiplier",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Halves the wait, which is the only thing waiting ever costs"
+  },
+  {
+   "id": "perception.reactionDelay",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Reaction delay",
+   "description": "Vehicle sensing response delay.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.3,
+   "status": "author-decided",
+   "source": "GDD §6.2–6.3; Edit 37 (P2.2)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 0.08,
+    "designMax": 0.3
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The window a bait must fit inside; 0.3 s is fair at a glance (P2.2)",
+   "designBound": "Below 0.08 s no bait fits inside the window. Above 0.3 s cars read as oblivious and pillar 2's learning is unreadable."
+  },
+  {
+   "id": "perception.sideRadius",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Side-sensor reach",
+   "description": "Short side sensors at the nose.",
+   "unit": "px",
+   "type": "number",
+   "default": 100,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Short enough that passing close is safe; long enough to make a car hesitate"
+  },
+  {
+   "id": "traffic.timeGap",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Following time gap",
+   "description": "Nominal non-bus time gap.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.2,
+   "status": "proposed",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Standard following distance; sets how often a usable gap appears"
+  },
+  {
+   "id": "traffic.busTimeGap",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Bus following time gap",
+   "description": "Bus following time gap.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.8,
+   "status": "proposed",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Buses leave larger gaps, making them the easiest class to reach"
+  },
+  {
+   "id": "traffic.minimumGap",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Stopped gap",
+   "description": "Does not alone prove safe admission.",
+   "unit": "px",
+   "type": "number",
+   "default": 8,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Queued cars stay separable, so the dummy can enter a stopped line"
+  },
+  {
+   "id": "traffic.acceleration",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Acceleration",
+   "description": "Pulling away.",
+   "unit": "px/s²",
+   "type": "number",
+   "default": 360,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A stopped car takes about half a second to become dangerous again"
+  },
+  {
+   "id": "traffic.comfortBraking",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Comfortable braking",
+   "description": "Nominal slowing; terrain affects safe stopping.",
+   "unit": "px/s²",
+   "type": "number",
+   "default": 400,
+   "status": "proposed",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Normal slowing; the deceleration an incident is measured against"
+  },
+  {
+   "id": "traffic.hardBraking",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Hard braking",
+   "description": "Maximum nominal emergency deceleration.",
+   "unit": "px/s²",
+   "type": "number",
+   "default": 600,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Emergency stop; the cue that the player forced a reaction"
+  },
+  {
+   "id": "traffic.arrivalTie",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Arrival tie window",
+   "description": "Near-simultaneous arrival window.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Arrivals this close count as simultaneous at a junction"
+  },
+  {
+   "id": "traffic.stopPause",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Stop-sign pause",
+   "description": "Full-stop dwell.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A full stop long enough to be a reliable target"
+  },
+  {
+   "id": "traffic.deadlockTimeout",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Wait-cycle timeout",
+   "description": "Triggers safe recovery planning, not automatic reversing.",
+   "unit": "s",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §6.2 navigation, §6.3 detection",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "How long a wait cycle runs before safe recovery is planned"
+  },
+  {
+   "id": "vehicles.sports.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sports cruise speed",
+   "description": "Nominal class cruise speed; changing this is not changing the fixed damage-reference speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 192,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation tuning",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Fastest class; highest damage, smallest window"
+  },
+  {
+   "id": "vehicles.hatchback.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Hatchback cruise speed",
+   "description": "Nominal class cruise speed; changing this is not changing the fixed damage-reference speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 156,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation tuning",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Fast and recommits once, so timing is readable but tight"
+  },
+  {
+   "id": "vehicles.wagon.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Wagon cruise speed",
+   "description": "Nominal class cruise speed; changing this is not changing the fixed damage-reference speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 144,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation tuning",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wide clearance at moderate speed; rewards a fresh body's full reach"
+  },
+  {
+   "id": "vehicles.sedan.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sedan cruise speed",
+   "description": "Nominal class cruise speed; changing this is not changing the fixed damage-reference speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 138,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation tuning",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The reference vehicle; all damage figures normalise to a sedan at cruise"
+  },
+  {
+   "id": "vehicles.van.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Van cruise speed",
+   "description": "Nominal class cruise speed; changing this is not changing the fixed damage-reference speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 120,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation tuning",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Slow but heavy; brakes then swerves late"
+  },
+  {
+   "id": "vehicles.bus.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Bus cruise speed",
+   "description": "Nominal class cruise speed; changing this is not changing the fixed damage-reference speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 108,
+   "status": "reported-built",
+   "source": "GDD §6.2 navigation tuning",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Slowest and heaviest; cannot swerve, so it is the beginner's target"
+  },
+  {
+   "id": "world.safeGroundDwell",
+   "group": "World",
+   "owner": "World",
+   "label": "Safe-ground dwell",
+   "description": "Time on suitable ground before updating the fall recovery point.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "GDD §7.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "How long the dummy must stand clear before that spot becomes its fall-recovery point"
+  },
+  {
+   "id": "world.pedestrianGap",
+   "group": "World",
+   "owner": "World",
+   "label": "Pedestrian gap width",
+   "description": "Level-geometry input; body footprint must fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 40,
+   "status": "proposed",
+   "source": "GDD §7.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wide enough for the body footprint with margin; narrow enough for cars to learn"
+  },
+  {
+   "id": "canvas.width",
+   "group": "Canvas and extent",
+   "owner": "Presentation",
+   "label": "Canvas width",
+   "description": "16:9 exhibition canvas at reference scale.",
+   "unit": "world units",
+   "type": "number",
+   "default": 1280,
+   "status": "proposed",
+   "source": "GDD §7.1",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "16:9 exhibition canvas at reference scale"
+  },
+  {
+   "id": "canvas.height",
+   "group": "Canvas and extent",
+   "owner": "Presentation",
+   "label": "Canvas height",
+   "description": "16:9 exhibition canvas at reference scale.",
+   "unit": "world units",
+   "type": "number",
+   "default": 720,
+   "status": "proposed",
+   "source": "GDD §7.1",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "16:9 exhibition canvas at reference scale"
+  },
+  {
+   "id": "sensing.coneReach",
+   "group": "Sensing and cues",
+   "owner": "Sensing / Body",
+   "label": "View cone reach",
+   "description": "Replaces the screen-relative reading; clamped to the level extent.",
+   "unit": "world units",
+   "type": "number",
+   "default": 900,
+   "status": "proposed",
+   "source": "GDD §§5.3, 7.1",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Covers most of the level width, so the limit is direction rather than distance"
+  },
+  {
+   "id": "sensing.fogRadius",
+   "group": "Sensing and cues",
+   "owner": "Sensing / Body",
+   "label": "Fog sight radius",
+   "description": "Fog-of-war test; replaces the screen-share derivation.",
+   "unit": "world units",
+   "type": "number",
+   "default": 265,
+   "status": "proposed",
+   "source": "GDD §§7.1, 13.1",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About a third of the play area; the fog-of-war experiment only (13.1)"
+  },
+  {
+   "id": "run.quota.road",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Road quota",
+   "description": "Three-level quota.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §§10.3, 10.6",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-progression-check",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The tutorial level in all but name; three bodies teaches the loop and funds a first purchase"
+  },
+  {
+   "id": "run.quota.junction",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Cross junction quota",
+   "description": "Three-level quota.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 5,
+   "status": "proposed",
+   "source": "GDD §§10.3, 10.6",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-progression-check",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Committed routes are harder to read, but mixed streams give more openings"
+  },
+  {
+   "id": "run.certification",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Certification target",
+   "description": "One above the quota sum of 14, so minimum performance never certifies",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 15,
+   "status": "proposed",
+   "source": "GDD §§10.3, 10.6",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-progression-check",
+   "validation": {
+    "min": 0,
+    "designMin": 10,
+    "designMax": 20
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One above the quota sum of 14, so minimum performance never certifies",
+   "designBound": "Must exceed the quota sum of 14. Above 20 the run exceeds the thirty-minute horizon (pillar 4)."
+  },
+  {
+   "id": "run.appearanceCeiling",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Appearance ceiling",
+   "description": "Ceiling, never a session-length target.",
+   "unit": "vehicles",
+   "type": "number",
+   "default": 1000,
+   "status": "proposed",
+   "source": "GDD §§10.3, 10.6",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-spawn",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A ceiling that bounds the run, never a pacing target"
+  },
+  {
+   "id": "feedback.hitStop",
+   "group": "Feedback",
+   "owner": "Presentation",
+   "label": "Hit-stop duration",
+   "description": "Applies to the next impact pause; an active pause retains its duration.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.06,
+   "status": "proposed",
+   "source": "GDD §§8.3, 5.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "designMin": 0.03,
+    "designMax": 0.12
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Short enough not to break flow, long enough to register the hit",
+   "designBound": "Below 0.03 s the hit does not register. Above 0.12 s flow breaks and the attempt horizon suffers."
+  },
+  {
+   "id": "feedback.writeOffSeconds",
+   "group": "Feedback",
+   "owner": "Presentation",
+   "label": "Destruction animation",
+   "description": "Approximate reported duration; presentation and run sequencing interact.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.1,
+   "status": "reported-built",
+   "source": "GDD §§8.3, 5.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The destruction animation; gameplay is frozen throughout"
+  },
+  {
+   "id": "economy.price.battery",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Big battery",
+   "description": "Cheapest node; enables a purchase after one write-off.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The cheapest node, so a first purchase is possible after one write-off"
+  },
+  {
+   "id": "economy.price.torso",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Hips",
+   "description": "Tier 1.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 1. Doubles turn rate"
+  },
+  {
+   "id": "economy.price.head",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Wider view",
+   "description": "Tier 1.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 1. Opens the view cone"
+  },
+  {
+   "id": "economy.price.arms",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Carry",
+   "description": "Tier 1.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 1. Activates the B button"
+  },
+  {
+   "id": "economy.price.legs",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Strafe",
+   "description": "Tier 1. Spring start: the first step costs nothing",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 1. Spring start: the first step costs nothing"
+  },
+  {
+   "id": "economy.price.legs.grip",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Grip",
+   "description": "Tier 2. Removes a hazard rather than adding a verb, so the cheapest tier-2 node",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Removes a hazard rather than adding a verb, so the cheapest tier-2 node"
+  },
+  {
+   "id": "economy.price.arms.throw",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Throw",
+   "description": "Requires Carry.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Extends Carry rather than adding a verb"
+  },
+  {
+   "id": "economy.price.battery.fastCharge",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Fast charge",
+   "description": "Requires Big battery.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. A multiplier"
+  },
+  {
+   "id": "economy.price.head.memory",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Memory",
+   "description": "Requires Wider view.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Persistence of sensing"
+  },
+  {
+   "id": "economy.price.head.ears",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Ears",
+   "description": "Requires Wider view.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Warning from outside the cone"
+  },
+  {
+   "id": "economy.price.torso.neck",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Neck",
+   "description": "Requires Hips.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Decouples look from facing"
+  },
+  {
+   "id": "economy.price.legs.jump",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Jump",
+   "description": "Requires Strafe.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. New traversal, gated on gaps existing in the level"
+  },
+  {
+   "id": "economy.price.battery.kineticCharge",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Kinetic charge",
+   "description": "Requires Big battery.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Changes resource rhythm"
+  },
+  {
+   "id": "economy.price.torso.spine",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Spine",
+   "description": "Requires Hips; strongest single node.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 4,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Steers a committed lunge; the strongest single node"
+  },
+  {
+   "id": "economy.price.arms.holdOn",
+   "group": "Upgrades",
+   "owner": "Economy",
+   "label": "Hold on",
+   "description": "Requires Carry; most complex state.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 4,
+   "status": "proposed",
+   "source": "GDD §9.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-transaction",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tier 2. Rides a vehicle; the most complex state"
+  },
+  {
+   "id": "ui.playWidth",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "playWidth",
+   "description": "5:4 play area: 400 × 320 art px, 25 × 20 tiles of world.tileSize.",
+   "unit": "units",
+   "type": "number",
+   "default": 800,
+   "status": "author-decided",
+   "source": "GDD §§4.2.1, 4.2.3; Edit 42 (D27)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "4:3 play area; equalises vertical and horizontal approach warning"
+  },
+  {
+   "id": "ui.playHeight",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "playHeight",
+   "description": "5:4 play area: 400 × 320 art px, 25 × 20 tiles of world.tileSize.",
+   "unit": "units",
+   "type": "number",
+   "default": 640,
+   "status": "author-decided",
+   "source": "GDD §§4.2.1, 4.2.3; Edit 42 (D27)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A whole number of tile rows; closes D27"
+  },
+  {
+   "id": "ui.sideColumn",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "sideColumn",
+   "description": "Instrument column each side; wide enough to hold a module stack",
+   "unit": "units",
+   "type": "number",
+   "default": 240,
+   "status": "proposed",
+   "source": "GDD §§4.2.1, 4.2.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Instrument column each side; wide enough to hold a module stack"
+  },
+  {
+   "id": "ui.horizontalStrip",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "horizontalStrip",
+   "description": "Top and bottom strips; one row of load-bearing type plus bezel",
+   "unit": "units",
+   "type": "number",
+   "default": 60,
+   "status": "proposed",
+   "source": "GDD §§4.2.1, 4.2.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Top and bottom strips; one row of load-bearing type plus bezel"
+  },
+  {
+   "id": "ui.typeLoadBearing",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "typeLoadBearing",
+   "description": "Cap height of HUD readouts. Field labels use ui.typeFieldLabel.",
+   "unit": "units",
+   "type": "number",
+   "default": 24,
+   "status": "proposed",
+   "source": "GDD §§4.2.1, 4.2.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 20,
+    "designMax": 40
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Cap height legible at 2 m, the exhibition viewing distance",
+   "designBound": "Below 20 units load-bearing type is illegible at two metres, the exhibition viewing distance."
+  },
+  {
+   "id": "ui.typeSecondary",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "typeSecondary",
+   "description": "Legible at 1.5 m; labels only, never a tier-1 fact",
+   "unit": "units",
+   "type": "number",
+   "default": 16,
+   "status": "proposed",
+   "source": "GDD §§4.2.1, 4.2.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Legible at 1.5 m; labels only, never a tier-1 fact"
+  },
+  {
+   "id": "ui.typeTexture",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "typeTexture",
+   "description": "Deliberately below the legibility threshold; atmosphere only",
+   "unit": "units",
+   "type": "number",
+   "default": 9,
+   "status": "proposed",
+   "source": "GDD §§4.2.1, 4.2.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Deliberately below the legibility threshold; atmosphere only"
+  },
+  {
+   "id": "ui.cueContrastTier1",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "cueContrastTier1",
+   "description": "Minimum contrast of a tier-1 cue against the scan ground at full texture density",
+   "unit": "multiplier",
+   "type": "number",
+   "default": 4.5,
+   "status": "proposed",
+   "source": "GDD §§4.2.1, 4.2.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Minimum contrast of a tier-1 cue against the scan ground at full texture density"
+  },
+  {
+   "id": "ui.cueContrastTier2",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "cueContrastTier2",
+   "description": "Minimum contrast of a tier-2 cue against the scan ground at full texture density",
+   "unit": "multiplier",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §§4.2.1, 4.2.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Minimum contrast of a tier-2 cue against the scan ground at full texture density"
+  },
+  {
+   "id": "service.idleSeconds",
+   "group": "Damage and rewards",
+   "owner": "Damage",
+   "label": "idleSeconds",
+   "description": "Long enough that cautious play is never punished; short enough that standing still is",
+   "unit": "s",
+   "type": "number",
+   "default": 20,
+   "status": "proposed",
+   "source": "GDD §8.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Long enough that cautious play is never punished; short enough that standing still is"
+  },
+  {
+   "id": "service.warningSeconds",
+   "group": "Damage and rewards",
+   "owner": "Damage",
+   "label": "warningSeconds",
+   "description": "Lead time on the repair cue, so the player can act before losing their damage",
+   "unit": "s",
+   "type": "number",
+   "default": 5,
+   "status": "proposed",
+   "source": "GDD §8.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Lead time on the repair cue, so the player can act before losing their damage"
+  },
+  {
+   "id": "service.restoreFraction",
+   "group": "Damage and rewards",
+   "owner": "Damage",
+   "label": "restoreFraction",
+   "description": "Full restoration. A partial repair would be a gentler punishment and a worse joke",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "GDD §8.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Full restoration. A partial repair would be a gentler punishment and a worse joke"
+  },
+  {
+   "id": "world.laneWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Lane width",
+   "description": "Level-geometry input. Lunge reach is tuned against a two-lane road plus verge.",
+   "unit": "world units",
+   "type": "number",
+   "default": 56,
+   "status": "proposed",
+   "source": "GDD §§7.3, 7.9",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "designMin": 44,
+    "designMax": 80
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One traffic lane; two lanes plus verge is what lunge reach is tuned against",
+   "designBound": "Below 44 the widest class clips its lane on a swerve. At 80 a two-lane road is 160 units and movement.lungeDistance of 164 barely reaches the far lane; beyond that the far lane stops being a target from the verge."
+  },
+  {
+   "id": "world.fallRecovery",
+   "group": "World",
+   "owner": "World",
+   "label": "Fall recovery",
+   "description": "Time cost of falling into a hole or water. No damage and no write-off.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.2,
+   "status": "proposed",
+   "source": "GDD §§7.5, 7.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0,
+    "designMin": 0.6,
+    "designMax": 2.5
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "What a fall costs: no damage, no write-off, only this",
+   "designBound": "Below 0.6 a fall is free and holes stop being hazards. Above 2.5 a fall costs more than a body on a dense level."
+  },
+  {
+   "id": "world.occludedFractionMax",
+   "group": "World",
+   "owner": "World",
+   "label": "Occlusion ceiling",
+   "description": "Share of the play area that may block the player's read of the fleet. Static terrain and props only; vehicles are transient.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.3,
+   "status": "proposed",
+   "source": "GDD §7.9 clause 6; Edit 39 (city at 25%)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1,
+    "designMin": 0.1,
+    "designMax": 0.4
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Ceiling on static occlusion; city blocks fill about 25% of each level (Edit 39)",
+   "designBound": "Below 0.10 the Head branch and the occluded-ambush approach have nothing to work with. Above 0.40 the player cannot read the fleet and pillar 2 voids."
+  },
+  {
+   "id": "world.barrierGapsMin",
+   "group": "World",
+   "owner": "World",
+   "label": "Minimum barrier gaps",
+   "description": "Pedestrian openings per side of a barrier run.",
+   "unit": "count",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "GDD §7.9 clause 2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "designMin": 2,
+    "designMax": 6
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Minimum pedestrian openings per side of a barrier run",
+   "designBound": "Below 2 the fleet learns the single gap inside one level and no learning cap can leave a lethal opening. Above 6 the barrier stops being a barrier."
+  },
+  {
+   "id": "world.spawnLeadIn",
+   "group": "World",
+   "owner": "World",
+   "label": "Spawn lead-in",
+   "description": "Distance outside the play edge where an appearance is placed.",
+   "unit": "world units",
+   "type": "number",
+   "default": 200,
+   "status": "proposed",
+   "source": "GDD §7.9 clause 3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-spawn",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Distance outside the play edge where a car is placed, so it enters at cruise speed and correctly spaced"
+  },
+  {
+   "id": "damage.plateMultiplier",
+   "group": "Damage and rewards",
+   "owner": "Damage / Economy",
+   "label": "Impact plate multiplier",
+   "description": "Score-only surface modifier. Affects impact points, never health loss or write-off count.",
+   "unit": "multiplier",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "GDD §§7.3, 8.4",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "designMin": 1.0,
+    "designMax": 2.0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "What a hit on a calibrated plate scores; the roundabout's scoring geometry",
+   "designBound": "At 1.0 the plate is decoration and the roundabout has no scoring geometry. Above 2.0 the plate beats zone choice and the damage table in 8.3 stops mattering."
+  },
+  {
+   "id": "traffic.pivotOffset",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Turn pivot offset",
+   "description": "Rear-axle steering. The turn centre sits this fraction of the vehicle's length behind its midpoint.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.3,
+   "status": "proposed",
+   "source": "GDD §6.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1,
+    "designMin": 0.15,
+    "designMax": 0.45
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "How far behind the midpoint the turn centre sits, as a fraction of length",
+   "designBound": "Below 0.15 the pivot is effectively central and the tail sweeps outward again. Above 0.45 the turn centre passes behind the rear bumper and the vehicle crabs sideways."
+  },
+  {
+   "id": "traffic.lookAheadBase",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Look-ahead, fixed part",
+   "description": "Constant term of the forward check. Total look-ahead is this plus lookAheadSeconds of travel.",
+   "unit": "world units",
+   "type": "number",
+   "default": 20,
+   "status": "reported-built",
+   "source": "GDD §6.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The fixed part of how far a car checks ahead"
+  },
+  {
+   "id": "traffic.lookAheadSeconds",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Look-ahead, speed part",
+   "description": "Speed-scaled term of the forward check, so fast classes look further.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.45,
+   "status": "reported-built",
+   "source": "GDD §6.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The speed-scaled part of how far a car checks ahead"
+  },
+  {
+   "id": "traffic.backOffLengths",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Deadlock back-off",
+   "description": "How far a car reverses during deadlock recovery, in its own lengths, only into verified clear space.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.0,
+   "status": "proposed",
+   "source": "GDD §6.2 rule 7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "How far a car reverses during deadlock recovery, only into verified clear space"
+  },
+  {
+   "id": "traffic.entryRoomLengths",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Entry room",
+   "description": "Space required before admission, in car lengths, added to traffic.minimumGap.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.0,
+   "status": "proposed",
+   "source": "GDD §6.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-spawn",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Space required before a new car is admitted, on top of the minimum gap"
+  },
+  {
+   "id": "vehicles.occlusionHeight",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Occlusion height threshold",
+   "description": "A class at or above this height blocks side sensors and the player's read.",
+   "unit": "world units",
+   "type": "number",
+   "default": 30,
+   "status": "proposed",
+   "source": "GDD §6.1",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "designMin": 25,
+    "designMax": 40
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "At or above this a vehicle blocks side sensors and the player's read; below it does not",
+   "designBound": "Below 25 every class occludes and the play area is never readable. Above 40 only the bus occludes and the van stops being mobile cover."
+  },
+  {
+   "id": "vehicles.sports.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sports mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.85,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sports mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.sports.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sports length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 52,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sports length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.sports.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sports width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 26,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sports width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.sports.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sports height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 20,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sports height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.hatchback.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Hatchback mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.9,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Hatchback mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.hatchback.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Hatchback length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 46,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Hatchback length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.hatchback.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Hatchback width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 26,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Hatchback width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.hatchback.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Hatchback height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 23,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Hatchback height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.sedan.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sedan mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.0,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sedan mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.sedan.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sedan length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 56,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sedan length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.sedan.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sedan width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 28,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sedan width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.sedan.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Sedan height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 22,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Sedan height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.wagon.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Wagon mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.15,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wagon mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.wagon.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Wagon length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 62,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wagon length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.wagon.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Wagon width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 28,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wagon width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.wagon.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Wagon height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 24,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wagon height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.van.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Van mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Van mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.van.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Van length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 68,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Van length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.van.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Van width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Van width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.van.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Van height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 34,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Van height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.bus.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Bus mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 3.0,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Bus mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.bus.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Bus length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 96,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Bus length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.bus.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Bus width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 34,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Bus width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.bus.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Bus height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 48,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Bus height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.suv.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "SUV mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.8,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "SUV mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.suv.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "SUV length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 64,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "SUV length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.suv.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "SUV width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "SUV width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.suv.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "SUV height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 27,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "SUV height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.police.mass",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Police mass",
+   "description": "Relative to a sedan, the reference vehicle for the damage formula.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.1,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Police mass; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.police.length",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Police length",
+   "description": "Bumper to bumper along the direction of travel; sets the collision footprint.",
+   "unit": "world units",
+   "type": "number",
+   "default": 58,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Police length; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.police.width",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Police width",
+   "description": "Door to door; sets the collision footprint and lane fit.",
+   "unit": "world units",
+   "type": "number",
+   "default": 28,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Police width; part of the class footprint and damage reference"
+  },
+  {
+   "id": "vehicles.police.height",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Police height",
+   "description": "Ground to roof; read for occlusion against vehicles.occlusionHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 23,
+   "status": "proposed",
+   "source": "GDD §6.1 class physics",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Police height; part of the class footprint and damage reference"
+  },
+  {
+   "id": "run.quota.roundabout",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Roundabout quota",
+   "description": "Three-level quota. The final level.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 6,
+   "status": "proposed",
+   "source": "GDD §§10.3, 10.6",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-progression-check",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Continuous traffic, so bodies come faster even though the level is hardest"
+  },
+  {
+   "id": "run.appearances.road",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Road appearances",
+   "description": "Scheduled vehicle appearances for this level, drawn from its weighted class pool.",
+   "unit": "vehicles",
+   "type": "number",
+   "default": 24,
+   "status": "proposed",
+   "source": "GDD §10.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Fast and sparse. The bus is the beginner's target"
+  },
+  {
+   "id": "run.appearances.junction",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Cross junction appearances",
+   "description": "Scheduled vehicle appearances for this level, drawn from its weighted class pool.",
+   "unit": "vehicles",
+   "type": "number",
+   "default": 36,
+   "status": "proposed",
+   "source": "GDD §10.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Mixed streams; the hatchback's recommitment is the lesson"
+  },
+  {
+   "id": "run.appearances.roundabout",
+   "group": "Run and learning",
+   "owner": "Run",
+   "label": "Roundabout appearances",
+   "description": "Scheduled vehicle appearances for this level, drawn from its weighted class pool.",
+   "unit": "vehicles",
+   "type": "number",
+   "default": 44,
+   "status": "proposed",
+   "source": "GDD §10.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Every class in continuous circulation. The exam"
+  },
+  {
+   "id": "vehicles.suv.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "SUV cruise speed",
+   "description": "Nominal class cruise speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 132,
+   "status": "proposed",
+   "source": "GDD §§6.1, 6.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Heavy and moderate; brakes before a wide turn, so the flank is reachable early"
+  },
+  {
+   "id": "vehicles.police.cruiseSpeed",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles",
+   "label": "Police cruise speed",
+   "description": "Nominal class cruise speed.",
+   "unit": "px/s",
+   "type": "number",
+   "default": 150,
+   "status": "proposed",
+   "source": "GDD §§6.1, 6.2",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Quick and deliberate; tracks the approach before committing"
+  },
+  {
+   "id": "ui.artScale",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "Art scale",
+   "description": "Screen units per art pixel. Field art 400 × 300; screen 640 × 360.",
+   "unit": "units",
+   "type": "number",
+   "default": 2,
+   "status": "author-decided",
+   "source": "Edits 37–38 (640 × 360)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Integer scaling: 720p ×2, 1080p ×3, 1440p ×4, 4K ×6"
+  },
+  {
+   "id": "ui.typeFieldLabel",
+   "group": "Interface",
+   "owner": "Presentation",
+   "label": "Field label cap height",
+   "description": "Model tags and bark text in the play area: a 6-art-px pixel face.",
+   "unit": "units",
+   "type": "number",
+   "default": 12,
+   "status": "author-decided",
+   "source": "Edit 39 (tags at 50%)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "designMin": 10,
+    "designMax": 24
+   },
+   "integrationStatus": "not-connected-to-game",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Legible at laptop distance (about 0.6 m) without covering the field",
+   "designBound": "Below 10 units the face drops under one art pixel per stroke. Above 24 tags hide the cars they label."
+  },
+  {
+   "id": "proto.city",
+   "group": "Prototype P3",
+   "owner": "World",
+   "label": "City statics",
+   "description": "City blocks and jersey barriers are solid statics (Fix A). 0 restores the P2.2 roads.",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "author-decided",
+   "source": "Edit 38 §7.4 (decision 96)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Anything that looks solid is solid"
+  },
+  {
+   "id": "proto.art.extrusion",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Height extrusion",
+   "description": "Share of an object's height drawn as a screen-up offset.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.3,
+   "status": "proposed",
+   "source": "Edit 38 §4.1.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Three-quarter depth without changing colliders"
+  },
+  {
+   "id": "proto.stopCue",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Stop bracket",
+   "description": "Each moving car shows where it will stop.",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "author-decided",
+   "source": "Edit 37 (decision 91)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Shows the stop line a bait must beat"
+  },
+  {
+   "id": "proto.driver.coveredReaction",
+   "group": "Prototype P3",
+   "owner": "Vehicles",
+   "label": "Covered reaction",
+   "description": "Reaction time while the driver already covers the brake.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.18,
+   "status": "proposed",
+   "source": "Edit 37",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A cautious car reacts faster than a cruising one"
+  },
+  {
+   "id": "proto.parts.torsoFrom",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "torsoFrom",
+   "description": "Assessed damage that reaches the torso or an arm",
+   "unit": "damage",
+   "type": "number",
+   "default": 100,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Bumper-height hits land on the legs"
+  },
+  {
+   "id": "proto.parts.headFrom",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "headFrom",
+   "description": "Assessed damage that reaches the head",
+   "unit": "damage",
+   "type": "number",
+   "default": 250,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Only the hardest hits reach the head"
+  },
+  {
+   "id": "proto.parts.crackedShare",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "crackedShare",
+   "description": "Share of body health lost by one part to crack it",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.2,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Cracks show before a part breaks"
+  },
+  {
+   "id": "proto.parts.brokenShare",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "brokenShare",
+   "description": "Share of body health lost by one part to break it",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.4,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A broken part is a warning-outlined fact"
+  },
+  {
+   "id": "proto.parts.effects",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "effects",
+   "description": "Damaged parts cut abilities; 0 = display only",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "author-decided",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Damage you can feel, not only see"
+  },
+  {
+   "id": "proto.parts.legSpeedLoss",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "legSpeedLoss",
+   "description": "Ground speed lost per leg share",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Leg damage slows walking, running and carrying"
+  },
+  {
+   "id": "proto.parts.legSpeedFloor",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "legSpeedFloor",
+   "description": "Lowest ground-speed multiplier",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A wrecked body still moves"
+  },
+  {
+   "id": "proto.parts.legDashLoss",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "legDashLoss",
+   "description": "Dash reach lost per leg share, to movement.wearFloor",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.5,
+   "status": "author-decided",
+   "source": "Edit 38 §5.7; Edit 39 (D19)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Leg damage shortens the dash (D19)"
+  },
+  {
+   "id": "proto.parts.torsoTurnLoss",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "torsoTurnLoss",
+   "description": "Turn rate lost per torso share",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Torso damage stiffens the turn"
+  },
+  {
+   "id": "proto.parts.torsoTurnFloor",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "torsoTurnFloor",
+   "description": "Lowest turn-rate multiplier",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A wrecked body still turns"
+  },
+  {
+   "id": "proto.parts.headConeLoss",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "headConeLoss",
+   "description": "View-cone width lost per head share",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Head damage narrows what you resolve"
+  },
+  {
+   "id": "proto.parts.headConeFloor",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "headConeFloor",
+   "description": "Lowest view-cone multiplier",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The cone never closes below 45°"
+  },
+  {
+   "id": "proto.parts.armThrowLoss",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "armThrowLoss",
+   "description": "Throw distance lost per arm share",
+   "unit": "ratio",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Arm damage shortens throws"
+  },
+  {
+   "id": "proto.parts.armThrowFloor",
+   "group": "Prototype P3",
+   "owner": "Body",
+   "label": "armThrowFloor",
+   "description": "Lowest throw multiplier",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 38 §5.7",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A damaged arm still throws"
+  },
+  {
+   "id": "proto.barks.seconds",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "seconds",
+   "description": "Bark bubble timing (Edit 34; text in content/db/fleet.json).",
+   "unit": "s",
+   "type": "number",
+   "default": 2.4,
+   "status": "proposed",
+   "source": "Edit 34; Edit 39",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Time one bubble stays up"
+  },
+  {
+   "id": "proto.barks.cooldown",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "cooldown",
+   "description": "Bark bubble timing (Edit 34; text in content/db/fleet.json).",
+   "unit": "s",
+   "type": "number",
+   "default": 0.8,
+   "status": "proposed",
+   "source": "Edit 34; Edit 39",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Global gap before a lower-priority bubble"
+  },
+  {
+   "id": "proto.barks.carCooldown",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "carCooldown",
+   "description": "Bark bubble timing (Edit 34; text in content/db/fleet.json).",
+   "unit": "s",
+   "type": "number",
+   "default": 4,
+   "status": "proposed",
+   "source": "Edit 34; Edit 39",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Per-car wait before the same car speaks at lower priority"
+  },
+  {
+   "id": "proto.barks.maxOnScreen",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "maxOnScreen",
+   "description": "Bark bubble timing (Edit 34; text in content/db/fleet.json).",
+   "unit": "count",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "Edit 34; Edit 39",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Bubbles at once, so the road stays readable"
+  },
+  {
+   "id": "world.tileSize",
+   "group": "World",
+   "owner": "World",
+   "label": "Tile size",
+   "description": "Ground tile edge: one deck plate, 16 art px. Surfaces patch whole tiles.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "author-decided",
+   "source": "Edit 40 §11.3 (D18)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 8
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The grid surfaces are counted and placed on"
+  },
+  {
+   "id": "world.puddleShare",
+   "group": "World",
+   "owner": "World",
+   "label": "Puddle share",
+   "description": "Share of a screen's tiles carrying a puddle patch, on road and walkable ground.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.02,
+   "status": "author-decided",
+   "source": "Edit 40 §7.3 (D18)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 0.2
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A few spots of water per screen (about 10 tiles of 475)",
+   "designBound": "Above 0.06 wet ground stops being a spot and becomes the level; the no-dash rule then dominates."
+  },
+  {
+   "id": "world.puddleSpotMax",
+   "group": "World",
+   "owner": "World",
+   "label": "Puddle spot size",
+   "description": "Largest puddle spot, in tiles (1 × 1 or 2 × 1).",
+   "unit": "tiles",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 40 §7.3",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Spots read as puddles, not lakes"
+  },
+  {
+   "id": "world.districtColumns",
+   "group": "World",
+   "owner": "World",
+   "label": "District columns",
+   "description": "Screens across one level (D24).",
+   "unit": "screens",
+   "type": "number",
+   "default": 3,
+   "status": "author-decided",
+   "source": "Edit 40 §7.1 (D24)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A level is a 3 × 3 district: nine screens to explore"
+  },
+  {
+   "id": "world.districtRows",
+   "group": "World",
+   "owner": "World",
+   "label": "District rows",
+   "description": "Screens down one level (D24).",
+   "unit": "screens",
+   "type": "number",
+   "default": 3,
+   "status": "author-decided",
+   "source": "Edit 40 §7.1 (D24)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Row 1 lies on the river"
+  },
+  {
+   "id": "world.gateWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Pedestrian gate width",
+   "description": "Opening in a screen edge where the dummy may walk to the next screen.",
+   "unit": "world units",
+   "type": "number",
+   "default": 48,
+   "status": "proposed",
+   "source": "Edit 40 §7.1 (D24)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "designMin": 40
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wider than world.pedestrianGap; fits the alleys between flush blocks",
+   "designBound": "Below world.pedestrianGap the body cannot pass. Above 96 a gate no longer fits between flush blocks."
+  },
+  {
+   "id": "world.flipSeconds",
+   "group": "World",
+   "owner": "Presentation",
+   "label": "Screen flip",
+   "description": "Slide between screens. Play pauses for its length.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.4,
+   "status": "proposed",
+   "source": "Edit 40 §7.1 (D24)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-flip",
+   "validation": {
+    "min": 0,
+    "designMax": 0.8
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Long enough to read the direction; short enough to keep momentum"
+  },
+  {
+   "id": "world.blockShare",
+   "group": "World",
+   "owner": "World",
+   "label": "City block share",
+   "description": "Target share of a screen covered by city blocks (generator).",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.25,
+   "status": "author-decided",
+   "source": "Edit 39 §7.9 clause 6 (decision 118)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 0.3
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Buildings about a quarter of each screen"
+  },
+  {
+   "id": "world.jerseyShare",
+   "group": "World",
+   "owner": "World",
+   "label": "Jersey barrier share",
+   "description": "Target share of the road edge lined by jersey barriers (generator).",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.08,
+   "status": "author-decided",
+   "source": "Edit 39 §7.9 clause 6 (decision 118)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.05,
+    "max": 0.1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Barriers on 5–10% of the road edge"
+  },
+  {
+   "id": "proto.district",
+   "group": "Prototype P3",
+   "owner": "World",
+   "label": "Districts",
+   "description": "Each road is a 3 × 3 district of screens, Zelda-style. 0 = one static screen.",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "author-decided",
+   "source": "Edit 40 (D24)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Exploration without a scrolling camera"
+  },
+  {
+   "id": "proto.district.seed",
+   "group": "Prototype P3",
+   "owner": "World",
+   "label": "District seed",
+   "description": "Rerolls the eight generated screens of each district. 0 = the fixed layout.",
+   "unit": "seed",
+   "type": "number",
+   "default": 0,
+   "status": "proposed",
+   "source": "Edit 40 (D24)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Fixed layouts are learnable; a new seed gives a new street view"
+  },
+  {
+   "id": "proto.health.fragile",
+   "group": "Prototype P3",
+   "owner": "Damage",
+   "label": "Fragile health",
+   "description": "Body health on the easy setting (Fragile).",
+   "unit": "health units",
+   "type": "number",
+   "default": 600,
+   "status": "author-decided",
+   "source": "Edit 40.1 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-chassis",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Easy: fewer hits per write-off"
+  },
+  {
+   "id": "proto.health.standard",
+   "group": "Prototype P3",
+   "owner": "Damage",
+   "label": "Standard health",
+   "description": "Body health on the base setting (Standard). Equals damage.bodyHealth.",
+   "unit": "health units",
+   "type": "number",
+   "default": 800,
+   "status": "author-decided",
+   "source": "Edit 40.1 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-chassis",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The base contract"
+  },
+  {
+   "id": "proto.health.reinforced",
+   "group": "Prototype P3",
+   "owner": "Damage",
+   "label": "Reinforced health",
+   "description": "Body health on the difficult setting (Reinforced).",
+   "unit": "health units",
+   "type": "number",
+   "default": 1000,
+   "status": "author-decided",
+   "source": "Edit 40.1 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-chassis",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Difficult: more hits per write-off"
+  },
+  {
+   "id": "world.deckHeight",
+   "group": "World",
+   "owner": "World",
+   "label": "Flyover height",
+   "description": "Height of the low highway (Z1), about 10 m. A Z1 deck and everything on it draw lifted by height × proto.art.extrusion (18 art px). Reference height for stair runs and falls.",
+   "unit": "world units",
+   "type": "number",
+   "default": 120,
+   "status": "proposed",
+   "source": "Edit 41; Edits 43–44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Lifted far enough that the south row of columns reads under the girder"
+  },
+  {
+   "id": "world.deckWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Flyover width",
+   "description": "Two lanes, a hard shoulder each side, parapets (world.parapetWidth).",
+   "unit": "world units",
+   "type": "number",
+   "default": 176,
+   "status": "proposed",
+   "source": "Edit 41; Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The dummy walks the shoulders outside the lanes"
+  },
+  {
+   "id": "world.deckPillarSpacing",
+   "group": "World",
+   "owner": "World",
+   "label": "Flyover pier spacing",
+   "description": "Column pairs, one under each deck edge, at this spacing. Never on the road or its pavement.",
+   "unit": "world units",
+   "type": "number",
+   "default": 160,
+   "status": "proposed",
+   "source": "Edit 41; Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Piers are cover and sensor shadow on the ground"
+  },
+  {
+   "id": "world.deckInterval",
+   "group": "World",
+   "owner": "World",
+   "label": "Flyover traffic interval",
+   "description": "Seconds between deck cars per lane.",
+   "unit": "s",
+   "type": "number",
+   "default": 2.4,
+   "status": "proposed",
+   "source": "Edit 41 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Busy but readable deck traffic"
+  },
+  {
+   "id": "world.towerHeightMin",
+   "group": "World",
+   "owner": "World",
+   "label": "Tower height, lowest",
+   "description": "The lowest a tower may be: eight storeys, above every Z2 roof.",
+   "unit": "world units",
+   "type": "number",
+   "default": 288,
+   "status": "proposed",
+   "source": "Edit 41; Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Towers stand clear of the platform roofs and the high highway"
+  },
+  {
+   "id": "world.towerHeightMax",
+   "group": "World",
+   "owner": "World",
+   "label": "Tower height, highest",
+   "description": "The highest a tower may be.",
+   "unit": "world units",
+   "type": "number",
+   "default": 380,
+   "status": "proposed",
+   "source": "Edit 41 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Tall but within the screen: 57 art px at 0.3 extrusion"
+  },
+  {
+   "id": "world.roundaboutRadius",
+   "group": "World",
+   "owner": "World",
+   "label": "Roundabout radius",
+   "description": "Centre-line radius of the Interchange roundabout.",
+   "unit": "world units",
+   "type": "number",
+   "default": 160,
+   "status": "proposed",
+   "source": "Edit 41; Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Keeps the ring clear of the wider deck bands"
+  },
+  {
+   "id": "proto.layout",
+   "group": "Prototype P3",
+   "owner": "World",
+   "label": "Baked layout",
+   "description": "Which of the three baked layouts a city district plays. 0 = layout 1 in the sim; the game picks 1–3 at random each run; −1 generates live.",
+   "unit": "index",
+   "type": "number",
+   "default": 0,
+   "status": "proposed",
+   "source": "Edit 41 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": -1,
+    "max": 3
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Playtest a layout by number"
+  },
+  {
+   "id": "world.parapetWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Parapet width",
+   "description": "Deck parapet module, each side. The dummy stands inside it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 8,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A barrier tile the dummy cannot cross except at a gap"
+  },
+  {
+   "id": "world.deckLampSpacing",
+   "group": "World",
+   "owner": "Presentation",
+   "label": "Deck lamp spacing",
+   "description": "One street light per parapet module run. Lamps beside a gap are down.",
+   "unit": "world units",
+   "type": "number",
+   "default": 128,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Reads as a highway; the downed lamps mark the drop points"
+  },
+  {
+   "id": "world.stairLength",
+   "group": "World",
+   "owner": "World",
+   "label": "Stair length",
+   "description": "Run of a stair per world.deckHeight of rise, rounded to 16. Z0–Z1 64, Z0–Z2 112, Z1–Z2 48.",
+   "unit": "world units",
+   "type": "number",
+   "default": 64,
+   "status": "proposed",
+   "source": "Edit 42; Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two tiles: long enough to read as stairs"
+  },
+  {
+   "id": "world.stairWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Stair width",
+   "description": "Width of a stair and of a skybridge.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "proposed",
+   "source": "Edit 42; Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 28
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One tile; wider than the dummy (26)"
+  },
+  {
+   "id": "world.stairSpeed",
+   "group": "Dummy movement",
+   "owner": "Dummy",
+   "label": "Stair speed",
+   "description": "Ground speed multiplier on a stair. No dash on a stair.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.7,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.1,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Changing level costs time"
+  },
+  {
+   "id": "world.dropSeconds",
+   "group": "Dummy movement",
+   "owner": "Dummy",
+   "label": "Drop time",
+   "description": "Fall from Z1 to the ground. A fall of height h takes × √(h / world.deckHeight): Z2 to the ground 0.47 s. No control, no contact until the landing.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.35,
+   "status": "proposed",
+   "source": "Edit 42; Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A short hop: readable, not a dead stop"
+  },
+  {
+   "id": "damage.dropSpeed",
+   "group": "Damage and rewards",
+   "owner": "Damage",
+   "label": "Drop speed",
+   "description": "Downward speed at the landing after a Z1 fall; × √(h / world.deckHeight) for a fall of height h (Z2 to the ground about 161). Closing speed on a car is its hypotenuse with the car's speed across.",
+   "unit": "world units/s",
+   "type": "number",
+   "default": 120,
+   "status": "proposed",
+   "source": "Edit 42; Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A landing on a stopped sedan scores 76; on a sedan at cruise, 176. The legs take it",
+   "designBound": "Above 200 a drop onto a stopped car outscores a full-speed dash."
+  },
+  {
+   "id": "world.wallThickness",
+   "group": "World",
+   "owner": "World",
+   "label": "Perimeter wall",
+   "description": "Thickness of the wall on a district's outer edges (the river closes row 1).",
+   "unit": "world units",
+   "type": "number",
+   "default": 16,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 8
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Half a tile: the district is bounded"
+  },
+  {
+   "id": "world.boomRange",
+   "group": "World",
+   "owner": "World",
+   "label": "Boom range",
+   "description": "A checkpoint boom lifts when a car on its level comes this close.",
+   "unit": "world units",
+   "type": "number",
+   "default": 140,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About a second at cruise: cars never stop"
+  },
+  {
+   "id": "world.boomSeconds",
+   "group": "World",
+   "owner": "Presentation",
+   "label": "Boom swing",
+   "description": "Time for a boom to swing fully up or down.",
+   "unit": "s",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.05
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Up before the car arrives"
+  },
+  {
+   "id": "proto.art.wallHeight",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Wall height",
+   "description": "Drawn height of perimeter walls and checkpoint booths.",
+   "unit": "world units",
+   "type": "number",
+   "default": 40,
+   "status": "proposed",
+   "source": "Edit 42 (20 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Lower than any building; reads as a boundary"
+  },
+  {
+   "id": "world.deckCrossAngle",
+   "group": "World",
+   "owner": "World",
+   "label": "Deck crossing angle",
+   "description": "Within the deck band and one road half-width either side, a road under a flyover runs within this angle of square.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 5,
+   "status": "author-decided",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 15
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Flyovers always pass perpendicular to the road beneath"
+  },
+  {
+   "id": "world.deckColumn",
+   "group": "World",
+   "owner": "World",
+   "label": "Deck column",
+   "description": "Side of a deck column footprint. Solid on the ground.",
+   "unit": "world units",
+   "type": "number",
+   "default": 24,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 8
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Wide enough to read as a column below the girder"
+  },
+  {
+   "id": "world.turnRadiusTight",
+   "group": "World",
+   "owner": "World",
+   "label": "Tight turn radius",
+   "description": "Centre-line radius of a tight corner, and of each corner of a stepped turn.",
+   "unit": "world units",
+   "type": "number",
+   "default": 64,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A city corner: the inner kerb nearly square"
+  },
+  {
+   "id": "world.turnRadiusWide",
+   "group": "World",
+   "owner": "World",
+   "label": "Circular turn radius",
+   "description": "Centre-line radius of a circular turn, where the straights allow it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 224,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 64
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A sweeping bend: cars hold more speed"
+  },
+  {
+   "id": "world.buildingSetback",
+   "group": "World",
+   "owner": "World",
+   "label": "Building setback",
+   "description": "Forecourt between the pavement and every building front. Spawns stand in it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 48,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 30
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Buildings face the road at one line; the dummy fits beside the pavement"
+  },
+  {
+   "id": "world.storeyHeight",
+   "group": "World",
+   "owner": "Presentation",
+   "label": "Storey height",
+   "description": "One storey, about 3 m. Buildings are 1 or 2 storeys, or towers of world.towerHeightMin–Max rounded to storeys.",
+   "unit": "world units",
+   "type": "number",
+   "default": 36,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 12
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Single, double and tower read apart by face and shadow"
+  },
+  {
+   "id": "traffic.cornerAccel",
+   "group": "Vehicles and traffic",
+   "owner": "Vehicles / Traffic",
+   "label": "Corner acceleration",
+   "description": "Lateral limit in a bend: speed ≤ √(this × radius), braked for at traffic.comfortBraking.",
+   "unit": "world units/s²",
+   "type": "number",
+   "default": 60,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-tick",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Cars slow for tight corners (about 50 at the tight radius): a target",
+   "designBound": "Above 150 tight corners no longer slow a sedan."
+  },
+  {
+   "id": "proto.art.beamLength",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Headlight reach",
+   "description": "Headlight beams follow the route ahead for this distance. They reach the screen before the car.",
+   "unit": "world units",
+   "type": "number",
+   "default": 200,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About 1.4 s of warning at cruise; objects in a beam cast shadows"
+  },
+  {
+   "id": "proto.art.beamAlpha",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Headlight strength",
+   "description": "Beam colour-math strength near the car, in three falloff bands. Day palette × 0.45.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.22,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 0.6
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Visible on dark ground, never brighter than a cue"
+  },
+  {
+   "id": "proto.art.brakeLength",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Brake glow length",
+   "description": "Red wash on the ground behind a braking car.",
+   "unit": "world units",
+   "type": "number",
+   "default": 48,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A braking car reads from behind, not only by its lamps"
+  },
+  {
+   "id": "proto.art.brakeAlpha",
+   "group": "Prototype P3",
+   "owner": "Presentation",
+   "label": "Brake glow strength",
+   "description": "Strength of the brake wash nearest the car, in three bands.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.35,
+   "status": "proposed",
+   "source": "Edit 43 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 0.6
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A soft wash: the warning stays the only solid red"
+  },
+  {
+   "id": "world.highHeight",
+   "group": "World",
+   "owner": "World",
+   "label": "High level height",
+   "description": "Height of Z2: the high highway, platform roofs and skybridges, about 18 m. Draws lifted 32 art px.",
+   "unit": "world units",
+   "type": "number",
+   "default": 216,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 160
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Clearly above the low highway; six storeys"
+  },
+  {
+   "id": "world.skybridgeMax",
+   "group": "World",
+   "owner": "World",
+   "label": "Skybridge span",
+   "description": "Longest gap a skybridge crosses between two platform roofs.",
+   "unit": "world units",
+   "type": "number",
+   "default": 96,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 40
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Spans an alley or a service lane, never a road"
+  },
+  {
+   "id": "world.skybridgeChance",
+   "group": "World",
+   "owner": "World",
+   "label": "Skybridge chance",
+   "description": "Chance that the next lot in a row after a platform becomes a platform joined to it by a skybridge.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.75,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Roofs come in joined pairs and threes"
+  },
+  {
+   "id": "world.platformChain",
+   "group": "World",
+   "owner": "World",
+   "label": "Platform chain",
+   "description": "Most platform roofs joined in a row by skybridges.",
+   "unit": "count",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A roof walk, not a second street"
+  },
+  {
+   "id": "world.skybridgeCount",
+   "group": "World",
+   "owner": "World",
+   "label": "Skybridges per screen",
+   "description": "Most skybridges on one screen, counting those between rows.",
+   "unit": "count",
+   "type": "number",
+   "default": 4,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Keeps the ground readable under Z2"
+  }
+ ],
+ "tables": {
+  "terrain": {
+   "description": "Row data for §§7.3–7.5. Each cell is addressable as world.terrain.<id>.<field>. Held as rows rather than scalar entries because the columns are sparse and mixed-type.",
+   "columns": [
+    {
+     "name": "id",
+     "type": "string",
+     "note": "Stable string ID used by levels, reports and learning"
+    },
+    {
+     "name": "kind",
+     "type": "enum",
+     "values": [
+      "surface",
+      "structure",
+      "hazard"
+     ]
+    },
+    {
+     "name": "band",
+     "type": "number",
+     "note": "Height band, §7.7"
+    },
+    {
+     "name": "dummySpeed",
+     "type": "number",
+     "unit": "ratio",
+     "note": "Multiplier on the dummy's base speed; null where the dummy cannot enter"
+    },
+    {
+     "name": "lunge",
+     "type": "number",
+     "unit": "ratio",
+     "note": "Multiplier on lunge distance at take-off"
+    },
+    {
+     "name": "grip",
+     "type": "enum",
+     "values": [
+      "high",
+      "normal",
+      "slightly low",
+      "low",
+      "very low"
+     ]
+    },
+    {
+     "name": "carSpeed",
+     "type": "number",
+     "unit": "ratio",
+     "note": "null where cars cannot drive"
+    },
+    {
+     "name": "carBraking",
+     "type": "number",
+     "unit": "ratio"
+    },
+    {
+     "name": "carSwerving",
+     "type": "number",
+     "unit": "ratio"
+    },
+    {
+     "name": "walkable",
+     "type": "boolean"
+    },
+    {
+     "name": "gap",
+     "type": "boolean",
+     "note": "True means Jump clears it and the dummy otherwise falls"
+    },
+    {
+     "name": "occluder",
+     "type": "boolean",
+     "note": "Blocks car side sensors and the player's read"
+    },
+    {
+     "name": "note",
+     "type": "string"
+    }
+   ],
+   "rows": [
+    {
+     "id": "tarmac",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 1.0,
+     "lunge": 1.0,
+     "grip": "normal",
+     "carSpeed": 1.0,
+     "carBraking": 1.0,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "The reference surface"
+    },
+    {
+     "id": "pavement",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 1.0,
+     "lunge": 1.0,
+     "grip": "normal",
+     "carSpeed": 1.0,
+     "carBraking": 1.0,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Pavement or concrete"
+    },
+    {
+     "id": "kerb",
+     "kind": "surface",
+     "band": 1,
+     "dummySpeed": 0.85,
+     "lunge": 1.0,
+     "grip": "normal",
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "A thin strip that slows a step. Cars cannot mount"
+    },
+    {
+     "id": "zebra",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 1.0,
+     "lunge": 1.0,
+     "grip": "normal",
+     "carSpeed": 1.0,
+     "carBraking": 1.0,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Cars always stop for anything on it. A safe zone: useless to you, funny on purpose"
+    },
+    {
+     "id": "grass",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 0.75,
+     "lunge": 0.85,
+     "grip": "slightly low",
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Island planting"
+    },
+    {
+     "id": "hedge",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 0.6,
+     "lunge": 0.7,
+     "grip": "normal",
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": true,
+     "gap": false,
+     "occluder": true,
+     "note": "Tall grass or hedge. Natural cover"
+    },
+    {
+     "id": "gravel",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 0.8,
+     "lunge": 0.9,
+     "grip": "low",
+     "carSpeed": 0.7,
+     "carBraking": 0.7,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Cars skid"
+    },
+    {
+     "id": "mud",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 0.5,
+     "lunge": 0.6,
+     "grip": "low",
+     "carSpeed": 0.5,
+     "carBraking": 1.0,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Not placed in the first version"
+    },
+    {
+     "id": "puddle",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 0.9,
+     "lunge": 0,
+     "grip": "low",
+     "carSpeed": 1.0,
+     "carBraking": 0.5,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Standing water. The dummy slides (low grip) and cannot dash from it; cars brake late, so they are easier to hit (D18, Edit 40)"
+    },
+    {
+     "id": "oil",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 1.0,
+     "lunge": 1.0,
+     "grip": "very low",
+     "carSpeed": 1.0,
+     "carBraking": 0.3,
+     "carSwerving": 0.5,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Oil or diesel spill. The best surface to lure a car onto"
+    },
+    {
+     "id": "matting",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 1.0,
+     "lunge": 1.15,
+     "grip": "high",
+     "carSpeed": 1.0,
+     "carBraking": 1.0,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Rubber crash matting on the roundabout's central island; a springboard"
+    },
+    {
+     "id": "plate",
+     "kind": "surface",
+     "band": 0,
+     "dummySpeed": 1.0,
+     "lunge": 1.0,
+     "grip": "normal",
+     "carSpeed": 1.0,
+     "carBraking": 1.0,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Calibrated impact plate. Hits on it pay damage.plateMultiplier"
+    },
+    {
+     "id": "bump",
+     "kind": "surface",
+     "band": 1,
+     "dummySpeed": 1.0,
+     "lunge": 1.0,
+     "grip": "normal",
+     "carSpeed": 0.5,
+     "carBraking": 1.0,
+     "carSwerving": 1.0,
+     "walkable": true,
+     "gap": false,
+     "occluder": false,
+     "note": "Speed bump"
+    },
+    {
+     "id": "barrier",
+     "kind": "structure",
+     "band": 2,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "occluder": true,
+     "note": "Crash barrier. Solid, never jumpable; the gaps are the way through"
+    },
+    {
+     "id": "gardenWall",
+     "kind": "structure",
+     "band": 3,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "occluder": true,
+     "note": "Solid, never jumpable"
+    },
+    {
+     "id": "wall",
+     "kind": "structure",
+     "band": 4,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "occluder": true,
+     "note": "Solid, never jumpable"
+    },
+    {
+     "id": "water",
+     "kind": "hazard",
+     "band": -1,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": true,
+     "occluder": false,
+     "note": "Deep water. Jump clears it; falling in costs world.fallRecovery"
+    },
+    {
+     "id": "hole",
+     "kind": "hazard",
+     "band": -1,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": true,
+     "occluder": false,
+     "note": "Hole or open manhole. Never on roads in the first version"
+    },
+    {
+     "id": "block",
+     "kind": "structure",
+     "band": 4,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "occluder": true,
+     "note": "City block. Solid; casts sensor shadows; height drawn only (Edit 38 §7.4)"
+    },
+    {
+     "id": "jersey",
+     "kind": "structure",
+     "band": 2,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "occluder": true,
+     "note": "Jersey barrier, 44 × 8 units, off the pavement (Edit 38 §7.4)"
+    }
+   ]
+  },
+  "props": {
+   "description": "Row data for §7.6. Each cell is addressable as world.props.<id>.<field>.",
+   "columns": [
+    {
+     "name": "id",
+     "type": "string"
+    },
+    {
+     "name": "band",
+     "type": "number"
+    },
+    {
+     "name": "pushable",
+     "type": "boolean",
+     "note": "Punted by running into it"
+    },
+    {
+     "name": "carryable",
+     "type": "boolean",
+     "note": "Requires the Carry upgrade"
+    },
+    {
+     "name": "throwable",
+     "type": "boolean",
+     "note": "Requires the Throw upgrade"
+    },
+    {
+     "name": "occluder",
+     "type": "boolean"
+    },
+    {
+     "name": "note",
+     "type": "string"
+    }
+   ],
+   "rows": [
+    {
+     "id": "cone",
+     "band": 1,
+     "pushable": true,
+     "carryable": true,
+     "throwable": true,
+     "occluder": false,
+     "note": "Put it in a lane and cars commit around it: baiting without standing in the road. Not jumpable: a solid object"
+    },
+    {
+     "id": "crate",
+     "band": 3,
+     "pushable": false,
+     "carryable": false,
+     "throwable": false,
+     "occluder": true,
+     "note": "Fixed. Blocks the cars' sensors: ambush cover"
+    }
+   ]
+  },
+  "palette": {
+   "description": "Role-to-hex map for §4.1.4. Canonical scheme: cyber (Sinofuturist, decision 113). Day is an option. Contrast gates measure cues against field.road in the scheme shown.",
+   "columns": [
+    {
+     "name": "role",
+     "type": "string"
+    },
+    {
+     "name": "scheme",
+     "type": "enum",
+     "values": [
+      "cyber",
+      "day"
+     ]
+    },
+    {
+     "name": "hex",
+     "type": "string"
+    },
+    {
+     "name": "alpha",
+     "type": "number",
+     "unit": "ratio"
+    },
+    {
+     "name": "layer",
+     "type": "enum",
+     "values": [
+      "play",
+      "frame"
+     ]
+    },
+    {
+     "name": "use",
+     "type": "string"
+    }
+   ],
+   "rows": [
+    {
+     "role": "brand.aqua",
+     "hex": "#4FC3E8",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "FARSIGHT's accent. Chrome and menus only",
+     "scheme": "cyber"
+    },
+    {
+     "role": "brand.glass",
+     "hex": "#FFFFFF",
+     "alpha": 0.18,
+     "layer": "frame",
+     "use": "Translucent panel fill",
+     "scheme": "cyber"
+    },
+    {
+     "role": "texture",
+     "hex": "#C3CDD3",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Tier-4 marks",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.deck",
+     "scheme": "cyber",
+     "hex": "#10141D",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Ground plates between blocks"
+    },
+    {
+     "role": "field.road",
+     "scheme": "cyber",
+     "hex": "#1E222C",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Tarmac. The cue ground"
+    },
+    {
+     "role": "field.paving",
+     "scheme": "cyber",
+     "hex": "#262B36",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Pavements"
+    },
+    {
+     "role": "field.kerb",
+     "scheme": "cyber",
+     "hex": "#E6F4FF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Kerb line"
+    },
+    {
+     "role": "fleet.body",
+     "scheme": "cyber",
+     "hex": "#DDE6EE",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Vehicle roof and bonnet"
+    },
+    {
+     "role": "fleet.glass",
+     "scheme": "cyber",
+     "hex": "#0E3A4F",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Windscreens"
+    },
+    {
+     "role": "prop.cone",
+     "scheme": "cyber",
+     "hex": "#FF8A1F",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Cones. Orange, never red"
+    },
+    {
+     "role": "dummy.body",
+     "scheme": "cyber",
+     "hex": "#F5C542",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Safety yellow. The only yellow"
+    },
+    {
+     "role": "dummy.joint",
+     "scheme": "cyber",
+     "hex": "#1A1D1F",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Joints, inner lines"
+    },
+    {
+     "role": "dummy.worn",
+     "scheme": "cyber",
+     "hex": "#9C9070",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Wear tint"
+    },
+    {
+     "role": "cue.primary",
+     "scheme": "cyber",
+     "hex": "#F4F8FA",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Tier-1 cues"
+    },
+    {
+     "role": "cue.secondary",
+     "scheme": "cyber",
+     "hex": "#7FA8BC",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Tier-2 cues"
+    },
+    {
+     "role": "cue.warning",
+     "scheme": "cyber",
+     "hex": "#FF3D3D",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Brake lights, STOP line, broken parts"
+    },
+    {
+     "role": "cue.warningHalo",
+     "scheme": "cyber",
+     "hex": "#FFB0B0",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Halo that carries the warning on dark ground"
+    },
+    {
+     "role": "dummy.rimLight",
+     "scheme": "cyber",
+     "hex": "#E6F4FF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Dummy rim, sun side"
+    },
+    {
+     "role": "dummy.rimDark",
+     "scheme": "cyber",
+     "hex": "#5E7080",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Dummy rim, shade side"
+    },
+    {
+     "role": "fleet.rim",
+     "scheme": "cyber",
+     "hex": "#8FDFFF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Car rim, sun side"
+    },
+    {
+     "role": "fleet.rimD",
+     "scheme": "cyber",
+     "hex": "#3A4A66",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Car rim, shade side"
+    },
+    {
+     "role": "prop.coneRim",
+     "scheme": "cyber",
+     "hex": "#F2A65A",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Cone rim, sun side"
+    },
+    {
+     "role": "prop.coneRimD",
+     "scheme": "cyber",
+     "hex": "#7A4420",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Cone rim, shade side"
+    },
+    {
+     "role": "structure.jerseyRim",
+     "scheme": "cyber",
+     "hex": "#8494B8",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Jersey rim, sun side"
+    },
+    {
+     "role": "structure.jerseyRimD",
+     "scheme": "cyber",
+     "hex": "#2C3550",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Jersey rim, shade side"
+    },
+    {
+     "role": "structure.podRim",
+     "scheme": "cyber",
+     "hex": "#5B6E9C",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Pod rim, sun side"
+    },
+    {
+     "role": "structure.podRimD",
+     "scheme": "cyber",
+     "hex": "#262F48",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Pod rim, shade side"
+    },
+    {
+     "role": "structure.bldgRim",
+     "scheme": "cyber",
+     "hex": "#46557D",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Block rim, sun side"
+    },
+    {
+     "role": "structure.bldgRimD",
+     "scheme": "cyber",
+     "hex": "#1E263B",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Block rim, shade side"
+    },
+    {
+     "role": "field.tagFill",
+     "scheme": "cyber",
+     "hex": "#1840C8",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Model tag fill"
+    },
+    {
+     "role": "field.tagInk",
+     "scheme": "cyber",
+     "hex": "#FFFFFF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Model tag ink"
+    },
+    {
+     "role": "field.barkFill",
+     "scheme": "cyber",
+     "hex": "#0B1020",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Bark bubble fill"
+    },
+    {
+     "role": "field.barkEdge",
+     "scheme": "cyber",
+     "hex": "#6FE4FF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Bark bubble edge"
+    },
+    {
+     "role": "field.barkInk",
+     "scheme": "cyber",
+     "hex": "#E6F4FF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Bark text"
+    },
+    {
+     "role": "chassis.chrome",
+     "scheme": "cyber",
+     "hex": "#7D8AA3",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "HUD doll joints"
+    },
+    {
+     "role": "chassis.chromeL",
+     "scheme": "cyber",
+     "hex": "#D6F6FF",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "HUD doll joint highlight"
+    },
+    {
+     "role": "chassis.chromeD",
+     "scheme": "cyber",
+     "hex": "#353D52",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "HUD doll joint shade"
+    },
+    {
+     "role": "chassis.mod",
+     "scheme": "cyber",
+     "hex": "#3FD0FF",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module components"
+    },
+    {
+     "role": "chassis.modL",
+     "scheme": "cyber",
+     "hex": "#B6F0FF",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module highlight"
+    },
+    {
+     "role": "chassis.modD",
+     "scheme": "cyber",
+     "hex": "#1A6FA0",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module shade"
+    },
+    {
+     "role": "chassis.modGlow",
+     "scheme": "cyber",
+     "hex": "#FF5FD2",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module LEDs"
+    },
+    {
+     "role": "field.deck",
+     "scheme": "day",
+     "hex": "#8ED45A",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Ground plates between blocks"
+    },
+    {
+     "role": "field.road",
+     "scheme": "day",
+     "hex": "#B9C6CF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Tarmac. The cue ground"
+    },
+    {
+     "role": "field.paving",
+     "scheme": "day",
+     "hex": "#F2EEE2",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Pavements"
+    },
+    {
+     "role": "field.kerb",
+     "scheme": "day",
+     "hex": "#FFFFFF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Kerb line"
+    },
+    {
+     "role": "fleet.body",
+     "scheme": "day",
+     "hex": "#F4F8FA",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Vehicle roof and bonnet"
+    },
+    {
+     "role": "fleet.glass",
+     "scheme": "day",
+     "hex": "#1A7FA7",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Windscreens"
+    },
+    {
+     "role": "prop.cone",
+     "scheme": "day",
+     "hex": "#F28C28",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Cones. Orange, never red"
+    },
+    {
+     "role": "dummy.body",
+     "scheme": "day",
+     "hex": "#F5C542",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Safety yellow. The only yellow"
+    },
+    {
+     "role": "dummy.joint",
+     "scheme": "day",
+     "hex": "#1A1D1F",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Joints, inner lines"
+    },
+    {
+     "role": "dummy.worn",
+     "scheme": "day",
+     "hex": "#9C9070",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Wear tint"
+    },
+    {
+     "role": "cue.primary",
+     "scheme": "day",
+     "hex": "#101417",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Tier-1 cues"
+    },
+    {
+     "role": "cue.secondary",
+     "scheme": "day",
+     "hex": "#4A5A66",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Tier-2 cues"
+    },
+    {
+     "role": "cue.warning",
+     "scheme": "day",
+     "hex": "#E4442E",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Brake lights, STOP line, broken parts"
+    },
+    {
+     "role": "cue.warningHalo",
+     "scheme": "day",
+     "hex": "#1A1D1F",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Halo that carries the warning on dark ground"
+    },
+    {
+     "role": "field.tagFill",
+     "scheme": "day",
+     "hex": "#FFFFFF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Model tag fill"
+    },
+    {
+     "role": "field.tagInk",
+     "scheme": "day",
+     "hex": "#101417",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Model tag ink"
+    },
+    {
+     "role": "field.barkFill",
+     "scheme": "day",
+     "hex": "#FFFFFF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Bark bubble fill"
+    },
+    {
+     "role": "field.barkEdge",
+     "scheme": "day",
+     "hex": "#1A1D1F",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Bark bubble edge"
+    },
+    {
+     "role": "field.barkInk",
+     "scheme": "day",
+     "hex": "#101417",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Bark text"
+    },
+    {
+     "role": "chassis.chrome",
+     "scheme": "day",
+     "hex": "#B9C3CA",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "HUD doll joints"
+    },
+    {
+     "role": "chassis.chromeL",
+     "scheme": "day",
+     "hex": "#F4F7F9",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "HUD doll joint highlight"
+    },
+    {
+     "role": "chassis.chromeD",
+     "scheme": "day",
+     "hex": "#6E7C87",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "HUD doll joint shade"
+    },
+    {
+     "role": "chassis.mod",
+     "scheme": "day",
+     "hex": "#4FC3E8",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module components"
+    },
+    {
+     "role": "chassis.modL",
+     "scheme": "day",
+     "hex": "#BDEBFA",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module highlight"
+    },
+    {
+     "role": "chassis.modD",
+     "scheme": "day",
+     "hex": "#1E8FB8",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module shade"
+    },
+    {
+     "role": "chassis.modGlow",
+     "scheme": "day",
+     "hex": "#E8FAFF",
+     "alpha": 1,
+     "layer": "frame",
+     "use": "Module LEDs"
+    },
+    {
+     "role": "field.puddle",
+     "hex": "#1B2B45",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Standing water (D18)",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.puddleRim",
+     "hex": "#5B7BB0",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Puddle sheen, far lip",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.puddleLip",
+     "hex": "#0E1422",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Puddle near lip",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.puddleHi",
+     "hex": "#BFEFFF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Light reflected in a puddle",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.gate",
+     "hex": "#7FA8BC",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Screen-edge gate marks (D24); cue.secondary value",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.puddle",
+     "hex": "#93BFD3",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Standing water (D18)",
+     "scheme": "day"
+    },
+    {
+     "role": "field.puddleRim",
+     "hex": "#DDF3FB",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Puddle sheen, far lip",
+     "scheme": "day"
+    },
+    {
+     "role": "field.puddleLip",
+     "hex": "#6F97AB",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Puddle near lip",
+     "scheme": "day"
+    },
+    {
+     "role": "field.puddleHi",
+     "hex": "#FFFFFF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Light reflected in a puddle",
+     "scheme": "day"
+    },
+    {
+     "role": "field.gate",
+     "hex": "#4A5A66",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Screen-edge gate marks (D24); cue.secondary value",
+     "scheme": "day"
+    },
+    {
+     "role": "field.deck",
+     "hex": "#3B4459",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Flyover deck surface: pale concrete (Edit 43)",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.deck2",
+     "hex": "#323A4D",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck hard shoulder",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.deckJoint",
+     "hex": "#262C3B",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck expansion joints",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.column",
+     "hex": "#4A5470",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck column and girder face",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.columnD",
+     "hex": "#262D40",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Column shade, girder ribs",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.beam",
+     "hex": "#E8F7FF",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Headlight beam (colour math)",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.brakeGlow",
+     "hex": "#FF3A3A",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Brake wash on the ground (soft only)",
+     "scheme": "cyber"
+    },
+    {
+     "role": "structure.bldgRoof1",
+     "hex": "#252E44",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Single-storey roof",
+     "scheme": "cyber"
+    },
+    {
+     "role": "field.deck",
+     "hex": "#D9DFE3",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Flyover deck surface: pale concrete (Edit 43)",
+     "scheme": "day"
+    },
+    {
+     "role": "field.deck2",
+     "hex": "#C2CBD1",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck hard shoulder",
+     "scheme": "day"
+    },
+    {
+     "role": "field.deckJoint",
+     "hex": "#A9B5BD",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck expansion joints",
+     "scheme": "day"
+    },
+    {
+     "role": "field.column",
+     "hex": "#C9D3DA",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Deck column and girder face",
+     "scheme": "day"
+    },
+    {
+     "role": "field.columnD",
+     "hex": "#9AA8B1",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Column shade, girder ribs",
+     "scheme": "day"
+    },
+    {
+     "role": "field.beam",
+     "hex": "#FFF6DC",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Headlight beam (colour math)",
+     "scheme": "day"
+    },
+    {
+     "role": "field.brakeGlow",
+     "hex": "#E4442E",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Brake wash on the ground (soft only)",
+     "scheme": "day"
+    },
+    {
+     "role": "structure.bldgRoof1",
+     "hex": "#F4F8FA",
+     "alpha": 1,
+     "layer": "play",
+     "use": "Single-storey roof",
+     "scheme": "day"
+    }
+   ],
+   "retired": [
+    "lab.floor",
+    "lab.grid",
+    "structure (as barriers fill)",
+    "fleet (as vehicle fill)"
+   ]
+  },
+  "districts": {
+   "description": "City districts (Edit 41). One row per district in campaign order; each cell is addressable as world.district.<id>.<field>. Layouts are baked from these rows by prototypes/p3/tools/district_bake.js.",
+   "columns": [
+    {
+     "name": "id",
+     "type": "string"
+    },
+    {
+     "name": "order",
+     "type": "number"
+    },
+    {
+     "name": "name",
+     "type": "string"
+    },
+    {
+     "name": "focal",
+     "type": "enum",
+     "values": [
+      "monument",
+      "fountain",
+      "roundabout",
+      "tower",
+      "plate"
+     ]
+    },
+    {
+     "name": "form",
+     "type": "string"
+    },
+    {
+     "name": "quota",
+     "type": "number",
+     "unit": "write-offs"
+    },
+    {
+     "name": "interval",
+     "type": "number",
+     "unit": "s",
+     "note": "Seconds between scheduled cars"
+    },
+    {
+     "name": "vanShare",
+     "type": "number",
+     "unit": "ratio"
+    },
+    {
+     "name": "blockShare",
+     "type": "number",
+     "unit": "ratio",
+     "note": "Share of buildable ground: inside walls and river, outside flyover bands and the road setback (Edit 43)"
+    },
+    {
+     "name": "blockMax",
+     "type": "number",
+     "unit": "world units",
+     "note": "Largest block side"
+    },
+    {
+     "name": "doubleShare",
+     "type": "number",
+     "unit": "ratio",
+     "note": "Share of non-tower buildings with two storeys; the rest have one (Edit 43)"
+    },
+    {
+     "name": "towerShare",
+     "type": "number",
+     "unit": "ratio",
+     "note": "Share of large footprints raised as towers"
+    },
+    {
+     "name": "puddleShare",
+     "type": "number",
+     "unit": "ratio"
+    },
+    {
+     "name": "jerseyShare",
+     "type": "number",
+     "unit": "ratio"
+    },
+    {
+     "name": "decks",
+     "type": "number",
+     "unit": "flyovers"
+    },
+    {
+     "name": "highDecks",
+     "type": "number",
+     "unit": "count",
+     "note": "Flyovers that run at Z2 (world.highHeight); the rest run at Z1 (Edit 44)"
+    },
+    {
+     "name": "platformShare",
+     "type": "number",
+     "unit": "ratio",
+     "note": "Chance a frontage lot becomes a platform with a walkable roof at Z2 and a stair up (Edit 44)"
+    }
+   ],
+   "rows": [
+    {
+     "id": "riverside",
+     "order": 1,
+     "name": "Riverside",
+     "focal": "monument",
+     "form": "low-rise",
+     "quota": 1,
+     "interval": 3,
+     "vanShare": 0.2,
+     "blockShare": 0.38,
+     "blockMax": 112,
+     "towerShare": 0,
+     "puddleShare": 0.02,
+     "jerseyShare": 0.06,
+     "decks": 0,
+     "doubleShare": 0.3,
+     "highDecks": 0,
+     "platformShare": 0.1
+    },
+    {
+     "id": "market",
+     "order": 2,
+     "name": "Old Market",
+     "focal": "fountain",
+     "form": "dense low-rise",
+     "quota": 2,
+     "interval": 3,
+     "vanShare": 0.45,
+     "blockShare": 0.42,
+     "blockMax": 96,
+     "towerShare": 0,
+     "puddleShare": 0.04,
+     "jerseyShare": 0.05,
+     "decks": 0,
+     "doubleShare": 0.7,
+     "highDecks": 0,
+     "platformShare": 0.12
+    },
+    {
+     "id": "interchange",
+     "order": 3,
+     "name": "Interchange",
+     "focal": "roundabout",
+     "form": "mid-rise, stacked flyovers",
+     "quota": 2,
+     "interval": 2.8,
+     "vanShare": 0.3,
+     "blockShare": 0.36,
+     "blockMax": 160,
+     "towerShare": 0.15,
+     "puddleShare": 0.02,
+     "jerseyShare": 0.1,
+     "decks": 2,
+     "doubleShare": 0.6,
+     "highDecks": 1,
+     "platformShare": 0.15
+    },
+    {
+     "id": "cbd",
+     "order": 4,
+     "name": "Central Business District",
+     "focal": "tower",
+     "form": "towers",
+     "quota": 3,
+     "interval": 2.6,
+     "vanShare": 0.3,
+     "blockShare": 0.42,
+     "blockMax": 160,
+     "towerShare": 0.5,
+     "puddleShare": 0.02,
+     "jerseyShare": 0.08,
+     "decks": 2,
+     "doubleShare": 0.8,
+     "highDecks": 1,
+     "platformShare": 0.15
+    },
+    {
+     "id": "campus",
+     "order": 5,
+     "name": "FARSIGHT Campus",
+     "focal": "plate",
+     "form": "campus halls",
+     "quota": 4,
+     "interval": 2.5,
+     "vanShare": 0.4,
+     "blockShare": 0.36,
+     "blockMax": 160,
+     "towerShare": 0.1,
+     "puddleShare": 0.01,
+     "jerseyShare": 0.08,
+     "decks": 1,
+     "doubleShare": 0.9,
+     "highDecks": 0,
+     "platformShare": 0.12
+    }
+   ]
+  }
+ },
+ "unresolvedGroups": [],
+ "policy": {
+  "liveEditingRequired": true,
+  "recordEveryEffectiveChange": true,
+  "allGameplayModulesMustRegister": true,
+  "implementationStatus": "pending-game-repository"
+ }
+}

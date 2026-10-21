@@ -1,0 +1,21 @@
+{
+  "note": "Knowledge base for the P3.3 targets (Submission 4). V29 Design is the GDD of record; GDD Edits 37–44 extend and override it for the P3 city (newest edit wins). EDIT26 is the earlier full GDD: humour, bark key, feedback table. FLEET is generated from content/db/fleet.json at each run: canon, voice, classes, tiers, models and the existing bark bank (pipeline-written lines excluded). Paths are relative to the repository root.",
+  "docs": [
+    {"id": "DESIGN", "path": "content/kb/DUMMIES_V29_Design.md", "title": "DUMMIES V29 Design (GDD of record)"},
+    {"id": "ENG", "path": "content/kb/DUMMIES_V29_Engineering_Spec.md", "title": "DUMMIES V29 Engineering Spec and parameter registry"},
+    {"id": "EDIT26", "path": "content/kb/DUMMIES_GDD_Edit26.md", "title": "GDD edit 26: full GDD before V29 (fiction, voice, bark key, feedback, style guide)"},
+    {"id": "JUICE", "path": "content/kb/DUMMIES_GDD_Edit30_Juice_References.md", "title": "GDD edit 30: juice references (top-down arcade driving)"},
+    {"id": "DRIVER", "path": "prototypes/p1/DUMMIES_Driver_Behaviour.md", "title": "GDD edit: driver behaviour"},
+    {"id": "LOG", "path": "content/kb/p3/DUMMIES_Prototype_Log.md", "title": "Prototype log P1–P3.3: observations and decisions per build"},
+    {"id": "EDIT37", "path": "content/kb/p3/DUMMIES_GDD_Edit37_Art_Direction.md", "title": "GDD edit 37: art direction (16-bit field, FARSIGHT frame)"},
+    {"id": "EDIT38", "path": "content/kb/p3/DUMMIES_GDD_Edit38_P3.md", "title": "GDD edit 38: P3 pixel prototype, HUD, chassis doll"},
+    {"id": "EDIT39", "path": "content/kb/p3/DUMMIES_GDD_Edit39_Canon_Lore_City.md", "title": "GDD edit 39: canon, lore system, Sinofuturist cyber city"},
+    {"id": "EDIT40", "path": "content/kb/p3/DUMMIES_GDD_Edit40_Districts_Surfaces.md", "title": "GDD edit 40: 3 x 3 districts, puddles"},
+    {"id": "EDIT41", "path": "content/kb/p3/DUMMIES_GDD_Edit41_City_Districts.md", "title": "GDD edit 41: five city districts, landmarks, flyovers"},
+    {"id": "EDIT42", "path": "content/kb/p3/DUMMIES_GDD_Edit42_Levels_Bounds.md", "title": "GDD edit 42: bounded districts, checkpoints, stairs, drops"},
+    {"id": "EDIT43", "path": "content/kb/p3/DUMMIES_GDD_Edit43_Crossings_Buildings_Lights.md", "title": "GDD edit 43: square crossings, buildings by storey, car lights"},
+    {"id": "EDIT44", "path": "content/kb/p3/DUMMIES_GDD_Edit44_Z_Levels_Platforms.md", "title": "GDD edit 44: Z levels, high highway, platform roofs, skybridges"},
+    {"id": "DECISIONS", "path": "content/kb/p3/DUMMIES_DECISIONS.md", "title": "Decision log, rows 1–173"},
+    {"id": "FLEET", "path": "content/kb/p3/DUMMIES_Fleet_Canon.md", "title": "Fleet database canon (generated from content/db/fleet.json)"}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The bank sounds like DUMMIES. The lines are dry, they come from a worker's log and paintwork, and the situation lines only claim what the simulation logs. One line breaks tier temperament: a Luxury car shouts.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "lines[30].style",
+      "found": "shout",
+      "canon": "FLEET#F4",
+      "rule": "Luxury is confident and polished and never raises its voice. Shout is used only for tier 04 Budget in the existing bank (FLEET#F9.2), and the shout style is a double-edged bubble.",
+      "fix": "speech"
+    }
+  ]
+}

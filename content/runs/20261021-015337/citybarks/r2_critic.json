@@ -1,0 +1,36 @@
+{
+  "verdict": "revise",
+  "summary": "The bank mostly sounds like DUMMIES: Luxury is superior, Corporate files tickets, and the claims match the fields each line tests. Two lines have no tier, so they fire for both models. One of them shouts, which neither temperament does. The other is a generic aphorism, not a worker's line.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "lines[2].style",
+      "found": "shout",
+      "canon": "FLEET#F4",
+      "rule": "Only Budget (tier 04, angry) shouts. This line has no tier, so it fires for confident Luxury and calm Corporate cars. Use the plain speech style.",
+      "fix": "speech"
+    },
+    {
+      "id": "C2",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "lines[2].text",
+      "found": "Something landed on me from a rooftop!",
+      "canon": "FLEET#F4",
+      "rule": "A line that fires for both Luxury and Corporate must stay calm. An exclamation is out of temperament for both.",
+      "fix": "Contact from a rooftop. Noted."
+    },
+    {
+      "id": "C3",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "lines[21].text",
+      "found": "Interchange. Everything merges eventually.",
+      "canon": "EDIT26#3.2",
+      "rule": "Cars speak as workers about deadlines, rank and retraining. A generic aphorism is not a worker's line.",
+      "fix": "Interchange. I am late for the next merge."
+    }
+  ]
+}

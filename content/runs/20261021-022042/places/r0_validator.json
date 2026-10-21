@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "lore",
+    "severity": "block",
+    "path": "districts.campus.intro",
+    "found": "Impact plates mark the road at the centre. A hit taken on a plate scores more.",
+    "canon": "FLEET#F2",
+    "rule": "Banned term 'score' (fleet canon)."
+  }
+]
