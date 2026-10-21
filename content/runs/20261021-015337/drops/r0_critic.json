@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The content sounds like DUMMIES. It is plain, physical and quiet, it stays inside the palette roles, and it leaves the hit layers alone. Two data problems need correcting: a wrong unit on the stumble amplitude, and a hard-coded copy of a simulation fall time.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "data",
+      "severity": "fix",
+      "path": "params[proto.drops.land.stumbleMin].unit and params[proto.drops.land.stumbleMax].unit",
+      "found": "\"unit\": \"ratio\" (on proto.drops.land.stumbleMin 0.15 and proto.drops.land.stumbleMax 0.4)",
+      "canon": "BRIEF: Game data",
+      "rule": "The registry's stumble amplitude, proto.hits.miss.stumbleAmp (0.4 rad), is an angle in radians. A ratio unit contradicts it, and the Z2 maximum should not exceed 0.4 rad.",
+      "fix": "\"unit\": \"rad\""
+    },
+    {
+      "id": "C2",
+      "kind": "data",
+      "severity": "fix",
+      "path": "params[proto.drops.step.fallSecondsMax]",
+      "found": "\"id\": \"proto.drops.step.fallSecondsMax\", \"value\": 0.47, \"purpose\": \"Z2 fall time. Matches world.dropSeconds × √(216/120) rounded.\"",
+      "canon": "EDIT44#5.2",
+      "rule": "Fall time is a simulation value: world.dropSeconds × √(h / world.deckHeight). Presentation must not keep its own copy of it.",
+      "fix": "Remove the param. In layers[0] (deck-drop), set zoom.seconds and sound.seconds to \"world.dropSeconds\" alone and let the renderer use the simulated fall time. If a cap is kept, name it as a presentation clamp of the simulated time, not as a fall time."
+    }
+  ]
+}

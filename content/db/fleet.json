@@ -11,7 +11,10 @@
    "GDD Edit 26 §3 Setting, §6.1 Classes, §6.4 Seniority, §6.5 Moods, §6.6 Voice",
    "V29 D3 tree",
    "GDD Edit 39 §6.6.1 lore system"
-  ]
+  ],
+  "generated": {
+   "citybarks": "20261021-024324"
+  }
  },
  "canon": {
   "setting": "SHENZHEN SMART CITY, NEW ECONOMIC ZONE, CHINA, 20XX",
@@ -212,7 +215,8 @@
   "mood",
   "wear",
   "owns",
-  "broken"
+  "broken",
+  "district"
  ],
  "events": {
   "impact": [
@@ -220,12 +224,22 @@
    "part",
    "bait",
    "stopped",
-   "lunging"
+   "lunging",
+   "drop",
+   "dropZ",
+   "dropFrom",
+   "deck",
+   "plate"
   ],
   "writeoff": [
    "writeOffs",
    "chassis",
-   "zone"
+   "zone",
+   "drop",
+   "dropZ",
+   "dropFrom",
+   "deck",
+   "plate"
   ],
   "near-miss": [
    "gap",
@@ -2237,6 +2251,492 @@
    "priority": 1,
    "text": "Subject damage noted.",
    "claims": []
+  },
+  {
+   "id": "c001",
+   "event": "impact",
+   "when": {
+    "tier": "01",
+    "drop": true,
+    "dropFrom": "roof",
+    "dropZ": 2
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "A roof? I was not briefed on roofs.",
+   "claims": [
+    "drop",
+    "dropFrom:roof",
+    "dropZ:2"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "LOG#P3.3",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c002",
+   "event": "impact",
+   "when": {
+    "tier": "02",
+    "drop": true,
+    "dropFrom": "roof",
+    "dropZ": 2
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Incident filed: load received from a roof.",
+   "claims": [
+    "drop",
+    "dropFrom:roof",
+    "dropZ:2"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c003",
+   "event": "impact",
+   "when": {
+    "drop": true,
+    "dropFrom": "roof",
+    "dropZ": 2
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Roofs are not on my route.",
+   "claims": [
+    "drop",
+    "dropFrom:roof",
+    "dropZ:2"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "LOG#P3.3",
+    "EDIT26#3.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c004",
+   "event": "impact",
+   "when": {
+    "tier": "01",
+    "drop": true,
+    "dropFrom": "roof",
+    "dropZ": 2
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Landed on from a roof. My paintwork objects.",
+   "claims": [
+    "drop",
+    "dropFrom:roof",
+    "dropZ:2"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c005",
+   "event": "impact",
+   "when": {
+    "drop": true,
+    "dropFrom": "deck",
+    "dropZ": 2
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "That came off the high highway.",
+   "claims": [
+    "drop",
+    "dropFrom:deck",
+    "dropZ:2",
+    "highway"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "EDIT44#4.2",
+    "LOG#P3.3"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c006",
+   "event": "impact",
+   "when": {
+    "tier": "02",
+    "drop": true,
+    "dropFrom": "deck"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Form 9: load received from a parapet.",
+   "claims": [
+    "drop",
+    "dropFrom:deck",
+    "highway"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c007",
+   "event": "impact",
+   "when": {
+    "tier": "01",
+    "drop": true,
+    "dropFrom": "deck",
+    "dropZ": 1
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "From the low highway? Quite unseemly.",
+   "claims": [
+    "drop",
+    "dropFrom:deck",
+    "dropZ:1",
+    "highway"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "EDIT44#4.2",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c008",
+   "event": "impact",
+   "when": {
+    "drop": true,
+    "dropZ": 2
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "That fell a long way to reach me.",
+   "claims": [
+    "drop",
+    "dropZ:2"
+   ],
+   "sources": [
+    "EDIT44#8.3",
+    "EDIT44#5.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c009",
+   "event": "impact",
+   "when": {
+    "tier": "02",
+    "drop": true,
+    "dropFrom": "deck",
+    "dropZ": 1
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Policy 12 excludes loads from parapets.",
+   "claims": [
+    "drop",
+    "dropFrom:deck",
+    "dropZ:1",
+    "highway"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c010",
+   "event": "impact",
+   "when": {
+    "deck": true
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Nobody walks the highway. Nobody.",
+   "claims": [
+    "deck",
+    "highway"
+   ],
+   "sources": [
+    "EDIT42#6.3",
+    "EDIT44#6.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c011",
+   "event": "impact",
+   "when": {
+    "tier": "01",
+    "deck": true
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Struck on the highway. How undignified.",
+   "claims": [
+    "deck",
+    "highway"
+   ],
+   "sources": [
+    "EDIT42#6.3",
+    "EDIT44#6.2",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c012",
+   "event": "impact",
+   "when": {
+    "tier": "02",
+    "deck": true
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Highway strike filed under policy 9.",
+   "claims": [
+    "deck",
+    "highway"
+   ],
+   "sources": [
+    "EDIT44#6.2",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c013",
+   "event": "impact",
+   "when": {
+    "plate": true
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Hit on a plate. Calibrated, naturally.",
+   "claims": [
+    "plate"
+   ],
+   "sources": [
+    "EDIT41#7.3",
+    "EDIT41#7.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c014",
+   "event": "impact",
+   "when": {
+    "tier": "01",
+    "plate": true
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Struck on a calibration plate. Vulgar.",
+   "claims": [
+    "plate"
+   ],
+   "sources": [
+    "EDIT41#7.3",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c015",
+   "event": "impact",
+   "when": {
+    "tier": "02",
+    "plate": true
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Plate hit filed against calibration form 3.",
+   "claims": [
+    "plate"
+   ],
+   "sources": [
+    "EDIT41#7.3",
+    "FLEET#F4"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c016",
+   "event": "writeoff",
+   "when": {
+    "tier": "01",
+    "drop": true
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Written off from above. Unthinkable.",
+   "claims": [
+    "drop"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "FLEET#F9.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c017",
+   "event": "writeoff",
+   "when": {
+    "tier": "02",
+    "drop": true
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Write-off filed. Cause: load from above.",
+   "claims": [
+    "drop"
+   ],
+   "sources": [
+    "EDIT44#5.2",
+    "FLEET#F9.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c018",
+   "event": "writeoff",
+   "when": {
+    "deck": true
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Written off on the highway. On my record.",
+   "claims": [
+    "deck",
+    "highway"
+   ],
+   "sources": [
+    "EDIT44#6.2",
+    "FLEET#F9.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c019",
+   "event": "writeoff",
+   "when": {
+    "plate": true
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "Written off on a calibration plate.",
+   "claims": [
+    "plate"
+   ],
+   "sources": [
+    "EDIT41#7.3",
+    "FLEET#F9.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c020",
+   "event": "impact",
+   "when": {
+    "district": "riverside"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Riverside route. Nobody mentioned this.",
+   "claims": [
+    "district:riverside"
+   ],
+   "sources": [
+    "EDIT41#7.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c021",
+   "event": "impact",
+   "when": {
+    "district": "market"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Old Market. Not on any itinerary.",
+   "claims": [
+    "district:market"
+   ],
+   "sources": [
+    "EDIT41#7.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c022",
+   "event": "impact",
+   "when": {
+    "district": "interchange"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Interchange. Two flyovers and now this.",
+   "claims": [
+    "district:interchange"
+   ],
+   "sources": [
+    "EDIT41#7.2",
+    "EDIT44#decisions"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c023",
+   "event": "impact",
+   "when": {
+    "district": "cbd"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Business district. Of all places.",
+   "claims": [
+    "district:cbd"
+   ],
+   "sources": [
+    "EDIT41#7.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  },
+  {
+   "id": "c024",
+   "event": "impact",
+   "when": {
+    "district": "campus"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "FARSIGHT Campus. Test centre. How apt.",
+   "claims": [
+    "district:campus"
+   ],
+   "sources": [
+    "EDIT41#7.2",
+    "EDIT41#7.3"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
   }
  ]
 }

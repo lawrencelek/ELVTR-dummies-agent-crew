@@ -1,0 +1,158 @@
+[
+  {
+    "query": "the brand never comments the contrast is the tone",
+    "results": [
+      {
+        "id": "EDIT37#4.1~1",
+        "score": 18.244
+      },
+      {
+        "id": "DECISIONS#rows-81-90~2",
+        "score": 10.44
+      }
+    ]
+  },
+  {
+    "query": "marketing gloss game-show cheer generic science fiction",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 14.998
+      },
+      {
+        "id": "EDIT37#decisions",
+        "score": 10.621
+      }
+    ]
+  },
+  {
+    "query": "a line may only say what the game state guarantees",
+    "results": [
+      {
+        "id": "FLEET#F2",
+        "score": 8.341
+      },
+      {
+        "id": "FLEET#F8",
+        "score": 8.061
+      }
+    ]
+  },
+  {
+    "query": "banned terms level game player city names Shenzhen",
+    "results": [
+      {
+        "id": "DESIGN#D1",
+        "score": 14.977
+      },
+      {
+        "id": "FLEET#F2",
+        "score": 14.708
+      }
+    ]
+  },
+  {
+    "query": "roof no traffic ledge drop high highway Interchange CBD only",
+    "results": [
+      {
+        "id": "EDIT44#evidence",
+        "score": 33.83
+      },
+      {
+        "id": "EDIT44#open-items",
+        "score": 24.617
+      }
+    ]
+  },
+  {
+    "query": "the dummy starts on B1 on the river",
+    "results": [
+      {
+        "id": "EDIT40#7.1.1",
+        "score": 6.01
+      },
+      {
+        "id": "EDIT42#7.9",
+        "score": 5.376
+      }
+    ]
+  },
+  {
+    "query": "A fountain square stands at the centre. Puddles slow the dummy, and vans are common.",
+    "results": [
+      {
+        "id": "LOG#P1.7/questions-for-the-p1-7-session",
+        "score": 9.927
+      },
+      {
+        "id": "LOG#P1.5/pillars-and-blind-spots",
+        "score": 9.345
+      }
+    ]
+  },
+  {
+    "query": "A roundabout stands at the centre, its island crash matting. Flyovers cross above.",
+    "results": [
+      {
+        "id": "EDIT26#7.2~1",
+        "score": 20.6
+      },
+      {
+        "id": "EDIT41#open-items",
+        "score": 14.175
+      }
+    ]
+  },
+  {
+    "query": "Low highway. Its own traffic drives here. A broken parapet drops you to the road.",
+    "results": [
+      {
+        "id": "EDIT44#7.7",
+        "score": 18.663
+      },
+      {
+        "id": "DECISIONS#rows-141-150~2",
+        "score": 14.722
+      }
+    ]
+  },
+  {
+    "query": "FARSIGHT Tower stands at the centre. Barriers and flyovers divide the roads.",
+    "results": [
+      {
+        "id": "LOG#P1.5/pillars-and-blind-spots",
+        "score": 12.229
+      },
+      {
+        "id": "DECISIONS#rows-131-140~2",
+        "score": 11.246
+      }
+    ]
+  },
+  {
+    "query": "A calibration plate marks the centre. A hit taken on a plate scores more.",
+    "results": [
+      {
+        "id": "EDIT26#7.3~2",
+        "score": 13.647
+      },
+      {
+        "id": "EDIT42#8.3",
+        "score": 11.339
+      }
+    ]
+  },
+  {
+    "query": "High highway: fast traffic. A broken parapet drops you to the street.",
+    "results": [
+      {
+        "id": "EDIT44#7.7",
+        "score": 20.078
+      },
+      {
+        "id": "DECISIONS#rows-141-150~2",
+        "score": 15.945
+      }
+    ]
+  }
+]

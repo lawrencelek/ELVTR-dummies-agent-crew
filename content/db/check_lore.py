@@ -25,6 +25,7 @@ ENUMS = {
     'zone': {'front', 'frontDiagonal', 'side', 'rearDiagonal', 'rear'},
     'cause': {'body', 'cone', 'pass', 'car'}, 'man': {'brake', 'shift'},
     'at': {'body', 'cone'}, 'by': {'car', 'cone'}, 'how': {'reverse', 'replan'},
+    'dropFrom': {'deck', 'roof'}, 'district': {'riverside', 'market', 'interchange', 'cbd', 'campus'},  # GDD Edit 44
 }
 tiers = {t['tier']: t for t in d['tiers']}
 classes = {c['class']: c for c in d['classes']}
@@ -82,6 +83,12 @@ def implied(claim, b):
     kind, _, rest = claim.partition(':')
     if claim == 'bait': return w.get('bait') is True
     if claim == 'stopped': return w.get('stopped') is True
+    if claim == 'drop': return w.get('drop') is True or w.get('dropZ') in (1, 2) or w.get('dropFrom') in ('deck', 'roof')   # Edit 44: landed on from above
+    if claim in ('highway', 'deck'): return w.get('deck') is True or w.get('dropFrom') == 'deck'
+    if claim == 'plate': return w.get('plate') is True
+    if kind == 'dropZ': return w.get('dropZ') == int(rest) or (rest == '2' and w.get('dropFrom') == 'roof')   # roofs are Z2 (Edit 44 §7.7)
+    if kind == 'dropFrom': return w.get('dropFrom') == rest
+    if kind == 'district': return w.get('district') == rest
     if claim == 'spent': return ev == 'touch-spent'
     if claim == 'learned': return ev == 'learned'
     if claim.startswith('seniority>='): return (w.get('seniority') or {}).get('min', -1) >= int(claim[11:])
@@ -109,6 +116,8 @@ MENTIONS = [
     (r'\bleft arm\b', 'part:armL'), (r'\bright arm\b', 'part:armR'), (r'\bleft leg\b', 'part:legL'), (r'\bright leg\b', 'part:legR'),
     (r'\blegs have gone\b', 'part:legs'), (r'\bhead is\b', 'part:head'), (r'\btorso\b', 'part:torso'),
     (r'\bparcel\b', 'class:van'), (r'\bpassengers\b', 'class:bus'), (r'\bofficer\b', 'class:police'),
+    (r'\broof\b|\brooftop\b', 'dropFrom:roof'), (r'\bfrom above\b|\blanded\b|\bfell\b|\bdropped onto\b|\bout of the sky\b|\bfrom the sky\b', 'drop'),
+    (r'\bhighway\b|\bflyover\b|\bdeck\b|\boverpass\b', 'highway'), (r'\bplate\b|\bcalibrat', 'plate'),
     (r'\bfrom behind\b|\bmy boot\b', 'zone:rear'), (r'\bgrille\b|\bbumper\b', 'zone:front'), (r'\bdoor panel\b|\bside panel\b|\bmy side\b', 'zone:side'),
 ]
 for m in d['models']:  # a callsign or job detail in a line pins it to that model

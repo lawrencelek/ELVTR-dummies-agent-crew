@@ -1,0 +1,112 @@
+{
+  "districts": {
+    "riverside": {
+      "intro": "A lantern monument stands at the centre. Traffic is light and slow.",
+      "screens": {
+        "A1": "West Embankment",
+        "B1": "Ferry Landing",
+        "C1": "East Quay",
+        "A2": "Weaver Lane",
+        "B2": "Lantern Plaza",
+        "C2": "Teahouse Row",
+        "A3": "Lychee Street",
+        "B3": "Garden Court",
+        "C3": "Cotton Road"
+      },
+      "sources": [
+        "EDIT41#7.2",
+        "EDIT41#7.1.1",
+        "EDIT42#7.1.1"
+      ]
+    },
+    "market": {
+      "intro": "A fountain square stands at the centre. Puddles slow the dummy. Vans are common.",
+      "screens": {
+        "A1": "Fishmonger Quay",
+        "B1": "Market Landing",
+        "C1": "Canal Steps",
+        "A2": "Noodle Lane",
+        "B2": "Fountain Square",
+        "C2": "Spice Street",
+        "A3": "Tailor Row",
+        "B3": "Bean Curd Alley",
+        "C3": "Dumpling Street"
+      },
+      "sources": [
+        "EDIT41#7.2",
+        "EDIT40#7.3",
+        "EDIT41#7.1.1"
+      ]
+    },
+    "interchange": {
+      "intro": "A roundabout stands at the centre. Its island is crash matting. Flyovers cross above.",
+      "screens": {
+        "A1": "West Toll Quay",
+        "B1": "Central Quay Flyover",
+        "C1": "East Toll Quay",
+        "A2": "Signal Street",
+        "B2": "Central Roundabout",
+        "C2": "Logistics Street",
+        "A3": "West Viaduct Road",
+        "B3": "Central Viaduct",
+        "C3": "East Viaduct Terrace"
+      },
+      "sources": [
+        "EDIT41#7.2",
+        "EDIT41#7.3",
+        "EDIT44#decisions",
+        "EDIT42#7.1.1"
+      ]
+    },
+    "cbd": {
+      "intro": "FARSIGHT Tower stands at the centre. Barriers and flyovers divide the roads.",
+      "screens": {
+        "A1": "West Finance Quay",
+        "B1": "Exchange Quay",
+        "C1": "Terrace Quay",
+        "A2": "Overpass Avenue",
+        "B2": "FARSIGHT Tower Plaza",
+        "C2": "Elevated Avenue",
+        "A3": "Auditor Street",
+        "B3": "Ledger Street",
+        "C3": "Treasury Road"
+      },
+      "sources": [
+        "EDIT41#7.2",
+        "EDIT44#decisions",
+        "EDIT42#7.1.1"
+      ]
+    },
+    "campus": {
+      "intro": "Calibrated plates lie on the centre road. A hit taken on one scores more.",
+      "screens": {
+        "A1": "Research Quay",
+        "B1": "Intake Quay",
+        "C1": "Terrace Quay",
+        "A2": "Platform Row",
+        "B2": "Calibration Plate",
+        "C2": "Sensor Avenue",
+        "A3": "Rig Street",
+        "B3": "Sled Road",
+        "C3": "Impact Lane"
+      },
+      "sources": [
+        "EDIT41#7.2",
+        "EDIT41#7.3",
+        "EDIT26#7.3~1"
+      ]
+    }
+  },
+  "levels": {
+    "z1": "Low highway. Its own traffic drives here. A broken parapet drops you to the road.",
+    "z2Highway": "High highway: fast traffic. A broken parapet drops you to the street.",
+    "roof": "Roof. No traffic here. Step off a ledge to drop to the street.",
+    "sources": [
+      "EDIT44#4.2",
+      "EDIT44#decisions",
+      "DECISIONS#rows-161-170~2",
+      "LOG#P3.3"
+    ]
+  },
+  "params": []
+}

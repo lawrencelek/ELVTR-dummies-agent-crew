@@ -1628,7 +1628,7 @@
     // Off a ledge or broken parapet: velocity carries on, outward at least far enough to clear the edge. The dummy lands on the
     // nearest level below its landing point (a deck, else the ground). Fall time and landing speed grow with √height.
     startDrop(ax, sg) {
-      const P = this.P, b = this.body, r = P['body.radius'], vmax = P['movement.runSpeed'], fromZ = b.level, ref = P['world.deckHeight'];
+      const P = this.P, b = this.body, r = P['body.radius'], vmax = P['movement.runSpeed'], fromZ = b.level, ref = P['world.deckHeight'], fromKind = (this.floorOf() || {}).kind || null;
       let vx = b.vx, vy = b.vy;
       const sp = hyp(vx, vy);
       if (sp > vmax) { vx *= vmax / sp; vy *= vmax / sp; }
@@ -1639,8 +1639,8 @@
       const h = zHeight(P, fromZ) - zHeight(P, toZ);
       T = P['world.dropSeconds'] * Math.sqrt(h / ref); [ux, uy] = plan(T);
       b.mode = 'drop'; b.lunge = null; b.stair = null; b.floor = null;
-      b.drop = { t: 0, T, vx: ux, vy: uy, x0: b.x, y0: b.y, fromZ, toZ, toFloor, h }; b.vx = ux; b.vy = uy;
-      this.emit('deck-drop', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), from: fromZ, to: toZ });
+      b.drop = { t: 0, T, vx: ux, vy: uy, x0: b.x, y0: b.y, fromZ, toZ, toFloor, h, fromKind }; b.vx = ux; b.vy = uy;
+      this.emit('deck-drop', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), from: fromZ, to: toZ, h, fromKind }); // fromKind: 'deck' or 'roof'
       this.mile('firstDeckDrop');
     }
     // Landing: on open ground or a deck the dummy recovers; on a car it scores a hit from above (dropImpact) to the legs.
@@ -1654,13 +1654,13 @@
         c.touched = true; c.inEpisode = true;
         const ph = dropImpact(P, d.vx, d.vy, c, res, v);
         contacts.push({ k, car: c, closing: ph.un, ph, px: b.x, py: b.y, zone: zoneOf(res.qx, res.qy, c), carState: this.carCue(c), cause: c.cause, lunging: false,
-          bodySpeed: v, carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), drop: true });
+          bodySpeed: v, carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), drop: true, dropZ: d.fromZ, dropFrom: d.fromKind });
         b.x += res.nx * res.pen; b.y += res.ny * res.pen;
-        this.emit('land', { car: c.id, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level });
+        this.emit('land', { car: c.id, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level, fromZ: d.fromZ, h: d.h, fromKind: d.fromKind });
         b.mode = 'knock'; b.lunge = null; b.knockT = 0; b.knockVx = ph.knock.x; b.knockVy = ph.knock.y; b.vx = ph.knock.x; b.vy = ph.knock.y;
         return;
       }
-      this.emit('land', { car: null, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level });
+      this.emit('land', { car: null, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level, fromZ: d.fromZ, h: d.h, fromKind: d.fromKind });
       b.mode = 'recover'; b.recoverT = 0;
     }
     moveCones(h) {
@@ -2307,7 +2307,7 @@
         const ev = { car: c.id, model: c.model, cls: c.cls, zone: ct.zone, part, closing: +ct.closing.toFixed(3),
           angle: +ct.ph.angle.toFixed(1), dv: +ct.ph.dvd.toFixed(2), strike: +ct.ph.un.toFixed(2),
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
-          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, drop: !!ct.drop, deck: !!c.deck };
+          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, drop: !!ct.drop, deck: !!c.deck, dropZ: ct.drop ? ct.dropZ : 0, dropFrom: ct.drop ? ct.dropFrom : null };
         this.emit('impact', ev); b.hits.push(ev);
         this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed, t: this.t, zone: ct.zone, angle: ct.ph.angle, layer: lay(c) });
         this.mile('firstHit');

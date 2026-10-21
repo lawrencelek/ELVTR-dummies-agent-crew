@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""DUMMIES dynamic content pipeline (ELVTR Assignment #4).
+"""DUMMIES dynamic content pipeline (ELVTR Assignment #4; retargeted to the P3.3 prototype for Submission 4).
 
 Knowledge base (V29 Design + GDD edits) -> BM25 retrieval -> Generator agent -> validators
--> Critic agent -> repair loop -> published content that the P2 prototype reads (P1.9 sim + generated content).
+-> Critic agent -> repair loop -> published content the prototype reads.
+
+Targets:
+  p3 (default)  the current prototype, prototypes/p3 (P3.3). Types: citybarks, places, drops.
+                KB: content/kb/manifest_p3.json (V29 + GDD Edits 37–44, decision log, fleet canon).
+  p2            the Assignment 4 build, prototypes/p2 (P2.1). Types: juice, interface, graphics, barks, hits, terminal.
 
   index      chunk the KB at its ## / ### headings                   (rag.py)
   retrieve   BM25, several focused queries per content type          (specs/<type>.json)
@@ -13,9 +18,9 @@ Knowledge base (V29 Design + GDD edits) -> BM25 retrieval -> Generator agent -> 
   publish    prototypes/p2/content/<type>.json, content.js, rebuilt dummies_p2.html, GDD edit in content/out/
 
 Usage:
-  python content/pipeline.py                          P2.1 types: barks, hits, terminal
-  python content/pipeline.py --type juice,graphics    other types (P2.0: juice, interface, graphics)
-  python content/pipeline.py --query "barks workers"  show what retrieval returns, no model calls
+  python content/pipeline.py                          P3.3 types: citybarks, places, drops
+  python content/pipeline.py --target p2              P2.1 types: barks, hits, terminal
+  python content/pipeline.py --query "drop roof"      show what retrieval returns, no model calls
   python content/pipeline.py --check                  re-validate published content, rebuild content.js; no model calls
 Needs Python 3.9+, Node 18+, and Claude Code signed in (`claude` on PATH). No API key is stored here.
 """
@@ -33,18 +38,37 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 import checks  # noqa: E402
+import kb_build  # noqa: E402
 import rag  # noqa: E402
 import registry  # noqa: E402
 
-P2 = ROOT / "prototypes" / "p2"   # consumer: P1.9 sim + content-aware renderer; P1 stays frozen
-OUT_CONTENT = P2 / "content"
-TYPES = ["juice", "interface", "graphics", "barks", "hits", "terminal"]   # P2.0 foundation, then the P2.1 gap fills
-P21 = ["barks", "hits", "terminal"]
+TARGETS = {
+    "p2": {"dir": ROOT / "prototypes" / "p2", "types": ["juice", "interface", "graphics", "barks", "hits", "terminal"],
+           "default": ["barks", "hits", "terminal"], "manifest": "manifest.json", "agents": "",
+           "edit_no": {"juice": 31, "interface": 32, "graphics": 33, "barks": 34, "hits": 35, "terminal": 36}},
+    "p3": {"dir": ROOT / "prototypes" / "p3", "types": ["citybarks", "places", "drops"],
+           "bundle": ["juice", "interface", "graphics", "barks", "hits", "terminal", "places", "drops"],
+           "default": ["citybarks", "places", "drops"], "manifest": "manifest_p3.json", "agents": "p3/",
+           "edit_no": {"citybarks": 45, "places": 46, "drops": 47}},
+}
+T = TARGETS["p3"]
+
+
+def use_target(name):
+    global T, P2, OUT_CONTENT, TYPES, EDIT_NO
+    T = TARGETS[name]
+    P2 = T["dir"]   # the consumer prototype (name kept from the P2 build)
+    OUT_CONTENT = P2 / "content"
+    TYPES = T["types"]
+    EDIT_NO = T["edit_no"]
+
+
+use_target("p3")
+FLEET_DB = ROOT / "content" / "db" / "fleet.json"
 MAX_REPAIRS = 2
 CALL_TIMEOUT_S = 1500
 MODEL = os.environ.get("CONTENT_MODEL")
 CLAUDE = shutil.which("claude") or "claude"
-EDIT_NO = {"juice": 31, "interface": 32, "graphics": 33, "barks": 34, "hits": 35, "terminal": 36}
 
 # Registry IDs shown to the generator, per type (the full registry is used by the validators).
 REG_PREFIXES = {
@@ -61,6 +85,10 @@ REG_PREFIXES = {
              "proto.scale.unitsPerMetre", "proto.restitution"),
     "terminal": ("ui.", "world.", "body.radius", "vehicles.sedan.", "vehicles.van.", "battery.", "movement.", "damage.",
                  "proto.quota.", "proto.health.", "traffic.", "perception.", "sensing.", "feedback."),
+    "citybarks": ("proto.barks.", "world.deckHeight", "world.highHeight", "damage.dropSpeed", "world.dropSeconds", "damage.plateMultiplier"),
+    "places": ("world.district.", "world.deckHeight", "world.highHeight", "world.dropSeconds"),
+    "drops": ("proto.hits.", "proto.juice.", "feedback.", "damage.dropSpeed", "damage.bodyHealth", "world.dropSeconds", "world.deckHeight",
+              "world.highHeight", "body.radius", "proto.art.extrusion", "movement.lungeRecovery", "proto.recoil"),
 }
 
 
@@ -87,7 +115,7 @@ class Run:
 
 def call_agent(run, role, prompt_file, message, label):
     """One agent = one fresh headless Claude Code session: its own system prompt, no tools, no shared memory."""
-    system = (HERE / "agents" / prompt_file).read_text(encoding="utf-8")
+    system = (HERE / "agents" / (T["agents"] + prompt_file)).read_text(encoding="utf-8")
     cmd = [CLAUDE, "-p", "--system-prompt", system, "--tools", "", "--output-format", "json"]
     if MODEL:
         cmd += ["--model", MODEL]
@@ -119,8 +147,17 @@ def parse_json(text):
 
 # ------------------------------------------------------------------ context
 def load_context():
-    man, chunks = rag.load_kb(ROOT, HERE / "kb" / "manifest.json")
     kb = HERE / "kb"
+    if T is TARGETS["p3"]:
+        kb_build.fleet_md()   # FLEET is regenerated from content/db/fleet.json every run (pipeline lines excluded)
+    man, chunks = rag.load_kb(ROOT, kb / T["manifest"])
+    if T is TARGETS["p3"]:
+        return {
+            "manifest": man, "chunks": chunks, "index": rag.Index(chunks), "kb_ids": {c["id"] for c in chunks},
+            "registry": registry.registry_p3(), "palette": registry.palette(kb), "levels": registry.districts_p3(),
+            "sim_events": registry.SIM_EVENTS_P3, "event_fields": registry.event_fields_p3,
+            "fleet": json.loads(FLEET_DB.read_text(encoding="utf-8")),
+        }
     return {
         "manifest": man, "chunks": chunks, "index": rag.Index(chunks), "kb_ids": {c["id"] for c in chunks},
         "registry": registry.registry(kb), "palette": registry.palette(kb), "levels": registry.levels(),
@@ -155,6 +192,8 @@ def fmt_chunks(chunks):
 
 
 def game_data(kind, ctx):
+    if kind in ("citybarks", "places", "drops"):
+        return game_data_p3(kind, ctx)
     reg = ctx["registry"]
     pre = REG_PREFIXES[kind]
     lines = ["Registry IDs you may reference (value, unit):"]
@@ -181,6 +220,46 @@ def game_data(kind, ctx):
     return "\n".join(lines)
 
 
+def game_data_p3(kind, ctx):
+    reg, facts, fleet = ctx["registry"], ctx["levels"], ctx["fleet"]
+    pre = REG_PREFIXES[kind]
+    L = ["Registry IDs you may reference (value, unit):"]
+    L += [f"- {k} = {reg[k]['value']:g} {reg[k].get('unit', '')}".rstrip() for k in sorted(reg) if k.startswith(pre)]
+    L += ["", "Districts in run order (sim.js, tables.districts):"]
+    for did, f in facts.items():
+        L.append(f"- {did}: {f['name']} — focal {f['focal']}; quota {f['quota']:g}; highways {f['decks']:g} (Z2: {f['highDecks']:g}); "
+                 f"current placeholder blurb: \"{f['blurb']}\"")
+    if kind == "places":
+        L += ["", "Per screen, what the three baked layouts have: 'all' (every layout), 'some', 'none'. A name may promise only 'all'.",
+              "| District | Cell | River edge | Landmark | Any highway | Low highway (Z1) | High highway (Z2) | Checkpoint | Platform roofs | Skybridge | Start |",
+              "|---|---|---|---|---|---|---|---|---|---|---|"]
+        for did, f in facts.items():
+            for cell, c in f["cells"].items():
+                L.append(f"| {did} | {cell} | {'yes' if c['river'] else 'no'} | {c['landmark'] or '-'} | {c['highway']} | {c['lowHighway']} | {c['highHighway']} | "
+                         f"{c['checkpoint']} | {c['roofs']} | {c['skybridge']} | {'yes' if c['start'] else ''} |")
+        L += ["", "Placeholders being replaced (game.js): screen toast '<cell> · ' + one of Start screen, Pillars, Barrier run, Open street, "
+              "Lantern monument, Fountain square, Roundabout, FARSIGHT Tower, Test plates. Level toasts: 'Low highway: traffic up here. A broken "
+              "parapet drops you to the road.' / 'High highway: fast traffic. A broken parapet is a long drop to the street.' / 'Roof: no traffic "
+              "up here. Step off a ledge to drop on a car below.'"]
+    if kind == "citybarks":
+        run = [m for m in fleet["models"] if m["simIds"]]
+        L += ["", "Models running in the P3 city: " + "; ".join(f"{m['id']} ({m['tag']}, {m['line']}, callsign {m['callsign']}, tier {m['tier']}, {m['class']}, job: {m['job']})" for m in run) + ".",
+              "Fields a line may test (fleet.json): " + "; ".join(f"{ev}: {', '.join(fleet['events'][ev])}" for ev in ("impact", "writeoff")) + "; shared context: " + ", ".join(fleet["context"]) + ".",
+              "Where each situation can happen: drop from a roof — every district (roofs are Z2); drop from a highway parapet — Interchange (Z1, Z2), CBD (Z1, Z2), Campus (Z1); "
+              "hit on a highway deck — the same three; plate — Campus only, ground roads. Never drop onto highway traffic.",
+              f"Existing pipeline lines are replaced on publish. The fleet bank holds {len(fleet['barks'])} lines; do not repeat one."]
+    if kind == "drops":
+        try:
+            ch = json.loads((OUT_CONTENT / "hits.json").read_text(encoding="utf-8"))
+            L += ["", "Published hit layers these stack on (prototypes/p3/content/hits.json): " + "; ".join(
+                f"{x['event']} {json.dumps(x.get('when') or {})}: " + ", ".join(k for k in ("shake", "zoom", "flash", "crumple", "stumble", "ring", "rays", "popup", "streaks", "sound") if x.get(k))
+                for x in ch["layers"]) + "."]
+        except (OSError, KeyError, ValueError):
+            pass
+        L += ["", "Palette roles (DESIGN#D10.2):"] + [f"- {r}: {v['hex']} — {v['use']}" for r, v in ctx["palette"].items()]
+    return "\n".join(L)
+
+
 def brief_extras(spec):
     extra = []
     for key, head in (("voices", "Voices (who says what)"), ("slots", "Copy slots (where each string appears)"),
@@ -196,11 +275,11 @@ def brief(spec, ctx):
     kind = spec["type"]
     allowed = dict(spec["allowed"])
     if "event_fields" in allowed:   # the generator cannot see registry.py: give it the real field names
-        allowed["event_fields"] = {e: registry.event_fields(e) for e in allowed["events"]}
+        allowed["event_fields"] = {e: ctx["event_fields"](e) for e in allowed["events"]}
     extra = brief_extras(spec)
     return "\n".join([
         f"# BRIEF — {spec['title']}", f"Content type: {kind}. Parameter prefix for new IDs: {spec['param_prefix']}",
-        "\n## The gap (what P1 is thin on)", *[f"- {g}" for g in spec["gap"]],
+        "\n## The gap (what the game is thin on)", *[f"- {g}" for g in spec["gap"]],
         "\n## Deliverable", *[f"- {g}" for g in spec["deliverable"]],
         "\n## JSON schema", "```", *spec["schema"], "```",
         "\n## Consumer contract (what the renderer can draw)", *[f"- {g}" for g in spec["consumer"]],
@@ -297,6 +376,7 @@ def run_type(run, kind, ctx, max_repairs):
         run.save(rd + f"r{r}_critic_retrieval.json", c_hits)
         c_msg = "\n".join([f"# BRIEF — {spec['title']}", *[f"- {g}" for g in spec["gap"]],
                            "\n## Consumer contract", *[f"- {g}" for g in spec["consumer"]], *brief_extras(spec),
+                           *(["\n## Game data", game_data(kind, ctx)] if spec.get("target") == "p3" else []),
                            "\n# CANON\n", fmt_chunks(canon), "\n# VALIDATOR",
                            *([f"- {i['id']} {i['path']}: {i['found']} — {i['rule']}" for i in v_iss] or ["- none"]),
                            "\n# SETTLED (fixes applied in earlier rounds; do not reverse)",
@@ -410,19 +490,27 @@ def publish(kind, content, run_id):
     OUT_CONTENT.mkdir(parents=True, exist_ok=True)
     data = dict(content)
     data["meta"] = {"type": kind, "run": run_id, "generator": "content/pipeline.py",
-                    "kb": [d["id"] for d in json.loads((HERE / "kb" / "manifest.json").read_text())["docs"]],
+                    "kb": [d["id"] for d in json.loads((HERE / "kb" / T["manifest"]).read_text())["docs"]],
                     "generated": datetime.datetime.now().isoformat(timespec="seconds")}
-    (OUT_CONTENT / f"{kind}.json").write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    if kind == "citybarks":   # the fleet database is where barks live (decision 117): replace the pipeline's lines, keep the rest
+        db = json.loads(FLEET_DB.read_text(encoding="utf-8"))
+        keep = [b for b in db["barks"] if not re.match(r"^c\d+$", b["id"])]
+        db["barks"] = keep + [dict({k: ln[k] for k in ("id", "event", "when", "style", "priority", "text", "claims")},
+                                   sources=ln.get("sources", []), source=f"content/pipeline.py run {run_id}") for ln in content["lines"]]
+        db["meta"]["generated"] = {"citybarks": run_id}
+        FLEET_DB.write_text(json.dumps(db, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    else:
+        (OUT_CONTENT / f"{kind}.json").write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     (HERE / "out" / f"DUMMIES_GDD_Edit{EDIT_NO[kind]}_{kind.capitalize()}.md").write_text(gdd_edit(kind, data), encoding="utf-8")
 
 
 def bundle():
     merged = {}
-    for k in TYPES:
+    for k in T.get("bundle", TYPES):
         p = OUT_CONTENT / f"{k}.json"
         if p.exists():
             merged[k] = json.loads(p.read_text(encoding="utf-8"))
-    js = ("/* Generated by content/pipeline.py from prototypes/p2/content/*.json. Do not edit by hand. */\n"
+    js = (f"/* Generated by content/pipeline.py from {P2.relative_to(ROOT).as_posix()}/content/*.json. Do not edit by hand. */\n"
           "window.DUMMIES_CONTENT = " + json.dumps(merged, ensure_ascii=False, separators=(",", ":")) + ";\n")
     (P2 / "content.js").write_text(js, encoding="utf-8")
     subprocess.run([sys.executable, str(P2 / "build.py")], check=True)
@@ -433,7 +521,7 @@ def gdd_edit(kind, d):
     m = d["meta"]
     L = [f"# DUMMIES — GDD Edit {EDIT_NO[kind]}: Generated {kind.capitalize()}", "",
          f"**Generated · {m['generated'][:10]} · run `{m['run']}` · Proposed**", "",
-         "- **Parent:** [Design](../kb/DUMMIES_V29_Design.md). Consumer: `prototypes/p2/content/" + kind + ".json`.",
+         "- **Parent:** [Design](../kb/DUMMIES_V29_Design.md). Consumer: `" + ("content/db/fleet.json" if kind == "citybarks" else P2.relative_to(ROOT).as_posix() + "/content/" + kind + ".json") + "`.",
          "- **Source:** `content/pipeline.py`. Regenerate; do not hand-edit.",
          "- **Status:** Proposed. Generated from the knowledge base, checked by validators and the critic.", ""]
     if d.get("params"):
@@ -513,18 +601,53 @@ def gdd_edit(kind, d):
         L += [f"| {short(s.get('text', ''), 90)} | {s.get('zh', '')} |" for s in sg.get("lines", []) if isinstance(s, dict)]
         L += ["", "## Title screen", "", f"- **Eyebrow:** {ti.get('eyebrow')}"] + [f"- **Line {i + 1}:** {x}" for i, x in enumerate(ti.get("lines") or [])] + \
              [f"- **Start:** {ti.get('start')}"] + [f"- **{k}:** {v}" for k, v in (ti.get("difficulty") or {}).items()]
+    if kind == "citybarks":
+        L += ["## City lines (merged into content/db/fleet.json)", "", "| Id | Event | When | Style | Priority | Line | Claims | Sources |", "|---|---|---|---|---:|---|---|---|"]
+        for b in d.get("lines", []):
+            L.append(f"| {b.get('id')} | `{b.get('event')}` | {short(json.dumps(b.get('when') or {}, ensure_ascii=False), 60)} | {b.get('style')} | {b.get('priority')} | "
+                     f"{short(b.get('text', ''), 60)} | {', '.join(b.get('claims') or [])} | {', '.join(b.get('sources', []))} |")
+    elif kind == "places":
+        for did, x in (d.get("districts") or {}).items():
+            L += [f"## {did}", "", f"- **Intro:** {x.get('intro')}", f"- **Sources:** {', '.join(x.get('sources') or [])}", "",
+                  "| | A | B | C |", "|---|---|---|---|"]
+            sc = x.get("screens") or {}
+            L += [f"| {r} | {sc.get('A' + r, '')} | {sc.get('B' + r, '')} | {sc.get('C' + r, '')} |" for r in "123"]
+            L.append("")
+        lv = d.get("levels") or {}
+        L += ["## Level toasts", ""] + [f"- **{k}:** {v}" for k, v in lv.items() if k != "sources"] + [f"- **Sources:** {', '.join(lv.get('sources') or [])}"]
+    elif kind == "drops":
+        L += ["## Layers (stacked on hits.json)", "", "| Event | When | Response | Reference | Sources |", "|---|---|---|---|---|"]
+        for e in d.get("layers", []):
+            resp = [k for k in ("shake", "zoom", "flash", "crumple", "stumble", "ring", "rays", "popup", "streaks") if e.get(k)]
+            resp += [f"{p.get('type')} at {p.get('at', 'dummy')}" for p in e.get("particles") or []]
+            if e.get("sound"):
+                resp.append(f"{e['sound'].get('type')} sound")
+            if e.get("scale"):
+                resp.append(f"scaled by {e['scale'].get('by')} / `{e['scale'].get('full')}`")
+            L.append(f"| `{e.get('event')}` | {short(json.dumps(e.get('when') or {}, ensure_ascii=False), 40)} | {short(', '.join(resp), 160)} | "
+                     f"{short(e.get('reference', ''), 70)} | {', '.join(e.get('sources', []))} |")
     return "\n".join(L) + "\n"
+
+
+def published(kind):
+    if kind == "citybarks":
+        lines = [b for b in json.loads(FLEET_DB.read_text(encoding="utf-8"))["barks"] if re.match(r"^c\d+$", b["id"])]
+        return {"lines": lines} if lines else None
+    p = OUT_CONTENT / f"{kind}.json"
+    if not p.exists():
+        return None
+    content = json.loads(p.read_text(encoding="utf-8"))
+    content.pop("meta", None)
+    return content
 
 
 def check_published(ctx):
     bad = 0
     for kind in TYPES:
-        p = OUT_CONTENT / f"{kind}.json"
-        if not p.exists():
+        content = published(kind)
+        if content is None:
             print(f"{kind}: not published")
             continue
-        content = json.loads(p.read_text(encoding="utf-8"))
-        content.pop("meta", None)
         spec = load_spec(kind)
         cited = {s for _, it in checks.walk(content) if isinstance(it, dict) for s in (it.get("sources") or []) if isinstance(it.get("sources"), list)}
         iss = checks.validate(kind, content, dict(ctx, spec=spec, retrieved_ids=cited & ctx["kb_ids"]))
@@ -533,19 +656,26 @@ def check_published(ctx):
         print(f"{kind}: {len(iss)} validator issue(s), {len(blocks)} blocking")
         for i in iss:
             print(f"  {i['id']} [{i['kind']}/{i['severity']}] {i['path']}: {i['found']} — {i['rule']}")
+    if T is TARGETS["p3"]:
+        lore = subprocess.run([sys.executable, str(HERE / "db" / "check_lore.py")], capture_output=True, text=True)
+        print("check_lore.py:", lore.stdout.strip().splitlines()[-1])
+        bad += lore.returncode
     print("content.js types:", bundle())
     return bad
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--type", default=",".join(P21))
+    ap.add_argument("--target", default="p3", choices=sorted(TARGETS))
+    ap.add_argument("--type")
     ap.add_argument("--query")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--no-publish", action="store_true")
     ap.add_argument("--max-repairs", type=int, default=MAX_REPAIRS)
     ap.add_argument("--publish-run", metavar="RUN_ID", help="publish accepted content from a --no-publish run after review")
     a = ap.parse_args()
+    use_target(a.target)
+    a.type = a.type or ",".join(T["default"])
     ctx = load_context()
     if a.query:
         for c, s in ctx["index"].search(a.query, k=5):
@@ -580,9 +710,9 @@ def main():
         results.append(res)
         if res.get("ok") and not a.no_publish:
             publish(k, res["content"], run.id)
-            run.log(f"{k}: published to prototypes/p2/content/{k}.json and content/out/")
+            run.log(f"{k}: published ({'content/db/fleet.json' if k == 'citybarks' else P2.relative_to(ROOT).as_posix() + '/content/' + k + '.json'}) and content/out/")
     if any(r.get("ok") for r in results) and not a.no_publish:
-        run.log("bundled content.js and rebuilt dummies_p2.html: " + ", ".join(bundle()))
+        run.log(f"bundled content.js and rebuilt {P2.name}: " + ", ".join(bundle()))
     run.save("summary.json", {"run": run.id, "results": [{k: v for k, v in r.items() if k != "content"} for r in results],
                               "calls": run.calls})
     return 0 if all(r.get("ok") for r in results) else 1

@@ -1,0 +1,172 @@
+{
+ "type": "places",
+ "target": "p3",
+ "title": "Places: district intros, screen names and level toasts",
+ "param_prefix": "proto.places.",
+ "gap": [
+  "My game is thin on place (designer's gap statement). Five districts share one hand-written sentence each in sim.js, so the city reads as five test grids, not Shenzhen Smart City.",
+  "Every screen toasts a generic theme on first visit: 'B2 · Open street', 'A1 · Pillars'. Nine screens per district, forty-five in all, have no names.",
+  "The new Z-level toasts (low highway, high highway, roof) are placeholder strings typed into game.js.",
+  "Names must stay true to the baked layouts: a screen name may only promise what all three layouts of that district have on that screen."
+ ],
+ "deliverable": [
+  "Per district: an intro of one or two short sentences, shown after 'District N of 5: <Name>.' and before 'Write-offs required: N.' It names the centre landmark and one thing that changes play there.",
+  "Per district: nine screen names, A1 to C3, shown as '<cell> · <name>' on first visit. Place names a Shenzhen smart-city planner would put on a street sign.",
+  "Three level toasts shown the first time the dummy reaches each: z1 (a low highway deck), z2Highway (the high highway), roof (a platform roof). Each says what the level does: who drives there and how to get down.",
+  "Every item cites the chunks it draws on."
+ ],
+ "queries": [
+  "five city districts Riverside Old Market Interchange Central Business District FARSIGHT Campus centre landmark form flyovers quota traffic hazards",
+  "lantern monument fountain square roundabout crash matting island FARSIGHT Tower plaza calibrated impact plates",
+  "bounded districts row 1 outer edge is the river wall checkpoint booth boom",
+  "the dummy starts on B1 on the river centre screen B2 holds the landmark",
+  "Z0 ground Z1 low highway Z2 high highway platform roofs skybridges reached by",
+  "roof ledge drops onto the street striped kerb no traffic on roofs cues none",
+  "high highway Interchange CBD second LED line long drop falls 0.47 s",
+  "setting Shenzhen smart city new economic zone FARSIGHT sells a city without accidents",
+  "Sinofuturist cyber city inside a friendly corporate terminal the brand never comments",
+  "interface copy voice plain instructive toast first visit names the screen",
+  "puddles water no dash cars brake late surfaces terrain",
+  "buildings single double tower frontage forecourt alleys street wall"
+ ],
+ "critic_queries": [
+  "the brand never comments the contrast is the tone",
+  "marketing gloss game-show cheer generic science fiction",
+  "a line may only say what the game state guarantees",
+  "banned terms level game player city names Shenzhen",
+  "roof no traffic ledge drop high highway Interchange CBD only",
+  "the dummy starts on B1 on the river"
+ ],
+ "k": 3,
+ "max_chunks": 22,
+ "allowed": {
+  "districts": [
+   "riverside",
+   "market",
+   "interchange",
+   "cbd",
+   "campus"
+  ],
+  "cells": [
+   "A1",
+   "B1",
+   "C1",
+   "A2",
+   "B2",
+   "C2",
+   "A3",
+   "B3",
+   "C3"
+  ],
+  "levels": [
+   "z1",
+   "z2Highway",
+   "roof"
+  ],
+  "max_chars": {
+   "intro": 120,
+   "screen": 22,
+   "level": 96
+  },
+  "landmark_words": {
+   "monument": [
+    "lantern",
+    "monument",
+    "obelisk"
+   ],
+   "fountain": [
+    "fountain"
+   ],
+   "roundabout": [
+    "roundabout",
+    "ring",
+    "island",
+    "circus"
+   ],
+   "tower": [
+    "farsight tower",
+    "tower"
+   ],
+   "plate": [
+    "plate",
+    "calibration",
+    "test"
+   ]
+  },
+  "feature_words": {
+   "river": [
+    "river",
+    "riverside",
+    "quay",
+    "embankment",
+    "bank",
+    "canal",
+    "wharf",
+    "pier",
+    "waterfront"
+   ],
+   "highway": [
+    "highway",
+    "flyover",
+    "overpass",
+    "viaduct",
+    "skyway",
+    "deck",
+    "ramp",
+    "expressway",
+    "elevated"
+   ],
+   "checkpoint": [
+    "checkpoint",
+    "gate",
+    "boom",
+    "toll",
+    "customs",
+    "barrier"
+   ],
+   "roofs": [
+    "roof",
+    "rooftop",
+    "terrace",
+    "platform",
+    "heights"
+   ],
+   "skybridge": [
+    "skybridge",
+    "sky bridge",
+    "walkway",
+    "bridge"
+   ],
+   "roundabout": [
+    "roundabout",
+    "ring",
+    "circus"
+   ]
+  }
+ },
+ "schema": [
+  "{",
+  "  \"districts\": {",
+  "    \"<district id>\": {",
+  "      \"intro\": \"one or two sentences, each under 15 words\",",
+  "      \"screens\": {\"A1\": \"name\", \"B1\": \"name\", \"C1\": \"name\", \"A2\": \"name\", \"B2\": \"name\", \"C2\": \"name\", \"A3\": \"name\", \"B3\": \"name\", \"C3\": \"name\"},",
+  "      \"sources\": [chunk ids]",
+  "    }, … all five …",
+  "  },",
+  "  \"levels\": {\"z1\": \"toast\", \"z2Highway\": \"toast\", \"roof\": \"toast\", \"sources\": [chunk ids]},",
+  "  \"params\": []",
+  "}"
+ ],
+ "consumer": [
+  "Intro toast (frame layer, ui.typeSecondary, first four seconds of a district): 'District {n} of 5: {Name}. ' + intro + ' Write-offs required: {quota}.' The renderer adds the name and the quota; the intro must not repeat them.",
+  "Screen toast (first visit to a screen): '{cell} · {name}'. Name at most 22 characters, Title Case, no full stop.",
+  "Level toasts (first time on each): z1 when the dummy steps onto a low highway deck; z2Highway onto the high highway; roof onto a platform roof. At most 96 characters.",
+  "Cell names: column A, B, C from west to east; row 1, 2, 3 from north to south. Row 1's north edge is the river in every district.",
+  "The 'Game data' table says, per screen, what all three baked layouts have ('all'), what only some have ('some') and what none have. A name may promise only 'all' features. 'some' is not enough.",
+  "Where drops land: Z1 and Z2 highways always run on different rows, and no roof ledge overhangs a highway (checked on all 15 baked layouts). So every drop from a roof or a highway lands on the street. Only a stair links two raised floors."
+ ],
+ "voices": {
+  "intro and level toasts": "FARSIGHT's interface: plain, short, instructive, politely corporate. It tells the subject what the place does. It never jokes, never cheers, never mocks. No backstory or history the CONTEXT does not state.",
+  "screen names": "Street signage in Shenzhen Smart City: a place name with a FARSIGHT planner's calm. Concrete nouns, not adjectives. No puns."
+ }
+}

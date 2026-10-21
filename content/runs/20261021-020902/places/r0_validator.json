@@ -1,0 +1,29 @@
+[
+  {
+    "id": "V1",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "districts.market.intro",
+    "found": "A fountain square stands at the centre. Puddles slow the dummy. Vans are common.",
+    "canon": "pipeline:consumer",
+    "rule": "One or two sentences."
+  },
+  {
+    "id": "V2",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "districts.interchange.intro",
+    "found": "A roundabout stands at the centre. Its island is crash matting. Flyovers cross above.",
+    "canon": "pipeline:consumer",
+    "rule": "One or two sentences."
+  },
+  {
+    "id": "V3",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.campus.intro",
+    "found": "Calibrated plates lie on the centre road. A hit taken on one scores more.",
+    "canon": "EDIT41#7.1.1",
+    "rule": "The intro names the centre landmark (plate)."
+  }
+]

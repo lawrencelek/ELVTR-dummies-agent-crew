@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 22.739
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 16.362
+      }
+    ]
+  },
+  {
+    "query": "Luxury never apologises Corporate speaks in logs KPIs policy numbers",
+    "results": [
+      {
+        "id": "EDIT26#6.1~1",
+        "score": 7.93
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 7.716
+      }
+    ]
+  },
+  {
+    "query": "banned terms setting Shenzhen smart city FARSIGHT capitals",
+    "results": [
+      {
+        "id": "FLEET#F1",
+        "score": 25.78
+      },
+      {
+        "id": "EDIT26#3.1",
+        "score": 17.991
+      }
+    ]
+  },
+  {
+    "query": "mockery game-show cheer generic science fiction commentary interchangeable",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 27.556
+      },
+      {
+        "id": "EDIT37#decisions",
+        "score": 10.621
+      }
+    ]
+  },
+  {
+    "query": "roofs are Z2 platform buildings low highway Z1 high highway Interchange CBD",
+    "results": [
+      {
+        "id": "EDIT44#7.1.1",
+        "score": 45.988
+      },
+      {
+        "id": "EDIT44#evidence",
+        "score": 39.22
+      }
+    ]
+  },
+  {
+    "query": "plates on the road FARSIGHT Campus only",
+    "results": [
+      {
+        "id": "EDIT26#7.2~2",
+        "score": 9.725
+      },
+      {
+        "id": "EDIT41#10.3",
+        "score": 9.567
+      }
+    ]
+  },
+  {
+    "query": "Riverside run logged. Quiet stretch, then this.",
+    "results": [
+      {
+        "id": "EDIT41#10.3",
+        "score": 8.213
+      },
+      {
+        "id": "LOG#P2",
+        "score": 5.652
+      }
+    ]
+  },
+  {
+    "query": "Something fell from a roof. Onto my paintwork.",
+    "results": [
+      {
+        "id": "LOG#P3.3/questions-for-the-p3-3-session",
+        "score": 11.07
+      },
+      {
+        "id": "FLEET#F9.12",
+        "score": 10.404
+      }
+    ]
+  },
+  {
+    "query": "Struck on the flyover. The board is waiting.",
+    "results": [
+      {
+        "id": "EDIT39#5.4",
+        "score": 5.633
+      },
+      {
+        "id": "EDIT41#edit-41-1-flyovers-cross-roads-field-size-test-2",
+        "score": 5.021
+      }
+    ]
+  },
+  {
+    "query": "A roof drop. My schedule slips by a minute.",
+    "results": [
+      {
+        "id": "EDIT26#12.3",
+        "score": 10.633
+      },
+      {
+        "id": "EDIT44#open-items",
+        "score": 8.96
+      }
+    ]
+  },
+  {
+    "query": "From the highway? My paintwork is unamused.",
+    "results": [
+      {
+        "id": "FLEET#F9.10",
+        "score": 8.471
+      },
+      {
+        "id": "FLEET#F9.1~2",
+        "score": 7.119
+      }
+    ]
+  },
+  {
+    "query": "Highway drop logged. Incident form 9 filed.",
+    "results": [
+      {
+        "id": "EDIT44#evidence",
+        "score": 8.225
+      },
+      {
+        "id": "FLEET#F8",
+        "score": 6.861
+      }
+    ]
+  }
+]

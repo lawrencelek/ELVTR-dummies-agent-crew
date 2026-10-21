@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[20]",
+    "found": "c021",
+    "canon": "EDIT39#6.6.1",
+    "rule": "text asserts 'model:VAN-02-001' without that claim — \"Old Market incident logged. Route 44 noted.\""
+  }
+]

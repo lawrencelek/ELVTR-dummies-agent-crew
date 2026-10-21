@@ -7,6 +7,12 @@ The pipeline reads the GDD, retrieves the sections that govern each piece of con
 
 ![P2.1: a front hit. Shout bubble, burst, value popup, FARSIGHT smart-city frame](docs/p2_impact.png)
 
+## Submission 4: retargeted to the P3.3 prototype (21 October)
+
+`python content/pipeline.py` now targets the current prototype (`--target p3`, the default): knowledge base `kb/manifest_p3.json` (V29 + GDD Edits 37–44, decision log, prototype log, a FLEET canon page generated from `db/fleet.json`), three new types (`citybarks` → `db/fleet.json` lines c001–c024, `places` → `prototypes/p3/content/places.json`, `drops` → `prototypes/p3/content/drops.json`), P3 prompts in `agents/p3/`, and per-screen layout facts from the 15 baked districts. `--target p2` runs the P2.1 types above unchanged.
+
+Runs: `runs/20261021-015337` … `runs/20261021-024324`. Generated GDD edits 45–47 in `out/`. The submission README with the side-by-side retrieval, critic catches and voice tweaks: [ELVTR-Multiagent-Submission-4](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-4).
+
 ## 1. Three gaps, evaluated against the GDD
 
 | Gap statement (designer) | Evaluation against canon | Decision |

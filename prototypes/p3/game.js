@@ -49,12 +49,13 @@
   const CT = window.DUMMIES_CONTENT || {};
   const CJ = CT.juice || null, CI = CT.interface || null, CG = CT.graphics || null;
   const CB = CT.barks || null, CH = CT.hits || null, CTM = CT.terminal || null; // P2.1: humour, hit juice, FARSIGHT terminal skin
+  const CP = CT.places || null, CD = CT.drops || null; // Submission 4 (P3.3): district and level copy; drop juice
   // Fleet database (content/db/fleet.json, decision 117): model names, tags and the bark bank, separate from other text.
   const FLEET = window.FLEET_DB || null;
   const FMODEL = new Map(); // sim model id → database model
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
-  for (const part of [CJ, CI, CG, CB, CH, CTM]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
+  for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
   const BUILD = 'P3.3';
   function pv(id) {
     if (id == null) return null;
@@ -68,6 +69,7 @@
     const x = pv(v); return x == null ? 0 : x;
   }
   function fillIn(str, vars) { return String(str).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m)); }
+  function place(path) { const v = path.split('.').reduce((o, k) => (o && o[k] != null ? o[k] : null), CP); return typeof v === 'string' ? v : null; } // generated places.json
   function copy(path, fallback, vars) {
     const v = path.split('.').reduce((o, k) => (o && o[k] != null ? o[k] : null), CI && CI.copy);
     return fillIn(typeof v === 'string' ? v : fallback, vars);
@@ -262,7 +264,8 @@
   // Every event that names a car gets the car's model, class and seniority; a write-off gets the car of the impact that caused it.
   function enrich(e) {
     const out = Object.assign({}, e);
-    if (e.type === 'writeoff' && fx.lastImpact && fx.lastImpact.t === e.t) Object.assign(out, { car: fx.lastImpact.car, zone: fx.lastImpact.zone });
+    if (e.type === 'writeoff' && fx.lastImpact && fx.lastImpact.t === e.t) { const li = fx.lastImpact; Object.assign(out, { car: li.car, zone: li.zone, drop: li.drop, dropZ: li.dropZ, dropFrom: li.dropFrom, deck: li.deck, plate: li.plate }); }
+    if (app.sim && app.sim.isCity) out.district = app.sim.levelId; // Edit 44 city barks may test the district
     const info = out.car && fx.cars.get(out.car);
     if (info) {
       const fm = FMODEL.get(info.model);
@@ -333,8 +336,9 @@
   }
   function hitJuice(e, s) {
     const res = { done: false, sound: false };
-    if (!CH || !CH.layers) return res;
-    const layers = CH.layers.filter((L) => L.event === e.type);
+    const all = ((CH && CH.layers) || []).concat((CD && CD.layers) || []); // generated drop juice stacks on the hit layers
+    if (!all.length) return res;
+    const layers = all.filter((L) => L.event === e.type);
     if (!layers.length) return res;
     res.done = true;
     const now = app.realT, rk = e.type + ':' + (e.car || '');
@@ -391,8 +395,11 @@
     const pool = FLEET.barks.filter((ln) => ln.event === e.type && whenOk(ln.when, e));
     if (!pool.length) return;
     const pr = Math.max(...pool.map((ln) => ln.priority || 1)), now = app.realT, dur = pv('proto.barks.seconds') || 2.4;
-    const spec = (ln) => Object.keys(ln.when || {}).length, top = [], best = Math.max(...pool.filter((ln) => ln.priority === pr).map(spec));
-    for (const ln of pool) if ((ln.priority || 1) === pr && spec(ln) >= Math.min(best, 1)) { top.push(ln); if (spec(ln) >= best && best > 0) top.push(ln); }
+    // Submission 4: a line that names the situation (a drop, a highway, a plate, the district) outranks a generic line of the same priority
+    const SIT = ['drop', 'dropZ', 'dropFrom', 'deck', 'plate', 'district'], sit = (ln) => Object.keys(ln.when || {}).some((k) => SIT.includes(k));
+    const pool2 = pool.filter((ln) => (ln.priority || 1) === pr), sitPool = pool2.filter(sit), cand = sitPool.length ? sitPool : pool2;
+    const spec = (ln) => Object.keys(ln.when || {}).length, top = [], best = Math.max(...cand.map(spec));
+    for (const ln of cand) if (spec(ln) >= Math.min(best, 1)) { top.push(ln); if (spec(ln) >= best && best > 0) top.push(ln); }
     const cur = fx.bubbles.get(e.car), last = fx.carBarkT.get(e.car);
     if (cur && now - cur.t0 < dur && cur.priority > pr) return;
     if (pr < 3) {
@@ -527,7 +534,7 @@
         case 'skid': { const c = s.cars.find((q) => q.id === e.car); if (c) puff(c.x, c.y, 10, { type: 'spark', role: 'puddleHi', dir: c.h + Math.PI, spread: 2.2, speed: 120, life: 0.35, size: 2 }); Snd.tone(1800, 900, 0.18, 'sawtooth', 0.02); break; }
         case 'screen': { // D24: first visit names the screen
           Snd.tone(300, 520, 0.12, 'triangle', 0.04);
-          if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (THEME_NAME[e.focal || e.theme] || '')); }
+          if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (place('districts.' + s.levelId + '.screens.' + e.to) || THEME_NAME[e.focal || e.theme] || '')); }
           break;
         }
         case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODES[e.node].name })); break;
@@ -538,14 +545,14 @@
           const f = s.level.floors && s.body.floor != null ? s.level.floors[s.body.floor] : null, kind = f ? f.kind : null, key = 'level' + e.level + (kind === 'deck' ? '' : kind || '');
           if (e.level > 0 && kind !== 'bridge' && !fx.seenScreens.has(key)) {
             fx.seenScreens.add(key);
-            toast(kind === 'roof' ? copy('toast.roof', 'Roof: no traffic up here. Step off a ledge to drop on a car below.')
-              : e.level === 2 ? copy('toast.highway', 'High highway: fast traffic. A broken parapet is a long drop to the street.')
-              : copy('toast.deck', 'Low highway: traffic up here. A broken parapet drops you to the road.'));
+            toast(kind === 'roof' ? place('levels.roof') || copy('toast.roof', 'Roof: no traffic up here. Step off a ledge to drop on a car below.')
+              : e.level === 2 ? place('levels.z2Highway') || copy('toast.highway', 'High highway: fast traffic. A broken parapet is a long drop to the street.')
+              : place('levels.z1') || copy('toast.deck', 'Low highway: traffic up here. A broken parapet drops you to the road.'));
           }
           break;
         }
-        case 'deck-drop': Snd.tone(700, 200, 0.3, 'triangle', 0.06); break;
-        case 'land': { const b = s.body; Snd.tone(110, 80, 0.12, 'square', 0.06); puff(b.x, b.y + 6, 8, { type: 'dust', speed: 70, life: 0.4, size: 3 }); if (!e.car) kick(2, 0.12); break; }
+        case 'deck-drop': if (!hj.sound) Snd.tone(700, 200, 0.3, 'triangle', 0.06); break;
+        case 'land': { const b = s.body; if (!hj.sound) Snd.tone(110, 80, 0.12, 'square', 0.06); if (!hj.done) { puff(b.x, b.y + 6, 8, { type: 'dust', speed: 70, life: 0.4, size: 3 }); if (!e.car) kick(2, 0.12); } break; } // generated drop juice replaces the stub
         case 'throw': Snd.tone(620, 180, 0.16, 'triangle', 0.07); break;
         case 'punt': Snd.tone(420, 300, 0.05, 'triangle', 0.04); break;
         case 'ending': if (e.kind === 'Licensed') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
@@ -1324,7 +1331,7 @@
     if (s.t < 4 && s.phase === 'play') {
       const iv = { road: s.roadIndex + 1, roads: s.list.length, roadName: INFO(s.levelId).name, quota: s.quota, difficulty: s.difficulty, health: P['damage.bodyHealth'] };
       const intro = CI && CI.copy && CI.copy.intro;
-      const msg = s.isCity ? 'District ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. ' + INFO(s.levelId).blurb + ' Write-offs required: ' + iv.quota + '.'
+      const msg = s.isCity ? 'District ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. ' + (place('districts.' + s.levelId + '.intro') || INFO(s.levelId).blurb) + ' Write-offs required: ' + iv.quota + '.'
         : (intro ? fillIn(intro[0], iv) : 'Road ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. Write-offs required: ' + iv.quota + '.') +
         (s.district ? ' ' + s.district.cols * s.district.rows + ' screens: walk off a marked edge to explore.' : '');
       const lines = wrapLines(msg, FW - 88, fLab), h = 22 + lines.length * 30;

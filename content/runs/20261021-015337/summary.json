@@ -1,0 +1,167 @@
+{
+  "run": "20261021-015337",
+  "results": [
+    {
+      "type": "citybarks",
+      "ok": true,
+      "rounds": 3
+    },
+    {
+      "type": "places",
+      "ok": true,
+      "rounds": 2
+    },
+    {
+      "type": "drops",
+      "ok": true,
+      "rounds": 3
+    }
+  ],
+  "calls": [
+    {
+      "label": "citybarks/02_generator",
+      "role": "Generator",
+      "seconds": 40.5,
+      "output_tokens": 6022,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r0_critic",
+      "role": "Critic",
+      "seconds": 36.2,
+      "output_tokens": 4707,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 15.6,
+      "output_tokens": 3047,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r1_critic",
+      "role": "Critic",
+      "seconds": 22.5,
+      "output_tokens": 2787,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 12.7,
+      "output_tokens": 2680,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r2_critic",
+      "role": "Critic",
+      "seconds": 25.2,
+      "output_tokens": 3314,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/02_generator",
+      "role": "Generator",
+      "seconds": 32.0,
+      "output_tokens": 4350,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r0_critic",
+      "role": "Critic",
+      "seconds": 26.3,
+      "output_tokens": 3422,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 9.0,
+      "output_tokens": 1475,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r1_critic",
+      "role": "Critic",
+      "seconds": 19.3,
+      "output_tokens": 2496,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "drops/02_generator",
+      "role": "Generator",
+      "seconds": 72.8,
+      "output_tokens": 12747,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "drops/r0_critic",
+      "role": "Critic",
+      "seconds": 26.4,
+      "output_tokens": 3383,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "drops/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 37.3,
+      "output_tokens": 8565,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "drops/r1_critic",
+      "role": "Critic",
+      "seconds": 23.4,
+      "output_tokens": 2980,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "drops/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 38.2,
+      "output_tokens": 8659,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "drops/r2_critic",
+      "role": "Critic",
+      "seconds": 19.8,
+      "output_tokens": 2275,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

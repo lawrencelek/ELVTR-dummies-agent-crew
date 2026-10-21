@@ -1,0 +1,36 @@
+{
+  "verdict": "revise",
+  "summary": "The set mostly sounds like DUMMIES: Luxury lines are polished and dry, and Corporate lines file forms. Two Riverside and Old Market lines assert a hit count the simulation did not log, and one Luxury line insults the dummy.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "block",
+      "path": "lines[18].text",
+      "found": "Riverside. Low-rise streets. One hit logged.",
+      "canon": "EDIT39#3.1",
+      "rule": "A line may only say what game state guarantees. Nothing logs that this is the district's first or only hit, so 'One hit' can be false.",
+      "fix": "Riverside. Low-rise streets. Hit logged."
+    },
+    {
+      "id": "C2",
+      "kind": "truth",
+      "severity": "block",
+      "path": "lines[19].text",
+      "found": "Old Market. Tight streets. One hit logged.",
+      "canon": "EDIT39#3.1",
+      "rule": "A line may only say what game state guarantees. Nothing logs that this is the district's first or only hit, so 'One hit' can be false.",
+      "fix": "Old Market. Tight streets. Hit logged."
+    },
+    {
+      "id": "C3",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "lines[4].text",
+      "found": "The highway parapet. Bold, if vulgar.",
+      "canon": "BRIEF: Game data",
+      "rule": "Any car never mocks the dummy. Luxury complains about the indignity, not the actor. 'Vulgar' is an insult aimed at the dummy.",
+      "fix": "The highway parapet. Not on my itinerary."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The bank sounds like DUMMIES. The Luxury lines are superior and put the indignity first, and the Corporate lines file forms. One district line asserts a place the car may not be in, so it needs rewriting.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "block",
+      "path": "lines[30].text",
+      "found": "Beneath FARSIGHT Tower. In front of everyone.",
+      "canon": "EDIT39#3.1",
+      "rule": "A line may only say what the game state guarantees; district 'cbd' does not guarantee the car is beneath the Tower, and no onlookers are logged.",
+      "fix": "The Central Business District. How very public."
+    }
+  ]
+}

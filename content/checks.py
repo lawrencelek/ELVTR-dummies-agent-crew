@@ -6,6 +6,7 @@ Every rule cites the canon it enforces. Issues use the same shape as the critic'
 import json
 import math
 import re
+import sys
 
 ID_RE = re.compile(r"^[a-z]+(?:\.[A-Za-z0-9]+)+$")
 CJK_RE = re.compile(r"[㐀-鿿豈-﫿]")
@@ -547,6 +548,16 @@ def hits(content, ctx, iss):
     rv = resolve(ctx, content, rm) if isinstance(rm, str) else None
     if isinstance(rv, (int, float)) and rv > 0.25:
         iss.add("rule", "reducedMotion", rv, "Reduced motion scales juice to 25%.", "LOG#P1.2/juice")
+    seen, accents = check_layers(content, ctx, iss, sp, fields_of)
+    for need in sp["required_events"]:
+        if need not in seen:
+            iss.add("data", "layers", need, f"The gap needs a base layer (when {{}}) for '{need}'.", "pipeline:spec gap")
+    if accents < sp["min_impact_accents"]:
+        iss.add("data", "layers", f"{accents} impact accent(s)", f"Every hit should differ: at least {sp['min_impact_accents']} impact accents.", "pipeline:spec gap")
+
+
+def check_layers(content, ctx, iss, sp, fields_of):
+    """Shared layer checks for hit juice (P2.1 hits) and drop juice (P3.3 drops)."""
     seen, accents = set(), 0
     slots = {"shake": ("amp", "seconds"), "zoom": ("amount", "seconds"), "crumple": ("amount", "seconds"),
              "stumble": ("amp", "seconds"), "ring": ("radius", "seconds", "width"), "rays": ("count", "length", "seconds"),
@@ -626,11 +637,7 @@ def hits(content, ctx, iss):
                     hz = resolve(ctx, content, x) if isinstance(x, str) else None
                     if isinstance(hz, (int, float)) and not 20 <= hz <= 12000:
                         iss.add("data", f"{path}.sound.{k}", hz, "Frequencies are audible: 20 to 12000 Hz.", "pipeline:consumer")
-    for need in sp["required_events"]:
-        if need not in seen:
-            iss.add("data", "layers", need, f"The gap needs a base layer (when {{}}) for '{need}'.", "pipeline:spec gap")
-    if accents < sp["min_impact_accents"]:
-        iss.add("data", "layers", f"{accents} impact accent(s)", f"Every hit should differ: at least {sp['min_impact_accents']} impact accents.", "pipeline:spec gap")
+    return seen, accents
 
 
 # ---------------------------------------------------------------- terminal (P2.1 interface skin)
@@ -756,7 +763,227 @@ def terminal(content, ctx, iss):
     required_params(content, ctx, iss, sp["required_params"])
 
 
-VALIDATORS = {"juice": juice, "interface": interface, "graphics": graphics, "barks": barks, "hits": hits, "terminal": terminal}
+# ================================================================ P3.3 targets (Submission 4)
+SIT_KEYS = ("drop", "dropZ", "dropFrom", "deck", "plate", "district")
+CITIES = ["Beijing", "Shanghai", "Guangzhou", "Chongqing", "Hong Kong", "Chengdu", "Wuhan", "Hangzhou", "Tokyo", "London", "New York"]
+
+
+def canon_text(iss, path, text, fleet, severity="block"):
+    """Fleet canon applies to every string the game shows: banned terms, city names, FARSIGHT in capitals."""
+    low = text.lower()
+    for w in fleet["canon"]["banned"]:
+        if re.search(r"\b" + re.escape(w.lower()) + r"(?:s|d|ed)?\b", low):   # 'scores', 'levels' count too
+            iss.add("lore", path, text, f"Banned term '{w}' (fleet canon).", "FLEET#F2", severity)
+    for c in CITIES:
+        if c.lower() in low and c not in fleet["canon"]["cities"]:
+            iss.add("lore", path, text, f"Names {c}; the setting is Shenzhen Smart City.", "EDIT39#3.1")
+    if re.search(r"\bfarsight\b", text, re.I) and "FARSIGHT" not in text:
+        iss.add("lore", path, text, "Write FARSIGHT in capitals.", "FLEET#F1", "fix")
+
+
+def run_lore_check(fleet, lines):
+    """Merge the draft into a copy of the fleet database and run content/db/check_lore.py on it."""
+    import subprocess, tempfile, pathlib
+    root = pathlib.Path(__file__).resolve().parent.parent
+    d = json.loads(json.dumps(fleet))
+    d["barks"] = [b for b in d["barks"] if not re.match(r"^c\d+$", b["id"])] + \
+        [{k: v for k, v in ln.items() if k in ("id", "event", "when", "style", "priority", "text", "claims")} for ln in lines if isinstance(ln, dict)]
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False)
+    out = subprocess.run([sys.executable, str(root / "content" / "db" / "check_lore.py"), f.name, str(root / "prototypes" / "p3" / "sim.js")],
+                         capture_output=True, text=True)
+    pathlib.Path(f.name).unlink()
+    return [ln[6:] for ln in out.stdout.splitlines() if ln.startswith("ERROR ")]
+
+
+def citybarks(content, ctx, iss):
+    sp, fleet, facts = ctx["spec"]["allowed"], ctx["fleet"], ctx["levels"]
+    lines = content.get("lines") or []
+    if not lines:
+        iss.add("data", "lines", None, "The new lines are the deliverable.", "pipeline:spec gap")
+        return
+    old = {b["text"].strip().lower() for b in fleet["barks"] if not re.match(r"^c\d+$", b["id"])}
+    ids, texts, styles = set(), set(), set()
+    idx = {}
+    for i, b in enumerate(lines):
+        path, ev, w, text = f"lines[{i}]", b.get("event"), b.get("when") or {}, b.get("text") or ""
+        idx[b.get("id")] = path
+        if not re.fullmatch(r"c\d{3}", str(b.get("id"))):
+            iss.add("data", path + ".id", b.get("id"), "Pipeline lines use ids c001, c002, …", "pipeline:consumer")
+        if b.get("id") in ids:
+            iss.add("data", path + ".id", b.get("id"), "Duplicate id.", "pipeline:consumer")
+        ids.add(b.get("id"))
+        if ev not in sp["events"]:
+            iss.add("data", path + ".event", ev, f"City barks bind to {sp['events']}.", "pipeline:consumer")
+            continue
+        fields = set(fleet["events"][ev]) | set(fleet["context"])
+        for k, v in w.items():
+            if k not in fields:
+                iss.add("truth", f"{path}.when.{k}", k, f"'{ev}' lines may test only {sorted(fields)}.", "FLEET#F8")
+            elif k in sp["values"] and v not in sp["values"][k]:
+                iss.add("truth", f"{path}.when.{k}", v, f"{k} = {v!r} never happens in the P3 city (possible: {sp['values'][k]}).", "FLEET#F6")
+        if not any(k in w for k in SIT_KEYS):
+            iss.add("data", path + ".when", w, "Each city line tests a situation (drop, dropZ, dropFrom, deck, plate or district); otherwise it adds nothing the city needs.", "pipeline:spec gap")
+        # situations the city can and cannot produce (GDD Edit 44; Game data)
+        dist = w.get("district")
+        if w.get("dropFrom") == "roof" and w.get("dropZ") == 1:
+            iss.add("truth", path + ".when", w, "Roofs are Z2: a roof drop is never dropZ 1.", "EDIT44#7.7")
+        if (w.get("drop") or w.get("dropZ") or w.get("dropFrom")) and w.get("deck"):
+            iss.add("truth", path + ".when", w, "No ledge or gap drops onto highway traffic in any baked layout.", "BRIEF: Game data")
+        if w.get("plate") and (w.get("deck") or (dist and dist != "campus")):
+            iss.add("truth", path + ".when", w, "Calibration plates are on Campus ground roads only.", "EDIT41#7.3")
+        if dist in facts:
+            f = facts[dist]
+            if (w.get("deck") or w.get("dropFrom") == "deck") and not f["decks"]:
+                iss.add("truth", path + ".when", w, f"{f['name']} has no highway.", "EDIT41#7.2")
+            if w.get("deck") and w.get("dropZ") == 2 and not f["highDecks"]:
+                iss.add("truth", path + ".when", w, f"{f['name']} has no Z2 highway.", "EDIT44#7.1.1")
+            if w.get("dropFrom") == "deck" and w.get("dropZ") == 2 and not f["highDecks"]:
+                iss.add("truth", path + ".when", w, f"{f['name']} has no Z2 highway to fall from.", "EDIT44#7.1.1")
+        pri = sp["priorities"].get(ev)
+        if b.get("priority") != pri:
+            iss.add("data", path + ".priority", b.get("priority"), f"{ev} lines take priority {pri}.", "EDIT26#6.6")
+        if b.get("style") not in sp["styles"]:
+            iss.add("data", path + ".style", b.get("style"), f"Bubble styles are {sp['styles']}.", "EDIT39#6.6")
+        styles.add(b.get("style"))
+        if len(text) > sp["max_chars"]:
+            iss.add("rule", path + ".text", text, f"Bubbles hold at most {sp['max_chars']} characters.", "EDIT39#6.6")
+        if text.strip().lower() in old:
+            iss.add("data", path + ".text", text, "Repeats an existing fleet line.", "FLEET#F9", "fix")
+        if text.strip().lower() in texts:
+            iss.add("data", path + ".text", text, "Repeats another new line.", "pipeline:consumer", "fix")
+        texts.add(text.strip().lower())
+        short_sentences(iss, path + ".text", text)
+        canon_text(iss, path + ".text", text, fleet)
+        if not isinstance(b.get("claims"), list):
+            iss.add("data", path + ".claims", b.get("claims"), "Every line lists its claims (may be empty).", "EDIT39#6.6.1")
+    for case in sp["required_cases"]:
+        n = sum(1 for b in lines if b.get("event") == case["event"] and when_matches(case["when"], b.get("when") or {}))
+        if n < case["min_lines"]:
+            iss.add("data", "lines", f"{case['event']} {json.dumps(case['when'])}: {n} line(s)", f"The gap needs at least {case['min_lines']} line(s) for this case.", "pipeline:spec gap")
+    stock = [b.get("id") for b in lines if re.search(r"\b(noted|logged|recorded)\.$", (b.get("text") or "").strip(), re.I)]
+    if len(stock) > 2:   # run 20261021-022042: truthful but flat; nine lines ended "Noted." or "Logged."
+        iss.add("tone", "lines", ", ".join(stock), "At most two lines end with a stock 'Noted.', 'Logged.' or 'Recorded.'; give the rest the car's own reaction.", "FLEET#F2", "fix")
+    for t in sp["tier_cases"]:
+        if not any((b.get("when") or {}).get("tier") == t for b in lines):
+            iss.add("data", "lines", f"tier {t}", f"Tier {t} needs its own voice in at least one line.", "FLEET#F4", "fix")
+    # P2.1's "use every bubble style" rule is not applied here: runs 20261021-022042 and -023310 showed it fighting the
+    # critic. The generator added a shout to satisfy it; the critic removed it (FLEET#F4: only the angry Budget tier shouts,
+    # and only Luxury and Corporate run in P3).
+    for e in run_lore_check(fleet, lines):     # the database's own lore check (decision 114)
+        m = re.match(r"^(c\d+): (.*)$", e)
+        if m:
+            iss.add("truth" if "claim" in m.group(2) or "asserts" in m.group(2) else "lore", idx.get(m.group(1), "lines"), m.group(1), m.group(2), "EDIT39#6.6.1")
+
+
+def places(content, ctx, iss):
+    sp, fleet, facts = ctx["spec"]["allowed"], ctx["fleet"], ctx["levels"]
+    ds = content.get("districts") or {}
+    mx = sp["max_chars"]
+    fw = sp["feature_words"]
+
+    def has_word(text, words):
+        low = text.lower()
+        return [w for w in words if re.search(r"\b" + re.escape(w) + r"\b", low)]
+    for did in sp["districts"]:
+        d = ds.get(did)
+        if not isinstance(d, dict):
+            iss.add("data", f"districts.{did}", None, "Every district needs its copy.", "pipeline:spec gap")
+            continue
+        f = facts[did]
+        lw = sp["landmark_words"][f["focal"]]
+        intro = d.get("intro") or ""
+        ip = f"districts.{did}.intro"
+        if not intro:
+            iss.add("data", ip, None, "Every district needs an intro.", "pipeline:spec gap")
+        if len(intro) > mx["intro"]:
+            iss.add("rule", ip, intro, f"Intro at most {mx['intro']} characters: it shares the toast with the name and quota.", "EDIT40#4.2", "fix")
+        if len(sentences(intro)) > 2:
+            iss.add("rule", ip, intro, "One or two sentences.", "pipeline:consumer", "fix")
+        if not has_word(intro, lw):
+            iss.add("truth", ip, intro, f"The intro names the centre landmark ({f['focal']}).", "EDIT41#7.1.1")
+        no_digits(iss, ip, intro, "No numbers in copy: the renderer adds the quota.", "pipeline:consumer")
+        short_sentences(iss, ip, intro)
+        canon_text(iss, ip, intro, fleet)
+        sc = d.get("screens") or {}
+        seen = {}
+        for cell in sp["cells"]:
+            name = sc.get(cell)
+            path = f"districts.{did}.screens.{cell}"
+            if not isinstance(name, str) or not name.strip():
+                iss.add("data", path, name, "Every screen needs a name.", "pipeline:spec gap")
+                continue
+            c = f["cells"][cell]
+            if len(name) > mx["screen"]:
+                iss.add("rule", path, name, f"Screen names at most {mx['screen']} characters.", "pipeline:consumer")
+            if name.rstrip().endswith("."):
+                iss.add("rule", path, name, "A name has no full stop.", "pipeline:consumer", "fix")
+            if name.lower() in seen:
+                iss.add("data", path, name, f"Same name as {seen[name.lower()]}.", "pipeline:consumer")
+            seen[name.lower()] = cell
+            no_digits(iss, path, name, "No numbers in names.", "pipeline:consumer")
+            canon_text(iss, path, name, fleet)
+            if cell == "B2" and not has_word(name, lw):
+                iss.add("truth", path, name, f"B2 holds the landmark ({f['focal']}); its name says so.", "EDIT41#7.1.1")
+            for feat, words in fw.items():
+                hit = has_word(name, words)
+                if not hit:
+                    continue
+                if feat == "river":
+                    ok = c["river"]
+                elif feat == "highway":
+                    ok = c["highway"] == "all"
+                elif feat == "roundabout":
+                    ok = c["roundabout"] == "all"
+                else:
+                    ok = c[feat] == "all"
+                if not ok:
+                    iss.add("truth", path, name, f"'{hit[0]}' promises a {feat} that not every layout of {f['name']} {cell} has ({'yes' if feat == 'river' and c['river'] else c.get(feat, 'none')}).", "BRIEF: Game data")
+        d.setdefault("sources", d.get("sources"))
+    lv = content.get("levels") or {}
+    for k in sp["levels"]:
+        t = lv.get(k)
+        path = f"levels.{k}"
+        if not isinstance(t, str) or not t.strip():
+            iss.add("data", path, t, "Each new level needs its toast.", "pipeline:spec gap")
+            continue
+        if len(t) > mx["level"]:
+            iss.add("rule", path, t, f"Level toasts at most {mx['level']} characters.", "pipeline:consumer", "fix")
+        no_digits(iss, path, t, "No numbers in copy.", "pipeline:consumer")
+        short_sentences(iss, path, t)
+        canon_text(iss, path, t, fleet)
+    if lv.get("roof") and re.search(r"\b(cars?|traffic|vehicles?)\b", lv["roof"], re.I) and not re.search(r"\bno (cars?|traffic|vehicles?)\b", lv["roof"], re.I):
+        iss.add("truth", "levels.roof", lv["roof"], "Nothing drives on a roof; cars below are reached only by dropping.", "EDIT44#7.7", "fix")
+
+
+def drops(content, ctx, iss):
+    sp, fields_of = ctx["spec"]["allowed"], ctx["event_fields"]
+    for k in ("hitStop", "reducedMotion"):
+        if k in content:
+            iss.add("rule", k, content.get(k), f"'{k}' belongs to the published hit juice; drop layers only stack on it.", "pipeline:consumer")
+    seen, _ = check_layers(content, ctx, iss, sp, fields_of)
+    layers = content.get("layers") or []
+    for need in sp["required_events"]:
+        if need not in seen:
+            iss.add("data", "layers", need, f"The gap needs a base layer (when {{}}) for '{need}'.", "pipeline:spec gap")
+    for req in sp["required_layers"]:
+        if not any(L.get("event") == req["event"] and (L.get("when") or {}) == req["when"] for L in layers):
+            iss.add("data", "layers", f"{req['event']} {json.dumps(req['when'])}", "The gap needs this layer.", "pipeline:spec gap")
+    for i, L in enumerate(layers):
+        path, ev, w = f"layers[{i}]", L.get("event"), L.get("when") or {}
+        if ev == "land" and ("car" not in w or w.get("car") is not None):
+            iss.add("truth", path + ".when", w, "A landing on a car also fires an impact: land layers use when {\"car\": null}, or the hit is juiced twice.", "pipeline:consumer")
+        if ev in ("impact", "writeoff") and not any(k in w for k in sp["situation_keys"]):
+            iss.add("rule", path + ".when", w, "Drop juice only adds to hits from above; a layer without drop, dropZ or dropFrom would change every ground hit.", "pipeline:designer decision")
+        if ev in ("land", "deck-drop") and (L.get("scale") or {}).get("by") != "h":
+            iss.add("data", path + ".scale", L.get("scale"), "Height must be felt: scale by the fall height h.", "pipeline:spec gap")
+        for j, pt in enumerate(L.get("particles") or []):
+            if ev == "land" and pt.get("at") == "car":
+                iss.add("truth", f"{path}.particles[{j}].at", "car", "An open-ground landing names no car.", "pipeline:consumer")
+
+
+VALIDATORS = {"juice": juice, "interface": interface, "graphics": graphics, "barks": barks, "hits": hits, "terminal": terminal,
+              "citybarks": citybarks, "places": places, "drops": drops}
 
 
 def validate(kind, content, ctx):
