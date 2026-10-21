@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet Mock-up</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --warn: #ffb347; --bad: #ff5a6a; --good: #57e389; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 0; color: var(--dim); max-width: 980px; }
+  main { padding: 12px 16px 32px; display: grid; gap: 12px; max-width: 1400px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+  canvas { display: block; image-rendering: pixelated; max-width: 100%; height: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 5px 8px; border-bottom: 1px solid #1f2a3d; text-align: right; white-space: nowrap; }
+  th { color: var(--dim); font-weight: 500; }
+  th:first-child, td:first-child, td.l, th.l { text-align: left; }
+  .bad { color: var(--bad); } .good { color: var(--good); } .warn { color: var(--warn); }
+  .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 980px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+  select, button { background: #1d2a40; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; }
+  label { color: var(--dim); font-size: 12px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Fleet mock-up · P4</h1>
+  <p>The eight canon classes at their V29 registry sizes, plus buses at three lengths. Sprites at game scale (1 art px = 2 world units), shown 4×, on 16 px tiles and two 56-unit lanes. Then the swept path of each vehicle through P4's bends.</p>
+</header>
+<main>
+  <section><h2>Line-up</h2><canvas id="lineup"></canvas>
+    <p class="note">Tile = 16 art px = 32 world units = 2.6 m (proto.scale.unitsPerMetre 12.2). Lane = 56 units = 4.6 m. Widths run about 1.25× real, for readability.</p></section>
+  <section><h2>Sizes</h2><table id="sizes"></table>
+    <p class="note">In lane: the least inner-lane radius at which the body stays inside its lane through a bend (centre of the body on the lane line, as the sim poses cars). Road centre = that + half a lane. P4 bends: centre 64 (inner lane 36); roundabout entries 96 (inner lane 68).</p></section>
+  <section><h2>Swept path</h2>
+    <div class="row">
+      <label>Vehicle</label><select id="veh"></select>
+      <label>Bend (road centre radius)</label><select id="rad"><option>64</option><option>96</option><option>128</option><option>160</option><option>224</option></select>
+    </div>
+    <div class="grid2"><canvas id="sweep" width="640" height="520"></canvas><div id="sweepInfo"></div></div>
+    <p class="note">Ghost footprints every 12 units through a 90° bend, both lanes. Red corners stand outside their lane; past the centre line they reach oncoming traffic.</p></section>
+  <section><h2>Turn Lab with the expanded fleet</h2><table id="lab"></table>
+    <p class="note">From <code>node fleet_run.js</code>: 180 s per run, P4 driver, dummy away. Pass: no jam, no bodies overlapping, bus overhang ≤ 8. Expanded fleet: one car every 2.5 s from all eight classes; buses only: one every 4 s.</p></section>
+</main>
+<!--SCRIPTS-->
+</body>
+</html>

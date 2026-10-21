@@ -25,6 +25,13 @@
     'vehicles.sedan.mass': 1.0, 'vehicles.sedan.length': 56, 'vehicles.sedan.width': 28, 'vehicles.sedan.cruiseSpeed': 138,
     'vehicles.sedan.height': 22, 'vehicles.van.height': 34,
     'vehicles.van.mass': 1.5, 'vehicles.van.length': 68, 'vehicles.van.width': 32, 'vehicles.van.cruiseSpeed': 120,
+    // P4 (Edit 49.2, fleet mock-up): the other six canon classes, at their V29 registry sizes. Turn Lab and fleet sheet only.
+    'vehicles.sports.length': 52, 'vehicles.sports.width': 26, 'vehicles.sports.height': 20, 'vehicles.sports.cruiseSpeed': 192, 'vehicles.sports.mass': 0.85,
+    'vehicles.hatchback.length': 46, 'vehicles.hatchback.width': 26, 'vehicles.hatchback.height': 23, 'vehicles.hatchback.cruiseSpeed': 156, 'vehicles.hatchback.mass': 0.9,
+    'vehicles.wagon.length': 62, 'vehicles.wagon.width': 28, 'vehicles.wagon.height': 24, 'vehicles.wagon.cruiseSpeed': 144, 'vehicles.wagon.mass': 1.15,
+    'vehicles.suv.length': 64, 'vehicles.suv.width': 32, 'vehicles.suv.height': 27, 'vehicles.suv.cruiseSpeed': 132, 'vehicles.suv.mass': 1.8,
+    'vehicles.police.length': 58, 'vehicles.police.width': 28, 'vehicles.police.height': 23, 'vehicles.police.cruiseSpeed': 150, 'vehicles.police.mass': 1.1,
+    'vehicles.bus.length': 96, 'vehicles.bus.width': 34, 'vehicles.bus.height': 48, 'vehicles.bus.cruiseSpeed': 108, 'vehicles.bus.mass': 3.0,
     'world.laneWidth': 56, 'world.pedestrianGap': 40, 'world.spawnLeadIn': 200, 'world.width': 800, 'world.height': 640,
     'body.radius': 13, 'simulation.tickRate': 60,
     'run.quota.road': 5, 'run.appearances.road': 40, 'run.admissionInterval': 12,
@@ -1365,6 +1372,7 @@
       this.cones = this.conesFor(this.level);
       this.drones = []; this.droneSeq = 0; this.deckSeq = 0; this.deckNext = {}; this.booms = {};
       this.models = { sedan: { id: 'SEDAN-01', cls: 'sedan', applied: 0, standoffApplied: 0 }, van: { id: 'VAN-02', cls: 'van', applied: 0, standoffApplied: 0 } };
+      for (const [cls, id] of [['sports', 'SPT-03'], ['hatchback', 'HAT-03'], ['wagon', 'WGN-03'], ['suv', 'SUV-02'], ['police', 'POL-03'], ['bus', 'BUS-02']]) this.models[cls] = { id, cls, applied: 0, standoffApplied: 0 }; // P4: Turn Lab fleet
       const cy = this.carry || {};
       // The fleet remembers stop distances across roads.
       for (const k in cy.standoff || {}) if (this.models[k]) this.models[k].standoffApplied = cy.standoff[k];

@@ -341,12 +341,26 @@
       if (c === 2) {
         const [u, v] = loc(x, y + hgt), av = Math.abs(v);
         let col = K.fleetTop;
-        if (cls === 'sedan') {
-          if (av <= hw - 2 && ((u >= 0.18 * L && u <= 0.29 * L) || (u >= -0.23 * L && u <= -0.16 * L))) col = K.glass;
-          else if (av <= hw - 1.5 && u > -0.16 * L && u < 0.18 * L) col = K.fleetRoof;
+        const glassAt = (a, b) => av <= hw - 2 && u >= a * L && u <= b * L, roofAt = (a, b) => av <= hw - 1.5 && u > a * L && u < b * L;
+        if (cls === 'sedan' || cls === 'police') {
+          if (glassAt(0.18, 0.29) || glassAt(-0.23, -0.16)) col = K.glass;
+          else if (roofAt(-0.16, 0.18)) col = K.fleetRoof;
+          if (cls === 'police' && Math.abs(u) <= 1.2 && av <= hw - 2.5) col = v > 0 ? K.warn : K.podCrown; // P4 mock-up: light bar
+        } else if (cls === 'sports') { // P4 mock-up: long bonnet, short cabin, rear deck
+          if (glassAt(0.02, 0.14) || glassAt(-0.26, -0.2)) col = K.glass;
+          else if (roofAt(-0.2, 0.02)) col = K.fleetRoof;
+        } else if (cls === 'hatchback') { // short bonnet, roof to the tail, glass tailgate
+          if (glassAt(0.16, 0.3) || glassAt(-0.47, -0.4)) col = K.glass;
+          else if (roofAt(-0.4, 0.16)) col = K.fleetRoof;
+        } else if (cls === 'wagon' || cls === 'suv') { // long roof with rails
+          if (glassAt(0.2, 0.31)) col = K.glass;
+          else if (roofAt(-0.45, 0.2)) col = av >= hw - 3 && av <= hw - 2 ? K.fleetLine : cls === 'suv' && Math.abs(u + 0.12 * L) < 3 && av < hw - 5 ? K.pod2 : K.fleetRoof;
+        } else if (cls === 'bus') { // full-width screen, roof panels, two roof units, a hatch
+          if (av <= hw - 1.5 && u >= hl - 4) col = K.glass;
+          else if (av <= hw - 1.5 && u > -hl + 1 && u < hl - 4) col = (Math.abs(u - 0.18 * L) < 5 || Math.abs(u + 0.22 * L) < 5) && av < hw - 4 ? K.pod2 : Math.abs(((u + hl) % 12)) < 1 ? K.fleetLine : K.fleetRoof;
         } else {
-          if (av <= hw - 2 && u >= 0.22 * L && u <= 0.33 * L) col = K.glass;
-          else if (av <= hw - 1.5 && u < 0.22 * L && u > -hl + 1) col = Math.abs(((u + hl) % 6)) < 1 ? K.pod2 : K.fleetRoof;
+          if (glassAt(0.22, 0.33)) col = K.glass;
+          else if (roofAt(-0.5 + 1 / L, 0.22)) col = Math.abs(((u + hl) % 6)) < 1 ? K.pod2 : K.fleetRoof;
         }
         if (u > hl - 1.6 && av >= hw - 4.5 && av <= hw - 0.8) col = K.head;
         if (u < -hl + 1.6 && av >= hw - 4.5 && av <= hw - 0.8) col = braking ? K.warn : K.tail;
@@ -356,6 +370,7 @@
         const bottom = !at(i, j + 1), low = bottom || !at(i, j + 2);
         let col = bottom ? K.fleetSide2 : K.fleetSide;
         const [u] = loc(x, y + Math.max(0, k0[j * w + i]));
+        if (cls === 'bus' && !low && k0[j * w + i] >= 2 && k0[j * w + i] <= hgt - 3 && Math.abs(u) < hl - 4 && ((u + hl) % 10) > 2) col = K.glass; // P4 mock-up: side windows
         if (low && (Math.abs(u - (hl - 6)) <= 2 || Math.abs(u + (hl - 6)) <= 2)) col = K.joint;
         sput(S, i, j, col);
       }

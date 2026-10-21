@@ -1,17 +1,19 @@
 # DUMMIES — P4 test prototype: turn radii and 45° roads
 
-**P4.1 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edits 49 and 49.1 (proposed). P3 (P3.4) is unchanged.
+**P4.2 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edits 49, 49.1 and 49.2 (proposed). P3 (P3.4) is unchanged.
 
-P4 is P3.4 with the road and traffic rules under test. Two builds:
+P4 is P3.4 with the road and traffic rules under test. Three builds:
 
 - **`turn_lab.html` (Turn Lab):** one road piece at a time, at any radius, with the game's driver. Does traffic flow or pile up?
-- **`dummies_p4.html` (P4.1):** the game on 15 P4 layouts: 45° roads, roundabout fillets, the new driver and the spawn hold.
+- **`fleet_mockup.html` (Fleet mock-up):** every canon class and three bus lengths at game scale; swept paths; Turn Lab fleet runs.
+- **`dummies_p4.html` (P4.2):** the game on 15 P4 layouts: 45° roads, roundabout fillets, the new driver and the spawn hold.
 
 ## Why
 
 - **O3.60:** Interchange piles up. Cars cannot reverse out of it.
 - **O3.61:** roads zigzag through a screen with tight left-right corners.
 - **O3.62:** would a three- or four-way interchange still work?
+- **O3.63:** what about the expanded fleet, with buses? Mock up lengths and sizes.
 
 ## What the Interchange pile-up was
 
@@ -83,6 +85,41 @@ P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three ve
 
 - **Districts:** still one road through each screen. A three- or four-arm Interchange needs branching roads in the planner.
 
+## Fleet mock-up (P4.2, Edit 49.2)
+
+![Fleet mock-up: line-up at game scale, sizes, swept path, Turn Lab results](docs/p42_fleet_mockup.png)
+
+- **Sizes:** the V29 registry `vehicles.<class>.length` and `.width`. Buses at 120 and 144 are mock-up lengths only.
+- **In lane:** the least inner-lane radius at which a body stays in its lane. P4 bends give 36 (corners) and 68 (roundabout entries).
+
+| Vehicle | Units (L × W) | Metres | Tiles long | In lane from |
+|---|---|---|---|---|
+| Hatchback | 46 × 26 | 3.8 × 2.1 | 1.4 | 0 |
+| Sports | 52 × 26 | 4.3 × 2.1 | 1.6 | 2 |
+| Sedan | 56 × 28 | 4.6 × 2.3 | 1.8 | 7 |
+| Police | 58 × 28 | 4.8 × 2.3 | 1.8 | 9 |
+| Wagon | 62 × 28 | 5.1 × 2.3 | 1.9 | 13 |
+| SUV | 64 × 32 | 5.2 × 2.6 | 2.0 | 21 |
+| Van | 68 × 32 | 5.6 × 2.6 | 2.1 | 26 |
+| Bus (V29) | 96 × 34 | 7.9 × 2.8 | 3.0 | 82 |
+| Bus 120 | 120 × 34 | 9.8 × 2.8 | 3.8 | 141 |
+| Bus 144 | 144 × 34 | 11.8 × 2.8 | 4.5 | 213 |
+
+- **Fleet matrix:** `node fleet_run.js 180` → `docs/fleet_results.md` (96 runs). Pass: no jam, no overlap, bus at most 8 outside its lane.
+
+| Piece (road centre) | Bus 96 | Bus 120 | Bus 144 |
+|---|---|---|---|
+| Corner 64 | Swings 10 | Collides | Collides |
+| Corner 96 | Flows | Swings 11 | Collides |
+| Corner 128 | Flows | Flows | Swings 12 |
+| Corner 160 | Flows | Flows | Flows |
+| Two-arm roundabout, fillet 96 / 128 / 160 | Flows | Collides / collides / flows | Collides |
+| Four-arm roundabout, fillet 96 / 128 / 160 | Flows | Swings 11 / flows / flows | Collides / jams / jams |
+
+- **Seven car classes:** at most 0.3 outside their lane on every piece.
+- **Turn Lab:** fleet select (P3, expanded, buses only) and bus length (96, 120, 144).
+- **Recommendation:** keep the bus at 96 (decision 200). A longer bus needs bus routes with bends ≥ 128–160.
+
 ## P4 layouts
 
 ![P4 layout 1 of each district: 45° roads, roundabout fillets](docs/p4_plans.png)
@@ -109,9 +146,10 @@ P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three ve
 ## Run
 
 ```
-python3 build.py            # dummies_p4.html and turn_lab.html
-node test_sim.js            # P3.4 checks plus P4 checks (89)
+python3 build.py            # dummies_p4.html, turn_lab.html, fleet_mockup.html
+node test_sim.js            # P3.4 checks plus P4 checks (90)
 node lab_run.js 180         # Turn Lab matrix
+node fleet_run.js 180       # Fleet matrix
 node tools/district_bake.js 60   # P4 layouts → content/districts/districts_p4.json
 ```
 
@@ -122,11 +160,16 @@ node tools/district_bake.js 60   # P4 layouts → content/districts/districts_p4
 | `sim.js` | P3.4 sim plus Edit 49: `filletAny`, the `diagonal` style, roundabout fillets, `leadGap` along the lane, `jammed`, `jamCause`, `needsRoom`; Edit 49.1: `giveWayHold`, `mergingPast` |
 | `lab.js`, `lab_view.js`, `lab_shell.html` | Turn Lab: pieces, runner, metrics, viewer |
 | `lab_run.js` | Headless matrix |
+| `fleet_run.js`, `fleet_view.js`, `fleet_shell.html` | Fleet mock-up: matrix, page |
 | `tools/district_check.js` | Contract plus clauses 25 (bends) and 26 (60 s traffic soak) |
 | `tools/district_bake.js` | Bakes P4 layouts to `content/districts/districts_p4.json` |
-| `game.js`, `pixel.js`, `shell.html` | P3.4 renderer. Screen toasts show the theme and `45° road` |
+| `game.js`, `pixel.js`, `shell.html` | P3.4 renderer. Screen toasts show the theme and `45° road`. `pixel.js` draws each canon class (Edit 49.2) |
 
 ## Open
+
+- **Bus length:** keep 96, or test 120–144 on bus routes with wide bends?
+- **Bus pose:** bodies centre on the lane line. A two-axle pose would cut the inside like a real bus.
+- **Bus behaviour:** canon buses only brake. The P4 driver still lets them swerve.
 
 - **Adopt into P3?** The driver and spawn hold carry over without a rebake. Bends and 45° roads need one.
 - **Diagonal art:** 45° segments draw with the curve renderer. Playtest how they read.

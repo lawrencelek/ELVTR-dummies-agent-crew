@@ -20,7 +20,7 @@
       box.append(l, i);
     }
   }
-  function opts() { return { vanShare: +$('van').value, interval: +$('int').value, seconds: 120, seed: 11, overrides: Object.assign({ 'traffic.gridlockSeconds': state.hold ? 6 : 0 }, state.driver ? {} : { 'traffic.followRoad': 0, 'traffic.jamReverse': 0, 'traffic.giveWayGap': 0 }) }; }
+  function opts() { return { fleet: $('fleet').value, vanShare: +$('van').value, interval: +$('int').value, seconds: 120, seed: 11, overrides: Object.assign({ 'vehicles.bus.length': +$('busL').value }, Object.assign({ 'traffic.gridlockSeconds': state.hold ? 6 : 0 }, state.driver ? {} : { 'traffic.followRoad': 0, 'traffic.jamReverse': 0, 'traffic.giveWayGap': 0 }) ) }; }
   function reset() {
     const q = {}; for (const k of L.PIECES[state.piece].params) q[k] = state.q[k];
     state.sim = L.makeSim(X, state.piece, q, opts());
@@ -37,7 +37,7 @@
     $('speed').textContent = 'Speed ' + state.speed + '×'; $('play').textContent = state.playing ? 'Pause' : 'Play';
   }
   $('piece').onchange = () => { state.piece = $('piece').value; sliders(); reset(); $('matrix').innerHTML = ''; };
-  $('van').oninput = reset; $('int').oninput = reset;
+  $('van').oninput = reset; $('int').oninput = reset; $('fleet').onchange = reset; $('busL').onchange = reset;
   $('drv').onclick = () => { state.driver = 1 - state.driver; reset(); };
   $('hold').onclick = () => { state.hold = 1 - state.hold; reset(); };
   $('play').onclick = () => { state.playing = !state.playing; labels(); };
@@ -68,7 +68,7 @@
     for (let i = 0; i < s.cars.length; i++) for (let j = i + 1; j < s.cars.length; j++) if (L.overlap(s.cars[i], s.cars[j])) { ov.add(s.cars[i]); ov.add(s.cars[j]); }
     for (const c of s.cars) {
       g.save(); g.translate(c.x, c.y); g.rotate(c.h);
-      g.fillStyle = jam.has(c) ? '#ff5a6a' : (c.stopT || 0) > 1 ? '#ffb347' : c.cls === 'van' ? '#f2f5f8' : '#9fd8ff';
+      g.fillStyle = jam.has(c) ? '#ff5a6a' : (c.stopT || 0) > 1 ? '#ffb347' : c.cls === 'bus' ? '#ffe08a' : c.cls === 'van' || c.cls === 'suv' ? '#f2f5f8' : c.cls === 'police' ? '#7f9cff' : '#9fd8ff';
       g.fillRect(-c.L / 2, -c.W / 2, c.L, c.W);
       g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(c.L / 2 - 12, -c.W / 2 + 3, 6, c.W - 6); // windscreen: which way it faces
       if (ov.has(c)) { g.strokeStyle = '#ff4fd8'; g.lineWidth = 3; g.strokeRect(-c.L / 2, -c.W / 2, c.L, c.W); }

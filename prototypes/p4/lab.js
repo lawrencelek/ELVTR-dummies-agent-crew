@@ -93,8 +93,34 @@
     return best;
   }
 
+  // ---------- fleets (P4, Edit 49.2 mock-up). 'p3': sedans and vans by vanShare. 'expanded': all eight canon classes.
+  // 'buses': buses only. Bus length comes from vehicles.bus.length (overrides), so 96, 120 and 144 can be compared.
+  const FLEETS = {
+    p3: null,
+    expanded: [['sedan', 0.2], ['hatchback', 0.14], ['sports', 0.08], ['wagon', 0.1], ['suv', 0.1], ['police', 0.06], ['van', 0.2], ['bus', 0.12]],
+    buses: [['bus', 1]],
+  };
+  const CLASSES = ['hatchback', 'sports', 'sedan', 'police', 'wagon', 'suv', 'van', 'bus'];
+  function pickClass(fleet, vanShare, u) {
+    const F = FLEETS[fleet || 'p3'];
+    if (!F) return u < vanShare ? 'van' : 'sedan';
+    let acc = 0; for (const [c, w] of F) { acc += w; if (u < acc) return c; }
+    return F[F.length - 1][0];
+  }
+  // how far a car's body corners stand outside its own lane (half a lane each side of its path), world units
+  function overhang(c, P) {
+    const ca = Math.cos(c.h), sa = Math.sin(c.h), lw2 = P['world.laneWidth'] / 2;
+    let m = 0;
+    for (const [a, b] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const x = c.x + ca * a * c.L / 2 - sa * b * c.W / 2, y = c.y + sa * a * c.L / 2 + ca * b * c.W / 2, pr = X0.pathProject(c.path, x, y);
+      m = Math.max(m, Math.abs(pr.lat - c.d) - lw2);
+    }
+    return m;
+  }
+  let X0 = null;
   // ---------- a lab sim: the P4 driver on one road piece, the dummy away, cars of the chosen mix both ways
   function makeSim(X, piece, q, opts) {
+    X0 = X;
     const s = new X.Sim('straight', Object.assign({ 'run.appearances.road': 2000 }, opts.overrides || {}));
     const P = s.P, g = PIECES[piece].build(X, q, P), lanes = g.lanes || X.lanesOf(g.center, P);
     s.level = Object.assign({}, s.level, { center: g.center, ring: g.ring || null, lanes, statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }],
@@ -103,11 +129,11 @@
     s.checkTerminal = () => {}; s.checkFlip = () => {};
     let seed = opts.seed || 7;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: rnd() < opts.vanShare ? 'van' : 'sedan', lane: Math.min(lanes.length - 1, Math.floor(rnd() * lanes.length)), mult: 0.8 + 0.4 * rnd() }));
+    s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: pickClass(opts.fleet, opts.vanShare, rnd()), lane: Math.min(lanes.length - 1, Math.floor(rnd() * lanes.length)), mult: 0.8 + 0.4 * rnd() }));
     s.admissionInterval = () => opts.interval;
     Object.assign(s.body, { x: -900, y: -900 });
     s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: lanes.filter((l) => l.giveWay).map((l) => X.pathAt(l, l.giveWay.s)) }, stats: null };
-    s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity };
+    s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity, over: {}, overT: 0 };
     return s;
   }
   // rectangle overlap of two car bodies (separating axis)
@@ -135,6 +161,7 @@
       for (let j = i + 1; j < s.cars.length && !ov; j++) if (overlap(c, s.cars[j])) ov = true;
     }
     if (ov) st.overlapT += dt;
+    if (s.tick % 3 === 0) { let big = false; for (const c of s.cars) { if (c.s < c.L || c.s > c.path.length - c.L) continue; const o = overhang(c, s.P); st.over[c.cls] = Math.max(st.over[c.cls] || 0, o); if (o > 8) big = true; } if (big) st.overT += 3 * dt; } // swept path
     st.peak = Math.max(st.peak, s.cars.length);
     const T = 6, jam = s.cars.filter((c) => (c.stopT || 0) >= T && ['cycle', 'none'].includes(s.jamCause(c, new Set([c]))));
     if (jam.length && st.jamAt == null) { st.jamAt = +s.t.toFixed(1); st.jamCars = jam.map((c) => c.cls); }
@@ -144,12 +171,13 @@
     const s = makeSim(X, piece, q, opts), n = Math.round(opts.seconds * s.P['simulation.tickRate']);
     for (let i = 0; i < n; i++) tick(s);
     const geo = s.lab.geo, lanesR = geo.lanes.map((p) => minRadius(p).r), st = s.lab.stats;
-    return { piece, q, driver: opts.overrides && opts.overrides['traffic.followRoad'] === 0 ? 'P3' : 'P4', hold: !(opts.overrides && opts.overrides['traffic.gridlockSeconds'] === 0),
+    return { piece, q, driver: opts.overrides && opts.overrides['traffic.followRoad'] === 0 ? 'P3' : 'P4', hold: !(opts.overrides && opts.overrides['traffic.gridlockSeconds'] === 0), fleet: opts.fleet || 'p3', busL: s.P['vehicles.bus.length'],
+      overhang: Object.fromEntries(Object.entries(st.over).map(([k, v]) => [k, +v.toFixed(1)])), overhangS: +st.overT.toFixed(1),
       vanShare: opts.vanShare, interval: opts.interval, seconds: opts.seconds,
       centreR: +minRadius(geo.center).r.toFixed(1), laneR: +Math.min(...lanesR).toFixed(1), cornerV: +Math.sqrt(s.P['traffic.cornerAccel'] * Math.min(...lanesR)).toFixed(0),
       exitedPerMin: +(st.exited / opts.seconds * 60).toFixed(1), maxStop: +st.maxStop.toFixed(1), jamAt: st.jamAt, jamCars: st.jamCars, overlapS: +st.overlapT.toFixed(1),
       heldS: +st.held.toFixed(1), peak: st.peak };
   }
-  const api = { PIECES, makeSim, tick, run, minRadius, radii, overlap, W, H };
+  const api = { PIECES, FLEETS, CLASSES, makeSim, tick, run, minRadius, radii, overlap, overhang: (c, P) => overhang(c, P), W, H };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.TURNLAB = api;
 })(typeof window !== 'undefined' ? window : globalThis);

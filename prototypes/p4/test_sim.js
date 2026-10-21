@@ -897,6 +897,17 @@ check('P4 multi-arm roundabouts (Edit 49.1): three and four arms, every route, o
   const p3 = labRun('roundabout4', { Rf: 96 }, 0, true, 0.4, 150, 1.5);
   assert(p3.jamAt != null, 'the P3 driver jams four arms in dense traffic');
 });
+check('P4 fleet (Edit 49.2): the seven car classes stay in lane through P4 bends; a 96 bus flows on P4 roundabouts; a 144 bus does not', () => {
+  for (const [piece, q] of [['corner', { R: 64 }], ['roundabout4', { Rf: 96 }]]) {
+    const r = LAB.run(D, piece, q, { fleet: 'expanded', interval: 2.5, seconds: 150, seed: 11, overrides: {} });
+    for (const [cls, o] of Object.entries(r.overhang)) if (cls !== 'bus') assert(o <= 1, piece + ' ' + cls + ' overhang ' + o);
+    assert(r.jamAt == null && r.overlapS === 0, piece + ': ' + JSON.stringify(r));
+  }
+  const b96 = LAB.run(D, 'roundabout4', { Rf: 96 }, { fleet: 'buses', interval: 4, seconds: 150, seed: 11, overrides: {} });
+  assert(b96.jamAt == null && b96.overlapS === 0 && b96.overhang.bus <= 8, 'bus 96: ' + JSON.stringify(b96.overhang));
+  const b144 = LAB.run(D, 'roundabout4', { Rf: 96 }, { fleet: 'buses', interval: 4, seconds: 150, seed: 11, overrides: { 'vehicles.bus.length': 144 } });
+  assert(b144.overhang.bus > 15, 'bus 144 swings out of its lane: ' + b144.overhang.bus);
+});
 check('P4 bends (Edit 49): no lane on a baked layout bends tighter than 0.9 × (world.turnRadiusTight − half a lane); roundabout entries on their fillets', () => {
   const tk = require('./tools/district_check.js'), lmin = 0.9 * (REG['world.turnRadiusTight'] - REG['world.laneWidth'] / 2);
   for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {

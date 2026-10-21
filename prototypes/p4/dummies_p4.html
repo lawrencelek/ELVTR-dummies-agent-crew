@@ -132,6 +132,13 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
     'vehicles.sedan.mass': 1.0, 'vehicles.sedan.length': 56, 'vehicles.sedan.width': 28, 'vehicles.sedan.cruiseSpeed': 138,
     'vehicles.sedan.height': 22, 'vehicles.van.height': 34,
     'vehicles.van.mass': 1.5, 'vehicles.van.length': 68, 'vehicles.van.width': 32, 'vehicles.van.cruiseSpeed': 120,
+    // P4 (Edit 49.2, fleet mock-up): the other six canon classes, at their V29 registry sizes. Turn Lab and fleet sheet only.
+    'vehicles.sports.length': 52, 'vehicles.sports.width': 26, 'vehicles.sports.height': 20, 'vehicles.sports.cruiseSpeed': 192, 'vehicles.sports.mass': 0.85,
+    'vehicles.hatchback.length': 46, 'vehicles.hatchback.width': 26, 'vehicles.hatchback.height': 23, 'vehicles.hatchback.cruiseSpeed': 156, 'vehicles.hatchback.mass': 0.9,
+    'vehicles.wagon.length': 62, 'vehicles.wagon.width': 28, 'vehicles.wagon.height': 24, 'vehicles.wagon.cruiseSpeed': 144, 'vehicles.wagon.mass': 1.15,
+    'vehicles.suv.length': 64, 'vehicles.suv.width': 32, 'vehicles.suv.height': 27, 'vehicles.suv.cruiseSpeed': 132, 'vehicles.suv.mass': 1.8,
+    'vehicles.police.length': 58, 'vehicles.police.width': 28, 'vehicles.police.height': 23, 'vehicles.police.cruiseSpeed': 150, 'vehicles.police.mass': 1.1,
+    'vehicles.bus.length': 96, 'vehicles.bus.width': 34, 'vehicles.bus.height': 48, 'vehicles.bus.cruiseSpeed': 108, 'vehicles.bus.mass': 3.0,
     'world.laneWidth': 56, 'world.pedestrianGap': 40, 'world.spawnLeadIn': 200, 'world.width': 800, 'world.height': 640,
     'body.radius': 13, 'simulation.tickRate': 60,
     'run.quota.road': 5, 'run.appearances.road': 40, 'run.admissionInterval': 12,
@@ -1472,6 +1479,7 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
       this.cones = this.conesFor(this.level);
       this.drones = []; this.droneSeq = 0; this.deckSeq = 0; this.deckNext = {}; this.booms = {};
       this.models = { sedan: { id: 'SEDAN-01', cls: 'sedan', applied: 0, standoffApplied: 0 }, van: { id: 'VAN-02', cls: 'van', applied: 0, standoffApplied: 0 } };
+      for (const [cls, id] of [['sports', 'SPT-03'], ['hatchback', 'HAT-03'], ['wagon', 'WGN-03'], ['suv', 'SUV-02'], ['police', 'POL-03'], ['bus', 'BUS-02']]) this.models[cls] = { id, cls, applied: 0, standoffApplied: 0 }; // P4: Turn Lab fleet
       const cy = this.carry || {};
       // The fleet remembers stop distances across roads.
       for (const k in cy.standoff || {}) if (this.models[k]) this.models[k].standoffApplied = cy.standoff[k];
@@ -3188,12 +3196,26 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
       if (c === 2) {
         const [u, v] = loc(x, y + hgt), av = Math.abs(v);
         let col = K.fleetTop;
-        if (cls === 'sedan') {
-          if (av <= hw - 2 && ((u >= 0.18 * L && u <= 0.29 * L) || (u >= -0.23 * L && u <= -0.16 * L))) col = K.glass;
-          else if (av <= hw - 1.5 && u > -0.16 * L && u < 0.18 * L) col = K.fleetRoof;
+        const glassAt = (a, b) => av <= hw - 2 && u >= a * L && u <= b * L, roofAt = (a, b) => av <= hw - 1.5 && u > a * L && u < b * L;
+        if (cls === 'sedan' || cls === 'police') {
+          if (glassAt(0.18, 0.29) || glassAt(-0.23, -0.16)) col = K.glass;
+          else if (roofAt(-0.16, 0.18)) col = K.fleetRoof;
+          if (cls === 'police' && Math.abs(u) <= 1.2 && av <= hw - 2.5) col = v > 0 ? K.warn : K.podCrown; // P4 mock-up: light bar
+        } else if (cls === 'sports') { // P4 mock-up: long bonnet, short cabin, rear deck
+          if (glassAt(0.02, 0.14) || glassAt(-0.26, -0.2)) col = K.glass;
+          else if (roofAt(-0.2, 0.02)) col = K.fleetRoof;
+        } else if (cls === 'hatchback') { // short bonnet, roof to the tail, glass tailgate
+          if (glassAt(0.16, 0.3) || glassAt(-0.47, -0.4)) col = K.glass;
+          else if (roofAt(-0.4, 0.16)) col = K.fleetRoof;
+        } else if (cls === 'wagon' || cls === 'suv') { // long roof with rails
+          if (glassAt(0.2, 0.31)) col = K.glass;
+          else if (roofAt(-0.45, 0.2)) col = av >= hw - 3 && av <= hw - 2 ? K.fleetLine : cls === 'suv' && Math.abs(u + 0.12 * L) < 3 && av < hw - 5 ? K.pod2 : K.fleetRoof;
+        } else if (cls === 'bus') { // full-width screen, roof panels, two roof units, a hatch
+          if (av <= hw - 1.5 && u >= hl - 4) col = K.glass;
+          else if (av <= hw - 1.5 && u > -hl + 1 && u < hl - 4) col = (Math.abs(u - 0.18 * L) < 5 || Math.abs(u + 0.22 * L) < 5) && av < hw - 4 ? K.pod2 : Math.abs(((u + hl) % 12)) < 1 ? K.fleetLine : K.fleetRoof;
         } else {
-          if (av <= hw - 2 && u >= 0.22 * L && u <= 0.33 * L) col = K.glass;
-          else if (av <= hw - 1.5 && u < 0.22 * L && u > -hl + 1) col = Math.abs(((u + hl) % 6)) < 1 ? K.pod2 : K.fleetRoof;
+          if (glassAt(0.22, 0.33)) col = K.glass;
+          else if (roofAt(-0.5 + 1 / L, 0.22)) col = Math.abs(((u + hl) % 6)) < 1 ? K.pod2 : K.fleetRoof;
         }
         if (u > hl - 1.6 && av >= hw - 4.5 && av <= hw - 0.8) col = K.head;
         if (u < -hl + 1.6 && av >= hw - 4.5 && av <= hw - 0.8) col = braking ? K.warn : K.tail;
@@ -3203,6 +3225,7 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
         const bottom = !at(i, j + 1), low = bottom || !at(i, j + 2);
         let col = bottom ? K.fleetSide2 : K.fleetSide;
         const [u] = loc(x, y + Math.max(0, k0[j * w + i]));
+        if (cls === 'bus' && !low && k0[j * w + i] >= 2 && k0[j * w + i] <= hgt - 3 && Math.abs(u) < hl - 4 && ((u + hl) % 10) > 2) col = K.glass; // P4 mock-up: side windows
         if (low && (Math.abs(u - (hl - 6)) <= 2 || Math.abs(u + (hl - 6)) <= 2)) col = K.joint;
         sput(S, i, j, col);
       }
@@ -6725,7 +6748,7 @@ window.FLEET_DB = {
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P4.1';
+  const BUILD = 'P4.2';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];

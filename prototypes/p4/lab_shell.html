@@ -39,7 +39,9 @@
     <select id="piece"></select>
     <div id="sliders"></div>
     <h2 style="margin-top:14px">Traffic</h2>
-    <label>Vans <span class="val" id="vanV"></span></label><input id="van" type="range" min="0" max="1" step="0.1" value="0.4">
+    <label>Fleet</label><select id="fleet"><option value="p3">P3: sedans and vans</option><option value="expanded">Expanded: all eight classes</option><option value="buses">Buses only</option></select>
+    <label>Bus length</label><select id="busL"><option value="96">96 (7.9 m, V29)</option><option value="120">120 (9.8 m)</option><option value="144">144 (11.8 m)</option></select>
+    <label>Vans (P3 fleet) <span class="val" id="vanV"></span></label><input id="van" type="range" min="0" max="1" step="0.1" value="0.4">
     <label>One car every <span class="val" id="intV"></span></label><input id="int" type="range" min="1" max="5" step="0.25" value="2.5">
     <div class="row"><button id="drv">Driver: P4</button><button id="hold">Spawn hold: on</button></div>
     <div class="row"><button id="play">Pause</button><button id="speed">Speed 4×</button><button id="reset">Reset</button></div>
