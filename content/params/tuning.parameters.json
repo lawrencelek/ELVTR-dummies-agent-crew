@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit50-2026-10-21",
+ "registryVersion": "edit50.1-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5",
  "entries": [
@@ -2442,12 +2442,12 @@
    "group": "Damage",
    "owner": "Damage",
    "label": "Highway multiplier",
-   "description": "Points from a hit by a deck (highway) car are multiplied by this. The hit's damage is not.",
+   "description": "Points from a hit by a deck (highway) car are multiplied by this. P5.1: 1. Highway hits pay more only because the cars run traffic.deckSpeedScale faster.",
    "unit": "×",
    "type": "number",
-   "default": 1.5,
-   "status": "proposed",
-   "source": "Edit 50 (21 October), P5 prototype",
+   "default": 1,
+   "status": "retired (user, 21 October): highway hits pay through speed alone",
+   "source": "Edit 50 (21 October); retired in Edit 50.1",
    "editable": true,
    "protectedReason": null,
    "applyAt": "immediate",
@@ -2457,7 +2457,30 @@
    },
    "integrationStatus": "prototype-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Makes the highway worth the climb",
+   "purpose": "Kept for tuning; the faster cars already pay (speed scale)² for the same hit",
+   "designBound": "At 1.0 the plate is decoration and the roundabout has no scoring geometry. Above 2.0 the plate beats zone choice and the damage table in 8.3 stops mattering."
+  },
+  {
+   "id": "damage.walkShare",
+   "group": "Damage",
+   "owner": "Damage",
+   "label": "Walk share",
+   "description": "Share of the dummy's walking or running speed that adds to the closing speed of a hit. A dash (or a thrown dummy) adds its full speed, up to proto.dummyStrikeSpeed.",
+   "unit": "share",
+   "type": "number",
+   "default": 0.25,
+   "status": "proposed",
+   "source": "Edit 50.1 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-impact",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Walking into a car scores little; the dash is the scoring verb",
    "designBound": "At 1.0 the plate is decoration and the roundabout has no scoring geometry. Above 2.0 the plate beats zone choice and the damage table in 8.3 stops mattering."
   },
   {

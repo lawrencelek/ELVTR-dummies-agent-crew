@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagonal Highways</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --warn: #ffb347; --bad: #ff5a6a; --good: #57e389; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 0; color: var(--dim); max-width: 1000px; }
+  main { padding: 12px 16px 32px; display: grid; gap: 12px; max-width: 1500px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+  h3 { font-size: 14px; margin: 8px 0 2px; }
+  canvas { display: block; image-rendering: pixelated; width: 100%; height: auto; border-radius: 6px; background: #10141c; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 12px; }
+  .grid2 > * { min-width: 0; }
+  @media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } }
+  .cap { color: var(--dim); font-size: 12px; margin: 4px 0 0; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  button { background: #1d2a40; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 5px 8px; border-bottom: 1px solid #1f2a3d; text-align: right; }
+  th { color: var(--dim); font-weight: 500; }
+  td.l, th.l { text-align: left; }
+  .scroll { overflow-x: auto; }
+  .bad { color: var(--bad); } .good { color: var(--good); } .warn { color: var(--warn); }
+  .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 1000px; }
+  .key span { margin-right: 14px; } .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Diagonal highways · P5 mock-up</h1>
+  <p>Highways at 45° and 135° beside today's square highway, in game art, with live P5 traffic: highway cars at 1.4× speed, the game's driver. A mock-up: the P5 districts still build square highways.</p>
+</header>
+<main>
+  <section>
+    <h2>One screen each</h2>
+    <div class="row"><button id="play">Pause</button></div>
+    <div class="grid2" id="panels"></div>
+    <p class="note">Highway decks drawn lifted by their height (three-quarter view), girder face on the screen-down edge, columns under both edges at world.deckPillarSpacing, clear of the road. 16 px tile grid. Panel 2 adds a stair along the deck and a dummy on its shoulder, for scale.</p>
+  </section>
+  <section>
+    <h2>Across a district</h2>
+    <div class="grid2"><canvas id="map"></canvas>
+      <div><p class="cap key"><span><i class="dot" style="background:#57e389"></i>Side-edge crossing: as today's highways</span><span><i class="dot" style="background:#ffb347"></i>Top/bottom-edge crossing: the lower screen's top edge</span></p>
+      <div class="scroll"><table id="maprows"></table></div>
+      <p class="note">A screen is 800 × 640. A 45° line drops 800 across one screen, more than its height, so a diagonal highway crosses a top or bottom edge on most screens it enters. Edit 48 keeps a drawn deck top world.deckTopClear (128) below every top edge, so the dummy is never hidden on entry from above. Proposal: close the top edge over the deck's crossing, plus world.deckTopClear either side (orange bars).</p></div></div>
+  </section>
+</main>
+<!--SCRIPTS-->
+</body>
+</html>

@@ -56,7 +56,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P5.0';
+  const BUILD = 'P5.1';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -1681,7 +1681,7 @@
     ['proto.driver.passClearance', 0, 80, 2], ['proto.driver.passSpeed', 10, 160, 2], ['proto.driver.patienceSeconds', 0, 30, 0.5],
     ['traffic.comfortBraking', 10, 200, 1], ['traffic.hardBraking', 20, 300, 1], ['traffic.acceleration', 10, 200, 1], ['traffic.timeGap', 0.5, 4, 0.1], ['proto.swerveLength', 40, 300, 5], ['proto.returnSignalSeconds', 0, 2, 0.05],
     ['vehicles.sedan.cruiseSpeed', 60, 260, 2], ['vehicles.van.cruiseSpeed', 60, 260, 2], ['upgrades.throwDistance', 40, 300, 5],
-    ['traffic.deckSpeedScale', 1, 2, 0.05], ['traffic.deckGapScale', 0.5, 3, 0.1], ['damage.deckMultiplier', 1, 3, 0.1], ['vehicles.bus.minRadius', 64, 320, 8],
+    ['traffic.deckSpeedScale', 1, 2, 0.05], ['traffic.deckGapScale', 0.5, 3, 0.1], ['damage.deckMultiplier', 1, 3, 0.1], ['vehicles.bus.minRadius', 64, 320, 8], ['damage.walkShare', 0, 1, 0.05],
     ['traffic.share.hatchback', 0, 0.5, 0.01], ['traffic.share.police', 0, 0.3, 0.01], ['traffic.share.bus', 0, 0.4, 0.01], // P5 (Edit 50)
     ['upgrades.spineLimit', 10, 90, 1], ['upgrades.bigCapacity', 2, 6, 1], ['world.puddleShare', 0, 0.1, 0.005], ['proto.district.seed', 0, 20, 1], ['world.flipSeconds', 0, 1, 0.05],
     ['proto.damageExponent', 1, 3, 0.1], ['proto.dummyStrikeSpeed', 0, 400, 5], ['proto.dummyMass', 0.01, 1, 0.005],

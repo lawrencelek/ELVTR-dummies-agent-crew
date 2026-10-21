@@ -13,3 +13,9 @@ scripts += db + f'<script>\n{(here / "game.js").read_text(encoding="utf-8")}\n</
 out = here / 'dummies_p5.html'
 out.write_text(shell.replace('<!--SCRIPTS-->', scripts), encoding='utf-8')
 print(out.name, out.stat().st_size, 'bytes')
+# P5.1 mock-up (Edit 50.1): diagonal highways at 45° and 135°, in game art with live traffic
+hw = (here / 'highway_shell.html').read_text(encoding='utf-8')
+hw_scripts = ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</script>\n' for f in ('sim.js', 'pixel.js', 'highway_view.js'))
+out2 = here / 'highway_mockup.html'
+out2.write_text(hw.replace('<!--SCRIPTS-->', hw_scripts), encoding='utf-8')
+print(out2.name, out2.stat().st_size, 'bytes')

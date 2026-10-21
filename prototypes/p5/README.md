@@ -1,14 +1,18 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways
 
-**P5.0 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edit 50 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.1 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edits 50 and 50.1 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
-P5 is the game with P4's road and traffic learnings, plus the fleet and highway rules of Edit 50. One build: **`dummies_p5.html`**.
+P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
+
+- **`dummies_p5.html`:** the game (P5.1).
+- **`highway_mockup.html`:** diagonal highways at 45° and 135°, a mock-up in game art with live traffic. Not in the districts.
 
 ## Why
 
 - **O3.65:** buses only on roads with centre radius 160, and on the elevated highways.
 - **O3.65:** highway traffic faster, with fewer vehicles, and better to go there.
 - **O3.65:** 45° roads and highways in; all new learnings into P5. Five car models: hatchback, sedan, police, van, small bus.
+- **O3.66:** the highway pays through speed, not a bonus. Walking into a car's front scores too much. What about diagonal highways?
 
 ## From P4
 
@@ -34,23 +38,54 @@ P5 is the game with P4's road and traffic learnings, plus the fleet and highway 
 | A bus only brakes; it never swerves | `vehicles.bus.swerve` | 0 |
 | Highway cars cruise faster | `traffic.deckSpeedScale` | 1.4× |
 | Highway cars come further apart | `traffic.deckGapScale` | 1.5× `world.deckInterval` |
-| A highway hit scores more points (damage unchanged) | `damage.deckMultiplier` | 1.5× |
+| Highway hits pay through speed alone (Edit 50.1; was 1.5×) | `damage.deckMultiplier` | 1 |
+| Walking or running into a car adds this share of the dummy's speed; a dash adds all of it, up to `proto.dummyStrikeSpeed` (Edit 50.1) | `damage.walkShare` | 0.25 |
 
 - **Bus slot on an unfit road:** runs as a sedan.
 - **Bend measure:** arc length over turn, across four vertices; 10% polyline tolerance (as contract clause 25).
 - **Sight:** a bus hides the dummy from cars like a van, and casts a sensor shadow.
-- **Popup:** a highway hit shows `HIGHWAY X1.5` under its points.
+- **Popup:** a highway hit shows `HIGHWAY X…` under its points when `damage.deckMultiplier` > 1 (off in P5.1).
 - **Out:** sports, wagon and SUV. Their sizes stay in the registry.
 
 ![Interchange C1 in P5: the highway carries fewer, faster cars; the ground road may carry a bus](docs/p5_highway_screen.png)
 
-![A dash into a highway hatchback: 286 damage, +429 points (×1.5)](docs/p5_highway_hit.png)
+![P5.0: a dash into a highway hatchback, 286 damage, +429 points at the retired ×1.5](docs/p5_highway_hit.png)
 
 ![Riverside C2 in P5: a bus on a 45° road with wide bends (buses staged for the shot)](docs/p5_diagonal_bus.png)
 
+## Points rebalance (P5.1, Edit 50.1)
+
+| Front contact with a sedan (points = damage) | Parked | Caution (82) | Cruise (138) | Highway (193) |
+|---|---|---|---|---|
+| Standing | 0 | 35 | 100 | 196 |
+| Walking in (81): P5.0 → P5.1 | 34 → 2 | 140 → 55 | 252 → 132 | 394 → 239 |
+| Running in (162): P5.0 → P5.1 | 53 → 9 | 174 → 79 | 297 → 167 | 451 → 286 |
+| Dashing in | 53 | 174 | 297 | 451 |
+
+- **Points report** (`docs/points_report.md`, every start screen, 150 s):
+
+| Model | Style | Layouts with a write-off | Write-offs | Mean points per hit | Median first write-off |
+|---|---|---|---|---|---|
+| P5.0 | Walks into cars | 13 of 15 | 22 | 54 | 57 s |
+| P5.0 | Dashes | 15 of 15 | 34 | 77 | 35 s |
+| P5.1 | Walks into cars | 0 of 15 | 0 | 15 | — |
+| P5.1 | Dashes | 14 of 15 | 27 | 60 | 49 s |
+
+- **Bake bot:** all 15 layouts still give a first write-off by 90 s (18–87 s). No rebake.
+
+## Diagonal highways (mock-up, Edit 50.1)
+
+![Today's square highway; 135° over a 45° road; 45° over a square road; a corner cut](docs/p51_highway_mockup.png)
+
+![A 45° and a 135° highway across a district: edge crossings and top-edge closures](docs/p51_highway_map.png)
+
+- **Square crossing (decision 152):** only a 45° road passes square under a 135° highway, and the reverse.
+- **Edges:** a 45° line drops 800 across an 800 × 640 screen, so it meets a top or bottom edge on most screens.
+- **Proposal (decision 218):** a diagonal highway only over a 45° road run; the lower screen's top edge closes over each crossing, plus `world.deckTopClear` either side.
+
 ## Evidence
 
-- `node test_sim.js` → 93/93: P3.4 and P4 checks, plus P5 fleet, buses and highways.
+- `node test_sim.js` → 94/94: P3.4 and P4 checks, plus P5 fleet, buses, highways and points.
 - **Bake:** 15 layouts kept of 30 candidates (`content/districts/districts_p5.json`, `p5-edit50-2026-10-21`). Contract clauses 25–26 hold with the P5 fleet.
   - 11 of 15 match P4's layouts. Interchange 1–3 and CBD 3 differ.
 - **Report:** `node tools/p5_report.js 120` → `docs/p5_report.md`.
@@ -70,9 +105,10 @@ P5 is the game with P4's road and traffic learnings, plus the fleet and highway 
 
 ```
 python3 build.py                 # dummies_p5.html
-node test_sim.js                 # P3.4, P4 and P5 checks (93)
+node test_sim.js                 # P3.4, P4 and P5 checks (94)
 node tools/district_bake.js 60   # P5 layouts → content/districts/districts_p5.json
 node tools/p5_report.js 120      # bus roads, highway traffic
+node tools/points_report.js 150  # walk-in against dash play, before and after damage.walkShare
 ```
 
 ## Files
@@ -84,10 +120,14 @@ node tools/p5_report.js 120      # bus roads, highway traffic
 | `lab.js` | Test helper only (road pieces for `test_sim.js`). The Turn Lab stays in P4 |
 | `tools/district_bake.js`, `tools/district_check.js` | Bake and contract, as P4 |
 | `tools/p5_report.js` | Bus roads and highway traffic on the baked layouts |
+| `tools/points_report.js` | Walk-in and dash play on every start screen, P5.0 and P5.1 points |
+| `highway_view.js`, `highway_shell.html` | Diagonal highway mock-up |
 
 ## Open
 
-- **Highway reward:** points ×1.5. Or credits, or a quota bonus?
+- **Diagonal highways:** adopt with decision 218's rules, or keep highways square?
+- **Walk share:** 0.25 stops walk-in write-offs; dashing play slows (first write-off 35 → 49 s).
+
 - **Bus routes:** 40% of screens fit a bus. Should the planner make wide-bend bus routes?
 - **Junctions:** the 45° junction choice (decision 204) and branching roads in the planner.
 - **Police:** canon says it tracks your approach, then commits. P5 drives it like a sedan.

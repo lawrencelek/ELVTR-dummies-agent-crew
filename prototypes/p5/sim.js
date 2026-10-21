@@ -71,7 +71,8 @@
     // P5 (Edit 50): five models (hatchback, sedan, police, van, bus); buses on wide roads and highways; faster, sparser, richer highways
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
-    'traffic.deckSpeedScale': 1.4, 'traffic.deckGapScale': 1.5, 'damage.deckMultiplier': 1.5,
+    'traffic.deckSpeedScale': 1.4, 'traffic.deckGapScale': 1.5, 'damage.deckMultiplier': 1, // P5.1: highway hits pay through speed alone (user, 21 October)
+    'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
@@ -1305,10 +1306,12 @@
   // P1.3 impulse model. n points from dummy into car. Velocities in world units/s.
   // Newtonian two-body impact: J = (1+e)·μ·u, μ = m_d·m_c/(m_d+m_c). Damage ∝ (dummy Δv)^p; p = 2 tracks dissipated energy.
   // The dummy's own approach speed is capped at a sprint (the one non-Newtonian rule).
-  function impulseImpact(P, bvx, bvy, cvx, cvy, nx, ny, cls) {
+  // P5.1 (Edit 50.1): dash says whether the dummy is dashing (or thrown). A dash strikes at its own speed, up to
+  // proto.dummyStrikeSpeed. Walking or running adds only damage.walkShare of the dummy's speed into the car.
+  function impulseImpact(P, bvx, bvy, cvx, cvy, nx, ny, cls, dash) {
     const md = P['proto.dummyMass'], mc = P['vehicles.' + cls + '.mass'], ms = P['vehicles.sedan.mass'], e = P['proto.restitution'];
-    const vdn = bvx * nx + bvy * ny, vcn = cvx * nx + cvy * ny;
-    const strike = Math.min(Math.max(vdn, 0), P['proto.dummyStrikeSpeed']) + Math.min(vdn, 0);
+    const vdn = bvx * nx + bvy * ny, vcn = cvx * nx + cvy * ny, share = dash || P['damage.walkShare'] == null ? 1 : P['damage.walkShare'];
+    const strike = Math.min(Math.max(vdn, 0) * share, P['proto.dummyStrikeSpeed']) + Math.min(vdn, 0);
     const un = Math.max(0, strike - vcn);
     const mu = md * mc / (md + mc), J = (1 + e) * mu * un, dvd = J / md;
     const rx = bvx - cvx, ry = bvy - cvy, rn = rx * nx + ry * ny, rl = hyp(rx, ry);
@@ -1690,7 +1693,7 @@
         let knock = null;
         if (!c.inEpisode) {
           c.inEpisode = true;
-          const ph = impulseImpact(P, b.vx, b.vy, c.vx, c.vy, nx, ny, c.cls);
+          const ph = impulseImpact(P, b.vx, b.vy, c.vx, c.vy, nx, ny, c.cls, b.mode === 'lunge' || b.mode === 'knock');
           contacts.push({ k, car: c, closing: Math.max(0, rel), ph, px: res.cx, py: res.cy, zone: zoneOf(res.qx, res.qy, c),
             carState: this.carCue(c), cause: c.cause, lunging: b.mode === 'lunge', bodySpeed: hyp(b.vx, b.vy), carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff) });
           if (P['proto.damageModel'] && ph.un > 1e-6) knock = ph.knock;

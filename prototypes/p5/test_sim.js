@@ -930,7 +930,7 @@ check('P5 buses (Edit 50): a bus runs only on a ground road whose bends keep veh
     assert(swerves ? maxD > 20 : maxD < 0.5, cls + ' lateral ' + maxD.toFixed(1)); assert.strictEqual(b.health, s.P['damage.bodyHealth'], cls + ' hit the dummy');
   }
 });
-check('P5 highways (Edit 50): deck cars run traffic.deckSpeedScale faster, traffic.deckGapScale further apart; a deck hit scores damage.deckMultiplier', () => {
+check('P5 highways (Edit 50, 50.1): deck cars run traffic.deckSpeedScale faster, traffic.deckGapScale further apart; points come from speed (damage.deckMultiplier 1)', () => {
   const { s, lv } = onScreen((lv) => lv.decks.length && lv.deckLanes.length), P = s.P;
   const deck = s.cars.filter((c) => c.deck);
   assert(deck.length > 0 && deck.every((c) => Math.abs(c.cruise - P['vehicles.' + c.cls + '.cruiseSpeed'] * P['traffic.deckSpeedScale']) < 1e-9), 'deck cruise');
@@ -943,8 +943,23 @@ check('P5 highways (Edit 50): deck cars run traffic.deckSpeedScale faster, traff
     t.s.account([{ k: 0, car, ph: { raw: 40, assessed: 40, angle: 0, dvd: 0, un: 0 }, closing: 1, zone: 'front', px: b.x, py: b.y, carState: 'cruise', cause: null, lunging: false, stopped: false, drop: false }]); return t.s.run.points - p0; };
   const dc = t.s.newCar('deckP', 'sedan', 2, ln.path, 300, b.level), gc = t.s.newCar('carP', 'sedan', 0, t.lv.lanes[0], 300, 0);
   const pd = gain(dc), pg = gain(gc);
-  assert(Math.abs(pd - pg * P['damage.deckMultiplier']) < 1e-6 && pd > pg, 'deck ' + pd + ' ground ' + pg);
-  assert(t.s.events.some((e) => e.type === 'impact' && e.car === 'deckP' && e.highway), 'impact event marks the highway');
+  assert(Math.abs(pd - pg * P['damage.deckMultiplier']) < 1e-6, 'deck ' + pd + ' ground ' + pg);
+  const f = (cls, cv) => D.impulseImpact(P, 0, 0, -cv, 0, 1, 0, cls, false).raw; // the same car standing still, ground against highway speed
+  assert(Math.abs(f('sedan', P['vehicles.sedan.cruiseSpeed'] * P['traffic.deckSpeedScale']) / f('sedan', P['vehicles.sedan.cruiseSpeed']) - P['traffic.deckSpeedScale'] ** 2) < 1e-9, 'highway pays (speed scale)²');
+});
+check('P5.1 points (Edit 50.1): walking into a car adds damage.walkShare of the walk; a dash strikes at full speed', () => {
+  const P = Object.assign({}, REG, D.PROTO, D.OVERRIDES), v = P['vehicles.sedan.cruiseSpeed'], walk = P['movement.walkSpeed'], run = P['movement.runSpeed'];
+  const f = (bv, cv, dash) => D.impulseImpact(P, bv, 0, -cv, 0, 1, 0, 'sedan', dash).raw;
+  assert(Math.abs(f(0, v, false) - P['damage.baseImpact']) < 1e-9, 'standing, hit at cruise: baseImpact');
+  assert(f(walk, v, false) < 1.4 * f(0, v, false), 'walk-in ' + f(walk, v, false).toFixed(0));
+  assert(f(run, v, false) < 0.6 * f(400, v, true), 'run-in ' + f(run, v, false).toFixed(0) + ' dash ' + f(400, v, true).toFixed(0));
+  assert(f(walk, 0, false) < 5 && f(400, 0, true) > 40, 'parked car: walk ' + f(walk, 0, false).toFixed(1) + ', dash ' + f(400, 0, true).toFixed(1));
+  const { s } = onScreen((lv) => lv.lanes.length), b = s.body; s.cars = [];
+  const c = s.newCar('carW', 'sedan', 0, s.level.lanes[0], 400, 0); c.v = 0; s.pose(c); s.cars.push(c); // a parked car; the dummy walks into its nose
+  const p = D.pathAt(c.path, c.s + c.L / 2 + 20); b.x = p.x; b.y = p.y; b.level = 0; b.floor = null; b.mode = 'idle'; b.facing = Math.atan2(c.y - b.y, c.x - b.x);
+  const h0 = b.health, pts0 = s.run.points;
+  for (let i = 0; i < 60; i++) { s.step({ mx: Math.cos(b.facing), my: Math.sin(b.facing) }); c.v = 0; }
+  assert(h0 - b.health < 5 && s.run.points - pts0 < 5, 'walking into a parked car: ' + (h0 - b.health).toFixed(1) + ' damage');
 });
 check('P4 junctions (Edit 49.3): T, 45° Y, fork, squared-off T and a roundabout with a 45° arm flow; the minor road gives way; no two priority lanes conflict', () => {
   const P = Object.assign({}, REG, D.PROTO, D.OVERRIDES), R = P['world.junctionTurnRadius'];
