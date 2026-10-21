@@ -577,7 +577,8 @@ check('city: the centre screen holds the landmark; flyovers cross whole rows or 
     for (const dk of Dd.decks) { const cells = Dd.cells.flat().filter((q) => (q.decks || []).length && (dk.hz ? q.cell[1] === dk.line : q.cell[0] === dk.line)); assert.strictEqual(cells.length, 3, id + ' deck spans 3 screens'); }
   }
   const t = new Sim('interchange', { 'proto.layout': 1 }), dks = t.district.decks;
-  assert(dks.length === 2 && dks.every((dk) => dk.hz && dk.height === t.P['world.deckHeight']) && dks[0].line !== dks[1].line, 'one overground level: two decks on different rows (Edit 42)');
+  assert(dks.length === 2 && dks.every((dk) => dk.hz) && dks[0].line !== dks[1].line, 'two decks on different rows (Edit 42)');
+  assert(dks.filter((dk) => dk.z === 1 && dk.height === t.P['world.deckHeight']).length === 1 && dks.filter((dk) => dk.z === 2 && dk.height === t.P['world.highHeight']).length === 1, 'a low highway at Z1 and a high highway at Z2 (Edit 44)');
   assert(dks.every((dk) => dk.line !== 1), 'Interchange decks stay off the roundabout row (Edit 43)');
 });
 check('city: the same layout plays the same; the next district follows in order', () => {
@@ -600,77 +601,118 @@ function onScreen(fn, o) {
   }
   throw new Error('no screen found');
 }
-check('flyovers: deck cars are full drivers on level 2, both ways; they never meet a dummy on the ground', () => {
+check('flyovers: deck cars are full drivers at their deck level, both ways; they never meet a dummy on the ground', () => {
   const { s, lv } = onScreen((lv) => lv.decks.length);
   const deck = s.cars.filter((c) => c.deck);
-  assert(deck.length > 0 && deck.every((c) => c.layer === 2) && new Set(deck.map((c) => c.lane)).size === 2, 'both lanes run');
+  assert(deck.length > 0 && deck.every((c) => c.layer === lv.decks[c.deckIdx].z && c.layer >= 1) && new Set(deck.map((c) => c.lane)).size === 2, 'both lanes run');
   assert.strictEqual(s.run.admitted, 0, 'deck cars are off the schedule');
   const dk = lv.decks[0]; s.body.x = 400; s.body.y = dk.off + 28; const h = s.body.health; // under a deck lane, on the ground
   for (let i = 0; i < 600; i++) { s.step({}); for (const c of s.cars) if (c.deck) assert.strictEqual(c.hz, null, 'deck driver sensed the ground dummy'); }
   assert.strictEqual(s.body.health, h, 'no hits through the deck'); assert(s.cars.some((c) => c.deck), 'traffic keeps coming');
 });
-check('stairs: up to the deck at world.stairSpeed and back down to the ground', () => {
-  const { s, hit: st } = onScreen((lv) => lv.stairs.find((q) => q.to === 2)), b = s.body, R = s.P['body.radius'], sg = Math.sign(st.low - st.high);
-  b.x = st.x + st.w / 2; b.y = st.low + sg * (R + 4); b.facing = -sg * Math.PI / 2;
+const deckFloor = (lv, k) => lv.floors.findIndex((f) => f.kind === 'deck' && f.deck === k);
+const stairStart = (st, R, b) => { const sg = Math.sign(st.low - st.high); if (st.axis === 'y') { b.x = st.x + st.w / 2; b.y = st.low + sg * (R + 4); } else { b.y = st.y + st.h / 2; b.x = st.low + sg * (R + 4); } return st.axis === 'y' ? { mx: 0, my: -sg } : { mx: -sg, my: 0 }; };
+check('stairs: from the ground up to a highway at world.stairSpeed, and back down (Edit 44: to Z1 or Z2)', () => {
+  const { s, hit: st } = onScreen((lv) => lv.stairs.find((q) => q.from === 0 && q.deck != null)), b = s.body, R = s.P['body.radius'], sg = Math.sign(st.low - st.high);
+  s.cars = []; s.admitDeck = () => {}; b.facing = -sg * Math.PI / 2; const up = stairStart(st, R, b);
   let top = 0, onStair = 0;
-  for (let i = 0; i < 300 && b.level !== 2; i++) { s.step({ mx: 0, my: -sg }); if (b.stair) top = Math.max(top, Math.hypot(b.vx, b.vy)), onStair++; }
-  assert.strictEqual(b.level, 2, 'reached the deck'); assert(onStair > 0, 'climbed the stair');
+  for (let i = 0; i < 400 && b.level !== st.to; i++) { s.step(up); if (b.stair) top = Math.max(top, Math.hypot(b.vx, b.vy)), onStair++; }
+  assert.strictEqual(b.level, st.to, 'reached the highway'); assert(onStair > 0, 'climbed the stair');
+  assert.strictEqual(s.level.floors[b.floor].kind, 'deck', 'on the deck floor'); assert.strictEqual(s.level.floors[b.floor].deck, st.deck);
   assert(top <= s.P['movement.runSpeed'] * s.P['world.stairSpeed'] + 1e-6, 'stair speed ' + top.toFixed(1));
   s.step({ aPress: true }); assert.strictEqual(b.mode, 'lunge', 'dash on the deck'); idle(s, 40, {});
   b.x = st.x + st.w / 2; b.mode = 'idle'; b.lunge = null;
-  for (let i = 0; i < 400 && b.level !== 1; i++) s.step({ mx: 0, my: sg });
-  assert.strictEqual(b.level, 1, 'back on the ground');
+  for (let i = 0; i < 600 && b.level !== 0; i++) s.step({ mx: 0, my: sg });
+  assert.strictEqual(b.level, 0, 'back on the ground'); assert.strictEqual(b.floor, null);
 });
 check('deck: a deck car brakes for the dummy in its lane and takes a dash; a ground car passes under it', () => {
-  const { s, lv } = onScreen((lv) => lv.decks.length && lv.deckLanes.length), b = s.body, dk = lv.decks[0];
-  s.cars = []; const ln = lv.deckLanes[0], p = D.pathAt(ln.path, 600);
-  b.level = 2; b.deck = 0; b.x = p.x; b.y = p.y; b.facing = Math.atan2(-p.ty, -p.tx);
-  const c = s.newCar('deckT', 'sedan', 2, ln.path, 380, 2); s.cars.push(c);
-  const g = s.newCar('carT', 'sedan', 0, lv.lanes[0], 200, 1); s.cars.push(g);
+  const { s, lv } = onScreen((lv) => lv.decks.length && lv.deckLanes.length), b = s.body;
+  s.cars = []; const ln = lv.deckLanes[0], p = D.pathAt(ln.path, 600), z = lv.decks[ln.deck].z;
+  b.level = z; b.floor = deckFloor(lv, ln.deck); b.x = p.x; b.y = p.y; b.facing = Math.atan2(-p.ty, -p.tx);
+  const c = s.newCar('deckT', 'sedan', 2, ln.path, 380, z); c.deckIdx = ln.deck; s.cars.push(c);
+  const g = s.newCar('carT', 'sedan', 0, lv.lanes[0], 200, 0); s.cars.push(g);
   let sensed = false, groundSensed = false;
   for (let i = 0; i < 120; i++) { s.step({}); if (c.hz) sensed = true; if (g.hz) groundSensed = true; }
   assert(sensed && c.v < c.cruise, 'deck driver sees and slows'); assert(!groundSensed, 'ground driver never sees the deck dummy');
-  void dk;
   c.s = 600 - c.L / 2 - 30; c.v = 60; s.pose(c); b.facing = Math.atan2(c.y - b.y, c.x - b.x); b.mode = 'idle'; b.charge = 2;
   s.step({ aPress: true }); idle(s, 30, {});
   const ev = s.events.find((e) => e.type === 'impact' && e.car === 'deckT'); assert(ev && ev.deck, 'hit on the deck');
 });
 check('drop: a broken parapet drops the dummy to the road; landing on a car scores a hit to the legs', () => {
   const { s, lv, hit: dk } = onScreen((lv) => lv.decks.find((q) => q.gaps.length)), b = s.body, R = s.P['body.radius'];
-  const [a0, a1, side] = dk.gaps[0], lim = s.P['world.deckWidth'] / 2 - s.P['world.parapetWidth'] - R;
-  s.cars = []; b.level = 2; b.deck = lv.decks.indexOf(dk);
+  const [a0, a1, side] = dk.gaps[0], lim = s.P['world.deckWidth'] / 2 - s.P['world.parapetWidth'] - R, k = lv.decks.indexOf(dk);
+  s.cars = []; b.level = dk.z; b.floor = deckFloor(lv, k);
   if (dk.hz) { b.x = (a0 + a1) / 2; b.y = dk.off + side * (lim - 2); } else { b.y = (a0 + a1) / 2; b.x = dk.off + side * (lim - 2); }
   for (let i = 0; i < 30 && b.mode !== 'drop'; i++) s.step(dk.hz ? { mx: 0, my: side } : { mx: side, my: 0 });
   assert.strictEqual(b.mode, 'drop', 'dropped through the gap');
-  const T = s.P['world.dropSeconds'];
+  const T = b.drop.T; assert(near(T, s.P['world.dropSeconds'] * Math.sqrt(D.zHeight(s.P, dk.z) / s.P['world.deckHeight']), 1e-9), 'fall time scales with √height');
   while (b.drop.t < T - 1 / 60 - 1e-9) s.step({});
   const rest = T - b.drop.t, lx = b.x + b.drop.vx * rest, ly = b.y + b.drop.vy * rest, pr = D.pathProject(lv.lanes[0], lx, ly);
-  const c = s.newCar('carL', 'sedan', 0, lv.lanes[0], pr.s, 1); c.d = pr.lat; c.v = 40; s.pose(c); s.cars.push(c);
+  const c = s.newCar('carL', 'sedan', 0, lv.lanes[0], pr.s, 0); c.d = pr.lat; c.v = 40; s.pose(c); s.cars.push(c);
   s.step({});
-  assert.strictEqual(b.level, 1, 'on the ground');
+  assert.strictEqual(b.level, 0, 'on the ground');
   const ev = s.events.find((e) => e.type === 'impact' && e.drop);
   assert(ev && /^leg[LR]$/.test(ev.part) && ev.assessed > 0, 'landing hit to the legs');
   const want = D.dropImpact(s.P, 0, 0, { cls: 'sedan', vx: 0, vy: 0 }, { nx: 0, ny: 0 }).assessed;
   assert(ev.assessed >= want - 1e-6, 'at least a drop onto a stopped car: ' + ev.assessed.toFixed(1) + ' vs ' + want.toFixed(1));
 });
-check('underpass: down, under the road, up the far side; no car senses the dummy below', () => {
-  const { s, lv } = onScreen((lv) => lv.corridors.length), b = s.body, R = s.P['body.radius'];
-  const [sA, sB] = lv.stairs.filter((q) => q.to === 0), sg = Math.sign(sA.low - sA.high), dir = -sg;
-  if (sA.axis === 'y') { b.x = sA.x + sA.w / 2; b.y = sA.low + sg * (R + 4); } else { b.y = sA.y + sA.h / 2; b.x = sA.low + sg * (R + 4); }
-  const cmd = sA.axis === 'y' ? { mx: 0, my: dir } : { mx: dir, my: 0 };
-  let under = false;
-  for (let i = 0; i < 600; i++) {
-    s.step(cmd);
-    if (b.level === 0 && !b.stair && !under) {
-      under = true;
-      const pr = D.pathProject(lv.lanes[0], b.x, b.y), c = s.newCar('carU', 'sedan', 0, lv.lanes[0], pr.s, 1); c.d = pr.lat; s.pose(c); s.cars.push(c);
-      s.step(cmd); assert(!c.hz && !c.det.side && !s.events.some((e) => e.type === 'impact'), 'unsensed and untouched below');
-      s.cars = [];
-    }
-    if (under && b.level === 1 && !b.stair) break;
-  }
-  assert(under, 'went under'); assert.strictEqual(b.level, 1, 'came up');
-  assert(sA.axis === 'y' ? Math.sign(b.y - sA.y) === dir : Math.sign(b.x - sA.x) === dir, 'on the far side');
+// ---------- Edit 44: Z0 ground, Z1 low highway, Z2 high highway, platform roofs and skybridges
+check('levels (Edit 44): Z heights and stair runs; a Z2 drop lands harder than a Z1 drop', () => {
+  const P = Object.assign({}, D.REG, D.PROTO, D.OVERRIDES);
+  assert.deepStrictEqual([0, 1, 2].map((z) => D.zHeight(P, z)), [0, P['world.deckHeight'], P['world.highHeight']]);
+  assert.deepStrictEqual([D.stairRun(P, 0, 1), D.stairRun(P, 0, 2), D.stairRun(P, 1, 2)], [64, 112, 48]);
+  const car = { cls: 'sedan', vx: 0, vy: 0 }, v1 = P['damage.dropSpeed'], v2 = v1 * Math.sqrt(P['world.highHeight'] / P['world.deckHeight']);
+  assert(D.dropImpact(P, 0, 0, car, { nx: 0, ny: 0 }, v2).assessed > D.dropImpact(P, 0, 0, car, { nx: 0, ny: 0 }, v1).assessed, 'higher fall, harder hit');
+  for (const id of ['interchange', 'cbd']) for (const k of [1, 2, 3]) assert.strictEqual(new Sim(id, { 'proto.layout': k }).district.decks.filter((q) => q.z === 2).length, 1, id + '/' + k + ' one high highway');
+  for (const id of ['riverside', 'market', 'campus']) for (const k of [1, 2, 3]) assert(new Sim(id, { 'proto.layout': k }).district.decks.every((q) => q.z === 1), id + ' low highways only');
+});
+check('platforms (Edit 44): a tall stair climbs from the ground to a Z2 roof; its ledge drops to the forecourt', () => {
+  const { s, lv, hit: st } = onScreen((lv) => lv.stairs.find((q) => q.from === 0 && q.to === 2 && q.deck == null && lv.floors[q.head].ledges.length)), b = s.body, R = s.P['body.radius'];
+  s.cars = []; s.admit = () => {}; const up = stairStart(st, R, b);
+  for (let i = 0; i < 600 && b.level !== 2; i++) s.step(up);
+  assert.strictEqual(b.level, 2, 'on the roof'); assert.strictEqual(b.floor, st.head); const f = lv.floors[b.floor]; assert.strictEqual(f.kind, 'roof');
+  assert(s.events.some((e) => e.type === 'level' && e.level === 2 && e.floor === 'roof'), 'level event names the roof');
+  const lg = f.ledges[0], o = { W: [-1, 0], E: [1, 0], N: [0, -1], S: [0, 1] }[lg.side], m = (lg.a0 + lg.a1) / 2;
+  b.x = o[0] ? (o[0] < 0 ? f.x + 30 : f.x + f.w - 30) : m; b.y = o[1] ? (o[1] < 0 ? f.y + 30 : f.y + f.h - 30) : m; b.mode = 'idle';
+  for (let i = 0; i < 120 && b.mode !== 'drop'; i++) s.step({ mx: o[0], my: o[1] });
+  assert.strictEqual(b.mode, 'drop', 'off the ledge'); assert.strictEqual(b.drop.fromZ, 2); assert.strictEqual(b.drop.toZ, 0);
+  assert(near(b.drop.T, s.P['world.dropSeconds'] * Math.sqrt(s.P['world.highHeight'] / s.P['world.deckHeight']), 1e-9), 'Z2 fall time');
+  for (let i = 0; i < 120 && (b.mode === 'drop' || b.level !== 0); i++) s.step({});
+  idle(s, 30, {});
+  assert.strictEqual(b.level, 0, 'landed on the ground'); assert.strictEqual(b.floor, null);
+  const rd = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
+  assert(rd(b.x, b.y, { x: f.bx, y: f.by, w: f.bw, h: f.bh }) >= R - 0.5, 'clear of the building');
+});
+check('skybridges (Edit 44): the dummy crosses from roof to roof at Z2; the bridge sides hold', () => {
+  const { s, lv, hit: br } = onScreen((lv) => lv.floors.find((f) => f.kind === 'bridge')), b = s.body, bi = lv.floors.indexOf(br);
+  s.cars = []; s.admit = () => {};
+  const [i, j] = br.ends, A = lv.floors[i], B = lv.floors[j], hz = br.axis === 'x', dir = Math.sign(hz ? B.bx - A.bx : B.by - A.by);
+  b.level = 2; b.floor = i; b.stair = null; b.mode = 'idle';
+  if (hz) { b.y = br.y + br.h / 2; b.x = A.x + A.w / 2; } else { b.x = br.x + br.w / 2; b.y = A.y + A.h / 2; }
+  let onBridge = false;
+  for (let k = 0; k < 600 && b.floor !== j; k++) { s.step(hz ? { mx: dir, my: 0 } : { mx: 0, my: dir }); assert.strictEqual(b.level, 2, 'stayed at Z2'); if (b.floor === bi) onBridge = true; }
+  assert(onBridge, 'walked the bridge'); assert.strictEqual(b.floor, j, 'reached the far roof');
+  b.floor = bi; b.mode = 'idle'; if (hz) { b.x = br.x + br.w / 2; b.y = br.y + br.h / 2; } else { b.y = br.y + br.h / 2; b.x = br.x + br.w / 2; }
+  for (let k = 0; k < 90; k++) s.step(hz ? { mx: 0, my: 1 } : { mx: 1, my: 0 });
+  assert(b.mode !== 'drop' && b.level === 2 && b.floor === bi, 'the bridge parapet holds');
+});
+check('link stairs (Edit 44): a short stair climbs from a low highway (Z1) to a platform roof (Z2), and back', () => {
+  const { s, lv, hit: st } = onScreen((lv) => lv.stairs.find((q) => q.from === 1)), b = s.body, sg = Math.sign(st.high - st.low);
+  s.cars = []; s.admitDeck = () => {}; s.admit = () => {};
+  assert.strictEqual(lv.floors[st.foot].kind, 'deck'); assert.strictEqual(lv.floors[st.foot].z, 1); assert.strictEqual(lv.floors[st.head].kind, 'roof');
+  b.level = 1; b.floor = st.foot; b.x = st.x + st.w / 2; b.y = st.low - sg * 30; b.mode = 'idle';
+  for (let i = 0; i < 400 && b.level !== 2; i++) s.step({ mx: 0, my: sg });
+  assert.strictEqual(b.level, 2, 'up to the roof'); assert.strictEqual(b.floor, st.head);
+  for (let i = 0; i < 400 && b.level !== 1; i++) s.step({ mx: 0, my: -sg });
+  assert.strictEqual(b.level, 1, 'back on the low highway'); assert.strictEqual(b.floor, st.foot);
+});
+check('high highway (Edit 44): its cars meet the dummy on their own deck only, never on a roof or the ground', () => {
+  const { s, lv } = onScreen((lv) => lv.decks.some((q) => q.z === 2) && lv.deckLanes.length), b = s.body, k = lv.decks.findIndex((q) => q.z === 2);
+  const c = s.cars.find((q) => q.deck && q.deckIdx === k) || s.addDeckCar(lv.deckLanes.findIndex((ln) => ln.deck === k), 200);
+  assert.strictEqual(c.layer, 2, 'a Z2 car');
+  b.level = 0; b.floor = null; assert(!s.meets(c), 'not from the ground');
+  b.level = 2; b.floor = deckFloor(lv, k); assert(s.meets(c), 'on its deck');
+  const roof = lv.floors.findIndex((f) => f.kind === 'roof'); if (roof >= 0) { b.floor = roof; assert(!s.meets(c), 'not from a roof'); }
 });
 check('bounded: walls hold the dummy; a checkpoint boom cannot be passed, and it lifts for a car', () => {
   const { s, lv, hit: cp } = onScreen((lv) => lv.checkpoints.find((q) => !q.deck)), b = s.body, R = s.P['body.radius'], W = 800, H = 640;
@@ -679,15 +721,16 @@ check('bounded: walls hold the dummy; a checkpoint boom cannot be passed, and it
   const bp = s.boomPoint(cp); b.x = bp.x - out[0] * 60; b.y = bp.y - out[1] * 60;
   for (let i = 0; i < 180; i++) { s.step({ mx: out[0], my: out[1] }); assert(rd(b.x, b.y, zone) >= R - 0.5, 'inside the checkpoint zone'); }
   assert.strictEqual(s.screenName(), scr, 'still on the screen');
-  const pr = D.pathProject(lv.lanes[0], bp.x, bp.y), c = s.newCar('carB', 'sedan', 0, lv.lanes[0], pr.s, 1); c.v = 0; c.cruise = 0; s.pose(c); s.cars.push(c);
+  const pr = D.pathProject(lv.lanes[0], bp.x, bp.y), c = s.newCar('carB', 'sedan', 0, lv.lanes[0], pr.s, 0); c.v = 0; c.cruise = 0; s.pose(c); s.cars.push(c);
   const i0 = lv.checkpoints.indexOf(cp); idle(s, Math.ceil(s.P['world.boomSeconds'] * 60) + 2, {}); assert.strictEqual(s.booms[i0], 1, 'boom up');
   s.cars = []; idle(s, Math.ceil(s.P['world.boomSeconds'] * 60) + 2, {}); assert.strictEqual(s.booms[i0], 0, 'boom down');
   const wall = lv.statics.find((q) => q.kind === 'wall' && q.h > 120 && q.w < 40); // a side wall, if this screen has one
   // a flyover leaving the district stops at its own boom
   const dq = onScreen((l) => l.checkpoints.find((q) => q.deck)), dcp = dq.hit, ds = dq.s, db = ds.body, dz = D.checkZone(dcp, ds.P, W, H), dout = dcp.side === 'W' ? -1 : 1;
-  ds.cars = []; db.level = 2; db.deck = dq.lv.decks.findIndex((q) => q.off === dcp.off); db.x = dout < 0 ? dcp.line + 60 : W - dcp.line - 60; db.y = dcp.off + 50;
+  const dk = dq.lv.decks.findIndex((q) => q.off === dcp.off);
+  ds.cars = []; db.level = dq.lv.decks[dk].z; db.floor = deckFloor(dq.lv, dk); db.x = dout < 0 ? dcp.line + 60 : W - dcp.line - 60; db.y = dcp.off + 50;
   for (let i = 0; i < 120; i++) { ds.step({ mx: dout, my: 0 }); assert(rd(db.x, db.y, dz) >= R - 0.5, 'past the deck boom'); }
-  assert.strictEqual(db.level, 2, 'still on the deck');
+  assert.strictEqual(db.level, dq.lv.decks[dk].z, 'still on the deck');
   if (wall) { const t = s; t.body.x = wall.x < 400 ? wall.x + wall.w + R + 20 : wall.x - R - 20; t.body.y = wall.y + wall.h / 2; idle(t, 120, { mx: wall.x < 400 ? -1 : 1, my: 0 }); assert(rd(t.body.x, t.body.y, wall) >= R - 0.5, 'through the wall'); }
 });
 check('interchange: the roundabout island is crash matting: dash × world.terrain.matting.lunge', () => {
@@ -743,7 +786,7 @@ check('corner speed: a car takes a tight corner no faster than √(traffic.corne
   const s = new Sim(found.id, { 'proto.layout': found.k, 'run.appearances.road': 0 }); s.checkTerminal = () => {};
   const Dd = s.district; Dd.cur = found.q.cell.slice(); s.level = D.cellLevel(Dd, Dd.cur, s.P); s.cars = []; s.body.x = -500; s.body.y = -500;
   const lane = s.level.lanes[0], rr = radii(lane.pts), i = rr.indexOf(Math.min(...rr)), sC = lane.cum[i];
-  const c = s.newCar('carC', 'sedan', 0, lane, 40, 1); s.cars.push(c);
+  const c = s.newCar('carC', 'sedan', 0, lane, 40, 0); s.cars.push(c);
   let vAt = null;
   for (let t = 0; t < 900 && vAt == null; t++) { s.step({}); if (c.s + c.L / 2 >= sC) vAt = c.v; }
   const vMax = Math.sqrt(s.P['traffic.cornerAccel'] * rr[i]);

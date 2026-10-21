@@ -1,11 +1,12 @@
 # DUMMIES — P3 Prototype: 16-bit Aero
 
-**P3.2 · 21 October 2026 · Lawrence Lek**
+**P3.3 · 21 October 2026 · Lawrence Lek**
 
 P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber city as canon (Edit 39). Pixel-art field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 320 at (120, 20): 25 × 20 tiles, 5:4.
 
+- **P3.3 (Edit 44):** three levels by height: Z0 ground, Z1 low highway, Z2 high highway, platform roofs and skybridges. The underground is gone. Tall stairs from the street and link stairs from the low highway reach Z2; roof ledges drop onto the street.
 - **P3.2 (Edit 43):** flyovers pass square over roads, raised on columns; tight, circular and stepped turns; single, double and tower buildings facing the road at one setback; headlight beams and brake washes.
-- **P3.1 (Edit 42):** bounded districts (river, walls, checkpoints with booms); three levels: underpasses, ground, flyover decks. Stairs join them. Drop off a broken parapet onto the road, or onto a car.
+- **P3.1 (Edit 42):** bounded districts (river, walls, checkpoints with booms); stairs up to flyover decks (P3.1's underpasses were removed in P3.3). Drop off a broken parapet onto the road, or onto a car.
 - **Simulation changes:** solid city statics (city v2, ~25% buildings); part damage that cuts abilities; two dash charges, shortened by leg damage.
 - **City districts (Edit 41):** a run is five districts in order: Riverside → Old Market → Interchange → CBD → FARSIGHT Campus. Each has a landmark on its centre screen, its own building form, flyovers, traffic and hazards. Three baked layouts per district; a run picks one.
 - **Districts (Edit 40):** each district is 3 × 3 screens, Zelda-style. Walk off any open edge to flip to the next screen.
@@ -15,7 +16,7 @@ P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber 
 - **Voice:** barks from `content/db/fleet.json`, checked by `check_lore.py`.
 - Everything else is P2.2.
 
-![P3.2: Interchange A1 at 720p. The raised deck on its columns, headlight beams, a brake wash; the road below crosses square](docs/p32_play.png)
+![P3.3: Old Market B2 at 720p. The dummy on a Z2 roof by its ledge; a skybridge to the next roof; the tall stair from the street](docs/p33_play.png)
 
 ## Play
 
@@ -26,8 +27,8 @@ Open `dummies_p3.html` in a browser. No install, no server. **Full screen** fill
 | Move | WASD or arrows |
 | Dash (the lunge) | Space or J |
 | Cone (after Carry) | K or Shift |
-| Stairs | Walk into the foot (ground) or the head (deck, passage) |
-| Drop | Walk or dash through a broken parapet |
+| Stairs | Walk into the foot (ground, or a highway's shoulder) or the head (highway, roof) |
+| Drop | Walk or dash off a roof ledge or through a broken parapet |
 | Pause and cue key | Esc |
 | Tuning panel | T |
 
@@ -107,19 +108,61 @@ A black outline vanishes on a dark field. The background owns the darkest values
 |---|---|---|---|---|---|---|
 | 1 | Riverside | Lantern monument on a plaza | Low-rise | 0 | 1 | 3.0 s, 20% vans |
 | 2 | Old Market | Fountain square | Dense low-rise | 0 | 2 | 3.0 s, 45% vans |
-| 3 | Interchange | Roundabout with a crash-matting island (dash × 1.15) | Mid-rise | 2, rows 1 and 3, clear of the roundabout | 2 | 2.8 s, 30% vans |
-| 4 | Central Business District | FARSIGHT Tower | Towers | 1 | 3 | 2.6 s, 30% vans |
-| 5 | FARSIGHT Campus | Calibrated plates on the road (points × 1.5) | Campus halls | 1 | 4 | 2.5 s, 40% vans |
+| 3 | Interchange | Roundabout with a crash-matting island (dash × 1.15) | Mid-rise | 2, rows 1 and 3, clear of the roundabout: one Z1, one Z2 | 2 | 2.8 s, 30% vans |
+| 4 | Central Business District | FARSIGHT Tower | Towers | 2: one Z1, one Z2 | 3 | 2.6 s, 30% vans |
+| 5 | FARSIGHT Campus | Calibrated plates on the road (points × 1.5) | Campus halls | 1, Z1 | 4 | 2.5 s, 40% vans |
 
 - **Data:** `tables.districts` in the registry; `world.district.<id>.<field>` in `sim.js`.
-- **Flyovers:** decks on piers across a whole row (`world.deckHeight` 60; one overground level). Piers are solid ground statics. No buildings under a deck. Levels and deck play: below.
+- **Flyovers:** decks on columns across a whole row. Z1 at `world.deckHeight` (120); Z2 at `world.highHeight` (216), `world.district.<id>.highDecks` of them. Columns are solid ground statics. No buildings under a deck. Levels and deck play: below.
 - **Flyovers pass square (Edit 43):** within the band and one road half-width either side, a road beneath runs within `world.deckCrossAngle` (5°) of square. Flyovers are planned first; roads are routed to cross them.
 - **Roundabout:** the whole ring is road; traffic uses the part on its route.
-- **Towers:** a share of large lots (`world.district.<id>.towerShare`) rise 220–380 units, with LED crowns.
-- **Layouts made in advance:** `node tools/district_bake.js` tries seeds and keeps the first three per district that pass the contract (`tools/district_check.js`) with different roads, and whose start screen gives the bot a write-off within 150 s. Output: `content/districts/districts.json` (15 layouts).
+- **Towers:** a share of large lots (`world.district.<id>.towerShare`) rise 288–380 units (above every Z2 roof), with LED crowns.
+- **Layouts made in advance:** `node tools/district_bake.js` tries seeds and keeps the first three per district that pass the contract (`tools/district_check.js`) with different roads, and whose start screen gives the bot a write-off within 150 s, the first by 90 s. Output: `content/districts/districts.json` (15 layouts).
 - **Per run:** one layout per district at random. Tuning: `proto.layout` 1–3 fixes one; −1 generates live.
 
-![The five centre screens and a deck screen, P3.2](docs/p32_districts_sheet.png)
+![The five centre screens and a platform roof, P3.3](docs/p33_districts_sheet.png)
+
+## Z levels, platforms and skybridges (P3.3, Edit 44; 21 October)
+
+![Layout 1 of each district: Z1 and Z2 highways, buildings by tier, platforms, ledges, skybridges and the three kinds of stair](docs/p33_plans.png)
+
+| Z | Name | Floors | Drawn | Reached by | Cars |
+|---|---|---|---|---|---|
+| 0 | Ground (default) | Streets, forecourts | 0 | Spawn, stair foot, landing | Ground traffic |
+| 1 | Low highway | Z1 decks | 18 art px up | Stair from the ground (run 64) | Its deck's traffic |
+| 2 | High | Z2 decks, platform roofs, skybridges | 32 art px up | Tall stair (112), link stair from Z1 (48), stair to a Z2 deck | A Z2 deck's own traffic |
+
+- **Heights:** `world.deckHeight` (120) and `world.highHeight` (216), drawn × `proto.art.extrusion`. Stair run: `world.stairLength` per `world.deckHeight` of rise.
+- **High highway:** Interchange and CBD run one flyover each at Z2. A second LED line inside each parapet; heavier dashes on the map.
+- **Platforms:** a frontage lot becomes a building to Z2 with a walkable roof, at `world.district.<id>.platformShare` (0.10–0.15).
+  - Its tall stair climbs along the road-facing edge from the alley. A single-storey annex fills the strip behind.
+  - A link platform stands beside a low highway: a short stair from the shoulder to its roof.
+  - Roof: tiles, an LED parapet, openings where stairs and bridges join. Edges facing the road are ledges with a striped kerb.
+- **Skybridges:** across an alley or lane up to `world.skybridgeMax` (96). The next lot after a platform joins it at `world.skybridgeChance` (0.75), up to `world.platformChain` (3) roofs; at most `world.skybridgeCount` (4) per screen. Parapets hold.
+- **Drops:** off a ledge or a broken parapet, onto the nearest level below. Fall time and landing speed × √(h / `world.deckHeight`): Z2 to the ground 0.47 s; a stopped sedan takes 136 (76 from Z1).
+- **Cues:** ground cars on Z0; the dummy's own deck on a highway; none on a roof or bridge.
+- **HUD:** `Z1 HIGHWAY`, `Z2 HIGHWAY`, `Z2 ROOF`, `Z2 BRIDGE`, `STAIRS` or `FALLING` in the top bar.
+- **Contract (clauses 19, 20, 22):** ground stair feet reachable; link stairs on their deck; `highDecks` flyovers at Z2; every roof reached by a stair or bridge chain; every ledge over open ground.
+
+| District | Highways | Roofs (with ledges) | Skybridges | Tall stairs | Link stairs | First bot write-off, layouts 1–3 |
+|---|---|---|---|---|---|---|
+| Riverside | none | 1–6 (1–4) | 0–1 | 1–6 | 0 | 25.2, 68.7, 38.5 s |
+| Old Market | none | 6–8 (2–5) | 1–2 | 5–6 | 0 | 41.3, 45.9, 47.6 s |
+| Interchange | Z1 + Z2 | 2–5 (1–3) | 0 | 1–3 | 1–3 | 19.2, 30.9, 60.3 s |
+| CBD | Z1 + Z2 | 2–7 (0–4) | 0 | 0–5 | 2–3 | 21.4, 29.7, 33.4 s |
+| Campus | Z1 | 7–10 (4–6) | 2–3 | 4–5 | 3 | 39.2, 22.1, 33.9 s |
+
+![A tall stair from the alley up to a platform roof; the annex behind it](docs/p33_tallstair.png)
+
+![On the roof by its ledge, traffic below](docs/p33_roof.png)
+
+![Off the ledge: the fall in front of the building, its shadow on the forecourt](docs/p33_drop.png)
+
+![A skybridge between two platform roofs](docs/p33_bridge.png)
+
+![A link stair from the low highway's shoulder up to a platform roof](docs/p33_link.png)
+
+![The high highway: tall columns, the stair up from the street, Z2 traffic](docs/p33_highway.png)
 
 ## Roads, decks, buildings and lights (P3.2, Edit 43; 21 October)
 
@@ -128,22 +171,16 @@ A black outline vanishes on a dark field. The background owns the darkest values
 - **Turn styles** (one per screen): tight (`world.turnRadiusTight` 64), circular (`world.turnRadiusWide` 224), stepped (a dog-leg of tight corners).
 - **Corner speed:** ≤ √(`traffic.cornerAccel` 60 × radius). Tight corner: about 47 inner lane, 74 outer. Cruise 138.
 - **Raised decks:** drawn 18 art px up (`world.deckHeight` 120 × `proto.art.extrusion`), on column pairs (`world.deckColumn` 24) under both edges. The south row shows. Sim positions stay on the footprint.
-- **Levels read apart:** pale concrete decks with joints; asphalt streets; a tiled cutaway underground with traffic above as checkers.
+- **Levels read apart:** pale concrete decks with joints; asphalt streets. (P3.2's underground cutaway was removed in P3.3.)
 - **Buildings:** single storey (`world.storeyHeight` 36), double storey (`world.district.<id>.doubleShare`), towers (`towerShare`). Shadows in every palette.
 - **Frontage:** fronts at lane + shoulder + `world.buildingSetback` (48) from the centre line. Lots 64–160 wide, alleys of `world.pedestrianGap` (40). Rows behind rows to the district's share of buildable ground.
 - **Lights:** headlight beams along the route ahead (`proto.art.beamLength` 200), visible before the car arrives; the dummy and other cars cast shadows in them. Braking washes the ground red behind (`proto.art.brakeLength` 48).
 
 ![A dummy climbing a south-side stair to the raised deck; columns either side](docs/p32_stair.png)
 
-![Underpass cutaway: tiled floor, lit walls, the dummy inside, traffic above as checkers](docs/p32_underpass.png)
-
 ## Levels and bounds (P3.1, Edit 42; 20 October)
 
-| Level | Name | Reached by | Cars | Bounds |
-|---|---|---|---|---|
-| 0 | Underground | Underpass stairs | None | The passage |
-| 1 | Ground (default) | Spawn, stair foot, landing | Ground traffic | Statics, walls, checkpoints |
-| 2 | Overground | Up-stair | Deck traffic | Parapets, deck checkpoint |
+P3.1's level numbering (0 underground, 1 ground, 2 overground) is replaced by P3.3's Z levels (above).
 
 - **Bounded districts.** Row 1's outer edge is the river; every other outer edge is a wall (`world.wallThickness` 16).
 - **Checkpoints.** A road leaving the district passes a booth and a boom. The boom lifts for a car within `world.boomRange` (140) over `world.boomSeconds` (0.5 s). The dummy cannot pass. Decks have their own boom at the district edge.
@@ -151,19 +188,17 @@ A black outline vanishes on a dark field. The background owns the darkest values
   - **Deck traffic:** full drivers, one per lane every `world.deckInterval` (2.4 s). They sense only the deck. Off the schedule: not in CARS LEFT.
   - **Broken parapets** over every road a deck crosses. Lamps beside them are down.
 - **Stairs:** `world.stairLength` 64 × `world.stairWidth` 32. Walked at × `world.stairSpeed` (0.7); no dash. Sides solid on the ground.
-- **Underpasses:** on `world.underpassChance` (0.5) of screens. Stairs down on both pavements; a passage under the road. No car senses the dummy there.
-- **Drop:** `world.dropSeconds` (0.35 s), no control. Landing on a car: closing speed is the hypotenuse of `damage.dropSpeed` (120) and the car's speed. Stopped sedan 76; sedan at cruise 176. The legs take it.
-- **Cones stay on the ground.** Carry one up; drop or throw it only on level 1.
-- **HUD:** `DECK`, `UNDERPASS` or `STAIRS` in the top bar. Cues and tags show for the dummy's level only.
-- **Contract (clauses 18–20):** walls or river on every outer edge; a checkpoint per road and deck exit; every stair foot reachable; every deck row with an up-stair and a drop point; paired underpass stairs.
+- **Drop:** `world.dropSeconds` (0.35 s) from Z1, no control. Landing on a car: closing speed is the hypotenuse of `damage.dropSpeed` (120) and the car's speed. Stopped sedan 76; sedan at cruise 176. The legs take it. Higher falls: above.
+- **Cones stay on the ground.** Carry one up; drop or throw it only on Z0.
+- **Contract (clause 18):** walls or river on every outer edge; a checkpoint per road and deck exit.
 
-| District | Up-stairs | Parapet gaps | Underpasses | Checkpoints (road + deck) |
-|---|---|---|---|---|
-| Riverside | 0 | 0 | 3–4 | 2 + 0 |
-| Old Market | 0 | 0 | 1–5 | 2 + 0 |
-| Interchange | 6 | 9–14 | 2–3 | 2 + 4 |
-| CBD | 3 | 1–2 | 1–4 | 2 + 2 |
-| Campus | 2–3 | 2–6 | 2–3 | 2 + 2 |
+| District | Stairs to a highway | Parapet gaps | Checkpoints (road + deck) |
+|---|---|---|---|
+| Riverside | 0 | 0 | 2 + 0 |
+| Old Market | 0 | 0 | 2 + 0 |
+| Interchange | 5–6 | 4–8 | 2 + 4 |
+| CBD | 6 | 8–12 | 2 + 4 |
+| Campus | 3 | 1–6 | 2 + 2 |
 
 ![On the deck: the shoulder, deck cars stopping for the dummy](docs/p32_deck.png)
 
@@ -349,7 +384,7 @@ Day version: `docs/p3_chassis_modules.png`.
 | `world.district.<id>.*` (10 fields × 5 districts) | City districts table above | Registry `districts` table (Edit 41) |
 | `world.deckHeight`, `world.deckWidth` | 120, 176 units | Registry, Proposed (`world.deckStack` retired, Edit 42; height 60 → 120, Edit 43) |
 | `world.deckPillarSpacing`, `world.deckInterval` | 160 units, 2.4 s | Registry, Proposed |
-| `world.towerHeightMin`, `world.towerHeightMax`, `world.roundaboutRadius` | 220, 380, 160 units | Registry, Proposed |
+| `world.towerHeightMin`, `world.towerHeightMax`, `world.roundaboutRadius` | 288, 380, 160 units | Registry, Proposed (min 220 → 288, Edit 44) |
 | `damage.plateMultiplier`, `world.terrain.matting.lunge` | 1.5, 1.15 | Registry values, now used |
 | `proto.layout` | 0 | Registry, prototype group. Baked layout 1–3; −1 = live |
 | `world.deckCrossAngle`, `world.deckColumn` | 5°, 24 units | Registry (Edit 43); `world.deckParallelAngle` retired |
@@ -359,7 +394,10 @@ Day version: `docs/p3_chassis_modules.png`.
 | `world.parapetWidth`, `world.deckLampSpacing` | 8, 128 units | Registry, Proposed (Edit 42) |
 | `world.stairLength`, `world.stairWidth`, `world.stairSpeed` | 64, 32 units; 0.7 | Registry, Proposed (Edit 42) |
 | `world.dropSeconds`, `damage.dropSpeed` | 0.35 s, 120 units/s | Registry, Proposed (Edit 42) |
-| `world.underpassChance`, `world.wallThickness` | 0.5, 16 units | Registry, Proposed (Edit 42) |
+| `world.wallThickness` | 16 units | Registry, Proposed (Edit 42); `world.underpassChance` retired (Edit 44) |
+| `world.highHeight`, `world.skybridgeMax` | 216, 96 units | Registry, Proposed (Edit 44) |
+| `world.skybridgeChance`, `world.platformChain`, `world.skybridgeCount` | 0.75, 3, 4 | Registry, Proposed (Edit 44) |
+| `world.district.<id>.highDecks`, `.platformShare` | 0/0/1/1/0; 0.10–0.15 | Registry `districts` table (Edit 44); CBD `decks` 1 → 2 |
 | `world.boomRange`, `world.boomSeconds` | 140 units, 0.5 s | Registry, Proposed (Edit 42) |
 | `proto.art.wallHeight` | 40 units | Registry, prototype group (Edit 42) |
 | `ui.typeFieldLabel` | 12 units | Registry. Tags and barks |
@@ -390,7 +428,7 @@ Day version: `docs/p3_chassis_modules.png`.
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html`, with `content/db/fleet.json` as `window.FLEET_DB` |
 | `tools/city_gen.js` | City v2 generator: `node tools/city_gen.js .` prints block and barrier data |
-| `test_sim.js` | `node test_sim.js`: 77 checks, incl. 21 for the city districts (contract on all 15 layouts, square crossings, turn styles, buildings, corner speed, landmarks, deck drivers, stairs, drop, underpass, walls and booms, plates, matting, smoke runs) |
+| `test_sim.js` | `node test_sim.js`: 81 checks, incl. 25 for the city districts (contract on all 15 layouts, square crossings, turn styles, buildings, corner speed, landmarks, deck drivers, stairs, drop, Z levels, platforms, skybridges, link stairs, high highway, walls and booms, plates, matting, smoke runs) |
 | `tools/district_bake.js`, `tools/district_check.js` | Bake 3 layouts per district; the district contract and start-screen bot |
 | `../../content/districts/districts.json` | The 15 baked layouts at 800 × 640, bundled as `window.DISTRICT_DB` |
 | `../../content/db/` | Fleet database and `check_lore.py` (lore consistency) |
@@ -405,8 +443,9 @@ Day version: `docs/p3_chassis_modules.png`.
 - **D28 exploration reward.** Exploration is optional today.
 - **Pacing at 800 health.** A reading bot clears L1 in 31.6 s (was 11.0 s at 300). Quotas 2 and 3 on L2 and L3 need a timed check against CARS LEFT.
 - **Junctions.** Generated screens have no T or cross pieces yet.
-- **D29 rest.** Skybridges between towers. Riverside and Old Market have no decks.
-- **Drop value.** 76–176 damage: a hit, or a getaway? Playtest.
+- **Roof cues.** No traffic cues on a roof. Should ground paths show from Z2, to time a drop?
+- **Link stairs** climb only 10 px from a north deck. Playtest whether they read.
+- **Drop value.** 76–176 damage from Z1, 136–236 from Z2: a hit, or a getaway? Playtest.
 - **Deck tags.** Six tagged deck cars at once may crowd the field.
 - **D30.** GDD 7.2's old level types against the districts.
 - **Turn-style weights.** Equal thirds per screen. Districts could lean.

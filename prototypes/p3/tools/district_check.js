@@ -1,4 +1,4 @@
-// City district contract (GDD Edit 41 §7.9 clauses 11–17; Edit 42 clauses 18–20; Edit 43 clauses 17 and 21). Used by the baking tool and by test_sim.js.
+// City district contract (GDD Edit 41 §7.9 clauses 11–17; Edit 42 clauses 18–20; Edit 43 clauses 17 and 21; Edit 44 clauses 20 and 22). Used by the baking tool and by test_sim.js.
 // Returns a list of problems; an empty list means the layout passes.
 const rdist = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
 function reach(lv, R, W, H) { // flood fill from the spawns over open ground, 4-unit grid
@@ -69,21 +69,36 @@ function checkCity(D, P, sim) {
         if (!lv.statics.some((q) => (q.kind === 'wall' || q.kind === 'river') && rdist(px, py, q) === 0) && !zones.some((q) => rdist(px, py, q) === 0)) { out.push(tag + ' open district edge ' + sd + ' at ' + v); break; }
       }
     }
-    // 19–20. Stairs: each foot is reachable; underpass stairs come in pairs with their passage
+    // 19. Stairs: each ground foot is reachable (a link stair's foot stands on its deck)
     for (const st of lv.stairs || []) {
+      if (st.foot != null) { if (!lv.floors[st.foot] || lv.floors[st.foot].z !== st.from) out.push(tag + ' link stair off its deck'); continue; }
       const sg = Math.sign(st.low - st.high), fx = st.axis === 'y' ? st.x + st.w / 2 : st.low + sg * (R + 4), fy = st.axis === 'y' ? st.low + sg * (R + 4) : st.y + st.h / 2;
       if (!rc.at(fx, fy)) out.push(tag + ' stair foot unreachable');
     }
-    const down = (lv.stairs || []).filter((q) => q.to === 0).length;
-    if (down !== 2 * (lv.corridors || []).length) out.push(tag + ' underpass stairs ' + down + ' for ' + (lv.corridors || []).length + ' passages');
     for (const dk of lv.decks || []) for (const [a0, a1] of dk.gaps) if (a1 - a0 < 2 * R) out.push(tag + ' parapet gap too narrow');
+    // 22. Platforms (Edit 44): every roof is reached by a stair or a skybridge chain; skybridges join two roofs; ledges drop to open ground
+    const fl = lv.floors || [], roofs = fl.map((f, i) => i).filter((i) => fl[i].kind === 'roof'), live = new Set((lv.stairs || []).map((st) => st.head));
+    const touch = (b, f) => b.x < f.x + f.w && b.x + b.w > f.x && b.y < f.y + f.h && b.y + b.h > f.y;
+    for (const b of fl.filter((f) => f.kind === 'bridge')) if (roofs.filter((i) => touch(b, fl[i])).length !== 2) out.push(tag + ' skybridge joins ' + roofs.filter((i) => touch(b, fl[i])).length + ' roofs');
+    for (let n = 0; n < 4; n++) for (const b of fl.filter((f) => f.kind === 'bridge')) { const ends = roofs.filter((i) => touch(b, fl[i])); if (ends.some((i) => live.has(i))) ends.forEach((i) => live.add(i)); }
+    for (const i of roofs) {
+      const f = fl[i];
+      if (f.z !== 2) out.push(tag + ' roof not at Z2');
+      if (!live.has(i)) out.push(tag + ' roof unreachable');
+      for (const lg of f.ledges) {
+        const ok = [0.1, 0.3, 0.5, 0.7, 0.9].some((u) => { const m = lg.a0 + (lg.a1 - lg.a0) * u, px = lg.side === 'W' ? f.bx - R - 6 : lg.side === 'E' ? f.bx + f.bw + R + 6 : m, py = lg.side === 'N' ? f.by - R - 6 : lg.side === 'S' ? f.by + f.bh + R + 6 : m; return rc.at(px, py); });
+        if (!ok) { out.push(tag + ' roof ledge drops onto no open ground'); break; }
+      }
+    }
   }
   if (deckCells < Math.round(dp('decks')) * 3 - (dp('decks') >= 2 ? 1 : 0)) out.push(id + ' flyover screens ' + deckCells);
-  // 19. Every flyover has a stair up and a broken parapet somewhere along it
+  // 20. Levels (Edit 44): world.district.<id>.highDecks of the flyovers run at Z2, the rest at Z1
+  if ((D.decks || []).filter((q) => q.z === 2).length !== Math.round(dp('highDecks') || 0) || (D.decks || []).some((q) => q.z !== 1 && q.z !== 2)) out.push(id + ' high highways ' + (D.decks || []).filter((q) => q.z === 2).length);
+  // 19. Every flyover has a stair up from the ground and a broken parapet somewhere along it
   for (const dk of D.decks || []) {
     const line = D.cells.flat().filter((q) => (dk.hz ? q.cell[1] : q.cell[0]) === dk.line).map((q) => sim.cellLevel(D, q.cell, P));
     const k = (lv) => (lv.decks || []).findIndex((q) => q.hz === dk.hz && q.off === dk.off);
-    if (!line.some((lv) => (lv.stairs || []).some((st) => st.to === 2 && st.deck === k(lv)))) out.push(id + ' flyover ' + dk.line + ' has no stair');
+    if (!line.some((lv) => (lv.stairs || []).some((st) => st.from === 0 && st.foot == null && st.deck === k(lv) && st.to === dk.z))) out.push(id + ' flyover ' + dk.line + ' has no stair');
     if (!line.some((lv) => k(lv) >= 0 && lv.decks[k(lv)].gaps.length)) out.push(id + ' flyover ' + dk.line + ' has no drop point');
   }
   return out;
@@ -95,7 +110,7 @@ function startBot(sim, D, overrides, secs) {
   const s = new sim.Sim(D.levelId, Object.assign({ 'proto.layout': 1 }, overrides || {}));
   const W = s.P['world.width'], H = s.P['world.height'];
   s.district = D; D.cur = D.start.slice(); s.level = sim.cellLevel(D, D.start, s.P); s.reset();
-  s.checkFlip = () => {}; // the bot stays on the start screen
+  s.checkFlip = () => {}; s.enterStair = () => false; // the bot stays on the start screen, on the ground (Edit 44: stairs lead to roofs)
   const clearLine = (x0, y0, x1, y1) => { for (let t = 0; t <= 1; t += 0.02) { const x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t; if (s.level.statics.some((st) => x > st.x - 15 && x < st.x + st.w + 15 && y > st.y - 15 && y < st.y + st.h + 15)) return false; } return true; };
   const homeOf = () => {
     const b = s.body, L = s.level.lanes[0]; let best = null;

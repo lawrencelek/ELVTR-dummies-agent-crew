@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit43-2026-10-21",
+ "registryVersion": "edit44-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–43 (20–21 October 2026)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44 (20–21 October 2026)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -4192,12 +4192,12 @@
    "group": "World",
    "owner": "World",
    "label": "Flyover height",
-   "description": "Height of a flyover deck, about 10 m. The deck and everything on it draw lifted by height × proto.art.extrusion (18 art px); its columns show beneath.",
+   "description": "Height of the low highway (Z1), about 10 m. A Z1 deck and everything on it draw lifted by height × proto.art.extrusion (18 art px). Reference height for stair runs and falls.",
    "unit": "world units",
    "type": "number",
    "default": 120,
    "status": "proposed",
-   "source": "Edit 41; Edit 43 (21 October)",
+   "source": "Edit 41; Edits 43–44 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4276,12 +4276,12 @@
    "group": "World",
    "owner": "World",
    "label": "Tower height, lowest",
-   "description": "Tallest buildings: the lowest a tower may be.",
+   "description": "The lowest a tower may be: eight storeys, above every Z2 roof.",
    "unit": "world units",
    "type": "number",
-   "default": 220,
+   "default": 288,
    "status": "proposed",
-   "source": "Edit 41 (20 October)",
+   "source": "Edit 41; Edit 44 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4290,7 +4290,7 @@
    },
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Towers read as towers next to low-rise"
+   "purpose": "Towers stand clear of the platform roofs and the high highway"
   },
   {
    "id": "world.towerHeightMax",
@@ -4403,12 +4403,12 @@
    "group": "World",
    "owner": "World",
    "label": "Stair length",
-   "description": "Run of a stair module, foot to head.",
+   "description": "Run of a stair per world.deckHeight of rise, rounded to 16. Z0–Z1 64, Z0–Z2 112, Z1–Z2 48.",
    "unit": "world units",
    "type": "number",
    "default": 64,
    "status": "proposed",
-   "source": "Edit 42 (20 October)",
+   "source": "Edit 42; Edit 44 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4424,12 +4424,12 @@
    "group": "World",
    "owner": "World",
    "label": "Stair width",
-   "description": "Width of a stair module and of an underpass passage.",
+   "description": "Width of a stair and of a skybridge.",
    "unit": "world units",
    "type": "number",
    "default": 32,
    "status": "proposed",
-   "source": "Edit 42 (20 October)",
+   "source": "Edit 42; Edit 44 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -4467,12 +4467,12 @@
    "group": "Dummy movement",
    "owner": "Dummy",
    "label": "Drop time",
-   "description": "Fall from a deck gap to the road. No control, no contact until the landing.",
+   "description": "Fall from Z1 to the ground. A fall of height h takes × √(h / world.deckHeight): Z2 to the ground 0.47 s. No control, no contact until the landing.",
    "unit": "s",
    "type": "number",
    "default": 0.35,
    "status": "proposed",
-   "source": "Edit 42 (20 October)",
+   "source": "Edit 42; Edit 44 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "immediate",
@@ -4488,12 +4488,12 @@
    "group": "Damage and rewards",
    "owner": "Damage",
    "label": "Drop speed",
-   "description": "Downward speed at the landing. Closing speed on a car is its hypotenuse with the car's speed across.",
+   "description": "Downward speed at the landing after a Z1 fall; × √(h / world.deckHeight) for a fall of height h (Z2 to the ground about 161). Closing speed on a car is its hypotenuse with the car's speed across.",
    "unit": "world units/s",
    "type": "number",
    "default": 120,
    "status": "proposed",
-   "source": "Edit 42 (20 October)",
+   "source": "Edit 42; Edit 44 (21 October)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "immediate",
@@ -4504,28 +4504,6 @@
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "A landing on a stopped sedan scores 76; on a sedan at cruise, 176. The legs take it",
    "designBound": "Above 200 a drop onto a stopped car outscores a full-speed dash."
-  },
-  {
-   "id": "world.underpassChance",
-   "group": "World",
-   "owner": "World",
-   "label": "Underpass chance",
-   "description": "Chance that a generated screen gets a pedestrian underpass under a straight run.",
-   "unit": "ratio",
-   "type": "number",
-   "default": 0.5,
-   "status": "proposed",
-   "source": "Edit 42 (20 October)",
-   "editable": true,
-   "protectedReason": null,
-   "applyAt": "checkpoint",
-   "validation": {
-    "min": 0,
-    "max": 1
-   },
-   "integrationStatus": "prototype-p3",
-   "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "About half the screens have a way under the road"
   },
   {
    "id": "world.wallThickness",
@@ -4845,6 +4823,112 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "A soft wash: the warning stays the only solid red"
+  },
+  {
+   "id": "world.highHeight",
+   "group": "World",
+   "owner": "World",
+   "label": "High level height",
+   "description": "Height of Z2: the high highway, platform roofs and skybridges, about 18 m. Draws lifted 32 art px.",
+   "unit": "world units",
+   "type": "number",
+   "default": 216,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 160
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Clearly above the low highway; six storeys"
+  },
+  {
+   "id": "world.skybridgeMax",
+   "group": "World",
+   "owner": "World",
+   "label": "Skybridge span",
+   "description": "Longest gap a skybridge crosses between two platform roofs.",
+   "unit": "world units",
+   "type": "number",
+   "default": 96,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 40
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Spans an alley or a service lane, never a road"
+  },
+  {
+   "id": "world.skybridgeChance",
+   "group": "World",
+   "owner": "World",
+   "label": "Skybridge chance",
+   "description": "Chance that the next lot in a row after a platform becomes a platform joined to it by a skybridge.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.75,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Roofs come in joined pairs and threes"
+  },
+  {
+   "id": "world.platformChain",
+   "group": "World",
+   "owner": "World",
+   "label": "Platform chain",
+   "description": "Most platform roofs joined in a row by skybridges.",
+   "unit": "count",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A roof walk, not a second street"
+  },
+  {
+   "id": "world.skybridgeCount",
+   "group": "World",
+   "owner": "World",
+   "label": "Skybridges per screen",
+   "description": "Most skybridges on one screen, counting those between rows.",
+   "unit": "count",
+   "type": "number",
+   "default": 4,
+   "status": "proposed",
+   "source": "Edit 44 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Keeps the ground readable under Z2"
   }
  ],
  "tables": {
@@ -5982,22 +6066,6 @@
      "scheme": "cyber"
     },
     {
-     "role": "field.tile",
-     "hex": "#103A44",
-     "alpha": 1,
-     "layer": "play",
-     "use": "Underpass floor",
-     "scheme": "cyber"
-    },
-    {
-     "role": "field.tile2",
-     "hex": "#1E6170",
-     "alpha": 1,
-     "layer": "play",
-     "use": "Underpass tile grid",
-     "scheme": "cyber"
-    },
-    {
      "role": "field.beam",
      "hex": "#E8F7FF",
      "alpha": 1,
@@ -6059,22 +6127,6 @@
      "alpha": 1,
      "layer": "play",
      "use": "Column shade, girder ribs",
-     "scheme": "day"
-    },
-    {
-     "role": "field.tile",
-     "hex": "#CDEBF1",
-     "alpha": 1,
-     "layer": "play",
-     "use": "Underpass floor",
-     "scheme": "day"
-    },
-    {
-     "role": "field.tile2",
-     "hex": "#9FD3DF",
-     "alpha": 1,
-     "layer": "play",
-     "use": "Underpass tile grid",
      "scheme": "day"
     },
     {
@@ -6193,6 +6245,18 @@
      "name": "decks",
      "type": "number",
      "unit": "flyovers"
+    },
+    {
+     "name": "highDecks",
+     "type": "number",
+     "unit": "count",
+     "note": "Flyovers that run at Z2 (world.highHeight); the rest run at Z1 (Edit 44)"
+    },
+    {
+     "name": "platformShare",
+     "type": "number",
+     "unit": "ratio",
+     "note": "Chance a frontage lot becomes a platform with a walkable roof at Z2 and a stair up (Edit 44)"
     }
    ],
    "rows": [
@@ -6211,7 +6275,9 @@
      "puddleShare": 0.02,
      "jerseyShare": 0.06,
      "decks": 0,
-     "doubleShare": 0.3
+     "doubleShare": 0.3,
+     "highDecks": 0,
+     "platformShare": 0.1
     },
     {
      "id": "market",
@@ -6228,7 +6294,9 @@
      "puddleShare": 0.04,
      "jerseyShare": 0.05,
      "decks": 0,
-     "doubleShare": 0.7
+     "doubleShare": 0.7,
+     "highDecks": 0,
+     "platformShare": 0.12
     },
     {
      "id": "interchange",
@@ -6245,7 +6313,9 @@
      "puddleShare": 0.02,
      "jerseyShare": 0.1,
      "decks": 2,
-     "doubleShare": 0.6
+     "doubleShare": 0.6,
+     "highDecks": 1,
+     "platformShare": 0.15
     },
     {
      "id": "cbd",
@@ -6261,8 +6331,10 @@
      "towerShare": 0.5,
      "puddleShare": 0.02,
      "jerseyShare": 0.08,
-     "decks": 1,
-     "doubleShare": 0.8
+     "decks": 2,
+     "doubleShare": 0.8,
+     "highDecks": 1,
+     "platformShare": 0.15
     },
     {
      "id": "campus",
@@ -6279,7 +6351,9 @@
      "puddleShare": 0.01,
      "jerseyShare": 0.08,
      "decks": 1,
-     "doubleShare": 0.9
+     "doubleShare": 0.9,
+     "highDecks": 0,
+     "platformShare": 0.12
     }
    ]
   }

@@ -2,7 +2,7 @@
    Screen: 640 × 360 art pixels, integer-scaled. Field: 400 × 300 art pixels at (120, 30). HUD and screens: 1280 × 720 reference units. */
 (function () {
   'use strict';
-  const { Sim, NODES, LEVELS, LEVEL_LIST, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, INFO, DISTRICTS } = window.DUMMIES;
+  const { Sim, NODES, LEVELS, LEVEL_LIST, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, INFO, DISTRICTS, zHeight } = window.DUMMIES;
   const PIX = window.PIX;
 
   // Palette roles (Design §4.2 / D10.2, Trial)
@@ -55,7 +55,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P3.2';
+  const BUILD = 'P3.3';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -534,9 +534,14 @@
         case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
         case 'stair': Snd.tone(260, 300, 0.05, 'triangle', 0.03); break;
-        case 'level': { // Edit 42: first time up or down says what the level does
-          const key = 'level' + e.level;
-          if (e.level !== 1 && !fx.seenScreens.has(key)) { fx.seenScreens.add(key); toast(e.level === 2 ? copy('toast.deck', 'Deck: highway traffic up here. A broken barrier drops you to the road.') : copy('toast.underpass', 'Underpass: no car can sense you down here.')); }
+        case 'level': { // Edit 42, 44: first time up says what the level does
+          const f = s.level.floors && s.body.floor != null ? s.level.floors[s.body.floor] : null, kind = f ? f.kind : null, key = 'level' + e.level + (kind === 'deck' ? '' : kind || '');
+          if (e.level > 0 && kind !== 'bridge' && !fx.seenScreens.has(key)) {
+            fx.seenScreens.add(key);
+            toast(kind === 'roof' ? copy('toast.roof', 'Roof: no traffic up here. Step off a ledge to drop on a car below.')
+              : e.level === 2 ? copy('toast.highway', 'High highway: fast traffic. A broken parapet is a long drop to the street.')
+              : copy('toast.deck', 'Low highway: traffic up here. A broken parapet drops you to the road.'));
+          }
           break;
         }
         case 'deck-drop': Snd.tone(700, 200, 0.3, 'triangle', 0.06); break;
@@ -712,8 +717,18 @@
     if (!artCache.has(id)) {
       const P = s.P, L = s.level, gen = L.cell && L.theme !== 'start';
       const gr = PIX.ground(L, P, gen ? 1000 + L.cell[0] * 37 + L.cell[1] * 101 + LEVEL_LIST.indexOf(L.id) * 7 : 7 + LEVEL_LIST.indexOf(id) * 31), leds = PIX.PAL.bldgLed;
+      const zL = (z) => EXT(zHeight(P, z)), fl = L.floors || [], half = P['world.deckWidth'] / 2;
+      const roofSpec = (st) => { // Edit 44: a platform's ledges and openings (stair heads, skybridges), art px along each side
+        const ri = fl.findIndex((f) => f.kind === 'roof' && f.bx === st.x && f.by === st.y);
+        if (ri < 0) return null;
+        const f = fl[ri], open = [], rel = (sd, a0, a1) => { const o = sd === 'N' || sd === 'S' ? st.x : st.y; open.push([sd, Math.round((a0 - o) / U), Math.round((a1 - o) / U)]); };
+        for (const q of L.stairs || []) if (q.head === ri) { const sd = q.axis === 'x' ? (q.high <= st.x + 1 ? 'W' : 'E') : (q.high <= st.y + 1 ? 'N' : 'S'); if (q.axis === 'x') rel(sd, q.y, q.y + q.h); else rel(sd, q.x, q.x + q.w); }
+        for (const g of fl) if (g.kind === 'bridge' && (g.ends || []).includes(ri)) { if (g.axis === 'x') rel(g.x < st.x ? 'W' : 'E', g.y, g.y + g.h); else rel(g.y < st.y ? 'N' : 'S', g.x, g.x + g.w); }
+        return { ledges: f.ledges.map((lg) => lg.side), open };
+      };
       const sprite = (st, i) => {
         const w = Math.round(st.w / U), h = Math.round(st.h / U);
+        if (st.kind === 'block' && st.platform) return PIX.building(w, h, zL(2), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]), st.storeys, roofSpec(st) || { ledges: [], open: [] }); // Edit 44: roof at Z2
         if (st.kind === 'block') return st.storeys ? PIX.building(w, h, st.storeys * EXT(P['world.storeyHeight']), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]), st.storeys) // Edit 43: by storeys
           : PIX.building(w, h, EXT(st.height), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]));
         if (st.deck) return null; // deck columns are drawn with their deck
@@ -726,9 +741,13 @@
         if (st.kind === 'river') return null; // the canal in the ground art is the river
         return PIX.pod(w, h, EXT(P[st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight']), i);
       };
+      const deckAt = (st) => (L.decks || []).find((dk) => (dk.hz ? Math.abs(st.y + st.h / 2 - dk.off) : Math.abs(st.x + st.w / 2 - dk.off)) < half);
+      const blockOf = (ri) => L.statics.find((q) => q.kind === 'block' && fl[ri] && q.x === fl[ri].bx && q.y === fl[ri].by);
       artCache.set(id, { ground: gr, statics: L.statics.map((st, i) => ({ st, spr: sprite(st, i) })).filter((o) => o.spr), decks: (L.decks || []).map((dk) => Object.assign({ dk }, PIX.deck(dk, P))),
-        up: (L.stairs || []).filter((st) => st.to === 2).map((st) => ({ st, spr: PIX.stairs(st, EXT(P['world.deckHeight'])) })),
-        cols: L.statics.filter((st) => st.deck && st.kind === 'pillar').map((st) => ({ st, spr: PIX.column(Math.round(st.w / U), Math.round(st.h / U), EXT(P['world.deckHeight'])) })) });
+        up: (L.stairs || []).map((st) => ({ st, spr: PIX.stairs(st, zL(st.from), zL(st.to)) })), // Edit 44: every flight, foot to head
+        cols: L.statics.filter((st) => st.deck && st.kind === 'pillar').map((st) => { const dk = deckAt(st); return { st, spr: PIX.column(Math.round(st.w / U), Math.round(st.h / U), EXT(dk ? dk.height : P['world.deckHeight'])) }; }),
+        bridges: fl.map((f, i) => ({ f, i })).filter((o) => o.f.kind === 'bridge').map(({ f, i }) => ({ f, i, key: Math.max(...(f.ends || []).map((ri) => { const q = blockOf(ri); return q ? q.y + q.h : f.y + f.h; })) + 0.5,
+          spr: PIX.skybridge(Math.round(f.w / U), Math.round(f.h / U), zL(2), f.axis === 'x') })) });
     }
     return artCache.get(id);
   }
@@ -865,23 +884,34 @@
     fx.marks = fx.marks.filter((m) => app.realT - m.t < fade);
     for (const m of fx.marks) PIX.line(m.a[0] / U, m.a[1] / U, m.b[0] / U, m.b[1] / U, (x, y) => FB.mix(x, y, K.tyre, al * (1 - (app.realT - m.t) / fade)));
   }
-  // ----- Edit 42 levels: which level the dummy is on for drawing and cues
-  const lay = (c) => c.layer || 1;
-  function onDeck(s) { const b = s.body; return b.alive && ((b.level === 2 && b.mode !== 'drop') || (b.stair && b.stair.to === 2)); }
-  function bodyDeck(s) { const b = s.body; return b.stair && b.stair.to === 2 ? b.stair.deck : b.deck; }
-  function cueLevel(s) { // cues and tags show for cars on the dummy's level; on a stair, the level it is nearer
+  // ----- Edit 44 levels: Z0 ground, Z1 low highway, Z2 high highway, platform roofs and skybridges
+  const lay = (c) => (c.layer == null ? 0 : c.layer);
+  const zLift = (s, z) => EXT(zHeight(s.P, z || 0)); // art px a level is drawn above its footprint
+  function bodyFloor(s) { const b = s.body; return b.floor != null ? (s.level.floors || [])[b.floor] || null : null; }
+  function onFloor(s, kind) { const b = s.body, f = bodyFloor(s); return b.alive && !b.stair && b.mode !== 'drop' && b.level > 0 && !!f && (!kind || f.kind === kind); }
+  function onDeck(s) { return onFloor(s, 'deck'); }
+  function onGroundDraw(s) { const b = s.body; return b.alive && b.level === 0 && !b.stair && b.mode !== 'drop'; }
+  function stairDeck(s, st) { const fl = s.level.floors || []; return st.deck != null ? st.deck : st.foot != null && fl[st.foot] ? fl[st.foot].deck : null; } // the deck a flight is drawn with
+  function cueLevel(s) { // cues and tags show for cars on the dummy's level; on a stair, the level it is nearer; falling, where it lands
     const b = s.body;
-    if (!b.alive) return 1;
-    if (b.stair) return s.stairT(b.stair, b.x, b.y) > 0.5 ? Math.max(1, b.stair.to) : 1;
-    return b.mode === 'drop' ? 1 : Math.max(1, b.level);
+    if (!b.alive) return 0;
+    if (b.stair) return s.stairT(b.stair, b.x, b.y) > 0.5 ? b.stair.to : b.stair.from;
+    return b.mode === 'drop' && b.drop ? b.drop.toZ : b.level;
   }
-  const deckLift = (s) => EXT(s.P['world.deckHeight']); // art px a deck and everything on it is drawn above its footprint (Edit 43)
+  function cueDeck(s) { // the deck whose traffic can meet the dummy, if any
+    const b = s.body, fl = s.level.floors || [];
+    let f = null;
+    if (b.stair) f = s.stairT(b.stair, b.x, b.y) > 0.5 ? fl[b.stair.head] : b.stair.foot != null ? fl[b.stair.foot] : null;
+    else if (b.mode === 'drop' && b.drop) f = b.drop.toFloor != null ? fl[b.drop.toFloor] : null;
+    else f = bodyFloor(s);
+    return f && f.kind === 'deck' ? f.deck : null;
+  }
   function bodyLift(s) {
     const b = s.body;
     if (!b.alive) return 0;
-    if (b.mode === 'drop' && b.drop) { const f = clamp(b.drop.t / b.drop.T, 0, 1); return Math.round(deckLift(s) * (1 - f * f)); } // falls
-    if (b.stair && b.stair.to === 2) return Math.round(deckLift(s) * clamp(s.stairT(b.stair, b.x, b.y), 0, 1));
-    return b.level === 2 ? deckLift(s) : 0;
+    if (b.mode === 'drop' && b.drop) { const f = clamp(b.drop.t / b.drop.T, 0, 1), hi = zLift(s, b.drop.fromZ), lo = zLift(s, b.drop.toZ); return Math.round(lo + (hi - lo) * (1 - f * f)); } // falls
+    if (b.stair) { const a = zLift(s, b.stair.from), c = zLift(s, b.stair.to); return Math.round(a + (c - a) * clamp(s.stairT(b.stair, b.x, b.y), 0, 1)); }
+    return zLift(s, b.level);
   }
   function deckOf(s, c) { const ln = s.level.deckLanes && s.level.deckLanes[c.lane - 2]; return ln ? ln.deck : -1; }
   function carShadow(s, c) { const P = s.P, k = P['proto.art.shadowScale'], h = P['vehicles.' + c.cls + '.height']; PIX.fillPoly(toA(rotRect(c.x + PIX.SUN.x * h * k, c.y + PIX.SUN.y * h * k, c.h, c.L, c.W)), (x, y) => FB.shade(x, y, 0.72)); }
@@ -892,8 +922,8 @@
       if (cn.state !== 'free' && cn.state !== 'flight') continue;
       const o = off(P['proto.art.coneHeight'] + coneLift(cn)); PIX.disc((cn.x + o[0]) / U, (cn.y + o[1]) / U, Math.round(P['props.cone.radius'] / U), sh);
     }
-    for (const c of s.cars) if (lay(c) === 1) carShadow(s, c);
-    if (b.alive && !onDeck(s) && !(b.level === 0 && !b.stair)) { const o = off(P['proto.art.dummyHeight']); PIX.ellipse(b.x / U + o[0] / U, b.y / U + 3, 5.5, 2.2, sh); }
+    for (const c of s.cars) if (lay(c) === 0) carShadow(s, c);
+    if (onGroundDraw(s) || (b.alive && b.mode === 'drop' && b.drop && b.drop.toZ === 0)) { const o = off(P['proto.art.dummyHeight']); PIX.ellipse(b.x / U + o[0] / U, b.y / U + 3, 5.5, 2.2, sh); } // falling: the shadow marks the landing
     for (const d of s.drones) {
       const o = off(P['proto.art.droneHeight'] * d.alt), x = (d.x + o[0]) / U, y = (d.y + o[1]) / U, pts = [];
       PIX.line(x - 7, y - 4, x + 7, y + 4, (px, py) => pts.push([px, py])); PIX.line(x - 7, y + 4, x + 7, y - 4, (px, py) => pts.push([px, py]));
@@ -951,7 +981,6 @@
     const dk = dropK(), lift = dk ? Math.round(jv(CJ.states.replacementDrop.height) * dk / U / 2) : 0;
     const hop = liftPx || 0; // above the ground: on a deck, a stair, or falling from a deck
     const cx = Math.round(b.x / U) + jx, cy = Math.round(b.y / U) + jy - lift - hop;
-    if (b.mode === 'drop') PIX.ellipse(b.x / U, b.y / U + 3, 5.5, 2.2, (x, y) => FB.shade(x, y, 0.6)); // the landing spot
     if (dk) PIX.line(cx, cy - 16, cx, -1, (x, y) => FB.mix(x, y, K.ink, 0.5 * dk));
     const S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
     b._spr = S; b._sx = cx; b._sy = cy;
@@ -1041,21 +1070,21 @@
     FB.put(x, y - 1, Math.floor(app.realT * 4) % 2 ? K.warn : K.podCrown);
     for (const [rx, ry] of [[-7, -4], [7, -4], [-7, 4], [7, 4]]) { const a = app.realT * 40 + rx; FB.put(Math.round(x + rx + Math.cos(a) * 2), Math.round(y + ry + Math.sin(a) * 1.2), K.ink); }
   }
-  // A flyover (Edit 43): its columns from the ground up, then the deck layer (deck, boom, lights, shadows, the cues when the
-  // dummy is up here, its actors) drawn on the footprint and lifted by world.deckHeight × proto.art.extrusion, then its stairs
-  // up and a dummy climbing them. Ground actors under the deck show through as x-ray checkers (drawSprites).
+  // A flyover (Edit 43, 44): its columns from the ground up, then the deck layer (deck, boom, lights, shadows, the cues when the
+  // dummy is up here, its actors) drawn on the footprint and lifted by its level's height × proto.art.extrusion (Z1 18 art px,
+  // Z2 32), then its stairs (from the ground, and link stairs up to platform roofs) and a dummy climbing them.
   function drawDeck(s, d, k, cues, la) {
     const P = s.P, half = P['world.deckWidth'] / 2, b = s.body, still = cues === false, lift = d.ext, top = Math.round((d.dk.off - half) / U);
     for (const c of la.cols) if (Math.abs(c.st.y + c.st.h / 2 - d.dk.off) < half) PIX.blit(FB, c.spr, Math.round(c.st.x / U), Math.round(c.st.y / U));
     DL.d.fill(0); FB = DL;
     PIX.blit(FB, d.S, 0, top);
     (s.level.checkpoints || []).forEach((cp, i) => { if (cp.deck && cp.off === d.dk.off) drawBoom(s, cp, i); }); // the deck's own checkpoint
-    const cars = still ? [] : s.cars.filter((c) => lay(c) === 2 && deckOf(s, c) === k), mine = !still && b.alive && b.level === 2 && !b.stair && b.mode !== 'drop' && b.deck === k;
+    const cars = still ? [] : s.cars.filter((c) => lay(c) >= 1 && c.deckIdx === k), mine = !still && onDeck(s) && bodyFloor(s).deck === k;
     if (!still) {
       drawLights(s, cars);
       for (const c of cars) carShadow(s, c);
       if (mine) { const o = P['proto.art.dummyHeight'] * P['proto.art.shadowScale']; PIX.ellipse((b.x + PIX.SUN.x * o) / U, b.y / U + 3, 5.5, 2.2, (x, y) => FB.shade(x, y, 0.72)); }
-      if (mine && cues) cues();
+      if (cues) cues();
       if (mine) drawBodyGround(s);
       const list = cars.map((c) => [c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
       if (mine) list.push([b.y + P['body.radius'], () => drawBodySprite(s)]);
@@ -1067,7 +1096,7 @@
     for (const c of cars) { c._lift = lift; if (c._top != null) c._top -= lift; }
     if (mine && b._sy != null) b._sy -= lift;
     for (const u of d.up || []) PIX.blit(FB, u.spr, Math.round(u.st.x / U), Math.round(u.st.y / U));
-    if (!still && b.alive && b.stair && b.stair.to === 2 && b.stair.deck === k) { const L = bodyLift(s); drawBodyGround(s, L); drawBodySprite(s, false, L); }
+    if (!still && b.alive && b.stair && stairDeck(s, b.stair) === k) { const L = bodyLift(s); drawBodyGround(s, L); drawBodySprite(s, false, L); }
   }
   // Car lights (Edit 43). Headlight beams follow the route ahead for proto.art.beamLength and reach the screen before the car
   // does; the dummy and other cars in a beam cast its shadow. Braking washes the ground behind red (proto.art.brakeLength).
@@ -1110,33 +1139,29 @@
     PIX.line(px, py, tx, ty, (x, y, j) => { const c = Math.floor(j / 3) % 2 ? K.white : K.bldgOutline; FB.put(x, y, c); FB.put(x, y + 1, K.bldgOutline); }); // white and black: red is the warning alone
   }
   function drawSprites(s, la, still, deckCues) { // depth-sorted by the ground line of each object
-    const list = [], b = s.body, up = onDeck(s), under = b.alive && b.level === 0 && !b.stair;
+    const list = [], b = s.body, P = s.P, fl = s.level.floors || [], r = P['body.radius'];
     for (const o of la.statics) list.push([o.st.y + o.st.h, () => PIX.blit(FB, o.spr, Math.round(o.st.x / U), Math.round(o.st.y / U))]);
-    (la.decks || []).forEach((d, k) => { d.up = la.up.filter((u) => u.st.deck === k); list.push([d.dk.hz ? d.dk.off + s.P['world.deckWidth'] / 2 : s.P['world.height'] + d.dk.height / 1000, () => drawDeck(s, d, k, still ? false : deckCues, la)]); }); // flyovers sort by their south edge
+    (la.decks || []).forEach((d, k) => { d.up = la.up.filter((u) => stairDeck(s, u.st) === k); list.push([d.dk.hz ? d.dk.off + P['world.deckWidth'] / 2 : P['world.height'] + d.dk.height / 1000, () => drawDeck(s, d, k, still ? false : (cueDeck(s) === k ? deckCues : null), la)]); }); // flyovers sort by their south edge
+    for (const u of la.up) if (stairDeck(s, u.st) == null) list.push([u.st.y + u.st.h + 0.25, () => PIX.blit(FB, u.spr, Math.round(u.st.x / U), Math.round(u.st.y / U))]); // Edit 44: platform stairs, after their building
+    for (const g of la.bridges || []) list.push([g.key, () => PIX.blit(FB, g.spr, Math.round(g.f.x / U), Math.round(g.f.y / U))]);
     (s.level.checkpoints || []).forEach((cp, i) => { if (!cp.deck) list.push([s.boomPoint(cp).y + 2, () => drawBoom(s, cp, i)]); });
     for (const cn of s.cones) if (cn.state === 'free' || cn.state === 'flight') list.push([cn.y + 6, () => PIX.blit(FB, PIX.CONE, cn.x / U, (cn.y - coneLift(cn) * 1.2) / U)]);
     if (!still) {
-      for (const c of s.cars) if (lay(c) === 1) list.push([c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
-      if (b.alive && !up && !under) list.push([b.y + s.P['body.radius'], () => drawBodySprite(s, false, bodyLift(s))]);
+      for (const c of s.cars) if (lay(c) === 0) list.push([c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
+      if (b.alive) { // the dummy, unless its deck draws it: on the ground or falling by its feet; on a roof or skybridge after it; on a platform stair after the flight
+        const L = () => bodyLift(s), me = () => { const l = L(); if (l) drawBodyGround(s, l); drawBodySprite(s, false, l); }, f = bodyFloor(s);
+        if (b.stair) { if (stairDeck(s, b.stair) == null) list.push([b.stair.y + b.stair.h + 0.26, me]); }
+        else if (b.mode === 'drop') { const over = s.level.statics.find((q) => q.kind === 'block' && b.x > q.x - r && b.x < q.x + q.w + r && b.y > q.y - r && b.y < q.y + q.h + r); list.push([Math.max(b.y + r, over ? over.y + over.h + 0.6 : -1), me]); } // still over the roof it left: drawn above it
+        else if (b.level === 0) list.push([b.y + r, () => drawBodySprite(s, false, 0)]);
+        else if (f && f.kind === 'roof') list.push([f.by + f.bh + 0.6, me]);
+        else if (f && f.kind === 'bridge') { const g = (la.bridges || []).find((q) => q.i === b.floor); list.push([(g ? g.key : f.y + f.h) + 0.1, me]); }
+      }
     }
     list.sort((a, b2) => a[0] - b2[0]);
     for (const it of list) it[1]();
     if (!still) { // x-ray pass: a checker of each actor's own pixels, so an occluded car or dummy still reads (4.2.4 tier 1)
-      if (under) drawUnder(s); // underground: a cutaway of the passage; the traffic above shows as checkers over it
       for (const c of s.cars) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0));
-      if (under) drawBodySprite(s);
-      else if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
-    }
-  }
-  // Underground (Edit 43): a cutaway of the passage. Tiled floor, lit walls, ceiling lamps. Nothing above draws over it but checkers.
-  function drawUnder(s) {
-    for (const cr of s.level.corridors || []) {
-      const x0 = Math.round(cr.x / U), y0 = Math.round(cr.y / U), x1 = Math.round((cr.x + cr.w) / U) - 1, y1 = Math.round((cr.y + cr.h) / U) - 1, along = cr.h > cr.w;
-      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
-        const wall = along ? x === x0 || x === x1 : y === y0 || y === y1, strip = along ? x === x0 + 1 || x === x1 - 1 : y === y0 + 1 || y === y1 - 1;
-        const lamp = along ? (x === Math.round((x0 + x1) / 2) && (y - y0) % 8 === 4) : (y === Math.round((y0 + y1) / 2) && (x - x0) % 8 === 4);
-        FB.put(x, y, wall ? K.bldgOutline : strip ? K.podCrown : lamp ? K.white : ((x - x0) % 4 === 0 || (y - y0) % 4 === 0) ? K.tile2 : K.tile);
-      }
+      if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
     }
   }
   function ghost(S, ax, ay) {
@@ -1148,7 +1173,7 @@
       if (e._w == null) e._w = app.realT;
       const age = app.realT - e._w, cf = e._cfg || {}, ry = cf.rays, pu = cf.popup;
       const rayDur = ry ? Math.max(0.1, jv(ry.v.seconds, ry.k)) : 0.9, popDur = pu ? Math.max(0.2, jv(pu.v.seconds, pu.k)) : 0.9;
-      const ex = e.x / U, ey = e.y / U - (e.layer === 2 ? deckLift(s) : 0);
+      const ex = e.x / U, ey = e.y / U - zLift(s, e.layer);
       if (e.type === 'burst' && age < Math.max(rayDur, popDur)) {
         const big = Math.min(1, e.v / 500);
         if (!popups && age < rayDur) { // impact burst (4.2.2): radial rays at the contact
@@ -1222,7 +1247,7 @@
     const sa = app.realT - fx.stampT0, dur = (CJ && CJ.writeOff ? jv(CJ.writeOff) : 1.1) + 0.2;
     if (sa >= dur || (dur - sa < 0.25 && Math.floor(app.realT * 20) % 2)) return;
     const sc = sa < 0.15 ? 2 : 1, label = 'WRITTEN OFF', w = PIX.textWidth(label, sc) + 10 * sc, h = (PIX.FONT_H + 10) * sc;
-    const wr = s.effects.find((e) => e.type === 'wreck'), cx = wr ? wr.x / U : AW / 2, cy = wr ? wr.y / U - 32 - (wr.layer === 2 ? deckLift(s) : 0) : AH / 2;
+    const wr = s.effects.find((e) => e.type === 'wreck'), cx = wr ? wr.x / U : AW / 2, cy = wr ? wr.y / U - 32 - zLift(s, wr.layer) : AH / 2;
     const x0 = Math.round(clamp(cx - w / 2, 3, AW - w - 3)), y0 = Math.round(clamp(cy - h / 2, 3, AH - h - 3));
     FB.rect(x0 - 1, y0 - 1, x0 + w, y0 + h, K.stampOutline); FB.rect(x0, y0, x0 + w - 1, y0 + h - 1, K.warn); FB.rect(x0 + 2 * sc, y0 + 2 * sc, x0 + w - 1 - 2 * sc, y0 + h - 1 - 2 * sc, K.stampFill);
     PIX.text(FB, label, x0 + 5 * sc, y0 + 5 * sc, K.warn, K.stampOutline, sc);
@@ -1232,17 +1257,17 @@
     for (const c of s.cars) { c._brk = (c.man && c.man.type === 'brake') || c.state === 'interrupted' || (c._pv != null && c.v < c._pv - 0.4); c._pv = c.v; markCar(c, c._brk); }
     drawMarks();
     for (const c of s.cars) c._lift = 0;
-    drawLights(s, s.cars.filter((c) => lay(c) === 1)); // ground traffic; deck traffic lights its own deck (drawDeck)
-    const inCone = coneFn(s), lvl = cueLevel(s), mine = s.cars.filter((c) => lay(c) === lvl); // Edit 42: cues for the dummy's level only
+    drawLights(s, s.cars.filter((c) => lay(c) === 0)); // ground traffic; deck traffic lights its own deck (drawDeck)
+    const inCone = coneFn(s), lvl = cueLevel(s), dq = cueDeck(s), mine = s.cars.filter((c) => lay(c) === lvl && (lvl === 0 || c.deckIdx === dq)); // Edit 42, 44: cues for cars that can meet the dummy
     const cues = () => {
       if (b.alive || P['proto.zonesEverywhere']) for (const c of mine) drawZones(s, c, P['proto.zonesEverywhere'] ? ALL : inCone);
       if (b.alive || P['proto.pathsEverywhere']) for (const c of mine) drawPath(s, c, P['proto.pathsEverywhere'] ? ALL : inCone);
       if (b.alive) { for (const c of mine) drawStopCue(s, c); drawViewEdges(s); }
     };
-    if (lvl !== 2) cues(); // on a deck they are drawn on its surface (drawDeck)
+    if (lvl === 0) cues(); // on a deck they are drawn on its surface (drawDeck); a roof has no traffic
     dynShadows(s);
-    if (!onDeck(s) && !(b.level === 0 && !b.stair)) drawBodyGround(s);
-    drawSprites(s, la, false, lvl === 2 ? cues : null);
+    if (onGroundDraw(s)) drawBodyGround(s);
+    drawSprites(s, la, false, lvl > 0 ? cues : null);
     if (b.alive && b.held) { const p = s.releasePoint(); PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4); }
     for (const c of mine) drawCarMarks(s, c);
     drawNose(s);
@@ -1346,7 +1371,7 @@
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function drawTopBar(s) {
     const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - s.cars.filter((c) => !c.deck).length)); // deck traffic is off the shift's clock
-    const b = s.body, where = !b.alive ? '' : b.stair ? ' · STAIRS' : b.level === 2 ? ' · DECK' : b.level === 0 ? ' · UNDERPASS' : '';
+    const b = s.body, f = bodyFloor(s), where = !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44
     const items = [[null, roadLabel(s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
     const gap = (1264 - FX - w.reduce((a, b) => a + b, 0)) / (items.length - 1);
@@ -1395,9 +1420,10 @@
       ctx.beginPath(); cell.center.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
       if (cell.ring) cell.ring.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
       ctx.strokeStyle = seen ? (cur ? FT.selText : FT.text) : FT.off; ctx.lineWidth = seen ? 5 : 3; ctx.lineJoin = 'round'; ctx.stroke();
-      for (const dk of cell.decks || []) { // flyovers: a thin double line
+      for (const dk of cell.decks || []) { // flyovers: a dashed line; the high highway (Z2) a heavier one
+        const hi = (dk.z || 1) === 2;
         ctx.beginPath(); if (dk.hz) { ctx.moveTo(x, y + dk.off / Hd * ch); ctx.lineTo(x + cw, y + dk.off / Hd * ch); } else { ctx.moveTo(x + dk.off / Wd * cw, y); ctx.lineTo(x + dk.off / Wd * cw, y + ch); }
-        ctx.strokeStyle = FT.accent; ctx.lineWidth = 2; ctx.setLineDash([3, 2]); ctx.stroke(); ctx.setLineDash([]);
+        ctx.strokeStyle = FT.accent; ctx.lineWidth = hi ? 4 : 2; ctx.setLineDash(hi ? [6, 2] : [3, 2]); ctx.stroke(); ctx.setLineDash([]);
       }
       if (cell.focal) { ctx.beginPath(); ctx.arc(x + cw / 2, y + ch / 2, 3, 0, TAU); ctx.fillStyle = FT.accent; ctx.fill(); }
       ctx.restore();

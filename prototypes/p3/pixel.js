@@ -35,7 +35,7 @@
     // surfaces (D18): puddle patches; gates (D24): edge marks in cue.secondary
     puddle: '#93BFD3', puddleRim: '#DDF3FB', puddleLip: '#6F97AB', puddleHi: '#FFFFFF', gate: '#4A5A66',
     // levels (Edit 43): the deck is pale concrete, the underground a tiled passage; car lights wash the ground
-    deck: '#D9DFE3', deck2: '#C2CBD1', deckJoint: '#A9B5BD', column: '#C9D3DA', columnD: '#9AA8B1', tile: '#CDEBF1', tile2: '#9FD3DF',
+    deck: '#D9DFE3', deck2: '#C2CBD1', deckJoint: '#A9B5BD', column: '#C9D3DA', columnD: '#9AA8B1',
     beam: '#FFF6DC', brakeGlow: '#E4442E', bldgRoof1: '#F4F8FA',
   };
   // Chongqing night: dark ground, LED towers, lime-uplit planting, river reflections. Cues turn light-on-dark.
@@ -67,7 +67,7 @@
     bldgLed: ['#3FD0FF', '#2F6BFF', '#9B6BFF', '#FF5FD2', '#E6F4FF'], bldgOutline: '#05070B', spill: true,
     jersey: '#3A4252', jerseyTop: '#6B7894', jerseyLed: '#3FD0FF', jerseyO: '#05070B',
     puddle: '#1B2B45', puddleRim: '#5B7BB0', puddleLip: '#0E1422', puddleHi: '#BFEFFF', gate: '#7FA8BC',
-    deck: '#3B4459', deck2: '#323A4D', deckJoint: '#262C3B', column: '#4A5470', columnD: '#262D40', tile: '#103A44', tile2: '#1E6170',
+    deck: '#3B4459', deck2: '#323A4D', deckJoint: '#262C3B', column: '#4A5470', columnD: '#262D40',
     beam: '#E8F7FF', brakeGlow: '#FF3A3A', bldgRoof1: '#252E44',
   };
   // Cyber: the night palette with a city instead of parkland. Decks for lawns, blocks for trees, jersey barriers for hedges.
@@ -714,8 +714,8 @@
   }
   // City block (Edit 43): drawn by storeys. H = storeys × the storey's extrusion. Single storey: a pale roof with plant and a
   // lit shopfront. Double: a window row over the shopfront. Tower (3+ storeys): window rows, LED crown, lit seams, a sign.
-  function building(wpx, hpx, H, r, led, storeys) {
-    const n = Math.max(1, storeys || Math.round(H / 5)), tower = n >= 3, sh = H / n;
+  function building(wpx, hpx, H, r, led, storeys, deck) {
+    const n = Math.max(1, storeys || Math.round(H / 5)), tower = n >= 3 && !deck, sh = H / n;
     const S = spr(wpx, hpx + H, 0, H), o = K.bldgOutline;
     const P = (x, y, c) => sput(S, x, y + H, c); // y relative to the footprint top; roof spans -H .. hpx - H - 1
     const top = -H, face0 = hpx - H, roof = n === 1 ? K.bldgRoof1 : K.bldgRoof;
@@ -745,6 +745,7 @@
       for (let x = 1; x < wpx - 1; x++) { P(x, top + 1, led); if (x % 2) P(x, top + 2, led); }
       for (let y = face0; y < hpx - 1; y += 1) if ((y - face0) % 6 < 4) { P(1, y, led); P(wpx - 2, y, led); }
     }
+    if (deck) roofDeck(P, wpx, top, face0, led, deck); // Edit 44: a platform's walkable roof at Z2
     if (n >= 2 && wpx >= 20) { // vertical LED sign: glyph blocks meant as texture, not reading
       const sx = 3 + Math.floor(r() * (wpx - 10)), y0 = face0 + 1, y1 = tower ? hpx - 1 : hpx - Math.round(sh);
       for (let y = y0; y < y1; y++) for (let x = sx; x < sx + 5; x++) P(x, y, led);
@@ -753,6 +754,38 @@
     for (let y = top; y < hpx; y++) { P(0, y, y < face0 ? K.bldgEdge : o); P(wpx - 1, y, y < face0 ? K.bldgEdge : o); }
     for (let x = 0; x < wpx; x++) P(x, hpx - 1, o);
     return edgeRim(S, o, K.bldgRim, K.bldgRimD);
+  }
+  // Platform roof (Edit 44): rooftop tiles, a parapet with an LED line, a striped kerb (white and black: red is the warning's
+  // alone) along each ledge that drops to the street, and openings where a stair arrives or a skybridge joins.
+  // spec: { ledges: [side], open: [[side, a0, a1]] } in art px along the side from the footprint's top-left.
+  function roofDeck(P, wpx, top, face0, led, spec) {
+    const hpx = face0 - top, ledge = new Set(spec.ledges || []), open = spec.open || [];
+    const isOpen = (sd, a) => open.some(([s2, a0, a1]) => s2 === sd && a >= a0 && a < a1);
+    for (let j = 0; j < hpx; j++) for (let x = 0; x < wpx; x++) {
+      const y = top + j, dN = j, dS = hpx - 1 - j, dW = x, dE = wpx - 1 - x, d = Math.min(dN, dS, dW, dE);
+      const sd = d === dN ? 'N' : d === dS ? 'S' : d === dW ? 'W' : 'E', a = sd === 'N' || sd === 'S' ? x : j;
+      let c = (x % 6 === 0 || j % 6 === 0) ? K.pave2 : K.pave; // rooftop tiles
+      if (d < 3 && !isOpen(sd, a)) {
+        if (ledge.has(sd)) c = d === 0 ? (Math.floor(a / 3) % 2 ? K.white : K.bldgDark) : d === 1 ? K.kerb : c; // ledge: striped kerb
+        else c = d === 0 ? K.bldgOutline : d === 1 ? ((a % 4 < 2) ? led : K.jerseyTop) : K.jersey; // parapet with an LED line
+      } else if (d === 0) c = K.deck2; // an opening: the roof runs to its edge
+      P(x, y, c);
+    }
+  }
+  // Skybridge (Edit 44): a walkway at Z2 between two platform roofs. Glazed rails with LED dots along both long sides, a
+  // pale floor with joints, and a slim girder face below when it runs east-west. Anchor = footprint top-left.
+  function skybridge(wpx, hpx, lift, alongX) {
+    const face = alongX ? 3 : 0, S = spr(wpx, hpx + face, 0, lift), led = KX('bldgLed') ? KX('bldgLed')[2] || KX('bldgLed')[0] : K.lane;
+    for (let j = 0; j < hpx + face; j++) for (let i = 0; i < wpx; i++) {
+      const a = alongX ? i : j, b = alongX ? j : i, wide = alongX ? hpx : wpx;
+      let c;
+      if (b >= wide) c = b === wide + face - 1 ? K.bldgOutline : b === wide ? K.jerseyTop : K.column; // girder face
+      else if (b === 0 || b === wide - 1) c = K.bldgOutline;
+      else if (b === 1 || b === wide - 2) c = a % 4 === 1 ? led : K.jerseyTop; // rails
+      else c = a % 8 === 0 ? K.deckJoint : K.deck;
+      sput(S, i, j, c);
+    }
+    return S;
   }
   function mixK(a, b, k) { const p = [a & 255, (a >>> 8) & 255, (a >>> 16) & 255], q = [b & 255, (b >>> 8) & 255, (b >>> 16) & 255], m = p.map((v, i) => Math.round(v + (q[i] - v) * k)); return (0xFF000000 | (m[2] << 16) | (m[1] << 8) | m[0]) >>> 0; }
   function jersey(wpx, hpx, e) { // jersey barrier on its footprint (anchor = footprint top-left): lit top, face with LED dots
@@ -810,8 +843,10 @@
     const along = dk.hz ? AW : AH, lane = Math.round(P['world.laneWidth'] / U), pw = Math.max(2, Math.round(P['world.parapetWidth'] / U)), mid = Math.round(wpx / 2);
     const S = dk.hz ? spr(along, LAMP_H + wpx + face, 0, LAMP_H) : spr(wpx, along, 0, 0);
     const put = (a, b, c) => (dk.hz ? sput(S, a, b + LAMP_H, c) : sput(S, b, a, c)); // a along the deck, b across (0 = north / west)
-    const led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane, glow = c32(mixHex(PAL.deck2, PAL.head || PAL.white, 0.22));
+    const high = (dk.z || 1) === 2, leds = KX('bldgLed'), led = leds ? leds[high ? 2 : 1] || leds[0] : K.lane, glow = c32(mixHex(PAL.deck2, PAL.head || PAL.white, 0.22)); // Edit 44: the high highway's LED line differs
     const gaps = (dk.gaps || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]);
+    const opens = (dk.openings || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]); // Edit 44: a link stair's head, no parapet
+    const inOpen = (a, sd) => opens.some(([g0, g1, s2]) => s2 === sd && a >= g0 && a < g1);
     const inGap = (a, sd) => gaps.some(([g0, g1, s2]) => s2 === sd && a >= g0 && a < g1);
     const nearGap = (a, sd) => gaps.some(([g0, g1, s2]) => s2 === sd && a >= g0 - 12 && a < g1 + 12);
     for (let a = 0; a < along; a++) for (let b = 0; b < wpx + (dk.hz ? face : 0); b++) {
@@ -819,6 +854,8 @@
       const sd = b < mid ? -1 : 1, pb = sd < 0 ? b : wpx - 1 - b; // depth into the parapet from the outer edge
       if (b >= wpx) c = b === wpx + face - 1 ? K.bldgOutline : b === wpx ? K.jerseyTop : (a % 8 < 2 ? K.columnD : K.column); // girder face: lit lip, ribs
       else if (pb < pw + 1 && inGap(a, sd)) c = pb === 0 ? ((a % 3) ? K.deckJoint : K.bldgDark) : K.deck2; // broken parapet: the deck edge shows
+      else if (pb < pw + 1 && inOpen(a, sd)) c = pb === 0 ? K.deckJoint : K.deck; // opening: the deck runs onto the stair
+      else if (high && pb === pw + 1) c = (a % 6 < 3) ? led : K.deck2; // high highway: a second LED line inside the parapet
       else if (pb === 0) c = K.jerseyO;
       else if (pb === 1) c = (a % 6 < 3) ? led : K.jerseyTop; // parapet LED line
       else if (pb < pw + 1) c = K.jersey;
@@ -831,7 +868,7 @@
     }
     const sp = Math.round(P['world.deckLampSpacing'] / U);
     if (dk.hz) for (const sd of [-1, 1]) for (let a = Math.round(sp / 2) + (sd > 0 ? Math.round(sp / 2) : 0); a < along; a += sp) {
-      if (inGap(a, sd)) continue;
+      if (inGap(a, sd) || inOpen(a, sd)) continue;
       const b0 = sd < 0 ? 1 : wpx - 2;
       if (nearGap(a, sd)) { for (let k = 0; k < 5; k++) put(a + k, b0 - k * sd, k === 4 ? K.bldgDark : K.bldgOutline); continue; } // broken: the pole lies across the shoulder, unlit
       for (let k = 1; k <= 3; k++) for (let j = -1; j <= 1; j++) put(a + j, b0 - sd * (pw + k), glow); // light pool on the shoulder
@@ -860,22 +897,27 @@
     const cx = wpx >> 1; for (let k = 1; k <= 3; k++) P(cx, -e - k, k === 3 ? K.amber : o);
     return edgeRim(S, o, K.bldgRim, K.bldgRimD);
   }
-  // Stairs (anchor = footprint top-left). Up to a deck: lit treads rising to the head. Down to an underpass: a subway
-  // entrance, treads darkening into the passage, railings on both sides.
-  function stairs(st, lift) {
-    if (st.to === 2 && st.axis === 'y' && lift) return stairsUp(st, lift);
-    const w = Math.round(st.w / U), h = Math.round(st.h / U), S = spr(w, h, 0, 0), ay = st.axis === 'y', n = ay ? h : w, up = st.to === 2;
-    const headAtStart = st.high < st.low; // the head (high end) lies at the low coordinate
-    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
-      const along = ay ? j : i, across = ay ? i : j, wide = ay ? w : h, t = headAtStart ? 1 - along / (n - 1) : along / (n - 1); // 0 foot, 1 head
-      const rail = across === 0 || across === wide - 1, tread = along % 3 === 0;
-      let c;
-      if (rail) c = up ? (along % 4 < 2 ? (KX('bldgLed') ? KX('bldgLed')[1] : K.lane) : K.jerseyTop) : K.railO;
-      else if (up) c = tread ? K.jerseyO : t > 0.66 ? K.jerseyTop : t > 0.33 ? K.pave2 : K.pave;
-      else c = t > 0.8 ? K.bldgDark : tread ? K.bldgDark : t > 0.5 ? K.road : t > 0.25 ? K.road2 : K.pave2;
-      sput(S, i, j, c);
+  // Stairs (Edit 44, anchor = footprint top-left): lit treads from the foot at lift0 to the head at lift1 (art px). A flight
+  // along y stretches toward a head to the north and steepens toward one to the south; a flight along x shows its south
+  // stringer from the treads down to its foot level.
+  function stairs(st, lift0, lift1) {
+    lift0 = lift0 || 0; lift1 = lift1 || 0;
+    const w = Math.round(st.w / U), h = Math.round(st.h / U), ay = st.axis === 'y', top = Math.max(lift0, lift1), led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane;
+    const headLow = st.high < st.low, n = ay ? h : w, S = spr(w, h + top, 0, top);
+    const tAt = (k) => (headLow ? 1 - k / (n - 1) : k / (n - 1)), L = (k) => Math.round(lift0 + (lift1 - lift0) * tAt(k));
+    const tone = (t, k, rail) => (rail ? (k % 4 < 2 ? led : K.jerseyTop) : k % 3 === 0 ? K.jerseyO : t > 0.66 ? K.deck : t > 0.33 ? K.deck2 : K.pave2);
+    if (ay) {
+      for (let j = 0; j < h; j++) {
+        const y0 = j - L(j), y1 = j + 1 < h ? j + 1 - L(j + 1) : y0 + 1;
+        for (let y = Math.min(y0, y1 - 1); y <= Math.max(y0, y1 - 1); y++) for (let i = 0; i < w; i++) sput(S, i, y + top, tone(tAt(j), j, i === 0 || i === w - 1));
+      }
+    } else {
+      for (let i = 0; i < w; i++) {
+        const l = L(i), base = Math.min(lift0, lift1);
+        for (let j = 0; j < h; j++) sput(S, i, j - l + top, tone(tAt(i), i, j === 0 || j === h - 1));
+        for (let y = h - l; y < h - base; y++) sput(S, i, y + top, y === h - base - 1 ? K.bldgOutline : i % 6 === 0 ? K.columnD : K.column); // stringer face
+      }
     }
-    if (!up) { const fa = headAtStart ? n - 1 : 0; for (const k of [0, (ay ? w : h) - 1]) sput(S, ay ? k : fa, ay ? fa : k, K.podCrown); } // lit posts at the entrance
     return S;
   }
   // Ground patches beyond puddles: plaza paving, rubber crash matting, calibrated impact plates.
@@ -1008,25 +1050,11 @@
       rectShadow(B, band, dk.height, P);
     }
     for (const st of level.statics) if (st.kind !== 'river' && !st.deck && (!PAL.spill || st.kind !== 'block' || st.storeys)) rectShadow(B, st, st.height || P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
-    for (const st of level.stairs || []) if (st.to === 0) blit(B, stairs(st), Math.round(st.x / U), Math.round(st.y / U)); // subway entrances: below the ground line
+    for (const f of level.floors || []) if (f.kind === 'bridge') rectShadow(B, f, P['world.highHeight'], P); // skybridges cast theirs across the alley
     edgeMarks(B, level);
     return B;
   }
 
-  // An up-stair seen in the oblique view (Edit 43): the head rises by the deck's lift, so the flight stretches toward a deck to
-  // the north and steepens toward a deck to the south. Anchor = footprint top-left; sprite rows run from the lifted head.
-  function stairsUp(st, lift) {
-    const w = Math.round(st.w / U), h = Math.round(st.h / U), headTop = st.high < st.low, S = spr(w, h + lift, 0, lift), led = KX('bldgLed') ? KX('bldgLed')[1] : K.lane;
-    const rowY = (j) => j - Math.round((headTop ? 1 - j / (h - 1) : j / (h - 1)) * lift);
-    for (let j = 0; j < h; j++) {
-      const t = headTop ? 1 - j / (h - 1) : j / (h - 1), y0 = rowY(j), y1 = j + 1 < h ? rowY(j + 1) : y0 + 1, tread = j % 3 === 0;
-      for (let y = Math.min(y0, y1 - 1); y <= Math.max(y0, y1 - 1); y++) for (let i = 0; i < w; i++) {
-        const rail = i === 0 || i === w - 1;
-        sput(S, i, y + lift, rail ? (j % 4 < 2 ? led : K.jerseyTop) : tread ? K.jerseyO : t > 0.66 ? K.deck : t > 0.33 ? K.deck2 : K.pave2);
-      }
-    }
-    return S;
-  }
   // Deck column (Edit 43): concrete, lit on the left, from its footprint up to the deck's underside.
   function column(wpx, hpx, lift) {
     const S = spr(wpx, hpx + lift, 0, lift);
@@ -1036,6 +1064,6 @@
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
-    monument, fountain, deck, wall, booth, stairs, column, mixK, LAMP_H,
+    monument, fountain, deck, wall, booth, stairs, column, skybridge, mixK, LAMP_H,
   };
 })(typeof window !== 'undefined' ? window : globalThis);
