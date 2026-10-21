@@ -1,0 +1,114 @@
+# DUMMIES — P4 test prototype: turn radii and 45° roads
+
+**P4.0 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edit 49 (proposed). P3 (P3.4) is unchanged.
+
+P4 is P3.4 with the road and traffic rules under test. Two builds:
+
+- **`turn_lab.html` (Turn Lab):** one road piece at a time, at any radius, with the game's driver. Does traffic flow or pile up?
+- **`dummies_p4.html` (P4.0):** the game on 15 P4 layouts: 45° roads, roundabout fillets, the new driver and the spawn hold.
+
+## Why
+
+- **O3.60:** Interchange piles up. Cars cannot reverse out of it.
+- **O3.61:** roads zigzag through a screen with tight left-right corners.
+
+## What the Interchange pile-up was
+
+- Two causes, both measured.
+- **Driver:** a P3 car judges other cars in a straight strip ahead of its nose. On a bend the strip points into the oncoming lane. Two opposing cars on a reverse bend each see the other head-on and stop. Neither reverses.
+- **Geometry:** the radial road met the ring at a rounded 90° corner. Offset by half a lane, the inner lane bends at radius 4. Cars there swing through each other.
+- **Repro (P3.4):** Interchange B2, all 3 layouts. A car had stood 10 s by 19–20 s; no car left the screen in 180 s.
+
+## Rules under test (P4 only)
+
+| Rule | Parameter | Value |
+|---|---|---|
+| Cars judge other cars along their own lane | `traffic.followRoad` | 1 |
+| No new cars while traffic is jammed | `traffic.gridlockSeconds` | 6 s |
+| A jammed car backs up to clear the jam | `traffic.jamReverse` | 1 |
+| Least bend on any road (centre line) | `world.turnRadiusTight` | 64 (inner lane 36) |
+| Roundabout entry fillet | `world.roundaboutEntryRadius` | 96 |
+| Screens with 45° roads | `world.diagonalShare` | 0.25 |
+
+- **Jammed:** a car stopped 6 s whose wait leads, car by car, to a cycle or to nothing. A queue behind the dummy or a cone is play: spawns continue.
+- **Jam reverse:** a jammed car on the wrong side of the road backs up 140; a stopped car behind it backs up first to make room; of two cars facing each other, the later one backs up.
+- **Entry room:** a car enters only with room to stop from cruise behind the last car in.
+- **Z jog:** two 90° corners need an offset ≥ 128. A smaller offset takes one 45° segment.
+- **45° style:** a through-screen's jog becomes one 45° segment; a corner screen's L is cut at 45° (96–192 per leg). Never under a flyover.
+
+## Turn Lab
+
+![Turn Lab: the P3 roundabout on the P3 driver jams; the P4 roundabout on the P4 driver flows](docs/p4_turnlab_compare.png)
+
+- **Pieces:** L corner, P3 Z jog, P3 stepped L, 45° diagonal jog, 45° chamfered L, roundabout (half round, three quarters round).
+- **Controls:** radius, offset, corner cut, entry fillet (0 = P3 shape), van share, interval, driver P3/P4, spawn hold, speed.
+- **Live:** cars out per minute, longest stop, jam time, seconds with bodies overlapping, seconds spawns held, tightest bend.
+- **Sweep:** runs the piece over its radius range on both drivers.
+- **Headless:** `node lab_run.js` → `docs/turn_lab_results.md` (282 runs, 180 s each).
+
+P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three vehicle mixes, the dummy away.
+
+| Piece | P4 driver | P3 driver |
+|---|---|---|
+| L corner (90°) | Flows from centre 32. At 32 the inner lane bends at 3.6: 15 at the bend, 18–21 cars/min. At 64: 45 at the bend, 22–23 cars/min | Vans jam at centre 48–64 |
+| Z jog, two 90° corners | Offset 48 jams. Offset 84: bodies overlap. Offset ≥ 128 flows | Jams at every offset |
+| Stepped L | Flows. Full rate from centre 48 | Jams at every radius |
+| 45° diagonal jog | Flows at every radius (64–224) and offset (84–240) | Jams on most short offsets |
+| 45° chamfered L | Flows | Flows |
+| Roundabout, half round | Flows even on the P3 shape: 15 at the entry, 18–19 cars/min. Fillet 96: 60 at the entry, 22/min | Jams at every fillet |
+| Roundabout, three quarters | P3 shape fails (8–12 cars/min). Fillet ≥ 32 flows | Jams in most runs at every fillet |
+
+- **Reading:** the driver causes the jams. Tight bends cost speed and throughput, and the shortest Z jogs fail on either driver.
+- **P4 margin:** 64 for every bend (45 at the bend, full rate); 96 for roundabout entries.
+- **Spawn hold, P3 roundabout on the P3 driver:** spawns held 145–150 s of 180; the queue stops growing.
+- **Dummy in a lane for 30 s, then gone (P4):** jams clear within 27 s on every piece tested.
+
+## P4 layouts
+
+![P4 layout 1 of each district: 45° roads, roundabout fillets](docs/p4_plans.png)
+
+![Interchange B2 in P4: the road meets the ring on fillets; 60 s of traffic, 17 cars out, no stop](docs/p4_interchange_b2.png)
+
+![Riverside C2 in P4: a 45° jog in place of a zigzag](docs/p4_diagonal_screen.png)
+
+- **Bake:** 15 kept of 61 candidates (`content/districts/districts_p4.json`, `p4-edit49-2026-10-21`). No candidate failed on a bend or a jam.
+- **Every lane:** tightest bend 33.5 (36 nominal) on all 15 layouts.
+- **Traffic soak (contract clause 26):** every screen, 60 s, no jam.
+
+| District | 45° screens, layouts 1–3 | First bot write-off, layouts 1–3 |
+|---|---|---|
+| Riverside | 1, 1, 3 | 35.8, 29.5, 48.3 s |
+| Old Market | 3, 3, 3 | 31.6, 30.2, 76.9 s |
+| Interchange | 0, 2, 1 | 20.9, 43.6, 39.4 s |
+| CBD | 1, 1, 2 | 32.0, 55.3, 37.7 s |
+| Campus | 3, 2, 0 | 36.6, 32.5, 36.1 s |
+
+- Z jogs too short for two corners also take a 45° segment, whatever the screen's style.
+- **Browser:** Interchange B2, 60 s of traffic: 17 cars out, longest stop 0, no jam. A 45° screen toured. No page errors.
+
+## Run
+
+```
+python3 build.py            # dummies_p4.html and turn_lab.html
+node test_sim.js            # P3.4 checks plus P4 checks
+node lab_run.js 180         # Turn Lab matrix
+node tools/district_bake.js 60   # P4 layouts → content/districts/districts_p4.json
+```
+
+## Files
+
+| File | Role |
+|---|---|
+| `sim.js` | P3.4 sim plus Edit 49: `filletAny`, the `diagonal` style, roundabout fillets, `leadGap` along the lane, `jammed` and `jamCause` |
+| `lab.js`, `lab_view.js`, `lab_shell.html` | Turn Lab: pieces, runner, metrics, viewer |
+| `lab_run.js` | Headless matrix |
+| `tools/district_check.js` | Contract plus clauses 25 (bends) and 26 (60 s traffic soak) |
+| `tools/district_bake.js` | Bakes P4 layouts to `content/districts/districts_p4.json` |
+| `game.js`, `pixel.js`, `shell.html` | P3.4 renderer. Screen toasts show the theme and `45° road` |
+
+## Open
+
+- **Adopt into P3?** The driver and spawn hold carry over without a rebake. Bends and 45° roads need one.
+- **Diagonal art:** 45° segments draw with the curve renderer. Playtest how they read.
+- **Passing clips:** a car passing a dummy can still clip an oncoming car before the jam clears. P3 does the same.
+- **Frontage:** buildings stay axis-aligned beside a diagonal, leaving wedge forecourts.

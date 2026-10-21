@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit48-2026-10-21",
+ "registryVersion": "edit49-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals tried in P4 only",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -4637,7 +4637,7 @@
    "group": "World",
    "owner": "World",
    "label": "Tight turn radius",
-   "description": "Centre-line radius of a tight corner, and of each corner of a stepped turn.",
+   "description": "Centre-line radius of a tight corner, and of each corner of a stepped turn. P4 (Edit 49, proposed): the least bend on any road; no half-radius fallback; inner lane 36.",
    "unit": "world units",
    "type": "number",
    "default": 64,
@@ -4992,6 +4992,114 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "One 16 px tile: the building shows on both screens"
+  },
+  {
+   "id": "traffic.followRoad",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Follow along the lane",
+   "description": "A car judges another lane's car only where it stands on this car's own lane ahead (1). 0: a straight strip ahead of the nose, as in P3, which points into the oncoming lane on a bend. The dummy sensor is unchanged.",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 49 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "No false head-on stops on bends; no mutual stop between opposing cars"
+  },
+  {
+   "id": "traffic.gridlockSeconds",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Jam hold",
+   "description": "No new car enters a level while one of its cars has been stopped this long and its wait leads, car by car, to a cycle or to nothing. A queue behind the dummy or a cone does not count. 0 turns the hold off.",
+   "unit": "s",
+   "type": "number",
+   "default": 6,
+   "status": "proposed",
+   "source": "Edit 49 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A jam never grows (user-directed hold; value proposed)"
+  },
+  {
+   "id": "world.roundaboutEntryRadius",
+   "group": "World",
+   "owner": "World",
+   "label": "Roundabout entry radius",
+   "description": "Centre-line radius of the fillet between a radial road and the ring, at both ends of the route round. Inner lane = this less half a lane.",
+   "unit": "world units",
+   "type": "number",
+   "default": 96,
+   "status": "proposed",
+   "source": "Edit 49 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 64
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Inner lane 68 instead of P3's 4"
+  },
+  {
+   "id": "world.diagonalShare",
+   "group": "World",
+   "owner": "World",
+   "label": "45° road share",
+   "description": "Chance that a city screen takes the diagonal style: a through-screen jog as one 45° segment, a corner cut at 45°. Never under a flyover.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.25,
+   "status": "proposed",
+   "source": "Edit 49 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "45° roads occasionally (user-directed); value proposed"
+  },
+  {
+   "id": "traffic.jamReverse",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Jam reverse",
+   "description": "A car jammed for traffic.gridlockSeconds backs up proto.unstick.reverseGap when the way behind is clear: a car on the wrong side of the road (a pass that met oncoming traffic), a stopped car behind it to make room, or the later of two cars facing each other. 0: P3, no reverse out of a jam.",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 49 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Vehicles can reverse out of a pile-up"
   }
  ],
  "tables": {
