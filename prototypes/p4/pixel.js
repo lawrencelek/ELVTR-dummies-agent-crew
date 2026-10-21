@@ -1011,8 +1011,9 @@
     const geo0 = pathGeom(level.center), geoR = level.ring ? pathGeom(level.ring) : null, lw = P['world.laneWidth'], outer = lw + P['proto.shoulderWidth'];
     const geo = geoR ? { length: geo0.length, at: geo0.at, near: (x, y) => { const a = geo0.near(x, y), b2 = geoR.near(x, y); return b2.d < a.d ? b2 : a; } } : geo0; // the roundabout ring is road too
     const near = new Float32Array(AW * AH);
+    const field = level.arms ? roadField([].concat(level.arms.map((pts) => ({ pts, dash: true })), level.ring ? [{ pts: level.ring, dash: true }] : [], (level.surfaces || []).map((pts) => ({ pts, dash: false }))), outer + 40) : null; // P4 (Edit 49.3): junctions
     for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) {
-      const wx = (x + 0.5) * U, wy = (y + 0.5) * U, n = geo.near(wx, wy);
+      const wx = (x + 0.5) * U, wy = (y + 0.5) * U, k = y * AW + x, n = field ? { d: field.D[k], sd: field.dash[k] ? field.SD[k] : -1, s: field.S[k] } : geo.near(wx, wy);
       near[y * AW + x] = n.d;
       if (n.d >= outer) continue;
       if (n.d < lw) {
@@ -1066,8 +1067,31 @@
     }
     for (const st of level.statics) if (st.kind !== 'river' && !st.deck && (!PAL.spill || st.kind !== 'block' || st.storeys)) rectShadow(B, st, st.height || P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
     for (const f of level.floors || []) if (f.kind === 'bridge') rectShadow(B, f, P['world.highHeight'], P); // skybridges cast theirs across the alley
+    for (const g of level.giveWays || []) giveWayMark(B, g); // P4 (Edit 49.1, 49.3): double broken line across the lane
     edgeMarks(B, level);
     return B;
+  }
+  // P4 (Edit 49.3): nearest road centre line per art pixel, stamped segment by segment within reach (junctions have many lines).
+  function roadField(geoms, reach) {
+    const N = AW * AH, D = new Float32Array(N).fill(1e9), SD = new Float32Array(N), S = new Float32Array(N), dash = new Uint8Array(N);
+    for (const g of geoms) {
+      let acc = 0;
+      for (let i = 1; i < g.pts.length; i++) {
+        const [ax, ay] = g.pts[i - 1], [bx, by] = g.pts[i], dx = bx - ax, dy = by - ay, len = Math.hypot(dx, dy) || 1, tx = dx / len, ty = dy / len;
+        const x0 = Math.max(0, Math.floor((Math.min(ax, bx) - reach) / U)), x1 = Math.min(AW - 1, Math.ceil((Math.max(ax, bx) + reach) / U));
+        const y0 = Math.max(0, Math.floor((Math.min(ay, by) - reach) / U)), y1 = Math.min(AH - 1, Math.ceil((Math.max(ay, by) + reach) / U));
+        for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+          const px = (x + 0.5) * U - ax, py = (y + 0.5) * U - ay, t = Math.max(0, Math.min(len, px * tx + py * ty)), d = Math.hypot(px - tx * t, py - ty * t), k = y * AW + x;
+          if (d < D[k]) { D[k] = d; SD[k] = tx * py - ty * px; S[k] = acc + t; dash[k] = g.dash ? 1 : 0; }
+        }
+        acc += len;
+      }
+    }
+    return { D, SD, S, dash };
+  }
+  function giveWayMark(B, g) { // yield line (US, decision 84): shark's teeth across the lane, pointing at the approaching car. g: lane point at the line, with its direction (world units)
+    const nx = -g.ty, ny = g.tx;
+    for (let l0 = -21; l0 <= 21; l0 += 10.5) for (let a = 0; a <= 7; a += U / 2) { const half = 3.5 * (1 - a / 7); for (let l = -half; l <= half; l += U / 2) B.put(Math.floor((g.x + nx * (l0 + l) - g.tx * a) / U), Math.floor((g.y + ny * (l0 + l) - g.ty * a) / U), K.lane); }
   }
 
   // Deck column (Edit 43): concrete, lit on the left, from its footprint up to the deck's underside.
@@ -1079,6 +1103,6 @@
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
-    monument, fountain, deck, wall, booth, stairs, column, skybridge, mixK, LAMP_H,
+    monument, fountain, deck, wall, booth, stairs, column, skybridge, mixK, LAMP_H, roadField, giveWayMark,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

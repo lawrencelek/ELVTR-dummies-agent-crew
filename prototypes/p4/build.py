@@ -15,7 +15,7 @@ out.write_text(shell.replace('<!--SCRIPTS-->', scripts), encoding='utf-8')
 print(out.name, out.stat().st_size, 'bytes')
 # P4 Turn Lab (Edit 49): road pieces at chosen radii on the game's driver
 lab = (here / 'lab_shell.html').read_text(encoding='utf-8')
-lab_scripts = ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</script>\n' for f in ('sim.js', 'lab.js', 'lab_view.js'))
+lab_scripts = ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</script>\n' for f in ('sim.js', 'pixel.js', 'lab.js', 'lab_view.js'))
 out2 = here / 'turn_lab.html'
 out2.write_text(lab.replace('<!--SCRIPTS-->', lab_scripts), encoding='utf-8')
 print(out2.name, out2.stat().st_size, 'bytes')
@@ -28,3 +28,11 @@ fl_scripts += ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</sc
 out3 = here / 'fleet_mockup.html'
 out3.write_text(fl.replace('<!--SCRIPTS-->', fl_scripts), encoding='utf-8')
 print(out3.name, out3.stat().st_size, 'bytes')
+# P4 road mock-up (Edit 49.3): Turn Lab pieces in game art; 90° corners by radius; 45° junction ideas
+rd = (here / 'road_shell.html').read_text(encoding='utf-8')
+jres = here / 'docs' / 'junction_results.json'
+rd_scripts = f'<script>\nwindow.JUNCTION_RESULTS = {jres.read_text(encoding="utf-8") if jres.exists() else "{}"};\n</script>\n'
+rd_scripts += ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</script>\n' for f in ('sim.js', 'pixel.js', 'lab.js', 'road_view.js'))
+out4 = here / 'road_mockup.html'
+out4.write_text(rd.replace('<!--SCRIPTS-->', rd_scripts), encoding='utf-8')
+print(out4.name, out4.stat().st_size, 'bytes')

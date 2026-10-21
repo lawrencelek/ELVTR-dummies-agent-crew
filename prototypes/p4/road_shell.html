@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Road Mock-up</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --warn: #ffb347; --bad: #ff5a6a; --good: #57e389; --minor: #ff7ad9; --ring: #ffe08a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 0; color: var(--dim); max-width: 1000px; }
+  main { padding: 12px 16px 32px; display: grid; gap: 12px; max-width: 1500px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+  h3 { font-size: 14px; margin: 8px 0 2px; }
+  canvas { display: block; image-rendering: pixelated; width: 100%; height: auto; border-radius: 6px; background: #10141c; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 12px; }
+  @media (max-width: 480px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+  .cap { color: var(--dim); font-size: 12px; margin: 4px 0 0; }
+  .cap b { color: var(--ink); font-weight: 600; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  button { background: #1d2a40; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  button.on { background: #154a63; border-color: var(--accent); }
+  .key { display: inline-flex; gap: 14px; flex-wrap: wrap; color: var(--dim); font-size: 12px; }
+  .key i { display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 4px; border-radius: 2px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 5px 8px; border-bottom: 1px solid #1f2a3d; text-align: right; white-space: nowrap; }
+  th { color: var(--dim); font-weight: 500; }
+  td.l, th.l { text-align: left; }
+  .scroll { overflow-x: auto; }
+  .bad { color: var(--bad); } .good { color: var(--good); } .warn { color: var(--warn); }
+  .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 1000px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Road mock-up · P4</h1>
+  <p>The Turn Lab's road pieces in game art: 90° corners at each radius, and five ways for a 45° road to meet a straight one. Ground and sprites are the game's renderer (1 art px = 2 world units), shown 2× on 16 px tiles.</p>
+</header>
+<main>
+  <section>
+    <h2>90° corners</h2>
+    <div class="row"><span class="cap">Footprints through the bend:</span><button id="fpBus" class="on">Bus 96, inner lane</button><button id="fpVan">Van, inner lane</button><button id="fpNone">None</button></div>
+    <div class="grid3" id="corners"></div>
+    <p class="note">Same 13 × 13-tile crop for every radius. Radius is on the road's centre line; the inner lane bends half a lane (28) tighter, the inner kerb a full lane (56) tighter. Ghost footprints every 16 units: cyan in lane, amber up to 8 outside, red beyond 8 (into the next lane).</p>
+  </section>
+  <section>
+    <h2>45° junction ideas</h2>
+    <div class="row"><button id="tRoutes" class="on">Routes</button><button id="tTraffic" class="on">Traffic at 40 s</button>
+      <span class="key"><span><i style="background:var(--accent)"></i>Major road (priority)</span><span><i style="background:var(--warn)"></i>Left turn off the major road (gives way to oncoming)</span><span><i style="background:var(--minor)"></i>Minor road (gives way to both)</span><span><i style="background:var(--ring)"></i>Roundabout (gives way to the ring)</span></span></div>
+    <div class="grid2" id="junctions"></div>
+    <p class="note">Each panel: one screen, the major road W–E, every route the piece allows, one car every 2.5 s from all eight classes, P4 driver. Yield lines are the rows of white triangles (shark's teeth) across a lane.</p>
+  </section>
+  <section>
+    <h2>Junction results</h2>
+    <div class="scroll"><table id="results"></table></div>
+    <p class="note">From <code>node junction_run.js</code>: 180 s per run, two seeds, the dummy away. Mixes: expanded fleet (bus 96) every 2.5 s and 1.5 s; P3 fleet (40% vans) every 2.5 s. Minor wait: the longest any car stood on the minor road or at a ring entry. Bus: most outside its lane.</p>
+  </section>
+</main>
+<!--SCRIPTS-->
+</body>
+</html>

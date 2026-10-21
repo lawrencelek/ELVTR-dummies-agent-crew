@@ -33,19 +33,113 @@
       } },
     roundabout3: { name: 'Roundabout, three arms (W, E, S): every route', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'E', 'S'], q.Rf) },
     roundabout4: { name: 'Roundabout, four arms: every route', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'N', 'E', 'S'], q.Rf) },
+    // P4 (Edit 49.3): junctions on one screen. Major road W–E; a minor road joins it. Give way by rank (see junction()).
+    tee: { name: 'T junction, 90° (W, E, S): every route', params: ['R'], defaults: { R: 'world.junctionTurnRadius' }, build: (X, q, P) => junction(X, P, { W: ARM.W(), E: ARM.E(), S: ARM.S() }, ['W', 'E'], q.R) },
+    y45: { name: 'Y junction, 45° (W, E, SW): every route', params: ['R'], defaults: { R: 'world.junctionTurnRadius' }, build: (X, q, P) => junction(X, P, { W: ARM.W(), E: ARM.E(), SW: ARM.SW() }, ['W', 'E'], q.R) },
+    y45fork: { name: 'Y junction, 45°, no hairpin turns (fork)', params: ['R'], defaults: { R: 'world.junctionTurnRadius' }, build: (X, q, P) => junction(X, P, { W: ARM.W(), E: ARM.E(), SW: ARM.SW() }, ['W', 'E'], q.R, 100) },
+    tee45: { name: 'T junction, 45° road squared off', params: ['R', 'run'], defaults: { R: 'world.junctionTurnRadius', run: 'world.junctionApproach' }, build: (X, q, P) => junction(X, P, { W: ARM.W(), E: ARM.E(), SQ: ARM.SQ(X, Math.max(q.run != null ? q.run : P['world.junctionApproach'], q.R + P['world.turnRadiusWide'] * Math.tan(Math.PI / 8) + 8), P['world.turnRadiusWide']) }, ['W', 'E'], q.R) },
+    roundabout45: { name: 'Roundabout, three arms, one at 45° (W, E, SW)', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'E', 'SW'], q.Rf) },
   };
+  // ---------- P4 (Edit 49.3): junctions. Arms run out from the junction point J. A route is arm A reversed, a fillet of
+  // radius R at J, then arm B. Traffic keeps right. Rank 0: the major road, through and turning right off it. Rank 1:
+  // turning left off the major road (gives way to oncoming traffic). Rank 2: the minor road (gives way to both).
+  const JX = W / 2, JY = H / 2, D45 = Math.SQRT1_2;
+  const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = hyp(dx, dy); return [dx / l, dy / l]; };
+  function toEdge(dir, from) { // from a point along dir to LEAD beyond the screen edge
+    const [x, y] = from, ts = [];
+    if (dir[0] > 1e-9) ts.push((W - x) / dir[0]); if (dir[0] < -1e-9) ts.push(-x / dir[0]);
+    if (dir[1] > 1e-9) ts.push((H - y) / dir[1]); if (dir[1] < -1e-9) ts.push(-y / dir[1]);
+    const t = Math.min(...ts) + LEAD;
+    return [x + dir[0] * t, y + dir[1] * t];
+  }
+  const ARM = {
+    W: () => [[JX, JY], toEdge([-1, 0], [JX, JY])], E: () => [[JX, JY], toEdge([1, 0], [JX, JY])], S: () => [[JX, JY], toEdge([0, 1], [JX, JY])],
+    SW: () => [[JX, JY], toEdge([-D45, D45], [JX, JY])],
+    SQ: (X, run, Rb) => { const b = [JX, JY + run]; return X.filletAny([[JX, JY], b, toEdge([-D45, D45], b)], Rb, 0); }, // 45° road, straight for `run` before J
+  };
+  function jRoute(X, A, B, R) {
+    const u = unit(A[0], A[1]), v = unit(B[0], B[1]), th = Math.acos(Math.max(-1, Math.min(1, -(u[0] * v[0] + u[1] * v[1])))); // deflection
+    const back = A.slice(1).reverse(), [jx, jy] = A[0];
+    if (th < 1e-3) return back.concat([A[0]], B.slice(1));
+    const t = R * Math.tan(th / 2);
+    if (t > hyp(A[1][0] - jx, A[1][1] - jy) - 1 || t > hyp(B[1][0] - jx, B[1][1] - jy) - 1) return null; // the fillet does not fit the arm's first straight
+    const p1 = [jx + u[0] * t, jy + u[1] * t], p2 = [jx + v[0] * t, jy + v[1] * t];
+    const bis = unit([0, 0], [u[0] + v[0], u[1] + v[1]]), dc = R / Math.cos(th / 2), c = [jx + bis[0] * dc, jy + bis[1] * dc];
+    const a0 = Math.atan2(p1[1] - c[1], p1[0] - c[0]); let da = Math.atan2(p2[1] - c[1], p2[0] - c[0]) - a0;
+    while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI;
+    return back.concat(X.arcPts(c[0], c[1], R, a0, a0 + da, Math.max(4, Math.round(R * Math.abs(da) / 8))), B.slice(1));
+  }
+  function junction(X, P, arms, major, R, maxTurn) {
+    const lanes = [], roads = [], routes = [], info = [];
+    for (const a of Object.keys(arms)) for (const b of Object.keys(arms)) {
+      if (a === b) continue;
+      const A = arms[a], B = arms[b], u = unit(A[0], A[1]), v = unit(B[0], B[1]);
+      const th = Math.acos(Math.max(-1, Math.min(1, -(u[0] * v[0] + u[1] * v[1])))) * 180 / Math.PI, right = (-u[0]) * v[1] - (-u[1]) * v[0] > 1e-9;
+      if (maxTurn && th > maxTurn) continue; // banned turn
+      const center = jRoute(X, A, B, R); if (!center) continue;
+      const rank = !major.includes(a) ? 2 : major.includes(b) || right ? 0 : 1;
+      lanes.push(X.lanesOf(center, P)[0]); roads.push(center); routes.push(a + '→' + b); info.push({ from: a, to: b, rank, turn: Math.round(th) });
+    }
+    conflictZones(X, lanes, info, P);
+    const lw = P['world.laneWidth'];
+    const show = Object.entries(arms).map(([k, A]) => (major.includes(k) ? A : trimFrom(A, lw + R))); // minor arm: no centre line inside the junction
+    const majorLine = arms[major[0]].slice().reverse().concat(arms[major[1]].slice(1));
+    return { center: roads[0], ring: null, lanes, roads, routes, info, arms: [majorLine].concat(show.filter((_, i) => !major.includes(Object.keys(arms)[i]))), junction: [JX, JY] };
+  }
+  function trimFrom(A, d) { // the arm beyond distance d from its start
+    const out = []; let acc = 0;
+    for (let i = 1; i < A.length; i++) {
+      const l = hyp(A[i][0] - A[i - 1][0], A[i][1] - A[i - 1][1]);
+      if (!out.length && acc + l > d) { const f = (d - acc) / l; out.push([A[i - 1][0] + (A[i][0] - A[i - 1][0]) * f, A[i - 1][1] + (A[i][1] - A[i - 1][1]) * f]); }
+      if (out.length) out.push(A[i]);
+      acc += l;
+    }
+    return out;
+  }
+  // Where each route's lane meets another's: lane lines closer than the widest body plus 6 (the driver's corridor margin).
+  // Spans on both lanes. Routes from one arm share their entry (they queue, they do not conflict). A merge into one exit is
+  // capped at one bus length past where the lanes meet. The give-way line stands traffic.minimumGap before the first span.
+  function conflictZones(X, lanes, info, P) {
+    const NEAR = Math.max(...CLASSES.map((c) => P['vehicles.' + c + '.width'])) + 6, STEP = 4, CAP = P['vehicles.bus.length'], GAP = P['traffic.minimumGap'];
+    lanes.forEach((a, i) => {
+      const zones = [];
+      lanes.forEach((b, j) => {
+        if (i === j || info[i].from === info[j].from) return;
+        let cur = null;
+        for (let s = 0; s <= a.length; s += STEP) {
+          const p = X.pathAt(a, s), pr = X.pathProject(b, p.x, p.y), hit = onScreen([p.x, p.y]) && Math.sqrt(pr.d2) < NEAR && pr.s > 1 && pr.s < b.length - 1;
+          if (hit) { if (!cur) cur = { lane: j, s0: s, s1: s, o0: pr.s, o1: pr.s }; else { cur.s1 = s; cur.o0 = Math.min(cur.o0, pr.s); cur.o1 = Math.max(cur.o1, pr.s); } }
+          else if (cur) { zones.push(cur); cur = null; }
+        }
+        if (cur) zones.push(cur);
+      });
+      for (const z of zones) if (info[i].to === info[z.lane].to) { z.s1 = Math.min(z.s1, z.s0 + CAP); z.o1 = Math.min(z.o1, z.o0 + CAP); z.merge = true; }
+      const first = zones.filter((z) => info[z.lane].rank < info[i].rank).reduce((m, z) => Math.min(m, z.s0), Infinity);
+      a.junction = { rank: info[i].rank, line: info[i].rank > 0 && first < Infinity ? Math.max(0, first - GAP) : null, zones, route: info[i].from + '→' + info[i].to };
+    });
+    // the minor road has one give-way line per arm: every route from it stops at the earliest of their lines
+    lanes.forEach((a, i) => {
+      if (info[i].rank < 2) return;
+      a.junction.line = Math.min(...lanes.filter((b, j) => info[j].from === info[i].from && b.junction.line != null).map((b) => b.junction.line));
+    });
+  }
   // P4 (Edit 49.1): a roundabout with several arms. Traffic keeps right and circulates one way (anticlockwise on screen) in the
   // outer ring lane. One route per ordered pair of arms, each with its own lane path and a give-way line where it joins the ring.
   function multiRoundabout(X, P, arms, Rf) {
-    const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 };
+    const arms0 = arms;
+    const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2, SW: 3 * Math.PI / 4 };
     const cx = W / 2, cy = H / 2, ring = X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 48), lanes = [], roads = [], names = [];
     const wrapA = (a) => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
     for (const a of arms) for (const b of arms) {
       if (a === b) continue;
-      const ea = { side: a, off: a === 'W' || a === 'E' ? H / 2 : W / 2 }, eb = { side: b, off: b === 'W' || b === 'E' ? H / 2 : W / 2 };
+      const arm = (k) => (k === 'SW' ? { side: 'S', ang: ang.SW, pt: toEdge([Math.cos(ang.SW), Math.sin(ang.SW)], [W / 2, H / 2]) } : { side: k, off: k === 'W' || k === 'E' ? H / 2 : W / 2 });
+      const ea = arm(a), eb = arm(b);
       const nat = wrapA(ang[b] - ang[a]), opposite = Math.abs(Math.abs(nat) - Math.PI) < 1e-6;
       const r = () => (opposite ? 0.9 : nat > 0 ? 0.1 : 0.9); // always the anticlockwise way round (decreasing angle)
-      const center = X.roundaboutCenter(ea, eb, W, H, LEAD, Rc, r, Rf || 96), lane = X.lanesOf(center, P)[0];
+      // arms close together (45°): both fillets must fit the short way between them, with world.roundaboutArmGap of ring; never below world.turnRadiusTight
+      const short = Math.abs(nat) < Math.PI - 1e-6 && nat < 0 ? Math.abs(nat) : 2 * Math.PI, hs = (short - P['world.roundaboutArmGap'] * Math.PI / 180) / 2;
+      const Rfp = short < Math.PI ? Math.max(P['world.turnRadiusTight'], Math.min(Rf || 96, Rc * Math.sin(hs) / (1 - Math.sin(hs)))) : Rf || 96;
+      const center = X.roundaboutCenter(ea, eb, W, H, LEAD, Rc, r, Rfp), lane = X.lanesOf(center, P)[0];
       let sLine = null, aj = null, sj = null;
       for (let i = 0; i < lane.pts.length; i++) {
         const [x, y] = lane.pts[i], d = hyp(x - cx, y - cy);
@@ -55,7 +149,9 @@
       lane.giveWay = { s: sLine, sj, cx, cy, R, dir: -1, aj }; // stop line, join point (s and angle), circulating lane
       lanes.push(lane); roads.push(center); names.push(a + '→' + b);
     }
-    return { center: roads[0], ring, lanes, roads, routes: names };
+    lanes.forEach((ln, i) => { const a = names[i].split('→')[0]; ln.giveWay.s = Math.min(...lanes.filter((_, j) => names[j].split('→')[0] === a).map((m) => m.giveWay.s)); }); // one line per arm
+    const armLines = arms0.map((k) => { const t = ang[k], c = [cx + Math.cos(t) * (Rc + (Rf || 96) + 8), cy + Math.sin(t) * (Rc + (Rf || 96) + 8)]; return [k === 'SW' ? toEdge([Math.cos(t), Math.sin(t)], [cx, cy]) : X.edgePoint(k, k === 'W' || k === 'E' ? H / 2 : W / 2, W, H, LEAD), c]; });
+    return { center: roads[0], ring, lanes, roads, routes: names, arms: armLines };
   }
   // P3's roundabout path, rebuilt here so the lab can compare it on the same driver (P3 sim.js, Edit 41.1).
   function p3Roundabout(X, a, b, Rc, sweepIn) {
@@ -132,8 +228,9 @@
     s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: pickClass(opts.fleet, opts.vanShare, rnd()), lane: Math.min(lanes.length - 1, Math.floor(rnd() * lanes.length)), mult: 0.8 + 0.4 * rnd() }));
     s.admissionInterval = () => opts.interval;
     Object.assign(s.body, { x: -900, y: -900 });
-    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: lanes.filter((l) => l.giveWay).map((l) => X.pathAt(l, l.giveWay.s)) }, stats: null };
-    s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity, over: {}, overT: 0 };
+    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: lanes.filter((l) => l.giveWay).map((l) => X.pathAt(l, l.giveWay.s)).concat(lanes.filter((l) => l.junction && l.junction.rank === 2).map((l) => X.pathAt(l, l.junction.line))), // a left turn off the major road waits unmarked
+      arms: g.arms || null, info: g.info || null, junction: g.junction || null }, stats: null };
+    s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity, over: {}, overT: 0, routes: {}, rankStop: {} };
     return s;
   }
   // rectangle overlap of two car bodies (separating axis)
@@ -149,9 +246,12 @@
   // one tick, then the lab's bookkeeping. The jam test runs whether or not spawns are held.
   function tick(s) {
     const st = s.lab.stats, dt = 1 / s.P['simulation.tickRate'];
+    const before = s.cars.slice();
     s.step({}); s.body.x = -900; s.body.y = -900;
     st.t = s.t;
     for (const e of s.events || []) { if (e.type === 'exit') st.exited++; }
+    for (const c of before) if (!s.cars.includes(c) && c.path.junction) { const r = c.path.junction.route; st.routes[r] = (st.routes[r] || 0) + 1; } // P4 (Edit 49.3): out per route
+    for (const c of s.cars) { const k = c.path.junction ? c.path.junction.rank : c.path.giveWay ? 2 : 0; if ((c.stopT || 0) > (st.rankStop[k] || 0)) st.rankStop[k] = c.stopT; }
     s.events = [];
     let ov = false;
     for (let i = 0; i < s.cars.length; i++) {
@@ -176,7 +276,7 @@
       vanShare: opts.vanShare, interval: opts.interval, seconds: opts.seconds,
       centreR: +minRadius(geo.center).r.toFixed(1), laneR: +Math.min(...lanesR).toFixed(1), cornerV: +Math.sqrt(s.P['traffic.cornerAccel'] * Math.min(...lanesR)).toFixed(0),
       exitedPerMin: +(st.exited / opts.seconds * 60).toFixed(1), maxStop: +st.maxStop.toFixed(1), jamAt: st.jamAt, jamCars: st.jamCars, overlapS: +st.overlapT.toFixed(1),
-      heldS: +st.held.toFixed(1), peak: st.peak };
+      heldS: +st.held.toFixed(1), peak: st.peak, routes: st.routes, rankStop: Object.fromEntries(Object.entries(st.rankStop).map(([k, v]) => [k, +v.toFixed(1)])) };
   }
   const api = { PIECES, FLEETS, CLASSES, makeSim, tick, run, minRadius, radii, overlap, overhang: (c, P) => overhang(c, P), W, H };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.TURNLAB = api;

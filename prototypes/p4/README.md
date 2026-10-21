@@ -1,12 +1,13 @@
 # DUMMIES — P4 test prototype: turn radii and 45° roads
 
-**P4.2 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edits 49, 49.1 and 49.2 (proposed). P3 (P3.4) is unchanged.
+**P4.3 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edits 49–49.3 (proposed). P3 (P3.4) is unchanged.
 
-P4 is P3.4 with the road and traffic rules under test. Three builds:
+P4 is P3.4 with the road and traffic rules under test. Four builds:
 
-- **`turn_lab.html` (Turn Lab):** one road piece at a time, at any radius, with the game's driver. Does traffic flow or pile up?
+- **`turn_lab.html` (Turn Lab):** one road piece at a time, at any radius, with the game's driver, in game art. Does traffic flow or pile up?
+- **`road_mockup.html` (Road mock-up):** 90° corners at radius 32–224; five 45° junction ideas with routes, yield lines and traffic.
 - **`fleet_mockup.html` (Fleet mock-up):** every canon class and three bus lengths at game scale; swept paths; Turn Lab fleet runs.
-- **`dummies_p4.html` (P4.2):** the game on 15 P4 layouts: 45° roads, roundabout fillets, the new driver and the spawn hold.
+- **`dummies_p4.html` (P4.3):** the game on 15 P4 layouts: 45° roads, roundabout fillets, the new driver and the spawn hold.
 
 ## Why
 
@@ -14,6 +15,7 @@ P4 is P3.4 with the road and traffic rules under test. Three builds:
 - **O3.61:** roads zigzag through a screen with tight left-right corners.
 - **O3.62:** would a three- or four-way interchange still work?
 - **O3.63:** what about the expanded fleet, with buses? Mock up lengths and sizes.
+- **O3.64:** keep the 96 bus. Mock up the Turn Lab, the 90° radii and the 45° road junction idea.
 
 ## What the Interchange pile-up was
 
@@ -32,6 +34,9 @@ P4 is P3.4 with the road and traffic rules under test. Three builds:
 | Give way at a roundabout entry: gap to circulating traffic | `traffic.giveWayGap` | 2.5 s |
 | Give way: speed at the line | `traffic.giveWaySpeed` | 40 |
 | Least bend on any road (centre line) | `world.turnRadiusTight` | 64 (inner lane 36) |
+| Junction turns (centre line) | `world.junctionTurnRadius` | 96 (inner lane 68) |
+| 45° road squared off: square run before a T | `world.junctionApproach` | 192 |
+| Ring left between close arms' fillets | `world.roundaboutArmGap` | 10° |
 | Roundabout entry fillet | `world.roundaboutEntryRadius` | 96 |
 | Screens with 45° roads | `world.diagonalShare` | 0.25 |
 
@@ -81,7 +86,7 @@ P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three ve
 | P3 (straight strip, no give-way) | Light traffic: cars clip. One car every 1.5 s: jams in every run | Same |
 | P4 without give-way | No jams. Cars merge through each other: 6–38 s per 180 s | 11–62 s per 180 s |
 | P4 with give-way, fillet 96 | No jam, no overlap. 21–22 cars/min light; 25–27 dense | No jam, no overlap. 21–22 light; 24–26 dense |
-| P4 with give-way, fillet 64 | No jam, no overlap | One jam in 12 runs (vans only, at 173 s) |
+| P4 with give-way, fillet 64 | No jam, no overlap | No jam, no overlap (corrected in P4.3) |
 
 - **Districts:** still one road through each screen. A three- or four-arm Interchange needs branching roads in the planner.
 
@@ -114,11 +119,48 @@ P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three ve
 | Corner 128 | Flows | Flows | Swings 12 |
 | Corner 160 | Flows | Flows | Flows |
 | Two-arm roundabout, fillet 96 / 128 / 160 | Flows | Collides / collides / flows | Collides |
-| Four-arm roundabout, fillet 96 / 128 / 160 | Flows | Swings 11 / flows / flows | Collides / jams / jams |
+| Four-arm roundabout, fillet 96 / 128 / 160 | Flows | Swings 11 / flows / flows | Collides / swings 12 / flows (corrected in P4.3) |
 
 - **Seven car classes:** at most 0.3 outside their lane on every piece.
 - **Turn Lab:** fleet select (P3, expanded, buses only) and bus length (96, 120, 144).
-- **Recommendation:** keep the bus at 96 (decision 200). A longer bus needs bus routes with bends ≥ 128–160.
+- **Decided:** keep the bus at 96 (decision 200). A longer bus would need bus routes with bends ≥ 128–160.
+
+## Turn Lab in game art, 90° corners, 45° junctions (P4.3, Edit 49.3)
+
+![Turn Lab in game art: the 45° Y junction, expanded fleet](docs/p43_turnlab_art.png)
+
+- **Turn Lab:** game art by default (the game's ground and sprites, 16 px tiles). `View` toggles the diagram.
+- **Junction pieces:** T (90°), Y (45°), fork (45°, no hairpins), squared-off T (45° road bent square), roundabout with a 45° arm.
+
+![90° corners at game scale, bus 96 footprints](docs/p43_corner_radii.png)
+
+| Centre radius | Inner lane | Inner kerb (tiles) | Corner speed, inner lane | Bus 96 outside lane |
+|---|---|---|---|---|
+| 32 (P3 fallback) | 4 | square | 15 | 19.2 |
+| 64 (P4 least bend) | 36 | 8 (0.3) | 46 | 9.7 |
+| 96 (junction turns) | 68 | 40 (1.3) | 64 | 3.3 |
+| 128 | 100 | 72 (2.3) | 77 | 0.1 |
+| 160 | 132 | 104 (3.3) | 89 | 0 |
+| 224 (wide, 45° bends) | 196 | 168 (5.3) | 108 | 0 |
+
+![45° junction ideas: routes by rank, yield lines, traffic at 40 s](docs/p43_junctions.png)
+
+- **Give way by rank:** 0 major road; 1 left turn off it (gives way to oncoming); 2 minor road (gives way to both).
+- **Yield line:** `traffic.minimumGap` before the first span shared with a higher rank. One per minor arm. US triangles.
+- **Gap:** `traffic.giveWayGap`, or the time to clear from a standstill plus `perception.reactionDelay`. Priority cars let a going car in.
+- **Junction matrix:** `node junction_run.js 180` → `docs/junction_results.md` (66 runs). No jam, no overlap on any piece.
+
+| Piece (radius 96) | Routes | Cars out/min, every 2.5 s / 1.5 s | Longest minor wait, 2.5 s / any | Bus 96 outside lane, radius 64 / 96 |
+|---|---|---|---|---|
+| T, 90° | 6 | 19.7–20.3 / 21.7–24.7 | 25.7 / 36.7 s | 8.9 / 2.9 |
+| Y, 45° | 6 | 20–20.3 / 21.7–25 | 32 / 38.8 s | 9 / 3.1 |
+| Fork, 45° | 4 | 22–22.7 / 27.7–31 | 4.2 / 12.1 s | 8.8 / 3.1 |
+| Squared-off T, 45° | 6 | 20–20.7 / 22–23 | 32.7 / 43.1 s | 8.9 / 2.9 |
+| Roundabout, 45° arm | 6 | 20–21.3 / 23–24.3 | 9.2 / 10.2 s | 9.6 / 8.3 (fillet 64 / 96) |
+| Roundabout, 90° three arms | 6 | 20–20.7 / 22.7–25.3 | 6.2 / 7.4 s | — / 3.7 |
+
+- **Recommendation (decision 204):** a 45° road joins as a roundabout arm where a ring fits; else a fork; a squared-off T where a T is wanted.
+- **Jam-test fix (decision 205):** a car at its yield line is giving way. Turn Lab: 1 of 330 verdicts changed. Fleet: 2 of 48 cells.
 
 ## P4 layouts
 
@@ -146,10 +188,11 @@ P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three ve
 ## Run
 
 ```
-python3 build.py            # dummies_p4.html, turn_lab.html, fleet_mockup.html
-node test_sim.js            # P3.4 checks plus P4 checks (90)
+python3 build.py            # dummies_p4.html, turn_lab.html, fleet_mockup.html, road_mockup.html
+node test_sim.js            # P3.4 checks plus P4 checks (91)
 node lab_run.js 180         # Turn Lab matrix
 node fleet_run.js 180       # Fleet matrix
+node junction_run.js 180    # Junction matrix
 node tools/district_bake.js 60   # P4 layouts → content/districts/districts_p4.json
 ```
 
@@ -157,17 +200,21 @@ node tools/district_bake.js 60   # P4 layouts → content/districts/districts_p4
 
 | File | Role |
 |---|---|
-| `sim.js` | P3.4 sim plus Edit 49: `filletAny`, the `diagonal` style, roundabout fillets, `leadGap` along the lane, `jammed`, `jamCause`, `needsRoom`; Edit 49.1: `giveWayHold`, `mergingPast` |
-| `lab.js`, `lab_view.js`, `lab_shell.html` | Turn Lab: pieces, runner, metrics, viewer |
+| `sim.js` | P3.4 sim plus Edit 49: `filletAny`, the `diagonal` style, roundabout fillets, `leadGap` along the lane, `jammed`, `jamCause`, `needsRoom`; Edit 49.1: `giveWayHold`, `mergingPast`; Edit 49.3: `junctionHold`, `junctionLetIn`, `junctionPast`, ring arms at any angle |
+| `lab.js`, `lab_view.js`, `lab_shell.html` | Turn Lab: pieces (Edit 49.3: junctions, shared spans, ranks), runner, metrics, viewer in game art or diagram |
 | `lab_run.js` | Headless matrix |
 | `fleet_run.js`, `fleet_view.js`, `fleet_shell.html` | Fleet mock-up: matrix, page |
+| `junction_run.js`, `road_view.js`, `road_shell.html` | Road mock-up: junction matrix, page |
 | `tools/district_check.js` | Contract plus clauses 25 (bends) and 26 (60 s traffic soak) |
 | `tools/district_bake.js` | Bakes P4 layouts to `content/districts/districts_p4.json` |
-| `game.js`, `pixel.js`, `shell.html` | P3.4 renderer. Screen toasts show the theme and `45° road`. `pixel.js` draws each canon class (Edit 49.2) |
+| `game.js`, `pixel.js`, `shell.html` | P3.4 renderer. Screen toasts show the theme and `45° road`. `pixel.js` draws each canon class (Edit 49.2); junction roads and yield lines (Edit 49.3) |
 
 ## Open
 
-- **Bus length:** keep 96, or test 120–144 on bus routes with wide bends?
+- **Junction choice:** roundabout arm, fork or squared-off T for a 45° road (decision 204)?
+- **Planner:** branching roads. Districts still run one road per screen.
+- **Minor-road waits:** 26–43 s at priority junctions in heavy traffic. Play, or force a gap?
+
 - **Bus pose:** bodies centre on the lane line. A two-axle pose would cut the inside like a real bus.
 - **Bus behaviour:** canon buses only brake. The P4 driver still lets them swerve.
 

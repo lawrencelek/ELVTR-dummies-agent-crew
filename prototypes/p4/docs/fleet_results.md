@@ -93,11 +93,11 @@ Overhang: how far a body corner stands outside its own lane (half a lane each si
 | Roundabout, four arms: every route | Rf 128 | 92.3 | 96 | buses | 14 | — | 0 | 0.2 | — | yes |
 | Roundabout, four arms: every route | Rf 128 | 92.3 | 120 | expanded | 21.3 | — | 0 | 5.6 | 0 | yes |
 | Roundabout, four arms: every route | Rf 128 | 92.3 | 120 | buses | 14 | — | 0 | 5.6 | — | yes |
-| Roundabout, four arms: every route | Rf 128 | 92.3 | 144 | expanded | 21.3 | 68.2 | 0 | 11.7 | 0 | **no** |
+| Roundabout, four arms: every route | Rf 128 | 92.3 | 144 | expanded | 21.3 | — | 0 | 11.7 | 0 | **no** |
 | Roundabout, four arms: every route | Rf 128 | 92.3 | 144 | buses | 13 | — | 0 | 11.7 | — | **no** |
 | Roundabout, four arms: every route | Rf 160 | 108.6 | 96 | expanded | 21.7 | — | 0 | 0 | 0 | yes |
 | Roundabout, four arms: every route | Rf 160 | 108.6 | 96 | buses | 14 | — | 0 | 0 | — | yes |
 | Roundabout, four arms: every route | Rf 160 | 108.6 | 120 | expanded | 21.3 | — | 0 | 2.4 | 0 | yes |
 | Roundabout, four arms: every route | Rf 160 | 108.6 | 120 | buses | 14 | — | 0 | 2.6 | — | yes |
-| Roundabout, four arms: every route | Rf 160 | 108.6 | 144 | expanded | 21.3 | 66.8 | 0 | 7.6 | 0 | **no** |
+| Roundabout, four arms: every route | Rf 160 | 108.6 | 144 | expanded | 21.3 | — | 0 | 7.6 | 0 | yes |
 | Roundabout, four arms: every route | Rf 160 | 108.6 | 144 | buses | 13 | — | 0 | 7.8 | — | yes |

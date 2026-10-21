@@ -2,10 +2,37 @@
 (function () {
   'use strict';
   const X = window.DUMMIES, L = window.TURNLAB, cv = document.getElementById('cv'), g = cv.getContext('2d');
-  const RANGES = { R: ['Bend radius (centre line)', 24, 224, 8, 64], lat: ['Offset between crossings', 48, 320, 4, 84], cut: ['Corner cut (45°)', 64, 224, 16, 160], Rf: ['Entry fillet radius (0 = P3 shape)', 0, 160, 16, 96] };
+  const RANGES = { R: ['Bend radius (centre line)', 24, 224, 8, 64], lat: ['Offset between crossings', 48, 320, 4, 84], cut: ['Corner cut (45°)', 64, 224, 16, 160], Rf: ['Entry fillet radius (0 = P3 shape)', 0, 160, 16, 96], run: ['Straight before the junction', 96, 320, 16, 192] };
   const giveWayPieces = { roundabout3: 1, roundabout4: 1 };
   const SWEEP = { R: [32, 40, 48, 64, 96, 128, 224], Rf: [0, 32, 48, 64, 96, 128], lat: null, cut: null };
-  const state = { piece: 'roundabout', q: {}, driver: 1, hold: 1, speed: 4, playing: true, sim: null };
+  const state = { piece: 'roundabout', q: {}, driver: 1, hold: 1, speed: 4, playing: true, sim: null, art: 1 };
+  // P4 (Edit 49.3): game-art view. The piece drawn by the game's ground renderer, cars as the game's sprites, 1 art px = 2 units.
+  const PIX = window.PIX, AW = PIX ? PIX.AW : 400, AH = PIX ? PIX.AH : 320, FB = PIX ? new PIX.Buf(AW, AH) : null, off = document.createElement('canvas');
+  off.width = AW; off.height = AH; const og = off.getContext('2d'), oimg = og.createImageData(AW, AH);
+  let ground = null;
+  function buildGround() {
+    if (!PIX) return;
+    const s = state.sim, geo = s.lab.geo;
+    const lv = { center: geo.center, ring: geo.ring ? geo.ring.concat([geo.ring[0]]) : null, statics: [], spawns: [], coneHomes: [], patches: [], decks: [], floors: [], canal: false, solid: [],
+      giveWays: (geo.stops || []).map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })) };
+    if (geo.arms) Object.assign(lv, { arms: geo.arms, surfaces: geo.roads });
+    else if (geo.roads.length > 1) Object.assign(lv, { arms: geo.roads, surfaces: [] });
+    ground = PIX.ground(lv, s.P, 7);
+  }
+  const EXT = (h) => Math.round(h * state.sim.P['proto.art.extrusion'] / PIX.U);
+  function drawArt(jam) {
+    const s = state.sim; FB.d.set(ground.d);
+    for (const c of s.cars.slice().sort((a, b) => a.y - b.y)) {
+      const S = PIX.car(c.cls, Math.round(c.L / PIX.U), Math.round(c.W / PIX.U), EXT(s.P['vehicles.' + c.cls + '.height']), c.h, (c.stopT || 0) > 0.2);
+      PIX.blit(FB, S, c.x / PIX.U, c.y / PIX.U);
+      if (jam.has(c)) for (const p of PIX.circle(6)) FB.put(Math.round(c.x / PIX.U) + p[0], Math.round(c.y / PIX.U) - EXT(s.P['vehicles.' + c.cls + '.height']) + p[1], PIX.K.warn);
+    }
+    new Uint32Array(oimg.data.buffer).set(FB.d); og.putImageData(oimg, 0, 0);
+    g.imageSmoothingEnabled = false; g.drawImage(off, 0, 0, 800, 640);
+    g.strokeStyle = 'rgba(73,211,255,0.10)'; g.lineWidth = 1;
+    for (let x = 0; x <= 800; x += 32) { g.beginPath(); g.moveTo(x + 0.5, 0); g.lineTo(x + 0.5, 640); g.stroke(); }
+    for (let y = 0; y <= 640; y += 32) { g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(800, y + 0.5); g.stroke(); }
+  }
   const $ = (id) => document.getElementById(id);
   for (const [k, p] of Object.entries(L.PIECES)) { const o = document.createElement('option'); o.value = k; o.textContent = p.name; $('piece').appendChild(o); }
   $('piece').value = state.piece;
@@ -26,7 +53,8 @@
     state.sim = L.makeSim(X, state.piece, q, opts());
     const geo = state.sim.lab.geo;
     state.minLane = geo.lanes.map((p) => L.minRadius(p));
-    state.minCentre = L.minRadius(geo.center);
+    state.minCentre = geo.roads.map((r) => L.minRadius(r)).reduce((a, b) => (b.r < a.r ? b : a)); // every route's centre line (junctions)
+    buildGround();
     labels();
   }
   function labels() {
@@ -35,14 +63,21 @@
     $('drv').textContent = 'Driver: ' + (state.driver ? 'P4' : 'P3'); $('drv').classList.toggle('on', !!state.driver);
     $('hold').textContent = 'Spawn hold: ' + (state.hold ? 'on' : 'off'); $('hold').classList.toggle('on', !!state.hold);
     $('speed').textContent = 'Speed ' + state.speed + '×'; $('play').textContent = state.playing ? 'Pause' : 'Play';
+    $('view').textContent = 'View: ' + (state.art && PIX ? 'game art' : 'diagram'); $('view').classList.toggle('on', !!state.art);
   }
-  $('piece').onchange = () => { state.piece = $('piece').value; sliders(); reset(); $('matrix').innerHTML = ''; };
+  $('piece').onchange = () => {
+    state.piece = $('piece').value;
+    const P0 = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES), d = L.PIECES[state.piece].defaults || {};
+    for (const k of L.PIECES[state.piece].params) state.q[k] = d[k] ? P0[d[k]] : RANGES[k][4]; // the piece's registry default, else the slider's
+    sliders(); reset(); $('matrix').innerHTML = '';
+  };
   $('van').oninput = reset; $('int').oninput = reset; $('fleet').onchange = reset; $('busL').onchange = reset;
   $('drv').onclick = () => { state.driver = 1 - state.driver; reset(); };
   $('hold').onclick = () => { state.hold = 1 - state.hold; reset(); };
   $('play').onclick = () => { state.playing = !state.playing; labels(); };
   $('speed').onclick = () => { state.speed = state.speed === 1 ? 4 : state.speed === 4 ? 16 : 1; labels(); };
   $('reset').onclick = reset;
+  $('view').onclick = () => { state.art = 1 - state.art; labels(); };
 
   // ---------- drawing
   const LW = 56, SH = 24;
@@ -52,6 +87,10 @@
   }
   function draw() {
     const s = state.sim, geo = s.lab.geo;
+    if (state.art && PIX && ground) {
+      drawArt(new Set(s.cars.filter((c) => (c.stopT || 0) >= 6 && ['cycle', 'none'].includes(s.jamCause(c, new Set([c]))))));
+      stats(s); return;
+    }
     g.fillStyle = '#10141c'; g.fillRect(0, 0, 800, 640);
     g.strokeStyle = '#18202e'; g.lineWidth = 1;
     for (let x = 0; x <= 800; x += 32) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 640); g.stroke(); }
@@ -74,10 +113,14 @@
       if (ov.has(c)) { g.strokeStyle = '#ff4fd8'; g.lineWidth = 3; g.strokeRect(-c.L / 2, -c.W / 2, c.L, c.W); }
       g.restore();
     }
+    stats(s);
+  }
+  function stats(s) {
     const st = s.lab.stats, lr = Math.min(...state.minLane.map((m) => m.r));
     const rows = [['Time', st.t.toFixed(0) + ' s'], ['Cars on screen', s.cars.length], ['Cars out per minute', st.t > 5 ? (st.exited / st.t * 60).toFixed(1) : '—'],
       ['Longest stop', st.maxStop.toFixed(1) + ' s', st.maxStop >= 6 ? 'warn' : ''], ['Jam', st.jamAt == null ? 'none' : 'at ' + st.jamAt + ' s', st.jamAt == null ? 'good' : 'bad'],
       ['Bodies overlapping', st.overlapT.toFixed(1) + ' s', st.overlapT > 0 ? 'bad' : 'good'], ['Spawns held', st.held.toFixed(1) + ' s', st.held > 0 ? 'warn' : ''],
+      ...(s.level.lanes.some((l) => l.junction || l.giveWay) ? [['Longest wait, major road', ((st.rankStop[0] || 0)).toFixed(1) + ' s'], ['Longest wait, minor road / entry', ((st.rankStop[2] || 0)).toFixed(1) + ' s', (st.rankStop[2] || 0) > 15 ? 'warn' : '']] : []),
       ['Tightest bend, centre', state.minCentre.r.toFixed(0)], ['Tightest bend, lane', lr.toFixed(0), lr < 30 ? 'bad' : ''], ['Corner speed there', Math.sqrt(s.P['traffic.cornerAccel'] * lr).toFixed(0) + ' (cruise 138)']];
     $('stats').innerHTML = rows.map(([a, b, cl]) => `<tr><td>${a}</td><td class="${cl || ''}">${b}</td></tr>`).join('');
   }

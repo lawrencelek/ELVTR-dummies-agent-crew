@@ -70,6 +70,7 @@
     // P4 test (Edit 49): no road bends tighter than world.turnRadiusTight; roundabout entries on fillets; 45° roads in the palette;
     // cars judge other cars along their own lane; no new cars while traffic is jammed
     'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5, 'traffic.giveWaySpeed': 40,
+    'world.junctionTurnRadius': 96, 'world.junctionApproach': 192, 'world.roundaboutArmGap': 10, // P4 (Edit 49.3)
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
@@ -966,7 +967,7 @@
   // P4 (Edit 49): radial road → fillet (world.roundaboutEntryRadius) → ring → fillet → radial road. Every bend is an arc.
   function roundaboutCenter(a, b, W, H, lead, Rc, r, Rf) {
     const ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 }, cx = W / 2, cy = H / 2;
-    const ta = ang[a.side], tb = ang[b.side];
+    const ta = a.ang != null ? a.ang : ang[a.side], tb = b.ang != null ? b.ang : ang[b.side]; // P4 (Edit 49.3): an arm may come in at any angle
     let sweep = wrap(tb - ta);
     if (Math.abs(Math.abs(sweep) - Math.PI) < 1e-6) sweep = r() < 0.5 ? Math.PI : -Math.PI; // opposite: round either side
     else if (r() < 0.6) sweep = sweep > 0 ? sweep - 2 * Math.PI : sweep + 2 * Math.PI; // adjacent: the long way, like a roundabout
@@ -977,10 +978,10 @@
       const [p0, p1] = s1 > 0 ? [foot, tang] : [tang, foot];
       return seg(Rf, p0, p0 + wrap(p1 - p0)).map(([x, y]) => [fx + x, fy + y]);
     };
-    const pts = [edgePoint(a.side, a.off, W, H, lead)].concat(fil(ta, 1));
+    const pts = [a.pt || edgePoint(a.side, a.off, W, H, lead)].concat(fil(ta, 1));
     const r0 = ta + sg * phi, r1 = tb - sg * phi, sw = sweep - 2 * sg * phi;
     pts.push(...arcPts(cx, cy, Rc, r0, r0 + sw, Math.max(4, Math.round(Rc * Math.abs(sw) / 12))).slice(1, -1));
-    pts.push(...fil(tb, -1), edgePoint(b.side, b.off, W, H, lead));
+    pts.push(...fil(tb, -1), b.pt || edgePoint(b.side, b.off, W, H, lead));
     void r1;
     return pts.map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]);
   }
@@ -1885,11 +1886,66 @@
       const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * g.R;
       return d > 0 && d < 300;
     }
+    // P4 (Edit 49.3): give way at a junction. A lane may carry junction = { rank, line, zones: [{ lane, s0, s1, o0, o1 }] }:
+    // its priority (0 = major road), the give-way line (s where the nose stops) and the spans where it meets each other lane.
+    jRank(o) { const j = o.path.junction; return j ? j.rank : 0; }
+    jCommitted(o) { const j = o.path.junction; return !!(j && j.line != null && o.s + o.L / 2 > j.line + 1); }
+    // Wait at the line while a car with priority is in a shared span, or would reach it within traffic.giveWayGap s, or before
+    // this car, from a standstill, is into a merge or clear of a crossing (plus perception.reactionDelay). A car of lower
+    // priority counts only once it has crossed its own line. Same rank: first in goes.
+    junctionHold(c) {
+      const J = c.path.junction, P = this.P, gap = P['traffic.giveWayGap'];
+      if (!J || J.line == null || !(gap > 0) || lay(c) !== 0) return null;
+      const nose = c.s + c.L / 2, toLine = J.line - nose;
+      if (toLine < -1 || toLine > 200) return null; // over the line: committed
+      for (const z of J.zones) {
+        const ln = this.level.lanes[z.lane];
+        for (const o of this.cars) {
+          if (o === c || o.path !== ln || lay(o) !== 0) continue;
+          const ro = this.jRank(o), oc = this.jCommitted(o);
+          if (ro > J.rank && !oc) continue;
+          if (ro === J.rank && !oc && !(o.slot < c.slot && o.path.junction.line - (o.s + o.L / 2) < 60)) continue;
+          const on = o.s + o.L / 2, ot = o.s - o.L / 2;
+          if (on > z.o0 && ot < z.o1 + 2) return { line: J.line - c.L / 2 };
+          const dist = z.o0 - on; if (dist < 0) continue;
+          const tc = Math.sqrt(2 * Math.max(0, (z.merge ? z.s0 : z.s1 + c.L) - nose) / P['traffic.acceleration']); // from a standstill: into a merge, or tail clear of a crossing
+          if (dist < Math.max(o.v, 20) * Math.max(gap, tc + P['perception.reactionDelay']) + o.L) return { line: J.line - c.L / 2 };
+        }
+      }
+      return null;
+    }
+    // A car that has crossed its line: the cars it gives way to let it in. Returns the speed limit for c (Infinity if none).
+    junctionLetIn(c) {
+      const J = c.path.junction, P = this.P;
+      c.letIn = null;
+      if (!J || !(P['traffic.giveWayGap'] > 0) || lay(c) !== 0) return Infinity;
+      const nose = c.s + c.L / 2; let v = Infinity;
+      for (const z of J.zones) {
+        const ahead = z.s0 - nose; if (ahead < -2 || ahead > 300) continue;
+        const ln = this.level.lanes[z.lane];
+        for (const o of this.cars) {
+          if (o === c || o.path !== ln || lay(o) !== 0 || this.jRank(o) <= J.rank || !this.jCommitted(o) || o.s - o.L / 2 > z.o1 + 2) continue;
+          const lim = Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, ahead - P['traffic.minimumGap']));
+          if (lim < v) { v = lim; c.letIn = o; }
+        }
+      }
+      return v;
+    }
+    // c need not follow o: o waits at its line for c, or c is going and the give-way already judged o.
+    junctionPast(c, o) {
+      const J = c.path.junction; if (!J || !o.path.junction) return false;
+      const z = J.zones.find((q) => this.level.lanes[q.lane] === o.path); if (!z || o.s + o.L / 2 > z.o0) return false;
+      if (this.jRank(o) > J.rank) return !this.jCommitted(o);
+      return this.jCommitted(c) && c.s + c.L / 2 < z.s1 + c.L;
+    }
     // P4 (Edit 49): jammed traffic on a level. A car stopped traffic.gridlockSeconds whose wait leads, car by car, to no dummy
     // or cone (a cycle, or a car that waits for nothing) is jammed. Waiting behind a dummy in the road is play, not a jam.
     jamCause(c, seen) {
       if (c.hz && c.hz.inPath) return 'body';
       if (c.yielding) return 'giveway'; // P4 (Edit 49.1): waiting for a gap at a roundabout entry
+      const ln = c.path.junction && c.path.junction.line != null ? c.path.junction.line : c.path.giveWay ? c.path.giveWay.s : null;
+      if (ln != null && this.P['traffic.giveWayGap'] > 0 && Math.abs(c.s + c.L / 2 - ln) < 4) return 'giveway'; // P4 (Edit 49.3): at its line, waiting or just let go
+      if (c.letIn && this.cars.includes(c.letIn) && c.v < 2) { if (seen.has(c.letIn)) return 'cycle'; seen.add(c); return this.jamCause(c.letIn, seen); } // P4 (Edit 49.3)
       if (this.blockingCone(c)) return 'cone';
       if (c.v >= 2) return 'moving';
       const lead = this.leadGap(c); // the car it waits behind, however far back it stopped
@@ -2061,7 +2117,7 @@
         if (o.lane === c.lane) {
           if (o.s > c.s && Math.abs(o.d - c.d) < (c.W + o.W) / 2 + 6) { gap = o.s - c.s - (c.L + o.L) / 2; v = o.v; }
         } else if (road) { // P4 (Edit 49): another lane's car counts only where it stands on this car's own route ahead, as the road bends
-          if (hyp(o.x - c.x, o.y - c.y) > 460 || this.mergingPast(c, o)) continue;
+          if (hyp(o.x - c.x, o.y - c.y) > 460 || this.mergingPast(c, o) || this.junctionPast(c, o)) continue;
           const pr = pathProject(c.path, o.x, o.y), ahead = pr.s - c.s;
           if (ahead > 0 && ahead < 420 && Math.abs(pr.lat - c.d) < (c.W + o.W) / 2 + 6) {
             const q = pathAt(c.path, pr.s); gap = ahead - (c.L + o.L) / 2; v = o.vx * q.tx + o.vy * q.ty; oncoming = Math.cos(o.h - Math.atan2(q.ty, q.tx)) < -0.5;
@@ -2441,16 +2497,19 @@
           if (c.state === 'cruise' || c.state === 'released') c.state = 'caution';
         }
         // P4 (Edit 49.1): approach a give-way line slowly enough to stop at it (traffic.giveWaySpeed at the line); stop for circulating traffic
-        const gw = this.giveWayHold(c), gl = c.path.giveWay, toLine = gl ? gl.s - (c.s + c.L / 2) : null;
+        const gw = this.giveWayHold(c) || this.junctionHold(c), jl = c.path.junction && c.path.junction.line != null ? { s: c.path.junction.line } : null;
+        const gl = c.path.giveWay || jl, toLine = gl ? gl.s - (c.s + c.L / 2) : null;
         c.yielding = !!gw;
         if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && toLine > -4 && toLine < 200) vT = Math.min(vT, Math.max(P['traffic.giveWaySpeed'], Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, toLine))));
+        if (c.path.junction) vT = Math.min(vT, this.junctionLetIn(c)); // P4 (Edit 49.3): let in a car that has crossed its line
         if (gw) { const rem = gw.line - c.s; vT = Math.min(vT, rem < 1 ? 0 : Math.sqrt(2 * P['traffic.comfortBraking'] * rem)); }
-        if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && c.s > gl.sj && Math.abs(hyp(c.x - gl.cx, c.y - gl.cy) - gl.R) < 22) { // circulating: let a car that has crossed its line in
-          const ac = Math.atan2(c.y - gl.cy, c.x - gl.cx);
+        const rg = c.path.giveWay;
+        if (rg && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && c.s > rg.sj && Math.abs(hyp(c.x - rg.cx, c.y - rg.cy) - rg.R) < 22) { // circulating: let a car that has crossed its line in
+          const ac = Math.atan2(c.y - rg.cy, c.x - rg.cx);
           for (const o of this.cars) {
             const go = o.path.giveWay;
-            if (o === c || lay(o) !== 0 || !go || go.cx !== gl.cx || go.cy !== gl.cy || o.yielding || o.s + o.L / 2 <= go.s || o.s > go.sj + o.L / 2) continue; // only a car that is going
-            const d = ((((go.aj - ac) * gl.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * gl.R;
+            if (o === c || lay(o) !== 0 || !go || go.cx !== rg.cx || go.cy !== rg.cy || o.yielding || o.s + o.L / 2 <= go.s || o.s > go.sj + o.L / 2) continue; // only a car that is going
+            const d = ((((go.aj - ac) * rg.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * rg.R;
             if (d < 300) vT = Math.min(vT, Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, d - (c.L + o.L) / 2 - P['traffic.minimumGap'])));
           }
         }

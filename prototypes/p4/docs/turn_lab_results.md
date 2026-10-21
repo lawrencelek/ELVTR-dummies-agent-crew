@@ -317,7 +317,7 @@ A run passes with no jam (a car stopped ≥ 6 s waiting on nothing or on a cycle
 | Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 2.5 | mixed 40% vans | P3 | 21.7 | 1.3 | — | 5 | 0 | **no** |
 | Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 2.5 | mixed 40% vans | P4 | 21.3 | 8 | — | 0 | 0 | yes |
 | Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 2.5 | vans | P3 | 21.7 | 1.5 | — | 2.8 | 0 | **no** |
-| Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 2.5 | vans | P4 | 20.3 | 8.8 | 173.2 | 0 | 0 | **no** |
+| Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 2.5 | vans | P4 | 20.3 | 8.8 | — | 0 | 0 | yes |
 | Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 1.5 | sedans | P3 | 8.3 | 125.4 | 60.3 | 126.6 | 119.4 | **no** |
 | Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 1.5 | sedans | P4 | 23.7 | 7.6 | — | 0 | 0 | yes |
 | Roundabout, four arms: every route | Rf 64 | 60.1 | 32.3 | 1.5 | mixed 40% vans | P3 | 6 | 120 | 75.8 | 135.1 | 101.2 | **no** |

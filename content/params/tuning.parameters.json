@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit49.1-2026-10-21",
+ "registryVersion": "edit49.3-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals tried in P4 only",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4 only",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -5058,6 +5058,69 @@
    "purpose": "Inner lane 68 instead of P3's 4"
   },
   {
+   "id": "world.junctionTurnRadius",
+   "group": "World",
+   "owner": "World",
+   "label": "Junction turn radius",
+   "description": "Centre-line radius of every turn at a priority junction (T, 45° Y, fork). Inner lane = this less half a lane; inner kerb = this less a lane.",
+   "unit": "world units",
+   "type": "number",
+   "default": 96,
+   "status": "proposed",
+   "source": "Edit 49.3 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 64
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The 96 bus stays within 3 of its lane through a junction turn; at 64 it swings 9 into the next lane"
+  },
+  {
+   "id": "world.junctionApproach",
+   "group": "World",
+   "owner": "World",
+   "label": "Junction approach run",
+   "description": "A 45° road squared off to meet a road at 90°: the straight run before the junction, on the centre line. Its 45° bend uses world.turnRadiusWide. Lengthens to fit the turn radius.",
+   "unit": "world units",
+   "type": "number",
+   "default": 192,
+   "status": "proposed",
+   "source": "Edit 49.3 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 96
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Six tiles of square approach, so a 45° road meets the junction as a T"
+  },
+  {
+   "id": "world.roundaboutArmGap",
+   "group": "World",
+   "owner": "World",
+   "label": "Roundabout arm gap",
+   "description": "Least ring arc left between two entry fillets where adjacent arms are close (a 45° arm). The fillets shrink to fit, never below world.turnRadiusTight.",
+   "unit": "deg",
+   "type": "number",
+   "default": 10,
+   "status": "proposed",
+   "source": "Edit 49.3 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A 45° arm beside a 90° arm without a cusp in the short turn"
+  },
+  {
    "id": "world.diagonalShare",
    "group": "World",
    "owner": "World",
@@ -5106,18 +5169,18 @@
    "group": "Traffic",
    "owner": "Traffic",
    "label": "Give-way gap",
-   "description": "At a roundabout entry a car stops at its give-way line while a circulating car would reach its join point within this many seconds, or is passing it. Circulating cars let in a car that has crossed its line and is going; a joining car does not follow circulating cars behind its join. 0: no give-way (P3).",
+   "description": "A car stops at its give-way line while a car with priority would reach the shared span within this many seconds, or is in it. Roundabout: circulating cars have priority. Junction (Edit 49.3): the major road, then a left turn off it, then the minor road; the wait also covers the time to clear from a standstill at traffic.acceleration, plus perception.reactionDelay. Cars with priority let in a car that has crossed its line. 0: no give-way (P3).",
    "unit": "s",
    "type": "number",
    "default": 2.5,
    "status": "proposed",
-   "source": "Edit 49.1 (21 October), P4 test prototype",
+   "source": "Edit 49.1 (21 October), extended in Edit 49.3; P4 test prototype",
    "editable": true,
    "protectedReason": null,
    "applyAt": "immediate",
    "validation": {
     "min": 0,
-    "max": 1
+    "max": 5
    },
    "integrationStatus": "prototype-p4",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",

@@ -56,7 +56,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P4.2';
+  const BUILD = 'P4.3';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];

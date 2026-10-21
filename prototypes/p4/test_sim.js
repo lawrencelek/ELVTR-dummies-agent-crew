@@ -908,6 +908,28 @@ check('P4 fleet (Edit 49.2): the seven car classes stay in lane through P4 bends
   const b144 = LAB.run(D, 'roundabout4', { Rf: 96 }, { fleet: 'buses', interval: 4, seconds: 150, seed: 11, overrides: { 'vehicles.bus.length': 144 } });
   assert(b144.overhang.bus > 15, 'bus 144 swings out of its lane: ' + b144.overhang.bus);
 });
+check('P4 junctions (Edit 49.3): T, 45° Y, fork, squared-off T and a roundabout with a 45° arm flow; the minor road gives way; no two priority lanes conflict', () => {
+  const P = Object.assign({}, REG, D.PROTO, D.OVERRIDES), R = P['world.junctionTurnRadius'];
+  const routes = { tee: 6, y45: 6, y45fork: 4, tee45: 6 };
+  for (const [piece, n] of Object.entries(routes)) {
+    const g = LAB.PIECES[piece].build(D, { R, run: P['world.junctionApproach'] }, P);
+    assert(g.lanes.length === n, piece + ' routes ' + g.lanes.length);
+    for (const ln of g.lanes) {
+      for (const z of ln.junction.zones) assert(!(ln.junction.rank === 0 && g.lanes[z.lane].junction.rank === 0), piece + ' two priority lanes meet: ' + ln.junction.route + ' / ' + g.lanes[z.lane].junction.route);
+      if (ln.junction.rank > 0) assert(ln.junction.line != null, piece + ' ' + ln.junction.route + ' has no line');
+    }
+  }
+  for (const [piece, q] of [['tee', { R }], ['y45', { R }], ['y45fork', { R }], ['tee45', { R }], ['roundabout45', { Rf: P['world.roundaboutEntryRadius'] }]]) {
+    const s = LAB.makeSim(D, piece, q, { fleet: 'expanded', interval: 2.5, seconds: 150, seed: 11, overrides: {} });
+    let yielded = 0;
+    for (let i = 0; i < 150 * 60; i++) { LAB.tick(s); if (i % 30 === 0) yielded += s.cars.filter((c) => c.yielding).length; }
+    const st = s.lab.stats;
+    assert(st.jamAt == null && st.overlapT === 0, piece + ' jam ' + st.jamAt + ' overlap ' + st.overlapT.toFixed(1));
+    assert(st.exited / 150 * 60 >= 18, piece + ' out per minute ' + (st.exited / 150 * 60).toFixed(1));
+    assert(yielded > 0, piece + ': no car ever gave way');
+    if (piece === 'roundabout45') assert(LAB.minRadius(s.level.lanes[1].pts).r >= 0.9 * (P['world.turnRadiusTight'] - P['world.laneWidth'] / 2), 'W→SW fillet shrinks to fit, not below the least bend');
+  }
+});
 check('P4 bends (Edit 49): no lane on a baked layout bends tighter than 0.9 × (world.turnRadiusTight − half a lane); roundabout entries on their fillets', () => {
   const tk = require('./tools/district_check.js'), lmin = 0.9 * (REG['world.turnRadiusTight'] - REG['world.laneWidth'] / 2);
   for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
