@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit49.3-2026-10-21",
+ "registryVersion": "edit50-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4 only",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -2435,6 +2435,29 @@
    "integrationStatus": "not-connected-to-game",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "What a hit on a calibrated plate scores; the roundabout's scoring geometry",
+   "designBound": "At 1.0 the plate is decoration and the roundabout has no scoring geometry. Above 2.0 the plate beats zone choice and the damage table in 8.3 stops mattering."
+  },
+  {
+   "id": "damage.deckMultiplier",
+   "group": "Damage",
+   "owner": "Damage",
+   "label": "Highway multiplier",
+   "description": "Points from a hit by a deck (highway) car are multiplied by this. The hit's damage is not.",
+   "unit": "×",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 1,
+    "max": 5
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Makes the highway worth the climb",
    "designBound": "At 1.0 the plate is decoration and the roundabout has no scoring geometry. Above 2.0 the plate beats zone choice and the damage table in 8.3 stops mattering."
   },
   {
@@ -5100,6 +5123,49 @@
    "purpose": "Six tiles of square approach, so a 45° road meets the junction as a T"
   },
   {
+   "id": "vehicles.bus.swerve",
+   "group": "Vehicles",
+   "owner": "Vehicles",
+   "label": "Bus swerves",
+   "description": "0: a bus only brakes for a hazard and never steers round it (canon: \"Only brakes; cannot swerve\"). 1: it swerves like the other classes.",
+   "unit": "flag",
+   "type": "number",
+   "default": 0,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Reads as a bus: a slow wall that stops"
+  },
+  {
+   "id": "vehicles.bus.minRadius",
+   "group": "Vehicles",
+   "owner": "Vehicles",
+   "label": "Bus road radius",
+   "description": "A bus runs a ground road only if every bend of its centre line on screen keeps this radius (10% polyline tolerance), and never round a ring. Highways (straight) always carry buses.",
+   "unit": "world units",
+   "type": "number",
+   "default": 160,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 64
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The 96 bus stays in its lane: 0 outside at 160, 10 at 64"
+  },
+  {
    "id": "world.roundaboutArmGap",
    "group": "World",
    "owner": "World",
@@ -5207,6 +5273,116 @@
    "integrationStatus": "prototype-p4",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "A car can still stop when a gap closes late"
+  },
+  {
+   "id": "traffic.deckGapScale",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Highway spacing scale",
+   "description": "Deck admissions per lane every world.deckInterval times this.",
+   "unit": "×",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.5,
+    "max": 3
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Fewer cars on the highway: about half as many on screen at 1.4× speed"
+  },
+  {
+   "id": "traffic.deckSpeedScale",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Highway speed scale",
+   "description": "Deck (highway) cars cruise at their class cruise speed times this.",
+   "unit": "×",
+   "type": "number",
+   "default": 1.4,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1,
+    "max": 2
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Highways run faster: harder hits, less time to read a car"
+  },
+  {
+   "id": "traffic.share.bus",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Bus share",
+   "description": "Share of scheduled traffic that is buses. A bus slot on a screen that fails vehicles.bus.minRadius runs as a sedan.",
+   "unit": "share",
+   "type": "number",
+   "default": 0.1,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-run",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Buses where the road suits them"
+  },
+  {
+   "id": "traffic.share.police",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Police share",
+   "description": "Share of scheduled traffic that is police (Warden).",
+   "unit": "share",
+   "type": "number",
+   "default": 0.08,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-run",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Rare enough to notice"
+  },
+  {
+   "id": "traffic.share.hatchback",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Hatchback share",
+   "description": "Share of a district's scheduled traffic that is hatchbacks. Vans take the district's vanShare first; sedans take what the shares leave.",
+   "unit": "share",
+   "type": "number",
+   "default": 0.22,
+   "status": "proposed",
+   "source": "Edit 50 (21 October), P5 prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-run",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The light, quick model of the five"
   }
  ],
  "tables": {
