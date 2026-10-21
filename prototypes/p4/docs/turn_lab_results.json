@@ -6525,6 +6525,1100 @@
    "heldS": 0,
    "peak": 8,
    "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.7,
+   "maxStop": 1,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.3,
+   "maxStop": 5.9,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.7,
+   "maxStop": 1.6,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0.6,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 20.3,
+   "maxStop": 8.4,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.7,
+   "maxStop": 2.7,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 6.2,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 20.3,
+   "maxStop": 6.3,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 13,
+   "maxStop": 60.6,
+   "jamAt": 74.1,
+   "jamCars": [
+    "sedan"
+   ],
+   "overlapS": 76.3,
+   "heldS": 36.9,
+   "peak": 23,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 25,
+   "maxStop": 6.7,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 14,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 10.3,
+   "maxStop": 94.7,
+   "jamAt": 76.2,
+   "jamCars": [
+    "van"
+   ],
+   "overlapS": 98.1,
+   "heldS": 67.2,
+   "peak": 21,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 24.3,
+   "maxStop": 5.4,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 14,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 4.3,
+   "maxStop": 122.9,
+   "jamAt": 47,
+   "jamCars": [
+    "van"
+   ],
+   "overlapS": 133.1,
+   "heldS": 116.9,
+   "peak": 21,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 23,
+   "maxStop": 7.4,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 13,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 22,
+   "maxStop": 0.7,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 2.4,
+   "heldS": 0,
+   "peak": 8,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 6.4,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 1.8,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0.9,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 4.2,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 2.6,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 1.6,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 20.7,
+   "maxStop": 4.4,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 48.6,
+   "jamAt": 117.1,
+   "jamCars": [
+    "sedan",
+    "sedan"
+   ],
+   "overlapS": 20.4,
+   "heldS": 14.7,
+   "peak": 24,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 27,
+   "maxStop": 5.6,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 13,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 6.3,
+   "maxStop": 140.7,
+   "jamAt": 45.3,
+   "jamCars": [
+    "sedan"
+   ],
+   "overlapS": 141.7,
+   "heldS": 134.7,
+   "peak": 14,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 26.3,
+   "maxStop": 5.6,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 13,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 10.3,
+   "maxStop": 104.3,
+   "jamAt": 81.7,
+   "jamCars": [
+    "van"
+   ],
+   "overlapS": 111.4,
+   "heldS": 98.3,
+   "peak": 18,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout3",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 24.7,
+   "maxStop": 6.8,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 13,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.7,
+   "maxStop": 1.7,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 1.3,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.3,
+   "maxStop": 6.8,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.7,
+   "maxStop": 1.3,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 5,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.3,
+   "maxStop": 8,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 21.7,
+   "maxStop": 1.5,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 2.8,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 20.3,
+   "maxStop": 8.8,
+   "jamAt": 173.2,
+   "jamCars": [
+    "van"
+   ],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 10,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 8.3,
+   "maxStop": 125.4,
+   "jamAt": 60.3,
+   "jamCars": [
+    "sedan",
+    "sedan"
+   ],
+   "overlapS": 126.6,
+   "heldS": 119.4,
+   "peak": 20,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 23.7,
+   "maxStop": 7.6,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 13,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 6,
+   "maxStop": 120,
+   "jamAt": 75.8,
+   "jamCars": [
+    "sedan",
+    "sedan",
+    "sedan",
+    "sedan",
+    "van",
+    "van",
+    "sedan",
+    "sedan",
+    "sedan"
+   ],
+   "overlapS": 135.1,
+   "heldS": 101.2,
+   "peak": 25,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 23.3,
+   "maxStop": 7.9,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 12,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 5,
+   "maxStop": 121.4,
+   "jamAt": 48.5,
+   "jamCars": [
+    "van",
+    "van"
+   ],
+   "overlapS": 132.3,
+   "heldS": 103.2,
+   "peak": 26,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 64
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 60.1,
+   "laneR": 32.3,
+   "cornerV": 44,
+   "exitedPerMin": 23.3,
+   "maxStop": 8.2,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 14,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 22,
+   "maxStop": 0.9,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0.2,
+   "heldS": 0,
+   "peak": 8,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 3.7,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 8,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 22,
+   "maxStop": 0.7,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0.7,
+   "heldS": 0,
+   "peak": 8,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 5.3,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21.7,
+   "maxStop": 2,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 1.4,
+   "heldS": 0,
+   "peak": 8,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 2.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 21,
+   "maxStop": 5.6,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 9,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 5.7,
+   "maxStop": 146.1,
+   "jamAt": 39.9,
+   "jamCars": [
+    "sedan"
+   ],
+   "overlapS": 147.5,
+   "heldS": 139.3,
+   "peak": 13,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 26,
+   "maxStop": 9.2,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 13,
+   "mix": "sedans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 22.7,
+   "maxStop": 31.4,
+   "jamAt": 77.7,
+   "jamCars": [
+    "van"
+   ],
+   "overlapS": 61.6,
+   "heldS": 12.8,
+   "peak": 29,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 0.4,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 25.7,
+   "maxStop": 7.3,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 12,
+   "mix": "mixed 40% vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P3",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 7,
+   "maxStop": 126.8,
+   "jamAt": 56,
+   "jamCars": [
+    "van",
+    "van"
+   ],
+   "overlapS": 143,
+   "heldS": 104.5,
+   "peak": 20,
+   "mix": "vans"
+  },
+  {
+   "piece": "roundabout4",
+   "q": {
+    "Rf": 96
+   },
+   "driver": "P4",
+   "hold": true,
+   "vanShare": 1,
+   "interval": 1.5,
+   "seconds": 180,
+   "centreR": 88.2,
+   "laneR": 60.4,
+   "cornerV": 60,
+   "exitedPerMin": 24,
+   "maxStop": 7.3,
+   "jamAt": null,
+   "jamCars": [],
+   "overlapS": 0,
+   "heldS": 0,
+   "peak": 12,
+   "mix": "vans"
   }
  ]
 }

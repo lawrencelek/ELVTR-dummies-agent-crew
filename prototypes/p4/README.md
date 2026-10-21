@@ -1,16 +1,17 @@
 # DUMMIES — P4 test prototype: turn radii and 45° roads
 
-**P4.0 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edit 49 (proposed). P3 (P3.4) is unchanged.
+**P4.1 · 21 October 2026 · Lawrence Lek** · Spec: GDD Edits 49 and 49.1 (proposed). P3 (P3.4) is unchanged.
 
 P4 is P3.4 with the road and traffic rules under test. Two builds:
 
 - **`turn_lab.html` (Turn Lab):** one road piece at a time, at any radius, with the game's driver. Does traffic flow or pile up?
-- **`dummies_p4.html` (P4.0):** the game on 15 P4 layouts: 45° roads, roundabout fillets, the new driver and the spawn hold.
+- **`dummies_p4.html` (P4.1):** the game on 15 P4 layouts: 45° roads, roundabout fillets, the new driver and the spawn hold.
 
 ## Why
 
 - **O3.60:** Interchange piles up. Cars cannot reverse out of it.
 - **O3.61:** roads zigzag through a screen with tight left-right corners.
+- **O3.62:** would a three- or four-way interchange still work?
 
 ## What the Interchange pile-up was
 
@@ -26,6 +27,8 @@ P4 is P3.4 with the road and traffic rules under test. Two builds:
 | Cars judge other cars along their own lane | `traffic.followRoad` | 1 |
 | No new cars while traffic is jammed | `traffic.gridlockSeconds` | 6 s |
 | A jammed car backs up to clear the jam | `traffic.jamReverse` | 1 |
+| Give way at a roundabout entry: gap to circulating traffic | `traffic.giveWayGap` | 2.5 s |
+| Give way: speed at the line | `traffic.giveWaySpeed` | 40 |
 | Least bend on any road (centre line) | `world.turnRadiusTight` | 64 (inner lane 36) |
 | Roundabout entry fillet | `world.roundaboutEntryRadius` | 96 |
 | Screens with 45° roads | `world.diagonalShare` | 0.25 |
@@ -40,11 +43,11 @@ P4 is P3.4 with the road and traffic rules under test. Two builds:
 
 ![Turn Lab: the P3 roundabout on the P3 driver jams; the P4 roundabout on the P4 driver flows](docs/p4_turnlab_compare.png)
 
-- **Pieces:** L corner, P3 Z jog, P3 stepped L, 45° diagonal jog, 45° chamfered L, roundabout (half round, three quarters round).
+- **Pieces:** L corner, P3 Z jog, P3 stepped L, 45° diagonal jog, 45° chamfered L, roundabout (half round, three quarters round), roundabout with three arms, with four arms.
 - **Controls:** radius, offset, corner cut, entry fillet (0 = P3 shape), van share, interval, driver P3/P4, spawn hold, speed.
 - **Live:** cars out per minute, longest stop, jam time, seconds with bodies overlapping, seconds spawns held, tightest bend.
 - **Sweep:** runs the piece over its radius range on both drivers.
-- **Headless:** `node lab_run.js` → `docs/turn_lab_results.md` (282 runs, 180 s each).
+- **Headless:** `node lab_run.js` → `docs/turn_lab_results.md` (330 runs, 180 s each).
 
 P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three vehicle mixes, the dummy away.
 
@@ -62,6 +65,23 @@ P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three ve
 - **P4 margin:** 64 for every bend (45 at the bend, full rate); 96 for roundabout entries.
 - **Spawn hold, P3 roundabout on the P3 driver:** spawns held 145–150 s of 180; the queue stops growing.
 - **Dummy in a lane for 30 s, then gone (P4):** jams clear within 27 s on every piece tested.
+
+## Three- and four-arm roundabouts (P4.1, Edit 49.1)
+
+![Four arms, every route, one car every 1.5 s: P3 rules jam; P4 rules flow](docs/p41_four_arm_compare.png)
+
+- **Turn Lab pieces:** three arms (W, E, S) and four arms; one route per pair of arms; traffic keeps right and circulates anticlockwise on screen.
+- **Give way:** a car slows to stop at its entry line (40 there) and waits while a circulating car would reach its join within 2.5 s.
+- **Let in:** circulating cars slow for a car that has crossed its line and is going. A joining car does not follow circulating cars behind its join.
+
+| Rules | Three arms | Four arms |
+|---|---|---|
+| P3 (straight strip, no give-way) | Light traffic: cars clip. One car every 1.5 s: jams in every run | Same |
+| P4 without give-way | No jams. Cars merge through each other: 6–38 s per 180 s | 11–62 s per 180 s |
+| P4 with give-way, fillet 96 | No jam, no overlap. 21–22 cars/min light; 25–27 dense | No jam, no overlap. 21–22 light; 24–26 dense |
+| P4 with give-way, fillet 64 | No jam, no overlap | One jam in 12 runs (vans only, at 173 s) |
+
+- **Districts:** still one road through each screen. A three- or four-arm Interchange needs branching roads in the planner.
 
 ## P4 layouts
 
@@ -90,7 +110,7 @@ P3 driver = P3.4: straight strip, no jam reverse. 282 runs, 180 s each, three ve
 
 ```
 python3 build.py            # dummies_p4.html and turn_lab.html
-node test_sim.js            # P3.4 checks plus P4 checks
+node test_sim.js            # P3.4 checks plus P4 checks (89)
 node lab_run.js 180         # Turn Lab matrix
 node tools/district_bake.js 60   # P4 layouts → content/districts/districts_p4.json
 ```
@@ -99,7 +119,7 @@ node tools/district_bake.js 60   # P4 layouts → content/districts/districts_p4
 
 | File | Role |
 |---|---|
-| `sim.js` | P3.4 sim plus Edit 49: `filletAny`, the `diagonal` style, roundabout fillets, `leadGap` along the lane, `jammed` and `jamCause` |
+| `sim.js` | P3.4 sim plus Edit 49: `filletAny`, the `diagonal` style, roundabout fillets, `leadGap` along the lane, `jammed`, `jamCause`, `needsRoom`; Edit 49.1: `giveWayHold`, `mergingPast` |
 | `lab.js`, `lab_view.js`, `lab_shell.html` | Turn Lab: pieces, runner, metrics, viewer |
 | `lab_run.js` | Headless matrix |
 | `tools/district_check.js` | Contract plus clauses 25 (bends) and 26 (60 s traffic soak) |

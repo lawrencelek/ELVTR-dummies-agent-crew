@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit49-2026-10-21",
+ "registryVersion": "edit49.1-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals tried in P4 only",
  "entries": [
@@ -5100,6 +5100,50 @@
    "integrationStatus": "prototype-p4",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Vehicles can reverse out of a pile-up"
+  },
+  {
+   "id": "traffic.giveWayGap",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Give-way gap",
+   "description": "At a roundabout entry a car stops at its give-way line while a circulating car would reach its join point within this many seconds, or is passing it. Circulating cars let in a car that has crossed its line and is going; a joining car does not follow circulating cars behind its join. 0: no give-way (P3).",
+   "unit": "s",
+   "type": "number",
+   "default": 2.5,
+   "status": "proposed",
+   "source": "Edit 49.1 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Three- and four-arm roundabouts merge without cars driving through each other"
+  },
+  {
+   "id": "traffic.giveWaySpeed",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Give-way approach speed",
+   "description": "A car approaching a give-way line slows so that it could stop at the line, reaching it at no more than this speed.",
+   "unit": "world units/s",
+   "type": "number",
+   "default": 40,
+   "status": "proposed",
+   "source": "Edit 49.1 (21 October), P4 test prototype",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p4",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A car can still stop when a gap closes late"
   }
  ],
  "tables": {

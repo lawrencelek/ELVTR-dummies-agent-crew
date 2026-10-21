@@ -169,7 +169,7 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
     'world.deckTopClear': 128, 'world.deckBottomClear': 128, 'world.edgeOverlap': 32, // Edit 48: drawn deck clear of the top edge, a building row below it; buildings straddle shared edges
     // P4 test (Edit 49): no road bends tighter than world.turnRadiusTight; roundabout entries on fillets; 45° roads in the palette;
     // cars judge other cars along their own lane; no new cars while traffic is jammed
-    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1,
+    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5, 'traffic.giveWaySpeed': 40,
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
@@ -1950,7 +1950,8 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
       const sl = this.schedule[this.slot], L = P['vehicles.' + sl.cls + '.length'], vc = P['vehicles.' + sl.cls + '.cruiseSpeed'];
       const room = L * P['traffic.entryRoomLengths'] + P['traffic.minimumGap'] + L / 2;
       // P4 (Edit 49): also room to stop from cruise behind the last car in, at hard braking (no car spawns into a queue)
-      if (this.cars.some((c) => c.lane === sl.lane && lay(c) === 0 && c.s - c.L / 2 < room + Math.max(0, vc * vc - c.v * c.v) / (2 * P['traffic.hardBraking']))) return;
+      const path = this.level.lanes[sl.lane], along = (c) => { if (c.lane === sl.lane) return c.s; if (!P['traffic.followRoad']) return Infinity; const pr = pathProject(path, c.x, c.y); return Math.abs(pr.lat) < 30 ? pr.s : Infinity; }; // P4: routes that share a lane share its entry
+      if (this.cars.some((c) => lay(c) === 0 && along(c) - c.L / 2 < room + Math.max(0, vc * vc - c.v * c.v) / (2 * P['traffic.hardBraking']))) return;
       const c = this.newCar('car' + (++this.carSeq), sl.cls, sl.lane, this.level.lanes[sl.lane], L / 2, 0);
       c.slot = sl.i;
       this.cars.push(c); this.slot++; this.lastAdmit = this.t; this.run.admitted++;
@@ -1958,10 +1959,36 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
       this.nextAt = this.t + this.admissionInterval() * (nx ? nx.mult : 1);
       this.emit('admit', { car: c.id, cls: c.cls, model: c.model, lane: c.lane, fwdLen: +c.fwdLen.toFixed(2) });
     }
+    // P4 (Edit 49.1): give way at a roundabout entry. A lane may carry giveWay = { s, cx, cy, R, dir, aj }: the stop line
+    // (s, the nose stops there), the circulating lane it joins (centre, radius, direction of travel in angle) and the join angle.
+    // Wait while a circulating car would reach the join within traffic.giveWayGap seconds, or is passing it.
+    giveWayHold(c) {
+      const g = c.path.giveWay, gap = this.P['traffic.giveWayGap'];
+      if (!g || !(gap > 0) || lay(c) !== 0) return null;
+      const toLine = g.s - (c.s + c.L / 2);
+      if (toLine < -4 || toLine > 200) return null; // over the line: committed
+      for (const o of this.cars) {
+        if (o === c || lay(o) !== 0 || Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22) continue;
+        if (o.path.giveWay && o.path === c.path) continue;
+        const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), arc = d * g.R;
+        if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) return { line: g.s - c.L / 2 };
+      }
+      return null;
+    }
+    // P4 (Edit 49.1): c is joining a ring past its give-way line; o circulates upstream of c's join. The give-way rule has
+    // already judged o; c does not also follow it (else c and o each wait for the other).
+    mergingPast(c, o) {
+      const g = c.path.giveWay, go = o.path.giveWay;
+      if (!g || !go || c.yielding || go.cx !== g.cx || go.cy !== g.cy || c.s + c.L / 2 <= g.s || c.s > g.sj + c.L) return false;
+      if (o.s <= go.sj || Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22) return false;
+      const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * g.R;
+      return d > 0 && d < 300;
+    }
     // P4 (Edit 49): jammed traffic on a level. A car stopped traffic.gridlockSeconds whose wait leads, car by car, to no dummy
     // or cone (a cycle, or a car that waits for nothing) is jammed. Waiting behind a dummy in the road is play, not a jam.
     jamCause(c, seen) {
       if (c.hz && c.hz.inPath) return 'body';
+      if (c.yielding) return 'giveway'; // P4 (Edit 49.1): waiting for a gap at a roundabout entry
       if (this.blockingCone(c)) return 'cone';
       if (c.v >= 2) return 'moving';
       const lead = this.leadGap(c); // the car it waits behind, however far back it stopped
@@ -2133,7 +2160,7 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
         if (o.lane === c.lane) {
           if (o.s > c.s && Math.abs(o.d - c.d) < (c.W + o.W) / 2 + 6) { gap = o.s - c.s - (c.L + o.L) / 2; v = o.v; }
         } else if (road) { // P4 (Edit 49): another lane's car counts only where it stands on this car's own route ahead, as the road bends
-          if (hyp(o.x - c.x, o.y - c.y) > 460) continue;
+          if (hyp(o.x - c.x, o.y - c.y) > 460 || this.mergingPast(c, o)) continue;
           const pr = pathProject(c.path, o.x, o.y), ahead = pr.s - c.s;
           if (ahead > 0 && ahead < 420 && Math.abs(pr.lat - c.d) < (c.W + o.W) / 2 + 6) {
             const q = pathAt(c.path, pr.s); gap = ahead - (c.L + o.L) / 2; v = o.vx * q.tx + o.vy * q.ty; oncoming = Math.cos(o.h - Math.atan2(q.ty, q.tx)) < -0.5;
@@ -2512,13 +2539,27 @@ window.DISTRICT_DB = {"version":"p4-edit49-2026-10-21","size":[800,640],"note":"
           if (c.v > vc) decel = clamp((c.v * c.v - vc * vc) / (2 * Math.max(1, hz.lx + c.L)), P['traffic.comfortBraking'], P['traffic.hardBraking']);
           if (c.state === 'cruise' || c.state === 'released') c.state = 'caution';
         }
+        // P4 (Edit 49.1): approach a give-way line slowly enough to stop at it (traffic.giveWaySpeed at the line); stop for circulating traffic
+        const gw = this.giveWayHold(c), gl = c.path.giveWay, toLine = gl ? gl.s - (c.s + c.L / 2) : null;
+        c.yielding = !!gw;
+        if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && toLine > -4 && toLine < 200) vT = Math.min(vT, Math.max(P['traffic.giveWaySpeed'], Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, toLine))));
+        if (gw) { const rem = gw.line - c.s; vT = Math.min(vT, rem < 1 ? 0 : Math.sqrt(2 * P['traffic.comfortBraking'] * rem)); }
+        if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && c.s > gl.sj && Math.abs(hyp(c.x - gl.cx, c.y - gl.cy) - gl.R) < 22) { // circulating: let a car that has crossed its line in
+          const ac = Math.atan2(c.y - gl.cy, c.x - gl.cx);
+          for (const o of this.cars) {
+            const go = o.path.giveWay;
+            if (o === c || lay(o) !== 0 || !go || go.cx !== gl.cx || go.cy !== gl.cy || o.yielding || o.s + o.L / 2 <= go.s || o.s > go.sj + o.L / 2) continue; // only a car that is going
+            const d = ((((go.aj - ac) * gl.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * gl.R;
+            if (d < 300) vT = Math.min(vT, Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, d - (c.L + o.L) / 2 - P['traffic.minimumGap'])));
+          }
+        }
         const ahead = this.leadGap(c);
-        let hard = false;
+        let hard = !!gw;
         if (ahead) {
           const need = P['traffic.minimumGap'] + P['traffic.timeGap'] * c.v;
           if (ahead.gap < need) vT = Math.min(vT, Math.max(0, ahead.v) * clamp(ahead.gap / need, 0, 1));
           if (ahead.gap < P['traffic.minimumGap'] || ahead.oncoming) vT = 0;
-          hard = ahead.gap < P['traffic.minimumGap'] + c.v * c.v / (2 * P['traffic.comfortBraking']);
+          hard = hard || ahead.gap < P['traffic.minimumGap'] + c.v * c.v / (2 * P['traffic.comfortBraking']); // P4: a give-way stop stays hard
         }
         const kb = lay(c) === 0 ? this.terrain(c.x, c.y, 'carBraking') : 1; // wet tarmac: braking × world.terrain.puddle.carBraking
         if (c.v < vT) c.v = Math.min(vT, c.v + P['traffic.acceleration'] * dt);
@@ -6684,7 +6725,7 @@ window.FLEET_DB = {
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P4.0';
+  const BUILD = 'P4.1';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];

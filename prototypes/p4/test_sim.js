@@ -844,7 +844,7 @@ check('corner speed: a car takes a tight corner no faster than √(traffic.corne
 });
 // ---------- P4 test (Edit 49): turn radii, roundabout entries, 45° roads, jam-safe traffic
 const LAB = require('./lab.js');
-const labRun = (piece, q, drv, hold, vans, secs) => LAB.run(D, piece, q, { vanShare: vans, interval: 2.5, seconds: secs, seed: 11, overrides: { 'traffic.followRoad': drv, 'traffic.jamReverse': drv, 'traffic.gridlockSeconds': hold ? 6 : 0 } });
+const labRun = (piece, q, drv, hold, vans, secs, iv) => LAB.run(D, piece, q, { vanShare: vans, interval: iv || 2.5, seconds: secs, seed: 11, overrides: Object.assign({ 'traffic.gridlockSeconds': hold ? 6 : 0 }, drv ? {} : { 'traffic.followRoad': 0, 'traffic.jamReverse': 0, 'traffic.giveWayGap': 0 }) });
 check('P4 jam (Edit 49): the P3 driver on the P3 roundabout jams; the P4 driver on the P4 roundabout flows', () => {
   const old = labRun('roundabout', { Rf: 0 }, 0, true, 0.4, 90);
   assert(old.jamAt != null && old.jamAt < 60, 'P3 jams: ' + old.jamAt);
@@ -886,6 +886,16 @@ check('P4 spawn hold (Edit 49): while a car is jammed for traffic.gridlockSecond
     if (t.cars.some((c) => (c.stopT || 0) >= 6 && ['cycle', 'none'].includes(t.jamCause(c, new Set([c]))))) lastJam = t.t;
   }
   assert(waited, 'a queue waits on the dummy'); assert(lastJam < 75, 'last jam at ' + lastJam.toFixed(1)); assert(exits >= 25, 'exits after the dummy left: ' + exits);
+});
+check('P4 multi-arm roundabouts (Edit 49.1): three and four arms, every route, one way round: give way at entry, no jam, no overlap', () => {
+  for (const piece of ['roundabout3', 'roundabout4']) for (const iv of [2.5, 1.5]) for (const vans of [0, 0.4, 1]) {
+    const r = labRun(piece, { Rf: REG['world.roundaboutEntryRadius'] }, 1, true, vans, 150, iv);
+    assert(r.jamAt == null && r.overlapS === 0 && r.exitedPerMin > 18, piece + ' every ' + iv + ' s, vans ' + vans + ': ' + JSON.stringify(r));
+  }
+  const loose = LAB.run(D, 'roundabout4', { Rf: 96 }, { vanShare: 0.4, interval: 1.5, seconds: 150, seed: 11, overrides: { 'traffic.giveWayGap': 0 } });
+  assert(loose.overlapS > 5, 'without give-way, merging cars drive through each other: ' + loose.overlapS);
+  const p3 = labRun('roundabout4', { Rf: 96 }, 0, true, 0.4, 150, 1.5);
+  assert(p3.jamAt != null, 'the P3 driver jams four arms in dense traffic');
 });
 check('P4 bends (Edit 49): no lane on a baked layout bends tighter than 0.9 × (world.turnRadiusTight − half a lane); roundabout entries on their fillets', () => {
   const tk = require('./tools/district_check.js'), lmin = 0.9 * (REG['world.turnRadiusTight'] - REG['world.laneWidth'] / 2);

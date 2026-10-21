@@ -43,7 +43,7 @@
     <label>One car every <span class="val" id="intV"></span></label><input id="int" type="range" min="1" max="5" step="0.25" value="2.5">
     <div class="row"><button id="drv">Driver: P4</button><button id="hold">Spawn hold: on</button></div>
     <div class="row"><button id="play">Pause</button><button id="speed">Speed 4×</button><button id="reset">Reset</button></div>
-    <p class="note">Driver P3: a car judges other cars in a straight strip ahead of its nose. On a bend that strip points at oncoming traffic, and both cars stop. Driver P4: other cars count only where they stand on this car's own lane, and a jammed car backs up to clear the jam.</p>
+    <p class="note">Driver P3: a car judges other cars in a straight strip ahead of its nose. On a bend that strip points at oncoming traffic, and both cars stop. Driver P4: other cars count only where they stand on this car's own lane; a jammed car backs up; at a roundabout entry a car gives way to circulating traffic, and circulating cars let a car in once it is going.</p>
   </section>
   <section><canvas id="cv" width="800" height="640"></canvas></section>
   <section>
@@ -120,7 +120,7 @@
     'world.deckTopClear': 128, 'world.deckBottomClear': 128, 'world.edgeOverlap': 32, // Edit 48: drawn deck clear of the top edge, a building row below it; buildings straddle shared edges
     // P4 test (Edit 49): no road bends tighter than world.turnRadiusTight; roundabout entries on fillets; 45° roads in the palette;
     // cars judge other cars along their own lane; no new cars while traffic is jammed
-    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1,
+    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5, 'traffic.giveWaySpeed': 40,
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
@@ -1901,7 +1901,8 @@
       const sl = this.schedule[this.slot], L = P['vehicles.' + sl.cls + '.length'], vc = P['vehicles.' + sl.cls + '.cruiseSpeed'];
       const room = L * P['traffic.entryRoomLengths'] + P['traffic.minimumGap'] + L / 2;
       // P4 (Edit 49): also room to stop from cruise behind the last car in, at hard braking (no car spawns into a queue)
-      if (this.cars.some((c) => c.lane === sl.lane && lay(c) === 0 && c.s - c.L / 2 < room + Math.max(0, vc * vc - c.v * c.v) / (2 * P['traffic.hardBraking']))) return;
+      const path = this.level.lanes[sl.lane], along = (c) => { if (c.lane === sl.lane) return c.s; if (!P['traffic.followRoad']) return Infinity; const pr = pathProject(path, c.x, c.y); return Math.abs(pr.lat) < 30 ? pr.s : Infinity; }; // P4: routes that share a lane share its entry
+      if (this.cars.some((c) => lay(c) === 0 && along(c) - c.L / 2 < room + Math.max(0, vc * vc - c.v * c.v) / (2 * P['traffic.hardBraking']))) return;
       const c = this.newCar('car' + (++this.carSeq), sl.cls, sl.lane, this.level.lanes[sl.lane], L / 2, 0);
       c.slot = sl.i;
       this.cars.push(c); this.slot++; this.lastAdmit = this.t; this.run.admitted++;
@@ -1909,10 +1910,36 @@
       this.nextAt = this.t + this.admissionInterval() * (nx ? nx.mult : 1);
       this.emit('admit', { car: c.id, cls: c.cls, model: c.model, lane: c.lane, fwdLen: +c.fwdLen.toFixed(2) });
     }
+    // P4 (Edit 49.1): give way at a roundabout entry. A lane may carry giveWay = { s, cx, cy, R, dir, aj }: the stop line
+    // (s, the nose stops there), the circulating lane it joins (centre, radius, direction of travel in angle) and the join angle.
+    // Wait while a circulating car would reach the join within traffic.giveWayGap seconds, or is passing it.
+    giveWayHold(c) {
+      const g = c.path.giveWay, gap = this.P['traffic.giveWayGap'];
+      if (!g || !(gap > 0) || lay(c) !== 0) return null;
+      const toLine = g.s - (c.s + c.L / 2);
+      if (toLine < -4 || toLine > 200) return null; // over the line: committed
+      for (const o of this.cars) {
+        if (o === c || lay(o) !== 0 || Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22) continue;
+        if (o.path.giveWay && o.path === c.path) continue;
+        const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), arc = d * g.R;
+        if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) return { line: g.s - c.L / 2 };
+      }
+      return null;
+    }
+    // P4 (Edit 49.1): c is joining a ring past its give-way line; o circulates upstream of c's join. The give-way rule has
+    // already judged o; c does not also follow it (else c and o each wait for the other).
+    mergingPast(c, o) {
+      const g = c.path.giveWay, go = o.path.giveWay;
+      if (!g || !go || c.yielding || go.cx !== g.cx || go.cy !== g.cy || c.s + c.L / 2 <= g.s || c.s > g.sj + c.L) return false;
+      if (o.s <= go.sj || Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22) return false;
+      const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * g.R;
+      return d > 0 && d < 300;
+    }
     // P4 (Edit 49): jammed traffic on a level. A car stopped traffic.gridlockSeconds whose wait leads, car by car, to no dummy
     // or cone (a cycle, or a car that waits for nothing) is jammed. Waiting behind a dummy in the road is play, not a jam.
     jamCause(c, seen) {
       if (c.hz && c.hz.inPath) return 'body';
+      if (c.yielding) return 'giveway'; // P4 (Edit 49.1): waiting for a gap at a roundabout entry
       if (this.blockingCone(c)) return 'cone';
       if (c.v >= 2) return 'moving';
       const lead = this.leadGap(c); // the car it waits behind, however far back it stopped
@@ -2084,7 +2111,7 @@
         if (o.lane === c.lane) {
           if (o.s > c.s && Math.abs(o.d - c.d) < (c.W + o.W) / 2 + 6) { gap = o.s - c.s - (c.L + o.L) / 2; v = o.v; }
         } else if (road) { // P4 (Edit 49): another lane's car counts only where it stands on this car's own route ahead, as the road bends
-          if (hyp(o.x - c.x, o.y - c.y) > 460) continue;
+          if (hyp(o.x - c.x, o.y - c.y) > 460 || this.mergingPast(c, o)) continue;
           const pr = pathProject(c.path, o.x, o.y), ahead = pr.s - c.s;
           if (ahead > 0 && ahead < 420 && Math.abs(pr.lat - c.d) < (c.W + o.W) / 2 + 6) {
             const q = pathAt(c.path, pr.s); gap = ahead - (c.L + o.L) / 2; v = o.vx * q.tx + o.vy * q.ty; oncoming = Math.cos(o.h - Math.atan2(q.ty, q.tx)) < -0.5;
@@ -2463,13 +2490,27 @@
           if (c.v > vc) decel = clamp((c.v * c.v - vc * vc) / (2 * Math.max(1, hz.lx + c.L)), P['traffic.comfortBraking'], P['traffic.hardBraking']);
           if (c.state === 'cruise' || c.state === 'released') c.state = 'caution';
         }
+        // P4 (Edit 49.1): approach a give-way line slowly enough to stop at it (traffic.giveWaySpeed at the line); stop for circulating traffic
+        const gw = this.giveWayHold(c), gl = c.path.giveWay, toLine = gl ? gl.s - (c.s + c.L / 2) : null;
+        c.yielding = !!gw;
+        if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && toLine > -4 && toLine < 200) vT = Math.min(vT, Math.max(P['traffic.giveWaySpeed'], Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, toLine))));
+        if (gw) { const rem = gw.line - c.s; vT = Math.min(vT, rem < 1 ? 0 : Math.sqrt(2 * P['traffic.comfortBraking'] * rem)); }
+        if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && c.s > gl.sj && Math.abs(hyp(c.x - gl.cx, c.y - gl.cy) - gl.R) < 22) { // circulating: let a car that has crossed its line in
+          const ac = Math.atan2(c.y - gl.cy, c.x - gl.cx);
+          for (const o of this.cars) {
+            const go = o.path.giveWay;
+            if (o === c || lay(o) !== 0 || !go || go.cx !== gl.cx || go.cy !== gl.cy || o.yielding || o.s + o.L / 2 <= go.s || o.s > go.sj + o.L / 2) continue; // only a car that is going
+            const d = ((((go.aj - ac) * gl.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * gl.R;
+            if (d < 300) vT = Math.min(vT, Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, d - (c.L + o.L) / 2 - P['traffic.minimumGap'])));
+          }
+        }
         const ahead = this.leadGap(c);
-        let hard = false;
+        let hard = !!gw;
         if (ahead) {
           const need = P['traffic.minimumGap'] + P['traffic.timeGap'] * c.v;
           if (ahead.gap < need) vT = Math.min(vT, Math.max(0, ahead.v) * clamp(ahead.gap / need, 0, 1));
           if (ahead.gap < P['traffic.minimumGap'] || ahead.oncoming) vT = 0;
-          hard = ahead.gap < P['traffic.minimumGap'] + c.v * c.v / (2 * P['traffic.comfortBraking']);
+          hard = hard || ahead.gap < P['traffic.minimumGap'] + c.v * c.v / (2 * P['traffic.comfortBraking']); // P4: a give-way stop stays hard
         }
         const kb = lay(c) === 0 ? this.terrain(c.x, c.y, 'carBraking') : 1; // wet tarmac: braking × world.terrain.puddle.carBraking
         if (c.v < vT) c.v = Math.min(vT, c.v + P['traffic.acceleration'] * dt);
@@ -2788,7 +2829,32 @@
         if (q.Rf > 0) return { center: X.roundaboutCenter(a, b, W, H, LEAD, Rc, r, q.Rf), ring };
         return { center: p3Roundabout(X, a, b, Rc, -1.5 * Math.PI), ring };
       } },
+    roundabout3: { name: 'Roundabout, three arms (W, E, S): every route', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'E', 'S'], q.Rf) },
+    roundabout4: { name: 'Roundabout, four arms: every route', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'N', 'E', 'S'], q.Rf) },
   };
+  // P4 (Edit 49.1): a roundabout with several arms. Traffic keeps right and circulates one way (anticlockwise on screen) in the
+  // outer ring lane. One route per ordered pair of arms, each with its own lane path and a give-way line where it joins the ring.
+  function multiRoundabout(X, P, arms, Rf) {
+    const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 };
+    const cx = W / 2, cy = H / 2, ring = X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 48), lanes = [], roads = [], names = [];
+    const wrapA = (a) => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
+    for (const a of arms) for (const b of arms) {
+      if (a === b) continue;
+      const ea = { side: a, off: a === 'W' || a === 'E' ? H / 2 : W / 2 }, eb = { side: b, off: b === 'W' || b === 'E' ? H / 2 : W / 2 };
+      const nat = wrapA(ang[b] - ang[a]), opposite = Math.abs(Math.abs(nat) - Math.PI) < 1e-6;
+      const r = () => (opposite ? 0.9 : nat > 0 ? 0.1 : 0.9); // always the anticlockwise way round (decreasing angle)
+      const center = X.roundaboutCenter(ea, eb, W, H, LEAD, Rc, r, Rf || 96), lane = X.lanesOf(center, P)[0];
+      let sLine = null, aj = null, sj = null;
+      for (let i = 0; i < lane.pts.length; i++) {
+        const [x, y] = lane.pts[i], d = hyp(x - cx, y - cy);
+        if (sLine == null && d <= R + 45) sLine = lane.cum[i];
+        if (aj == null && d <= R + 2) { aj = Math.atan2(y - cy, x - cx); sj = lane.cum[i]; break; }
+      }
+      lane.giveWay = { s: sLine, sj, cx, cy, R, dir: -1, aj }; // stop line, join point (s and angle), circulating lane
+      lanes.push(lane); roads.push(center); names.push(a + '→' + b);
+    }
+    return { center: roads[0], ring, lanes, roads, routes: names };
+  }
   // P3's roundabout path, rebuilt here so the lab can compare it on the same driver (P3 sim.js, Edit 41.1).
   function p3Roundabout(X, a, b, Rc, sweepIn) {
     const ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 }, cx = W / 2, cy = H / 2, ta = ang[a.side], tb = ang[b.side];
@@ -2828,17 +2894,17 @@
   // ---------- a lab sim: the P4 driver on one road piece, the dummy away, cars of the chosen mix both ways
   function makeSim(X, piece, q, opts) {
     const s = new X.Sim('straight', Object.assign({ 'run.appearances.road': 2000 }, opts.overrides || {}));
-    const P = s.P, g = PIECES[piece].build(X, q, P);
-    s.level = Object.assign({}, s.level, { center: g.center, ring: g.ring || null, lanes: X.lanesOf(g.center, P), statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }],
+    const P = s.P, g = PIECES[piece].build(X, q, P), lanes = g.lanes || X.lanesOf(g.center, P);
+    s.level = Object.assign({}, s.level, { center: g.center, ring: g.ring || null, lanes, statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }],
       patches: [], decks: [], deckLanes: [], checkpoints: [], floors: [], stairs: [], theme: 'plain' });
     s.cones = []; s.cars = []; s.drones = []; s.booms = {};
     s.checkTerminal = () => {}; s.checkFlip = () => {};
     let seed = opts.seed || 7;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: rnd() < opts.vanShare ? 'van' : 'sedan', lane: rnd() < 0.5 ? 0 : 1, mult: 0.8 + 0.4 * rnd() }));
+    s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: rnd() < opts.vanShare ? 'van' : 'sedan', lane: Math.min(lanes.length - 1, Math.floor(rnd() * lanes.length)), mult: 0.8 + 0.4 * rnd() }));
     s.admissionInterval = () => opts.interval;
     Object.assign(s.body, { x: -900, y: -900 });
-    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, lanes: s.level.lanes.map((l) => l.pts) }, stats: null };
+    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: lanes.filter((l) => l.giveWay).map((l) => X.pathAt(l, l.giveWay.s)) }, stats: null };
     s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity };
     return s;
   }
@@ -2893,6 +2959,7 @@
   'use strict';
   const X = window.DUMMIES, L = window.TURNLAB, cv = document.getElementById('cv'), g = cv.getContext('2d');
   const RANGES = { R: ['Bend radius (centre line)', 24, 224, 8, 64], lat: ['Offset between crossings', 48, 320, 4, 84], cut: ['Corner cut (45°)', 64, 224, 16, 160], Rf: ['Entry fillet radius (0 = P3 shape)', 0, 160, 16, 96] };
+  const giveWayPieces = { roundabout3: 1, roundabout4: 1 };
   const SWEEP = { R: [32, 40, 48, 64, 96, 128, 224], Rf: [0, 32, 48, 64, 96, 128], lat: null, cut: null };
   const state = { piece: 'roundabout', q: {}, driver: 1, hold: 1, speed: 4, playing: true, sim: null };
   const $ = (id) => document.getElementById(id);
@@ -2909,7 +2976,7 @@
       box.append(l, i);
     }
   }
-  function opts() { return { vanShare: +$('van').value, interval: +$('int').value, seconds: 120, seed: 11, overrides: { 'traffic.followRoad': state.driver, 'traffic.jamReverse': state.driver, 'traffic.gridlockSeconds': state.hold ? 6 : 0 } }; }
+  function opts() { return { vanShare: +$('van').value, interval: +$('int').value, seconds: 120, seed: 11, overrides: Object.assign({ 'traffic.gridlockSeconds': state.hold ? 6 : 0 }, state.driver ? {} : { 'traffic.followRoad': 0, 'traffic.jamReverse': 0, 'traffic.giveWayGap': 0 }) }; }
   function reset() {
     const q = {}; for (const k of L.PIECES[state.piece].params) q[k] = state.q[k];
     state.sim = L.makeSim(X, state.piece, q, opts());
@@ -2945,11 +3012,12 @@
     g.strokeStyle = '#18202e'; g.lineWidth = 1;
     for (let x = 0; x <= 800; x += 32) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 640); g.stroke(); }
     for (let y = 0; y <= 640; y += 32) { g.beginPath(); g.moveTo(0, y); g.lineTo(800, y); g.stroke(); }
-    const roads = [geo.center].concat(geo.ring ? [geo.ring.concat([geo.ring[0]])] : []);
+    const roads = geo.roads.concat(geo.ring ? [geo.ring.concat([geo.ring[0]])] : []);
     for (const r of roads) strokePath(r, 2 * (LW + SH), '#3a4152');
     for (const r of roads) strokePath(r, 2 * LW, '#262b36');
     for (const r of roads) strokePath(r, 2, '#e8e2c8', [10, 12]);
     geo.lanes.forEach((p) => strokePath(p, 1, 'rgba(73,211,255,0.25)'));
+    for (const p of geo.stops || []) { g.save(); g.translate(p.x, p.y); g.rotate(Math.atan2(p.ty, p.tx)); g.fillStyle = '#f4f4f4'; for (let k = -22; k < 22; k += 8) g.fillRect(-2, k, 3, 4); g.restore(); } // give-way lines
     state.minLane.forEach((m) => { if (!m.at) return; g.beginPath(); g.arc(m.at[0], m.at[1], 10, 0, 2 * Math.PI); g.lineWidth = 2; g.strokeStyle = m.r < 30 ? '#ff5a6a' : '#57e389'; g.stroke(); });
     const jam = new Set(s.cars.filter((c) => (c.stopT || 0) >= 6 && ['cycle', 'none'].includes(s.jamCause(c, new Set([c])))));
     const ov = new Set();
@@ -2988,7 +3056,7 @@
         }).join('') + '</table>';
         return;
       }
-      const q = Object.assign({}, state.q, { [key]: j.v }), o = opts(); o.overrides['traffic.followRoad'] = j.d; o.overrides['traffic.jamReverse'] = j.d;
+      const q = Object.assign({}, state.q, { [key]: j.v }), o = opts(); Object.assign(o.overrides, j.d ? { 'traffic.followRoad': 1, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5 } : { 'traffic.followRoad': 0, 'traffic.jamReverse': 0, 'traffic.giveWayGap': 0 });
       const r = L.run(X, state.piece, q, o); res.push(Object.assign(r, { v: j.v, d: j.d }));
       $('matrix').textContent = 'Running… ' + res.length + ' / ' + (res.length + jobs.length);
       setTimeout(step, 0);

@@ -31,7 +31,32 @@
         if (q.Rf > 0) return { center: X.roundaboutCenter(a, b, W, H, LEAD, Rc, r, q.Rf), ring };
         return { center: p3Roundabout(X, a, b, Rc, -1.5 * Math.PI), ring };
       } },
+    roundabout3: { name: 'Roundabout, three arms (W, E, S): every route', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'E', 'S'], q.Rf) },
+    roundabout4: { name: 'Roundabout, four arms: every route', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'N', 'E', 'S'], q.Rf) },
   };
+  // P4 (Edit 49.1): a roundabout with several arms. Traffic keeps right and circulates one way (anticlockwise on screen) in the
+  // outer ring lane. One route per ordered pair of arms, each with its own lane path and a give-way line where it joins the ring.
+  function multiRoundabout(X, P, arms, Rf) {
+    const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 };
+    const cx = W / 2, cy = H / 2, ring = X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 48), lanes = [], roads = [], names = [];
+    const wrapA = (a) => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
+    for (const a of arms) for (const b of arms) {
+      if (a === b) continue;
+      const ea = { side: a, off: a === 'W' || a === 'E' ? H / 2 : W / 2 }, eb = { side: b, off: b === 'W' || b === 'E' ? H / 2 : W / 2 };
+      const nat = wrapA(ang[b] - ang[a]), opposite = Math.abs(Math.abs(nat) - Math.PI) < 1e-6;
+      const r = () => (opposite ? 0.9 : nat > 0 ? 0.1 : 0.9); // always the anticlockwise way round (decreasing angle)
+      const center = X.roundaboutCenter(ea, eb, W, H, LEAD, Rc, r, Rf || 96), lane = X.lanesOf(center, P)[0];
+      let sLine = null, aj = null, sj = null;
+      for (let i = 0; i < lane.pts.length; i++) {
+        const [x, y] = lane.pts[i], d = hyp(x - cx, y - cy);
+        if (sLine == null && d <= R + 45) sLine = lane.cum[i];
+        if (aj == null && d <= R + 2) { aj = Math.atan2(y - cy, x - cx); sj = lane.cum[i]; break; }
+      }
+      lane.giveWay = { s: sLine, sj, cx, cy, R, dir: -1, aj }; // stop line, join point (s and angle), circulating lane
+      lanes.push(lane); roads.push(center); names.push(a + '→' + b);
+    }
+    return { center: roads[0], ring, lanes, roads, routes: names };
+  }
   // P3's roundabout path, rebuilt here so the lab can compare it on the same driver (P3 sim.js, Edit 41.1).
   function p3Roundabout(X, a, b, Rc, sweepIn) {
     const ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2 }, cx = W / 2, cy = H / 2, ta = ang[a.side], tb = ang[b.side];
@@ -71,17 +96,17 @@
   // ---------- a lab sim: the P4 driver on one road piece, the dummy away, cars of the chosen mix both ways
   function makeSim(X, piece, q, opts) {
     const s = new X.Sim('straight', Object.assign({ 'run.appearances.road': 2000 }, opts.overrides || {}));
-    const P = s.P, g = PIECES[piece].build(X, q, P);
-    s.level = Object.assign({}, s.level, { center: g.center, ring: g.ring || null, lanes: X.lanesOf(g.center, P), statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }],
+    const P = s.P, g = PIECES[piece].build(X, q, P), lanes = g.lanes || X.lanesOf(g.center, P);
+    s.level = Object.assign({}, s.level, { center: g.center, ring: g.ring || null, lanes, statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }],
       patches: [], decks: [], deckLanes: [], checkpoints: [], floors: [], stairs: [], theme: 'plain' });
     s.cones = []; s.cars = []; s.drones = []; s.booms = {};
     s.checkTerminal = () => {}; s.checkFlip = () => {};
     let seed = opts.seed || 7;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: rnd() < opts.vanShare ? 'van' : 'sedan', lane: rnd() < 0.5 ? 0 : 1, mult: 0.8 + 0.4 * rnd() }));
+    s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: rnd() < opts.vanShare ? 'van' : 'sedan', lane: Math.min(lanes.length - 1, Math.floor(rnd() * lanes.length)), mult: 0.8 + 0.4 * rnd() }));
     s.admissionInterval = () => opts.interval;
     Object.assign(s.body, { x: -900, y: -900 });
-    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, lanes: s.level.lanes.map((l) => l.pts) }, stats: null };
+    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: lanes.filter((l) => l.giveWay).map((l) => X.pathAt(l, l.giveWay.s)) }, stats: null };
     s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity };
     return s;
   }
