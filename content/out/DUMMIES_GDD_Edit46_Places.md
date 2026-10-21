@@ -1,6 +1,6 @@
 # DUMMIES — GDD Edit 46: Generated Places
 
-**Generated · 2026-10-21 · run `20261021-022042` · Proposed**
+**Generated · 2026-10-21 · run `20261021-113431` · Proposed**
 
 - **Parent:** [Design](../kb/DUMMIES_V29_Design.md). Consumer: `prototypes/p3/content/places.json`.
 - **Source:** `content/pipeline.py`. Regenerate; do not hand-edit.
@@ -35,19 +35,19 @@
 
 | | A | B | C |
 |---|---|---|---|
-| 1 | West Flyover Gate | Riverside Flyover | East Flyover Gate |
+| 1 | West Flyover | Riverside Flyover | East Flyover Gate |
 | 2 | Mid-Rise Row | Central Roundabout | Logistics Street |
-| 3 | South Viaduct Road | Flyover Street | Platform Row |
+| 3 | South Viaduct Road | Flyover Street | East Flyover Row |
 
 ## cbd
 
-- **Intro:** A flyover crosses the middle row. FARSIGHT Tower stands at the centre, and towers shade the street.
+- **Intro:** Two flyovers cross the district, one low and one high. FARSIGHT Tower stands at the centre, and towers shade the street.
 - **Sources:** EDIT41#7.2, EDIT41#7.1.1, EDIT44#decisions, EDIT43#7.4
 
 | | A | B | C |
 |---|---|---|---|
-| 1 | West Quay | Central Quay | Quay Terrace |
-| 2 | Elevated Avenue | FARSIGHT Tower Plaza | Viaduct Avenue |
+| 1 | West Quay | Central Quay | East Quay |
+| 2 | Exchange Avenue | FARSIGHT Tower Plaza | Ledger Avenue |
 | 3 | Finance Street | Trade Street | Bond Street |
 
 ## campus
@@ -57,8 +57,8 @@
 
 | | A | B | C |
 |---|---|---|---|
-| 1 | Instrument Quay | Campus Quay | Hall Heights |
-| 2 | Lab Terrace | Calibration Road | Simulation Avenue |
+| 1 | Instrument Quay | Campus Quay | Hall Quay |
+| 2 | Lab Street | Calibration Road | Simulation Avenue |
 | 3 | Sensor Street | Data Street | Archive Road |
 
 ## Level toasts

@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The content sounds like DUMMIES: plain FARSIGHT instruction and calm street signage, with no jokes or cheer. One intro makes a claim the baked layouts do not support: the CBD intro says one flyover on the middle row, but the game data has two highways, and no row is common to all layouts except row 3.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "block",
+      "path": "districts.cbd.intro",
+      "found": "A flyover crosses the middle row.",
+      "canon": "BRIEF: Game data",
+      "rule": "A place may promise only what all three layouts have. CBD runs two highways (decks 2, highDecks 1), and only row 3 has a highway in every layout. Row 2 has one only in some layouts.",
+      "fix": "Two flyovers cross the district, one low and one high. FARSIGHT Tower stands at the centre, and towers shade the street."
+    }
+  ]
+}

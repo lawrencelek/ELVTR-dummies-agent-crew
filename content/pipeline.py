@@ -22,6 +22,7 @@ Usage:
   python content/pipeline.py --target p2              P2.1 types: barks, hits, terminal
   python content/pipeline.py --query "drop roof"      show what retrieval returns, no model calls
   python content/pipeline.py --check                  re-validate published content, rebuild content.js; no model calls
+  python content/pipeline.py --type places --revise   after a game change: start from the published content, fix only what the checks flag
 Needs Python 3.9+, Node 18+, and Claude Code signed in (`claude` on PATH). No API key is stored here.
 """
 import argparse
@@ -353,7 +354,8 @@ def short(v, n=110):
 
 
 # ------------------------------------------------------------------ one content type
-def run_type(run, kind, ctx, max_repairs):
+def run_type(run, kind, ctx, max_repairs, start=None):
+    """start: published content to revise (--revise). The checks find what the game change broke; the repair loop fixes only that."""
     spec = load_spec(kind)
     rd = kind + "/"
     run.log(f"== {kind}: {spec['title']}")
@@ -363,7 +365,11 @@ def run_type(run, kind, ctx, max_repairs):
     run.log(f"{kind}: retrieved {len(chunks)} chunks for {len(spec['queries'])} queries: {', '.join(got)}")
     b = brief(spec, ctx)
     gen_msg = b + "\n\n# CONTEXT\n\n" + fmt_chunks(chunks)
-    draft = parse_json(call_agent(run, "Generator", "generator.md", gen_msg, rd + "02_generator"))
+    if start is not None:
+        run.log(f"{kind}: revising the published content (no fresh draft)")
+        draft = start
+    else:
+        draft = parse_json(call_agent(run, "Generator", "generator.md", gen_msg, rd + "02_generator"))
     run.save(rd + "02_draft.json", draft)
     vctx = dict(ctx, spec=spec, retrieved_ids=set(got))
     rounds, current = [], draft
@@ -671,6 +677,7 @@ def main():
     ap.add_argument("--query")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--no-publish", action="store_true")
+    ap.add_argument("--revise", action="store_true", help="start from the published content; repair only what the checks flag")
     ap.add_argument("--max-repairs", type=int, default=MAX_REPAIRS)
     ap.add_argument("--publish-run", metavar="RUN_ID", help="publish accepted content from a --no-publish run after review")
     a = ap.parse_args()
@@ -703,7 +710,10 @@ def main():
     results = []
     for k in kinds:
         try:
-            res = run_type(run, k, ctx, a.max_repairs)
+            start = published(k) if a.revise else None
+            if a.revise and start is None:
+                raise RuntimeError("nothing published to revise")
+            res = run_type(run, k, ctx, a.max_repairs, start)
         except Exception as e:  # keep the other types going; the log keeps the reason
             run.log(f"{k}: FAILED — {e}")
             res = {"type": k, "ok": False, "error": str(e)}

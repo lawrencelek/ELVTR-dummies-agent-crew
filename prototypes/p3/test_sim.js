@@ -470,7 +470,7 @@ check('district: every generated screen meets the city contract; every gate is o
     }
   }
 });
-check('district: open ground crosses any edge and flips the screen; a building across the edge or the district edge holds', () => {
+check('district: open ground crosses any edge and flips the screen; no building hides across an open edge (Edit 48); the district edge holds', () => {
   const s = empty(); s.body.x = 780; s.body.y = 340; s.body.facing = 0;
   const h = s.body.health;
   for (let i = 0; i < 60 && s.screenName() === 'B1'; i++) s.step({ mx: 1, my: 0 });
@@ -481,9 +481,9 @@ check('district: open ground crosses any edge and flips the screen; a building a
   const c1 = cellLevel(s.district, [2, 0], s.P), clear = (y) => c1.statics.every((st) => rdist(R + 1, y, st) > R) && cellLevel(s.district, [1, 0], s.P).statics.every((st) => rdist(800 - R - 1, y, st) > R);
   const yOpen = [440, 450, 460, 470, 120, 130, 140, 150].find((y) => clear(y) && !(y > 220 && y < 380));
   assert(yOpen != null, 'an open spot off the road'); assert.strictEqual(push(770, yOpen, { mx: 1, my: 0 }).screenName(), 'C1', 'crossed at y ' + yOpen);
-  // a building flush against the far side of the edge stops it
-  const yBlk = Array.from({ length: 140 }, (_, k) => 20 + k * 4).find((y) => c1.statics.some((st) => rdist(R + 1, y, st) <= R - 2) && cellLevel(s.district, [1, 0], s.P).statics.every((st) => rdist(800 - R - 1, y, st) > R + 2));
-  if (yBlk != null) { const t = push(770, yBlk, { mx: 1, my: 0 }); assert.strictEqual(t.screenName(), 'B1', 'blocked at y ' + yBlk); assert(near(t.body.x, 800 - R, 0.5)); }
+  // Edit 48: no building stands flush against the far side of an open edge; a building there straddles the edge and shows on this side
+  const yBlk = Array.from({ length: 140 }, (_, k) => 20 + k * 4).find((y) => c1.statics.some((st) => st.kind === 'block' && rdist(R + 1, y, st) <= R - 2) && cellLevel(s.district, [1, 0], s.P).statics.every((st) => rdist(800 - R - 1, y, st) > R + 2));
+  assert.strictEqual(yBlk, undefined, 'a hidden building behind an open edge at y ' + yBlk);
   // the district edge (the river, row 1) holds
   const n = push(420, 30, { mx: 0, my: -1 }); assert.strictEqual(n.screenName(), 'B1'); assert(near(n.body.y, R, 0.5), 'river edge holds');
 });
@@ -770,7 +770,8 @@ check('buildings: single, double and tower storeys; none inside the setback; fro
       const dist = D.roadDist(q.level.center);
       for (const b of q.level.statics.filter((x) => x.kind === 'block' && !x.landmark)) {
         assert.strictEqual(b.height % st, 0, 'whole storeys'); if (b.tower) n.tower++; else n[b.height / st]++;
-        let m = Infinity; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) m = Math.min(m, dist(b.x + b.w * i / 8, b.y + b.h * j / 8));
+        const x0 = Math.max(0, b.x), y0 = Math.max(0, b.y), x1 = Math.min(800, b.x + b.w), y1 = Math.min(640, b.y + b.h); // Edit 48: the part on this screen
+        let m = Infinity; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) m = Math.min(m, dist(x0 + (x1 - x0) * i / 8, y0 + (y1 - y0) * j / 8));
         assert(m >= front - 1.5, id + '/' + k + ' block inside the setback ' + m.toFixed(1));
         if (m < front + 40) { near++; if (m <= front + 1) atLine++; }
       }
@@ -778,6 +779,49 @@ check('buildings: single, double and tower storeys; none inside the setback; fro
   }
   assert(n[1] > 0 && n[2] > 0 && n.tower > 0, 'tiers ' + JSON.stringify(n));
   assert(atLine / near >= 0.8, 'frontage on the line: ' + atLine + ' of ' + near);
+});
+check('shared edges (Edit 48): a building at a shared edge straddles it by world.edgeOverlap, the same building on both screens; no building-made edge marks', () => {
+  const E = REG['world.edgeOverlap'], W = REG['world.width'], H = REG['world.height'];
+  assert.strictEqual(E, REG['world.tileSize'], 'one tile: 16 art px');
+  let straddles = 0;
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
+    const s = new Sim(id, { 'proto.layout': k }), Dd = s.district;
+    for (const q of Dd.cells.flat()) {
+      const lv = D.cellLevel(Dd, q.cell, s.P), sp = D.edgeSpans(Dd, q.cell, s.P);
+      for (const sd of ['N', 'E', 'S', 'W']) {
+        const nx = q.cell[0] + D.SIDE[sd][0], ny = q.cell[1] + D.SIDE[sd][1];
+        if (nx < 0 || ny < 0 || nx >= Dd.cols || ny >= Dd.rows) continue;
+        const nb = D.cellLevel(Dd, [nx, ny], s.P);
+        assert.strictEqual(sp[sd].length, 0, id + '/' + k + ' ' + cellName(q.cell) + ' ' + sd + ': a marked stretch on a shared edge');
+        for (const b of lv.statics.filter((x) => x.kind === 'block')) {
+          const out = sd === 'E' ? b.x + b.w - W : sd === 'W' ? -b.x : sd === 'S' ? b.y + b.h - H : -b.y, inn = sd === 'E' ? W - b.x : sd === 'W' ? b.x + b.w : sd === 'S' ? H - b.y : b.y + b.h;
+          if (out < -0.5) continue; // stops short of this edge
+          assert(out >= E - 0.5 && inn >= E - 0.5, id + '/' + k + ' ' + cellName(q.cell) + ' ' + sd + ': ' + out + ' beyond, ' + inn + ' inside');
+          const dx = sd === 'E' ? -W : sd === 'W' ? W : 0, dy = sd === 'S' ? -H : sd === 'N' ? H : 0;
+          assert(nb.statics.some((o) => o.kind === 'block' && near(o.x, b.x + dx, 0.5) && near(o.y, b.y + dy, 0.5) && o.w === b.w && o.h === b.h && o.art === b.art && o.height === b.height), 'twin on ' + cellName([nx, ny]));
+          straddles++;
+        }
+      }
+    }
+  }
+  assert(straddles > 0, 'some buildings straddle a shared edge');
+});
+check('flyover clearance (Edit 48): the drawn deck stands world.deckTopClear below the top edge; world.deckBottomClear of ground below it', () => {
+  const P = Object.assign({}, D.REG, D.PROTO, D.OVERRIDES), H = P['world.height'], half = P['world.deckWidth'] / 2, U = P['ui.artScale']; // 2 world units per art px
+  const lift = (h) => Math.round(h * P['proto.art.extrusion'] / U) * U; // as drawn: Z1 36, Z2 64
+  assert.strictEqual(REG['world.deckTopClear'], 4 * REG['world.tileSize'], 'four 16 px tiles');
+  let n = 0;
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
+    const s = new Sim(id, { 'proto.layout': k });
+    for (const q of s.district.cells.flat()) for (const dk of q.level.decks || []) {
+      if (!dk.hz) continue; n++;
+      assert(dk.off - half - lift(dk.height) >= REG['world.deckTopClear'], id + '/' + k + ' ' + cellName(q.cell) + ' deck at ' + dk.off + ' drawn too near the top');
+      assert(dk.off + half <= H - REG['world.deckBottomClear'], id + '/' + k + ' ' + cellName(q.cell) + ' deck at ' + dk.off + ' leaves too little ground below');
+    }
+  }
+  assert(n > 0, 'some flyovers');
+  assert.strictEqual(lift(REG['world.deckHeight']), 36); assert.strictEqual(lift(REG['world.highHeight']), 64);
+  for (const id of ['interchange', 'cbd']) for (let k = 0; k < 6; k++) { const Dd = D.planCity(id, P, 900 + k * 7919); for (const dk of (Dd && Dd.decks) || []) assert(dk.off - half - lift(dk.height) >= REG['world.deckTopClear'], 'plan deck ' + dk.off); }
 });
 check('corner speed: a car takes a tight corner no faster than √(traffic.cornerAccel × radius)', () => {
   let found = null;

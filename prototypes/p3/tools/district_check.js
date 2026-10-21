@@ -1,4 +1,4 @@
-// City district contract (GDD Edit 41 §7.9 clauses 11–17; Edit 42 clauses 18–20; Edit 43 clauses 17 and 21; Edit 44 clauses 20 and 22). Used by the baking tool and by test_sim.js.
+// City district contract (GDD Edit 41 §7.9 clauses 11–17; Edit 42 clauses 18–20; Edit 43 clauses 17 and 21; Edit 44 clauses 20 and 22; Edit 48 clauses 23–24). Used by the baking tool and by test_sim.js.
 // Returns a list of problems; an empty list means the layout passes.
 const rdist = (x, y, r) => Math.hypot(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
 function reach(lv, R, W, H) { // flood fill from the spawns over open ground, 4-unit grid
@@ -16,7 +16,8 @@ function checkCity(D, P, sim) {
   let deckCells = 0;
   for (let y = 0; y < D.rows; y++) for (let x = 0; x < D.cols; x++) {
     const lv = sim.cellLevel(D, [x, y], P), tag = id + ' ' + name([x, y]);
-    const blocks = lv.statics.filter((q) => q.kind === 'block'), built = blocks.reduce((n, q) => n + q.w * q.h, 0);
+    const clip = (q) => ({ x: Math.max(0, q.x), y: Math.max(0, q.y), w: Math.min(W, q.x + q.w) - Math.max(0, q.x), h: Math.min(H, q.y + q.h) - Math.max(0, q.y) }); // Edit 48: a straddling building counts on-screen only
+    const blocks = lv.statics.filter((q) => q.kind === 'block').map(clip).filter((q) => q.w > 0 && q.h > 0), built = blocks.reduce((n, q) => n + q.w * q.h, 0);
     const open = sim.buildableArea(lv.center, lv.ring, lv.decks, lv.statics, P), share = built / Math.max(1, open); // Edit 43: share of buildable ground
     if ((open >= 0.2 * W * H && share < dp('blockShare') - 0.15) || built / (W * H) > P['world.occludedFractionMax']) out.push(tag + ' blocks ' + share.toFixed(3) + ' of buildable');
     if (lv.spawns.length < 3) out.push(tag + ' spawns ' + lv.spawns.length);
@@ -47,12 +48,27 @@ function checkCity(D, P, sim) {
     }
     // 21. Buildings (Edit 43): none nearer a road than the frontage setback; heights in whole storeys
     const front = P['world.laneWidth'] + P['proto.shoulderWidth'] + P['world.buildingSetback'], dist = sim.roadDist(lv.center), st = P['world.storeyHeight'];
-    for (const b of blocks) {
+    for (const b of lv.statics.filter((q) => q.kind === 'block').map((q) => Object.assign({}, q, clip(q)))) {
       if (b.landmark) continue;
       let m = Infinity; for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) m = Math.min(m, dist(b.x + b.w * i / 4, b.y + b.h * j / 4));
       if (m < front - 1.5) { out.push(tag + ' building inside the setback (' + m.toFixed(0) + ')'); break; }
       if (Math.abs(b.height / st - Math.round(b.height / st)) > 1e-6) { out.push(tag + ' building height not whole storeys'); break; }
     }
+    // 23. Shared edges (Edit 48): a building at a shared edge straddles it, world.edgeOverlap into each screen, the same building on both
+    const E = P['world.edgeOverlap'];
+    for (const sd of ['E', 'S']) {
+      const nx = x + (sd === 'E' ? 1 : 0), ny = y + (sd === 'S' ? 1 : 0);
+      if (nx >= D.cols || ny >= D.rows) continue;
+      const nb = sim.cellLevel(D, [nx, ny], P), hz = sd === 'E', L = hz ? W : H;
+      const touch = (lvX, near) => lvX.statics.filter((q) => q.kind === 'block' && (hz ? (near ? q.x + q.w >= L - 0.5 && q.x < L : q.x <= 0.5 && q.x + q.w > 0) : (near ? q.y + q.h >= L - 0.5 && q.y < L : q.y <= 0.5 && q.y + q.h > 0)));
+      for (const [q, other, near] of touch(lv, true).map((q) => [q, nb, true]).concat(touch(nb, false).map((q) => [q, lv, false]))) {
+        const a0 = hz ? q.x : q.y, a1 = a0 + (hz ? q.w : q.h), inside = near ? L - a0 : a1, beyond = near ? a1 - L : -a0;
+        const twin = other.statics.some((o) => o.kind === 'block' && Math.abs((hz ? o.x : o.y) - (near ? a0 - L : a0 + L)) < 0.5 && Math.abs(o.w - q.w) < 0.5 && Math.abs(o.h - q.h) < 0.5 && Math.abs((hz ? o.y : o.x) - (hz ? q.y : q.x)) < 0.5);
+        if (inside < E - 0.5 || beyond < E - 0.5 || !twin) { out.push(tag + ' building at the ' + sd + ' edge does not straddle it'); break; }
+      }
+    }
+    // 24. Deck clearance (Edit 48): the drawn deck stands world.deckTopClear below the top edge
+    for (const dk of lv.decks || []) if (dk.hz && dk.off - P['world.deckWidth'] / 2 - Math.round(dk.height * P['proto.art.extrusion'] / P['ui.artScale']) * P['ui.artScale'] < P['world.deckTopClear']) out.push(tag + ' flyover drawn within world.deckTopClear of the top edge');
     // 18. Bounded: every outer edge is wall or river; a road leaves through a checkpoint
     const cell = D.cells[y][x], outerRoads = (cell.ends || []).filter((e) => e.outer), cps = lv.checkpoints || [];
     if (cps.filter((cp) => !cp.deck).length !== outerRoads.length) out.push(tag + ' checkpoints ' + cps.length + ' for ' + outerRoads.length + ' road exits');

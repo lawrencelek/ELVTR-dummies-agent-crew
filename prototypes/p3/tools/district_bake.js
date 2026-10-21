@@ -1,4 +1,4 @@
-// Bake playtestable layouts per city district (GDD Edits 41–44). node tools/district_bake.js [candidates] [--keep k]
+// Bake playtestable layouts per city district (GDD Edits 41–44, 48). node tools/district_bake.js [candidates] [--keep k]
 // Each candidate is generated from a seed, checked against the district contract, and kept if its road differs from those kept.
 const path = require('path'), fs = require('fs');
 const sim = require(path.join(__dirname, '..', 'sim.js'));
@@ -7,7 +7,7 @@ const BOT_SECS = 150, BOT_FIRST = 90; // the start screen must yield a write-off
 const args = process.argv.slice(2), ki = args.indexOf('--keep');
 const N = +(args.find((a) => /^\d+$/.test(a)) || 40), KEEP = ki >= 0 ? +args[ki + 1] : 3;
 const P = Object.assign({}, sim.REG, sim.PROTO, sim.OVERRIDES);
-const out = { version: 'edit44-2026-10-21', size: [P['world.width'], P['world.height']], note: 'Layouts per district. Regenerate with tools/district_bake.js; playtest before replacing.', districts: {} };
+const out = { version: 'edit48-2026-10-21', size: [P['world.width'], P['world.height']], note: 'Layouts per district. Regenerate with tools/district_bake.js; playtest before replacing.', districts: {} };
 for (const id of sim.DISTRICT_LIST) {
   const kept = [], sigs = new Set(), report = [];
   for (let k = 0; k < N && kept.length < KEEP; k++) {

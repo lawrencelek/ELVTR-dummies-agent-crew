@@ -726,6 +726,8 @@ P2.0–P2.2 are logged in their own prototype doc.
 | O3.55 | Single-storey, double-storey and skyscrapers. Buildings need logic: alleys between them, equal distance from the sidewalk. | Storey tiers; frontage rows at one setback with alleys (157–158) | Addressed (awaiting replay) |
 | O3.56 | Brake lights cast red behind, front lights ahead. Cheap "shadows" for cars to pass ahead? | Brake wash; headlight beams along the route, with shadows (159) | Addressed (awaiting replay); "shadows" reading to confirm |
 | O3.57 | Too hard to see underground. Three levels: Ground Z0, Low Highway Z1, High Platforms / Roofs / High Highway Z2. Redraw graphics and navigation. | Underground removed; Z2 high highway in Interchange and CBD; platform roofs, tall and link stairs, skybridges, ledges; drops scale with height (decisions 162–173) | Addressed (awaiting replay) |
+| O3.58 | Interchange: the elevated road sits at the top of the screen; coming from above, the dummy is already hidden. Keep it at least four 16 px tiles from the top. | Drawn deck top ≥ `world.deckTopClear` (128) in every district; a building row below each deck (decisions 178–179) | Addressed (awaiting replay) |
+| O3.59 | Buildings at the edge of two consecutive screens are marked with a dotted line. Not clear. Overlap by at least one 16 px tile. | Buildings straddle shared edges by ≥ `world.edgeOverlap` (32), drawn on both screens; no building-made edge marks (180–183) | Addressed (awaiting replay) |
 
 ## P3 — 16-bit Aero, solid city, part damage
 
@@ -1007,3 +1009,25 @@ P2.0–P2.2 are logged in their own prototype doc.
 - Do the link stairs read, or do they look like the deck runs into the roof?
 - Do skybridges invite a route across the block?
 
+## P3.4 — screen edges and flyover clearance (O3.58–O3.59)
+
+**Build:** `prototypes/p3/dummies_p3.html` (P3.4) · 21 Oct 2026 · Spec: GDD Edit 48 · Decisions 178–185.
+
+- **Flyovers** draw at least four tiles below the top edge, in every district. A building row fits below.
+- **Shared edges:** a building touching one carries across, one to two tiles, and shows on both screens.
+- **Edge marks** now come only from district edges and non-building blockers.
+- **Screen names:** 7 names and the CBD intro became untrue on the new layouts. `pipeline.py --revise` fixed them.
+
+### Automated evidence
+
+- `node test_sim.js` → 83/83.
+- **Bake:** 15 kept of 62 candidates. Interchange needed 35.
+- **Shared edges:** 19–37 straddling buildings per layout. Marked shared-edge stretches: 565 → 0.
+- **Flyovers:** drawn tops 4.0–9.3 tiles below the edge. P3.3 had 12 of 15 rows nearer than four.
+- **Browser:** Interchange A3 from above; Campus A1 to B1. No page errors.
+
+### Questions for the P3.4 session
+
+- Does a building cut by the screen edge read as one building on both sides?
+- Is four tiles of street above a flyover enough to see the dummy arrive?
+- Interchange and CBD lost their tall stairs. Are link stairs enough to reach Z2 there?

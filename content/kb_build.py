@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parent.parent
 KB3 = ROOT / "content" / "kb" / "p3"
 DOCS = ["DUMMIES_GDD_Edit37_Art_Direction", "DUMMIES_GDD_Edit38_P3", "DUMMIES_GDD_Edit39_Canon_Lore_City",
         "DUMMIES_GDD_Edit40_Districts_Surfaces", "DUMMIES_GDD_Edit41_City_Districts", "DUMMIES_GDD_Edit42_Levels_Bounds",
-        "DUMMIES_GDD_Edit43_Crossings_Buildings_Lights", "DUMMIES_GDD_Edit44_Z_Levels_Platforms", "DUMMIES_Prototype_Log"]
+        "DUMMIES_GDD_Edit43_Crossings_Buildings_Lights", "DUMMIES_GDD_Edit44_Z_Levels_Platforms",
+        "DUMMIES_GDD_Edit48_Screen_Edges_Flyover_Clearance", "DUMMIES_Prototype_Log"]
 PIPELINE_ID = re.compile(r"^c\d+$")   # lines this pipeline wrote; kept out of the KB so a run never cites its own output
 
 

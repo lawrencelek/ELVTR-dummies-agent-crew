@@ -75,6 +75,7 @@ python content/pipeline.py --publish-run <run id> --type barks   # publish after
 python content/pipeline.py --type juice                  # a P2.0 type
 python content/pipeline.py --query "bark key near miss"  # retrieval only, no model calls
 python content/pipeline.py --check                       # re-validate all six published types, rebuild; no model calls
+python content/pipeline.py --type places --revise       # after a game change: start from the published content, fix only what the checks flag
 node prototypes/p2/test_sim.js                           # P1.9 sim, unchanged: 34/34
 ```
 

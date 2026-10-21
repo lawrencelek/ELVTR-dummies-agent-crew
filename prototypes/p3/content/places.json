@@ -42,7 +42,7 @@
     "interchange": {
       "intro": "Flyovers run the north and south rows. A roundabout, with a matting island, marks the centre.",
       "screens": {
-        "A1": "West Flyover Gate",
+        "A1": "West Flyover",
         "B1": "Riverside Flyover",
         "C1": "East Flyover Gate",
         "A2": "Mid-Rise Row",
@@ -50,7 +50,7 @@
         "C2": "Logistics Street",
         "A3": "South Viaduct Road",
         "B3": "Flyover Street",
-        "C3": "Platform Row"
+        "C3": "East Flyover Row"
       },
       "sources": [
         "EDIT41#7.2",
@@ -61,14 +61,14 @@
       ]
     },
     "cbd": {
-      "intro": "A flyover crosses the middle row. FARSIGHT Tower stands at the centre, and towers shade the street.",
+      "intro": "Two flyovers cross the district, one low and one high. FARSIGHT Tower stands at the centre, and towers shade the street.",
       "screens": {
         "A1": "West Quay",
         "B1": "Central Quay",
-        "C1": "Quay Terrace",
-        "A2": "Elevated Avenue",
+        "C1": "East Quay",
+        "A2": "Exchange Avenue",
         "B2": "FARSIGHT Tower Plaza",
-        "C2": "Viaduct Avenue",
+        "C2": "Ledger Avenue",
         "A3": "Finance Street",
         "B3": "Trade Street",
         "C3": "Bond Street"
@@ -85,8 +85,8 @@
       "screens": {
         "A1": "Instrument Quay",
         "B1": "Campus Quay",
-        "C1": "Hall Heights",
-        "A2": "Lab Terrace",
+        "C1": "Hall Quay",
+        "A2": "Lab Street",
         "B2": "Calibration Road",
         "C2": "Simulation Avenue",
         "A3": "Sensor Street",
@@ -114,7 +114,7 @@
   "params": [],
   "meta": {
     "type": "places",
-    "run": "20261021-022042",
+    "run": "20261021-113431",
     "generator": "content/pipeline.py",
     "kb": [
       "DESIGN",
@@ -134,6 +134,6 @@
       "DECISIONS",
       "FLEET"
     ],
-    "generated": "2026-10-21T02:33:13"
+    "generated": "2026-10-21T11:35:43"
   }
 }

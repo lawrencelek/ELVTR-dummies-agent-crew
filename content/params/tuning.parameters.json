@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit44-2026-10-21",
+ "registryVersion": "edit48-2026-10-21",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44 (20–21 October 2026)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -4929,6 +4929,69 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Keeps the ground readable under Z2"
+  },
+  {
+   "id": "world.deckTopClear",
+   "group": "World",
+   "owner": "World",
+   "label": "Flyover top clearance",
+   "description": "Least distance from the top screen edge to a flyover as drawn: band top minus its lift (height × proto.art.extrusion). So a Z1 band starts at y ≥ 164, a Z2 band at y ≥ 192. Applies in every district.",
+   "unit": "world units",
+   "type": "number",
+   "default": 128,
+   "status": "user-directed",
+   "source": "Edit 48 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Four 16 px tiles: a dummy entering from above shows before the deck hides it"
+  },
+  {
+   "id": "world.deckBottomClear",
+   "group": "World",
+   "owner": "World",
+   "label": "Flyover bottom clearance",
+   "description": "Least ground between a flyover band and the bottom screen edge: band bottom at y ≤ 512.",
+   "unit": "world units",
+   "type": "number",
+   "default": 128,
+   "status": "proposed",
+   "source": "Edit 48 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Room for a row of buildings below the deck"
+  },
+  {
+   "id": "world.edgeOverlap",
+   "group": "World",
+   "owner": "World",
+   "label": "Shared-edge overlap",
+   "description": "A building at a shared screen edge reaches at least this far into each screen. Up to 64 into the neighbour where it has room; otherwise the lot keeps world.pedestrianGap off the edge.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "user-directed",
+   "source": "Edit 48 (21 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "prototype-p3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One 16 px tile: the building shows on both screens"
   }
  ],
  "tables": {

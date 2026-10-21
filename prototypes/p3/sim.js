@@ -59,6 +59,7 @@
     'traffic.cornerAccel': 60, 'world.deckColumn': 24,
     // Edit 44 (P3.3): Z0 ground, Z1 low highway, Z2 high highway, platform roofs and skybridges
     'world.highHeight': 216, 'world.skybridgeMax': 96, 'world.skybridgeChance': 0.75, 'world.platformChain': 3, 'world.skybridgeCount': 4,
+    'world.deckTopClear': 128, 'world.deckBottomClear': 128, 'world.edgeOverlap': 32, // Edit 48: drawn deck clear of the top edge, a building row below it; buildings straddle shared edges
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
@@ -237,6 +238,7 @@
   }
 
   // ---------- geometry helpers for generated screens
+  const liftOf = (P, h) => Math.round(h * P['proto.art.extrusion'] / P['ui.artScale']) * P['ui.artScale']; // a height drawn as a screen-up offset, world units
   const rectDist = (x, y, r) => hyp(Math.max(r.x - x, 0, x - (r.x + r.w)), Math.max(r.y - y, 0, y - (r.y + r.h)));
   const overlapGap = (a, b, g) => a.x < b.x + b.w + g && a.x + a.w + g > b.x && a.y < b.y + b.h + g && a.y + a.h + g > b.y;
   function prng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
@@ -420,7 +422,7 @@
   }
   // A generated screen: theme features (flyover pillars or a barrier run with gaps), verge spawns and cones,
   // jersey barriers on world.jerseyShare of the road edge, then city blocks to world.blockShare of the screen (7.9 clause 6).
-  function generateScreen(D, cell, P, r) {
+  function generateScreen(D, cell, P, r, ctx) { // ctx (Edit 48, city): incoming neighbour buildings, room(side, rc), give(side, blk, e)
     const W = P['world.width'], H = P['world.height'], lw = P['world.laneWidth'], OUTER = lw + P['proto.shoulderWidth'];
     const BR = P['body.radius'], ALLEY = P['world.pedestrianGap'], top = cell.canal ? 48 : 0, c = cell.center, d0 = roadDist(c), dr = cell.ring ? roadDist(cell.ring) : null;
     const d = dr ? (x, y) => Math.min(d0(x, y), dr(x, y)) : d0; // the roundabout ring counts as road
@@ -428,7 +430,14 @@
     const city = D.kind === 'city', dp = (f, dflt) => (city ? dpar(P, D.levelId, f) : dflt), focalPatches = [];
     const DW = P['world.deckWidth'], deckBands = (cell.decks || []).map((dk) => dk.hz ? { x: 0, y: dk.off - DW / 2, w: W, h: DW } : { x: dk.off - DW / 2, y: 0, w: DW, h: H });
     const per = perimeter(D, cell, P, W, H, top), B = per.bounds; // Edit 42: walls, river, checkpoints
+    const shared = city ? SIDES.filter((sd) => { const x = cell.cell[0] + SIDE[sd][0], y = cell.cell[1] + SIDE[sd][1]; return x >= 0 && y >= 0 && x < D.cols && y < D.rows; }) : [];
     statics.push(...per.statics);
+    // Edit 48: a lot that touches a shared screen edge carries across it, so the building draws on both screens.
+    // Pieces of neighbours' buildings arrive first; everything else here keeps clear of them.
+    const incoming = (ctx && ctx.incoming) || [], onScreen = (b) => Math.max(0, Math.min(W, b.x + b.w) - Math.max(0, b.x)) * Math.max(0, Math.min(H, b.y + b.h) - Math.max(0, b.y));
+    const edgeSides = (rc) => shared.filter((sd) => (sd === 'W' && rc.x <= 0.5) || (sd === 'E' && rc.x + rc.w >= W - 0.5) || (sd === 'N' && rc.y <= 0.5) || (sd === 'S' && rc.y + rc.h >= H - 0.5));
+    const crossOK = (rc) => { const es = edgeSides(rc); return !es.length || (es.length === 1 && !!ctx && ctx.room(es[0], rc) > 0); }; // one shared edge per building
+    statics.push(...incoming);
     if (cell.focal) { const lm = placeLandmark(cell, P, d, keep, B, W, H, r); statics.push(...lm.statics); focalPatches.push(...lm.patches); }
     if (cell.focal === 'roundabout') focalPatches.push({ x: W / 2 - 32, y: H / 2 - 32, w: 64, h: 64, kind: 'matting' }); // the island: a springboard (7.3)
     if (cell.focal === 'plate') focalPatches.push(...placePlates(c, P, top, W, H, 3, r));
@@ -450,7 +459,7 @@
       for (let p = run.a + 100, k = Math.floor(r() * 2); p + 28 <= run.b - 60; p += 240 + Math.round(r() * 3) * 10, k++) {
         const off = k % 2 ? run.c + lw + 2 : run.c - lw - 30;
         const rc = run.hz ? { x: p, y: off, w: 28, h: 28, kind: 'pillar' } : { x: off, y: p, w: 28, h: 28, kind: 'pillar' };
-        if (inside(rc, 4) && offRoad(rc, lw) && clearKeep(rc, 8)) statics.push(rc);
+        if (inside(rc, 4) && offRoad(rc, lw) && clearKeep(rc, 8) && !incoming.some((b) => overlapGap(rc, b, ALLEY))) statics.push(rc);
       }
     }
     if (cell.theme === 'barrier' && runs.length) { // one side of the longest run: a crash barrier with world.barrierGapsMin gaps
@@ -458,7 +467,7 @@
       const n = Math.round(P['world.barrierGapsMin']), seg = (a1 - a0 - n * ALLEY) / (n + 1);
       for (let k = 0; k <= n; k++) {
         const p = a0 + k * (seg + ALLEY), rc = run.hz ? { x: Math.round(p), y: off, w: Math.round(seg), h: 12, kind: 'barrier' } : { x: off, y: Math.round(p), w: 12, h: Math.round(seg), kind: 'barrier' };
-        if (seg > 40 && inside(rc, 4) && offRoad(rc, OUTER) && clearKeep(rc, 8)) statics.push(rc);
+        if (seg > 40 && inside(rc, 4) && offRoad(rc, OUTER) && clearKeep(rc, 8) && !incoming.some((b) => overlapGap(rc, b, ALLEY))) statics.push(rc);
       }
     }
     if (cell.theme !== 'plain' && cell.theme !== 'focal' && statics.length === nBase) cell.theme = 'plain'; // too little straight road for the feature
@@ -514,16 +523,22 @@
       deckBands.some((k) => rectDist(x, y, k) < 8) || focalPatches.some((k) => rectDist(x, y, k) < 12); // no building under a flyover or on a plaza
     for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) forb[j * GW + i] = tooNear(i * G + G / 2, j * G + G / 2) ? 1 : 0;
     const mark = (b) => { for (let j = Math.max(0, Math.floor((b.y - ALLEY - G) / G)); j < Math.min(GH, Math.ceil((b.y + b.h + ALLEY + G) / G)); j++) for (let i = Math.max(0, Math.floor((b.x - ALLEY - G) / G)); i < Math.min(GW, Math.ceil((b.x + b.w + ALLEY + G) / G)); i++) if (rectDist(i * G + G / 2, j * G + G / 2, b) < ALLEY + 4) forb[j * GW + i] = 1; };
-    const reachable = (list) => { // flood fill from the spawns over open ground: nothing walled off
+    let before = null; // Edit 48: ground already cut off before the lots (a coarse-grid artefact, or open only through a neighbour) is not held against a lot
+    const reachable = (list) => { // flood fill from the spawns over open ground: no lot walls off ground that was reachable
+      if (!before) { before = true; before = flood(statics.concat(stairRects, cpZones)).seen; }
+      const { free, seen } = flood(list), gwh = free.length;
+      for (let k = 0; k < gwh; k++) if (free[k] && !seen[k] && before[k]) return false;
+      return true;
+    };
+    const flood = (list) => {
       const S = 8, gw = W / S, gh = H / S, free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh), q = [];
       for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const x = i * S + S / 2, y = j * S + S / 2; free[j * gw + i] = x > BR && x < W - BR && y > BR && y < H - BR && list.every((st) => rectDist(x, y, st) > BR + 0.5) ? 1 : 0; }
       for (const sp of spawns) { const k = Math.floor(sp.y / S) * gw + Math.floor(sp.x / S); if (free[k] && !seen[k]) { seen[k] = 1; q.push(k); } }
       while (q.length) { const k = q.pop(), i = k % gw, j = (k - i) / gw; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ii = i + di, jj = j + dj; if (ii < 0 || jj < 0 || ii >= gw || jj >= gh) continue; const kk = jj * gw + ii; if (free[kk] && !seen[kk]) { seen[kk] = 1; q.push(kk); } } }
-      for (let k = 0; k < free.length; k++) if (free[k] && !seen[k]) return false;
-      return true;
+      return { free, seen };
     };
     const blocks = [], banned = new Set(), storey = P['world.storeyHeight'];
-    let area = 0;
+    let area = incoming.reduce((n, b) => n + onScreen(b), 0);
     const bMax = dp('blockMax', 160), cap = P['world.occludedFractionMax'] * W * H; // never past the occlusion cap (7.9 clause 6)
     const ground = city ? buildableArea(c, cell.ring, cell.decks, statics, P) : W * H - deckBands.reduce((n, q) => n + q.w * q.h, 0); // Edit 43: share of buildable ground
     // building form (Edit 43): single- or double-storey (world.storeyHeight each; doubleShare), towers on a share of the larger lots
@@ -532,7 +547,15 @@
       if (b.w >= 96 && b.h >= 80 && r() < dp('towerShare', 0)) { const n = Math.round((P['world.towerHeightMin'] + r() * (P['world.towerHeightMax'] - P['world.towerHeightMin'])) / storey); return { height: n * storey, storeys: n, tower: true }; }
       const n = r() < dp('doubleShare', 0.5) ? 2 : 1; return { height: n * storey, storeys: n };
     };
-    const take = (rc, over) => { const blk = Object.assign({ x: rc.x, y: rc.y, w: rc.w, h: rc.h, kind: 'block' }, over || form(rc)); blocks.push(blk); mark(blk); area += blk.w * blk.h; return blk; };
+    const take = (rc, over) => {
+      const blk = Object.assign({ x: rc.x, y: rc.y, w: rc.w, h: rc.h, kind: 'block' }, over || form(rc)), es = edgeSides(rc);
+      if (es.length && ctx) { // Edit 48: across the shared edge by the most the neighbour has room for
+        const sd = es[0], e = ctx.room(sd, rc);
+        if (sd === 'E') blk.w += e; if (sd === 'W') { blk.x -= e; blk.w += e; } if (sd === 'S') blk.h += e; if (sd === 'N') { blk.y -= e; blk.h += e; }
+        ctx.give(sd, blk);
+      }
+      blocks.push(blk); mark(blk); area += rc.w * rc.h; return blk;
+    };
     // platform blocks (Edit 44): built to world.highHeight with a walkable roof at Z2, reached by a stair
     const SWD = P['world.stairWidth'], hiH = P['world.highHeight'], platform = { height: hiH, storeys: Math.round(hiH / storey), platform: true };
     const roofOf = (blk) => { floors.push({ kind: 'roof', z: 2, x: blk.x + PW, y: blk.y + PW, w: blk.w - 2 * PW, h: blk.h - 2 * PW, ledges: [], bx: blk.x, by: blk.y, bw: blk.w, bh: blk.h }); return floors.length - 1; };
@@ -564,7 +587,7 @@
         if (focalPatches.some((q) => overlapGap(rc, q, 12)) || reserved.some((q) => overlapGap(rc, q, 12))) return false;
         if (statics.some((st) => !edgeKinds[st.kind] && overlapGap(rc, st, thin[st.kind] ? 2 * BR + 2 : ALLEY))) return false;
         if (spawns.some((sp) => rectDist(sp.x, sp.y, rc) < BR + 6) || cones.some((cn) => rectDist(cn[0], cn[1], rc) < 24)) return false;
-        return !blocks.some((q) => overlapGap(rc, q, ALLEY - 1));
+        return !blocks.some((q) => overlapGap(rc, q, ALLEY - 1)) && crossOK(rc);
       };
       const dMaxAll = Math.max(...depths), snap = (v) => Math.round(v / 8) * 8, TSL = stairRun(P, 0, 2), L12 = stairRun(P, 1, 2);
       // a Z1→Z2 link: a platform beside a low highway, a short stair from the deck's shoulder up to its roof
@@ -577,7 +600,7 @@
           const e0 = q.off - half, e1 = q.off + half, blk = { x: cd.x, y: cd.side > 0 ? e1 + L12 : e0 - L12 - cd.h, w: cd.w, h: cd.h };
           const sx = cd.x + snap((cd.w - SWD) / 2), st = { x: sx, y: cd.side > 0 ? e1 : e0 - L12, w: SWD, h: L12, axis: 'y', low: cd.side > 0 ? e1 : e0, high: cd.side > 0 ? e1 + L12 : e0 - L12, from: 1, to: 2, foot: k, head: -1 };
           const sp = [[st.x, st.y], [st.x + SWD, st.y], [st.x, st.y + L12], [st.x + SWD, st.y + L12]];
-          if (!lotOK(blk) || sp.some(([x, y]) => d(x, y) < OUTER + 8) || keep.some((g) => overlapGap(st, g, 4)) || statics.some((g) => overlapGap(st, g, 4)) || dk.landing.some((g) => overlapGap(st, g, 8))) continue;
+          if (!lotOK(blk) || edgeSides(blk).length || sp.some(([x, y]) => d(x, y) < OUTER + 8) || keep.some((g) => overlapGap(st, g, 4)) || statics.some((g) => overlapGap(st, g, 4)) || dk.landing.some((g) => overlapGap(st, g, 8))) continue;
           if (stairRects.some((g) => overlapGap(st, g, 16)) || q.gaps.some(([g0, g1]) => st.x < g1 + 32 && st.x + SWD > g0 - 32)) continue;
           if (!reachable(statics.concat(blocks, [blk, st], stairRects, cpZones))) continue;
           take(blk, platform); st.head = roofOf(blk); addStair(st); q.openings.push([st.x, st.x + SWD, cd.side]);
@@ -588,7 +611,7 @@
       // the stair climbs along the lot's road-facing edge; a single-storey annex fills the strip behind it
       const platformize = (lot, hz, side) => {
         const along = hz ? lot.w : lot.h;
-        if (along < TSL + 64) return null;
+        if (along < TSL + 64 || edgeSides(lot).length) return null; // Edit 48: a walkable roof stays on one screen
         for (const end of r() < 0.5 ? [0, 1] : [1, 0]) {
           const a0 = hz ? lot.x : lot.y, a1 = a0 + along, lo = hz ? B.l : B.t, hi = hz ? B.r : B.b;
           if ((end === 0 && a0 - lo < ALLEY) || (end === 1 && hi - a1 < ALLEY)) continue; // the foot needs an alley
@@ -623,6 +646,7 @@
                 if (rest > 0 && rest < ALLEY && dpt + rest <= dMaxAll + ALLEY) dpt += rest; // flush to the wall or screen edge behind
                 const near = side < 0 ? run.c - front - dpt : run.c + front;
                 const rc = run.hz ? { x: p, y: near, w: e - p, h: dpt } : { x: near, y: p, w: dpt, h: e - p };
+                if (want && w >= TSL + 64 && edgeSides(rc).length) continue; // Edit 48: a platform lot stays on one screen
                 if (lotOK(rc) && reachable(statics.concat(blocks, [rc], stairRects, cpZones))) { got = rc; break; }
               }
               if (got) break;
@@ -630,7 +654,7 @@
             if (got && area + got.w * got.h > cap) got = null;
             if (got) {
               const gap = chain ? (run.hz ? got.x : got.y) - chain.end : Infinity, pf = want ? platformize(got, run.hz, side) : null;
-              if (chain && gap <= P['world.skybridgeMax'] && r() < P['world.skybridgeChance']) { take(got, platform); const k2 = roofOf(got); bridge(chain.roof, k2); chain = chain.n + 1 < P['world.platformChain'] ? { roof: k2, end: run.hz ? got.x + got.w : got.y + got.h, n: chain.n + 1 } : null; }
+              if (chain && gap <= P['world.skybridgeMax'] && !edgeSides(got).length && r() < P['world.skybridgeChance']) { take(got, platform); const k2 = roofOf(got); bridge(chain.roof, k2); chain = chain.n + 1 < P['world.platformChain'] ? { roof: k2, end: run.hz ? got.x + got.w : got.y + got.h, n: chain.n + 1 } : null; }
               else if (pf) chain = Object.assign(pf, { n: 1 });
               else { take(got); chain = null; }
               any = true; p = (run.hz ? got.x + got.w : got.y + got.h) + ALLEY;
@@ -655,7 +679,7 @@
           if (city && [[x, y], [x + w, y], [x, y + h], [x + w, y + h], [x + w / 2, y], [x + w / 2, y + h], [x, y + h / 2], [x + w, y + h / 2]].some(([px, py]) => d(px, py) < FRONT + ALLEY)) continue; // back lots stand behind the frontage line
           const align = blocks.reduce((n, b) => n + (b.y === y || b.y + b.h === y + h ? 1 : 0) + (b.x === x || b.x + b.w === x + w ? 1 : 0), 0) + (x === B.l || x + w === B.r ? 1 : 0) + (y + h === B.b || y === B.t ? 1 : 0);
           const score = w * h + align * 400 + r() * 50;
-          if (!best || score > best.score) best = { x, y, w, h, score };
+          if ((!best || score > best.score) && crossOK({ x, y, w, h })) best = { x, y, w, h, score }; // Edit 48: at a shared edge only where the neighbour has room
         }
       }
       if (!best || area + best.w * best.h > cap) break;
@@ -682,8 +706,12 @@
   function cellLevel(D, c, P) {
     const cell = D.cells[c[1]][c[0]];
     if (cell.level) return cell.level;
+    if (D.kind === 'city' && !D.stitched) { stitchCity(D, P); return cell.level; } // Edit 48: buildings across shared edges
     const r = prng(D.seed + (c[1] * 31 + c[0]) * 7477);
-    const lv = cell.start ? buildLevel(D.levelId, P) : generateScreen(D, cell, P, r);
+    return finishLevel(D, c, P, cell.start ? buildLevel(D.levelId, P) : generateScreen(D, cell, P, r), r);
+  }
+  function finishLevel(D, c, P, lv, r) {
+    const cell = D.cells[c[1]][c[0]];
     lv.statics = lv.statics.map((s, i) => Object.assign({}, s, { id: 's' + i }));
     const solid = SIDES.filter((sd) => { const x = c[0] + SIDE[sd][0], y = c[1] + SIDE[sd][1]; return x < 0 || y < 0 || x >= D.cols || y >= D.rows; });
     Object.assign(lv, { key: D.levelId + '@' + c[0] + ',' + c[1], cell: c.slice(), gates: cell.gates, solid, canal: cell.canal, theme: cell.theme, order: cell.order });
@@ -692,6 +720,78 @@
     lv.deckLanes = deckLanesOf(lv.decks, P);
     cell.level = lv;
     return lv;
+  }
+  // Edit 48: a building never ends at a shared screen edge. A lot that touches one carries across it, at least
+  // world.edgeOverlap into the neighbour, and the same building draws on both screens. Screens build one at a time:
+  // a neighbour already built is checked as built (roomFor); one still to come is checked against its plan (planRoom).
+  // The landmark screen builds first, so its neighbours know where the landmark stands.
+  // and receives the piece before its own lots.
+  function stitchCity(D, P) {
+    const W = P['world.width'], H = P['world.height'], ALLEY = P['world.pedestrianGap'], BR = P['body.radius'], E = P['world.edgeOverlap'];
+    const FRONT = P['world.laneWidth'] + P['proto.shoulderWidth'] + P['world.buildingSetback'], half = P['world.deckWidth'] / 2, cap = P['world.occludedFractionMax'] * W * H;
+    const raw = D.cells.map((row) => row.map((q) => ({ r: prng(D.seed + (q.cell[1] * 31 + q.cell[0]) * 7477), lv: null, q, incoming: [] })));
+    const onScreen = (b) => Math.max(0, Math.min(W, b.x + b.w) - Math.max(0, b.x)) * Math.max(0, Math.min(H, b.y + b.h) - Math.max(0, b.y));
+    let art = 0;
+    const order = raw.flat().sort((a, b) => (b.q.focal ? 1 : 0) - (a.q.focal ? 1 : 0)).map((e) => e.q.cell); // the landmark screen first, then reading order
+    for (const [x, y] of order) {
+      const me = raw[y][x], memo = new Map(), nbOf = (sd) => raw[y + SIDE[sd][1]][x + SIDE[sd][0]];
+      const piece = (sd, rc, e) => (sd === 'E' ? { x: 0, y: rc.y, w: e, h: rc.h } : sd === 'W' ? { x: W - e, y: rc.y, w: e, h: rc.h } : sd === 'S' ? { x: rc.x, y: 0, w: rc.w, h: e } : { x: rc.x, y: H - e, w: rc.w, h: e });
+      const ctx = {
+        incoming: me.incoming,
+        room: (sd, rc) => {
+          const key = sd + rc.x + ',' + rc.y + ',' + rc.w + ',' + rc.h;
+          if (!memo.has(key)) {
+            const nb = nbOf(sd), built = nb.lv ? nb.lv.statics.filter((b) => b.kind === 'block').reduce((n, b) => n + onScreen(b), 0) : 0;
+            memo.set(key, [64, 48, E].filter((v) => v >= E).find((e) => { const pc = piece(sd, rc, e);
+              return nb.lv ? built + pc.w * pc.h <= cap && roomFor(nb, pc, OPP[sd], P, W, H, ALLEY, BR, FRONT, half, []) : !nb.incoming.some((b) => overlapGap(pc, b, ALLEY - 1)) && planRoom(D, nb.q, pc, P, W, H, FRONT, half); }) || 0);
+          }
+          return memo.get(key);
+        },
+        give: (sd, blk) => {
+          blk.stitch = true; blk.art = ++art + D.seed % 997;
+          const nb = nbOf(sd), copy = Object.assign({}, blk);
+          if (sd === 'E') copy.x -= W; if (sd === 'W') copy.x += W; if (sd === 'S') copy.y -= H; if (sd === 'N') copy.y += H;
+          (nb.lv ? nb.lv.statics : nb.incoming).push(copy);
+        },
+      };
+      me.lv = generateScreen(D, me.q, P, me.r, ctx);
+    }
+    D.stitched = true;
+    for (const row of raw) for (const { r, lv, q } of row) finishLevel(D, q.cell, P, lv, r);
+  }
+  // Room in a screen still to be built: its road setback, flyover bands, gates, perimeter and checkpoints are planned.
+  function planRoom(D, q, pc, P, W, H, FRONT, half) {
+    if (q.focal) return false; // the landmark is placed when the screen builds
+    const per = perimeter(D, q, P, W, H, q.canal ? 48 : 0), B = per.bounds;
+    if (pc.x < B.l || pc.y < B.t || pc.x + pc.w > B.r || pc.y + pc.h > B.b) return false;
+    if (per.checkpoints.some((cp) => !cp.deck && overlapGap(pc, checkZone(cp, P, W, H), 8))) return false;
+    if ((q.decks || []).some((dk) => overlapGap(pc, dk.hz ? { x: 0, y: dk.off - half, w: W, h: 2 * half } : { x: dk.off - half, y: 0, w: 2 * half, h: H }, 8))) return false;
+    if (gateZones(q.gates || {}, W, H).some((k) => overlapGap(pc, k, 4))) return false;
+    const d0 = roadDist(q.center), dr = q.ring ? roadDist(q.ring) : null, d = (x, y) => Math.min(d0(x, y), dr ? dr(x, y) : Infinity);
+    for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) if (d(pc.x + pc.w * i / 4, pc.y + pc.h * j / 4) < FRONT - 1) return false;
+    return true;
+  }
+  // Is there room in this screen for the part of a neighbour's building that crosses the shared edge?
+  function roomFor(T, pc, side, P, W, H, ALLEY, BR, FRONT, half, skip) { // side: the edge of T the piece stands on; skip: the building it extends
+    const lv = T.lv, thin = { jersey: 1, pillar: 1, barrier: 1 }, statics = lv.statics.filter((st) => !skip.includes(st));
+    for (const st of statics) if (!(st.kind === 'wall' || st.kind === 'river') && overlapGap(pc, st, st.kind === 'block' ? ALLEY - 1 : thin[st.kind] ? 2 * BR + 2 : ALLEY)) return false;
+    if ((lv.stairs || []).some((q) => overlapGap(pc, q, ALLEY)) || (lv.floors || []).some((f) => f.kind === 'bridge' && overlapGap(pc, f, 4))) return false;
+    if ((lv.decks || []).some((dk) => overlapGap(pc, { x: 0, y: dk.off - half, w: W, h: 2 * half }, 8))) return false;
+    if ((lv.checkpoints || []).some((cp) => !cp.deck && overlapGap(pc, checkZone(cp, P, W, H), 8))) return false;
+    if ((lv.reserved || []).concat(lv.focalPatches || []).some((q) => overlapGap(pc, q, 12))) return false;
+    if (lv.spawns.some((sp) => rectDist(sp.x, sp.y, pc) < BR + 6) || (lv.coneHomes || []).some((cn) => rectDist(cn[0], cn[1], pc) < 24)) return false;
+    const d0 = roadDist(lv.center), dr = lv.ring ? roadDist(lv.ring) : null, d = (x, y) => Math.min(d0(x, y), dr ? dr(x, y) : Infinity);
+    for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) if (d(pc.x + pc.w * i / 4, pc.y + pc.h * j / 4) < FRONT - 1) return false;
+    const gates = (T.q.gates || {})[side] || [], l0 = horiz(side) ? pc.y : pc.x, l1 = l0 + (horiz(side) ? pc.h : pc.w);
+    if (gates.some(([a, b]) => l0 < b + BR && l1 > a - BR)) return false;
+    // no ground walled off: flood fill from the spawns, 8-unit grid
+    const S = 8, gw = W / S, gh = H / S, solid = lv.statics.concat([pc], (lv.stairs || []).map((q) => ({ x: q.x, y: q.y, w: q.w, h: q.h })), (lv.checkpoints || []).filter((cp) => !cp.deck).map((cp) => checkZone(cp, P, W, H)));
+    const free = new Uint8Array(gw * gh), seen = new Uint8Array(gw * gh), qq = [];
+    for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const x = i * S + S / 2, y = j * S + S / 2; free[j * gw + i] = x > BR && x < W - BR && y > BR && y < H - BR && solid.every((st) => rectDist(x, y, st) > BR + 0.5) ? 1 : 0; }
+    for (const sp of lv.spawns) { const k = Math.floor(sp.y / S) * gw + Math.floor(sp.x / S); if (free[k]) { seen[k] = 1; qq.push(k); } }
+    while (qq.length) { const k = qq.pop(), i = k % gw, j = (k - i) / gw; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ii = i + di, jj = j + dj; if (ii < 0 || jj < 0 || ii >= gw || jj >= gh) continue; const kk = jj * gw + ii; if (free[kk] && !seen[kk]) { seen[kk] = 1; qq.push(kk); } } }
+    for (let k = 0; k < free.length; k++) if (free[k] && !seen[k]) return false;
+    return true;
   }
   const cellName = (c) => 'ABCDEFGH'[c[0]] + (c[1] + 1); // columns A–C, rows 1–3 from the river
   // Edge stretches that stop the dummy although this side is open: the far side is built up, or it is the district edge.
@@ -852,16 +952,17 @@
       for (let k = 0; k < nd && rows.length; k++) {
         const line = rows.splice(Math.floor(r() * rows.length), 1)[0], cands = [];
         for (let off = 120; off <= H - 120; off += 20) {
-          if (line === 0 && off - half < 60) continue; // keep the river row's deck off the water
+          if (off - half - liftOf(P, P['world.deckHeight']) < P['world.deckTopClear'] || off + half > H - P['world.deckBottomClear']) continue; // Edit 48: the drawn deck clears the top edge by four tiles; a building row fits below
           if (acrossCity('W', W, H).some((o) => Math.abs(o - off) >= half + OUTER + Rt / 2)) cands.push(off); // room for a road along the row
         }
         if (cands.length) decks.push({ hz: true, line, off: pick(r, cands), height: P['world.deckHeight'], z: 1 });
       }
       if (decks.length < nd) continue;
       for (let k = 0, nh = Math.round(dpar(P, id, 'highDecks') || 0); k < nh && k < decks.length; k++) { // Edit 44: high highways at Z2
-        const lows = decks.filter((dk) => dk.z === 1), dk = lows[Math.floor(r() * lows.length)];
+        const lows = decks.filter((dk) => dk.z === 1 && dk.off - half - liftOf(P, P['world.highHeight']) >= P['world.deckTopClear']), dk = lows[Math.floor(r() * lows.length)]; // Edit 48: Z2 lifts further
         if (dk) Object.assign(dk, { z: 2, height: P['world.highHeight'] });
       }
+      if (decks.filter((dk) => dk.z === 2).length < Math.round(dpar(P, id, 'highDecks') || 0)) continue;
       const rowDecks = (y) => decks.filter((dk) => dk.line === y);
       const offsFor = (c, sd) => acrossCity(sd, W, H).filter((o) => !horiz(sd) || rowDecks(c[1]).every((dk) => Math.abs(o - dk.off) >= half + OUTER + Rt / 2));
       let bad = false;
@@ -1039,6 +1140,8 @@
         const room = 2 * P['body.radius'] + 4, around = { x: rc.x - room, y: rc.y - room, w: rc.w + 2 * room, h: rc.h + 2 * room }; // a stair never pens ground against an edge
         if (!inB(around) || pts.some(([x, y]) => d(x, y) < OUTER + 8) || keep.some((q) => overlapGap(rc, q, 4)) || !freeOf(rc, 12) || out.landing.some((q) => overlapGap(rc, q, 8))) continue;
         if (gaps.some(([g0, g1]) => a0 < g1 + T && a0 + SWD > g0 - T)) continue;
+        const foot = dk.hz ? { x: rc.x - 8, y: side > 0 ? rc.y + SL : rc.y - room - 8, w: SWD + 16, h: room + 8 } : { x: side > 0 ? rc.x + SL : rc.x - room - 8, y: rc.y - 8, w: room + 8, h: SWD + 16 };
+        if (!freeOf(foot, 8)) continue; // Edit 48: a neighbour's building may already stand here; the foot stays open
         cands.push({ rc, side, a0 });
       }
       let st = null;

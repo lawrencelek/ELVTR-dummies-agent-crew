@@ -56,7 +56,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P3.3';
+  const BUILD = 'P3.4';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -733,8 +733,8 @@
         for (const g of fl) if (g.kind === 'bridge' && (g.ends || []).includes(ri)) { if (g.axis === 'x') rel(g.x < st.x ? 'W' : 'E', g.y, g.y + g.h); else rel(g.y < st.y ? 'N' : 'S', g.x, g.x + g.w); }
         return { ledges: f.ledges.map((lg) => lg.side), open };
       };
-      const sprite = (st, i) => {
-        const w = Math.round(st.w / U), h = Math.round(st.h / U);
+      const sprite = (st, i0) => {
+        const w = Math.round(st.w / U), h = Math.round(st.h / U), i = st.art != null ? st.art : i0; // Edit 48: a building across a shared edge draws the same on both screens
         if (st.kind === 'block' && st.platform) return PIX.building(w, h, zL(2), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]), st.storeys, roofSpec(st) || { ledges: [], open: [] }); // Edit 44: roof at Z2
         if (st.kind === 'block') return st.storeys ? PIX.building(w, h, st.storeys * EXT(P['world.storeyHeight']), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]), st.storeys) // Edit 43: by storeys
           : PIX.building(w, h, EXT(st.height), PIX.rng(311 + i * 17), PIX.c32(leds[i % leds.length]));

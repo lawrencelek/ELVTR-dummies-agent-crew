@@ -1,9 +1,10 @@
 # DUMMIES — P3 Prototype: 16-bit Aero
 
-**P3.3 · 21 October 2026 · Lawrence Lek**
+**P3.4 · 21 October 2026 · Lawrence Lek**
 
 P2.2's simulation in the GDD Edit 37 art direction, with the Sinofuturist cyber city as canon (Edit 39). Pixel-art field inside the FARSIGHT glass frame. Screen 640 × 360 art pixels. Field 400 × 320 at (120, 20): 25 × 20 tiles, 5:4.
 
+- **P3.4 (Edit 48):** flyovers draw at least four tiles below the top edge, in every district, so the dummy shows arriving from above. A building at a shared screen edge carries across it by one to two tiles and draws on both screens; dotted edge marks remain only for district edges.
 - **P3.3 (Edit 44):** three levels by height: Z0 ground, Z1 low highway, Z2 high highway, platform roofs and skybridges. The underground is gone. Tall stairs from the street and link stairs from the low highway reach Z2; roof ledges drop onto the street.
 - **P3.2 (Edit 43):** flyovers pass square over roads, raised on columns; tight, circular and stepped turns; single, double and tower buildings facing the road at one setback; headlight beams and brake washes.
 - **P3.1 (Edit 42):** bounded districts (river, walls, checkpoints with booms); stairs up to flyover decks (P3.1's underpasses were removed in P3.3). Drop off a broken parapet onto the road, or onto a car.
@@ -122,6 +123,30 @@ A black outline vanishes on a dark field. The background owns the darkest values
 
 ![The five centre screens and a platform roof, P3.3](docs/p33_districts_sheet.png)
 
+## Screen edges and flyover clearance (P3.4, Edit 48; 21 October)
+
+![Interchange layout 1, A3, entered from above. Before: the Z2 deck covers the top. After: seven tiles of street first](docs/p34_a3_compare.png)
+
+- **Flyover clearance (every district):** drawn deck top (band top minus its lift: Z1 36, Z2 64) at least `world.deckTopClear` (128, four 16 px tiles) below the top edge. Band bottom at least `world.deckBottomClear` (128) above the bottom edge: a building row fits under it. Offsets 260–420.
+- **Shared edges:** a lot touching a shared edge carries across it: 64 into the neighbour where it has room, else 48, else `world.edgeOverlap` (32, one tile). Same footprint, height and sprite on both screens (`stitch`, `art` in the baked statics). No room: the lot keeps `world.pedestrianGap` off the edge. Platforms never cross.
+- **Build order:** the landmark screen first, then reading order. A built neighbour is checked as built; one still to build, against its plan, and it receives the piece before its own lots.
+- **Edge marks:** district edges and non-building blockers only. P3.3 had 565 marked stretches on shared edges; P3.4 has none.
+- **Contract (clauses 23, 24):** every building at a shared edge straddles it with a twin across; every flyover meets both clearances.
+
+![Campus A1 and B1. Before: buildings end at the edge behind a dotted line. After: they carry across and show on both screens](docs/p34_pair_compare.png)
+
+![Layout 1 of each district: straddling buildings outlined green; yellow line, drawn deck top](docs/p34_plans.png)
+
+| District | Flyovers (drawn top, tiles below the edge) | Straddling buildings, layouts 1–3 | Roofs (ledges) | Tall stairs | Link stairs | First bot write-off, layouts 1–3 |
+|---|---|---|---|---|---|---|
+| Riverside | none | 22, 23, 26 | 0–6 (0–4) | 0–4 | 0 | 24.9, 60.1, 28.2 s |
+| Old Market | none | 30, 27, 37 | 1–8 (1–3) | 1–8 | 0 | 41.2, 29.5, 23.7 s |
+| Interchange | Z1 4.3–9.3; Z2 7.1–8.4 | 19, 24, 25 | 1–2 (0) | 0 | 1–2 | 37.7, 72.4, 46.8 s |
+| CBD | Z1 4.3–9.3; Z2 4.0–8.4 | 20, 25, 21 | 2–3 (0) | 0 | 2–3 | 49.0, 41.4, 41.9 s |
+| Campus | Z1 4.3–8.0 | 27, 19, 24 | 2–6 (1–3) | 0–3 | 2–3 | 39.8, 46.7, 31.9 s |
+
+- **Open:** Interchange and CBD lost their tall stairs (mid-screen flyovers leave few platform-size lots); link stairs still reach Z2.
+
 ## Z levels, platforms and skybridges (P3.3, Edit 44; 21 October)
 
 ![Layout 1 of each district: Z1 and Z2 highways, buildings by tier, platforms, ledges, skybridges and the three kinds of stair](docs/p33_plans.png)
@@ -230,7 +255,7 @@ A road is a district of `world.districtColumns` × `world.districtRows` screens 
   - Jerseys on `world.jerseyShare` of the road edge; blocks to `world.blockShare`; spawns and cones on the verges.
   - Flood fill: every open spot and every gate reachable.
 - **HUD.** Top bar adds the screen (`B2`). Left column adds the district map. A toast names each new screen.
-- **Edge marks.** A dotted line where an open-looking edge stops you: the district edge, or a building just across it (`field.gate`). Unmarked edges are open.
+- **Edge marks.** A dotted line where an open-looking edge stops you: the district edge, or a non-building blocker just across it (`field.gate`). Unmarked edges are open. Buildings at a shared edge straddle it instead (Edit 48).
 - **Load.** All nine screens build when the road starts (20–100 ms each).
 
 ![Road 1, screen B2: flyover pillars, puddles; district map at left](docs/p3_district_B2.png)
@@ -398,6 +423,7 @@ Day version: `docs/p3_chassis_modules.png`.
 | `world.highHeight`, `world.skybridgeMax` | 216, 96 units | Registry, Proposed (Edit 44) |
 | `world.skybridgeChance`, `world.platformChain`, `world.skybridgeCount` | 0.75, 3, 4 | Registry, Proposed (Edit 44) |
 | `world.district.<id>.highDecks`, `.platformShare` | 0/0/1/1/0; 0.10–0.15 | Registry `districts` table (Edit 44); CBD `decks` 1 → 2 |
+| `world.deckTopClear`, `world.deckBottomClear`, `world.edgeOverlap` | 128, 128, 32 units | Registry (Edit 48): top clearance and edge overlap user-directed |
 | `world.boomRange`, `world.boomSeconds` | 140 units, 0.5 s | Registry, Proposed (Edit 42) |
 | `proto.art.wallHeight` | 40 units | Registry, prototype group (Edit 42) |
 | `ui.typeFieldLabel` | 12 units | Registry. Tags and barks |
@@ -428,7 +454,7 @@ Day version: `docs/p3_chassis_modules.png`.
 | `shell.html` | Integer-scaled stage, full-screen button, tuning drawer |
 | `build.py` | Bundles into `dummies_p3.html`, with `content/db/fleet.json` as `window.FLEET_DB` |
 | `tools/city_gen.js` | City v2 generator: `node tools/city_gen.js .` prints block and barrier data |
-| `test_sim.js` | `node test_sim.js`: 81 checks, incl. 25 for the city districts (contract on all 15 layouts, square crossings, turn styles, buildings, corner speed, landmarks, deck drivers, stairs, drop, Z levels, platforms, skybridges, link stairs, high highway, walls and booms, plates, matting, smoke runs) |
+| `test_sim.js` | `node test_sim.js`: 83 checks, incl. 27 for the city districts (shared-edge straddles, flyover clearance, contract on all 15 layouts, square crossings, turn styles, buildings, corner speed, landmarks, deck drivers, stairs, drop, Z levels, platforms, skybridges, link stairs, high highway, walls and booms, plates, matting, smoke runs) |
 | `tools/district_bake.js`, `tools/district_check.js` | Bake 3 layouts per district; the district contract and start-screen bot |
 | `../../content/districts/districts.json` | The 15 baked layouts at 800 × 640, bundled as `window.DISTRICT_DB` |
 | `../../content/db/` | Fleet database and `check_lore.py` (lore consistency) |
