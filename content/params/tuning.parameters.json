@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit51.1-2026-10-22",
+ "registryVersion": "edit51.2-2026-10-22",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5",
  "entries": [
@@ -5298,12 +5298,12 @@
    "group": "World",
    "owner": "World",
    "label": "Walkway ring half-size",
-   "description": "Half the outer width of the square Z1 walkway ring round the monument (Monument). Sides run at 90°; corners are cut at 45°.",
+   "description": "Half the outer width of the square Z1 walkway ring round the monument (Monument). Sides run at 90°; corners are cut at 45°. Its west and east sides bridge both carriageways of the split road.",
    "unit": "world units",
    "type": "number",
-   "default": 150,
+   "default": 168,
    "status": "proposed",
-   "source": "Edit 51.1 (22 October), P5 district mock-up",
+   "source": "Edit 51.1 (22 October), P5 district mock-up; 168 in Edit 51.2",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -5312,7 +5312,7 @@
    },
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "The monument and two sculptures stand clear inside it"
+   "purpose": "The north and south sides stand over the pavements, clear of both lanes"
   },
   {
    "id": "world.walkwayRingChamfer",
@@ -5340,21 +5340,105 @@
    "group": "World",
    "owner": "World",
    "label": "45° walkway length",
-   "description": "Length of each 45° walkway from the ring's cut corner to its podium roof. It ends inside the roof: flush, no rounded cap.",
+   "description": "Open span of each 45° walkway, from the ring's corner cut to the podium roof's face. The walkway runs on inside the roof: flush, no rounded cap. The podiums are placed from it.",
    "unit": "world units",
    "type": "number",
-   "default": 150,
+   "default": 100,
    "status": "proposed",
-   "source": "Edit 51.1 (22 October), P5 district mock-up",
+   "source": "Edit 51.1 (22 October), P5 district mock-up; redefined in Edit 51.2",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
    "validation": {
-    "min": 64
+    "min": 48
    },
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Reaches a corner podium from the ring in one straight run"
+   "purpose": "Long enough to read as a bridge; the podium still fits the screen corner"
+  },
+  {
+   "id": "world.deckEscalators",
+   "group": "World",
+   "owner": "World",
+   "label": "Escalators per highway screen",
+   "description": "Escalators from each highway (Z1 or Z2) down to the ground on every screen it crosses. One on each side, at opposite ends: north at the west end, south at the east end.",
+   "unit": "escalators",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 51.2 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 2
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A way up and a way down from either side of the highway on every screen"
+  },
+  {
+   "id": "world.deckEscalatorInset",
+   "group": "World",
+   "owner": "World",
+   "label": "Escalator inset",
+   "description": "Distance from the screen edge to the near side of each highway escalator.",
+   "unit": "world units",
+   "type": "number",
+   "default": 64,
+   "status": "proposed",
+   "source": "Edit 51.2 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 32
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two tiles: clear of the edge, near the end of the highway"
+  },
+  {
+   "id": "world.splitLaneOffset",
+   "group": "World",
+   "owner": "World",
+   "label": "Split lane offset",
+   "description": "Where a road splits round an island (the Monument), each lane centre runs this far from the road centre. The lanes leave and rejoin at 45° on fillets of world.roundaboutEntryRadius.",
+   "unit": "world units",
+   "type": "number",
+   "default": 104,
+   "status": "proposed",
+   "source": "Edit 51.2 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 56
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "An island wide enough for the monument and its lamp ring"
+  },
+  {
+   "id": "world.walkwayColumn",
+   "group": "World",
+   "owner": "World",
+   "label": "Walkway column",
+   "description": "Diameter of the round columns under a Z1 walkway. Never in a lane.",
+   "unit": "world units",
+   "type": "number",
+   "default": 16,
+   "status": "proposed",
+   "source": "Edit 51.2 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 8
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Slimmer than a highway column (world.deckColumn)"
   },
   {
    "id": "world.plazaHalf",
@@ -5365,8 +5449,8 @@
    "unit": "world units",
    "type": "number",
    "default": 190,
-   "status": "proposed",
-   "source": "Edit 51.1 (22 October), P5 district mock-up",
+   "status": "retired (user, 22 October): a road now runs through the middle; plazas lie north and south of it",
+   "source": "Edit 51.1 (22 October), P5 district mock-up; retired in Edit 51.2",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",

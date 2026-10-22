@@ -16,6 +16,11 @@
   h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
   h3 { font-size: 14px; margin: 8px 0 2px; }
   canvas { display: block; image-rendering: pixelated; width: 100%; height: auto; border-radius: 6px; background: #10141c; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 12px; }
+  .grid3 > * { min-width: 0; margin: 0; }
+  figcaption { font-size: 12px; color: var(--dim); margin-top: 6px; }
+  figcaption b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
+  .grid3 canvas { cursor: pointer; }
   .tabs button.on { background: #1b4a66; border-color: var(--accent); }
   #grid { cursor: pointer; }
   .mood { color: var(--ink); margin: 0 0 10px; }
@@ -30,10 +35,18 @@
 <body>
 <header>
   <h1>Three districts · P5 mock-up</h1>
-  <p>Each district is 3 × 3 screens of 800 × 640, in game art with live P5 traffic. Parkland: the Z1 roundabout over a lake. Circus: a four-way roundabout. Monument: a square walkway ring around the monument, joined by 45° walkways to podium roofs. Public sculptures stand where trees stood. The P5 game is unchanged until these are approved.</p>
+  <p>The three centres first, then each district as 3 × 3 screens of 800 × 640, in game art with live P5 traffic. Every highway screen has two escalators, on opposite sides at opposite ends. No trees or flower beds: concrete planters, monoliths and public sculptures. The P5 game is unchanged until these are approved.</p>
 </header>
 <main>
   <section>
+    <h2>The centres (B2)</h2>
+    <div class="grid3">
+      <figure><canvas id="c0"></canvas><figcaption><b id="t0"></b><span id="n0"></span></figcaption></figure>
+      <figure><canvas id="c1"></canvas><figcaption><b id="t1"></b><span id="n1"></span></figcaption></figure>
+      <figure><canvas id="c2"></canvas><figcaption><b id="t2"></b><span id="n2"></span></figcaption></figure>
+    </div>
+  </section>
+  <section id="district">
     <div class="row tabs" id="tabs"></div>
     <h2 id="dname"></h2>
     <p class="mood" id="dmood"></p>
@@ -42,7 +55,7 @@
       <div><canvas id="zoom"></canvas><h3 id="zname"></h3><p class="cap" id="znote"></p><p class="cap" id="zlive"></p></div>
     </div>
     <div class="row" style="margin-top:10px"><button id="play">Pause</button></div>
-    <p class="note">Roads are planned across the whole district, so every screen edge lines up. Ground roads turn at 90° or 45° on fillets of world.roundaboutEntryRadius (96). Highways run square along a row (decision 152) at P5.2's width (160), with paired lamps and round columns. Colours follow the style guide: no red or yellow décor.</p>
+    <p class="note">Roads are planned across the whole district, so every screen edge lines up. Ground roads turn at 90° or 45° on fillets of world.roundaboutEntryRadius (96). Highways run square along a row (decision 152) at P5.2's width (160). Escalators: world.deckEscalators (2) per highway screen, world.deckEscalatorInset (64) from the screen edge. Colours follow the style guide: no red or yellow décor.</p>
   </section>
 </main>
 <script>
@@ -123,7 +136,8 @@
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
     'traffic.deckSpeedScale': 1.4, 'traffic.deckGapScale': 1.5, 'damage.deckMultiplier': 1, // P5.1: highway hits pay through speed alone (user, 21 October)
     'world.deckRingRadius': 132, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
-    'world.walkwayRingHalf': 150, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 150, 'world.plazaHalf': 190, // Edit 51.1: the square walkway ring (district mock-up only)
+    'world.walkwayRingHalf': 168, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 100, 'world.plazaHalf': 190, // Edit 51.1–51.2: the square walkway ring (district mock-up only)
+    'world.deckEscalators': 2, 'world.deckEscalatorInset': 64, 'world.splitLaneOffset': 104, 'world.walkwayColumn': 16, // Edit 51.2 (district mock-up only)
     'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
@@ -4302,20 +4316,24 @@
 
 </script>
 <script>
-// Three districts (P5 mock-up, GDD Edit 51.1). Each district is 3 × 3 screens of 800 × 640, drawn in game art with live
-// P5 traffic: Parkland (the Z1 roundabout over a lake at B2), Circus (a four-way roundabout at B2) and Monument (a
-// monument in a plaza at B2, a square walkway ring at Z1 and four 45° walkways to podium roofs). Roads and highways are
-// planned in district coordinates so every screen edge lines up. Public sculptures stand where trees stood.
-// Mock-up only: the P5 planner still builds the five districts.
+// Three districts (P5 mock-up, GDD Edits 51.1–51.2). Each district is 3 × 3 screens of 800 × 640, drawn in game art with
+// live P5 traffic. Parkland: the Z1 roundabout over two pools at B2, a ground road passing north–south beneath it.
+// Circus: a four-way roundabout round a brutalist monument. Monument: a road splits round the monument's island; a
+// square walkway ring at Z1 bridges both carriageways and links four podium roofs by 45° walkways.
+// Rule (Edit 51.2): every highway screen has two escalators, on opposite sides, at opposite ends.
+// Roads and highways are planned in district coordinates so every screen edge lines up. No trees, no flower beds:
+// brutalist planters, monoliths and public sculptures. Mock-up only: the P5 planner still builds the five districts.
 (function () {
   'use strict';
   const X = window.DUMMIES, PIX = window.PIX, L = window.TURNLAB, P = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES), U = PIX.U, K = PIX.K, AW = PIX.AW, AH = PIX.AH;
   const W = P['world.width'], H = P['world.height'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'], HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'];
   const EXT = (h) => Math.round(h * P['proto.art.extrusion'] / U), C = P['world.deckColumn'], c32 = PIX.c32, mixK = PIX.mixK, LEDS = PIX.KX('bldgLed') || [K.lane], hyp = Math.hypot;
   const N = { grass: c32('#0E1712'), grass2: c32('#13211A'), grass3: c32('#1C3024'), water: c32('#08101E'), water2: c32('#13234A'), pave: c32('#2C3243'), pave2: c32('#384056'),
-    lime: c32('#B8F25E'), limeD: c32('#5ED13A'), magenta: c32('#FF5FD2'), cyan: c32('#3FD0FF'), violet: c32('#9B6BFF'), stone: c32('#C9D3DA'), stoneD: c32('#8C98A6'), stoneL: c32('#EEF2F4'), tile: c32('#262C3C'), tile2: c32('#30374B'), ink: c32('#05070B') };
+    magenta: c32('#FF5FD2'), cyan: c32('#3FD0FF'), stone: c32('#C9D3DA'), stoneD: c32('#8C98A6'), stoneL: c32('#EEF2F4'), tile: c32('#262C3C'), tile2: c32('#30374B') };
+  const CON = { m: c32('#4A5160'), d: c32('#363C49'), l: c32('#7D8799'), x: c32('#22262F'), g: c32('#1F3A27'), g2: c32('#2A4A32'), t: c32('#3B4250'), t2: c32('#444B5A') }; // board-marked concrete
+  const ISL = c32('#5F6878'); // the monument's island paving
   const $ = (id) => document.getElementById(id);
-  const Z1 = EXT(P['world.deckHeight']), Z2 = EXT(P['world.highHeight']);
+  const Z1 = EXT(P['world.deckHeight']), Z2 = EXT(P['world.highHeight']), SWD = P['world.stairWidth'], INSET = P['world.deckEscalatorInset'];
   // ---------- small helpers
   function each(fn) { for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) fn(x, y, (x + 0.5) * U, (y + 0.5) * U, y * AW + x); }
   function walk(pts, step, fn) { let acc = step / 2; for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], l = hyp(x1 - x0, y1 - y0); if (l < 1e-6) continue; while (acc <= l) { const t = acc / l; fn(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, (x1 - x0) / l, (y1 - y0) / l); acc += step; } acc -= l; } }
@@ -4336,39 +4354,75 @@
     return runs.filter((r) => r.length > 1 && onScreen(r) > 0).sort((a, b) => onScreen(b) - onScreen(a))[0] || null;
   }
   const shift = (pts, dx, dy) => pts.map(([x, y]) => [x + dx, y + dy]);
+  const chamf = (x0, y0, x1, y1, k) => (x, y, ins) => { ins = ins || 0; const c = k + ins * 0.6; return x >= x0 + ins && x <= x1 - ins && y >= y0 + ins && y <= y1 - ins && x - x0 + y - y0 >= c && x1 - x + y - y0 >= c && x - x0 + y1 - y >= c && x1 - x + y1 - y >= c; };
   function lawn(B, x, y) { B.put(x, y, ((x * 7 + y * 13) % 29 === 0) ? N.grass3 : (Math.floor((x + y) / 6) % 2 ? N.grass : N.grass2)); }
-  const blobR = (r0, th, ph) => r0 * (1 + 0.08 * Math.sin(3 * th + ph) + 0.05 * Math.cos(5 * th + 1.7 * ph));
-  function lake(B, ok, cx, cy, r0, ph) {
-    each((x, y, wx, wy) => {
-      if (!ok(wx, wy)) return;
-      const d = hyp(wx - cx, wy - cy), R = blobR(r0, Math.atan2(wy - cy, wx - cx), ph);
-      if (d < R) { let c = N.water; if (y % 4 === 0 && ((x * 5 + y) % 11) < 4) c = N.water2; if ((x * 3 + y * 7) % 97 === 0) c = LEDS[(x + y) % LEDS.length]; B.put(x, y, c); }
-      else if (d < R + 3) B.put(x, y, K.kerb2);
-      else if (d > R + 6 && d < R + 20) B.put(x, y, ((x + y) % 4) ? N.pave : N.pave2); // promenade
-    });
-  }
   function pathLine(B, ok, x0, y0, x1, y1, w) {
     const dx = x1 - x0, dy = y1 - y0, l = hyp(dx, dy);
-    each((x, y, wx, wy) => { if (!ok(wx, wy)) return; const t = Math.max(0, Math.min(1, ((wx - x0) * dx + (wy - y0) * dy) / (l * l))), d = hyp(wx - x0 - dx * t, wy - y0 - dy * t); if (d < w / 2) B.put(x, y, d > w / 2 - 2 ? N.pave2 : N.pave); });
+    each((x, y, wx, wy) => { if (!ok(wx, wy)) return; const t = Math.max(0, Math.min(1, ((wx - x0) * dx + (wy - y0) * dy) / (l * l))), d = hyp(wx - x0 - dx * t, wy - y0 - dy * t); if (d < w / 2) B.put(x, y, d > w / 2 - 2 ? CON.d : (x + y) % 8 === 0 ? CON.t2 : CON.t); });
   }
-  function flowers(B, ok, cx, cy, r0, r1, colA, colB, petals) {
-    each((x, y, wx, wy) => { if (!ok(wx, wy)) return; const d = hyp(wx - cx, wy - cy), a = Math.atan2(wy - cy, wx - cx), edge = r1 * (0.55 + 0.45 * Math.abs(Math.cos(a * petals / 2))); if (d > edge + 2 || d < r0) return; B.put(x, y, d > edge ? N.limeD : d < r0 + (r1 - r0) * 0.3 ? colB : ((x + y) % 3 ? colA : N.limeD)); });
+  function tiles(B, ok, lattice) { // concrete paving on a 16 grid; an LED lattice at 45° where asked
+    each((x, y, wx, wy) => { if (!ok(wx, wy)) return; let c = (x % 8 === 0 || y % 8 === 0) ? N.tile2 : N.tile; if (lattice && ((x + y) % 24 === 0 || ((x - y) % 24 + 24) % 24 === 0)) c = (x + y) % 48 === 0 ? mixK(N.tile, N.cyan, 0.5) : mixK(N.tile, N.magenta, 0.4); B.put(x, y, c); });
   }
-  function plaza(B, ok, x0, y0, x1, y1) { // a paved square with an LED lattice (world units)
-    each((x, y, wx, wy) => { if (wx < x0 || wx > x1 || wy < y0 || wy > y1 || !ok(wx, wy)) return; let c = ((x % 8) === 0 || (y % 8) === 0) ? N.tile2 : N.tile; if ((x + y) % 24 === 0 || ((x - y) % 24 + 24) % 24 === 0) c = (x + y) % 48 === 0 ? mixK(N.tile, N.cyan, 0.5) : mixK(N.tile, N.magenta, 0.4); B.put(x, y, c); });
+  function pool(B, ok, x0, y0, x1, y1, k) { // a reflecting pool: 90° sides, 45° corners, concrete coping and a shadowed inner wall
+    const inR = chamf(x0, y0, x1, y1, k);
+    each((x, y, wx, wy) => {
+      if (!ok(wx, wy) || !inR(wx, wy, -6)) return;
+      if (!inR(wx, wy, 0)) B.put(x, y, CON.l);
+      else if (!inR(wx, wy, 4)) B.put(x, y, wy < y0 + 8 ? CON.x : CON.d); // inner wall, the north one in shade
+      else { let c = N.water; if (y % 4 === 0 && ((x * 5 + y) % 11) < 4) c = N.water2; if ((x * 3 + y * 7) % 97 === 0) c = LEDS[(x + y) % LEDS.length]; B.put(x, y, c); }
+    });
   }
-  // ---------- public sculptures (art px; anchored at the footprint centre), in place of trees
+  // ---------- brutalist pieces (art px): a chamfered concrete mass with board marks, LED under the coping, hard shadow down-left
+  function block(B, x0, y0, x1, y1, k, base, h, top, led, shadow) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const inF = chamf(x0, y0, x1, y1, k);
+    if (shadow) {
+      const M = new Uint8Array(AW * AH);
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (inF(x, y)) for (let t = 1; t <= base + h; t++) { const sx = Math.round(x - t * 0.7), sy = Math.round(y + t * 0.7); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && !inF(sx, sy)) M[sy * AW + sx] = 1; }
+      for (let q = 0; q < M.length; q++) if (M[q]) B.shade(q % AW, Math.floor(q / AW), 0.68);
+    }
+    const mid = (x0 + x1) / 2;
+    for (let x = x0; x <= x1; x++) {
+      let yb = -1; for (let y = y1; y >= y0; y--) if (inF(x, y)) { yb = y; break; }
+      if (yb < 0) continue;
+      const slant = yb < y1, face = slant ? (x < mid ? CON.d : CON.l) : (x % 4 === 0 ? CON.d : CON.m);
+      for (let t = 0; t < h; t++) B.put(x, yb - base - t, t === 0 && base === 0 ? CON.x : t === h - 1 && led ? led : face);
+    }
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+      if (!inF(x, y)) continue;
+      const c = !inF(x, y, 1) ? CON.l : top === 'grass' && inF(x, y, 2) ? ((x * 3 + y * 5) % 7 ? CON.g : CON.g2) : !inF(x, y, 2) ? CON.m : ((x - x0) % 6 === 0 || (y - y0) % 6 === 0) ? CON.d : CON.m;
+      B.put(x, y - base - h, c);
+    }
+  }
+  function monolith(B, ax, ay, base, h, led) { // a concrete slab with a lit slot
+    block(B, ax - 2, ay - 1, ax + 2, ay + 1, 0, base, h, 'conc', null, base === 0);
+    for (let t = 3; t < h - 2; t++) B.put(Math.round(ax), Math.round(ay) + 1 - base - t, led);
+    B.put(Math.round(ax), Math.round(ay) - 1 - base - h, K.white);
+  }
+  function planter(B, wx, wy, hw, hh, kind, led) { // world centre and half-size; a raised lawn in a concrete box, or tiers, with a monolith
+    const x = wx / U, y = wy / U, a = hw / U, b = hh / U, k = Math.round(Math.min(a, b) * 0.5);
+    if (kind === 'tiers') { block(B, x - a, y - b, x + a, y + b, k, 0, 3, 'conc', null, true); block(B, x - a + 4, y - b + 3, x + a - 4, y + b - 3, Math.max(1, k - 3), 3, 3, 'grass', led, false); monolith(B, x, y, 6, 18, led); }
+    else { block(B, x - a, y - b, x + a, y + b, k, 0, 5, 'grass', led, true); if (kind === 'monolith') monolith(B, x + a * 0.4, y, 5, 20, led); }
+  }
+  // ---------- public sculptures (art px; anchored at the footprint centre)
   function sculpture(B, ax, ay, kind, led) {
     const x0 = Math.round(ax), y0 = Math.round(ay), put = (x, y, c) => B.put(x0 + x, y0 + y, c), sh = (n, w) => { for (let t = 0; t < n; t++) for (let j = -w; j <= w; j++) B.shade(x0 - t * 0.7 + j * 0.7, y0 + t * 0.7 + j * 0.7, 0.72); };
-    for (let x = -5; x <= 5; x++) for (let y = -2; y <= 2; y++) if (x * x / 30 + y * y / 6 <= 1) put(x, y, y > 0 ? K.columnD : K.jerseyTop); // plinth
-    if (kind === 'obelisk') { sh(16, 2); for (let h = 1; h < 26; h++) { const w = h > 20 ? 1 : 2; for (let i = -w; i <= w; i++) put(i, -h, i === -w ? K.jerseyTop : i === w ? led : K.column); } put(0, -26, K.white); put(0, -27, led); }
-    else if (kind === 'ring') { sh(12, 3); for (let h = 1; h < 6; h++) put(0, -h, K.column); for (let a = 0; a < 64; a++) { const t = a / 64 * Math.PI * 2; put(Math.round(Math.cos(t) * 6), Math.round(-14 + Math.sin(t) * 9), a % 8 < 5 ? led : K.white); } }
-    else if (kind === 'cubes') { sh(12, 4); for (const [s, ox, h0] of [[8, -1, 0], [6, 1, 8], [4, 0, 14]]) for (let y = 0; y < s; y++) for (let x = 0; x < s; x++) put(ox + x - s / 2, -h0 - y - 1, x === 0 || y === s - 1 ? led : y === 0 ? K.jerseyTop : K.column); }
-    else if (kind === 'arch') { sh(14, 5); for (let h = 1; h < 20; h++) for (const px of [-6, 5]) { put(px, -h, K.jerseyTop); put(px + 1, -h, K.column); } for (let x = -6; x <= 6; x++) { put(x, -20, K.jerseyTop); put(x, -19, led); } }
-    else { sh(10, 4); for (let k = 0; k < 5; k++) for (let h = 1; h < 10 + k * 3; h++) put(-6 + k * 3, -h, h > 6 + k * 3 ? led : K.column); } // light fins
+    for (let x = -5; x <= 5; x++) for (let y = -2; y <= 2; y++) if (Math.abs(x) + Math.abs(y) * 2 <= 6) put(x, y, y > 0 ? CON.d : CON.l); // chamfered plinth
+    if (kind === 'obelisk') { sh(16, 2); for (let h = 1; h < 26; h++) { const w = h > 20 ? 1 : 2; for (let i = -w; i <= w; i++) put(i, -h, i === -w ? CON.l : i === w ? led : CON.m); } put(0, -26, K.white); put(0, -27, led); }
+    else if (kind === 'ring') { sh(12, 3); for (let h = 1; h < 6; h++) put(0, -h, CON.m); for (let a = 0; a < 64; a++) { const t = a / 64 * Math.PI * 2; put(Math.round(Math.cos(t) * 6), Math.round(-14 + Math.sin(t) * 9), a % 8 < 5 ? led : K.white); } }
+    else if (kind === 'cubes') { sh(12, 4); for (const [s, ox, h0] of [[8, -1, 0], [6, 1, 8], [4, 0, 14]]) for (let y = 0; y < s; y++) for (let x = 0; x < s; x++) put(ox + x - s / 2, -h0 - y - 1, x === 0 || y === s - 1 ? led : y === 0 ? CON.l : CON.m); }
+    else if (kind === 'arch') { sh(14, 5); for (let h = 1; h < 20; h++) for (const px of [-6, 5]) { put(px, -h, CON.l); put(px + 1, -h, CON.m); } for (let x = -6; x <= 6; x++) { put(x, -20, CON.l); put(x, -19, led); } }
+    else { sh(10, 4); for (let k = 0; k < 5; k++) for (let h = 1; h < 10 + k * 3; h++) put(-6 + k * 3, -h, h > 6 + k * 3 ? led : CON.m); } // light fins
   }
   const SCULPT = ['obelisk', 'ring', 'cubes', 'arch', 'fins'];
-  // ---------- decks in their own layer: straight highways (the game's PIX.deck) or rings/walkways (distance field)
+  // ---------- escalators: two per highway screen, on opposite sides, at opposite ends (Edit 51.2)
+  function escalators(off, z, half, x0, x1) { // north at the west end, south at the east end
+    const run = X.stairRun(P, 0, z), a = x0 === undefined ? INSET : x0, b = x1 === undefined ? W - INSET - SWD : x1;
+    return [{ x: a, y: off - half - run, w: SWD, h: run, axis: 'y', low: off - half - run, high: off - half, side: -1, z },
+      { x: b, y: off + half, w: SWD, h: run, axis: 'y', low: off + half + run, high: off + half, side: 1, z }];
+  }
+  const stairProp = (st, lift) => ({ spr: PIX.stairs(st, 0, lift), x: st.x / U, y: st.y / U, by: st.y + st.h, over: st.side > 0 || st.axis === 'x' });
+  // ---------- decks in their own layer: straight highways (the game's PIX.deck) or rings (distance field)
   function ringRoutes(cx, cy, Rc, Rf) {
     const a = { ang: Math.PI, pt: [-200, cy] }, b = { ang: 0, pt: [W + 200, cy] }, r = () => 0.9, phi = Math.asin(Rf / (Rc + Rf)), D = (Rc + Rf) * Math.cos(phi);
     return { WE: X.roundaboutCenter(a, b, 2 * cx, 2 * cy, 200, Rc, r, Rf), EW: X.roundaboutCenter(b, a, 2 * cx, 2 * cy, 200, Rc, r, Rf), ring: X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 96), armW: [[-200, cy], [cx - D, cy]], armE: [[cx + D, cy], [W + 200, cy]] };
@@ -4379,13 +4433,14 @@
     each((x, y, wx, wy, k) => {
       const d = f.D[k]; if (d > HALF) return;
       const pb = HALF - d, s = f.S[k], m = ((s % 6) + 6) % 6 < 3;
-      if (pb < PW + 1 && wy > cy && (openings || []).some(([a, b]) => wx > a && wx < b)) { Lr.put(x, y, K.deck2); return; } // a stair head: no parapet
+      if (pb < PW + 1 && (openings || []).some(([a, b, sd]) => wx > a && wx < b && (sd > 0 ? wy > cy : wy < cy))) { Lr.put(x, y, K.deck2); return; } // an escalator head: no parapet
       Lr.put(x, y, pb < 2 ? K.jerseyO : pb < 4 ? (m ? led : K.jerseyTop) : pb < PW + 1 ? K.jersey : Math.abs(d - LW) < 1.2 ? K.lane : f.dash[k] && d < 1.2 && ((s % 48) + 48) % 48 < 28 ? K.lane : f.dash[k] && ((s % 64) + 64) % 64 < 1.5 ? K.deckJoint : d > LW ? K.deck2 : K.deck);
     });
     each((x, y) => { if (inB(x, y)) return; for (let k = 1; k <= 4; k++) if (inB(x, y - k)) { Lr.put(x, y, k === 1 ? K.jerseyTop : k === 4 ? K.bldgOutline : (x % 4 < 1 ? K.columnD : K.column)); break; } });
     const lift = z === 2 ? Z2 : Z1, glow = mixK(K.deck2, K.white, 0.38), cols = [];
     for (const g of geoms.filter((q) => q.dash)) walk(g.pts, P['world.deckLampSpacing'], (x, y, tx, ty) => { for (const sd of [-1, 1]) {
       const wx = x - ty * sd * (HALF - 3), wy = y + tx * sd * (HALF - 3); if (hyp(wx - cx, wy - cy) < Rc) continue; // lamps on the outer parapet
+      if ((openings || []).some(([a, b]) => wx > a - 12 && wx < b + 12 && Math.abs(Math.abs(wy - cy) - HALF) < 8)) continue;
       const bx = Math.round(wx / U), by = Math.round(wy / U), ix = Math.round((x - ty * sd * (HALF - 9)) / U), iy = Math.round((y + tx * sd * (HALF - 9)) / U);
       if (bx < 1 || by < 1 || bx >= AW - 2 || by >= AH) continue;
       for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) if (Math.abs(i) + Math.abs(j) <= 2 && inB(ix + i, iy + j)) Lr.put(ix + i, iy + j, glow);
@@ -4395,36 +4450,45 @@
     for (const g of geoms.filter((q) => q.dash)) walk(g.pts, 120, (x, y, tx, ty) => { for (const sd of [-1, 1]) {
       const off = HALF - 4 - C / 2, ccx = x - ty * sd * off, ccy = y + tx * sd * off;
       if (ccx < C || ccy < C || ccx > W - C || ccy > H - C || avoid(ccx, ccy) || cols.some((q) => hyp(q.cx - ccx, q.cy - ccy) < C + 24)) continue;
-      cols.push({ cx: ccx, cy: ccy, x: ccx - C / 2, y: ccy - C / 2, spr: PIX.column(Math.round(C / U), Math.round(C / U), lift) });
+      cols.push({ cx: ccx, cy: ccy, key: ccy + C / 2, x: ccx - C / 2, y: ccy - C / 2, spr: PIX.column(Math.round(C / U), Math.round(C / U), lift) });
     } });
     return { L: Lr, lift, cols, front: cy + Rc + HALF, inBand: (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH && f.D[k] <= HALF + 12; }, shadeOn: (B) => {
       const k = P['proto.art.shadowScale'], hgt = z === 2 ? P['world.highHeight'] : P['world.deckHeight'], ox = PIX.SUN.x * hgt * k / U, oy = PIX.SUN.y * hgt * k / U;
       each((x, y) => { for (const t of [0, 0.5, 1]) { const sx = Math.round(x - ox * t), sy = Math.round(y - oy * t); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && f.D[sy * AW + sx] <= HALF) { B.shade(x, y, 0.72); break; } } });
     } };
   }
-  function straightDeck(off, z, roadOk) { // the game's own highway sprite, lamps and round columns
-    const dk = { hz: true, off, z, height: z === 2 ? P['world.highHeight'] : P['world.deckHeight'], gaps: [], openings: [] }, { S, ext } = PIX.deck(dk, P), cols = [];
+  function straightDeck(off, z, roadOk, stairs) { // the game's own highway sprite, lamps and round columns, with escalator heads open
+    const dk = { hz: true, off, z, height: z === 2 ? P['world.highHeight'] : P['world.deckHeight'], gaps: [], openings: stairs.map((st) => [st.x, st.x + st.w, st.side]) }, { S, ext } = PIX.deck(dk, P), cols = [];
     for (let p = P['world.deckPillarSpacing'] / 2; p < W; p += P['world.deckPillarSpacing']) for (const e of [off - HALF + 4, off + HALF - 4 - C]) {
       if (!roadOk(p, e + C / 2, OUTER + C + 4)) continue;
-      cols.push({ cx: p, cy: e + C / 2, x: p - C / 2, y: e, spr: PIX.column(Math.round(C / U), Math.round(C / U), ext) });
+      cols.push({ cx: p, cy: e + C / 2, key: e + C, x: p - C / 2, y: e, spr: PIX.column(Math.round(C / U), Math.round(C / U), ext) });
     }
     const Lr = new PIX.Buf(AW, AH); PIX.blit(Lr, S, 0, Math.round((off - HALF) / U));
     return { dk, L: Lr, lift: ext, cols, front: off + HALF, inBand: (wx, wy) => Math.abs(wy - off) < HALF + 12 };
   }
-  // ---------- the walkway: a union of polygons at Z1, square ends where it meets a podium roof (no rounded caps)
-  function walkwayLayer(polys, roofs) {
-    const inPoly = (pts, x, y) => PIX.inPoly(pts, x, y), M = new Uint8Array(AW * AH), R = new Uint8Array(AW * AH), Lr = new PIX.Buf(AW, AH);
-    each((x, y, wx, wy, k) => { if (polys.some((p) => inPoly(p, wx, wy))) M[k] = 1; if (roofs.some((r) => wx >= r[0] && wx <= r[0] + r[2] && wy >= r[1] && wy <= r[1] + r[3])) R[k] = 1; });
-    const out = (x, y) => x < 0 || y < 0 || x >= AW || y >= AH || (!M[y * AW + x] && !R[y * AW + x]);
+  // ---------- the walkway at Z1: a union of polygons, square ends where it meets a podium roof or an escalator head
+  function walkwayLayer(polys, roofs, joins, colOk) {
+    const M = new Uint8Array(AW * AH), R = new Uint8Array(AW * AH), Lr = new PIX.Buf(AW, AH), inRect = (r, wx, wy) => wx >= r[0] && wx <= r[0] + r[2] && wy >= r[1] && wy <= r[1] + r[3];
+    each((x, y, wx, wy, k) => { if (polys.some((p) => PIX.inPoly(p, wx, wy))) M[k] = 1; if (roofs.some((r) => inRect(r, wx, wy))) R[k] = 1; else if (joins.some((r) => inRect(r, wx, wy))) R[k] = 2; });
+    const out = (x, y) => x < 0 || y < 0 || x >= AW || y >= AH || (!M[y * AW + x] && !R[y * AW + x]), on = (k) => M[k] && !R[k];
     each((x, y, wx, wy, k) => {
-      if (!M[k] || R[k]) return;
+      if (!on(k)) return;
       let edge = 9; for (let j = -3; j <= 3; j++) for (let i = -3; i <= 3; i++) if (out(x + i, y + j)) edge = Math.min(edge, Math.max(Math.abs(i), Math.abs(j)));
-      Lr.put(x, y, edge === 1 ? K.jerseyO : edge === 2 ? (((x + y) % 6) < 3 ? LEDS[3 % LEDS.length] : K.jerseyTop) : edge === 3 ? K.jersey : (((x >> 2) + (y >> 2)) % 2 ? K.deck : K.deck2));
+      Lr.put(x, y, edge === 1 ? K.jerseyO : edge === 2 ? (((x + y) % 6) < 3 ? N.magenta : K.jerseyTop) : edge === 3 ? K.jersey : (x + y) % 10 === 0 ? K.deckJoint : (((x >> 2) + (y >> 2)) % 2 ? K.deck : K.deck2));
     });
-    each((x, y, wx, wy, k) => { if (M[k] || R[k]) return; for (let d = 1; d <= 3; d++) { const kk = (y - d) * AW + x; if (y - d >= 0 && M[kk] && !R[kk]) { Lr.put(x, y, d === 1 ? K.jerseyTop : d === 3 ? K.bldgOutline : K.column); break; } } });
-    return { L: Lr, lift: Z1, cols: [], front: 1e6, inBand: (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH && M[k] === 1; } };
+    each((x, y, wx, wy, k) => { if (M[k] && !R[k]) return; for (let d = 1; d <= 4; d++) { const kk = (y - d) * AW + x; if (y - d >= 0 && on(kk)) { Lr.put(x, y, d === 1 ? K.jerseyTop : d === 2 ? CON.m : d === 3 ? N.cyan : K.bldgOutline); break; } } }); // fascia with an LED strip
+    // round columns under the walkway, on pavements and the island, never in a lane
+    const cols = [], cw = P['world.walkwayColumn'];
+    for (const p of polys.filter((q) => q.spine)) walk(p.spine, P['world.deckPillarSpacing'] / 2, (x, y) => {
+      if (!colOk(x, y) || roofs.concat(joins).some((r) => inRect([r[0] - 16, r[1] - 16, r[2] + 32, r[3] + 32], x, y)) || cols.some((q) => hyp(q.cx - x, q.cy - y) < 64)) return;
+      cols.push({ cx: x, cy: y, key: y + cw / 2, x: x - cw / 2, y: y - cw / 2, spr: PIX.column(Math.round(cw / U), Math.round(cw / U), Z1) });
+    });
+    return { L: Lr, lift: Z1, cols, front: 1e6, inBand: (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH && M[k] === 1; }, shadeOn: (B) => {
+      const k = P['proto.art.shadowScale'], hgt = P['world.deckHeight'], ox = PIX.SUN.x * hgt * k / U, oy = PIX.SUN.y * hgt * k / U;
+      each((x, y) => { for (const t of [0.5, 1]) { const sx = Math.round(x - ox * t), sy = Math.round(y - oy * t); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && M[sy * AW + sx] && !R[sy * AW + sx]) { B.shade(x, y, 0.66); break; } } });
+    } };
   }
-  // the monument (art px): stepped round base, banded white shaft, clock face, crown and spire, a ring of lamp posts
+  // the monument (art px): stepped base, banded white shaft, clock face, crown and spire, a ring of lamp posts
   function drawMonument(Bf, cx, cy) {
     const x0 = Math.round(cx / U), y0 = Math.round(cy / U), Ht = 58;
     for (let t = 0; t < 40; t++) for (let j = -4; j <= 4; j++) Bf.shade(x0 - t * 0.7 + j * 0.7, y0 + t * 0.7 + j * 0.7, 0.75);
@@ -4439,117 +4503,175 @@
   const R96 = P['world.roundaboutEntryRadius'];
   const fil = (pts) => X.filletAny(pts, R96, 0);
   const DISTRICTS = [
-    { id: 'parkland', name: 'Parkland', mood: 'Calm, green, water. The highway loops over the lake.', quota: P['world.district.parkland.quota'], storeys: [2, 5],
-      roads: [fil([[-200, 480], [2000, 480], [2000, 712], [400, 712], [400, 1440], [2600, 1440]])],
+    { id: 'parkland', name: 'Parkland', mood: 'Calm, water, concrete and lawn. The highway loops over the pools; a road passes beneath.', quota: P['world.district.parkland.quota'], storeys: [2, 5],
+      roads: [[[1200, -200], [1200, 2120]], fil([[400, -200], [400, 300], [200, 500], [200, 2120]]), fil([[2000, -200], [2000, 1420], [2200, 1620], [2200, 2120]])],
       decks: [{ row: 1, off: 420, z: 1 }], park: ['B1', 'A2', 'B2', 'C2', 'B3'], centre: 'B2' }, // the ring replaces the B2 stretch
     { id: 'circus', name: 'Circus', mood: 'Busy and circling. Traffic gives way at the four-way roundabout, then rushes.', quota: P['world.district.circus.quota'], storeys: [4, 9],
       roads: [[[-200, 960], [2600, 960]], [[1200, -200], [1200, 2120]], fil([[200, -200], [200, 200], [80, 320], [-200, 320]]), fil([[2200, -200], [2200, 200], [2320, 320], [2600, 320]]),
         fil([[200, 2120], [200, 1540], [80, 1420], [-200, 1420]]), fil([[2200, 2120], [2200, 1540], [2320, 1420], [2600, 1420]])],
       decks: [{ row: 2, off: 400, z: 1 }], park: [], centre: 'B2' },
-    { id: 'monument', name: 'Monument', mood: 'Neon commerce, LED walls. The monument is the beacon; podium roofs lead up to the walkway.', quota: P['world.district.monument.quota'], storeys: [6, 12],
-      roads: [fil([[-200, 480], [2000, 480], [2000, 1216], [400, 1216], [400, 1440], [2600, 1440]])],
-      decks: [{ row: 0, off: 300, z: 2 }, { row: 2, off: 380, z: 1 }], park: [], centre: 'B2' },
+    { id: 'monument', name: 'Monument', mood: 'Neon commerce, LED walls. The road splits round the monument; walkways bridge it at Z1.', quota: P['world.district.monument.quota'], storeys: [6, 12],
+      roads: [fil([[-200, 560], [2000, 560], [2000, 960], [400, 960], [400, 1440], [2600, 1440]])],
+      decks: [{ row: 0, off: 272, z: 2 }, { row: 2, off: 380, z: 1 }], park: [], centre: 'B2' },
   ];
   // ---------- one screen of a district
-  function sceneSim(center, decks, deckLanes, interval) {
-    const lanes = X.lanesOf(center, P), s = new X.Sim('straight', { 'run.appearances.road': 2000 });
-    s.level = Object.assign({}, s.level, { center, ring: null, lanes, statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }], patches: [], floors: [], stairs: [], checkpoints: [], theme: 'plain',
+  function sceneSim(center, decks, deckLanes, lanes, busOK) {
+    const s = new X.Sim('straight', { 'run.appearances.road': 2000 });
+    s.level = Object.assign({}, s.level, { center, ring: null, lanes: lanes || X.lanesOf(center, P), statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }], patches: [], floors: [], stairs: [], checkpoints: [], theme: 'plain',
       decks: decks.map((d) => ({ hz: true, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] })), deckLanes });
     s.cones = []; s.cars = []; s.drones = []; s.checkTerminal = () => {}; s.checkFlip = () => {};
-    s.schedule = s.schedule.map((sl, j) => Object.assign({}, sl, { cls: X.fleetClass(P, 0.25, (j * 0.6180339887 + 0.53) % 1) }));
-    s.admissionInterval = () => interval || 3.2;
+    s.schedule = s.schedule.map((sl, j) => { const cls = X.fleetClass(P, 0.25, (j * 0.6180339887 + 0.53) % 1); return Object.assign({}, sl, { cls: cls === 'bus' && !busOK ? 'sedan' : cls }); }); // buses only where the road allows (Edit 50)
+    s.admissionInterval = () => 3.2;
     Object.assign(s.body, { x: -900, y: -900 }); s.fillDeckCars();
     return s;
   }
+  // Monument B2: the road splits round the monument's island. Two one-way lanes, 45° tapers, fillets 96 (no buses).
+  function splitRoad(cy) {
+    const o = P['world.splitLaneOffset'], h = LW / 2, d = o - h, xa = 120, xb = W - 120;
+    const E = fil([[-200, cy + h], [xa, cy + h], [xa + d, cy + o], [xb - d, cy + o], [xb, cy + h], [W + 200, cy + h]]);
+    const Wl = fil([[W + 200, cy - h], [xb, cy - h], [xb - d, cy - o], [xa + d, cy - o], [xa, cy - h], [-200, cy - h]]);
+    return { E, Wl };
+  }
+  function paintSplit(B, E, Wl) { // asphalt, kerbs, centre dashes on the shared stretch, hatched gores, pavements; returns the margin field
+    const fE = PIX.roadField([{ pts: E }], 240), fW = PIX.roadField([{ pts: Wl }], 240), m = new Float32Array(AW * AH), h = LW / 2;
+    each((x, y, wx, wy, k) => {
+      const a = fE.D[k], b = fW.D[k], lane = Math.max(h - a, h - b), pair = LW - (a + b) / 2, mm = Math.max(lane, pair); m[k] = mm;
+      if (mm <= -P['proto.shoulderWidth']) return;
+      if (mm < 0) { B.put(x, y, mm > -U || ((fE.S[k] % 12) + 12) % 12 < U ? N.pave2 : N.pave); return; }
+      let c = (Math.imul(x * 73856093 ^ y * 19349663, 2654435761) >>> 0) % 100 < 7 ? K.road2 : K.road;
+      if (mm < U) c = K.kerb; else if (mm < 2 * U) c = K.kerb2;
+      else if (lane < 0 && pair > 0) { if (((x - y) % 6 + 6) % 6 < 2) c = K.lane; } // gore: hatched where the lanes part
+      else if (Math.abs(a - b) < U && a + b < LW + 2 && ((fE.S[k] % 36) + 36) % 36 < 20) c = K.lane;
+      B.put(x, y, c);
+    });
+    return m;
+  }
   function buildScreen(D, col, row) {
     const name = 'ABC'[col] + (row + 1), ox = col * W, oy = row * H, rng = PIX.rng(1000 + col * 37 + row * 101 + D.id.length * 7);
-    const sc = { D, name, col, row, props: [], layers: [], sculpts: [], note: '' };
+    const sc = { D, name, col, row, props: [], layers: [], sculpts: [], note: '', stairs: [] };
     const isPark = D.park.includes(name), isCentre = name === D.centre;
-    // roads in this screen (the district's polylines, cut to the screen plus 200)
-    let center = null, roadsLocal = [];
+    const roadsLocal = [];
     for (const r of D.roads) { const run = clipRun(shift(r, -ox, -oy), -200, -200, W + 200, H + 200); if (run) roadsLocal.push(run); }
-    center = roadsLocal[0];
-    const decks = D.decks.filter((d) => d.row === row);
-    let ground, labSim = null, ringDeck = null, rf;
+    let center = roadsLocal[0] || [[-900, -900], [-850, -900]], lanes = null, busOK = X.minBend(center, W, H) >= P['vehicles.bus.minRadius'];
+    const decks = D.decks.filter((d) => d.row === row), dkList = decks.map((d) => ({ hz: true, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] }));
+    const lvl = (c, extra) => Object.assign({ center: c, ring: null, statics: [], spawns: [], coneHomes: [], patches: [], decks: dkList, floors: [], canal: false, solid: [] }, extra || {});
+    let ground, labSim = null, ringDeck = null, roadD;
     if (D.id === 'circus' && isCentre) {
       labSim = L.makeSim(X, 'roundabout4', { Rf: R96 }, { fleet: 'expanded', interval: 1.6, seconds: 60, seed: 11, overrides: {} });
       const geo = labSim.lab.geo;
-      ground = PIX.ground({ center: geo.center, ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), statics: [], spawns: [], coneHomes: [], patches: [], decks: [], floors: [], canal: false, solid: [] }, P, 23);
-      rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
+      ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), decks: [] }), P, 23);
+      const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
+      roadD = (k) => rf.D[k];
+    } else if (D.id === 'monument' && isCentre) {
+      const sp = splitRoad(320); center = [[-200, 320], [W + 200, 320]]; lanes = [X.makePath(sp.E), X.makePath(sp.Wl)]; busOK = false; sc.split = sp;
+      ground = PIX.ground(lvl([[-900, -900], [-850, -900]]), P, 41);
+      tiles(ground, () => true, false);
+      const m = paintSplit(ground, sp.E, sp.Wl); roadD = (k) => LW - m[k];
     } else {
-      ground = PIX.ground({ center, ring: null, statics: [], spawns: [], coneHomes: [], patches: [], decks: decks.map((d) => ({ hz: true, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] })), floors: [], canal: false, solid: [] }, P, 31 + col * 7 + row * 13);
-      rf = PIX.roadField(roadsLocal.map((pts) => ({ pts, dash: false })), OUTER + 80);
+      ground = PIX.ground(lvl(center, D.id === 'parkland' && isCentre ? { decks: [] } : {}), P, 31 + col * 7 + row * 13);
+      const rf = PIX.roadField(roadsLocal.map((pts) => ({ pts, dash: false })), OUTER + 80);
+      roadD = (k) => rf.D[k];
     }
-    const B = ground; sc.B = B; const roadD = (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH ? rf.D[k] : 1e9; };
-    const roadOk = (wx, wy, m) => roadD(wx, wy) > (m || OUTER + 4);
-    // highways
+    const B = ground; sc.B = B;
+    const rd = (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH ? roadD(k) : 1e9; };
+    const roadOk = (wx, wy, m) => rd(wx, wy) > (m || OUTER + 4);
+    // highways, each with its two escalators
     if (D.id === 'parkland' && isCentre) {
       const cx = 400, cy = 420, Rc = P['world.deckRingRadius'], rr = ringRoutes(cx, cy, Rc, R96);
-      const st = { x: 124, y: cy + HALF, w: P['world.stairWidth'], h: P['world.stairLength'], axis: 'y', low: cy + HALF + P['world.stairLength'], high: cy + HALF };
-      ringDeck = ringLayer(rr, 1, cx, cy, Rc, (x, y) => !roadOk(x, y, OUTER + C + 4) || (x > st.x - C && x < st.x + st.w + C && y > cy), [[st.x + 2, st.x + st.w - 2]]);
-      sc.stair = st;
+      sc.stairs = escalators(cy, 1, HALF).slice(0, P['world.deckEscalators']);
+      ringDeck = ringLayer(rr, 1, cx, cy, Rc, (x, y) => !roadOk(x, y, OUTER + C + 4) || sc.stairs.some((st) => x > st.x - C && x < st.x + st.w + C && Math.abs(y - st.y - st.h / 2) < st.h / 2 + HALF), sc.stairs.map((st) => [st.x + 2, st.x + st.w - 2, st.side]));
       sc.layers.push(ringDeck); sc.ring = rr;
-    } else for (const d of decks) sc.layers.push(straightDeck(d.off, d.z, roadOk));
+    } else for (const d of decks) { const st = escalators(d.off, d.z, HALF).slice(0, P['world.deckEscalators']); sc.stairs.push(...st); sc.layers.push(straightDeck(d.off, d.z, roadOk, st)); }
+    for (const st of sc.stairs) { sc.props.push(stairProp(st, st.z === 2 ? Z2 : Z1)); if (rd(st.x + SWD / 2, st.side > 0 ? st.y + st.h : st.y) < LW) console.warn('escalator foot in a lane', D.id, name); }
+    const blocked = sc.stairs.map((st) => [st.x - 24, st.y - 24, st.w + 48, st.h + 48]);
     const underDeck = (wx, wy) => sc.layers.some((l) => l.inBand(wx, wy));
-    const free = (wx, wy, m) => roadOk(wx, wy, OUTER + (m || 24)) && !underDeck(wx, wy);
-    const reserved = [];
+    const free = (wx, wy, m) => roadOk(wx, wy, OUTER + (m || 24)) && !underDeck(wx, wy) && !blocked.some((r) => wx > r[0] && wx < r[0] + r[2] && wy > r[1] && wy < r[1] + r[3]);
+    let reserved = false;
     // centrepieces
     if (D.id === 'parkland' && isCentre) {
       const okL = (wx, wy) => roadOk(wx, wy, OUTER);
       each((x, y, wx, wy) => { if (okL(wx, wy)) lawn(B, x, y); });
-      pathLine(B, okL, 40, 150, 330, 440, 26); pathLine(B, okL, 760, 150, 470, 440, 26);
-      lake(B, okL, 430, 470, 262, 0.6);
-      for (const [fx, fy] of [[120, 260], [680, 260]]) flowers(B, okL, fx, fy, 6, 34, N.lime, N.magenta, 4);
-      for (const [sx, sy, kind] of [[52, 600, 'obelisk'], [748, 600, 'fins'], [40, 330, 'ring'], [760, 330, 'cubes']]) sculpture(B, sx / U, sy / U, kind, LEDS[(sx + sy) % LEDS.length]);
+      pathLine(B, okL, 0, 124, 136, 260, 24); pathLine(B, okL, W, 124, W - 136, 260, 24);
+      pool(B, (wx, wy) => roadOk(wx, wy, OUTER + 2), 112, 236, 304, 608, 48); pool(B, (wx, wy) => roadOk(wx, wy, OUTER + 2), 496, 236, 688, 608, 48);
+      planter(B, 216, 120, 52, 28, 'monolith', LEDS[0]); planter(B, 584, 120, 52, 28, 'plain', LEDS[3 % LEDS.length]);
+      for (const [sx, sy, kind] of [[40, 210, 'ring'], [762, 230, 'cubes'], [52, 600, 'obelisk'], [748, 600, 'fins']]) sculpture(B, sx / U, sy / U, kind, LEDS[(sx + sy) % LEDS.length]);
       ringDeck.shadeOn(B);
-      const st = sc.stair;
-      sc.props.push({ spr: PIX.stairs(st, 0, Z1), x: st.x / U, y: st.y / U, by: st.y + st.h, over: true });
-      reserved.push((wx, wy) => hyp(wx - 430, wy - 470) < 300);
-      sc.note = 'The Z1 highway turns once round the lake on a ring (centre radius world.deckRingRadius, entry fillets 96). Paths at 45° to the promenade; a stair up to the west arm.';
+      reserved = true;
+      sc.note = 'The Z1 highway turns once round the ring (world.deckRingRadius) over two reflecting pools. A ground road passes north–south beneath it, seen through the ring. Escalators: north side at the west end, south side at the east end.';
     } else if (D.id === 'circus' && isCentre) {
       const Rc = P['world.roundaboutRadius'], ci = Rc - OUTER - 2;
-      each((x, y, wx, wy) => { if (hyp(wx - 400, wy - 320) < ci) lawn(B, x, y); });
-      flowers(B, () => true, 400, 320, 14, ci - 8, N.lime, N.magenta, 6);
+      each((x, y, wx, wy) => { const d = hyp(wx - 400, wy - 320); if (d < ci) B.put(x, y, d > ci - 4 ? CON.l : (x % 8 === 0 || y % 8 === 0) ? CON.d : CON.t); });
+      const ax = 400 / U, ay = 320 / U, led = LEDS[3 % LEDS.length]; // a stepped plinth: concrete, a lawn tier, a slab with a lit slot and a halo
+      block(B, ax - 26, ay - 20, ax + 26, ay + 20, 12, 0, 4, 'conc', null, true);
+      block(B, ax - 18, ay - 13, ax + 18, ay + 13, 8, 4, 4, 'grass', led, false);
+      block(B, ax - 9, ay - 6, ax + 9, ay + 6, 4, 8, 3, 'conc', LEDS[0], false);
+      for (let t = 0; t < 46; t++) for (let j = -2; j <= 2; j++) B.shade(ax - t * 0.7 + j * 0.7 - 10, ay + t * 0.7 + j * 0.7 + 4, 0.8);
+      block(B, ax - 3, ay - 1, ax + 3, ay + 1, 0, 11, 40, 'conc', null, false);
+      for (let t = 4; t < 36; t++) B.put(ax, ay + 1 - 11 - t, led);
+      for (let a = 0; a < 48; a++) { const th = a / 48 * Math.PI * 2, hx = Math.round(ax + Math.cos(th) * 10), hy = Math.round(ay - 40 + Math.sin(th) * 3); if (Math.sin(th) > 0 || Math.abs(Math.cos(th)) > 0.3) B.put(hx, hy, a % 6 < 4 ? N.cyan : K.white); }
       const rz = PIX.roadField(labSim.lab.geo.roads.map((pts) => ({ pts, dash: false })), LW + 2);
       each((x, y, wx, wy, k) => { if (rz.D[k] > LW - 4) return; const zx = Math.abs(wx - 400) < LW && (Math.abs(wy - 36) < 16 || Math.abs(wy - 604) < 16) && Math.floor(wx / 8) % 2 === 0, zy = Math.abs(wy - 320) < LW && (Math.abs(wx - 70) < 16 || Math.abs(wx - 730) < 16) && Math.floor(wy / 8) % 2 === 0; if (zx || zy) B.put(x, y, K.lane); });
       [[8, 8, 200, 120], [592, 8, 200, 120], [8, 512, 200, 120], [592, 512, 200, 120]].forEach(([x, y, w, h], i) => sc.props.push({ spr: PIX.building(Math.round(w / U), Math.round(h / U), (6 + i % 3 * 2) * EXT(P['world.storeyHeight']), PIX.rng(311 + i * 17), LEDS[i % LEDS.length], 6 + i % 3 * 2), x: x / U, y: y / U, by: y + h }));
-      sc.props.push({ spr: PIX.fountain(16, 12, 8), x: (400 - 16) / U, y: (320 - 12) / U, by: 320 });
-      reserved.push(() => true); // the roundabout screen is complete
-      sc.note = 'Every route between four arms, one way round, give way at entry (Edit 49.1). A petal garden with a fountain; zebra crossings; four corner towers.';
+      reserved = true;
+      sc.note = 'Every route between four arms, one way round, give way at entry (Edit 49.1). The island: a stepped concrete plinth, a lawn tier, a slab with a lit slot and a halo. Zebra crossings; four corner towers.';
     } else if (D.id === 'monument' && isCentre) {
-      const cx = 400, cy = 250, Ao = P['world.walkwayRingHalf'], w = P['world.walkwayWidth'], Ai = Ao - w, ko = P['world.walkwayRingChamfer'], ki = ko - 0.586 * w;
-      const inSq = (a, k, x, y) => Math.abs(x - cx) <= a && Math.abs(y - cy) <= a && Math.abs(x - cx) + Math.abs(y - cy) <= 2 * a - k;
-      each((x, y, wx, wy) => { if (roadOk(wx, wy, OUTER + 8)) B.put(x, y, (x % 16 === 0 || y % 16 === 0) ? N.tile2 : N.tile); });
-      plaza(B, (wx, wy) => roadOk(wx, wy, OUTER + 8) && inSq(P['world.plazaHalf'], ko, wx, wy), 0, 0, W, H);
-      const podiums = [[16, 8, 176, 72], [608, 8, 176, 72], [16, 392, 176, 96], [608, 392, 176, 96]];
-      const sq = (a, k) => [[cx - a + k / 2, cy - a], [cx + a - k / 2, cy - a], [cx + a, cy - a + k / 2], [cx + a, cy + a - k / 2], [cx + a - k / 2, cy + a], [cx - a + k / 2, cy + a], [cx - a, cy + a - k / 2], [cx - a, cy - a + k / 2]];
-      const outerP = sq(Ao, ko), innerP = sq(Ai, ki);
-      const diag = (sx, sy) => { const d0 = (2 * Ao - ko) / Math.SQRT2 - 4, x1 = cx + sx * d0 * Math.SQRT1_2, y1 = cy + sy * d0 * Math.SQRT1_2, L2 = P['world.walkwayLinkLength'], x2 = x1 + sx * L2 * Math.SQRT1_2, y2 = y1 + sy * L2 * Math.SQRT1_2, nx = -sy * Math.SQRT1_2 * w / 2, ny = sx * Math.SQRT1_2 * w / 2;
-        return [[x1 + nx, y1 + ny], [x2 + nx, y2 + ny], [x2 - nx, y2 - ny], [x1 - nx, y1 - ny]]; };
-      // the ring as eight quads between its outer and inner outlines, and four 45° walkways from its cut corners to the podium roofs
+      const cx = 400, cy = 320, A = P['world.walkwayRingHalf'], w = P['world.walkwayWidth'], k = P['world.walkwayRingChamfer'], ki = k - 0.586 * w, Lk = P['world.walkwayLinkLength'];
+      const sq = (a, kk) => [[cx - a + kk, cy - a], [cx + a - kk, cy - a], [cx + a, cy - a + kk], [cx + a, cy + a - kk], [cx + a - kk, cy + a], [cx - a + kk, cy + a], [cx - a, cy + a - kk], [cx - a, cy - a + kk]];
+      const outerP = sq(A, k), innerP = sq(A - w, ki), dCut = (2 * A - k) / 2, dFace = dCut + Lk / Math.SQRT2;
       const ringQuads = outerP.map((p, i) => [p, outerP[(i + 1) % 8], innerP[(i + 1) % 8], innerP[i]]);
-      const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1)]), podiums);
+      const mid = sq(A - w / 2, k - 0.293 * w); ringQuads[0].spine = mid.concat([mid[0]]);
+      const diag = (sx, sy) => { const d0 = (2 * A - k - 1.414 * w) / 2, d2 = dFace + 40 / Math.SQRT2, nx = -sy * Math.SQRT1_2 * w / 2, ny = sx * Math.SQRT1_2 * w / 2, a = [cx + sx * d0, cy + sy * d0], b = [cx + sx * d2, cy + sy * d2];
+        const q = [[a[0] + nx, a[1] + ny], [b[0] + nx, b[1] + ny], [b[0] - nx, b[1] - ny], [a[0] - nx, a[1] - ny]]; q.spine = [[cx + sx * dCut, cy + sy * dCut], [cx + sx * dFace, cy + sy * dFace]]; return q; };
+      // podium roofs at Z1 in the four corners; each 45° walkway meets one square-on through its inner face
+      const fx = Math.round(cx - dFace), fyN = Math.ceil(cy - dFace + 0.707 * w + 6), fyS = Math.floor(cy + dFace - 0.707 * w - 6);
+      const podiums = [[16, 8, fx - 16, fyN - 8], [W - fx, 8, fx - 16, fyN - 8], [16, fyS, fx - 16, H - 8 - fyS], [W - fx, fyS, fx - 16, H - 8 - fyS]];
+      // escalators: outer ones at opposite ends of the north and south sides; inner ones down to the monument's island
+      const run = X.stairRun(P, 0, 1);
+      const esc = [{ x: cx - A + k + 8, y: cy - A - run, w: SWD, h: run, axis: 'y', low: cy - A - run, high: cy - A, side: -1, z: 1 },
+        { x: cx + A - k - 8 - SWD, y: cy + A, w: SWD, h: run, axis: 'y', low: cy + A + run, high: cy + A, side: 1, z: 1 },
+        { x: cx - A + w, y: cy - SWD / 2, w: run, h: SWD, axis: 'x', low: cx - A + w + run, high: cx - A + w, side: 0, z: 1 },
+        { x: cx + A - w - run, y: cy - SWD / 2, w: run, h: SWD, axis: 'x', low: cx + A - w - run, high: cx + A - w, side: 0, z: 1 }];
+      const sp = sc.split, fE = PIX.roadField([{ pts: sp.E }], 120), fW = PIX.roadField([{ pts: sp.Wl }], 120);
+      const laneD = (x, y) => { const kk = Math.floor(y / U) * AW + Math.floor(x / U); return Math.min(fE.D[kk], fW.D[kk]); };
+      const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1)]), podiums, esc.map((s) => [s.x, s.y, s.w, s.h]), (x, y) => laneD(x, y) > LW / 2 + 14);
       sc.layers.push(wl); sc.walk = wl;
+      // ground: plazas north and south with the LED lattice, the island in pale stone, planters, sculptures
+      const okP = (wx, wy) => roadOk(wx, wy, OUTER) && wx > fx + 8 && wx < W - fx - 8;
+      tiles(B, okP, true);
+      each((x, y, wx, wy, kk) => { // the island between the carriageways
+        if (!roadOk(wx, wy, OUTER) || wx < 150 || wx > W - 150 || Math.abs(wy - cy) > P['world.splitLaneOffset']) return;
+        B.put(x, y, (x % 8 === 0 || y % 8 === 0) ? CON.m : ((x + y) % 16 === 0 ? CON.l : ISL));
+      });
+      planter(B, 520, 96, 48, 26, 'monolith', LEDS[0]); planter(B, 280, 552, 48, 26, 'tiers', LEDS[3 % LEDS.length]);
+      for (const [sx, sy, kind] of [[400, 60, 'arch'], [400, 600, 'fins'], [330, 372, 'cubes'], [470, 372, 'ring']]) sculpture(B, sx / U, sy / U, kind, LEDS[(sx + sy) % LEDS.length]);
+      wl.shadeOn(B);
+      for (const st of esc) sc.props.push(stairProp(st, Z1));
+      sc.stairs = esc;
       podiums.forEach(([x, y, pw, ph], i) => sc.props.push({ spr: PIX.building(Math.round(pw / U), Math.round(ph / U), Z1, PIX.rng(91 + i * 13), LEDS[(i + 1) % LEDS.length], 1), x: x / U, y: y / U, by: y + ph, podium: true }));
-      [[16, 8, 96, 56], [688, 8, 96, 56], [16, 400, 88, 80], [696, 400, 88, 80]].forEach(([x, y, tw, th], i) => sc.props.push({ spr: PIX.building(Math.round(tw / U), Math.round(th / U), (7 + i * 2) * EXT(P['world.storeyHeight']), PIX.rng(57 + i * 29), LEDS[(i + 2) % LEDS.length], 7 + i * 2), x: x / U, y: y / U - Z1, by: y + th, tower: true })); // towers stand on the podiums
+      [[16, 8, 96, 56], [W - 112, 8, 96, 56], [16, fyS, 96, 64], [W - 112, fyS, 96, 64]].forEach(([x, y, tw, th], i) => sc.props.push({ spr: PIX.building(Math.round(tw / U), Math.round(th / U), (7 + i * 2) * EXT(P['world.storeyHeight']), PIX.rng(57 + i * 29), LEDS[(i + 2) % LEDS.length], 7 + i * 2), x: x / U, y: y / U - Z1, by: y + th, tower: true })); // towers stand on the podiums
       sc.monument = { cx, cy };
-      for (const [sx, sy, kind] of [[cx - 60, cy + 70, 'cubes'], [cx + 60, cy + 70, 'ring'], [cx, 52, 'arch'], [cx, 456, 'fins']]) sculpture(B, sx / U, sy / U, kind, LEDS[(sx + sy) % LEDS.length]);
-      reserved.push(() => true);
-      sc.note = 'The monument stands in a plaza under a square walkway ring at Z1 (90° sides, 45° corners). Four 45° walkways run from its corners to podium roofs at Z1; towers rise behind.';
+      reserved = true;
+      sc.note = 'The road splits round the monument\'s island (lanes world.splitLaneOffset from the centre, 45° tapers). A square walkway ring at Z1 bridges both carriageways on round columns. 45° walkways run to podium roofs at Z1. Escalators: two out to the plazas, two down to the island.';
     }
     // the rest of the screen: park or city
-    if (!reserved.length) {
+    if (!reserved) {
       if (isPark) {
         each((x, y, wx, wy) => { if (roadOk(wx, wy, OUTER)) lawn(B, x, y); });
         const okL = (wx, wy) => roadOk(wx, wy, OUTER) && !underDeck(wx, wy);
-        const lx = 200 + rng() * 400, ly = row === 1 ? 560 : 330, lr = 70 + 30 * rng();
         pathLine(B, okL, 0, 640, 640, 0, 22);
-        lake(B, (wx, wy) => okL(wx, wy) && roadOk(wx, wy, OUTER + 30), lx, ly, lr, rng() * 6);
-        sc.pond = [lx, ly, lr + 40];
-        for (let k = 0, n = 0; k < 40 && n < 3; k++) { const fx = 80 + rng() * 640, fy = 80 + rng() * 480; if (free(fx, fy, 40) && hyp(fx - lx, fy - ly) > lr + 70 && Math.abs(fx + fy - 640) > 60) { flowers(B, okL, fx, fy, 6, 30, N.lime, N.magenta, 3 + (n % 3)); n++; } }
+        for (let t = 0; t < 60 && !sc.pond; t++) { // one reflecting pool clear of the road, the highway and the path
+          const pw = 160 + Math.floor(rng() * 5) * 16, ph = 96 + Math.floor(rng() * 4) * 16, px = 32 + Math.floor(rng() * ((W - 64 - pw) / 16)) * 16, py = 32 + Math.floor(rng() * ((H - 64 - ph) / 16)) * 16;
+          const pts = []; for (let i = 0; i <= pw; i += 16) for (let j = 0; j <= ph; j += 16) pts.push([px + i, py + j]);
+          if (!pts.every(([a, b]) => free(a, b, 16) && Math.abs(a + b - 640) > 30)) continue;
+          pool(B, okL, px, py, px + pw, py + ph, 32); sc.pond = [px - 40, py - 40, pw + 80, ph + 80];
+        }
+        for (let t = 0, n = 0; t < 80 && n < 3; t++) { // brutalist planters on the lawn
+          const fx = 80 + rng() * 640, fy = 80 + rng() * 480;
+          if (![[0, 0], [-56, -32], [56, 32], [-56, 32], [56, -32]].every(([a, b]) => free(fx + a, fy + b, 8) && Math.abs(fx + a + fy + b - 640) > 24) || (sc.pond && fx > sc.pond[0] - 56 && fx < sc.pond[0] + sc.pond[2] + 56 && fy > sc.pond[1] - 32 && fy < sc.pond[1] + sc.pond[3] + 32) || sc.sculpts.some(([a, b]) => hyp(a - fx, b - fy) < 160)) continue;
+          planter(B, fx, fy, 48, 26, ['monolith', 'tiers', 'plain'][n % 3], LEDS[(n + col) % LEDS.length]); sc.sculpts.push([fx, fy]); n++;
+        }
       }
-      // buildings: greedy blocks clear of roads, highways, the park and each other
-      if (!isPark) {
+      if (!isPark) { // buildings: greedy blocks clear of roads, highways, escalators and each other
         const placed = [], [s0, s1] = D.storeys;
         for (let t = 0; t < 900 && placed.length < 10; t++) { // big blocks first, then infill
           const big = t < 450, w = (big ? 128 : 64) + Math.floor(rng() * (big ? 7 : 5)) * 16, h = (big ? 96 : 64) + Math.floor(rng() * (big ? 5 : 3)) * 16, x = 8 + Math.floor(rng() * ((W - 16 - w) / 16)) * 16, y = 8 + Math.floor(rng() * ((H - 16 - h) / 16)) * 16;
@@ -4560,29 +4682,27 @@
         }
         placed.forEach((q, i) => { const st = s0 + Math.floor(rng() * (s1 - s0 + 1)); sc.props.push({ spr: PIX.building(Math.round(q.w / U), Math.round(q.h / U), st * EXT(P['world.storeyHeight']), PIX.rng(700 + i * 31 + col * 7 + row * 3), LEDS[(i + col + row) % LEDS.length], st), x: q.x / U, y: q.y / U, by: q.y + q.h }); });
         sc.blocks = placed;
-        for (let t = 0, n = 0; t < 120 && n < 1; t++) { // a small plaza with a sculpture
+        for (let t = 0, n = 0; t < 120 && n < 1; t++) { // a small plaza with a planter
           const px = 60 + rng() * 680, py = 60 + rng() * 520;
-          if (![[0, 0], [-40, -40], [40, 40], [-40, 40], [40, -40]].every(([a, b]) => free(px + a, py + b, 30)) || placed.some((q) => px > q.x - 60 && px < q.x + q.w + 60 && py > q.y - 60 && py < q.y + q.h + 60)) continue;
-          plaza(B, (wx, wy) => free(wx, wy, 8), px - 48, py - 48, px + 48, py + 48); sc.sculpts.push([px, py]); n++;
+          if (![[0, 0], [-48, -48], [48, 48], [-48, 48], [48, -48]].every(([a, b]) => free(px + a, py + b, 24)) || placed.some((q) => px > q.x - 60 && px < q.x + q.w + 60 && py > q.y - 60 && py < q.y + q.h + 60)) continue;
+          tiles(B, (wx, wy) => free(wx, wy, 8) && Math.abs(wx - px) < 56 && Math.abs(wy - py) < 56, true); planter(B, px, py + 8, 36, 22, n % 2 ? 'tiers' : 'monolith', LEDS[(col + row) % LEDS.length]); sc.sculpts.push([px, py]); n++;
         }
       }
       const sk = [];
-      for (let t = 0; t < 200 && sk.length < (isPark ? 6 : 2); t++) { // sculptures on lawns and plazas
+      for (let t = 0; t < 200 && sk.length < (isPark ? 4 : 2); t++) { // sculptures on lawns and pavements
         const px = 30 + rng() * 740, py = 40 + rng() * 570;
-        if (!free(px, py, 30) || sk.concat(sc.sculpts).some(([a, b]) => hyp(a - px, b - py) < 90) || (sc.pond && hyp(px - sc.pond[0], py - sc.pond[1]) < sc.pond[2]) || Math.abs(px + py - 640) < 30 || (sc.blocks || []).some((q) => px > q.x - 30 && px < q.x + q.w + 30 && py > q.y - 20 && py < q.y + q.h + 60)) continue;
+        if (!free(px, py, 30) || sk.concat(sc.sculpts).some(([a, b]) => hyp(a - px, b - py) < 100) || (sc.pond && px > sc.pond[0] && px < sc.pond[0] + sc.pond[2] && py > sc.pond[1] && py < sc.pond[1] + sc.pond[3] + 30) || Math.abs(px + py - 640) < 30 || (sc.blocks || []).some((q) => px > q.x - 30 && px < q.x + q.w + 30 && py > q.y - 20 && py < q.y + q.h + 60)) continue;
         sk.push([px, py]);
       }
-      for (const p of (sc.sculpts || []).concat(sk)) sculpture(B, p[0] / U, p[1] / U, SCULPT[Math.floor(rng() * SCULPT.length)], LEDS[Math.floor(rng() * LEDS.length)]);
-      sc.note = (isPark ? 'Parkland: lawns, a pond, LED-lit flower beds, public sculptures.' : 'City blocks, ' + D.storeys[0] + '–' + D.storeys[1] + ' storeys, LED façades; a sculpture plaza.') + (decks.length ? ' Highway Z' + decks[0].z + ' along this row.' : '');
+      for (const p of sk) sculpture(B, p[0] / U, p[1] / U, SCULPT[Math.floor(rng() * SCULPT.length)], LEDS[Math.floor(rng() * LEDS.length)]);
+      sc.note = (isPark ? 'Parkland: lawns, a reflecting pool, concrete planters and monoliths, public sculptures.' : 'City blocks, LED façades; a plaza with a concrete planter.') + (decks.length ? ' Highway Z' + decks[0].z + ' along this row, with its two escalators: north side at the west end, south side at the east end.' : '');
     }
     // traffic
     if (labSim) sc.s = labSim, sc.lab = true;
-    else {
-      const dl = [];
-      if (sc.ring) dl.push({ path: X.lanesOf(sc.ring.WE, P)[0], dir: 0, z: 1 }, { path: X.lanesOf(sc.ring.EW, P)[0], dir: 1, z: 1 });
-      else for (const d of decks) X.deckLanesOf([{ hz: true, off: d.off }], P).forEach((q) => dl.push({ path: q.path, dir: q.dir, z: d.z }));
-      sc.s = sceneSim(center, sc.ring ? [{ off: 420, z: 1 }] : decks, sc.ring ? dl.map((d) => ({ path: d.path, deck: 0, dir: d.dir })) : X.deckLanesOf(decks.map((d) => ({ hz: true, off: d.off })), P));
-    }
+    else if (sc.ring) {
+      const dl = [{ path: X.lanesOf(sc.ring.WE, P)[0], deck: 0, dir: 0 }, { path: X.lanesOf(sc.ring.EW, P)[0], deck: 0, dir: 1 }];
+      sc.s = sceneSim(center, [{ off: 420, z: 1 }], dl, null, busOK);
+    } else sc.s = sceneSim(center, decks, X.deckLanesOf(decks.map((d) => ({ hz: true, off: d.off })), P), lanes, busOK);
     return sc;
   }
   // ---------- drawing a screen into its frame buffer
@@ -4598,7 +4718,7 @@
     const items = s.cars.filter((c) => !c.deck).map((c) => [c.y, () => PIX.blit(FB, carSpr(c), c.x / U, c.y / U)]);
     for (const p of sc.props) if (!p.podium && !p.tower) items.push([p.over ? 1e6 + 1 : p.by, () => PIX.blit(FB, p.spr, p.x, p.y)]);
     for (const l of sc.layers) { // a deck sorts at its front edge: buildings south of it stand in front
-      for (const c of l.cols) items.push([Math.min(c.cy + C / 2, l.front - 1), () => PIX.blit(FB, c.spr, Math.round(c.x / U), Math.round(c.y / U))]);
+      for (const c of l.cols) items.push([Math.min(c.key, l.front - 1), () => PIX.blit(FB, c.spr, Math.round(c.x / U), Math.round(c.y / U))]);
       items.push([l.front, () => layer(l)]);
     }
     for (const p of sc.props) if (p.podium) items.push([1e6 - 1, () => PIX.blit(FB, p.spr, p.x, p.y)]); // podium roofs at Z1, under the walkway's ends
@@ -4606,30 +4726,34 @@
     items.sort((a, b) => a[0] - b[0]).forEach((it) => it[1]());
     if (sc.monument) drawMonument(FB, sc.monument.cx, sc.monument.cy);
   }
-  // ---------- page
-  const built = {}, FB = new PIX.Buf(AW, AH), DL = new PIX.Buf(AW, AH), grid = $('grid'), gg = grid.getContext('2d'), zoom = $('zoom'), zg = zoom.getContext('2d'), off = Object.assign(document.createElement('canvas'), { width: AW, height: AH }), og = off.getContext('2d'), img = og.createImageData(AW, AH);
-  grid.width = AW * 3; grid.height = AH * 3; zoom.width = AW * 2; zoom.height = AH * 2;
+  // ---------- page: the three centres live at the top; one district at a time below, 3 × 3, any screen at 2×
+  const built = [{}, {}, {}], FB = new PIX.Buf(AW, AH), DL = new PIX.Buf(AW, AH), off = Object.assign(document.createElement('canvas'), { width: AW, height: AH }), og = off.getContext('2d'), img = og.createImageData(AW, AH);
+  const grid = $('grid'), gg = grid.getContext('2d'), zoom = $('zoom'), zg = zoom.getContext('2d'), cents = [0, 1, 2].map((i) => $('c' + i));
+  grid.width = AW * 3; grid.height = AH * 3; zoom.width = AW * 2; zoom.height = AH * 2; cents.forEach((c) => { c.width = AW * 2; c.height = AH * 2; });
   let cur = 0, sel = [1, 1], playing = true;
-  function build(i) {
-    if (built[i]) return built[i];
-    const D = DISTRICTS[i], screens = [];
-    for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) screens.push(buildScreen(D, col, row));
-    built[i] = screens; return screens;
+  function screen(i, col, row) {
+    const key = col + row * 3; let sc = built[i][key];
+    if (!sc) { sc = built[i][key] = buildScreen(DISTRICTS[i], col, row); for (let k = 0; k < 12 * 60; k++) step(sc); }
+    return sc;
   }
+  const districtScreens = (i) => { const out = []; for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) out.push(screen(i, col, row)); return out; };
   function show(i) {
     cur = i; const D = DISTRICTS[i];
     document.querySelectorAll('#tabs button').forEach((b, k) => b.classList.toggle('on', k === i));
     $('dname').textContent = (i + 1) + ' · ' + D.name; $('dmood').textContent = D.mood + ' Write-offs required: ' + D.quota + '.';
-    build(i).forEach((sc) => { if (sc.warm) return; sc.warm = true; for (let k = 0; k < 12 * 60; k++) step(sc); });
+    districtScreens(i);
   }
+  function paint(sc) { render(sc, FB, DL); new Uint32Array(img.data.buffer).set(FB.d); og.putImageData(img, 0, 0); }
   function frame() {
-    const screens = build(cur);
-    if (playing) for (const sc of screens) step(sc);
-    for (const sc of screens) {
-      render(sc, FB, DL);
-      new Uint32Array(img.data.buffer).set(FB.d); og.putImageData(img, 0, 0);
-      gg.imageSmoothingEnabled = false; gg.drawImage(off, sc.col * AW, sc.row * AH);
-      if (sc.col === sel[0] && sc.row === sel[1]) { zg.imageSmoothingEnabled = false; zg.drawImage(off, 0, 0, AW * 2, AH * 2); }
+    const screens = districtScreens(cur), centres = [0, 1, 2].map((i) => screen(i, 1, 1)), live = new Set(screens.concat(centres));
+    if (playing) for (const sc of live) step(sc);
+    for (const sc of live) {
+      paint(sc);
+      if (sc.D === DISTRICTS[cur]) {
+        gg.imageSmoothingEnabled = false; gg.drawImage(off, sc.col * AW, sc.row * AH);
+        if (sc.col === sel[0] && sc.row === sel[1]) { zg.imageSmoothingEnabled = false; zg.drawImage(off, 0, 0, AW * 2, AH * 2); }
+      }
+      const ci = centres.indexOf(sc); if (ci >= 0) { const g = cents[ci].getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(off, 0, 0, AW * 2, AH * 2); }
     }
     gg.strokeStyle = 'rgba(230,244,255,0.55)'; gg.lineWidth = 1; gg.font = '600 12px system-ui';
     for (const sc of screens) { gg.strokeRect(sc.col * AW + 0.5, sc.row * AH + 0.5, AW - 1, AH - 1); gg.fillStyle = 'rgba(12,16,24,0.75)'; gg.fillRect(sc.col * AW + 6, sc.row * AH + 6, 30, 18); gg.fillStyle = '#e6f4ff'; gg.fillText(sc.name, sc.col * AW + 12, sc.row * AH + 19); }
@@ -4637,13 +4761,15 @@
     const sc = screens.find((q) => q.col === sel[0] && q.row === sel[1]);
     $('zname').textContent = DISTRICTS[cur].name + ' · ' + sc.name; $('znote').textContent = sc.note;
     const deck = sc.s.cars.filter((c) => c.deck);
-    $('zlive').textContent = `Live: ground cars ${sc.s.cars.length - deck.length}` + (deck.length ? ` · highway cars ${deck.length}` : '') + (sc.lab ? ` · waiting to give way ${sc.s.cars.filter((c) => c.yielding).length}` : '');
+    $('zlive').textContent = `Live: ground cars ${sc.s.cars.length - deck.length}` + (deck.length ? ` · highway cars ${deck.length}` : '') + (sc.lab ? ` · waiting to give way ${sc.s.cars.filter((c) => c.yielding).length}` : '') + (sc.stairs.length ? ` · escalators ${sc.stairs.length}` : '');
+    centres.forEach((c, i) => { $('n' + i).textContent = c.note; });
     requestAnimationFrame(frame);
   }
   grid.onclick = (e) => { const r = grid.getBoundingClientRect(); sel = [Math.min(2, Math.floor((e.clientX - r.left) / r.width * 3)), Math.min(2, Math.floor((e.clientY - r.top) / r.height * 3))]; };
-  DISTRICTS.forEach((D, i) => { const b = document.createElement('button'); b.textContent = (i + 1) + ' · ' + D.name; b.onclick = () => { sel = [1, 1]; show(i); }; $('tabs').appendChild(b); });
+  cents.forEach((c, i) => { c.onclick = () => { sel = [1, 1]; show(i); $('district').scrollIntoView({ behavior: 'smooth' }); }; });
+  DISTRICTS.forEach((D, i) => { const b = document.createElement('button'); b.textContent = (i + 1) + ' · ' + D.name; b.onclick = () => { sel = [1, 1]; show(i); }; $('tabs').appendChild(b); $('t' + i).textContent = (i + 1) + ' · ' + D.name + ' · B2'; });
   $('play').onclick = () => { playing = !playing; $('play').textContent = playing ? 'Pause' : 'Play'; };
-  window.__district = { show, select: (c, r) => { sel = [c, r]; }, built };
+  window.__district = { show, select: (c, r) => { sel = [c, r]; }, built, screen };
   show(0); requestAnimationFrame(frame);
 })();
 
