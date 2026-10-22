@@ -1,12 +1,12 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways
 
-**P5.2 · 22 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2 and 51 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.2 · 22 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51 and 51.1 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
 - **`dummies_p5.html`:** the game (P5.2).
 - **`highway_mockup.html`:** highway width at 176, 160 and 128 over the same road, in game art with live traffic.
-- **`cityscape_mockup.html`:** the three proposed cityscapes' cores (Edit 51), in game art with live traffic. Not in the districts yet.
+- **`cityscape_mockup.html`:** the three proposed districts (Edit 51.1), each 3 × 3 screens in game art with live traffic. Tap a screen to see it at 2×. Not in the game yet.
 
 ## Why
 
@@ -15,6 +15,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 - **O3.65:** 45° roads and highways in; all new learnings into P5. Five car models: hatchback, sedan, police, van, small bus.
 - **O3.66:** the highway pays through speed, not a bonus. Walking into a car's front scores too much. What about diagonal highways?
 - **O3.67:** highways as wide as the road and walkway below; lamps 8–10 per screen width; round columns; angles only on ground roads. Three cityscapes instead of five.
+- **O3.68:** Parkland keeps the Z1 ring over the lake. Circus as is. Sculptures, not trees. Monument: 90° and 45° only; roofs lead up to the walkway; no rounded walkway ends. Mock up the three as 3 × 3 layouts.
 
 ## From P4
 
@@ -86,17 +87,24 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 - **Diagonal highways (P5.1 mock-up):** rejected. Highways run square; 45° angles stay on ground roads (decision 224).
 
-## Three cityscapes (mock-up, Edit 51)
+## Three districts (mock-up, Edits 51 and 51.1)
 
-![The three districts: highway rows, road networks, centrepieces](docs/p52_city_plans.png)
+![The three districts, 3 × 3 screens each: Parkland, Circus, Monument](docs/p53_districts.png)
 
-![The cores: Parkland B2 (Z1 ring over a lake) and B3 (Z2 ring over lawns), Circus (four-way roundabout), Monument (plaza, walkway ring)](docs/p52_cityscapes.png)
+![Each centre, B2, at 2×: the Z1 ring over the lake; the four-way roundabout; the monument in its square walkway ring](docs/p53_centres.png)
 
-| District | Core | Mood | Quota |
+| District | Centre (B2) | Mood | Quota |
 |---|---|---|---|
-| 1 Parkland | Z1 ring over a lake (B2); Z2 ring over lawns (B3) | Calm, green, water | 2 |
-| 2 Circus | Four-way roundabout, give way at entry | Busy and circling | 3 |
-| 3 Monument | Five streets meet at a plaza; a walkway ring links the malls | Neon commerce, LED walls | 4 |
+| 1 Parkland | Z1 ring over a lake. Park screens in a plus: B1, A2, B2, C2, B3 | Calm, green, water | 2 |
+| 2 Circus | Four-way roundabout, give way at entry. Roads cross at B2; 45° corner roads | Busy and circling | 3 |
+| 3 Monument | Square walkway ring at Z1; four 45° walkways to podium roofs | Neon commerce, LED walls | 4 |
+
+- **Roads:** planned across the whole district, so every screen edge lines up. Ground roads turn at 90° or 45°, fillets 96.
+- **Highways:** square along a row (decision 152). Parkland Z1 row 2; Circus Z1 row 3; Monument Z2 row 1 and Z1 row 3.
+- **Sculptures:** LED obelisk, ring, cube stack, arch, light fins. They replace trees in every district.
+- **Monument walkway:** 90° sides, 45° cuts. Each walkway ends flush inside a podium roof at Z1.
+
+![Monument B2: the square walkway ring, its 45° walkways and the podium roofs](docs/p53_monument_b2.png)
 
 ## Evidence
 
@@ -138,11 +146,11 @@ node tools/points_report.js 150  # walk-in against dash play, before and after d
 | `tools/p5_report.js` | Bus roads and highway traffic on the baked layouts |
 | `tools/points_report.js` | Walk-in and dash play on every start screen, P5.0 and P5.1 points |
 | `highway_view.js`, `highway_shell.html` | Highway width mock-up (P5.1's diagonal mock-up retired) |
-| `cityscape_view.js`, `cityscape_shell.html` | Three cityscapes mock-up (Edit 51) |
+| `cityscape_view.js`, `cityscape_shell.html` | Three districts mock-up, 3 × 3 screens each (Edit 51.1) |
 
 ## Open
 
-- **Cityscapes (decisions 225–229):** approve the three cores, then P6 rebuilds the planner: curved decks, branching roads, walkways.
+- **Districts (decisions 225–235):** approve the three 3 × 3 layouts, then P6 rebuilds the planner: a curved deck, branching roads, walkways, podium roofs.
 - **No-walkway highway (decision 223):** 128 wide, lanes and parapets only. Mocked up, not adopted.
 - **Walk share:** 0.25 stops walk-in write-offs; dashing play slows (first write-off 35 → 49 s).
 
