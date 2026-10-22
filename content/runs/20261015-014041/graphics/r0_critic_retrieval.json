@@ -1,0 +1,171 @@
+[
+  {
+    "query": "dummy is the only persistently saturated actor reserved red warning hazard markings exceptions",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 13.794
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 13.333
+      }
+    ]
+  },
+  {
+    "query": "frame aqua separate role gloss translucency bloom stay in the frame",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 12.627
+      },
+      {
+        "id": "LOG#P1.3/physics-basis",
+        "score": 8.732
+      }
+    ]
+  },
+  {
+    "query": "essential geometry stays legible behind the authored art",
+    "results": [
+      {
+        "id": "JUICE#J2",
+        "score": 6.506
+      },
+      {
+        "id": "DESIGN#D10.4",
+        "score": 5.75
+      }
+    ]
+  },
+  {
+    "query": "kerbs and painted stripes add no mechanics visual material implicit physics",
+    "results": [
+      {
+        "id": "ENG#7.4",
+        "score": 12.743
+      },
+      {
+        "id": "ENG#5.8",
+        "score": 7.025
+      }
+    ]
+  },
+  {
+    "query": "intent chevron arrow shape detected car provisional route",
+    "results": [
+      {
+        "id": "DESIGN#D1.1",
+        "score": 12.929
+      },
+      {
+        "id": "DRIVER#DB3a",
+        "score": 8.656
+      }
+    ]
+  },
+  {
+    "query": "not claims of documentary accuracy editorial review",
+    "results": [
+      {
+        "id": "ENG#9.4",
+        "score": 3.244
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 3.2
+      }
+    ]
+  },
+  {
+    "query": "expansion catalogue Sports Hatchback SUV Police expansion-gated",
+    "results": [
+      {
+        "id": "DESIGN#D3.10",
+        "score": 19.073
+      },
+      {
+        "id": "DESIGN#D3.3",
+        "score": 19.032
+      }
+    ]
+  },
+  {
+    "query": "Painted maintenance bay outline inside the bend, no collider",
+    "results": [
+      {
+        "id": "DRIVER#DB3b",
+        "score": 7.611
+      },
+      {
+        "id": "LOG#P1.9",
+        "score": 6.202
+      }
+    ]
+  },
+  {
+    "query": "Painted depot gate outline outside the bend, no collider",
+    "results": [
+      {
+        "id": "DRIVER#DB3b",
+        "score": 7.611
+      },
+      {
+        "id": "LOG#P1.9",
+        "score": 6.202
+      }
+    ]
+  },
+  {
+    "query": "Label for the west yard entrance in the barrier",
+    "results": [
+      {
+        "id": "LOG#P1.4",
+        "score": 4.842
+      },
+      {
+        "id": "LOG#P1.3/questions-for-the-p1-3-session",
+        "score": 4.74
+      }
+    ]
+  },
+  {
+    "query": "Label for the east yard entrance in the barrier",
+    "results": [
+      {
+        "id": "LOG#P1.4",
+        "score": 4.842
+      },
+      {
+        "id": "LOG#P1.3/questions-for-the-p1-3-session",
+        "score": 4.74
+      }
+    ]
+  },
+  {
+    "query": "Service pull-in edge for maintenance vehicles",
+    "results": [
+      {
+        "id": "DRIVER#DB1a",
+        "score": 6.532
+      },
+      {
+        "id": "DRIVER#DB6",
+        "score": 6.205
+      }
+    ]
+  },
+  {
+    "query": "Chinese road identifier on the approach leg",
+    "results": [
+      {
+        "id": "DRIVER#DB8",
+        "score": 3.819
+      },
+      {
+        "id": "BRIEF#P1.1",
+        "score": 3.475
+      }
+    ]
+  }
+]

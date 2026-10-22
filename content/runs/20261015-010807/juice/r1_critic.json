@@ -1,0 +1,46 @@
+{
+  "verdict": "revise",
+  "summary": "The table sounds like DUMMIES: matte, restrained, no cheer, and the scored hit, spent touch and denied action are clearly told apart. Three small things are wrong: the honk event reuses the impact pulse, one unit contradicts the sim's units, and the replacement-drop height has no parameter definition. The pickup ring is also typed as dust.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "events[11].carPulse",
+      "found": "true",
+      "canon": "DRIVER#DB5",
+      "rule": "A honking car is shown by the HONK bubble, hazard lights and headlight flash. The car pulse is the scored-impact reaction (P1.2), so reusing it on a blocked car looks like a hit cue and adds nothing the cue set lacks.",
+      "fix": false
+    },
+    {
+      "id": "C2",
+      "kind": "data",
+      "severity": "fix",
+      "path": "events[9].particles[0].type",
+      "found": "dust",
+      "canon": "JUICE#J2",
+      "rule": "The pickup effect is a confirming ring, built from the pickup.ring* params. The renderer draws an expanding outline only for type 'ring'.",
+      "fix": "ring"
+    },
+    {
+      "id": "C3",
+      "kind": "data",
+      "severity": "fix",
+      "path": "states.replacementDrop.height",
+      "found": "proto.art.droneHeight",
+      "canon": "DESIGN#D10.6",
+      "rule": "Every value needs a defined parameter ID. This ID is not defined in params and borrows the drone's art height for a chassis delivery.",
+      "fix": "proto.juice.chassis.dropHeight"
+    },
+    {
+      "id": "C4",
+      "kind": "data",
+      "severity": "fix",
+      "path": "params[70].unit",
+      "found": "canvas units/s",
+      "canon": "DESIGN#D10.2",
+      "rule": "Brake marks trigger on the car's simulation speed. Render scaling must not change simulation units, and car speeds are in world units/s (DB1).",
+      "fix": "world units/s"
+    }
+  ]
+}

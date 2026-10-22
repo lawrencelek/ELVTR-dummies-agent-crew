@@ -1,0 +1,29 @@
+[
+  {
+    "id": "V1",
+    "kind": "lore",
+    "severity": "fix",
+    "path": "districts.cbd.screens.B2",
+    "found": "Farsight Tower Plaza",
+    "canon": "FLEET#F1",
+    "rule": "Write FARSIGHT in capitals."
+  },
+  {
+    "id": "V2",
+    "kind": "lore",
+    "severity": "block",
+    "path": "districts.campus.intro",
+    "found": "The test centre the city was modelled on. Calibrated plates score more.",
+    "canon": "FLEET#F2",
+    "rule": "Banned term 'score' (fleet canon)."
+  },
+  {
+    "id": "V3",
+    "kind": "lore",
+    "severity": "block",
+    "path": "levels.roof",
+    "found": "Roof: no traffic. Step off a ledge to fall to the level below.",
+    "canon": "FLEET#F2",
+    "rule": "Banned term 'level' (fleet canon)."
+  }
+]

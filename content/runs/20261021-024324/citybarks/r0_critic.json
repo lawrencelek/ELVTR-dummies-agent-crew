@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The bank sounds like DUMMIES. The lines are dry, in character for each tier, and every claim matches its conditions. One tier-free write-off line uses Corporate procedure, which the Luxury car cannot say.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "lines[17].text",
+      "found": "Written off on the highway. Closing ticket.",
+      "canon": "FLEET#F4",
+      "rule": "A line with no tier fires for both S01 and V02, so it must suit both. 'Closing ticket' is Corporate procedure (taken from the tier 02 line 'Body total confirmed. Closing ticket.'), and a Luxury car never files tickets.",
+      "fix": "Written off on the highway. On my record."
+    }
+  ]
+}

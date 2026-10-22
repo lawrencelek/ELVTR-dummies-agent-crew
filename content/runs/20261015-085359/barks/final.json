@@ -1,0 +1,471 @@
+{
+  "params": [
+    {
+      "id": "proto.barks.seconds",
+      "value": 2.4,
+      "unit": "s",
+      "purpose": "On-screen time of one bubble, long enough to read two short lines at exhibition volume.",
+      "sources": [
+        "DESIGN#D9.4",
+        "EDIT26#6.6"
+      ]
+    },
+    {
+      "id": "proto.barks.cooldown",
+      "value": 0.8,
+      "unit": "s",
+      "purpose": "Global gap before a lower-priority bubble can start after another, so bubbles do not overlap.",
+      "sources": [
+        "EDIT26#6.6"
+      ]
+    },
+    {
+      "id": "proto.barks.carCooldown",
+      "value": 4,
+      "unit": "s",
+      "purpose": "Per-car wait before the same car can speak again at lower priority. Higher-priority lines bypass it.",
+      "sources": [
+        "EDIT26#6.6"
+      ]
+    },
+    {
+      "id": "proto.barks.maxOnScreen",
+      "value": 3,
+      "unit": "count",
+      "purpose": "Maximum simultaneous bubbles, so the road stays readable.",
+      "sources": [
+        "DESIGN#D4.5",
+        "DESIGN#D10.3~1"
+      ]
+    },
+    {
+      "id": "proto.barks.textSize",
+      "value": 12,
+      "unit": "px",
+      "purpose": "Bubble text size, above texture type (ui.typeTexture) so lines stay legible.",
+      "sources": [
+        "DESIGN#D9.4",
+        "DESIGN#D10.3~1"
+      ]
+    },
+    {
+      "id": "proto.barks.nearMissGap",
+      "value": 36,
+      "unit": "world units",
+      "purpose": "A car passing the dummy within this distance without contact logs a near miss. The renderer converts it to metres with proto.scale.unitsPerMetre for the gap field.",
+      "sources": [
+        "DESIGN#D4.5",
+        "EDIT26#6.6"
+      ]
+    },
+    {
+      "id": "proto.barks.nearMissSpeed",
+      "value": 60,
+      "unit": "world units/s",
+      "purpose": "Minimum car speed for a near miss. A slow crawl past the dummy is not a near miss.",
+      "sources": [
+        "DESIGN#D4.5",
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "id": "proto.barks.missRadius",
+      "value": 120,
+      "unit": "world units",
+      "purpose": "The nearest car within this distance of a lunge that ends with no contact speaks the miss line.",
+      "sources": [
+        "DESIGN#D4.5",
+        "EDIT26#6.6"
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "event": "impact",
+      "when": {
+        "zone": "front"
+      },
+      "style": "shout",
+      "priority": 2,
+      "text": "Bumper! That was the bumper!",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "impact",
+      "when": {
+        "zone": "front"
+      },
+      "style": "shout",
+      "priority": 2,
+      "text": "Ah! I was proceeding correctly!",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "impact",
+      "when": {
+        "zone": "front",
+        "seniority": {
+          "min": 2,
+          "max": 3
+        }
+      },
+      "style": "thought",
+      "priority": 2,
+      "text": "I was trained for this. It happened anyway.",
+      "sources": [
+        "EDIT26#6.4",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "impact",
+      "when": {
+        "zone": "side"
+      },
+      "style": "shout",
+      "priority": 2,
+      "text": "Side panel! I had right of way!",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "impact",
+      "when": {
+        "bait": true
+      },
+      "style": "thought",
+      "priority": 2,
+      "text": "It left my path, then came back. Rude.",
+      "sources": [
+        "EDIT26#6.4",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "impact",
+      "when": {
+        "stopped": true
+      },
+      "style": "mutter",
+      "priority": 2,
+      "text": "I was stationary. Please note I was stationary.",
+      "sources": [
+        "DRIVER#DB6",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "writeoff",
+      "when": {},
+      "style": "shout",
+      "priority": 3,
+      "text": "Write-off! Tell dispatch I tried!",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.1"
+      ]
+    },
+    {
+      "event": "writeoff",
+      "when": {},
+      "style": "thought",
+      "priority": 3,
+      "text": "Please not retraining. Anything but retraining.",
+      "sources": [
+        "EDIT26#3.2",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "writeoff",
+      "when": {},
+      "style": "speech",
+      "priority": 3,
+      "text": "Write-off number {writeOffs}. Please advise.",
+      "sources": [
+        "ENG#11.3",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "writeoff",
+      "when": {
+        "seniority": {
+          "min": 3,
+          "max": 3
+        }
+      },
+      "style": "thought",
+      "priority": 3,
+      "text": "Senior model. Apparently not senior enough.",
+      "sources": [
+        "EDIT26#6.4"
+      ]
+    },
+    {
+      "event": "near-miss",
+      "when": {},
+      "style": "mutter",
+      "priority": 1,
+      "text": "Within tolerance. Barely.",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.4"
+      ]
+    },
+    {
+      "event": "near-miss",
+      "when": {},
+      "style": "mutter",
+      "priority": 1,
+      "text": "Was that a collision? Logging it as not.",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "near-miss",
+      "when": {
+        "model": "SEDAN-01"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Parcel intact. Nerves are not.",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.2"
+      ]
+    },
+    {
+      "event": "near-miss",
+      "when": {
+        "model": "VAN-02"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Lane maintenance does not cover this.",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.2"
+      ]
+    },
+    {
+      "event": "miss",
+      "when": {},
+      "style": "mutter",
+      "priority": 1,
+      "text": "It lunged. Nothing happened. Logging that.",
+      "sources": [
+        "EDIT26#10.2",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "event": "miss",
+      "when": {},
+      "style": "speech",
+      "priority": 1,
+      "text": "Missed. Noted for my record.",
+      "sources": [
+        "EDIT26#6.6",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "miss",
+      "when": {},
+      "style": "thought",
+      "priority": 1,
+      "text": "If it lunges again, I will be late.",
+      "sources": [
+        "EDIT26#3.2",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "commit",
+      "when": {
+        "cause": "body",
+        "man": "brake"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Stopping for the dummy. Window closing.",
+      "sources": [
+        "DRIVER#DB5",
+        "EDIT26#3.2"
+      ]
+    },
+    {
+      "event": "commit",
+      "when": {
+        "cause": "pass"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Passing, after waiting. Patience documented.",
+      "sources": [
+        "DRIVER#DB5",
+        "DRIVER#DB6"
+      ]
+    },
+    {
+      "event": "touch-spent",
+      "when": {},
+      "style": "speech",
+      "priority": 1,
+      "text": "Already assessed. Please move along.",
+      "sources": [
+        "DESIGN#D4.5",
+        "DESIGN#D10.3~1"
+      ]
+    },
+    {
+      "event": "knock",
+      "when": {},
+      "style": "mutter",
+      "priority": 1,
+      "text": "Contact logged. Please stand clear of the vehicle.",
+      "sources": [
+        "EDIT26#3.2",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "honk",
+      "when": {
+        "at": "body"
+      },
+      "style": "speech",
+      "priority": 1,
+      "text": "Excuse me. Kindly vacate the carriageway.",
+      "sources": [
+        "DRIVER#DB5",
+        "EDIT26#3.2"
+      ]
+    },
+    {
+      "event": "honk",
+      "when": {
+        "at": "cone"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Cone in lane. Raising with maintenance.",
+      "sources": [
+        "DRIVER#DB5",
+        "DESIGN#D9.2"
+      ]
+    },
+    {
+      "event": "interrupt",
+      "when": {
+        "by": "car"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Another vehicle. Braking for safety.",
+      "sources": [
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "event": "interrupt",
+      "when": {
+        "by": "cone"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Swerve halted by a cone. Procedure holds.",
+      "sources": [
+        "DRIVER#DB5"
+      ]
+    },
+    {
+      "event": "unstick",
+      "when": {
+        "how": "reverse"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Reversing. This is within procedure.",
+      "sources": [
+        "DRIVER#DB5",
+        "EDIT26#3.2"
+      ]
+    },
+    {
+      "event": "unstick",
+      "when": {
+        "how": "replan"
+      },
+      "style": "mutter",
+      "priority": 1,
+      "text": "Replanning. Rank unaffected.",
+      "sources": [
+        "DRIVER#DB5",
+        "EDIT26#3.2"
+      ]
+    },
+    {
+      "event": "upgrade-seen",
+      "when": {
+        "node": "Hips"
+      },
+      "style": "speech",
+      "priority": 1,
+      "text": "Subject has acquired hips.",
+      "sources": [
+        "EDIT26#3.2"
+      ]
+    },
+    {
+      "event": "upgrade-seen",
+      "when": {
+        "node": "Spine"
+      },
+      "style": "thought",
+      "priority": 1,
+      "text": "That spine was not on the last report.",
+      "sources": [
+        "EDIT26#3.2",
+        "DESIGN#D9.3"
+      ]
+    },
+    {
+      "event": "upgrade-seen",
+      "when": {
+        "node": "Carry"
+      },
+      "style": "speech",
+      "priority": 1,
+      "text": "The subject is carrying something. Is that approved?",
+      "sources": [
+        "EDIT26#3.2",
+        "EDIT26#3.1"
+      ]
+    },
+    {
+      "event": "upgrade-seen",
+      "when": {
+        "node": "Throw"
+      },
+      "style": "thought",
+      "priority": 1,
+      "text": "It can throw now. Nobody told us.",
+      "sources": [
+        "EDIT26#3.2",
+        "DESIGN#D9.1"
+      ]
+    }
+  ]
+}

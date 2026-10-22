@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The copy and parameters sound like DUMMIES: dry, physical, with no cheer or slang, and the spent touch stays distinct from a scored hit. One presentation rule is broken: the lunge speed lines use the reserved tier-2 cue colour.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "layers[10].streaks.role",
+      "found": "secondary",
+      "canon": "EDIT26#4.2~2",
+      "rule": "The secondary cue colour is reserved for tier-2 cues. Decorative speed lines must not borrow it, or they read as the lunge-streak cue.",
+      "fix": "structure"
+    }
+  ]
+}

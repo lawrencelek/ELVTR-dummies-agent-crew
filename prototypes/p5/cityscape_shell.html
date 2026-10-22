@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three Cityscapes</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --warn: #ffb347; --bad: #ff5a6a; --good: #57e389; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 0; color: var(--dim); max-width: 1000px; }
+  main { padding: 12px 16px 32px; display: grid; gap: 12px; max-width: 1500px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+  h3 { font-size: 14px; margin: 8px 0 2px; }
+  canvas { display: block; image-rendering: pixelated; width: 100%; height: auto; border-radius: 6px; background: #10141c; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 12px; }
+  .grid3 > * { min-width: 0; margin: 0; }
+  figcaption { font-size: 12px; color: var(--dim); margin-top: 6px; }
+  figcaption b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
+  .grid3 canvas { cursor: pointer; }
+  .tabs button.on { background: #1b4a66; border-color: var(--accent); }
+  #grid { cursor: pointer; }
+  .mood { color: var(--ink); margin: 0 0 10px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(560px, 100%), 1fr)); gap: 12px; align-items: start; }
+  .grid2 > * { min-width: 0; }
+  .cap { color: var(--dim); font-size: 12px; margin: 4px 0 0; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  button { background: #1d2a40; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 1000px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Three districts · P5 mock-up</h1>
+  <p>The three centres first, then each district as 3 × 3 screens of 800 × 640, in game art with live P5 traffic. Every highway screen has two escalators, on opposite sides at opposite ends. No trees or flower beds: concrete planters, monoliths and public sculptures. The P5 game is unchanged until these are approved.</p>
+</header>
+<main>
+  <section>
+    <h2>The centres (B2)</h2>
+    <div class="grid3">
+      <figure><canvas id="c0"></canvas><figcaption><b id="t0"></b><span id="n0"></span></figcaption></figure>
+      <figure><canvas id="c1"></canvas><figcaption><b id="t1"></b><span id="n1"></span></figcaption></figure>
+      <figure><canvas id="c2"></canvas><figcaption><b id="t2"></b><span id="n2"></span></figcaption></figure>
+    </div>
+  </section>
+  <section id="district">
+    <div class="row tabs" id="tabs"></div>
+    <h2 id="dname"></h2>
+    <p class="mood" id="dmood"></p>
+    <div class="grid2">
+      <div><canvas id="grid"></canvas><p class="cap">The whole district. Tap a screen to see it at 2×.</p></div>
+      <div><canvas id="zoom"></canvas><h3 id="zname"></h3><p class="cap" id="znote"></p><p class="cap" id="zlive"></p></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button id="play">Pause</button></div>
+    <p class="note">Roads are planned across the whole district, so every screen edge lines up. Ground roads turn at 90° or 45° on fillets of world.roundaboutEntryRadius (96). Highways run square along a row (decision 152) at P5.2's width (160). Escalators: world.deckEscalators (2) per highway screen, world.deckEscalatorInset (64) from the screen edge. Colours follow the style guide: no red or yellow décor.</p>
+  </section>
+</main>
+<!--SCRIPTS-->
+</body>
+</html>

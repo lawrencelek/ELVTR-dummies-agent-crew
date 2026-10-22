@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The copy mostly sounds like DUMMIES: dry, bureaucratic, workers whose deadlines and fear of retraining show through, and it uses the D9.3 sample lines properly. Two items need to change: the learning toast names the counter at the moment of the hit, and the FLEET note ties the reserved warning red to a non-warning state.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "fix",
+      "path": "copy.toast.learn-standoff",
+      "found": "{model} stop line moved to {metres} m.",
+      "canon": "DESIGN#D9.3",
+      "rule": "Copy cannot explain a model's first learned change, or name its counter, before the player has met the changed return. Earlier text may state impact facts and identity only.",
+      "fix": "{model} record updated."
+    },
+    {
+      "id": "C2",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "hud.left[2].rows[1].label",
+      "found": "Red: learned stop",
+      "canon": "DESIGN#D10.2",
+      "rule": "Red is reserved for warning marks with independent shape or position. A learned-record state is not a warning, and colour must not be the only carrier.",
+      "fix": "Marked: learned stop"
+    }
+  ]
+}

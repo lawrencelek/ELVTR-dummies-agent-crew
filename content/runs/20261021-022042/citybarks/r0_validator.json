@@ -1,0 +1,38 @@
+[
+  {
+    "id": "V1",
+    "kind": "data",
+    "severity": "fix",
+    "path": "lines",
+    "found": "shout",
+    "canon": "EDIT39#6.6",
+    "rule": "Style 'shout' is unused."
+  },
+  {
+    "id": "V2",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[10]",
+    "found": "c011",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'highway' but its conditions do not guarantee it — \"Dropped from the low highway. Noted.\""
+  },
+  {
+    "id": "V3",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[23]",
+    "found": "c024",
+    "canon": "EDIT39#6.6.1",
+    "rule": "text asserts 'class:bus' without that claim — \"The Campus. My passengers own this place...\""
+  },
+  {
+    "id": "V4",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[24]",
+    "found": "c025",
+    "canon": "EDIT39#6.6.1",
+    "rule": "text asserts 'model:VAN-02-001' without that claim — \"Old Market, route 44. Incident filed.\""
+  }
+]

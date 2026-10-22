@@ -1,0 +1,19 @@
+[08:44:59] KB: 270 chunks from 7 docs; registry 154 IDs
+[08:44:59] == hits: Hits: layered juice for every hit, miss and near miss
+[08:44:59] hits: retrieved 18 chunks for 11 queries: EDIT26#5.5, DESIGN#D10.3~1, DESIGN#D4.5, JUICE#J1, EDIT26#4.1~1, LOG#P1.2/juice, DESIGN#D9.4, DESIGN#D10.1, EDIT26#5.1, EDIT26#4.2~2, JUICE#J3, JUICE#J2, EDIT26#3.3, EDIT26#4.1~2, ENG#8.2~1, ENG#8.1, EDIT26#10.1, LOG#P1.1-observations
+[08:44:59] Generator: calling (35,711 chars in)
+[08:47:32] Generator: done in 151.5 s (39,198 chars out)
+[08:47:32] Critic: calling (96,507 chars in)
+[08:48:42] Critic: done in 68.2 s (3,775 chars out)
+[08:48:42] hits: round 0: validator 0 issues (0 block); critic revise with 9 issues (0 block)
+[08:48:42] Generator (repair): calling (89,786 chars in)
+[08:50:15] Generator (repair): done in 91.5 s (39,703 chars out)
+[08:50:15] Critic: calling (98,250 chars in)
+[08:50:50] Critic: done in 33.2 s (1,200 chars out)
+[08:50:50] hits: round 1: validator 2 issues (2 block); critic revise with 3 issues (0 block)
+[08:50:50] Generator (repair): calling (88,543 chars in)
+[08:52:25] Generator (repair): done in 93.5 s (39,666 chars out)
+[08:52:25] Critic: calling (98,348 chars in)
+[08:53:09] Critic: done in 42.1 s (552 chars out)
+[08:53:09] hits: round 2: validator 0 issues (0 block); critic revise with 1 issues (0 block)
+[08:53:09] hits: ACCEPTED after 3 critic round(s)

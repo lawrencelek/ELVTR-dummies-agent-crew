@@ -1,0 +1,36 @@
+{
+  "verdict": "revise",
+  "summary": "The bank sounds like DUMMIES. The Luxury lines are dry and superior, and the Corporate lines file forms. The drop, deck and plate lines are true to their conditions. Three district lines name landmarks or counts that only some screens of the district have, so they break the truth rule.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "block",
+      "path": "lines[26].text",
+      "found": "Riverside. I came for the lantern, not this.",
+      "canon": "EDIT41#7.2",
+      "rule": "The lantern monument is the centre landmark on screen B2 only. This line fires on any screen of Riverside, so it promises a feature the screen may not have.",
+      "fix": "Riverside. I did not sign up for this."
+    },
+    {
+      "id": "C2",
+      "kind": "truth",
+      "severity": "block",
+      "path": "lines[28].text",
+      "found": "Old Market. Even the fountain looks appalled.",
+      "canon": "EDIT41#7.2",
+      "rule": "The fountain square is the centre landmark on screen B2 only. This line fires on any screen of Old Market, so it promises a feature the screen may not have.",
+      "fix": "Old Market. Not a place for good paintwork."
+    },
+    {
+      "id": "C3",
+      "kind": "truth",
+      "severity": "fix",
+      "path": "lines[31].text",
+      "found": "Interchange incident. Two flyovers, one form.",
+      "canon": "EDIT41#7.2",
+      "rule": "The two flyovers are stacked in the district (EDIT44#7.1.1 puts them on different rows). A given screen may show one or none, and the line does not test deck or any flyover field.",
+      "fix": "Interchange incident. Form I-3 raised."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The bank sounds like DUMMIES. The Luxury lines are polished and superior, the Corporate lines speak in forms and logs, and the tier-free lines are calm, with no shouts, no player mentions and no invented consequences. One district line promises features that a screen in its district doesn't always have.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "block",
+      "path": "lines[21].text",
+      "found": "Business district. Towers, barriers, a hit.",
+      "canon": "EDIT39#3.1",
+      "rule": "Lore follows state: a line may only say what the state guarantees. Generated screens can be an open street with no barrier run (LOG#P3-update-districts-puddles-big-battery-o3-33-o3-37) and towers stand on only 50% of large lots (EDIT41#7.2), so a CBD screen doesn't always have towers or barriers.",
+      "fix": "Central Business District. Hit logged."
+    }
+  ]
+}

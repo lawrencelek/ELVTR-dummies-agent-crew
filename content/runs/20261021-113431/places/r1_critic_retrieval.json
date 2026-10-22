@@ -1,0 +1,158 @@
+[
+  {
+    "query": "the brand never comments the contrast is the tone",
+    "results": [
+      {
+        "id": "EDIT37#4.1~1",
+        "score": 18.244
+      },
+      {
+        "id": "DECISIONS#rows-81-90~2",
+        "score": 10.44
+      }
+    ]
+  },
+  {
+    "query": "marketing gloss game-show cheer generic science fiction",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 14.998
+      },
+      {
+        "id": "EDIT37#decisions",
+        "score": 10.621
+      }
+    ]
+  },
+  {
+    "query": "a line may only say what the game state guarantees",
+    "results": [
+      {
+        "id": "FLEET#F2",
+        "score": 8.341
+      },
+      {
+        "id": "FLEET#F8",
+        "score": 8.061
+      }
+    ]
+  },
+  {
+    "query": "banned terms level game player city names Shenzhen",
+    "results": [
+      {
+        "id": "DESIGN#D1",
+        "score": 14.977
+      },
+      {
+        "id": "FLEET#F2",
+        "score": 14.708
+      }
+    ]
+  },
+  {
+    "query": "roof no traffic ledge drop high highway Interchange CBD only",
+    "results": [
+      {
+        "id": "EDIT44#evidence",
+        "score": 33.83
+      },
+      {
+        "id": "EDIT44#open-items",
+        "score": 24.617
+      }
+    ]
+  },
+  {
+    "query": "the dummy starts on B1 on the river",
+    "results": [
+      {
+        "id": "EDIT40#7.1.1",
+        "score": 6.01
+      },
+      {
+        "id": "EDIT42#7.9",
+        "score": 5.376
+      }
+    ]
+  },
+  {
+    "query": "Two flyovers cross the district, one low and one high. FARSIGHT Tower stands at the centre, and towers shade the street.",
+    "results": [
+      {
+        "id": "EDIT44#7.1.1",
+        "score": 18.332
+      },
+      {
+        "id": "DECISIONS#rows-171-180",
+        "score": 16.44
+      }
+    ]
+  },
+  {
+    "query": "Flyovers run the north and south rows. A roundabout, with a matting island, marks the centre.",
+    "results": [
+      {
+        "id": "LOG#P1.5/pillars-and-blind-spots",
+        "score": 16.92
+      },
+      {
+        "id": "EDIT26#7.2~1",
+        "score": 14.519
+      }
+    ]
+  },
+  {
+    "query": "Low-rise blocks run to the river. A lantern monument marks the centre; traffic is light.",
+    "results": [
+      {
+        "id": "DECISIONS#rows-131-140~2",
+        "score": 13.916
+      },
+      {
+        "id": "EDIT26#13.1",
+        "score": 12.213
+      }
+    ]
+  },
+  {
+    "query": "Dense streets surround a fountain square. Puddles slow the dummy, and vans are common.",
+    "results": [
+      {
+        "id": "LOG#P1.7/questions-for-the-p1-7-session",
+        "score": 9.927
+      },
+      {
+        "id": "DRIVER#DB6",
+        "score": 9.093
+      }
+    ]
+  },
+  {
+    "query": "Low highway: only its own cars drive here. A broken parapet drops you to the street.",
+    "results": [
+      {
+        "id": "EDIT44#7.7",
+        "score": 21.279
+      },
+      {
+        "id": "DECISIONS#rows-141-150~2",
+        "score": 17.32
+      }
+    ]
+  },
+  {
+    "query": "High highway: fast traffic. A broken parapet drops you to the street, a long fall.",
+    "results": [
+      {
+        "id": "EDIT44#7.7",
+        "score": 20.078
+      },
+      {
+        "id": "DECISIONS#rows-141-150~2",
+        "score": 15.945
+      }
+    ]
+  }
+]

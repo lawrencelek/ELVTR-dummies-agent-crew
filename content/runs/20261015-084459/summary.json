@@ -1,0 +1,67 @@
+{
+  "run": "20261015-084459",
+  "results": [
+    {
+      "type": "hits",
+      "ok": true,
+      "rounds": 3
+    }
+  ],
+  "calls": [
+    {
+      "label": "hits/02_generator",
+      "role": "Generator",
+      "seconds": 151.5,
+      "output_tokens": 28171,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "hits/r0_critic",
+      "role": "Critic",
+      "seconds": 68.2,
+      "output_tokens": 8808,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "hits/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 91.5,
+      "output_tokens": 20993,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "hits/r1_critic",
+      "role": "Critic",
+      "seconds": 33.2,
+      "output_tokens": 3821,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "hits/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 93.5,
+      "output_tokens": 21350,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "hits/r2_critic",
+      "role": "Critic",
+      "seconds": 42.1,
+      "output_tokens": 5354,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

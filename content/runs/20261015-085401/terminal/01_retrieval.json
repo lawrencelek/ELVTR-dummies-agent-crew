@@ -1,0 +1,206 @@
+[
+  {
+    "query": "frame FARSIGHT brand Frutiger Aero glossy bevels translucent panels aqua highlights rounded corners soft drop shadows",
+    "results": [
+      {
+        "id": "EDIT26#4.1~1",
+        "score": 57.111
+      },
+      {
+        "id": "EDIT26#4.1~2",
+        "score": 44.803
+      },
+      {
+        "id": "DESIGN#D10.1",
+        "score": 37.302
+      }
+    ]
+  },
+  {
+    "query": "brand kills you politely report card same aqua rounded corners friendly type one register throughout terminal",
+    "results": [
+      {
+        "id": "EDIT26#4.1~1",
+        "score": 57.731
+      },
+      {
+        "id": "EDIT26#4.1~3",
+        "score": 23.672
+      },
+      {
+        "id": "DESIGN#D10.1",
+        "score": 21.438
+      }
+    ]
+  },
+  {
+    "query": "texture micro-type range marks diagnostic runs FARSIGHT signage tier 4 first to be cut",
+    "results": [
+      {
+        "id": "EDIT26#4.2~3",
+        "score": 28.864
+      },
+      {
+        "id": "EDIT26#4.1~2",
+        "score": 24.601
+      },
+      {
+        "id": "EDIT26#4.1~3",
+        "score": 19.63
+      }
+    ]
+  },
+  {
+    "query": "decorative diagnostic text never carries a decision first to be removed when density competes",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 38.603
+      },
+      {
+        "id": "EDIT26#4.2~3",
+        "score": 10.647
+      },
+      {
+        "id": "BRIEF#P1.12",
+        "score": 9.524
+      }
+    ]
+  },
+  {
+    "query": "Frutiger Aero Windows Aero Wii system menu mid-2000s corporate tech marketing take leave wallpapers bubbles nature photography",
+    "results": [
+      {
+        "id": "EDIT26#4.1~3",
+        "score": 84.924
+      },
+      {
+        "id": "DESIGN#D10.1",
+        "score": 27.442
+      },
+      {
+        "id": "EDIT26#4.1~1",
+        "score": 18.15
+      }
+    ]
+  },
+  {
+    "query": "cyberpunk is tonal not surface Chinese signage surveillance grime at panel joints",
+    "results": [
+      {
+        "id": "EDIT26#4.1~3",
+        "score": 36.906
+      },
+      {
+        "id": "EDIT26#4.3",
+        "score": 9.012
+      },
+      {
+        "id": "DESIGN#D10.1",
+        "score": 8.932
+      }
+    ]
+  },
+  {
+    "query": "bilingual district test identifiers essential language decorative micro-type editorial review Chinese wording",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 74.457
+      },
+      {
+        "id": "EDIT26#4.1~3",
+        "score": 17.602
+      },
+      {
+        "id": "DESIGN#D10.4",
+        "score": 12.115
+      }
+    ]
+  },
+  {
+    "query": "FARSIGHT sells a city without accidents Shenzhen smart city surveillance instruments test markings",
+    "results": [
+      {
+        "id": "EDIT26#3.1",
+        "score": 51.318
+      },
+      {
+        "id": "DESIGN#D1",
+        "score": 27.336
+      },
+      {
+        "id": "DESIGN#D9.1",
+        "score": 27.085
+      }
+    ]
+  },
+  {
+    "query": "reference layout 1280 720 play viewport 800 600 side columns top and bottom strips palette brand aqua",
+    "results": [
+      {
+        "id": "DESIGN#D10.2",
+        "score": 57.428
+      },
+      {
+        "id": "EDIT26#4.2~1",
+        "score": 50.906
+      },
+      {
+        "id": "EDIT26#7.1~1",
+        "score": 35.045
+      }
+    ]
+  },
+  {
+    "query": "HUD modules BODY CHARGE FLEET CONTRACT SHIFT RECORD screens",
+    "results": [
+      {
+        "id": "DESIGN#D10.5",
+        "score": 25.983
+      },
+      {
+        "id": "EDIT26#4.2~4",
+        "score": 22.812
+      },
+      {
+        "id": "EDIT26#4.2~1",
+        "score": 21.584
+      }
+    ]
+  },
+  {
+    "query": "shell screens main menu pause diagnostic panels high scores personnel record control prompt",
+    "results": [
+      {
+        "id": "EDIT26#4.2~4",
+        "score": 33.667
+      },
+      {
+        "id": "EDIT26#12.4~2",
+        "score": 23.899
+      },
+      {
+        "id": "DESIGN#D10.5",
+        "score": 22.774
+      }
+    ]
+  },
+  {
+    "query": "campaign three roads quota write-offs body credit upgrade difficulty fragile standard reinforced health",
+    "results": [
+      {
+        "id": "LOG#P1.5/campaign",
+        "score": 42.271
+      },
+      {
+        "id": "LOG#P1.4",
+        "score": 33.607
+      },
+      {
+        "id": "EDIT26#10.2",
+        "score": 17.572
+      }
+    ]
+  }
+]

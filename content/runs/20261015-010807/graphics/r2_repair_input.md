@@ -1,0 +1,1687 @@
+# BRIEF — Graphics: vehicle identities, dummy markings, district dressing
+Content type: graphics. Parameter prefix for new IDs: proto.art.
+
+## The gap (what P1 is thin on)
+- Vehicles are identical grey rounded rectangles with a windscreen. Only the floating tag tells SEDAN-01 from VAN-02.
+- No vehicle shows a district job (D9.2 anchor 3) or self-driving hardware. D10.6 asks for two recognisable vehicle identities.
+- The dummy has a head disc, shoulder bar, joints and nose vector, but none of the FARSIGHT markings D4.1 requires.
+- The road is a calibration grid and nothing else: no logistics or maintenance district, entrances, destinations, service markings or bilingual test identifiers (D9.2 anchors 1 and 2).
+- D10.6: a greybox can establish feel but cannot pass the beauty gate.
+
+## Deliverable
+- Roof art for the Sedan and the Van: a district job, identity marks and sensor hardware, as vector shapes in car-local units.
+- FARSIGHT markings for the dummy, as vector shapes inside the body footprint.
+- Ground dressing and signage for each P1 road (straight, barrier, corner), as vector shapes in world units.
+- Palette role names only. Geometry stays inside the registry footprints.
+
+## JSON schema
+```
+{
+  "params": [] (art geometry is asset data bounded by registry IDs; declare proto.art.* only for a tunable value),
+  "vehicles": {
+    "sedan": {"job": "district job in 2-4 words", "jobZh": "Chinese job", "review": "pending", "roof": [shape], "sources": [...]},
+    "van":   {same}
+  },
+  "dummy": {"markings": [shape], "sources": [...]},
+  "environment": {
+    "straight": [decal], "barrier": [decal], "corner": [decal]
+  }
+}
+shape: {"shape": allowed.shapes, ...geometry..., "fill": role?, "stroke": role?, "lineWidth": n?, "alpha": 0-1?}
+  rect {x, y, w, h, rotate?}   circle {x, y, r}   ring {x, y, r, lineWidth}   quadrant {x, y, r, a: role, b: role} (crash-test target: alternating quarters)
+  line {points: [[x,y],...], dash?: [on, off]}   text {x, y, text, size, font, align: left|center|right, rotate?}   stripes {x, y, w, h, angle, gap} (hatching)
+decal: a shape plus "surface": "tarmac"|"shoulder"|"verge", "hazard": true|false, "note": "what it is in the district", "sources": [...]
+Any text containing Chinese characters also carries "review": "pending".
+```
+
+## Consumer contract (what the renderer can draw)
+- Vehicle roof shapes draw in car-local units after the body fill and before windscreen, lights and the state pip. Origin is the car centre; +x points to the nose; +y is the car's right side. The body is vehicles.<cls>.length by vehicles.<cls>.width.
+- The state pip draws at the car centre, radius 8. Keep a clear circle of pip_clear_radius around the origin.
+- Dummy markings draw in body-local units after the body fill, under the shoulder bar, head and nose vector. Origin is the body centre; +x is facing. Footprint radius is body.radius. The nose vector runs along +x from x = 6.5; keep the nose corridor clear.
+- Dummy markings fade with wear like the body's yellow.
+- Environment decals draw in world units (world.width by world.height) after the road and before shadows, statics, cones, cars and cues.
+- The road for each level is a centreline polyline; tarmac half-width is world.laneWidth; shoulders add proto.shoulderWidth each side. 'tarmac' decals sit within world.laneWidth of the centreline, 'shoulder' within the shoulder band, 'verge' beyond it.
+- Text uses the P1 fonts: mono = B612 Mono, ui = B612, brand = Nunito.
+
+## Allowed values
+```json
+{
+ "shapes": [
+  "rect",
+  "circle",
+  "ring",
+  "quadrant",
+  "line",
+  "text",
+  "stripes"
+ ],
+ "roles": "palette roles from DESIGN#D10.2 plus P1 field roles road and shoulder",
+ "forbidden_roles": {
+  "vehicle": [
+   "dummy",
+   "warning",
+   "aqua"
+  ],
+  "dummy": [
+   "warning",
+   "aqua"
+  ],
+  "environment": [
+   "aqua"
+  ]
+ },
+ "environment_saturated_roles": [
+  "warning",
+  "dummy"
+ ],
+ "environment_saturated_requires": "hazard: true",
+ "fonts": [
+  "mono",
+  "ui",
+  "brand"
+ ],
+ "pip_clear_radius": 9,
+ "nose_corridor": {
+  "x_from": 6,
+  "half_width": 2.5
+ },
+ "levels": [
+  "straight",
+  "barrier",
+  "corner"
+ ],
+ "min_text_size_param": "ui.typeTexture"
+}
+```
+
+## Game data
+Registry IDs you may reference (value, unit):
+- body.radius = 13 world units
+- props.cone.radius = 7.2 world units
+- proto.art.barrierHeight = 14
+- proto.art.coneHeight = 14
+- proto.art.crateHeight = 30
+- proto.art.droneHeight = 70
+- proto.art.dummyHeight = 18
+- proto.art.pillarHeight = 60
+- proto.art.shadowScale = 0.3
+- proto.shoulderWidth = 24
+- ui.typeLoadBearing = 24 reference-canvas units
+- ui.typeSecondary = 16 reference-canvas units
+- ui.typeTexture = 9 reference-canvas units
+- vehicles.sedan.cruiseSpeed = 138 world units/s
+- vehicles.sedan.height = 22 world units
+- vehicles.sedan.length = 56 world units
+- vehicles.sedan.mass = 1 ratio
+- vehicles.sedan.width = 28 world units
+- vehicles.van.cruiseSpeed = 120 world units/s
+- vehicles.van.height = 34 world units
+- vehicles.van.length = 68 world units
+- vehicles.van.mass = 1.5 ratio
+- vehicles.van.width = 32 world units
+- world.height = 600 world units
+- world.laneWidth = 56 world units
+- world.pedestrianGap = 40 world units
+- world.spawnLeadIn = 200 world units
+- world.width = 800 world units
+
+Palette roles (DESIGN#D10.2; road and shoulder are P1 field fills):
+- floor: #EDF1F3 — Matte laboratory street ground
+- grid: #D4DDE2 — Calibration pattern, subordinate to cues
+- structure: #B8C4CB — Barriers and fixed forms
+- fleet: #7E8C96 — Vehicle mass and ordinary lane geometry
+- dummy: #F5C542 — Persistent actor accent
+- joints: #1A1D1F — Facing/body articulation
+- primary: #101417 — Reflex information and outlines
+- secondary: #4A5A66 — Planning information
+- warning: #E4442E — Reserved warning marks with independent shape/position
+- aqua: #4FC3E8 — Frame and menu accents
+- road: #DCE3E7 — P1 tarmac fill
+- shoulder: #E5EAED — P1 pavement shoulder fill
+
+P1 game data: models ['SEDAN-01', 'VAN-02']; levels straight = L1 Straight (Flyover pillars line the road. Hide from side sensors, then step out.); barrier = L2 Barrier (Hide behind the barrier. Ambush through the gaps.); corner = L3 Corner (A right-angle bend. Read curved approaches.); upgrade nodes hips (Hips, Torso), spine (Spine, Torso), carry (Carry, Arms), throw (Throw, Arms); difficulties Fragile, Standard, Reinforced.
+
+Level geometry (world units; road = centreline polyline):
+- straight: centreline [[-200, 300], [1000, 300]]; statics [{"x": 136, "y": 214, "w": 28, "h": 28, "kind": "pillar"}, {"x": 416, "y": 214, "w": 28, "h": 28, "kind": "pillar"}, {"x": 676, "y": 214, "w": 28, "h": 28, "kind": "pillar"}, {"x": 276, "y": 358, "w": 28, "h": 28, "kind": "pillar"}, {"x": 546, "y": 358, "w": 28, "h": 28, "kind": "pillar"}]; cone homes [[110, 196], [310, 190], [500, 414], [690, 420]]; dummy spawns [[400, 480], [160, 480], [640, 480], [400, 120]]
+- barrier: centreline [[-200, 300], [1000, 300]]; statics [{"x": 0, "y": 388, "w": 250, "h": 12, "kind": "barrier"}, {"x": 290, "y": 388, "w": 220, "h": 12, "kind": "barrier"}, {"x": 550, "y": 388, "w": 250, "h": 12, "kind": "barrier"}, {"x": 186, "y": 214, "w": 28, "h": 28, "kind": "pillar"}, {"x": 466, "y": 214, "w": 28, "h": 28, "kind": "pillar"}, {"x": 686, "y": 214, "w": 28, "h": 28, "kind": "pillar"}]; cone homes [[90, 202], [260, 198], [540, 202], [150, 428], [700, 428]]; dummy spawns [[400, 500], [140, 500], [660, 500], [300, 110]]
+- corner: centreline [[-200, 440], [450, 440], ["... arc of", 23, "points ..."], [550, 340], [550, -200]]; statics [{"x": 382, "y": 312, "w": 36, "h": 36, "kind": "pillar"}, {"x": 404, "y": 232, "w": 32, "h": 32, "kind": "pillar"}, {"x": 236, "y": 336, "w": 28, "h": 28, "kind": "pillar"}, {"x": 626, "y": 456, "w": 32, "h": 32, "kind": "pillar"}]; cone homes [[200, 330], [320, 552], [660, 220], [420, 120]]; dummy spawns [[300, 560], [700, 400], [200, 160], [720, 140]]
+
+# CONTEXT
+
+[DESIGN#D4.1] (D4.1 Identity and states (§5.1))
+### D4.1 Identity and states (§5.1)
+The subject is earnest, stiff and clanky. Its personality is expressed through movement and repeated bodily expenditure. The same subject record and bought abilities continue through fresh chassis.
+The reference body footprint is 26 units across. The finished overhead silhouette uses a head disc, shoulder bar, nose vector, black joint markers and FARSIGHT markings. Carry loosens the arms visibly; Hips changes the rhythm of reorientation. Wear changes outline and lean without hiding facing.
+Active states are idle, moving, counter-braking/coasting, lunging, recovering, carrying and written off. Falling, jumping and attachment states are retained for gated expansion. Animation expresses the authoritative state; it cannot quietly change collisions, action duration or input acceptance.
+
+[DESIGN#D10.1] (D10.1 Visual register (§4.1))
+### D10.1 Visual register (§4.1)
+**An instrumented city inside a friendly corporate terminal.**
+The playfield uses near-white ground, calibration marks, crisp silhouettes, solid edges and matte surfaces. The frame uses FARSIGHT's optimistic Frutiger Aero language: rounded panels, aqua accents, glass, bevels and soft shadows. Gloss, decorative translucency and bloom stay in the frame. Sensor information on the floor uses restrained flat patterns and edges that remain distinguishable from world geometry.
+The dummy is the only persistently saturated **actor**. Its safety-yellow body and black joints contrast with the restrained fleet. Reserved red warning cues and high-visibility hazard markings are explicit exceptions, not accidental violations. Frame aqua is another separate role.
+The dummy has material weight: dents, lean, squash, stretch and a recoverable stagger. Cars glide according to their physical state. Vehicle movement, tyre/route cues and braking must not be disguised by a perfectly smooth decorative animation.
+References guide different properties: corporate optimism from mid-2000s interfaces; measurement language from crash-test facilities; modular frames from desktop skins; fast silhouette reading from top-down action games; diegetic institutional presentation from bureaucratic games. Their visual grammar is a reference, not a requirement to copy their surface details.
+
+[LOG#P1.2/dummy-damage-states] (Dummy damage states)
+### Dummy damage states
+Wear = 1 − health / `damage.bodyHealth`. The facing arrow never changes.
+| Wear from | Visible change |
+|---:|---|
+| 0% | Five dents appear one by one and deepen. Each chassis dents in its own places. |
+| 0% | Yellow fades toward grey-brown. |
+| 20% | Scorch marks spread across the body. |
+| 35% | The shoulder bar bends. |
+| 40% | The body sways. |
+| 45% | Smoke trails from the body. |
+| 55% | The right arm joint is gone. Exposed wires show. |
+| 60% | The body trembles constantly. |
+| 70% | The head cracks and sits off-centre. Sparks fly. A red vignette pulses at the screen edge. |
+| HUD | The health bar flashes red below 30% health. |
+
+[JUICE#J1] (J1 Reference games — top-down arcade driving)
+## J1 Reference games — top-down arcade driving
+| Game | What it does | DUMMIES reading |
+|---|---|---|
+| Super Sprint (Atari Games, 1986) | Each circuit fits one screen. No scrolling. A hard crash destroys the car. A helicopter lowers a replacement. Oil and small tornadoes cause brief loss of control. | Whole field visible, as D6.1. The replacement drop maps to a FARSIGHT chassis delivery. Presentation only; placement follows Engineering §8.5. |
+| Grand Theft Auto (1997), GTA 2 (1999) | Fixed overhead view. The camera rises with vehicle speed. On foot it drops closer. Wrecked cars linger on the street. | Do not take the speed zoom. The field is fixed (D6.1, Engineering §7.2). Take wreck permanence only. |
+| Micro Machines (Codemasters, 1991) | Toy cars race across desks and breakfast tables. The scale is the joke. Cars bounce off each other with springy contact. | Mundane setting carries the humour. Bounce maps to recoil (`proto.recoilScale`). |
+| Absolute Drift (Funselektor, 2015) | Minimal pale world. Tyres leave black marks like ink strokes. A run leaves a drawing on the ground. | Near-white lab floor (D10.1). Persistent tyre marks become the test's forensic record. |
+| art of rally (Funselektor, 2020) | High overhead rally. Flat, muted colour. Dust plumes and tyre tracks show the car's motion. | Muted fleet against a pale floor. Motion reads through marks and dust, not colour. |
+
+[DESIGN#D10.2] (D10.2 Reference layout and palette — Trial (§4.2))
+### D10.2 Reference layout and palette — Trial (§4.2)
+Reference canvas: 1280×720. Reference play viewport: 800×600, centred. Side columns: 240×600 each. Top and bottom strips: 1280×60 each. The playfield occupies approximately 52% of the canvas.
+The layout is a trial composition. Test a reduced frame at the same world extent before changing the simulation's dimensions. A 4:3 field reduces directional warning asymmetry compared with a wider field; it does not make all approach distances equal. Render scaling must not change simulation units.
+| Role | Initial colour | Use |
+|---|---|---|
+| Floor | `#EDF1F3` | Matte laboratory street ground |
+| Grid | `#D4DDE2` | Calibration pattern, subordinate to cues |
+| Structure | `#B8C4CB` | Barriers and fixed forms |
+| Fleet | `#7E8C96` | Vehicle mass and ordinary lane geometry |
+| Dummy body | `#F5C542` | Persistent actor accent |
+| Dummy joints | `#1A1D1F` | Facing/body articulation |
+| Primary cue | `#101417` | Reflex information and outlines |
+| Secondary cue | `#4A5A66` | Planning information |
+| Warning | `#E4442E` | Reserved warning marks with independent shape/position |
+| Brand aqua | `#4FC3E8` | Frame and menu accents |
+These values are starting colours, not measured contrast results. Tier-1 contrast starts with a 4.5:1 target and tier 2 with 3:1, evaluated against actual overlapping backgrounds. A coloured warning can require a contrasting outline to meet its role. The colour itself is never the only carrier.
+
+[DESIGN#D10.6] (D10.6 Representative finished assets (§4.6))
+### D10.6 Representative finished assets (§4.6)
+The ten-minute candidate includes a finished dummy treatment, two recognisable vehicle identities, one coherent environment, readable sensors/commitment/spent cues, report/shop/ending screens and an intentional sound mix. A greybox can establish feel but cannot pass the beauty gate.
+Higher structures use visible mass and shadows; sensor-blocking cover must look like cover. Palette/material rules yield when necessary for reserved cue readability. Height bands are descriptive art metadata; collision flags are authoritative (§7).
+
+[DESIGN#D5.1] (D5.1 Class, model and appearance (§6.1))
+### D5.1 Class, model and appearance (§6.1)
+A **class** supplies physical dimensions, mass and baseline behaviour. A **model** is a recurring identity with its own learning record. An **appearance** is one admitted instance of that model, with a unique ID, an immutable starting behaviour snapshot and one damage allowance. Replacement of the dummy does not replace an appearance or replenish its allowance. A later appearance of the same model has a new allowance and reads the updated learning record.
+The slice uses two persistent model identities: one Sedan and one Van. Their readable labels, silhouettes and identity marks remain stable between appearances. Both use Standard mood. Class, seniority, mood and random variation must not compete as explanations for the first learned response.
+| Slice class | Relative mass | Length × width × height, world units | Baseline speed, units/s | Encounter role |
+|---|---:|---:|---:|---|
+| Sedan | 1.0 | 56 × 28 × 22 | 138 | Clear reference for approach, commitment, bait and return |
+| Van | 1.5 | 68 × 32 × 34 | 120 | Heavier, slower encounter and mobile visual obstruction |
+Dimensions, mass and speeds are **Trial** values. Collider geometry, sprite placement and sensor origin share the same transform. A visual pivot does not excuse a tail extending outside the tested swept footprint. Height is metadata for explicit visibility rules; it is not a second physics engine.
+The expansion catalogue retains Sports, Hatchback, Sedan, Wagon, Van, Bus, SUV and Police. The earlier proposal for 32 models and four moods is **Expansion-gated**. No slice claim depends on meeting that catalogue count. An expansion profile must allocate every advertised class to a finite schedule; SUV and Police cannot remain advertised roster entries with zero opportunities. A Hatchback's possible second commitment requires a new, clearly announced window after the old promise has ended, with its own tests.
+
+[DESIGN#D10.3~1] (D10.3 Information taxonomy (§4.3))
+### D10.3 Information taxonomy (§4.3)
+There are four distinct inventories: dynamic gameplay cues, readable world features, HUD facts and decorative texture. All may have authored style rules; they do not have to fit one fixed fifteen-item list.
+| Dynamic cue | Meaning | Required independent treatment |
+|---|---|---|
+| Nose vector | Current body facing and unsteered launch direction | Line shape and rotation |
+| Body silhouette | Position, wear and recovery | Shape change and motion/position |
+| Charge ring/segments | Whether another lunge is available | Segment/arc geometry and luminance |
+| Reach endpoint/short mark | Current wear-adjusted straight-lunge reach against static geometry | Endpoint position and distinct mark shape |
+| Lunge trace | Actual snapshotted action in progress | Directional form and motion |
+| Intent chevron | A detected car's provisional route | Arrow shape and position |
+| Closed commitment cue | Fixed evasive corridor with a bounded planned trajectory | Closed shape and placement on the car |
+| Interrupted/blocked cue | Commitment prediction has been interrupted for safety | Broken/distinct shape plus braking/block indication |
+| Expiring commitment | Less than a full action window remains in the reservation | Opening/broken-ring form and visible countdown motion; distinct from interruption |
+| Brake marks | The car is slowing | Rear position and visible state change |
+| Detection zone and side sensors | Where this appearance can sense | Explicit boundary shape and patterned fill |
+| View cone | Where the dummy resolves sensor information | Wedge boundary and orientation |
+| Model tag | Which recurring model this is | Legible text and anchored position |
+| Seniority notches | Effective applied learning in this appearance's snapshot | Zero-to-three count and fixed tag position |
+| Spent-appearance mark | This appearance cannot award another damaging/scoring impact | Persistent stamped/slashed shape and tag placement |
+| Carried cone | Prop ownership and placement direction | Visible prop silhouette and position |
+| Impact burst | A positive qualifying hit | Contact position and radial motion |
+Use different forms for sensor rectangles and the dummy's wedge. Keep actor identity, intent/commitment, braking and spent state readable outside the view cone. Looking determines resolution of sensor information; it must not erase the approaching vehicles the player needs to navigate.
+
+[ENG#6.5] (6.5 Recurrence, moods and voice)
+### 6.5 Recurrence, moods and voice
+The slice schedule is eight repetitions of **Sedan–Van–Sedan–Sedan–Van**: 40 possible appearances, 24 Sedan and 16 Van. The initial nominal admission interval is 12 active simulation seconds. The first due appearance is at stage start; legal admission can be delayed by an occupied entrance. Admission means creation at the validated 200-unit off-screen lead-in, not arrival at the visible edge. At unimpeded cruise, nominal lead-in travel is about 1.45 s for Sedan and 1.67 s for Van; turning, braking and initial footprint placement can add time. Scheduled, admitted and exited counts are distinct. A successful early ending cancels the unused remainder. No quota implies that all 40 must appear.
+The schedule is deterministic and part of the versioned profile. For slot `i`, admission cannot precede `max(12 × i, previousActualAdmission + 12)` and still requires safe entry; the first slot has no previous-admission constraint. A due appearance waits for safe entry, avoiding a burst after a blockage. No opportunity disappears while queued. The last nominal admission is at 468 s (39 intervals), not 480 s. This is neither a minimum session length nor a ten-minute completion guarantee: success can cancel most of the queue. Interval, approach geometry and delay are jointly tested for ten-minute pacing and recurrence before minute five. In the unobstructed sequence, the next Sedan slot is 12–24 s later and the next Van slot 24–36 s later; the first new snapshot admitted after a learning event is the relevant return, not an already admitted car.
+The same model should visibly respond to an earlier successful approach while the visitor is still playing. Standard mood removes a major confound. Additional moods are expansion content and must specify independent behaviour effects, legible cues and exact roster allocation or a declared statistical tolerance. A population percentage alone does not guarantee that a short run contains a mood.
+Barks may express corporate confidence, embarrassment or bureaucratic blame. They cannot assert facts the simulation did not establish. The first report may state the observed impact and model identity, but it withholds the explanatory learned-counter message until the player has encountered the changed return. Evaluation asks the player what changed before supplying that explanation. Later reports may make the adaptation explicit.
+
+[DESIGN#D9.2] (D9.2 A specific fictional district (§3.2))
+### D9.2 A specific fictional district (§3.2)
+The slice needs three perceptible anchors:
+1. A logistics/maintenance road that visibly serves a working district, with entrances, destinations and service markings that justify the traffic.
+2. Readable bilingual district/test identifiers at entry and in the report. Essential language cannot be relegated to decorative micro-type.
+3. Recurring vehicle jobs and certification language tied to this district, rather than interchangeable science-fiction commentary.
+These are authored features of the fictional Shenzhen zone. They are not claims of documentary accuracy. Chinese wording and locally specific visual references require informed editorial review before final art. The review must preserve the game's dry register and the legibility of operational information.
+
+[DESIGN#D6.1] (D6.1 One authored Road (§7.1))
+### D6.1 One authored Road (§7.1)
+The slice uses one complete, authored Road with two lanes, readable approaches, shoulders, a few useful cones, fixed cover and safe repositioning space. The logical world reference is 800 × 600 units, independent of the surrounding UI layout. A different display scales the view without silently changing reach or car travel time. Changing logical world dimensions requires new pacing and collision witnesses.
+The initial lane width is 56 units. Openings must accommodate the complete 26-unit dummy footprint with usable margin, including the worn-reach case. A nominal 40-unit barrier gap is a starting layout constraint, not proof of feasibility. The authored level asset must supply actual positions, collider footprints, spawn transforms, legal exits, cover flags and prop recovery positions. Its geometry is tested as a single versioned asset. This document does not invent validated coordinates.
+The road must support direct interception, deliberate post-commit bait, baseline cone punts and deliberate Carry placement. There must be room to use Hips and Spine and meaningful placements to use Carry and Throw. Each advertised advantage is compared with what the unupgraded dummy can already do. Simply including a cone does not prove Carry has value; simply including a corner does not prove Hips has value.
+The scene's signage, maintenance fixtures and traffic task establish the fictional district described in §3. Essential geometry stays legible behind the authored art. Clear shoulders and escape positions are part of the layout, not emergency developer cheats.
+
+[DESIGN#D10.5] (D10.5 HUD and screens (§4.5))
+### D10.5 HUD and screens (§4.5)
+| Module | Content | Update |
+|---|---|---|
+| BODY | Remaining chassis health, wear and subject/chassis identity | Impact/write-off |
+| CHARGE | Current charge and action availability | Simulation tick |
+| FLEET | Recurring identities, current appearance state and learned model record | Appearance/learning |
+| CONTRACT | Bodies completed against the visible target | Write-off |
+| SHIFT | District/profile context and traffic remaining | Admission/exit |
+| RECORD | Points and spendable body credits | Committed outcome/purchase |
+There is no automatic-repair SERVICE meter in the slice. If useful, corporate service language appears on replacement/report screens without implying that inactivity restores health.
+The report pauses simulation and presents the actual body outcome. The purchase screen shows only the profile's offered upgrades: the two slice branches, prices, prerequisites, current credit balance and the shortfall for unaffordable choices. A selected node shows a concise benefit and a short looping preview. The player can buy an affordable option or save. Do not fill the screen with unavailable expansion nodes.
+An ending combines the contract verdict, final body facts where relevant, the appropriate score category and immediate replay. Initials use the available direction/action controls. High scores also serve the attract screen. Settings and operational debug tools are separate contexts; visitor menus do not expose accidental tuning actions.
+High-contrast mode suppresses texture and gloss while strengthening the same cues. It is a tested presentation mode, not a different ruleset. Input denial, blocked states and reset prompts remain understandable without sound.
+
+[DESIGN#D6.3] (D6.3 Expansion environments and the tree — Expansion-gated)
+### D6.3 Expansion environments and the tree — Expansion-gated
+- Road, Junction and Roundabout are the intended progression of traffic situations.
+- Each stage needs a tactical purpose, a quota, a finite opportunity budget and a tested upgrade-coverage matrix.
+- Each surface declares its own movement, lunge, car speed, braking, sensing and score effects.
+| Candidate feature | Node it gives a job |
+|---|---|
+| Flagged floor gaps | Jump |
+| Gravel, puddles and other low-grip surfaces | Grip |
+| Sensor-blocking cover | Wider view, Memory |
+| Planned and delayed entries | Ears |
+- Exact contracts: Engineering §7.4.
+
+[DESIGN#D11.1] (D11.1 Coherent fallback and expansion protection (§12.5))
+### D11.1 Coherent fallback and expansion protection (§12.5)
+The slice is already the small version: one level, two models and two meaningful branches. Cut decorative scenery, optional voice lines and extra vehicle variety before cutting the first choice, its follow-on development, observable adaptation, readable feedback, access needs or closure. If the active profile must change, publish a new complete profile with revised objectives, credits, schedule and tests. A two-level fallback cannot inherit an unrelated fifteen-body quota by accident.
+Keep expansion cheap through versioned profiles, content IDs, explicit surface/sensor flags, owned-upgrade derivation, a phase-aware menu flow and tested checkpoints. Do not build all future environments, menus or features merely to demonstrate modularity. The immediate architectural proof is that a small second-stage fixture and an alternative profile can be added without duplicating core rules.
+
+[LOG#P1.2/light-and-relief] (Light and relief)
+### Light and relief
+- **Sun:** At 1:30. Shadows fall toward 7:30.
+- **Shadow length:** Object height × `proto.art.shadowScale`.
+- **Heights:** Cars use `vehicles.sedan.height` and `vehicles.van.height` from the registry. Others below.
+- **Lit edges:** Crates and barriers catch light on their top and right edges. Car roofs and cones shade from the top right.
+| ID | Value | Unit |
+|---|---:|---|
+| `proto.art.shadowScale` | 0.3 | ratio |
+| `proto.art.crateHeight` | 30 | world units |
+| `proto.art.barrierHeight` | 14 | world units |
+| `proto.art.coneHeight` | 14 | world units |
+| `proto.art.dummyHeight` | 18 | world units (+8 while lunging) |
+| `proto.art.droneHeight` | 70 | world units |
+
+[LOG#P1.5/pillars-and-blind-spots] (Pillars and blind spots)
+### Pillars and blind spots
+- **Pillars:** Flyover columns now stand at the road edge, replacing distant crates. Shadow height `proto.art.pillarHeight` 60.
+- **L1:** Three north, two south, staggered.
+- **L2:** Three north. The south barrier with gaps remains.
+- **L3:** One in the inside of the bend, one beside the vertical leg, one at the west straight, one outside the bend.
+- **Blind spots:** Pillars, barriers and vans cast sensor shadows from each car's nose. Shown inside the scanners as pale aqua wedges labelled BLIND.
+- **Tactic:** Stand in a pillar's shadow and side sensors miss you. The car keeps full speed. Step out for a head-on hit.
+
+[LOG#P1.1-observations] (P1.1 observations)
+## P1.1 observations
+**Build seen:** `dummies_p1.html` v2 · 14 Oct 2026 · *Designer play*
+| ID | Observation | Response | Status |
+|---|---|---|---|
+| O1.6 | Light graphics amendments wanted. | P1.2 lighting, relief and cone pass | Addressed (awaiting replay) |
+| O1.7 | The dummy should visibly degrade as it absorbs damage. | Staged damage states | Addressed (awaiting replay) |
+| O1.8 | Add juice: camera shake, player shake, small animations that raise the stakes. | Juice pass | Addressed (awaiting replay) |
+| O1.9 | Cones should be 20% larger. They don't read as cones. | Radius override and new top-down cone | Addressed (awaiting replay) |
+| O1.10 | Cones should not start in the road. | All cone homes moved off the road | Addressed |
+| O1.11 | Drop shadows on everything, sun at 1:30, to throw items into relief. | Height-based shadows to 7:30 | Addressed (awaiting replay) |
+| O1.12 | A car blocked by cones for 5 s honks (sound, flashing lights). Then drones move the cones. | Honk and drone recovery | Addressed (awaiting replay) |
+
+[DESIGN#D9.1] (D9.1 The subject and the contract (§3.1))
+### D9.1 The subject and the contract (§3.1)
+- FARSIGHT sells a city without accidents. Your work is to find the conditions that still produce them.
+- Streets, delivery routes and maintenance spaces carry grids, numbered zones and measuring instruments. The city is the testing apparatus.
+- The subject's identity, acquired abilities and record persist across replaceable chassis. Approved modifications are installed on the replacement body.
+- One destroyed chassis completes one paid test. FARSIGHT funds broader test coverage; the subject uses that permission to acquire more ways to move and act.
+- Damage and assessed impact value are recorded separately. Only a completed nonterminal test pays a spendable credit.
+- Certification releases the subject from its current testing contract. It is not an extra currency and does not imply permission to drive.
+Destruction is bodily expenditure under coercive employment. It may read as comic, disturbing or routine payment collection. The design does not assume that dents alone produce a sense of sacrifice, and it adds no permanent-death penalty to force that emotion.
+
+# YOUR PREVIOUS OUTPUT
+
+{
+ "params": [
+  {
+   "id": "proto.art.markWidth",
+   "value": 2,
+   "unit": "world units",
+   "purpose": "Stroke width of painted lane lines and edge lines on every P1 road.",
+   "sources": [
+    "DESIGN#D10.1",
+    "DESIGN#D6.1"
+   ]
+  },
+  {
+   "id": "proto.art.signTextSize",
+   "value": 16,
+   "unit": "world units",
+   "purpose": "Text size for bilingual district and destination identifiers, so essential language is not micro-type. Matches ui.typeSecondary.",
+   "sources": [
+    "DESIGN#D9.2"
+   ]
+  }
+ ],
+ "vehicles": {
+  "sedan": {
+   "job": "Parcel Courier",
+   "jobZh": "园区包裹速递",
+   "review": "pending",
+   "roof": [
+    {
+     "shape": "rect",
+     "x": -25,
+     "y": -9,
+     "w": 12,
+     "h": 18,
+     "fill": "structure",
+     "stroke": "primary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "circle",
+     "x": -19,
+     "y": 0,
+     "r": 3.5,
+     "fill": "primary"
+    },
+    {
+     "shape": "rect",
+     "x": -24,
+     "y": -5,
+     "w": 10,
+     "h": 10,
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "rect",
+     "x": -10,
+     "y": -13,
+     "w": 20,
+     "h": 2,
+     "fill": "secondary"
+    },
+    {
+     "shape": "rect",
+     "x": -10,
+     "y": 11,
+     "w": 20,
+     "h": 2,
+     "fill": "secondary"
+    },
+    {
+     "shape": "rect",
+     "x": 22,
+     "y": -13,
+     "w": 4,
+     "h": 3,
+     "fill": "primary"
+    },
+    {
+     "shape": "rect",
+     "x": 22,
+     "y": 10,
+     "w": 4,
+     "h": 3,
+     "fill": "primary"
+    }
+   ],
+   "sources": [
+    "DESIGN#D5.1",
+    "DESIGN#D9.2",
+    "DESIGN#D10.6",
+    "DESIGN#D10.1"
+   ]
+  },
+  "van": {
+   "job": "Road Maintenance",
+   "jobZh": "道路养护",
+   "review": "pending",
+   "roof": [
+    {
+     "shape": "line",
+     "points": [
+      [
+       -31,
+       -10
+      ],
+      [
+       31,
+       -10
+      ]
+     ],
+     "stroke": "primary",
+     "lineWidth": 1.5
+    },
+    {
+     "shape": "line",
+     "points": [
+      [
+       -31,
+       10
+      ],
+      [
+       31,
+       10
+      ]
+     ],
+     "stroke": "primary",
+     "lineWidth": 1.5
+    },
+    {
+     "shape": "line",
+     "points": [
+      [
+       -28,
+       -10
+      ],
+      [
+       -28,
+       10
+      ]
+     ],
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "line",
+     "points": [
+      [
+       -24,
+       -10
+      ],
+      [
+       -24,
+       10
+      ]
+     ],
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "line",
+     "points": [
+      [
+       -20,
+       -10
+      ],
+      [
+       -20,
+       10
+      ]
+     ],
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "line",
+     "points": [
+      [
+       -16,
+       -10
+      ],
+      [
+       -16,
+       10
+      ]
+     ],
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "line",
+     "points": [
+      [
+       -12,
+       -10
+      ],
+      [
+       -12,
+       10
+      ]
+     ],
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "stripes",
+     "x": -8,
+     "y": -15,
+     "w": 16,
+     "h": 4,
+     "angle": 45,
+     "gap": 3,
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "stripes",
+     "x": -8,
+     "y": 11,
+     "w": 16,
+     "h": 4,
+     "angle": 45,
+     "gap": 3,
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "circle",
+     "x": 22,
+     "y": 0,
+     "r": 3.5,
+     "fill": "primary"
+    },
+    {
+     "shape": "rect",
+     "x": 17,
+     "y": -5.5,
+     "w": 11,
+     "h": 11,
+     "stroke": "secondary",
+     "lineWidth": 1
+    },
+    {
+     "shape": "rect",
+     "x": -33,
+     "y": -13,
+     "w": 3,
+     "h": 26,
+     "fill": "secondary"
+    },
+    {
+     "shape": "rect",
+     "x": 26,
+     "y": -15,
+     "w": 4,
+     "h": 3,
+     "fill": "primary"
+    },
+    {
+     "shape": "rect",
+     "x": 26,
+     "y": 12,
+     "w": 4,
+     "h": 3,
+     "fill": "primary"
+    }
+   ],
+   "sources": [
+    "DESIGN#D5.1",
+    "DESIGN#D9.2",
+    "DESIGN#D10.6",
+    "DESIGN#D10.1"
+   ]
+  }
+ },
+ "dummy": {
+  "markings": [
+   {
+    "shape": "quadrant",
+    "x": -5,
+    "y": 0,
+    "r": 6,
+    "a": "joints",
+    "b": "floor"
+   },
+   {
+    "shape": "rect",
+    "x": -10,
+    "y": -8,
+    "w": 10,
+    "h": 16,
+    "stroke": "primary",
+    "lineWidth": 1
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      -5,
+      -10
+     ],
+     [
+      -5,
+      10
+     ]
+    ],
+    "stroke": "primary",
+    "lineWidth": 1
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      -11,
+      0
+     ],
+     [
+      4,
+      0
+     ]
+    ],
+    "stroke": "primary",
+    "lineWidth": 1
+   },
+   {
+    "shape": "rect",
+    "x": -12,
+    "y": -5,
+    "w": 2,
+    "h": 10,
+    "fill": "joints"
+   },
+   {
+    "shape": "rect",
+    "x": -4,
+    "y": -11,
+    "w": 3,
+    "h": 3,
+    "fill": "primary"
+   },
+   {
+    "shape": "rect",
+    "x": -4,
+    "y": 8,
+    "w": 3,
+    "h": 3,
+    "fill": "primary"
+   }
+  ],
+  "sources": [
+   "DESIGN#D4.1",
+   "DESIGN#D10.1",
+   "DESIGN#D10.3~1",
+   "LOG#P1.2/dummy-damage-states"
+  ]
+ },
+ "environment": {
+  "straight": [
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      300
+     ],
+     [
+      800,
+      300
+     ]
+    ],
+    "dash": [
+     16,
+     12
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Lane divider between the two lanes of the logistics road.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      244
+     ],
+     [
+      800,
+      244
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "North tarmac edge line.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      356
+     ],
+     [
+      800,
+      356
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "South tarmac edge line.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 170,
+    "y": 336,
+    "text": "LOGISTICS · MAINTENANCE",
+    "size": 16,
+    "font": "mono",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Road identifier painted on the tarmac at entry.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 170,
+    "y": 282,
+    "text": "物流 · 养护道路",
+    "size": 16,
+    "font": "ui",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "review": "pending",
+    "note": "Chinese road identifier, paired with the English line.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "rect",
+    "x": 530,
+    "y": 128,
+    "w": 170,
+    "h": 40,
+    "fill": "structure",
+    "stroke": "primary",
+    "lineWidth": 1.5,
+    "surface": "verge",
+    "hazard": false,
+    "note": "Depot gate board on the north verge.",
+    "sources": [
+     "DESIGN#D9.2",
+     "DESIGN#D6.1"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 615,
+    "y": 153,
+    "text": "DEPOT 货运场",
+    "size": 16,
+    "font": "ui",
+    "align": "center",
+    "fill": "primary",
+    "surface": "verge",
+    "hazard": false,
+    "review": "pending",
+    "note": "Bilingual destination text for the depot the traffic serves.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 530,
+    "y": 172,
+    "w": 170,
+    "h": 8,
+    "angle": 45,
+    "gap": 5,
+    "stroke": "warning",
+    "lineWidth": 2,
+    "surface": "verge",
+    "hazard": true,
+    "note": "High-visibility hatching along the depot gate threshold.",
+    "sources": [
+     "DESIGN#D10.1",
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 330,
+    "y": 222,
+    "w": 80,
+    "h": 20,
+    "angle": 45,
+    "gap": 6,
+    "stroke": "secondary",
+    "lineWidth": 1,
+    "surface": "shoulder",
+    "hazard": false,
+    "note": "Service pull-in bay for maintenance vehicles.",
+    "sources": [
+     "DESIGN#D9.2",
+     "DESIGN#D6.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      310,
+      368
+     ],
+     [
+      540,
+      368
+     ]
+    ],
+    "dash": [
+     3,
+     37
+    ],
+    "stroke": "structure",
+    "lineWidth": 8,
+    "surface": "shoulder",
+    "hazard": false,
+    "note": "Calibration ticks along the south shoulder between the two south pillars, one every 40 units.",
+    "sources": [
+     "DESIGN#D10.1",
+     "DESIGN#D10.2"
+    ]
+   },
+   {
+    "shape": "ring",
+    "x": 110,
+    "y": 368,
+    "r": 6,
+    "lineWidth": 1.5,
+    "stroke": "secondary",
+    "surface": "shoulder",
+    "hazard": false,
+    "note": "Inspection hatch cover on the shoulder.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   }
+  ],
+  "barrier": [
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      300
+     ],
+     [
+      800,
+      300
+     ]
+    ],
+    "dash": [
+     16,
+     12
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Lane divider between the two lanes.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      244
+     ],
+     [
+      800,
+      244
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "North tarmac edge line.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      356
+     ],
+     [
+      800,
+      356
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "South tarmac edge line.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 170,
+    "y": 336,
+    "text": "LOGISTICS · MAINTENANCE",
+    "size": 16,
+    "font": "mono",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Road identifier repeated at entry.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 170,
+    "y": 282,
+    "text": "物流 · 养护道路",
+    "size": 16,
+    "font": "ui",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "review": "pending",
+    "note": "Chinese road identifier.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 250,
+    "y": 388,
+    "w": 40,
+    "h": 12,
+    "angle": 45,
+    "gap": 5,
+    "stroke": "secondary",
+    "lineWidth": 1,
+    "alpha": 0.6,
+    "surface": "verge",
+    "hazard": false,
+    "note": "Threshold hatching across the first barrier gap, an entrance to the service yard.",
+    "sources": [
+     "DESIGN#D9.2",
+     "DESIGN#D6.1"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 510,
+    "y": 388,
+    "w": 40,
+    "h": 12,
+    "angle": 45,
+    "gap": 5,
+    "stroke": "secondary",
+    "lineWidth": 1,
+    "alpha": 0.6,
+    "surface": "verge",
+    "hazard": false,
+    "note": "Threshold hatching across the second barrier gap.",
+    "sources": [
+     "DESIGN#D9.2",
+     "DESIGN#D6.1"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 270,
+    "y": 424,
+    "text": "YARD",
+    "size": 16,
+    "font": "mono",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "verge",
+    "hazard": false,
+    "note": "Destination label beyond the first gap.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 270,
+    "y": 444,
+    "text": "货场",
+    "size": 16,
+    "font": "ui",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "verge",
+    "hazard": false,
+    "review": "pending",
+    "note": "Chinese destination label beyond the first gap.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 530,
+    "y": 424,
+    "text": "BAY",
+    "size": 16,
+    "font": "mono",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "verge",
+    "hazard": false,
+    "note": "Destination label beyond the second gap.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 530,
+    "y": 444,
+    "text": "装卸",
+    "size": 16,
+    "font": "ui",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "verge",
+    "hazard": false,
+    "review": "pending",
+    "note": "Chinese loading-bay label beyond the second gap.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 60,
+    "y": 150,
+    "w": 120,
+    "h": 8,
+    "angle": 45,
+    "gap": 5,
+    "stroke": "warning",
+    "lineWidth": 2,
+    "surface": "verge",
+    "hazard": true,
+    "note": "High-visibility maintenance cordon hatching on the north verge.",
+    "sources": [
+     "DESIGN#D10.1",
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      368
+     ],
+     [
+      800,
+      368
+     ]
+    ],
+    "dash": [
+     3,
+     37
+    ],
+    "stroke": "structure",
+    "lineWidth": 8,
+    "surface": "shoulder",
+    "hazard": false,
+    "note": "Calibration ticks along the south shoulder.",
+    "sources": [
+     "DESIGN#D10.1",
+     "DESIGN#D10.2"
+    ]
+   }
+  ],
+  "corner": [
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      440
+     ],
+     [
+      450,
+      440
+     ]
+    ],
+    "dash": [
+     16,
+     12
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Lane divider on the west approach to the bend.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      450,
+      440
+     ],
+     [
+      475.9,
+      436.6
+     ],
+     [
+      500,
+      426.6
+     ],
+     [
+      520.7,
+      410.7
+     ],
+     [
+      536.6,
+      390
+     ],
+     [
+      546.6,
+      364.1
+     ],
+     [
+      550,
+      340
+     ]
+    ],
+    "dash": [
+     16,
+     12
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Lane divider following the right-angle bend.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      550,
+      340
+     ],
+     [
+      550,
+      0
+     ]
+    ],
+    "dash": [
+     16,
+     12
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Lane divider on the vertical leg.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      496
+     ],
+     [
+      450,
+      496
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Outer tarmac edge line on the west approach.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      450,
+      496
+     ],
+     [
+      490.4,
+      490.7
+     ],
+     [
+      528,
+      475.1
+     ],
+     [
+      560.3,
+      450.3
+     ],
+     [
+      585.1,
+      418
+     ],
+     [
+      600.7,
+      380.7
+     ],
+     [
+      606,
+      340
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Outer tarmac edge line round the bend.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      606,
+      340
+     ],
+     [
+      606,
+      0
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Outer tarmac edge line on the vertical leg.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      0,
+      384
+     ],
+     [
+      450,
+      384
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Inner tarmac edge line on the west approach.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      450,
+      384
+     ],
+     [
+      461.4,
+      382.5
+     ],
+     [
+      472,
+      378.1
+     ],
+     [
+      481.1,
+      371.1
+     ],
+     [
+      488.1,
+      362
+     ],
+     [
+      492.5,
+      351.4
+     ],
+     [
+      494,
+      340
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Inner tarmac edge line round the bend.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      494,
+      340
+     ],
+     [
+      494,
+      0
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Inner tarmac edge line on the vertical leg.",
+    "sources": [
+     "DESIGN#D6.1",
+     "DESIGN#D10.1"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      300,
+      420
+     ],
+     [
+      320,
+      440
+     ],
+     [
+      300,
+      460
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "First turn chevron painted on the approach.",
+    "sources": [
+     "DESIGN#D6.1",
+     "LOG#P1.5/pillars-and-blind-spots"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      340,
+      420
+     ],
+     [
+      360,
+      440
+     ],
+     [
+      340,
+      460
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Second turn chevron painted on the approach.",
+    "sources": [
+     "DESIGN#D6.1",
+     "LOG#P1.5/pillars-and-blind-spots"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      380,
+      420
+     ],
+     [
+      400,
+      440
+     ],
+     [
+      380,
+      460
+     ]
+    ],
+    "stroke": "fleet",
+    "lineWidth": 2,
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Third turn chevron painted on the approach.",
+    "sources": [
+     "DESIGN#D6.1",
+     "LOG#P1.5/pillars-and-blind-spots"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 150,
+    "y": 474,
+    "text": "LOGISTICS · MAINTENANCE",
+    "size": 16,
+    "font": "mono",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Road identifier at the west entry.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 150,
+    "y": 416,
+    "text": "物流 · 养护道路",
+    "size": 16,
+    "font": "ui",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "review": "pending",
+    "note": "Chinese road identifier at the west entry.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 550,
+    "y": 120,
+    "text": "DEPOT",
+    "size": 16,
+    "font": "mono",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "note": "Destination painted on the vertical leg.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "text",
+    "x": 550,
+    "y": 90,
+    "text": "货运场",
+    "size": 16,
+    "font": "ui",
+    "align": "center",
+    "fill": "secondary",
+    "surface": "tarmac",
+    "hazard": false,
+    "review": "pending",
+    "note": "Chinese destination painted on the vertical leg.",
+    "sources": [
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 60,
+    "y": 498,
+    "w": 100,
+    "h": 20,
+    "angle": 45,
+    "gap": 6,
+    "stroke": "secondary",
+    "lineWidth": 1,
+    "surface": "shoulder",
+    "hazard": false,
+    "note": "Service pull-in bay on the outer shoulder.",
+    "sources": [
+     "DESIGN#D9.2",
+     "DESIGN#D6.1"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 90,
+    "y": 362,
+    "w": 90,
+    "h": 20,
+    "angle": 45,
+    "gap": 6,
+    "stroke": "secondary",
+    "lineWidth": 1,
+    "surface": "shoulder",
+    "hazard": false,
+    "note": "Service pull-in bay on the inner shoulder.",
+    "sources": [
+     "DESIGN#D9.2",
+     "DESIGN#D6.1"
+    ]
+   },
+   {
+    "shape": "stripes",
+    "x": 636,
+    "y": 340,
+    "w": 10,
+    "h": 60,
+    "angle": 45,
+    "gap": 5,
+    "stroke": "warning",
+    "lineWidth": 2,
+    "surface": "verge",
+    "hazard": true,
+    "note": "High-visibility guard hatching outside the bend.",
+    "sources": [
+     "DESIGN#D10.1",
+     "DESIGN#D9.2"
+    ]
+   },
+   {
+    "shape": "line",
+    "points": [
+     [
+      618,
+      0
+     ],
+     [
+      618,
+      300
+     ]
+    ],
+    "dash": [
+     3,
+     37
+    ],
+    "stroke": "structure",
+    "lineWidth": 8,
+    "surface": "shoulder",
+    "hazard": false,
+    "note": "Calibration ticks along the vertical leg's outer shoulder.",
+    "sources": [
+     "DESIGN#D10.1",
+     "DESIGN#D10.2"
+    ]
+   }
+  ]
+ }
+}
+
+# ISSUES TO FIX
+
+## Validator (automatic checks)
+- V1 [data/fix] environment.corner[7].surface: tarmac — Declared tarmac but it sits on shoulder (69 units from the centreline). (pipeline:geometry)
+
+## Critic
+- C1 [rule/fix] environment.straight[9].stroke (also environment.barrier[12].stroke, environment.corner[19].stroke): found "\"stroke\": \"structure\"" — Calibration patterns use the Grid role (#D4DDE2), subordinate to cues. Structure (#B8C4CB) is reserved for barriers and fixed forms, so structure-coloured ticks read as geometry. (DESIGN#D10.2). Fix: "\"stroke\": \"grid\""
+- C2 [rule/fix] environment.corner[9].points: found "[[300,420],[320,440],[300,460]]" — Decoration must not look like a cue. Forward-pointing chevrons painted in the lane copy the intent chevron (a detected car's provisional route, DB5 Intention). Use a non-arrow marking. (DESIGN#D10.3~1). Fix: "[[320,420],[320,460]]"
+- C3 [rule/fix] environment.corner[14].x (and environment.corner[15].x): found "\"x\": 550" — Essential language must be readable. Centred at x=550, the DEPOT and 货运场 text sits on the dashed lane divider, so the dashes cut through the glyphs. (DESIGN#D9.2). Fix: "\"x\": 578"
+
+Apply every fix. Change nothing else. Output the complete corrected JSON object.

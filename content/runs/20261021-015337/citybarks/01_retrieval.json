@@ -1,0 +1,206 @@
+[
+  {
+    "query": "drop off a ledge or broken parapet lands on the nearest level below fall time landing speed square root height",
+    "results": [
+      {
+        "id": "EDIT44#5.2",
+        "score": 36.269
+      },
+      {
+        "id": "EDIT44#decisions",
+        "score": 31.841
+      },
+      {
+        "id": "DECISIONS#rows-161-170~2",
+        "score": 27.36
+      }
+    ]
+  },
+  {
+    "query": "landing on a car closing speed hit from above legs take it stopped sedan van cruise Z2",
+    "results": [
+      {
+        "id": "EDIT44#8.3",
+        "score": 40.757
+      },
+      {
+        "id": "EDIT42#8.3",
+        "score": 39.295
+      },
+      {
+        "id": "EDIT26#8.3",
+        "score": 17.244
+      }
+    ]
+  },
+  {
+    "query": "Z0 ground Z1 low highway Z2 high highway platform roofs skybridges levels",
+    "results": [
+      {
+        "id": "LOG#P3.3",
+        "score": 60.847
+      },
+      {
+        "id": "EDIT44#4.2",
+        "score": 48.421
+      },
+      {
+        "id": "DECISIONS#rows-161-170~2",
+        "score": 46.389
+      }
+    ]
+  },
+  {
+    "query": "deck traffic full drivers on their deck level cars sense their own level only",
+    "results": [
+      {
+        "id": "EDIT42#6.3",
+        "score": 33.267
+      },
+      {
+        "id": "EDIT44#6.2",
+        "score": 33.079
+      },
+      {
+        "id": "EDIT44#6.3",
+        "score": 32.991
+      }
+    ]
+  },
+  {
+    "query": "calibrated impact plates on the road points multiplier FARSIGHT Campus",
+    "results": [
+      {
+        "id": "EDIT41#7.3",
+        "score": 19.962
+      },
+      {
+        "id": "EDIT41#7.2",
+        "score": 19.411
+      },
+      {
+        "id": "EDIT26#7.2~2",
+        "score": 16.553
+      }
+    ]
+  },
+  {
+    "query": "vehicles speak as workers corporate politeness barely contains personalities retraining dispatch",
+    "results": [
+      {
+        "id": "EDIT26#3.2",
+        "score": 46.861
+      },
+      {
+        "id": "FLEET#F2",
+        "score": 43.451
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 31.243
+      }
+    ]
+  },
+  {
+    "query": "tier temperament voice Luxury Corporate polished superior procedural logs KPIs",
+    "results": [
+      {
+        "id": "FLEET#F4",
+        "score": 67.994
+      },
+      {
+        "id": "EDIT39#6.1",
+        "score": 15.899
+      },
+      {
+        "id": "EDIT26#6.1~1",
+        "score": 15.272
+      }
+    ]
+  },
+  {
+    "query": "models in the P3 city S01 V02 Ambassador Waybill chauffeurs board members parcel route",
+    "results": [
+      {
+        "id": "FLEET#F6",
+        "score": 65.289
+      },
+      {
+        "id": "FLEET#F7~2",
+        "score": 22.408
+      },
+      {
+        "id": "EDIT39#6.1",
+        "score": 18.708
+      }
+    ]
+  },
+  {
+    "query": "lore follows state a line may only say what the game state guarantees claims conditions",
+    "results": [
+      {
+        "id": "EDIT39#3.1",
+        "score": 37.841
+      },
+      {
+        "id": "EDIT39#6.6",
+        "score": 24.011
+      },
+      {
+        "id": "FLEET#F8",
+        "score": 22.68
+      }
+    ]
+  },
+  {
+    "query": "bark key model number event front hit side hit write-off seniority mood priority",
+    "results": [
+      {
+        "id": "EDIT26#6.6",
+        "score": 47.131
+      },
+      {
+        "id": "EDIT39#6.6",
+        "score": 23.698
+      },
+      {
+        "id": "FLEET#F9.1~2",
+        "score": 21.173
+      }
+    ]
+  },
+  {
+    "query": "Riverside Old Market Interchange Central Business District FARSIGHT Campus landmark form traffic hazards",
+    "results": [
+      {
+        "id": "EDIT41#7.2",
+        "score": 45.862
+      },
+      {
+        "id": "LOG#P3-update-five-city-districts-o3-40-o3-44",
+        "score": 42.217
+      },
+      {
+        "id": "EDIT41#evidence",
+        "score": 28.501
+      }
+    ]
+  },
+  {
+    "query": "existing lines impact write-off fleet bark bank style priority",
+    "results": [
+      {
+        "id": "EDIT26#6.6",
+        "score": 23.41
+      },
+      {
+        "id": "FLEET#F9.2",
+        "score": 22.162
+      },
+      {
+        "id": "FLEET#F9.10",
+        "score": 19.077
+      }
+    ]
+  }
+]

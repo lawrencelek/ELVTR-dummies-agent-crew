@@ -1,0 +1,126 @@
+{
+  "run": "20261021-020902",
+  "results": [
+    {
+      "type": "citybarks",
+      "ok": false,
+      "rounds": 3
+    },
+    {
+      "type": "places",
+      "ok": true,
+      "rounds": 3
+    }
+  ],
+  "calls": [
+    {
+      "label": "citybarks/02_generator",
+      "role": "Generator",
+      "seconds": 52.1,
+      "output_tokens": 7227,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r0_critic",
+      "role": "Critic",
+      "seconds": 32.9,
+      "output_tokens": 4556,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 16.9,
+      "output_tokens": 3479,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r1_critic",
+      "role": "Critic",
+      "seconds": 17.7,
+      "output_tokens": 2277,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 20.0,
+      "output_tokens": 4408,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "citybarks/r2_critic",
+      "role": "Critic",
+      "seconds": 21.4,
+      "output_tokens": 2787,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/02_generator",
+      "role": "Generator",
+      "seconds": 23.1,
+      "output_tokens": 3267,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r0_critic",
+      "role": "Critic",
+      "seconds": 20.5,
+      "output_tokens": 2695,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 8.7,
+      "output_tokens": 1449,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r1_critic",
+      "role": "Critic",
+      "seconds": 19.9,
+      "output_tokens": 2638,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 6.2,
+      "output_tokens": 1134,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r2_critic",
+      "role": "Critic",
+      "seconds": 18.9,
+      "output_tokens": 2416,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

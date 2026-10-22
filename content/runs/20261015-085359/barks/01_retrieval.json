@@ -1,0 +1,172 @@
+[
+  {
+    "query": "bark key model number event front hit side hit near miss safe passage write-off seniority mood cooldown",
+    "results": [
+      {
+        "id": "EDIT26#6.6",
+        "score": 60.308
+      },
+      {
+        "id": "ENG#11.3",
+        "score": 16.397
+      },
+      {
+        "id": "EDIT26#11.1",
+        "score": 16.134
+      }
+    ]
+  },
+  {
+    "query": "vehicles speak as workers deadlines rank fear of retraining resentment pride corporate politeness",
+    "results": [
+      {
+        "id": "EDIT26#3.2",
+        "score": 51.64
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 45.761
+      },
+      {
+        "id": "ENG#5.3~2",
+        "score": 8.32
+      }
+    ]
+  },
+  {
+    "query": "Sinofuturist AI workers ridiculous jobs comic and tragic at once FARSIGHT sells a city without accidents",
+    "results": [
+      {
+        "id": "EDIT26#3.1",
+        "score": 63.191
+      },
+      {
+        "id": "DESIGN#D9.1",
+        "score": 21.343
+      },
+      {
+        "id": "EDIT26#3.2",
+        "score": 10.403
+      }
+    ]
+  },
+  {
+    "query": "barks react to recorded events neutral fallback vivid false claim reports truthful",
+    "results": [
+      {
+        "id": "DESIGN#D9.3",
+        "score": 40.995
+      },
+      {
+        "id": "EDIT26#3.2",
+        "score": 29.83
+      },
+      {
+        "id": "EDIT26#6.6",
+        "score": 22.335
+      }
+    ]
+  },
+  {
+    "query": "cars may react to upgrades subject has acquired hips draft lines your freedom remains in progress",
+    "results": [
+      {
+        "id": "EDIT26#3.2",
+        "score": 47.554
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 18.501
+      },
+      {
+        "id": "DESIGN#D9.1",
+        "score": 15.21
+      }
+    ]
+  },
+  {
+    "query": "miss stumble near miss distinct cues input denial positive impact write-off",
+    "results": [
+      {
+        "id": "DESIGN#D9.4",
+        "score": 34.886
+      },
+      {
+        "id": "DESIGN#D4.5",
+        "score": 18.484
+      },
+      {
+        "id": "EDIT26#6.6",
+        "score": 16.8
+      }
+    ]
+  },
+  {
+    "query": "seniority notches beside model ID tag practised experienced senior write-offs caused",
+    "results": [
+      {
+        "id": "EDIT26#6.4",
+        "score": 39.434
+      },
+      {
+        "id": "EDIT26#10.5",
+        "score": 23.483
+      },
+      {
+        "id": "EDIT26#10.2",
+        "score": 19.458
+      }
+    ]
+  },
+  {
+    "query": "recurring vehicle jobs certification language district logistics maintenance road",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 42.539
+      },
+      {
+        "id": "DESIGN#D6.1",
+        "score": 10.362
+      },
+      {
+        "id": "DESIGN#D10.5",
+        "score": 10.327
+      }
+    ]
+  },
+  {
+    "query": "model tag seniority notches spent appearance mark readable cues feedback never hides a car's cues",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 26.546
+      },
+      {
+        "id": "DESIGN#D4.5",
+        "score": 22.475
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 20.014
+      }
+    ]
+  },
+  {
+    "query": "standoff stop line honk horn flash lights patient pass blocked dummy",
+    "results": [
+      {
+        "id": "DRIVER#DB5",
+        "score": 30.335
+      },
+      {
+        "id": "DRIVER#DB6",
+        "score": 20.397
+      },
+      {
+        "id": "LOG#P1.2/honking-and-drones",
+        "score": 19.357
+      }
+    ]
+  }
+]

@@ -1,0 +1,172 @@
+[
+  {
+    "query": "drop off a ledge or broken parapet fall time world.dropSeconds square root of height lands on the nearest level below",
+    "results": [
+      {
+        "id": "EDIT44#5.2",
+        "score": 43.315
+      },
+      {
+        "id": "EDIT44#decisions",
+        "score": 27.434
+      },
+      {
+        "id": "DECISIONS#rows-161-170~2",
+        "score": 27.084
+      }
+    ]
+  },
+  {
+    "query": "landing on a car closing speed damage.dropSpeed hit from above legs take it Z2 136 stopped sedan",
+    "results": [
+      {
+        "id": "EDIT44#8.3",
+        "score": 48.637
+      },
+      {
+        "id": "EDIT42#8.3",
+        "score": 43.71
+      },
+      {
+        "id": "DECISIONS#rows-161-170~2",
+        "score": 16.899
+      }
+    ]
+  },
+  {
+    "query": "falling the dummy's shadow marks the landing spot drawn heights drop draws from the lift it left",
+    "results": [
+      {
+        "id": "EDIT44#4.1",
+        "score": 22.563
+      },
+      {
+        "id": "EDIT44#4.2",
+        "score": 19.632
+      },
+      {
+        "id": "EDIT43#4.1",
+        "score": 17.983
+      }
+    ]
+  },
+  {
+    "query": "hit feedback hit-stop dummy crumples dents shake grows with damage crunch horn",
+    "results": [
+      {
+        "id": "EDIT26#5.5",
+        "score": 40.603
+      },
+      {
+        "id": "DESIGN#D4.5",
+        "score": 22.118
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 19.658
+      }
+    ]
+  },
+  {
+    "query": "impact burst radial particles at contact two times body width",
+    "results": [
+      {
+        "id": "EDIT26#4.2~2",
+        "score": 17.663
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 12.481
+      },
+      {
+        "id": "ENG#8.1",
+        "score": 11.23
+      }
+    ]
+  },
+  {
+    "query": "scored hit and a physical touch must not use indistinguishable reward feedback",
+    "results": [
+      {
+        "id": "DESIGN#D4.5",
+        "score": 32.502
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 21.321
+      },
+      {
+        "id": "ENG#8.4",
+        "score": 11.938
+      }
+    ]
+  },
+  {
+    "query": "screen shake squash and stretch hit pause top-down arcade juice reference",
+    "results": [
+      {
+        "id": "JUICE#J2",
+        "score": 36.739
+      },
+      {
+        "id": "JUICE#J1",
+        "score": 28.719
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 20.728
+      }
+    ]
+  },
+  {
+    "query": "reduced motion juice scales to 25 percent shake flinch",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 31.066
+      },
+      {
+        "id": "LOG#P1.2/juice",
+        "score": 30.885
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 13.007
+      }
+    ]
+  },
+  {
+    "query": "reserved hues yellow is the dummy red is the warning neon is material never a cue",
+    "results": [
+      {
+        "id": "EDIT39#4.1.1",
+        "score": 36.27
+      },
+      {
+        "id": "EDIT38#4.1.6",
+        "score": 26.664
+      },
+      {
+        "id": "EDIT37#4.1~2",
+        "score": 20.685
+      }
+    ]
+  },
+  {
+    "query": "Z0 ground Z1 low highway Z2 high highway platform roofs world.highHeight world.deckHeight",
+    "results": [
+      {
+        "id": "DECISIONS#rows-161-170~2",
+        "score": 59.212
+      },
+      {
+        "id": "EDIT44#7.7",
+        "score": 58.743
+      },
+      {
+        "id": "LOG#P3.3",
+        "score": 51.961
+      }
+    ]
+  }
+]

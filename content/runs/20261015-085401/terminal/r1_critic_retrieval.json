@@ -1,0 +1,158 @@
+[
+  {
+    "query": "dry register corporate politeness optimistic surface",
+    "results": [
+      {
+        "id": "EDIT26#3.2",
+        "score": 16.747
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 8.091
+      }
+    ]
+  },
+  {
+    "query": "texture never changes in response to gameplay state load-bearing promoted or removed",
+    "results": [
+      {
+        "id": "EDIT26#4.2~5",
+        "score": 18.555
+      },
+      {
+        "id": "EDIT26#4.2~2",
+        "score": 12.771
+      }
+    ]
+  },
+  {
+    "query": "gloss bloom translucency stay in frame matte play area",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 13.473
+      },
+      {
+        "id": "EDIT26#7.1~1",
+        "score": 9.905
+      }
+    ]
+  },
+  {
+    "query": "high-contrast mode suppresses texture and gloss",
+    "results": [
+      {
+        "id": "EDIT26#12.3",
+        "score": 12.199
+      },
+      {
+        "id": "EDIT26#12.2",
+        "score": 12.099
+      }
+    ]
+  },
+  {
+    "query": "Chinese wording requires informed editorial review",
+    "results": [
+      {
+        "id": "EDIT26#6.2~3",
+        "score": 6.745
+      },
+      {
+        "id": "EDIT26#7.6",
+        "score": 5.113
+      }
+    ]
+  },
+  {
+    "query": "cars avoid you fool them into hitting you bait commit",
+    "results": [
+      {
+        "id": "BRIEF#P1.11",
+        "score": 14.243
+      },
+      {
+        "id": "LOG#P1.5/car-fixes-found-in-testing",
+        "score": 13.154
+      }
+    ]
+  },
+  {
+    "query": "{roads} roads, each certified in turn. Write-offs required: {q1}, {q2}, {q3}. Each lost body buys one modification credit, except the last.",
+    "results": [
+      {
+        "id": "BRIEF#P1.1",
+        "score": 23.389
+      },
+      {
+        "id": "DESIGN#D1.2",
+        "score": 18.164
+      }
+    ]
+  },
+  {
+    "query": "Welcome, test subject. The fleet will avoid you. Kindly be struck, in the accidents FARSIGHT says cannot happen.",
+    "results": [
+      {
+        "id": "EDIT26#2~2",
+        "score": 10.604
+      },
+      {
+        "id": "EDIT26#8",
+        "score": 10.285
+      }
+    ]
+  },
+  {
+    "query": "Time each FARSIGHT notice stays up before it cross-fades to the next.",
+    "results": [
+      {
+        "id": "DESIGN#D2.2",
+        "score": 9.041
+      },
+      {
+        "id": "ENG#11.4",
+        "score": 7.98
+      }
+    ]
+  },
+  {
+    "query": "Safety is a shared responsibility. FARSIGHT shares it gladly.",
+    "results": [
+      {
+        "id": "EDIT26#6.5",
+        "score": 7.187
+      },
+      {
+        "id": "EDIT26#7.2~1",
+        "score": 5.092
+      }
+    ]
+  },
+  {
+    "query": "Logistics roads are open for the benefit of the whole zone.",
+    "results": [
+      {
+        "id": "DRIVER#DB8",
+        "score": 6.875
+      },
+      {
+        "id": "EDIT26#5.3",
+        "score": 6.27
+      }
+    ]
+  },
+  {
+    "query": "Calibration marks are provided for your safety and ours.",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 5.434
+      },
+      {
+        "id": "EDIT26#1",
+        "score": 4.678
+      }
+    ]
+  }
+]

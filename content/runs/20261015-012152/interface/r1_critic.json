@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The copy mostly sounds like DUMMIES: FARSIGHT strings are dry and procedural, and the vehicle barks sound like workers. Two barks assert more than the sim logged: one names the learned counter, and one claims a closing slot.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "truth",
+      "severity": "fix",
+      "path": "barks[1].text",
+      "found": "Noted. {model} will stop further back.",
+      "canon": "DESIGN#D9.3",
+      "rule": "Barks cannot explain a learned counter beyond what the evidence supports. P1.8 lets only the toast name the change, and a car speaks about its own job and the logged event.",
+      "fix": "Noted. I did not ask for this."
+    },
+    {
+      "id": "C2",
+      "kind": "truth",
+      "severity": "fix",
+      "path": "barks[4].text",
+      "found": "Dummy in my lane. My slot is closing.",
+      "canon": "DESIGN#D5.4",
+      "rule": "Barks never assert facts the simulation did not establish. A honk logs only that the car was blocked more than 5 s. It does not log lane occupancy or a closing slot.",
+      "fix": "Dummy ahead. I have been held up."
+    }
+  ]
+}

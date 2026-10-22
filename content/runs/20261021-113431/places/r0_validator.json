@@ -1,0 +1,65 @@
+[
+  {
+    "id": "V1",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.interchange.screens.A1",
+    "found": "West Flyover Gate",
+    "canon": "BRIEF: Game data",
+    "rule": "'gate' promises a checkpoint that not every layout of Interchange A1 has (some)."
+  },
+  {
+    "id": "V2",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.interchange.screens.C3",
+    "found": "Platform Row",
+    "canon": "BRIEF: Game data",
+    "rule": "'platform' promises a roofs that not every layout of Interchange C3 has (some)."
+  },
+  {
+    "id": "V3",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.cbd.screens.C1",
+    "found": "Quay Terrace",
+    "canon": "BRIEF: Game data",
+    "rule": "'terrace' promises a roofs that not every layout of Central Business District C1 has (some)."
+  },
+  {
+    "id": "V4",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.cbd.screens.A2",
+    "found": "Elevated Avenue",
+    "canon": "BRIEF: Game data",
+    "rule": "'elevated' promises a highway that not every layout of Central Business District A2 has (some)."
+  },
+  {
+    "id": "V5",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.cbd.screens.C2",
+    "found": "Viaduct Avenue",
+    "canon": "BRIEF: Game data",
+    "rule": "'viaduct' promises a highway that not every layout of Central Business District C2 has (some)."
+  },
+  {
+    "id": "V6",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.campus.screens.C1",
+    "found": "Hall Heights",
+    "canon": "BRIEF: Game data",
+    "rule": "'heights' promises a roofs that not every layout of FARSIGHT Campus C1 has (none)."
+  },
+  {
+    "id": "V7",
+    "kind": "truth",
+    "severity": "block",
+    "path": "districts.campus.screens.A2",
+    "found": "Lab Terrace",
+    "canon": "BRIEF: Game data",
+    "rule": "'terrace' promises a roofs that not every layout of FARSIGHT Campus A2 has (some)."
+  }
+]

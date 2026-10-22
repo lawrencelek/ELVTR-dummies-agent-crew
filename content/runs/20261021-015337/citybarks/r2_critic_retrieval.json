@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 22.739
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 16.362
+      }
+    ]
+  },
+  {
+    "query": "Luxury never apologises Corporate speaks in logs KPIs policy numbers",
+    "results": [
+      {
+        "id": "EDIT26#6.1~1",
+        "score": 7.93
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 7.716
+      }
+    ]
+  },
+  {
+    "query": "banned terms setting Shenzhen smart city FARSIGHT capitals",
+    "results": [
+      {
+        "id": "FLEET#F1",
+        "score": 25.78
+      },
+      {
+        "id": "EDIT26#3.1",
+        "score": 17.991
+      }
+    ]
+  },
+  {
+    "query": "mockery game-show cheer generic science fiction commentary interchangeable",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 27.556
+      },
+      {
+        "id": "EDIT37#decisions",
+        "score": 10.621
+      }
+    ]
+  },
+  {
+    "query": "roofs are Z2 platform buildings low highway Z1 high highway Interchange CBD",
+    "results": [
+      {
+        "id": "EDIT44#7.1.1",
+        "score": 45.988
+      },
+      {
+        "id": "EDIT44#evidence",
+        "score": 39.22
+      }
+    ]
+  },
+  {
+    "query": "plates on the road FARSIGHT Campus only",
+    "results": [
+      {
+        "id": "EDIT26#7.2~2",
+        "score": 9.725
+      },
+      {
+        "id": "EDIT41#10.3",
+        "score": 9.567
+      }
+    ]
+  },
+  {
+    "query": "Write-off {writeOffs} from above. Form 9 filed.",
+    "results": [
+      {
+        "id": "EDIT26#8.4",
+        "score": 9.921
+      },
+      {
+        "id": "EDIT26#5.1",
+        "score": 8.701
+      }
+    ]
+  },
+  {
+    "query": "Plate strike logged. Calibration variance: me.",
+    "results": [
+      {
+        "id": "FLEET#F9.3",
+        "score": 10.63
+      },
+      {
+        "id": "EDIT26#7.2~2",
+        "score": 7.742
+      }
+    ]
+  },
+  {
+    "query": "Riverside. I expected better manners by water.",
+    "results": [
+      {
+        "id": "LOG#P3/questions-for-the-next-session-questions-for-the-next-session",
+        "score": 8.911
+      },
+      {
+        "id": "FLEET#F9.4",
+        "score": 6.243
+      }
+    ]
+  },
+  {
+    "query": "Old Market incident logged. Route 44 noted.",
+    "results": [
+      {
+        "id": "EDIT42#evidence",
+        "score": 12.397
+      },
+      {
+        "id": "FLEET#F9.1~2",
+        "score": 10.093
+      }
+    ]
+  },
+  {
+    "query": "Campus incident. FARSIGHT will want a form.",
+    "results": [
+      {
+        "id": "FLEET#F1",
+        "score": 12.214
+      },
+      {
+        "id": "EDIT26#3.1",
+        "score": 11.681
+      }
+    ]
+  },
+  {
+    "query": "Dropped from a flyover. Frightfully crude.",
+    "results": [
+      {
+        "id": "EDIT41#edit-41-1-flyovers-cross-roads-field-size-test-2",
+        "score": 5.021
+      },
+      {
+        "id": "EDIT42#7.4",
+        "score": 4.708
+      }
+    ]
+  }
+]

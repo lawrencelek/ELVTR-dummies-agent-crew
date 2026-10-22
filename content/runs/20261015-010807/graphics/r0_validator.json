@@ -1,0 +1,83 @@
+[
+  {
+    "id": "V1",
+    "kind": "rule",
+    "severity": "block",
+    "path": "dummy.markings[1]",
+    "found": "[-14.0, -9.0, 4.0, 9.0]",
+    "canon": "ENG#13.5",
+    "rule": "Markings stay inside the 13-unit body."
+  },
+  {
+    "id": "V2",
+    "kind": "rule",
+    "severity": "block",
+    "path": "dummy.markings[3]",
+    "found": "[-14.5, -0.5, 4.5, 0.5]",
+    "canon": "ENG#13.5",
+    "rule": "Markings stay inside the 13-unit body."
+  },
+  {
+    "id": "V3",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.straight[9]",
+    "found": "overlaps pillar at (276,358)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  },
+  {
+    "id": "V4",
+    "kind": "data",
+    "severity": "fix",
+    "path": "environment.corner[0].surface",
+    "found": "tarmac",
+    "canon": "pipeline:geometry",
+    "rule": "Declared tarmac but it sits on verge (220 units from the centreline)."
+  },
+  {
+    "id": "V5",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.corner[0]",
+    "found": "overlaps pillar at (382,312)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  },
+  {
+    "id": "V6",
+    "kind": "data",
+    "severity": "fix",
+    "path": "environment.corner[1].surface",
+    "found": "tarmac",
+    "canon": "pipeline:geometry",
+    "rule": "Declared tarmac but it sits on verge (192 units from the centreline)."
+  },
+  {
+    "id": "V7",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.corner[1]",
+    "found": "overlaps pillar at (382,312)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  },
+  {
+    "id": "V8",
+    "kind": "data",
+    "severity": "fix",
+    "path": "environment.corner[2].surface",
+    "found": "tarmac",
+    "canon": "pipeline:geometry",
+    "rule": "Declared tarmac but it sits on verge (248 units from the centreline)."
+  },
+  {
+    "id": "V9",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.corner[2]",
+    "found": "overlaps pillar at (382,312)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  }
+]

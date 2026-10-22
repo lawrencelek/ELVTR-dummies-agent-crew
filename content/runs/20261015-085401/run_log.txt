@@ -1,0 +1,14 @@
+[08:54:01] KB: 270 chunks from 7 docs; registry 154 IDs
+[08:54:01] == terminal: Terminal: the FARSIGHT smart-city interface skin
+[08:54:01] terminal: retrieved 20 chunks for 12 queries: EDIT26#4.1~1, EDIT26#4.2~3, DESIGN#D10.3~2, EDIT26#4.1~3, DESIGN#D9.2, EDIT26#3.1, DESIGN#D10.2, DESIGN#D10.5, EDIT26#4.2~4, LOG#P1.5/campaign, EDIT26#4.1~2, DESIGN#D10.1, EDIT26#4.3, DESIGN#D1, EDIT26#4.2~1, EDIT26#12.4~2, LOG#P1.4, BRIEF#P1.12, DESIGN#D10.4, DESIGN#D9.1
+[08:54:01] Generator: calling (39,040 chars in)
+[08:54:34] Generator: done in 31.6 s (5,306 chars out)
+[08:54:34] Critic: calling (57,628 chars in)
+[08:54:56] Critic: done in 19.7 s (1,259 chars out)
+[08:54:56] terminal: round 0: validator 2 issues (0 block); critic revise with 2 issues (1 block)
+[08:54:56] Generator (repair): calling (48,089 chars in)
+[08:55:16] Generator (repair): done in 18.4 s (5,342 chars out)
+[08:55:16] Critic: calling (56,822 chars in)
+[08:55:32] Critic: done in 14.1 s (235 chars out)
+[08:55:32] terminal: round 1: validator 0 issues (0 block); critic pass with 0 issues (0 block)
+[08:55:32] terminal: ACCEPTED after 2 critic round(s)

@@ -1,0 +1,242 @@
+{
+  "type": "hits",
+  "title": "Hits: layered juice for every hit, miss and near miss",
+  "param_prefix": "proto.hits.",
+  "gap": [
+    "My game is thin on juice: every hit should feel more juiced (designer's gap statement).",
+    "P2.0 gives every scored hit one response: a shake, a white flash, a car pulse and sparks at the dummy's centre. A glancing tap and a head-on bait hit feel alike apart from size.",
+    "Nothing happens at the contact point except the hard-coded burst. There is no hit sound beyond two tones, no punch-in, no crumple, no ring.",
+    "The body does not announce a miss (DESIGN D4.5 requires it). A near miss is silent and invisible.",
+    "Designer decision for P2.1: the hit-stop stays the registry's feedback.hitStop and the simulation stays byte-identical to P1.9. All new juice is presentation."
+  ],
+  "deliverable": [
+    "A layer table the renderer reads: for each event, a base layer plus accent layers that add on when 'when' conditions match (head-on, bait, lunging, stopped, big damage).",
+    "At least two impact accents, so different hits feel different.",
+    "Entries for write-off, touch on a spent car, near miss, miss and lunge. Knock is optional.",
+    "Every numeric value is a parameter ID: declare proto.hits.* IDs with value, unit, purpose and sources; reuse registry IDs where one fits.",
+    "Each layer names the reference technique it adapts."
+  ],
+  "queries": [
+    "hit feedback hit-stop dummy crumples dents shake grows with damage crunch horn",
+    "miss stumble arms flailing clatter lunge squash stretch speed lines whoosh",
+    "impact burst positive qualifying hit contact position radial motion",
+    "scored hit touch on spent car must not use indistinguishable reward feedback",
+    "body visibly announces lunge positive impact miss recovery empty charge write-off",
+    "juice reference top-down arcade driving screen shake hit pause permanence impact",
+    "cars glide dummy flops sprite with mass against a flat diagram weight squash stretch",
+    "write-off shake particles body turns red disappears destruction presentation",
+    "P1.2 juice camera shake player shake lunge impact write-off stamp",
+    "near miss distinct cues input denial positive impact sound visual equivalent",
+    "gloss bloom translucency stay in frame matte play area dummy only saturated actor reserved red"
+  ],
+  "critic_queries": [
+    "cues take priority over particles shake decorative information feedback never hides a car's cues",
+    "presentation preserves tactical information hides readable mechanics",
+    "reduced motion 25%",
+    "hit-stop 0.06 trial value destruction presentation 1.1",
+    "vehicle movement braking must not be disguised by decorative animation cars glide according to physical state",
+    "reserved red warning cues dummy only saturated actor frame aqua separate role"
+  ],
+  "k": 3,
+  "max_chunks": 18,
+  "allowed": {
+    "events": [
+      "impact",
+      "knock",
+      "touch-spent",
+      "writeoff",
+      "lunge",
+      "near-miss",
+      "miss"
+    ],
+    "event_fields": "real field names per event; see the table below",
+    "values": {
+      "zone": [
+        "front",
+        "frontDiagonal",
+        "side",
+        "rearDiagonal",
+        "rear"
+      ],
+      "carState": [
+        "cruise",
+        "intention",
+        "committed",
+        "expiring",
+        "interrupted",
+        "caution"
+      ],
+      "cause": [
+        "body",
+        "pass",
+        "cone",
+        "yield",
+        "return",
+        "unstick"
+      ],
+      "cls": [
+        "sedan",
+        "van"
+      ],
+      "bait": [
+        true,
+        false
+      ],
+      "lunging": [
+        true,
+        false
+      ],
+      "stopped": [
+        true,
+        false
+      ]
+    },
+    "numeric_fields": [
+      "assessed",
+      "lost",
+      "closing",
+      "strike",
+      "dv",
+      "angle",
+      "health",
+      "speed",
+      "R",
+      "charge",
+      "gap",
+      "seniority"
+    ],
+    "particle_types": [
+      "dust",
+      "smoke",
+      "spark",
+      "debris",
+      "ring"
+    ],
+    "particle_dirs": [
+      "random",
+      "backward",
+      "facing",
+      "away"
+    ],
+    "particle_at": [
+      "dummy",
+      "contact",
+      "car"
+    ],
+    "particle_roles": [
+      "floor",
+      "grid",
+      "structure",
+      "fleet",
+      "dummy",
+      "joints"
+    ],
+    "line_roles": [
+      "grid",
+      "structure",
+      "fleet",
+      "joints"
+    ],
+    "sound_types": [
+      "tone",
+      "noise"
+    ],
+    "waves": [
+      "square",
+      "sawtooth",
+      "triangle",
+      "sine"
+    ],
+    "only_on": {
+      "popup": [
+        "impact"
+      ],
+      "rays": [
+        "impact"
+      ],
+      "stumble": [
+        "miss"
+      ],
+      "crumple": [
+        "impact",
+        "knock",
+        "writeoff"
+      ],
+      "streaks": [
+        "lunge",
+        "near-miss",
+        "miss"
+      ]
+    },
+    "no_reward_events": [
+      "touch-spent",
+      "near-miss",
+      "miss"
+    ],
+    "reward_blocks": [
+      "flash",
+      "popup",
+      "rays",
+      "zoom",
+      "crumple"
+    ],
+    "required_events": [
+      "impact",
+      "writeoff",
+      "touch-spent",
+      "near-miss",
+      "miss",
+      "lunge"
+    ],
+    "min_impact_accents": 2,
+    "range_ids": true,
+    "max_gain": 0.25
+  },
+  "schema": [
+    "{",
+    "  \"params\": [ {\"id\": \"proto.hits.<event>.<name>\", \"value\": number, \"unit\": \"canvas units|s|count|ratio|world units|world units/s|Hz|gain|px\", \"purpose\": \"one line\", \"sources\": [chunk ids]} ],",
+    "  \"hitStop\": \"feedback.hitStop\",",
+    "  \"reducedMotion\": \"<param id: ratio applied to shake, zoom, crumple and stumble>\",",
+    "  \"layers\": [ {",
+    "     \"event\": one of allowed.events,",
+    "     \"when\": {} for the base layer, or {field: literal} / {numericField: {\"min\": ID, \"max\": ID}} for an accent (bounds are parameter IDs),",
+    "     \"scale\": {\"by\": \"<numeric field of the event>\", \"full\": \"<param id: value that gives full intensity>\"} | null,",
+    "     \"shake\": {\"amp\": V, \"seconds\": V} | null,",
+    "     \"zoom\": {\"amount\": V, \"seconds\": V} | null,         (field punches in toward the contact; ratio, e.g. 0.04 = 4%)",
+    "     \"flash\": V | null,                                  (white field flash, seconds)",
+    "     \"crumple\": {\"amount\": V, \"seconds\": V} | null,      (dummy squashes along the hit direction, springs back; ratio)",
+    "     \"stumble\": {\"amp\": V, \"seconds\": V} | null,         (miss: dummy wobbles with arms flailing; amp in radians)",
+    "     \"ring\": {\"radius\": V, \"seconds\": V, \"width\": V, \"role\": allowed.line_roles} | null,",
+    "     \"rays\": {\"count\": V, \"length\": V, \"seconds\": V} | null,",
+    "     \"popup\": {\"size\": V, \"rise\": V, \"seconds\": V, \"pop\": V} | null,",
+    "     \"streaks\": {\"count\": V, \"length\": V, \"seconds\": V, \"role\": allowed.line_roles} | null,",
+    "     \"particles\": [ {\"type\": allowed.particle_types, \"count\": V, \"speed\": V, \"life\": V, \"size\": V, \"role\": allowed.particle_roles, \"dir\": allowed.particle_dirs, \"at\": allowed.particle_at} ],",
+    "     \"sound\": {\"type\": \"tone\"|\"noise\", \"from\": V, \"to\": V, \"seconds\": V, \"gain\": V, \"wave\": allowed.waves (tone only)} | null,",
+    "     \"reference\": \"which reference technique this adapts, in a few words\",",
+    "     \"sources\": [chunk ids]",
+    "  } ]",
+    "}",
+    "V is a parameter ID string, or a two-item array [minId, maxId] interpolated by the layer's scale (0 to 1). Never a bare number."
+  ],
+  "consumer": [
+    "Event fields (all logged; derived cases are logged by the renderer into the trace under 'presentation'):",
+    "- impact: zone, angle, closing, strike, dv, assessed, lost, health, carState, cause, bait, lunging, stopped, cls, seniority",
+    "- knock: speed (the dummy is pushed back by a car; fires with most scored hits)",
+    "- touch-spent: cls (a touch on a car already spent: no damage, no points)",
+    "- writeoff: chassis, writeOffs, plus zone and cls of the impact that caused it",
+    "- lunge: R (reach, world units), charge (charge left)",
+    "- near-miss (derived): gap (metres at closest), speed (car speed, world units/s), lunging, cls. A fast car passes close without contact.",
+    "- miss (derived): gap (metres to the nearest car, or none). A lunge ends with no contact.",
+    "For each event the renderer applies every layer whose 'when' matches, in order. A later layer replaces shake, zoom, flash, crumple, stumble, rays and popup. Particles, rings, streaks and sounds add up.",
+    "Contact point: where the sim resolved the contact (impact, write-off), else between the dummy and the car. 'at': dummy, contact or car. 'away' points from the car toward the dummy and beyond.",
+    "Shake and zoom move the play field only; HUD and frame never move. Shake amplitude is in canvas units and decays quadratically. Zoom eases back over its seconds.",
+    "rays and popup restyle the impact burst cue (DESIGN D10.3): radial lines and the assessed value at the contact. They exist only on positive hits.",
+    "crumple scales the dummy sprite along the hit normal. stumble rotates it and draws flailing arms. Neither moves the simulated body.",
+    "streaks are straight speed lines: behind the dummy for lunge and miss, along the car's travel beside the dummy for near-miss.",
+    "Sound: when a layer has sound, it replaces the P2.0 tone for that event. 'noise' is a filtered noise burst (crunch, whoosh, clatter); from/to are filter frequencies in Hz. 'tone' is an oscillator sweep.",
+    "Cars are drawn where the simulation puts them. The renderer cannot move, bend or dent a car.",
+    "The hit-stop is the simulation's feedback.hitStop (0.06 s). It is not a presentation parameter and must not be redeclared.",
+    "Reserved inks: primary and secondary cue colours belong to cues (EDIT26 4.2.2). Effects use structure, fleet, grid, joints, floor, or dummy for the dummy's own chips.",
+    "The impact burst (rays, contact ring) stays within 2 × body width (EDIT26 4.2.2). Sound gain is clamped to 0.25."
+  ]
+}

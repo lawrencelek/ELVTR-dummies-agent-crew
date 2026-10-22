@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The copy sounds like DUMMIES: polite, procedural and dry, with no neon, no game-show cheer and no claims about a run. One lore error needs fixing. The title tells the visitor every lost body earns a credit, but the final write-off on the last road pays none.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "lore",
+      "severity": "block",
+      "path": "title.lines[1]",
+      "found": "{roads} roads, needing {q1}, {q2} and {q3} write-offs. Each body lost earns a modification credit.",
+      "canon": "LOG#P1.5/campaign",
+      "rule": "Credits total 1 + 2 + 2 = 5 across the campaign, because clearing L3 ends with Licensed and pays no credit. So not every body lost earns one.",
+      "fix": "{roads} roads, needing {q1}, {q2} and {q3} write-offs. Each body lost earns a modification credit, except the last."
+    }
+  ]
+}
