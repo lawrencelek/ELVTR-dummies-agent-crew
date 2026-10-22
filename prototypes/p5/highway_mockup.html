@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diagonal Highways</title>
+<title>Highway Width</title>
 <style>
   :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --warn: #ffb347; --bad: #ff5a6a; --good: #57e389; }
   * { box-sizing: border-box; }
@@ -34,22 +34,15 @@
 </head>
 <body>
 <header>
-  <h1>Diagonal highways · P5 mock-up</h1>
-  <p>Highways at 45° and 135° beside today's square highway, in game art, with live P5 traffic: highway cars at 1.4× speed, the game's driver. A mock-up: the P5 districts still build square highways.</p>
+  <h1>Highway width · P5 mock-up</h1>
+  <p>The game's own highway art at three widths over the same ground road, with live P5 traffic. P5.2 takes 160: as wide as the road below with its pavements. Paired lamps and round columns are P5.2's too.</p>
 </header>
 <main>
   <section>
-    <h2>One screen each</h2>
+    <h2>Three widths</h2>
     <div class="row"><button id="play">Pause</button></div>
     <div class="grid2" id="panels"></div>
-    <p class="note">Highway decks drawn lifted by their height (three-quarter view), girder face on the screen-down edge, columns under both edges at world.deckPillarSpacing, clear of the road. 16 px tile grid. Panel 2 adds a stair along the deck and a dummy on its shoulder, for scale.</p>
-  </section>
-  <section>
-    <h2>Across a district</h2>
-    <div class="grid2"><canvas id="map"></canvas>
-      <div><p class="cap key"><span><i class="dot" style="background:#57e389"></i>Side-edge crossing: as today's highways</span><span><i class="dot" style="background:#ffb347"></i>Top/bottom-edge crossing: the lower screen's top edge</span></p>
-      <div class="scroll"><table id="maprows"></table></div>
-      <p class="note">A screen is 800 × 640. A 45° line drops 800 across one screen, more than its height, so a diagonal highway crosses a top or bottom edge on most screens it enters. Edit 48 keeps a drawn deck top world.deckTopClear (128) below every top edge, so the dummy is never hidden on entry from above. Proposal: close the top edge over the deck's crossing, plus world.deckTopClear either side (orange bars).</p></div></div>
+    <p class="note">White rulers: the ground road with its pavements (bottom) and the highway (left), in world units. One dummy on the ground pavement, one on the highway's walkway (or its lane edge, with no walkway). 16 px tile grid.</p>
   </section>
 </main>
 <script>
@@ -108,9 +101,11 @@
     'world.district.interchange.quota': 2, 'world.district.interchange.interval': 2.8, 'world.district.interchange.vanShare': 0.3, 'world.district.interchange.blockShare': 0.36, 'world.district.interchange.blockMax': 160, 'world.district.interchange.doubleShare': 0.6, 'world.district.interchange.towerShare': 0.15, 'world.district.interchange.puddleShare': 0.02, 'world.district.interchange.jerseyShare': 0.1, 'world.district.interchange.decks': 2, 'world.district.interchange.highDecks': 1, 'world.district.interchange.platformShare': 0.15,
     'world.district.cbd.quota': 3, 'world.district.cbd.interval': 2.6, 'world.district.cbd.vanShare': 0.3, 'world.district.cbd.blockShare': 0.42, 'world.district.cbd.blockMax': 160, 'world.district.cbd.doubleShare': 0.8, 'world.district.cbd.towerShare': 0.5, 'world.district.cbd.puddleShare': 0.02, 'world.district.cbd.jerseyShare': 0.08, 'world.district.cbd.decks': 2, 'world.district.cbd.highDecks': 1, 'world.district.cbd.platformShare': 0.15,
     'world.district.campus.quota': 4, 'world.district.campus.interval': 2.5, 'world.district.campus.vanShare': 0.4, 'world.district.campus.blockShare': 0.36, 'world.district.campus.blockMax': 160, 'world.district.campus.doubleShare': 0.9, 'world.district.campus.towerShare': 0.1, 'world.district.campus.puddleShare': 0.01, 'world.district.campus.jerseyShare': 0.08, 'world.district.campus.decks': 1, 'world.district.campus.highDecks': 0, 'world.district.campus.platformShare': 0.12,
-    'world.deckHeight': 120, 'world.deckWidth': 176, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
+    'world.deckHeight': 120, 'world.deckWidth': 160, // P5.2 (Edit 50.2): as wide as a ground road and its pavements (2 × (world.laneWidth + proto.shoulderWidth))
+     'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
     // Edit 42 (P3.1): three levels, bounded districts
-    'world.parapetWidth': 8, 'world.deckLampSpacing': 128, 'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7,
+    'world.parapetWidth': 8, 'world.deckLampSpacing': 88, // P5.2: lamps in pairs, about nine per screen width
+     'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7,
     'world.dropSeconds': 0.35, 'damage.dropSpeed': 120, 'world.wallThickness': 16, 'world.boomRange': 140, 'world.boomSeconds': 0.5,
     'world.towerHeightMin': 288, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 160, 'damage.plateMultiplier': 1.5,
     // Edit 43 (P3.2): perpendicular crossings, turn styles, storeys and frontage, car lights
@@ -127,6 +122,8 @@
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
     'traffic.deckSpeedScale': 1.4, 'traffic.deckGapScale': 1.5, 'damage.deckMultiplier': 1, // P5.1: highway hits pay through speed alone (user, 21 October)
+    'world.deckRingRadius': 132, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
+    'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
@@ -3758,7 +3755,7 @@
     const along = dk.hz ? AW : AH, lane = Math.round(P['world.laneWidth'] / U), pw = Math.max(2, Math.round(P['world.parapetWidth'] / U)), mid = Math.round(wpx / 2);
     const S = dk.hz ? spr(along, LAMP_H + wpx + face, 0, LAMP_H) : spr(wpx, along, 0, 0);
     const put = (a, b, c) => (dk.hz ? sput(S, a, b + LAMP_H, c) : sput(S, b, a, c)); // a along the deck, b across (0 = north / west)
-    const high = (dk.z || 1) === 2, leds = KX('bldgLed'), led = leds ? leds[high ? 2 : 1] || leds[0] : K.lane, glow = c32(mixHex(PAL.deck2, PAL.head || PAL.white, 0.22)); // Edit 44: the high highway's LED line differs
+    const high = (dk.z || 1) === 2, leds = KX('bldgLed'), led = leds ? leds[high ? 2 : 1] || leds[0] : K.lane, glow = c32(mixHex(PAL.deck2, PAL.head || PAL.white, 0.38)); // Edit 44: the high highway's LED line differs
     const gaps = (dk.gaps || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]);
     const opens = (dk.openings || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]); // Edit 44: a link stair's head, no parapet
     const inOpen = (a, sd) => opens.some(([g0, g1, s2]) => s2 === sd && a >= g0 && a < g1);
@@ -3782,13 +3779,14 @@
       if (pb < pw + 1 && pb > 0 && !inGap(a, sd) && (inGap(a - 1, sd) || inGap(a + 1, sd))) put(a, b, K.white); // snapped ends (never warning red: canon)
     }
     const sp = Math.round(P['world.deckLampSpacing'] / U);
-    if (dk.hz) for (const sd of [-1, 1]) for (let a = Math.round(sp / 2) + (sd > 0 ? Math.round(sp / 2) : 0); a < along; a += sp) {
+    // P5.2 (Edit 50.2): lamps in pairs, one on each parapet every world.deckLampSpacing; a pale pole, a bright head, a light pool
+    if (dk.hz) for (const sd of [-1, 1]) for (let a = Math.round(sp / 2); a < along; a += sp) {
       if (inGap(a, sd) || inOpen(a, sd)) continue;
       const b0 = sd < 0 ? 1 : wpx - 2;
       if (nearGap(a, sd)) { for (let k = 0; k < 5; k++) put(a + k, b0 - k * sd, k === 4 ? K.bldgDark : K.bldgOutline); continue; } // broken: the pole lies across the shoulder, unlit
-      for (let k = 1; k <= 3; k++) for (let j = -1; j <= 1; j++) put(a + j, b0 - sd * (pw + k), glow); // light pool on the shoulder
-      for (let k = 1; k < LAMP_H; k++) sput(S, a, b0 + LAMP_H - k, K.bldgOutline); // the pole rises screen-up from the parapet
-      for (let j = -1; j <= 1; j++) sput(S, a + j, b0 + 1, j ? K.head : K.white);
+      for (let k = 1; k <= 4; k++) for (let j = -2; j <= 2; j++) if (Math.abs(j) + (k > 3 ? 1 : 0) <= 2) put(a + j, b0 - sd * (pw + k), glow); // light pool on the shoulder
+      for (let k = 1; k < LAMP_H; k++) { sput(S, a, b0 + LAMP_H - k, K.jerseyTop); sput(S, a + 1, b0 + LAMP_H - k, K.bldgOutline); } // the pole rises screen-up from the parapet
+      for (let j = -1; j <= 2; j++) { sput(S, a + j, b0 + 1, j === 0 || j === 1 ? K.white : K.head); sput(S, a + j, b0, K.bldgOutline); }
     }
     return { S, ext };
   }
@@ -3995,200 +3993,96 @@
   }
 
   // Deck column (Edit 43): concrete, lit on the left, from its footprint up to the deck's underside.
+  // P5.2 (Edit 50.2): a round column. A cylinder of the footprint's width, lit from the left (the sun), shaded to the right,
+  // standing on an elliptical base; a pier cap two pixels proud at the top meets the deck.
   function column(wpx, hpx, lift) {
-    const S = spr(wpx, hpx + lift, 0, lift);
-    for (let y = -lift; y < hpx; y++) for (let x = 0; x < wpx; x++) sput(S, x, y + lift, x === 0 ? K.jerseyTop : x === wpx - 1 || y === hpx - 1 ? K.columnD : y < -lift + 2 ? K.columnD : K.column);
+    const S = spr(wpx + 2, hpx + lift, 1, lift), cx = wpx / 2, rx = wpx / 2, cy = hpx / 2, ry = Math.max(2, Math.round(hpx / 3));
+    const shade = (u) => (u < -0.75 ? K.columnD : u < -0.35 ? K.jerseyTop : u < 0.35 ? K.column : u < 0.8 ? K.columnD : K.bldgOutline);
+    for (let y = -lift; y < hpx; y++) for (let x = -1; x <= wpx; x++) {
+      const u = (x + 0.5 - cx) / rx, cap = y < -lift + 3;
+      if (Math.abs(u) > (cap ? 1 + 1.6 / rx : 1)) continue;
+      if (y > cy) { const e = (y + 0.5 - cy) / ry; if (u * u + e * e > 1) continue; } // the rounded base
+      sput(S, x + 1, y + lift, cap ? (y === -lift + 2 ? K.bldgOutline : u < 0 ? K.jerseyTop : K.columnD) : y > cy - 1 && u * u + ((y + 0.5 - cy) / ry) ** 2 > 0.7 ? K.columnD : shade(u));
+    }
     return S;
   }
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
-    monument, fountain, deck, wall, booth, stairs, column, skybridge, mixK, LAMP_H, roadField, giveWayMark,
+    monument, fountain, deck, wall, booth, stairs, column, skybridge, mixK, LAMP_H, roadField, giveWayMark, tree, hedge, blob, KX, // P5.2: park art for the cityscape mock-up
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
 <script>
-// Diagonal highway mock-up (P5, GDD Edit 50.1). Highways at 0°, 45° and 135° over a ground road, in game art, with live
-// P5 traffic on deck and ground (the game's driver; highway cars at traffic.deckSpeedScale). A district map shows how a
-// diagonal highway runs across screens. Mock-up only: the P5 planner still builds square highways.
+// Highway width mock-up (P5, GDD Edit 50.2). The game's own deck, lamp, column and ground art at three deck widths over the
+// same ground road, with live P5 traffic. 176: P5.1. 160: P5.2, as wide as the ground road and its pavements. 128: no
+// pavement on the highway (lanes and parapets only). A dummy on each for scale.
 (function () {
   'use strict';
-  const X = window.DUMMIES, PIX = window.PIX, P = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES), U = PIX.U, K = PIX.K, AW = PIX.AW, AH = PIX.AH, Z = 2;
-  const W = P['world.width'], H = P['world.height'], LEAD = P['world.spawnLeadIn'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'];
-  const HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'], EXT = (h) => Math.round(h * P['proto.art.extrusion'] / U), D45 = Math.SQRT1_2;
-  const LED = PIX.c32((PIX.PAL.bldgLed || ['#4FC3E8', '#1A7FA7'])[1]);
+  const X = window.DUMMIES, PIX = window.PIX, P0 = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES), U = PIX.U, AW = PIX.AW, AH = PIX.AH, Z = 2;
+  const W = P0['world.width'], H = P0['world.height'], LW = P0['world.laneWidth'], SH = P0['proto.shoulderWidth'], OUTER = LW + SH, PW = P0['world.parapetWidth'];
+  const EXT = (h) => Math.round(h * P0['proto.art.extrusion'] / U);
   const $ = (id) => document.getElementById(id);
-  // a straight line through (cx, cy) along (ux, uy), LEAD beyond the screen both ways
-  function line(cx, cy, ux, uy) {
-    const t = (fx, fy) => { const ts = []; if (fx > 1e-9) ts.push((W - cx) / fx); if (fx < -1e-9) ts.push(-cx / fx); if (fy > 1e-9) ts.push((H - cy) / fy); if (fy < -1e-9) ts.push(-cy / fy); return Math.min(...ts) + LEAD; };
-    const a = t(-ux, -uy), b = t(ux, uy);
-    return [[cx - ux * a, cy - uy * a], [cx + ux * b, cy + uy * b]];
-  }
-  const DIRS = { 0: [1, 0], 90: [0, 1], 45: [D45, -D45], 135: [D45, D45] }; // on screen: 45° rises to the right, 135° falls to the right
-  // ---------- panels: a highway (angle, centre) over a ground road (angle, centre)
-  const PANELS = [
-    { id: 'square', title: 'Today: square highway over a square road', deck: { ang: 0, c: [400, 352], z: 1 }, road: { ang: 90, c: [400, 320] },
-      note: 'Decision 152: the highway runs horizontally; the road beneath crosses square.', verdict: 'good' },
-    { id: 'd135', title: '135° highway over a 45° road: square crossing', deck: { ang: 135, c: [430, 380], z: 1 }, road: { ang: 45, c: [400, 340] },
-      note: 'Keeps decision 152: the road passes square beneath. The road takes a 45° run under the highway.', verdict: 'good', stair: true },
-    { id: 'd45x', title: '45° highway over a square road: 45° crossing', deck: { ang: 45, c: [430, 390], z: 1 }, road: { ang: 0, c: [400, 300] },
-      note: 'Breaks decision 152: the road passes under at 45°. Its shadowed run under the deck is 1.4× as long; columns crowd it.', verdict: 'bad' },
-    { id: 'corner', title: '45° highway cutting a corner (S edge to E edge)', deck: { ang: 45, c: [680, 520], z: 2 }, road: { ang: 0, c: [400, 232] },
-      note: 'A 45° line cannot cross 800 × 640 from W to E: Δy would be 800. It always meets a top or bottom edge.', verdict: 'warn' },
+  const VARIANTS = [
+    { w: 176, title: 'P5.1: 176, wider than the road below', verdict: 'bad', note: 'Lanes 112, hard shoulders 24, parapets 8. The ground road with its pavements is 160.' },
+    { w: 160, title: 'P5.2: 160, as wide as the road and its pavements', verdict: 'good', note: 'Lanes 112, a 16 walkway each side, parapets 8. Matches the ground road (lanes 112 + pavements 24).' },
+    { w: 128, title: 'No walkway: 128, lanes and parapets only', verdict: 'warn', note: 'The dummy on a highway always stands in a lane. Stairs land straight onto the lane.' },
   ];
-  function deckGeom(dk) {
-    const [ux, uy] = DIRS[dk.ang], nx = -uy, ny = ux, step = U / (Math.abs(nx) + Math.abs(ny)); // across moves by step per pixel line
-    return Object.assign({ ux, uy, nx, ny, step, height: dk.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] }, dk);
-  }
-  function clipLen(pts) { // length of a straight centre line inside the screen
-    const [[x0, y0], [x1, y1]] = pts; let a = 0, b = 1; const dx = x1 - x0, dy = y1 - y0;
-    for (const [p, q] of [[-dx, x0], [dx, W - x0], [-dy, y0], [dy, H - y0]]) { if (Math.abs(p) < 1e-9) { if (q < 0) return 0; continue; } const r = q / p; if (p < 0) a = Math.max(a, r); else b = Math.min(b, r); }
-    return b > a ? (b - a) * Math.hypot(dx, dy) : 0;
-  }
-  const acrossOf = (g, x, y) => (x - g.c[0]) * g.nx + (y - g.c[1]) * g.ny;
-  const alongOf = (g, x, y) => (x - g.c[0]) * g.ux + (y - g.c[1]) * g.uy;
-  // ---------- the deck surface, drawn in its own layer (pre-lift), by world-unit rules that keep 1 px lines at any of 0/45/135
-  function paintDeck(L, g) {
-    const s2 = g.step / 2, lift = EXT(g.height), face = 4, high = g.z === 2;
-    for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) {
-      const wx = (x + 0.5) * U, wy = (y + 0.5) * U, b = acrossOf(g, wx, wy), a = alongOf(g, wx, wy), pb = HALF - Math.abs(b);
-      if (pb < 0) continue;
-      let c;
-      if (pb < g.step) c = K.jerseyO;
-      else if (pb < 2 * g.step) c = ((a / U) % 6 + 6) % 6 < 3 ? LED : K.jerseyTop; // parapet LED line
-      else if (pb < PW + g.step) c = K.jersey;
-      else if (high && pb < PW + 2 * g.step) c = ((a / U) % 6 + 6) % 6 < 3 ? LED : K.deck2;
-      else if (Math.abs(Math.abs(b) - LW) < s2) c = K.lane; // solid lines: hard shoulders outside
-      else if (Math.abs(b) < s2 && ((a % 48) + 48) % 48 < 28) c = K.lane; // long dashes
-      else if (((a % 64) + 64) % 64 < g.step) c = K.deckJoint;
-      else c = Math.abs(b) > LW ? K.deck2 : K.deck;
-      L.put(x, y, c);
-    }
-    // girder face: the deck's screen-down edge, extruded 4 px down (lit lip, ribs, outline)
-    for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) {
-      const inB = (xx, yy) => HALF - Math.abs(acrossOf(g, (xx + 0.5) * U, (yy + 0.5) * U)) >= 0;
-      if (inB(x, y)) continue;
-      for (let k = 1; k <= face; k++) if (inB(x, y - k)) { const a = alongOf(g, (x + 0.5) * U, (y + 0.5) * U); L.put(x, y, k === 1 ? K.jerseyTop : k === face ? K.bldgOutline : (((a / U) % 8 + 8) % 8 < 2 ? K.columnD : K.column)); break; }
-    }
-    return lift;
-  }
-  function shadeDeck(B, g) { // the deck's shadow on the ground: the band swept by the sun over its height
-    const k = P['proto.art.shadowScale'], ox = PIX.SUN.x * g.height * k, oy = PIX.SUN.y * g.height * k, on = ox * g.nx + oy * g.ny;
-    const lo = -HALF + Math.min(0, on), hi = HALF + Math.max(0, on);
-    for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const b = acrossOf(g, (x + 0.5) * U, (y + 0.5) * U); if (b >= lo && b <= hi) B.shade(x, y, 0.72); }
-  }
-  // columns under both deck edges at world.deckPillarSpacing, clear of the road beneath
-  function columns(g, road) {
-    const out = [], C = P['world.deckColumn'], sp = P['world.deckPillarSpacing'];
-    for (let a = -1600 + sp / 2; a < 1600; a += sp) for (const sd of [-1, 1]) {
-      const cx = g.c[0] + g.ux * a + g.nx * sd * (HALF - C / 2 - 4), cy = g.c[1] + g.uy * a + g.ny * sd * (HALF - C / 2 - 4);
-      if (cx < -C || cy < -C || cx > W + C || cy > H + C) continue;
-      const pr = X.pathProject(road.path, cx, cy); if (Math.abs(pr.lat) < OUTER + C) continue;
-      out.push({ x: cx - C / 2, y: cy - C / 2, w: C, h: C });
-    }
-    return out;
-  }
-  // a stair parallel to the deck, outside its parapet: rises from the ground to the deck over world.stairLength × 3
-  function stairOf(g) {
-    const len = P['world.stairLength'] * 3, wd = P['world.stairWidth'], a0 = -320, side = 1;
-    return { g, a0, a1: a0 + len, b0: side * (HALF + 2), b1: side * (HALF + 2 + wd), side };
-  }
-  function paintStair(Bf, st, lift) { // drawn after the ground, before the deck: each row lifted by its height
-    const g = st.g;
-    for (let y = 0; y < AH + lift; y++) for (let x = 0; x < AW; x++) {
-      // pixel (x, y) on screen shows the stair point whose ground position is (x, y + h(t))
-      for (let h = lift; h >= 0; h--) {
-        const wx = (x + 0.5) * U, wy = (y + h + 0.5) * U, a = alongOf(g, wx, wy), b = acrossOf(g, wx, wy);
-        if (a < st.a0 || a > st.a1 || b < Math.min(st.b0, st.b1) || b > Math.max(st.b0, st.b1)) continue;
-        const t = (a - st.a0) / (st.a1 - st.a0), hh = Math.round(t * lift);
-        if (hh !== h) continue;
-        const edge = Math.abs(b - st.b0) < g.step || Math.abs(b - st.b1) < g.step;
-        Bf.put(x, y, edge ? K.jerseyO : (Math.floor(a / 6) % 2 ? K.jerseyTop : K.jersey));
-        break;
-      }
-    }
-  }
-  // ---------- live sims, one per panel
-  const panels = PANELS.map((pn) => {
-    const g = deckGeom(pn.deck), road = { center: line(pn.road.c[0], pn.road.c[1], ...DIRS[pn.road.ang]) }, lanes = X.lanesOf(road.center, P);
-    road.path = lanes[0];
-    const deckCenter = line(g.c[0], g.c[1], g.ux, g.uy), deckLanes = X.lanesOf(deckCenter, P).map((path, j) => ({ path, deck: 0, dir: j }));
-    const s = new X.Sim('straight', { 'run.appearances.road': 2000 });
-    s.level = Object.assign({}, s.level, { center: road.center, ring: null, lanes, statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }], patches: [], floors: [], stairs: [], checkpoints: [], theme: 'plain',
-      decks: [{ hz: g.ang === 0, off: g.ang === 0 ? g.c[1] : g.c[0], z: g.z, height: g.height, diag: g.ang }], deckLanes });
+  const panels = VARIANTS.map((v, i) => {
+    const P = Object.assign({}, P0, { 'world.deckWidth': v.w }), half = v.w / 2, C = P['world.deckColumn'];
+    const center = [[400, -200], [400, H + 200]], lanes = X.lanesOf(center, P);
+    const dk = { hz: true, off: 352, z: 1, height: P['world.deckHeight'], gaps: [], openings: [] };
+    const s = new X.Sim('straight', { 'world.deckWidth': v.w, 'run.appearances.road': 2000 });
+    s.level = Object.assign({}, s.level, { center, ring: null, lanes, statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }], patches: [], floors: [], stairs: [], checkpoints: [], theme: 'plain', decks: [dk], deckLanes: X.deckLanesOf([dk], P) });
     s.cones = []; s.cars = []; s.drones = []; s.checkTerminal = () => {}; s.checkFlip = () => {};
-    s.schedule = s.schedule.map((sl, i) => Object.assign({}, sl, { cls: X.fleetClass(P, 0.3, ((i * 0.6180339887 + 0.53) % 1)), lane: i % 2 }));
-    Object.assign(s.body, { x: -900, y: -900 });
-    s.fillDeckCars();
-    const B = PIX.ground({ center: road.center, ring: null, statics: [], spawns: [], coneHomes: [], patches: [], decks: [], floors: [], canal: false, solid: [] }, P, 11);
-    shadeDeck(B, g);
-    const cols = columns(g, road).map((st) => ({ st, spr: PIX.column(Math.round(st.w / U), Math.round(st.h / U), EXT(g.height)) }));
-    const L0 = new PIX.Buf(AW, AH); L0.layer = false; const lift = paintDeck(L0, g);
-    const stair = pn.stair ? stairOf(g) : null, SB = new PIX.Buf(AW, AH);
-    if (stair) paintStair(SB, stair, lift); // drawn once
+    s.schedule = s.schedule.map((sl, j) => Object.assign({}, sl, { cls: X.fleetClass(P, 0.3, (j * 0.6180339887 + 0.53) % 1) }));
+    Object.assign(s.body, { x: -900, y: -900 }); s.fillDeckCars();
+    for (let k = 0; k < 15 * 60; k++) { s.step({}); s.body.x = -900; s.body.y = -900; }
+    const B = PIX.ground({ center, ring: null, statics: [], spawns: [], coneHomes: [], patches: [], decks: [dk], floors: [], canal: false, solid: [] }, P, 11);
+    const { S, ext } = PIX.deck(dk, P), cols = [];
+    for (let p = P['world.deckPillarSpacing'] / 2; p < W; p += P['world.deckPillarSpacing']) for (const e of [dk.off - half + 4, dk.off + half - 4 - C]) {
+      if (Math.abs(p - 400) < OUTER + C + 4) continue;
+      cols.push({ x: p - C / 2, y: e, spr: PIX.column(Math.round(C / U), Math.round(C / U), ext) });
+    }
     const cv = document.createElement('canvas'); cv.width = AW * Z; cv.height = AH * Z;
-    const vis = clipLen(deckCenter);
-    return { pn, g, road, s, B, cols, L0, lift, stair, SB, vis, cv, FB: new PIX.Buf(AW, AH), DL: new PIX.Buf(AW, AH), off: Object.assign(document.createElement('canvas'), { width: AW, height: AH }) };
+    const wrap = document.createElement('div'), cap = document.createElement('div'); wrap.append(cv, cap); $('panels').appendChild(wrap);
+    const tag = { good: '<span class="good">P5.2</span>', warn: '<span class="warn">Option</span>', bad: '<span class="bad">Was</span>' }[v.verdict];
+    cap.innerHTML = `<h3>${v.title}</h3><p class="cap">${tag} · ${v.note}</p><p class="cap" id="st${i}"></p>`;
+    const dumX = 250, dumY = v.w > 128 ? dk.off - half + PW + (half - LW - PW) / 2 + 4 : dk.off - LW + 10; // on the walkway, or the lane edge
+    return { v, P, s, B, S, ext, dk, half, cols, cv, dumX, dumY, FB: new PIX.Buf(AW, AH), DL: new PIX.Buf(AW, AH), off: Object.assign(document.createElement('canvas'), { width: AW, height: AH }) };
   });
-  const box = $('panels');
-  for (const p of panels) {
-    const wrap = document.createElement('div'); wrap.appendChild(p.cv);
-    const tag = { good: '<span class="good">Fits the rules</span>', warn: '<span class="warn">Needs a rule</span>', bad: '<span class="bad">Breaks a rule</span>' }[p.pn.verdict];
-    const cap = document.createElement('div'); cap.innerHTML = `<h3>${p.pn.title}</h3><p class="cap">${tag} · ${p.pn.note}</p><p class="cap" id="st_${p.pn.id}"></p>`;
-    wrap.appendChild(cap); box.appendChild(wrap);
-  }
-  const EXTc = (cls) => EXT(P['vehicles.' + cls + '.height']);
-  function draw(p) {
-    const { FB, DL, s, g, lift } = p;
+  const car = (p, c) => PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(p.P['vehicles.' + c.cls + '.height']), c.h, false);
+  function draw(p, i) {
+    const { FB, DL, s, dk, half, ext } = p;
     FB.d.set(p.B.d);
-    if (p.stair) for (let i = 0; i < FB.d.length; i++) if (p.SB.d[i]) FB.d[i] = p.SB.d[i];
-    const ground = s.cars.filter((c) => !c.deck).sort((a, b) => a.y - b.y);
-    for (const c of ground) PIX.blit(FB, PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXTc(c.cls), c.h, false), c.x / U, c.y / U);
-    for (const c of p.cols.slice().sort((a, b) => a.st.y - b.st.y)) PIX.blit(FB, c.spr, Math.round(c.st.x / U), Math.round(c.st.y / U));
-    DL.d.set(p.L0.d);
-    for (const c of s.cars.filter((c) => c.deck).sort((a, b) => a.y - b.y)) PIX.blit(DL, PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXTc(c.cls), c.h, false), c.x / U, c.y / U);
-    if (p.pn.id === 'd135') { const S = PIX.dummy(Math.PI / 4, 0); PIX.blit(DL, S, (g.c[0] + g.nx * (HALF - 18) - g.ux * 120) / U, (g.c[1] + g.ny * (HALF - 18) - g.uy * 120) / U); } // a dummy on the shoulder, for scale
-    for (let y = 0; y < AH; y++) { const ty = y - lift; if (ty < 0) continue; for (let x = 0; x < AW; x++) { const c = DL.d[y * AW + x]; if (c) FB.d[ty * AW + x] = c; } }
+    for (const c of s.cars.filter((c) => !c.deck).sort((a, b) => a.y - b.y)) PIX.blit(FB, car(p, c), c.x / U, c.y / U);
+    PIX.blit(FB, PIX.dummy(Math.PI / 2, 0), (400 + OUTER - 10) / U, 560 / U); // a dummy on the ground pavement
+    for (const c of p.cols) PIX.blit(FB, c.spr, Math.round(c.x / U), Math.round(c.y / U));
+    DL.d.fill(0); PIX.blit(DL, p.S, 0, Math.round((dk.off - half) / U));
+    for (const c of s.cars.filter((c) => c.deck).sort((a, b) => a.y - b.y)) PIX.blit(DL, car(p, c), c.x / U, c.y / U);
+    PIX.blit(DL, PIX.dummy(Math.PI / 2, 0), p.dumX / U, p.dumY / U);
+    for (let y = 0; y < AH; y++) { const ty = y - ext; if (ty < 0) continue; for (let x = 0; x < AW; x++) { const c = DL.d[y * AW + x]; if (c) FB.d[ty * AW + x] = c; } }
     const og = p.off.getContext('2d'), img = og.createImageData(AW, AH); new Uint32Array(img.data.buffer).set(FB.d); og.putImageData(img, 0, 0);
-    const g2 = p.cv.getContext('2d'); g2.imageSmoothingEnabled = false; g2.drawImage(p.off, 0, 0, AW * Z, AH * Z);
-    g2.strokeStyle = 'rgba(73,211,255,0.10)'; g2.lineWidth = 1;
-    for (let x = 0; x <= AW; x += 16) { g2.beginPath(); g2.moveTo(x * Z + 0.5, 0); g2.lineTo(x * Z + 0.5, AH * Z); g2.stroke(); }
-    for (let y = 0; y <= AH; y += 16) { g2.beginPath(); g2.moveTo(0, y * Z + 0.5); g2.lineTo(AW * Z, y * Z + 0.5); g2.stroke(); }
-    const deck = s.cars.filter((c) => c.deck), vd = deck.length ? deck.reduce((a, c) => a + c.v, 0) / deck.length : 0;
-    $('st_' + p.pn.id).textContent = `Live: highway cars ${deck.length}, mean speed ${vd.toFixed(0)} · ground cars ${s.cars.length - deck.length} · deck Z${g.z}, lift ${lift} px · ${p.cols.length} columns · highway on screen ${p.vis.toFixed(0)} units`;
+    const g = p.cv.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(p.off, 0, 0, AW * Z, AH * Z);
+    g.strokeStyle = 'rgba(73,211,255,0.10)'; g.lineWidth = 1;
+    for (let x = 0; x <= AW; x += 16) { g.beginPath(); g.moveTo(x * Z + 0.5, 0); g.lineTo(x * Z + 0.5, AH * Z); g.stroke(); }
+    for (let y = 0; y <= AH; y += 16) { g.beginPath(); g.moveTo(0, y * Z + 0.5); g.lineTo(AW * Z, y * Z + 0.5); g.stroke(); }
+    // width rulers: the ground road with its pavements, and the deck
+    g.fillStyle = 'rgba(255,255,255,0.85)'; g.font = '13px system-ui';
+    const rx = (400 - OUTER) / U * Z, rw = 2 * OUTER / U * Z; g.fillRect(rx, AH * Z - 10, rw, 2); g.fillText(2 * OUTER + ' road + pavements', rx + rw + 6, AH * Z - 6);
+    const ry = (dk.off - half) / U * Z - ext * Z, rh = p.v.w / U * Z; g.fillRect(10, ry, 2, rh); g.fillText(p.v.w + ' highway', 16, ry + 14);
+    const deck = s.cars.filter((c) => c.deck);
+    $('st' + i).textContent = `Live: highway cars ${deck.length} · lamps every ${p.P['world.deckLampSpacing']} (${(W / p.P['world.deckLampSpacing']).toFixed(1)} a side per screen) · round columns every ${p.P['world.deckPillarSpacing']}`;
   }
   let last = performance.now(), playing = true;
   function frame(now) {
     const dt = Math.min(0.1, (now - last) / 1000); last = now;
-    if (playing) for (const p of panels) { const n = Math.round(dt * P['simulation.tickRate']); for (let i = 0; i < n; i++) { p.s.step({}); p.s.body.x = -900; p.s.body.y = -900; } }
-    for (const p of panels) draw(p);
-    requestAnimationFrame(frame);
+    if (playing) for (const p of panels) for (let k = 0; k < Math.round(dt * 60); k++) { p.s.step({}); p.s.body.x = -900; p.s.body.y = -900; }
+    panels.forEach(draw); requestAnimationFrame(frame);
   }
-  for (const p of panels) for (let i = 0; i < 20 * 60; i++) { p.s.step({}); p.s.body.x = -900; p.s.body.y = -900; } // 20 s of traffic first
   $('play').onclick = () => { playing = !playing; $('play').textContent = playing ? 'Pause' : 'Play'; };
   requestAnimationFrame(frame);
-
-  // ---------- district map: how a straight 45° or 135° highway runs across a 3 × 3 district of 800 × 640 screens
-  (function map() {
-    const cv = $('map'), g = cv.getContext('2d'), C = 3, R = 3, k = 0.22, DW = W * C, DH = H * R, pad = 20;
-    cv.width = DW * k + 2 * pad; cv.height = DH * k + 2 * pad;
-    g.fillStyle = '#10141c'; g.fillRect(0, 0, cv.width, cv.height); g.translate(pad, pad); g.scale(k, k);
-    for (let y = 0; y < R; y++) for (let x = 0; x < C; x++) { g.fillStyle = (x + y) % 2 ? '#161d2b' : '#141a26'; g.fillRect(x * W, y * H, W, H); g.strokeStyle = '#2a3650'; g.lineWidth = 4; g.strokeRect(x * W, y * H, W, H); g.fillStyle = '#8ea3bf'; g.font = '64px system-ui'; g.fillText('ABC'[x] + (y + 1), x * W + 24, y * H + 80); }
-    const hw = [{ p0: [0, 1300], d: [D45, -D45], col: '#49d3ff', name: '45°' }, { p0: [1500, 0], d: [D45, D45], col: '#ff7ad9', name: '135°' }]; // kept apart: crossing highways need Z1 and Z2
-    const rows = [];
-    for (const h of hw) {
-      const t1 = Math.min(...[h.d[0] > 0 ? (DW - h.p0[0]) / h.d[0] : Infinity, h.d[1] > 0 ? (DH - h.p0[1]) / h.d[1] : h.d[1] < 0 ? -h.p0[1] / h.d[1] : Infinity]) - 1e-6;
-      const p1 = [h.p0[0] + h.d[0] * t1, h.p0[1] + h.d[1] * t1];
-      g.strokeStyle = h.col; g.globalAlpha = 0.35; g.lineWidth = 2 * HALF; g.beginPath(); g.moveTo(...h.p0); g.lineTo(...p1); g.stroke(); g.globalAlpha = 1; g.lineWidth = 6; g.beginPath(); g.moveTo(...h.p0); g.lineTo(...p1); g.stroke();
-      let top = 0, side = 0; const screens = new Set();
-      for (let t = 0; t <= t1; t += 4) { const x = h.p0[0] + h.d[0] * t, y = h.p0[1] + h.d[1] * t; screens.add('ABC'[Math.min(2, Math.floor(x / W))] + (Math.min(2, Math.floor(y / H)) + 1)); }
-      for (let x = W; x < DW; x += W) { const t = (x - h.p0[0]) / h.d[0]; if (t > 0 && t < t1) { const y = h.p0[1] + h.d[1] * t; side++; g.fillStyle = '#57e389'; g.beginPath(); g.arc(x, y, 34, 0, 7); g.fill(); } }
-      for (let y = H; y < DH; y += H) { const t = (y - h.p0[1]) / h.d[1]; if (t > 0 && t < t1) { const x = h.p0[0] + h.d[0] * t; top++; g.fillStyle = '#ffb347'; g.beginPath(); g.arc(x, y, 34, 0, 7); g.fill(); g.strokeStyle = '#ffb347'; g.lineWidth = 10; g.beginPath(); g.moveTo(x - HALF * 1.41 - P['world.deckTopClear'], y); g.lineTo(x + HALF * 1.41 + P['world.deckTopClear'], y); g.stroke(); } }
-      rows.push(`<tr><td class="l" style="color:${h.col}">${h.name} highway</td><td>${screens.size}</td><td>${side}</td><td>${top}</td><td>${(2 * HALF * Math.SQRT2 + 2 * P['world.deckTopClear']).toFixed(0)}</td></tr>`);
-    }
-    $('maprows').innerHTML = '<tr><th class="l">Highway</th><th>Screens crossed</th><th>Side-edge crossings (as today)</th><th>Top/bottom-edge crossings</th><th>Edge closed per top crossing (units)</th></tr>' + rows.join('');
-  })();
 })();
 
 </script>

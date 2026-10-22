@@ -53,9 +53,11 @@
     'world.district.interchange.quota': 2, 'world.district.interchange.interval': 2.8, 'world.district.interchange.vanShare': 0.3, 'world.district.interchange.blockShare': 0.36, 'world.district.interchange.blockMax': 160, 'world.district.interchange.doubleShare': 0.6, 'world.district.interchange.towerShare': 0.15, 'world.district.interchange.puddleShare': 0.02, 'world.district.interchange.jerseyShare': 0.1, 'world.district.interchange.decks': 2, 'world.district.interchange.highDecks': 1, 'world.district.interchange.platformShare': 0.15,
     'world.district.cbd.quota': 3, 'world.district.cbd.interval': 2.6, 'world.district.cbd.vanShare': 0.3, 'world.district.cbd.blockShare': 0.42, 'world.district.cbd.blockMax': 160, 'world.district.cbd.doubleShare': 0.8, 'world.district.cbd.towerShare': 0.5, 'world.district.cbd.puddleShare': 0.02, 'world.district.cbd.jerseyShare': 0.08, 'world.district.cbd.decks': 2, 'world.district.cbd.highDecks': 1, 'world.district.cbd.platformShare': 0.15,
     'world.district.campus.quota': 4, 'world.district.campus.interval': 2.5, 'world.district.campus.vanShare': 0.4, 'world.district.campus.blockShare': 0.36, 'world.district.campus.blockMax': 160, 'world.district.campus.doubleShare': 0.9, 'world.district.campus.towerShare': 0.1, 'world.district.campus.puddleShare': 0.01, 'world.district.campus.jerseyShare': 0.08, 'world.district.campus.decks': 1, 'world.district.campus.highDecks': 0, 'world.district.campus.platformShare': 0.12,
-    'world.deckHeight': 120, 'world.deckWidth': 176, 'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
+    'world.deckHeight': 120, 'world.deckWidth': 160, // P5.2 (Edit 50.2): as wide as a ground road and its pavements (2 × (world.laneWidth + proto.shoulderWidth))
+     'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
     // Edit 42 (P3.1): three levels, bounded districts
-    'world.parapetWidth': 8, 'world.deckLampSpacing': 128, 'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7,
+    'world.parapetWidth': 8, 'world.deckLampSpacing': 88, // P5.2: lamps in pairs, about nine per screen width
+     'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7,
     'world.dropSeconds': 0.35, 'damage.dropSpeed': 120, 'world.wallThickness': 16, 'world.boomRange': 140, 'world.boomSeconds': 0.5,
     'world.towerHeightMin': 288, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 160, 'damage.plateMultiplier': 1.5,
     // Edit 43 (P3.2): perpendicular crossings, turn styles, storeys and frontage, car lights
@@ -72,6 +74,8 @@
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
     'traffic.deckSpeedScale': 1.4, 'traffic.deckGapScale': 1.5, 'damage.deckMultiplier': 1, // P5.1: highway hits pay through speed alone (user, 21 October)
+    'world.deckRingRadius': 132, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
+    'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };

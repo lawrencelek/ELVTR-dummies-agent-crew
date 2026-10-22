@@ -656,16 +656,16 @@
    "bus": false,
    "bend": 63,
    "decks": 1,
-   "turns": "tight"
+   "turns": "stepped"
   },
   {
    "id": "interchange",
    "k": 3,
    "cell": "B1",
-   "bus": false,
-   "bend": 63,
+   "bus": true,
+   "bend": 9999,
    "decks": 1,
-   "turns": "tight"
+   "turns": "diagonal"
   },
   {
    "id": "interchange",
@@ -674,16 +674,16 @@
    "bus": true,
    "bend": 9999,
    "decks": 1,
-   "turns": "circular"
+   "turns": "diagonal"
   },
   {
    "id": "interchange",
    "k": 3,
    "cell": "A2",
-   "bus": true,
-   "bend": 198,
+   "bus": false,
+   "bend": 99,
    "decks": 0,
-   "turns": "stepped"
+   "turns": "circular"
   },
   {
    "id": "interchange",
@@ -698,8 +698,8 @@
    "id": "interchange",
    "k": 3,
    "cell": "C2",
-   "bus": true,
-   "bend": 9999,
+   "bus": false,
+   "bend": 63,
    "decks": 0,
    "turns": "stepped"
   },
@@ -707,15 +707,6 @@
    "id": "interchange",
    "k": 3,
    "cell": "A3",
-   "bus": true,
-   "bend": 148,
-   "decks": 1,
-   "turns": "circular"
-  },
-  {
-   "id": "interchange",
-   "k": 3,
-   "cell": "B3",
    "bus": false,
    "bend": 63,
    "decks": 1,
@@ -724,11 +715,20 @@
   {
    "id": "interchange",
    "k": 3,
+   "cell": "B3",
+   "bus": true,
+   "bend": 162,
+   "decks": 1,
+   "turns": "diagonal"
+  },
+  {
+   "id": "interchange",
+   "k": 3,
    "cell": "C3",
    "bus": false,
-   "bend": 63,
+   "bend": 99,
    "decks": 1,
-   "turns": "tight"
+   "turns": "circular"
   },
   {
    "id": "cbd",
@@ -762,7 +762,7 @@
    "k": 1,
    "cell": "A2",
    "bus": false,
-   "bend": 107,
+   "bend": 112,
    "decks": 1,
    "turns": "stepped"
   },
@@ -942,7 +942,7 @@
    "k": 3,
    "cell": "C2",
    "bus": false,
-   "bend": 63,
+   "bend": 110,
    "decks": 1,
    "turns": "circular"
   },
@@ -1217,7 +1217,7 @@
    "turns": "tight"
   }
  ],
- "busScreens": 54,
+ "busScreens": 53,
  "total": 135,
  "traffic": [
   {
@@ -1251,7 +1251,7 @@
    "groundBuses": 27
   }
  ],
- "deckMultiplier": 1.5,
+ "deckMultiplier": 1,
  "deckSpeedScale": 1.4,
  "deckGapScale": 1.5
 }

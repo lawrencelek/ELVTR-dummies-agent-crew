@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diagonal Highways</title>
+<title>Highway Width</title>
 <style>
   :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --warn: #ffb347; --bad: #ff5a6a; --good: #57e389; }
   * { box-sizing: border-box; }
@@ -34,22 +34,15 @@
 </head>
 <body>
 <header>
-  <h1>Diagonal highways · P5 mock-up</h1>
-  <p>Highways at 45° and 135° beside today's square highway, in game art, with live P5 traffic: highway cars at 1.4× speed, the game's driver. A mock-up: the P5 districts still build square highways.</p>
+  <h1>Highway width · P5 mock-up</h1>
+  <p>The game's own highway art at three widths over the same ground road, with live P5 traffic. P5.2 takes 160: as wide as the road below with its pavements. Paired lamps and round columns are P5.2's too.</p>
 </header>
 <main>
   <section>
-    <h2>One screen each</h2>
+    <h2>Three widths</h2>
     <div class="row"><button id="play">Pause</button></div>
     <div class="grid2" id="panels"></div>
-    <p class="note">Highway decks drawn lifted by their height (three-quarter view), girder face on the screen-down edge, columns under both edges at world.deckPillarSpacing, clear of the road. 16 px tile grid. Panel 2 adds a stair along the deck and a dummy on its shoulder, for scale.</p>
-  </section>
-  <section>
-    <h2>Across a district</h2>
-    <div class="grid2"><canvas id="map"></canvas>
-      <div><p class="cap key"><span><i class="dot" style="background:#57e389"></i>Side-edge crossing: as today's highways</span><span><i class="dot" style="background:#ffb347"></i>Top/bottom-edge crossing: the lower screen's top edge</span></p>
-      <div class="scroll"><table id="maprows"></table></div>
-      <p class="note">A screen is 800 × 640. A 45° line drops 800 across one screen, more than its height, so a diagonal highway crosses a top or bottom edge on most screens it enters. Edit 48 keeps a drawn deck top world.deckTopClear (128) below every top edge, so the dummy is never hidden on entry from above. Proposal: close the top edge over the deck's crossing, plus world.deckTopClear either side (orange bars).</p></div></div>
+    <p class="note">White rulers: the ground road with its pavements (bottom) and the highway (left), in world units. One dummy on the ground pavement, one on the highway's walkway (or its lane edge, with no walkway). 16 px tile grid.</p>
   </section>
 </main>
 <!--SCRIPTS-->

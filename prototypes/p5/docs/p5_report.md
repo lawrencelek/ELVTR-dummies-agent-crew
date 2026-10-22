@@ -1,6 +1,6 @@
 # P5 report (Edit 50)
 
-Baked layouts: 135 screens. A bus may run the ground road on 54 (every bend ≥ vehicles.bus.minRadius 160, measured with 10% tolerance; no ring).
+Baked layouts: 135 screens. A bus may run the ground road on 53 (every bend ≥ vehicles.bus.minRadius 160, measured with 10% tolerance; no ring).
 
 | District | Layout | Screens a bus may run | Screens with highways |
 |---|---:|---:|---:|
@@ -12,7 +12,7 @@ Baked layouts: 135 screens. A bus may run the ground road on 54 (every bend ≥ 
 | market | 3 | 4 of 9 | 0 |
 | interchange | 1 | 4 of 9 | 6 |
 | interchange | 2 | 2 of 9 | 6 |
-| interchange | 3 | 4 of 9 | 6 |
+| interchange | 3 | 3 of 9 | 6 |
 | cbd | 1 | 1 of 9 | 6 |
 | cbd | 2 | 3 of 9 | 6 |
 | cbd | 3 | 3 of 9 | 6 |

@@ -858,7 +858,7 @@
     const along = dk.hz ? AW : AH, lane = Math.round(P['world.laneWidth'] / U), pw = Math.max(2, Math.round(P['world.parapetWidth'] / U)), mid = Math.round(wpx / 2);
     const S = dk.hz ? spr(along, LAMP_H + wpx + face, 0, LAMP_H) : spr(wpx, along, 0, 0);
     const put = (a, b, c) => (dk.hz ? sput(S, a, b + LAMP_H, c) : sput(S, b, a, c)); // a along the deck, b across (0 = north / west)
-    const high = (dk.z || 1) === 2, leds = KX('bldgLed'), led = leds ? leds[high ? 2 : 1] || leds[0] : K.lane, glow = c32(mixHex(PAL.deck2, PAL.head || PAL.white, 0.22)); // Edit 44: the high highway's LED line differs
+    const high = (dk.z || 1) === 2, leds = KX('bldgLed'), led = leds ? leds[high ? 2 : 1] || leds[0] : K.lane, glow = c32(mixHex(PAL.deck2, PAL.head || PAL.white, 0.38)); // Edit 44: the high highway's LED line differs
     const gaps = (dk.gaps || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]);
     const opens = (dk.openings || []).map(([a0, a1, sd]) => [Math.round(a0 / U), Math.round(a1 / U), sd]); // Edit 44: a link stair's head, no parapet
     const inOpen = (a, sd) => opens.some(([g0, g1, s2]) => s2 === sd && a >= g0 && a < g1);
@@ -882,13 +882,14 @@
       if (pb < pw + 1 && pb > 0 && !inGap(a, sd) && (inGap(a - 1, sd) || inGap(a + 1, sd))) put(a, b, K.white); // snapped ends (never warning red: canon)
     }
     const sp = Math.round(P['world.deckLampSpacing'] / U);
-    if (dk.hz) for (const sd of [-1, 1]) for (let a = Math.round(sp / 2) + (sd > 0 ? Math.round(sp / 2) : 0); a < along; a += sp) {
+    // P5.2 (Edit 50.2): lamps in pairs, one on each parapet every world.deckLampSpacing; a pale pole, a bright head, a light pool
+    if (dk.hz) for (const sd of [-1, 1]) for (let a = Math.round(sp / 2); a < along; a += sp) {
       if (inGap(a, sd) || inOpen(a, sd)) continue;
       const b0 = sd < 0 ? 1 : wpx - 2;
       if (nearGap(a, sd)) { for (let k = 0; k < 5; k++) put(a + k, b0 - k * sd, k === 4 ? K.bldgDark : K.bldgOutline); continue; } // broken: the pole lies across the shoulder, unlit
-      for (let k = 1; k <= 3; k++) for (let j = -1; j <= 1; j++) put(a + j, b0 - sd * (pw + k), glow); // light pool on the shoulder
-      for (let k = 1; k < LAMP_H; k++) sput(S, a, b0 + LAMP_H - k, K.bldgOutline); // the pole rises screen-up from the parapet
-      for (let j = -1; j <= 1; j++) sput(S, a + j, b0 + 1, j ? K.head : K.white);
+      for (let k = 1; k <= 4; k++) for (let j = -2; j <= 2; j++) if (Math.abs(j) + (k > 3 ? 1 : 0) <= 2) put(a + j, b0 - sd * (pw + k), glow); // light pool on the shoulder
+      for (let k = 1; k < LAMP_H; k++) { sput(S, a, b0 + LAMP_H - k, K.jerseyTop); sput(S, a + 1, b0 + LAMP_H - k, K.bldgOutline); } // the pole rises screen-up from the parapet
+      for (let j = -1; j <= 2; j++) { sput(S, a + j, b0 + 1, j === 0 || j === 1 ? K.white : K.head); sput(S, a + j, b0, K.bldgOutline); }
     }
     return { S, ext };
   }
@@ -1095,14 +1096,22 @@
   }
 
   // Deck column (Edit 43): concrete, lit on the left, from its footprint up to the deck's underside.
+  // P5.2 (Edit 50.2): a round column. A cylinder of the footprint's width, lit from the left (the sun), shaded to the right,
+  // standing on an elliptical base; a pier cap two pixels proud at the top meets the deck.
   function column(wpx, hpx, lift) {
-    const S = spr(wpx, hpx + lift, 0, lift);
-    for (let y = -lift; y < hpx; y++) for (let x = 0; x < wpx; x++) sput(S, x, y + lift, x === 0 ? K.jerseyTop : x === wpx - 1 || y === hpx - 1 ? K.columnD : y < -lift + 2 ? K.columnD : K.column);
+    const S = spr(wpx + 2, hpx + lift, 1, lift), cx = wpx / 2, rx = wpx / 2, cy = hpx / 2, ry = Math.max(2, Math.round(hpx / 3));
+    const shade = (u) => (u < -0.75 ? K.columnD : u < -0.35 ? K.jerseyTop : u < 0.35 ? K.column : u < 0.8 ? K.columnD : K.bldgOutline);
+    for (let y = -lift; y < hpx; y++) for (let x = -1; x <= wpx; x++) {
+      const u = (x + 0.5 - cx) / rx, cap = y < -lift + 3;
+      if (Math.abs(u) > (cap ? 1 + 1.6 / rx : 1)) continue;
+      if (y > cy) { const e = (y + 0.5 - cy) / ry; if (u * u + e * e > 1) continue; } // the rounded base
+      sput(S, x + 1, y + lift, cap ? (y === -lift + 2 ? K.bldgOutline : u < 0 ? K.jerseyTop : K.columnD) : y > cy - 1 && u * u + ((y + 0.5 - cy) / ry) ** 2 > 0.7 ? K.columnD : shade(u));
+    }
     return S;
   }
   root.PIX = {
     AW, AH, U, SUN, PAL, K, NAME, c32, mixHex, Buf, line, polyline, dash, circle, disc, ellipse, fillPoly, inPoly, stamp, collectLine,
     text, textWidth, FONT_H, smallText, smallWidth, SMALL_H, blit, car, dummy, doll, DOLL_W, DOLL_H, MODULES, CONE, DRONE, pod, barrier, building, jersey, ground, pathGeom, rng, HEADINGS,
-    monument, fountain, deck, wall, booth, stairs, column, skybridge, mixK, LAMP_H, roadField, giveWayMark,
+    monument, fountain, deck, wall, booth, stairs, column, skybridge, mixK, LAMP_H, roadField, giveWayMark, tree, hedge, blob, KX, // P5.2: park art for the cityscape mock-up
   };
 })(typeof window !== 'undefined' ? window : globalThis);
