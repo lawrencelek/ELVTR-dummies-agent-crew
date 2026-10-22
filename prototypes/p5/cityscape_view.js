@@ -54,27 +54,185 @@
       else { let c = N.water; if (y % 4 === 0 && ((x * 5 + y) % 11) < 4) c = N.water2; if ((x * 3 + y * 7) % 97 === 0) c = LEDS[(x + y) % LEDS.length]; B.put(x, y, c); }
     });
   }
-  // ---------- brutalist pieces (art px): a chamfered concrete mass with board marks, LED under the coping, hard shadow down-left
-  function block(B, x0, y0, x1, y1, k, base, h, top, led, shadow) {
+  // ---------- brutalist pieces (art px): a concrete mass with board marks, LED under the coping, hard shadow down-left
+  const HG = { x: c32('#0D1F15'), d: c32('#16301F'), m: c32('#1E3F29'), l: c32('#2A5536'), lime: c32('#7CC24A') }, REED = [c32('#2C6B3C'), c32('#3E8A4A'), c32('#9BD86A'), c32('#3FD0A8')];
+  const SOIL = c32('#1B1E17'), MOSS = [c32('#10241A'), c32('#173222'), c32('#1F3D29'), c32('#7CC24A')];
+  const hsh = (x, y) => Math.imul((x * 73856093) ^ (y * 19349663), 2654435761) >>> 0;
+  const hedgeC = (x, y) => { const n = hsh(x >> 1, y >> 1) % 9; return n < 3 ? HG.d : n < 6 ? HG.m : n < 8 ? HG.l : (hsh(x, y) % 5 ? HG.l : HG.lime); };
+  const lawnC = (x, y) => ((x * 7 + y * 13) % 29 === 0) ? N.grass3 : (Math.floor((x + y) / 6) % 2 ? N.grass : N.grass2);
+  const mossC = (x, y) => hsh(x, y) % 31 === 0 ? MOSS[3] : MOSS[hsh(x >> 1, y >> 1) % 3];
+  function mass(B, fp, x0, y0, x1, y1, base, h, top, led, shadow, faceKind) { // fp(x, y, ins): the footprint in art px within [x0..x1]×[y0..y1]
     x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
-    const inF = chamf(x0, y0, x1, y1, k);
     if (shadow) {
       const M = new Uint8Array(AW * AH);
-      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (inF(x, y)) for (let t = 1; t <= base + h; t++) { const sx = Math.round(x - t * 0.7), sy = Math.round(y + t * 0.7); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && !inF(sx, sy)) M[sy * AW + sx] = 1; }
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (fp(x, y)) for (let t = 1; t <= base + h; t++) { const sx = Math.round(x - t * 0.7), sy = Math.round(y + t * 0.7); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && !fp(sx, sy)) M[sy * AW + sx] = 1; }
       for (let q = 0; q < M.length; q++) if (M[q]) B.shade(q % AW, Math.floor(q / AW), 0.68);
     }
     const mid = (x0 + x1) / 2;
     for (let x = x0; x <= x1; x++) {
-      let yb = -1; for (let y = y1; y >= y0; y--) if (inF(x, y)) { yb = y; break; }
+      let yb = -1; for (let y = y1; y >= y0; y--) if (fp(x, y)) { yb = y; break; }
       if (yb < 0) continue;
       const slant = yb < y1, face = slant ? (x < mid ? CON.d : CON.l) : (x % 4 === 0 ? CON.d : CON.m);
-      for (let t = 0; t < h; t++) B.put(x, yb - base - t, t === 0 && base === 0 ? CON.x : t === h - 1 && led ? led : face);
+      for (let t = 0; t < h; t++) B.put(x, yb - base - t, faceKind === 'hedge' && t >= 2 ? (t === h - 1 ? HG.m : x % 3 === 0 ? HG.x : HG.d) : t === 0 && base === 0 ? CON.x : t === h - 1 && led ? led : face);
     }
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
-      if (!inF(x, y)) continue;
-      const c = !inF(x, y, 1) ? CON.l : top === 'grass' && inF(x, y, 2) ? ((x * 3 + y * 5) % 7 ? CON.g : CON.g2) : !inF(x, y, 2) ? CON.m : ((x - x0) % 6 === 0 || (y - y0) % 6 === 0) ? CON.d : CON.m;
+      if (!fp(x, y)) continue;
+      let c;
+      if (top === 'hedge') c = !fp(x, y, 1) ? HG.x : hedgeC(x, y);
+      else if (!fp(x, y, 1)) c = CON.l;
+      else if (top === 'reeds') c = led && hsh(x, y) % 61 === 0 ? led : SOIL;
+      else if (top === 'grass') c = fp(x, y, 2) ? ((x * 3 + y * 5) % 7 ? CON.g : CON.g2) : CON.m;
+      else c = !fp(x, y, 2) ? CON.m : ((x - x0) % 6 === 0 || (y - y0) % 6 === 0) ? CON.d : CON.m;
       B.put(x, y - base - h, c);
     }
+    if (top === 'reeds') for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { // grasses in clumps, tips lit
+      if (!fp(x, y, 1) || hsh(x, y) % 6) continue;
+      const len = 3 + hsh(y, x) % 4, q = hsh(x + 3, y); for (let j = 0; j < len; j++) B.put(x, y - base - h - 1 - j, j === len - 1 ? (q % 5 === 0 ? REED[2] : q % 11 === 0 ? REED[3] : REED[1]) : REED[0]);
+    }
+  }
+  function block(B, x0, y0, x1, y1, k, base, h, top, led, shadow) { x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1); mass(B, chamf(x0, y0, x1, y1, k), x0, y0, x1, y1, base, h, top, led, shadow); }
+  // ---------- garden kit (Edit 51.3): running-bond paving, light lines on the path centres, a grid of beds at 90° and 45°
+  const GW = P['world.gardenCellWidth'], GH = P['world.gardenCellHeight'], GP = P['world.gardenPath'];
+  const paveC = (x, y) => { const i = Math.floor(x / 12), j = Math.floor(y / 12); if (x % 12 === 0 || y % 12 === 0) return CON.d; if ((x % 12 === 6 && y % 12 === 6) && hsh(i, j) % 5 === 0) return N.cyan; return hsh(i, j) % 6 === 0 ? CON.t2 : CON.t; }; // large square slabs, an LED stud at some centres
+  const slabC = (x, y, vert) => { const a = vert ? y : x, b = vert ? x : y, row = b >> 2, aa = a + (row & 1) * 8; if ((b & 3) === 0 || (aa & 15) === 0) return CON.d; return hsh(aa >> 4, row) % 7 === 0 ? CON.t2 : CON.t; }; // long slabs along a path
+  const diagC = (x, y) => { const u = x + y, v = x - y + 1200; if (u % 6 === 0 || v % 12 === 0) return CON.d; return hsh(Math.floor(u / 6), Math.floor(v / 12)) % 5 === 0 ? CON.t2 : CON.m; };
+  function gardenPave(B, ok, diag) {
+    const line = mixK(CON.t, N.cyan, 0.5), line2 = mixK(CON.t, N.magenta, 0.45);
+    each((x, y, wx, wy) => {
+      if (!ok(wx, wy)) return;
+      const onD = diag && Math.abs(wx + wy - diag.c) < diag.w / 2;
+      const gx = ((wx % GW) + GW) % GW, gy = ((wy % GH) + GH) % GH, mx = Math.min(gx, GW - gx), my = Math.min(gy, GH - gy), pw = GP / 2 + 4;
+      let c = onD ? diagC(x, y) : mx < pw && my < pw ? diagC(x, y) : my < pw ? slabC(x, y, 0) : mx < pw ? slabC(x, y, 1) : paveC(x, y);
+      if (!onD && ((gx < U && wx > U && wy % 32 < 24) || (gy < U && wy > U && wx % 32 < 24))) c = (Math.floor(wx / GW) + Math.floor(wy / GH)) % 2 ? line : line2; // light lines
+      B.put(x, y, c);
+    });
+  }
+  function drawBed(B, type, fpA, fpW, ax0, ay0, ax1, ay1, w0, led) {
+    const [x0, y0, x1, y1] = w0;
+    if (type === 'lawn' || type === 'moss') { for (let y = ay0; y <= ay1; y++) for (let x = ax0; x <= ax1; x++) if (fpA(x, y)) B.put(x, y, !fpA(x, y, 1) ? CON.l : type === 'lawn' ? lawnC(x, y) : mossC(x, y)); return; }
+    if (type === 'hedge') { mass(B, fpA, ax0, ay0, ax1, ay1, 0, 5, 'hedge', null, true, 'hedge'); return; }
+    if (type === 'reeds') { mass(B, fpA, ax0, ay0, ax1, ay1, 0, 3, 'reeds', led, true); return; }
+    if (type === 'terrace') { mass(B, fpA, ax0, ay0, ax1, ay1, 0, 2, 'conc', null, true); mass(B, (x, y, i) => fpA(x, y, (i || 0) + 4), ax0, ay0, ax1, ay1, 2, 2, 'grass', led, false); mass(B, (x, y, i) => fpA(x, y, (i || 0) + 10), ax0, ay0, ax1, ay1, 4, 3, 'hedge', null, false, 'hedge'); return; }
+    if (type === 'pool') { pool(B, () => true, x0, y0, x1, y1, 24); return; }
+    tiles(B, (wx, wy) => fpW(wx, wy), true); monolith(B, (x0 + x1) / 2 / U, (y0 + y1) / 2 / U + 2, 0, 22, led); // plaza
+  }
+  function gardenBeds(B, o) { // o: { bedOk(wx, wy), diag, rng, leds, pools }
+    const TYPES = ['hedge', 'reeds', 'lawn', 'moss', 'terrace', 'pool', 'plaza', 'open'], WT = [3, 3, 2, 2, 2, o.pools === false ? 0 : 1.5, 1, 2], tot = WT.reduce((a, q) => a + q, 0), out = [];
+    let skip = -1;
+    const pick = () => { let r = o.rng() * tot; for (let i = 0; i < TYPES.length; i++) { r -= WT[i]; if (r < 0) return TYPES[i]; } return 'hedge'; };
+    let prev = null;
+    for (let gy = 0; gy < Math.ceil(H / GH); gy++) for (let gx = 0; gx < Math.ceil(W / GW); gx++) {
+      if (skip === gy * 99 + gx) { continue; }
+      const x0 = gx * GW + GP / 2, y0 = gy * GH + GP / 2, y1 = Math.min(H - 8, (gy + 1) * GH - GP / 2);
+      let x1 = Math.min(W - 8, (gx + 1) * GW - GP / 2);
+      const pts = []; for (let x = x0; x <= x1; x += 16) for (let y = y0; y <= y1; y += 16) pts.push([x, y]); pts.push([x1, y1], [x1, y0], [x0, y1]);
+      const band = (p) => o.diag && Math.abs(p[0] + p[1] - o.diag.c) < o.diag.w / 2 + 12, outside = pts.filter((p) => !band(p));
+      if (outside.length < pts.length * 0.45 || !outside.every((p) => o.bedOk(p[0], p[1]))) { prev = null; continue; }
+      let side = 0; if (outside.length < pts.length) side = Math.sign(outside.reduce((a, p) => a + Math.sign(p[0] + p[1] - o.diag.c), 0)) || 1;
+      if (side && outside.some((p) => Math.sign(p[0] + p[1] - o.diag.c) !== side)) { prev = null; continue; } // split by the promenade: leave it paved
+      let type = pick(); if (type === prev) type = pick(); if (side && type === 'pool') type = 'reeds';
+      if (type === 'open') { prev = type; continue; } // left as paving: a small square
+      if (!side && ['hedge', 'reeds', 'lawn', 'pool'].includes(type) && o.rng() < 0.3 && gx + 1 < Math.ceil(W / GW)) { // a long bed across two cells
+        const nx1 = Math.min(W - 8, (gx + 2) * GW - GP / 2), more = []; for (let x = x1; x <= nx1; x += 16) for (let y = y0; y <= y1; y += 16) more.push([x, y]); more.push([nx1, y1], [nx1, y0]);
+        if (more.every((p) => o.bedOk(p[0], p[1]) && !band(p))) { x1 = nx1; skip = gy * 99 + gx + 1; }
+      }
+      const cw = chamf(x0, y0, x1, y1, 16), fpW = (wx, wy, ins) => cw(wx, wy, ins) && (!side || side * (wx + wy - o.diag.c) > o.diag.w / 2 + 8 + (ins || 0) * 1.42);
+      const fpA = (x, y, ins) => fpW((x + 0.5) * U, (y + 0.5) * U, (ins || 0) * U);
+      drawBed(B, type, fpA, fpW, Math.floor(x0 / U), Math.floor(y0 / U), Math.ceil(x1 / U), Math.ceil(y1 / U), [x0, y0, x1, y1], o.leds[(gx + gy * 2) % o.leds.length]);
+      out.push({ x0, y0, x1, y1, type }); prev = type;
+    }
+    return out;
+  }
+  function gardenSculptures(B, ok, diag, rng, n) { // on the path crossings
+    const c = []; for (let gy = 1; gy < Math.ceil(H / GH); gy++) for (let gx = 1; gx < Math.ceil(W / GW); gx++) { const x = gx * GW, y = gy * GH; if (ok(x, y) && (!diag || Math.abs(x + y - diag.c) > diag.w / 2 + 16)) c.push([x, y]); }
+    for (let i = 0; i < n && c.length; i++) { const [x, y] = c.splice(Math.floor(rng() * c.length), 1)[0]; sculpture(B, x / U, y / U + 1, SCULPT[Math.floor(rng() * SCULPT.length)], LEDS[Math.floor(rng() * LEDS.length)]); }
+  }
+  // ---------- brutalist towers (Edit 51.3): a podium on pilotis, then a ziggurat, a cantilevered crown, a finned slab or twin towers and a bridge.
+  // Slab bands every storey, deep window slots, fins, LED banners and crowns, a 45° cut to the street, hard shadows.
+  const STY = EXT(P['world.storeyHeight']);
+  function brutal(w, h, H, rng, led, cut, rear, style0) {
+    w = Math.round(w); h = Math.round(h); H = Math.round(H);
+    const pad = 2, top = H + 18, S = { w: w + 2 * pad, h: h + top + 2, ox: pad, oy: top }; S.d = new Uint32Array(S.w * S.h);
+    const put = (x, y, c) => { const X0 = x + pad, Y0 = y + top; if (X0 >= 0 && Y0 >= 0 && X0 < S.w && Y0 < S.h) S.d[Y0 * S.w + X0] = c; };
+    const half = (x, y, ins) => { if (!cut) return true; const u = cut.c[1] === 'e' ? x : w - 1 - x, v = cut.c[0] === 's' ? y : h - 1 - y; return u + v <= w + h - 2 - cut.k - (ins || 0) * 1.42; };
+    const V = [], vol = (x0, y0, x1, y1, k, b, t, o) => {
+      x0 = Math.round(x0); x1 = Math.round(x1); y0 = Math.round(y0); y1 = Math.round(y1);
+      if (x1 - x0 < 6 || y1 - y0 < 4 || t <= b) return;
+      if (rear === 's' && !(o && o.kind === 'podium')) { const a = h - 1 - y1; y1 = h - 1 - y0; y0 = a; }
+      V.push(Object.assign({ x0, y0, x1, y1, k, b: Math.round(b), t: Math.round(t), seed: Math.floor(rng() * 997) }, o || {}));
+    };
+    const pH = Math.max(STY * 2, Math.round(H * (0.16 + rng() * 0.08) / STY) * STY), style = style0 || ['ziggurat', 'cantilever', 'slab', 'twin'][Math.floor(rng() * 4)];
+    const s = Math.max(3, Math.round(w * 0.1)), back = Math.max(4, Math.round(h * 0.2)), up = (f) => pH + Math.round((H - pH) * f / STY) * STY;
+    vol(0, 0, w - 1, h - 1, 2, 0, pH, { kind: 'podium' });
+    if (style === 'ziggurat') { const m = up(0.55); vol(s, 2, w - 1 - s, h - 1 - back, 3, pH, m, { fins: true }); vol(2 * s, 4, w - 1 - 2 * s, h - 1 - back - s, 3, m, H, { crown: true, mast: true }); }
+    else if (style === 'cantilever') { const n = up(0.35); vol(w * 0.3, h * 0.2, w * 0.7, h * 0.6, 2, pH, n, {}); vol(2, 2, w - 3, h - 1 - back, 3, n, H, { over: true, crown: true, fins: true }); }
+    else if (style === 'slab') { const d = Math.max(8, Math.round(h * 0.34)); vol(s, 3, w - 1 - s, 3 + d, 2, pH, H, { fins: true, crown: true, banner: true, mast: true }); }
+    else { const a = Math.round(w * 0.42), b2 = Math.round(w * 0.58), d = Math.round(h * 0.62); vol(2, 2, a, d, 3, pH, H, { crown: true, banner: true, mast: true }); vol(b2, 2, w - 3, d, 3, pH, up(0.8), { crown: true, fins: true }); vol(a + 1, h * 0.16, b2 - 1, h * 0.36, 1, up(0.55), up(0.68), { over: true }); }
+    const inV = (v, x, y, ins) => { ins = ins || 0; const c = v.k + ins * 0.6; return x >= v.x0 + ins && x <= v.x1 - ins && y >= v.y0 + ins && y <= v.y1 - ins && x - v.x0 + y - v.y0 >= c && v.x1 - x + y - v.y0 >= c && x - v.x0 + v.y1 - y >= c && v.x1 - x + v.y1 - y >= c && half(x, y, ins); };
+    const darker = (c) => c === CON.l ? CON.m : c === CON.m ? CON.d : CON.x;
+    const face = (v, x, z, sl) => {
+      const base = sl < 0 ? CON.d : sl > 0 ? CON.l : CON.m, f = z - v.b, fl = Math.floor(f / STY), r = f % STY;
+      if (z === 0) return CON.x;
+      if (v.kind === 'podium' && f < STY) return x % 6 === 0 ? base : f === STY - 1 ? led : CON.x; // pilotis, a lit shop line
+      if (v.banner && x >= v.x0 + 3 && x <= v.x0 + 4 && f >= STY && z < v.t - 2) return fl % 2 ? led : mixK(led, K.white, 0.45); // an LED banner
+      if (r === STY - 1) return sl > 0 ? CON.l : mixK(base, CON.l, 0.5); // slab edge
+      if (v.fins && x % 3 === 0) return base;
+      if (r === 1 || r === 2) { const q = hsh(x + v.seed, fl * 7 + v.y0) % 17; return q === 0 ? mixK(CON.x, led, 0.7) : q === 1 ? mixK(CON.x, K.white, 0.3) : CON.x; } // deep window slots
+      return x % 4 === 0 ? darker(base) : base;
+    };
+    const drawVol = (v) => {
+      const mid = (v.x0 + v.x1) / 2;
+      for (let x = v.x0; x <= v.x1; x++) {
+        let yb = -1; for (let y = v.y1; y >= v.y0; y--) if (inV(v, x, y)) { yb = y; break; }
+        if (yb < 0) continue;
+        const sl = yb < v.y1 ? (x < mid ? -1 : 1) : 0;
+        for (let z = v.b; z < v.t; z++) put(x, yb - z, v.plain ? (z === v.b ? CON.x : sl < 0 ? CON.d : x % 4 === 0 ? CON.d : CON.m) : face(v, x, z, sl));
+        if (v.over) for (let d = 1; d <= 2; d++) put(x, yb - v.b + d, CON.x); // soffit shadow under a cantilever
+      }
+      for (let y = v.y0; y <= v.y1; y++) for (let x = v.x0; x <= v.x1; x++) {
+        if (!inV(v, x, y)) continue;
+        const edge = !inV(v, x, y, 1), front = edge && !inV(v, x, y + 1);
+        const roof = mixK(CON.t, CON.l, Math.min(0.45, v.t / Math.max(1, H) * 0.45));
+        put(x, y - v.t, v.crown && front ? led : edge ? CON.l : v.plain ? CON.t2 : ((x - v.x0) % 8 === 0 || (y - v.y0) % 8 === 0) ? mixK(roof, CON.d, 0.5) : roof);
+      }
+      if (v.mast) { const mx = v.x0 + 4, my = v.y0 + 3; for (let j = 0; j < 10; j++) put(mx, my - v.t - j, CON.l); put(mx, my - v.t - 10, led); put(mx - 1, my - v.t - 6, CON.l); put(mx + 1, my - v.t - 6, CON.l); }
+    };
+    const shadeRoof = (lo, hi) => { // a higher volume casts a hard shadow on a lower roof
+      const L2 = Math.round((hi.t - lo.t) * 0.6), M = new Set();
+      for (let y = hi.y0; y <= hi.y1; y++) for (let x = hi.x0; x <= hi.x1; x++) if (inV(hi, x, y)) for (let t = 1; t <= L2; t++) { const px = Math.round(x - t * 0.7), py = Math.round(y + t * 0.7); if (inV(lo, px, py, 1) && !inV(hi, px, py)) M.add(px + ',' + py); }
+      for (const q of M) { const [px, py] = q.split(',').map(Number), X0 = px + pad, Y0 = py - lo.t + top; if (X0 >= 0 && Y0 >= 0 && X0 < S.w && Y0 < S.h && S.d[Y0 * S.w + X0]) S.d[Y0 * S.w + X0] = mixK(S.d[Y0 * S.w + X0], CON.x, 0.5); }
+    };
+    V.forEach((v, i) => { drawVol(v); for (const u of V.slice(i + 1)) if (u.t > v.t && u.b >= v.t - 1) shadeRoof(v, u); });
+    // roofscape: plant cores on the highest roof, skylights on the podium roof, an LED billboard on the front edge
+    const topV = V.reduce((a, v) => (v.t > a.t ? v : a), V[0]), towers = V.slice(1), coveredAt = (x, y) => towers.some((v) => inV(v, x, y, -1));
+    for (let i = 0; i < 2; i++) {
+      const cw = 4 + Math.floor(rng() * 4), ch = 3 + Math.floor(rng() * 2), cx = topV.x0 + 3 + Math.floor(rng() * Math.max(1, topV.x1 - topV.x0 - cw - 6)), cy = topV.y0 + 2 + Math.floor(rng() * Math.max(1, topV.y1 - topV.y0 - ch - 4));
+      if ([[cx, cy], [cx + cw, cy], [cx, cy + ch], [cx + cw, cy + ch]].every(([x, y]) => inV(topV, x, y, 2))) drawVol({ x0: cx, y0: cy, x1: cx + cw, y1: cy + ch, k: 0, b: topV.t, t: topV.t + 3 + Math.floor(rng() * 4), plain: true });
+    }
+    const pod = V[0];
+    for (let i = 0; i < 6; i++) {
+      const x = pod.x0 + 4 + Math.floor(rng() * (pod.x1 - pod.x0 - 10)), y = pod.y0 + 3 + Math.floor(rng() * (pod.y1 - pod.y0 - 6));
+      if (![[x, y], [x + 5, y], [x, y + 2], [x + 5, y + 2]].every(([a, b2]) => inV(pod, a, b2, 2) && !coveredAt(a, b2) && !coveredAt(a, b2 + 6))) continue;
+      for (let j = 0; j < 2; j++) for (let i2 = 0; i2 <= 5; i2++) put(x + i2, y + j - pod.t, i2 === 0 || i2 === 5 ? CON.x : mixK(CON.x, N.cyan, j ? 0.25 : 0.5));
+    }
+    if (rng() < 0.6 && topV.x1 - topV.x0 > 16) { // a billboard on legs, lit
+      const bw = Math.min(16, topV.x1 - topV.x0 - 8), bx = topV.x0 + 4 + Math.floor(rng() * (topV.x1 - topV.x0 - bw - 8)); let by = topV.y1 - 2; while (by > topV.y0 && !inV(topV, bx, by, 1)) by--;
+      for (const lx of [bx + 1, bx + bw - 1]) for (let z = 0; z < 3; z++) put(lx, by - topV.t - z, CON.l);
+      for (let z = 3; z < 10; z++) for (let x = bx; x <= bx + bw; x++) put(x, by - topV.t - z, z === 3 || z === 9 || x === bx || x === bx + bw ? CON.x : z % 2 ? led : mixK(led, K.white, 0.35));
+    }
+    return S;
+  }
+  function brutalShadow(B, ax, ay, w, h, L, cut) {
+    w = Math.round(w); h = Math.round(h); ax = Math.round(ax); ay = Math.round(ay);
+    const fp = (x, y) => { if (x < 0 || y < 0 || x >= w || y >= h) return false; if (!cut) return true; const u = cut.c[1] === 'e' ? x : w - 1 - x, v = cut.c[0] === 's' ? y : h - 1 - y; return u + v <= w + h - 2 - cut.k; };
+    const M = new Uint8Array(AW * AH), mark = (x, y) => { const sx = ax + x, sy = ay + y; if (sx >= 0 && sy >= 0 && sx < AW && sy < AH) M[sy * AW + sx] = 1; };
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      if (!fp(x, y)) continue;
+      const rim = !fp(x - 1, y) || !fp(x + 1, y) || !fp(x, y - 1) || !fp(x, y + 1);
+      if (rim) for (let t = 1; t <= L; t++) { const px = Math.round(x - t * 0.7), py = Math.round(y + t * 0.7); if (!fp(px, py)) mark(px, py); }
+      const px = Math.round(x - L * 0.7), py = Math.round(y + L * 0.7); if (!fp(px, py)) mark(px, py);
+    }
+    for (let q = 0; q < M.length; q++) if (M[q]) B.shade(q % AW, Math.floor(q / AW), 0.62);
   }
   function monolith(B, ax, ay, base, h, led) { // a concrete slab with a lit slot
     block(B, ax - 2, ay - 1, ax + 2, ay + 1, 0, base, h, 'conc', null, base === 0);
@@ -187,8 +345,8 @@
   const DISTRICTS = [
     { id: 'parkland', name: 'Parkland', mood: 'Calm, water, concrete and lawn. The highway loops over the pools; a road passes beneath.', quota: P['world.district.parkland.quota'], storeys: [2, 5],
       roads: [[[1200, -200], [1200, 2120]], fil([[400, -200], [400, 300], [200, 500], [200, 2120]]), fil([[2000, -200], [2000, 1420], [2200, 1620], [2200, 2120]])],
-      decks: [{ row: 1, off: 420, z: 1 }], park: ['B1', 'A2', 'B2', 'C2', 'B3'], centre: 'B2' }, // the ring replaces the B2 stretch
-    { id: 'circus', name: 'Circus', mood: 'Busy and circling. Traffic gives way at the four-way roundabout, then rushes.', quota: P['world.district.circus.quota'], storeys: [4, 9],
+      decks: [{ row: 1, off: 288, z: 1 }], park: ['B1', 'A2', 'B2', 'C2', 'B3'], centre: 'B2' }, // the ring replaces the B2 stretch; off 288 puts it in the upper half (Edit 51.3)
+    { id: 'circus', name: 'Circus', mood: 'Busy and circling, walled by monumental concrete towers. Traffic gives way at the four-way roundabout, then rushes.', quota: P['world.district.circus.quota'], storeys: [6, 14],
       roads: [[[-200, 960], [2600, 960]], [[1200, -200], [1200, 2120]], fil([[200, -200], [200, 200], [80, 320], [-200, 320]]), fil([[2200, -200], [2200, 200], [2320, 320], [2600, 320]]),
         fil([[200, 2120], [200, 1540], [80, 1420], [-200, 1420]]), fil([[2200, 2120], [2200, 1540], [2320, 1420], [2600, 1420]])],
       decks: [{ row: 2, off: 400, z: 1 }], park: [], centre: 'B2' },
@@ -259,7 +417,8 @@
     const roadOk = (wx, wy, m) => rd(wx, wy) > (m || OUTER + 4);
     // highways, each with its two escalators
     if (D.id === 'parkland' && isCentre) {
-      const cx = 400, cy = 420, Rc = P['world.deckRingRadius'], rr = ringRoutes(cx, cy, Rc, R96);
+      const cx = 400, cy = decks[0].off, Rc = P['world.deckRingRadius'], rr = ringRoutes(cx, cy, Rc, R96);
+      if (cy - Rc - HALF - Z1 * U < P['world.deckRingTopClear']) console.warn('ring too close to the top edge');
       sc.stairs = escalators(cy, 1, HALF).slice(0, P['world.deckEscalators']);
       ringDeck = ringLayer(rr, 1, cx, cy, Rc, (x, y) => !roadOk(x, y, OUTER + C + 4) || sc.stairs.some((st) => x > st.x - C && x < st.x + st.w + C && Math.abs(y - st.y - st.h / 2) < st.h / 2 + HALF), sc.stairs.map((st) => [st.x + 2, st.x + st.w - 2, st.side]));
       sc.layers.push(ringDeck); sc.ring = rr;
@@ -271,15 +430,15 @@
     let reserved = false;
     // centrepieces
     if (D.id === 'parkland' && isCentre) {
-      const okL = (wx, wy) => roadOk(wx, wy, OUTER);
-      each((x, y, wx, wy) => { if (okL(wx, wy)) lawn(B, x, y); });
-      pathLine(B, okL, 0, 124, 136, 260, 24); pathLine(B, okL, W, 124, W - 136, 260, 24);
-      pool(B, (wx, wy) => roadOk(wx, wy, OUTER + 2), 112, 236, 304, 608, 48); pool(B, (wx, wy) => roadOk(wx, wy, OUTER + 2), 496, 236, 688, 608, 48);
-      planter(B, 216, 120, 52, 28, 'monolith', LEDS[0]); planter(B, 584, 120, 52, 28, 'plain', LEDS[3 % LEDS.length]);
-      for (const [sx, sy, kind] of [[40, 210, 'ring'], [762, 230, 'cubes'], [52, 600, 'obelisk'], [748, 600, 'fins']]) sculpture(B, sx / U, sy / U, kind, LEDS[(sx + sy) % LEDS.length]);
+      const okL = (wx, wy) => roadOk(wx, wy, OUTER), cy = decks[0].off, pools = [[112, cy - 184, 304, cy + 184], [496, cy - 184, 688, cy + 184]];
+      const inPools = (wx, wy, m) => pools.some(([a, b, c, d]) => wx > a - m && wx < c + m && wy > b - m && wy < d + m);
+      gardenPave(B, okL, null);
+      for (const [a, b, c, d] of pools) pool(B, (wx, wy) => roadOk(wx, wy, OUTER + 2), a, b, c, d, 48);
+      gardenBeds(B, { bedOk: (wx, wy) => free(wx, wy, 8) && !inPools(wx, wy, 24), diag: null, rng, leds: LEDS, pools: false });
+      gardenSculptures(B, (wx, wy) => free(wx, wy, 16) && !inPools(wx, wy, 16), null, rng, 3);
       ringDeck.shadeOn(B);
       reserved = true;
-      sc.note = 'The Z1 highway turns once round the ring (world.deckRingRadius) over two reflecting pools. A ground road passes north–south beneath it, seen through the ring. Escalators: north side at the west end, south side at the east end.';
+      sc.note = 'The Z1 highway turns once round the ring (world.deckRingRadius), now in the upper half, over two reflecting pools. A ground road passes north–south beneath it, seen through the ring. A garden of paving, light lines and planted beds below. Escalators: north side at the west end, south side at the east end.';
     } else if (D.id === 'circus' && isCentre) {
       const Rc = P['world.roundaboutRadius'], ci = Rc - OUTER - 2;
       each((x, y, wx, wy) => { const d = hyp(wx - 400, wy - 320); if (d < ci) B.put(x, y, d > ci - 4 ? CON.l : (x % 8 === 0 || y % 8 === 0) ? CON.d : CON.t); });
@@ -293,9 +452,12 @@
       for (let a = 0; a < 48; a++) { const th = a / 48 * Math.PI * 2, hx = Math.round(ax + Math.cos(th) * 10), hy = Math.round(ay - 40 + Math.sin(th) * 3); if (Math.sin(th) > 0 || Math.abs(Math.cos(th)) > 0.3) B.put(hx, hy, a % 6 < 4 ? N.cyan : K.white); }
       const rz = PIX.roadField(labSim.lab.geo.roads.map((pts) => ({ pts, dash: false })), LW + 2);
       each((x, y, wx, wy, k) => { if (rz.D[k] > LW - 4) return; const zx = Math.abs(wx - 400) < LW && (Math.abs(wy - 36) < 16 || Math.abs(wy - 604) < 16) && Math.floor(wx / 8) % 2 === 0, zy = Math.abs(wy - 320) < LW && (Math.abs(wx - 70) < 16 || Math.abs(wx - 730) < 16) && Math.floor(wy / 8) % 2 === 0; if (zx || zy) B.put(x, y, K.lane); });
-      [[8, 8, 200, 120], [592, 8, 200, 120], [8, 512, 200, 120], [592, 512, 200, 120]].forEach(([x, y, w, h], i) => sc.props.push({ spr: PIX.building(Math.round(w / U), Math.round(h / U), (6 + i % 3 * 2) * EXT(P['world.storeyHeight']), PIX.rng(311 + i * 17), LEDS[i % LEDS.length], 6 + i % 3 * 2), x: x / U, y: y / U, by: y + h }));
+      [[8, 8, 280, 200, 'se', 'n', 12, 'ziggurat'], [512, 8, 280, 200, 'sw', 'n', 14, 'cantilever'], [8, 432, 280, 200, 'ne', 's', 10, 'twin'], [512, 432, 280, 200, 'nw', 's', 9, 'slab']].forEach(([x, y, w, h, c, rear, st, sty], i) => { // the circus walls: each tower cut at 45° to face the roundabout
+        const cut = { c, k: 65 }, Hh = st * STY; brutalShadow(B, x / U, y / U, w / U, h / U, Math.round(Hh * 0.55), cut);
+        sc.props.push({ spr: brutal(w / U, h / U, Hh, PIX.rng(311 + i * 17), LEDS[i % LEDS.length], cut, rear, sty), x: x / U, y: y / U, by: y + h });
+      });
       reserved = true;
-      sc.note = 'Every route between four arms, one way round, give way at entry (Edit 49.1). The island: a stepped concrete plinth, a lawn tier, a slab with a lit slot and a halo. Zebra crossings; four corner towers.';
+      sc.note = 'Every route between four arms, one way round, give way at entry (Edit 49.1). The island: a stepped concrete plinth, a lawn tier, a slab with a lit slot and a halo. Zebra crossings. Four monumental concrete towers, each cut at 45° to face the roundabout.';
     } else if (D.id === 'monument' && isCentre) {
       const cx = 400, cy = 320, A = P['world.walkwayRingHalf'], w = P['world.walkwayWidth'], k = P['world.walkwayRingChamfer'], ki = k - 0.586 * w, Lk = P['world.walkwayLinkLength'];
       const sq = (a, kk) => [[cx - a + kk, cy - a], [cx + a - kk, cy - a], [cx + a, cy - a + kk], [cx + a, cy + a - kk], [cx + a - kk, cy + a], [cx - a + kk, cy + a], [cx - a, cy + a - kk], [cx - a, cy - a + kk]];
@@ -338,31 +500,29 @@
     // the rest of the screen: park or city
     if (!reserved) {
       if (isPark) {
-        each((x, y, wx, wy) => { if (roadOk(wx, wy, OUTER)) lawn(B, x, y); });
-        const okL = (wx, wy) => roadOk(wx, wy, OUTER) && !underDeck(wx, wy);
-        pathLine(B, okL, 0, 640, 640, 0, 22);
-        for (let t = 0; t < 60 && !sc.pond; t++) { // one reflecting pool clear of the road, the highway and the path
-          const pw = 160 + Math.floor(rng() * 5) * 16, ph = 96 + Math.floor(rng() * 4) * 16, px = 32 + Math.floor(rng() * ((W - 64 - pw) / 16)) * 16, py = 32 + Math.floor(rng() * ((H - 64 - ph) / 16)) * 16;
-          const pts = []; for (let i = 0; i <= pw; i += 16) for (let j = 0; j <= ph; j += 16) pts.push([px + i, py + j]);
-          if (!pts.every(([a, b]) => free(a, b, 16) && Math.abs(a + b - 640) > 30)) continue;
-          pool(B, okL, px, py, px + pw, py + ph, 32); sc.pond = [px - 40, py - 40, pw + 80, ph + 80];
-        }
-        for (let t = 0, n = 0; t < 80 && n < 3; t++) { // brutalist planters on the lawn
-          const fx = 80 + rng() * 640, fy = 80 + rng() * 480;
-          if (![[0, 0], [-56, -32], [56, 32], [-56, 32], [56, -32]].every(([a, b]) => free(fx + a, fy + b, 8) && Math.abs(fx + a + fy + b - 640) > 24) || (sc.pond && fx > sc.pond[0] - 56 && fx < sc.pond[0] + sc.pond[2] + 56 && fy > sc.pond[1] - 32 && fy < sc.pond[1] + sc.pond[3] + 32) || sc.sculpts.some(([a, b]) => hyp(a - fx, b - fy) < 160)) continue;
-          planter(B, fx, fy, 48, 26, ['monolith', 'tiers', 'plain'][n % 3], LEDS[(n + col) % LEDS.length]); sc.sculpts.push([fx, fy]); n++;
-        }
+        const diag = { c: 640, w: 32 };
+        gardenPave(B, (wx, wy) => roadOk(wx, wy, OUTER), diag);
+        gardenBeds(B, { bedOk: (wx, wy) => free(wx, wy, 8), diag, rng, leds: LEDS });
+        gardenSculptures(B, (wx, wy) => free(wx, wy, 16), diag, rng, 2);
+        sc.pond = null;
       }
       if (!isPark) { // buildings: greedy blocks clear of roads, highways, escalators and each other
         const placed = [], [s0, s1] = D.storeys;
-        for (let t = 0; t < 900 && placed.length < 10; t++) { // big blocks first, then infill
-          const big = t < 450, w = (big ? 128 : 64) + Math.floor(rng() * (big ? 7 : 5)) * 16, h = (big ? 96 : 64) + Math.floor(rng() * (big ? 5 : 3)) * 16, x = 8 + Math.floor(rng() * ((W - 16 - w) / 16)) * 16, y = 8 + Math.floor(rng() * ((H - 16 - h) / 16)) * 16;
+        const mono = D.id === 'circus';
+        for (let t = 0; t < 900 && placed.length < (mono ? 7 : 10); t++) { // big blocks first, then infill
+          const big = t < 450, w = mono ? (big ? 192 : 112) + Math.floor(rng() * (big ? 9 : 5)) * 16 : (big ? 128 : 64) + Math.floor(rng() * (big ? 7 : 5)) * 16, h = mono ? (big ? 144 : 96) + Math.floor(rng() * (big ? 7 : 4)) * 16 : (big ? 96 : 64) + Math.floor(rng() * (big ? 5 : 3)) * 16, x = 8 + Math.floor(rng() * ((W - 16 - w) / 16)) * 16, y = 8 + Math.floor(rng() * ((H - 16 - h) / 16)) * 16;
           const pts = []; for (let i = 0; i <= w; i += 16) for (let j = 0; j <= h; j += 16) pts.push([x + i, y + j]);
           const deckClear = (py) => sc.layers.some((l) => l.dk && py > l.dk.off - HALF - 12 && py < l.dk.off + HALF + P['world.deckBottomClear']); // tall blocks keep clear south of a highway
           if (!pts.every(([px, py]) => free(px, py, 16) && !deckClear(py)) || placed.some((q) => x < q.x + q.w + 16 && x + w + 16 > q.x && y < q.y + q.h + 16 && y + h + 16 > q.y)) continue;
           placed.push({ x, y, w, h });
         }
-        placed.forEach((q, i) => { const st = s0 + Math.floor(rng() * (s1 - s0 + 1)); sc.props.push({ spr: PIX.building(Math.round(q.w / U), Math.round(q.h / U), st * EXT(P['world.storeyHeight']), PIX.rng(700 + i * 31 + col * 7 + row * 3), LEDS[(i + col + row) % LEDS.length], st), x: q.x / U, y: q.y / U, by: q.y + q.h }); });
+        if (mono) placed.forEach((q, i) => { // monumental: the corner nearest a road cut at 45°, towers set back from the street
+          const st = s0 + Math.floor(rng() * (s1 - s0 + 1)), Hh = st * STY, cs = [[q.x, q.y, 'nw'], [q.x + q.w, q.y, 'ne'], [q.x, q.y + q.h, 'sw'], [q.x + q.w, q.y + q.h, 'se']].map(([x, y, c]) => ({ c, d: rd(x, y) })).sort((a, b2) => a.d - b2.d);
+          const cut = cs[0].d < OUTER + 72 ? { c: cs[0].c, k: Math.round(Math.min(q.w, q.h) / U * 0.3) } : null, rear = rd(q.x + q.w / 2, q.y - 8) < rd(q.x + q.w / 2, q.y + q.h + 8) ? 's' : 'n';
+          brutalShadow(B, q.x / U, q.y / U, q.w / U, q.h / U, Math.round(Hh * 0.55), cut);
+          sc.props.push({ spr: brutal(q.w / U, q.h / U, Hh, PIX.rng(700 + i * 31 + col * 7 + row * 3), LEDS[(i + col + row) % LEDS.length], cut, rear), x: q.x / U, y: q.y / U, by: q.y + q.h });
+        });
+        else placed.forEach((q, i) => { const st = s0 + Math.floor(rng() * (s1 - s0 + 1)); sc.props.push({ spr: PIX.building(Math.round(q.w / U), Math.round(q.h / U), st * EXT(P['world.storeyHeight']), PIX.rng(700 + i * 31 + col * 7 + row * 3), LEDS[(i + col + row) % LEDS.length], st), x: q.x / U, y: q.y / U, by: q.y + q.h }); });
         sc.blocks = placed;
         for (let t = 0, n = 0; t < 120 && n < 1; t++) { // a small plaza with a planter
           const px = 60 + rng() * 680, py = 60 + rng() * 520;
@@ -371,19 +531,19 @@
         }
       }
       const sk = [];
-      for (let t = 0; t < 200 && sk.length < (isPark ? 4 : 2); t++) { // sculptures on lawns and pavements
+      for (let t = 0; t < 200 && sk.length < (isPark ? 0 : 2); t++) { // sculptures on pavements (gardens place their own)
         const px = 30 + rng() * 740, py = 40 + rng() * 570;
         if (!free(px, py, 30) || sk.concat(sc.sculpts).some(([a, b]) => hyp(a - px, b - py) < 100) || (sc.pond && px > sc.pond[0] && px < sc.pond[0] + sc.pond[2] && py > sc.pond[1] && py < sc.pond[1] + sc.pond[3] + 30) || Math.abs(px + py - 640) < 30 || (sc.blocks || []).some((q) => px > q.x - 30 && px < q.x + q.w + 30 && py > q.y - 20 && py < q.y + q.h + 60)) continue;
         sk.push([px, py]);
       }
       for (const p of sk) sculpture(B, p[0] / U, p[1] / U, SCULPT[Math.floor(rng() * SCULPT.length)], LEDS[Math.floor(rng() * LEDS.length)]);
-      sc.note = (isPark ? 'Parkland: lawns, a reflecting pool, concrete planters and monoliths, public sculptures.' : 'City blocks, LED façades; a plaza with a concrete planter.') + (decks.length ? ' Highway Z' + decks[0].z + ' along this row, with its two escalators: north side at the west end, south side at the east end.' : '');
+      sc.note = (isPark ? 'Parkland garden: running-bond paving, light lines, a 45° promenade, beds of hedge, grasses, lawn, moss, terraces and pools; sculptures on the crossings.' : D.id === 'circus' ? 'Monumental concrete towers on pilotis: ziggurats, cantilevered crowns, finned slabs, twin towers; corners cut at 45° to the street.' : 'City blocks, LED façades; a plaza with a concrete planter.') + (decks.length ? ' Highway Z' + decks[0].z + ' along this row, with its two escalators: north side at the west end, south side at the east end.' : '');
     }
     // traffic
     if (labSim) sc.s = labSim, sc.lab = true;
     else if (sc.ring) {
       const dl = [{ path: X.lanesOf(sc.ring.WE, P)[0], deck: 0, dir: 0 }, { path: X.lanesOf(sc.ring.EW, P)[0], deck: 0, dir: 1 }];
-      sc.s = sceneSim(center, [{ off: 420, z: 1 }], dl, null, busOK);
+      sc.s = sceneSim(center, [{ off: decks[0].off, z: 1 }], dl, null, busOK);
     } else sc.s = sceneSim(center, decks, X.deckLanesOf(decks.map((d) => ({ hz: true, off: d.off })), P), lanes, busOK);
     return sc;
   }

@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit51.2-2026-10-22",
+ "registryVersion": "edit51.3-2026-10-22",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5",
  "entries": [
@@ -5439,6 +5439,90 @@
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Slimmer than a highway column (world.deckColumn)"
+  },
+  {
+   "id": "world.deckRingTopClear",
+   "group": "World",
+   "owner": "World",
+   "label": "Ring top clearance",
+   "description": "An elevated ring's drawn top (lift included) stays at least this far inside the top edge. Rings only; straight highways keep world.deckTopClear.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "proposed",
+   "source": "Edit 51.3 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Lets the Parkland ring sit in the upper half of its screen without crossing the edge"
+  },
+  {
+   "id": "world.gardenCellWidth",
+   "group": "World",
+   "owner": "World",
+   "label": "Garden cell width",
+   "description": "Width of one cell of the park garden grid: a bed and half of the paths either side.",
+   "unit": "world units",
+   "type": "number",
+   "default": 160,
+   "status": "proposed",
+   "source": "Edit 51.3 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 96
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Five cells across an 800-wide screen"
+  },
+  {
+   "id": "world.gardenCellHeight",
+   "group": "World",
+   "owner": "World",
+   "label": "Garden cell height",
+   "description": "Height of one cell of the park garden grid.",
+   "unit": "world units",
+   "type": "number",
+   "default": 128,
+   "status": "proposed",
+   "source": "Edit 51.3 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 96
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Five cells down a 640-high screen"
+  },
+  {
+   "id": "world.gardenPath",
+   "group": "World",
+   "owner": "World",
+   "label": "Garden path width",
+   "description": "Width of the paved path between beds. A light line runs down its centre.",
+   "unit": "world units",
+   "type": "number",
+   "default": 32,
+   "status": "proposed",
+   "source": "Edit 51.3 (22 October), P5 district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 24
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Room for the dummy to pass between beds"
   },
   {
    "id": "world.plazaHalf",

@@ -1,12 +1,12 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways
 
-**P5.2 · 22 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2 and 51–51.2 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.2 · 22 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2 and 51–51.3 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
 - **`dummies_p5.html`:** the game (P5.2).
 - **`highway_mockup.html`:** highway width at 176, 160 and 128 over the same road, in game art with live traffic.
-- **`cityscape_mockup.html`:** the three proposed districts (Edit 51.2): the three centres live at the top, then each district as 3 × 3 screens in game art with live traffic. Tap a screen to see it at 2×. Not in the game yet.
+- **`cityscape_mockup.html`:** the three proposed districts (Edit 51.3): the three centres live at the top, then each district as 3 × 3 screens in game art with live traffic. Tap a screen to see it at 2×. Not in the game yet.
 
 ## Why
 
@@ -15,6 +15,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 - **O3.65:** 45° roads and highways in; all new learnings into P5. Five car models: hatchback, sedan, police, van, small bus.
 - **O3.66:** the highway pays through speed, not a bonus. Walking into a car's front scores too much. What about diagonal highways?
 - **O3.67:** highways as wide as the road and walkway below; lamps 8–10 per screen width; round columns; angles only on ground roads. Three cityscapes instead of five.
+- **O3.70:** Parkland's roundabout higher in the screen; more interesting paving and planting. Circus buildings more monumental and brutalist cyberpunk.
 - **O3.69:** Parkland's B2 road runs top to bottom. Two escalators per highway screen, opposite sides, opposite ends. Monument: a road in the middle; walkways must read as raised to meet roofs. Brutalist planters, not flowers.
 - **O3.68:** Parkland keeps the Z1 ring over the lake. Circus as is. Sculptures, not trees. Monument: 90° and 45° only; roofs lead up to the walkway; no rounded walkway ends. Mock up the three as 3 × 3 layouts.
 
@@ -88,22 +89,23 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 - **Diagonal highways (P5.1 mock-up):** rejected. Highways run square; 45° angles stay on ground roads (decision 224).
 
-## Three districts (mock-up, Edits 51–51.2)
+## Three districts (mock-up, Edits 51–51.3)
 
-![The three centres, B2 at 2×: Parkland, Circus, Monument](docs/p54_centres.png)
+![The three centres, B2 at 2×: Parkland, Circus, Monument](docs/p55_centres.png)
 
-![The three districts, 3 × 3 screens each](docs/p54_districts.png)
+![The three districts, 3 × 3 screens each](docs/p55_districts.png)
 
 | District | Centre (B2) | Mood | Quota |
 |---|---|---|---|
-| 1 Parkland | Z1 ring over two reflecting pools; a road passes north–south beneath | Calm, water, concrete and lawn | 2 |
-| 2 Circus | Four-way roundabout round a stepped concrete plinth and slab | Busy and circling | 3 |
+| 1 Parkland | Z1 ring in the upper half, over two reflecting pools; a road passes north–south beneath; a garden below | Calm, water, concrete and planting | 2 |
+| 2 Circus | Four-way roundabout round a stepped concrete plinth and slab, walled by four towers cut at 45° to face it | Busy, circling, monumental | 3 |
 | 3 Monument | The road splits round the monument's island; a square walkway ring at Z1 bridges it and meets four podium roofs | Neon commerce, LED walls | 4 |
 
 - **Escalators (rule):** two per highway screen, opposite sides, opposite ends (`world.deckEscalators`, `world.deckEscalatorInset`).
 - **Roads:** planned across the whole district. Ground roads turn at 90° or 45°, fillets 96. Parkland's run north–south.
 - **Highways:** square along a row. Parkland Z1 row 2; Circus Z1 row 3; Monument Z2 row 1 (off 272) and Z1 row 3.
-- **No flower beds:** concrete planters, tiers and monoliths; reflecting pools with 45° corners; public sculptures.
+- **Gardens (Parkland):** a grid of beds (hedge, grasses, lawn, moss, terraces, pools, plazas) with zoned paving and light lines (`world.gardenCellWidth`, `world.gardenCellHeight`, `world.gardenPath`).
+- **Towers (Circus):** podium on pilotis, then ziggurat, cantilevered crown, finned slab or twin towers; LED banners, billboards, hard shadows; corners cut at 45° to the street.
 
 ![Monument B2: the split road, the raised walkway ring on columns, escalators, podium roofs](docs/p54_monument_b2.png)
 
