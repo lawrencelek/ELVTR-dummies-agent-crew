@@ -1,12 +1,12 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways
 
-**P5.2 · 22 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2 and 51–51.3 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.2 · 22 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3 and 52 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
 - **`dummies_p5.html`:** the game (P5.2).
 - **`highway_mockup.html`:** highway width at 176, 160 and 128 over the same road, in game art with live traffic.
-- **`cityscape_mockup.html`:** the three proposed districts (Edit 51.3): the three centres live at the top, then each district as 3 × 3 screens in game art with live traffic. Tap a screen to see it at 2×. Not in the game yet.
+- **`cityscape_mockup.html`:** the three proposed districts (Edits 51.3 and 52): the three centres live at the top, then each district as 3 × 3 screens in game art with live traffic. Tap a screen to see it at 2×. Not in the game yet.
 
 ## Why
 
@@ -15,6 +15,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 - **O3.65:** 45° roads and highways in; all new learnings into P5. Five car models: hatchback, sedan, police, van, small bus.
 - **O3.66:** the highway pays through speed, not a bonus. Walking into a car's front scores too much. What about diagonal highways?
 - **O3.67:** highways as wide as the road and walkway below; lamps 8–10 per screen width; round columns; angles only on ground roads. Three cityscapes instead of five.
+- **O3.71:** an adversarial level-design critic; one mechanic and landmark per tile; flow to the centre; crossings at 90° or 45°; roundabouts with three or more arms; cars orbit the inner ring lane until their exit is free. Highways may run across, down or at 45°.
 - **O3.70:** Parkland's roundabout higher in the screen; more interesting paving and planting. Circus buildings more monumental and brutalist cyberpunk.
 - **O3.69:** Parkland's B2 road runs top to bottom. Two escalators per highway screen, opposite sides, opposite ends. Monument: a road in the middle; walkways must read as raised to meet roofs. Brutalist planters, not flowers.
 - **O3.68:** Parkland keeps the Z1 ring over the lake. Circus as is. Sculptures, not trees. Monument: 90° and 45° only; roofs lead up to the walkway; no rounded walkway ends. Mock up the three as 3 × 3 layouts.
@@ -89,23 +90,21 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 - **Diagonal highways (P5.1 mock-up):** rejected. Highways run square; 45° angles stay on ground roads (decision 224).
 
-## Three districts (mock-up, Edits 51–51.3)
+## Three districts (mock-up, Edits 51–52)
 
-![The three centres, B2 at 2×: Parkland, Circus, Monument](docs/p55_centres.png)
+![The three centres, B2 at 2×: Parkland, Circus, Monument](docs/p56_centres.png)
 
-![The three districts, 3 × 3 screens each](docs/p55_districts.png)
+![The three districts, 3 × 3 screens each, start arrowed, each tile labelled with its mechanic](docs/p56_districts.png)
 
-| District | Centre (B2) | Mood | Quota |
+| District | Start | Centre (B2) | The rest |
 |---|---|---|---|
-| 1 Parkland | Z1 ring in the upper half, over two reflecting pools; a road passes north–south beneath; a garden below | Calm, water, concrete and planting | 2 |
-| 2 Circus | Four-way roundabout round a stepped concrete plinth and slab, walled by four towers cut at 45° to face it | Busy, circling, monumental | 3 |
-| 3 Monument | The road splits round the monument's island; a square walkway ring at Z1 bridges it and meets four podium roofs | Neon commerce, LED walls | 4 |
+| 1 Parkland | A1, top edge | Four-arm Z1 ring; the 45° boulevard passes beneath | Z1 highways across row 2 and down column B; T and crossroads at 45°; footbridge; R160 bends |
+| 2 Circus | A2, west edge | Four-arm roundabout; orbit lane | Octagon street with 45° corners; crossroads and T junctions; roadworks, flooded corner, cone chicane |
+| 3 Monument | A1, west edge | Split road under the walkway ring | Z1 and Z2 highways down columns A and C; skybridge; bends, corner cuts, a 45° jog |
 
-- **Escalators (rule):** two per highway screen, opposite sides, opposite ends (`world.deckEscalators`, `world.deckEscalatorInset`).
-- **Roads:** planned across the whole district. Ground roads turn at 90° or 45°, fillets 96. Parkland's run north–south.
-- **Highways:** square along a row. Parkland Z1 row 2; Circus Z1 row 3; Monument Z2 row 1 (off 272) and Z1 row 3.
-- **Gardens (Parkland):** a grid of beds (hedge, grasses, lawn, moss, terraces, pools, plazas) with zoned paving and light lines (`world.gardenCellWidth`, `world.gardenCellHeight`, `world.gardenPath`).
-- **Towers (Circus):** podium on pilotis, then ziggurat, cantilevered crown, finned slab or twin towers; LED banners, billboards, hard shadows; corners cut at 45° to the street.
+- **Level design (Edit 52):** each tile reveals one mechanic and one landmark; the table under the grid lists them. Critique: `docs/level_design_critique.md`.
+- **Roundabouts (Edit 52):** three or more arms; cars orbit on the inner lane when their exit is blocked (`traffic.ringOrbit`). Evidence: `docs/orbit_report.md`.
+- **Escalators (rule):** two per highway screen, opposite sides, opposite ends.
 
 ![Monument B2: the split road, the raised walkway ring on columns, escalators, podium roofs](docs/p54_monument_b2.png)
 
@@ -136,6 +135,7 @@ node test_sim.js                 # P3.4, P4 and P5 checks (94)
 node tools/district_bake.js 60   # P5 layouts → content/districts/districts_p5.json
 node tools/p5_report.js 120      # bus roads, highway traffic
 node tools/points_report.js 150  # walk-in against dash play, before and after damage.walkShare
+node tools/orbit_report.js        # the inner-lane orbit, free flow and a blocked exit
 ```
 
 ## Files
@@ -149,11 +149,12 @@ node tools/points_report.js 150  # walk-in against dash play, before and after d
 | `tools/p5_report.js` | Bus roads and highway traffic on the baked layouts |
 | `tools/points_report.js` | Walk-in and dash play on every start screen, P5.0 and P5.1 points |
 | `highway_view.js`, `highway_shell.html` | Highway width mock-up (P5.1's diagonal mock-up retired) |
-| `cityscape_view.js`, `cityscape_shell.html` | Three districts mock-up: centres, then 3 × 3 screens each (Edit 51.2) |
+| `cityscape_view.js`, `cityscape_shell.html` | Three districts mock-up: centres, then 3 × 3 screens with a mechanic and landmark per tile (Edit 52) |
+| `tools/orbit_report.js` | Inner-lane orbit evidence (Edit 52) |
 
 ## Open
 
-- **Districts (decisions 225–241):** approve the three layouts, then P6 rebuilds the planner: a curved deck, split roads, walkways on columns, podium roofs, two escalators per highway screen.
+- **Districts (decisions 225–255):** approve the three layouts, then P6 rebuilds the planner: a curved deck, split roads, walkways on columns, podium roofs, two escalators per highway screen.
 - **No-walkway highway (decision 223):** 128 wide, lanes and parapets only. Mocked up, not adopted.
 - **Walk share:** 0.25 stops walk-in write-offs; dashing play slows (first write-off 35 → 49 s).
 

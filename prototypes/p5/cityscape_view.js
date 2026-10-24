@@ -1,4 +1,4 @@
-// Three districts (P5 mock-up, GDD Edits 51.1–51.2). Each district is 3 × 3 screens of 800 × 640, drawn in game art with
+// Three districts (P5 mock-up, GDD Edits 51.1–52). Each district is 3 × 3 screens of 800 × 640, drawn in game art with
 // live P5 traffic. Parkland: the Z1 roundabout over two pools at B2, a ground road passing north–south beneath it.
 // Circus: a four-way roundabout round a brutalist monument. Monument: a road splits round the monument's island; a
 // square walkway ring at Z1 bridges both carriageways and links four podium roofs by 45° walkways.
@@ -268,7 +268,7 @@
     return { WE: X.roundaboutCenter(a, b, 2 * cx, 2 * cy, 200, Rc, r, Rf), EW: X.roundaboutCenter(b, a, 2 * cx, 2 * cy, 200, Rc, r, Rf), ring: X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 96), armW: [[-200, cy], [cx - D, cy]], armE: [[cx + D, cy], [W + 200, cy]] };
   }
   function ringLayer(rr, z, cx, cy, Rc, avoid, openings) { // a curved deck from its centre lines: parapets, lane lines, dashes, girder face, paired lamps (outer), columns
-    const geoms = [{ pts: rr.ring, dash: true }, { pts: rr.armW, dash: true }, { pts: rr.armE, dash: true }, { pts: rr.WE }, { pts: rr.EW }];
+    const geoms = rr.geoms || [{ pts: rr.ring, dash: true }, { pts: rr.armW, dash: true }, { pts: rr.armE, dash: true }, { pts: rr.WE }, { pts: rr.EW }];
     const f = PIX.roadField(geoms, HALF + 6), Lr = new PIX.Buf(AW, AH), led = LEDS[z === 2 ? 2 : 1], inB = (x, y) => x >= 0 && y >= 0 && x < AW && y < AH && f.D[y * AW + x] <= HALF;
     each((x, y, wx, wy, k) => {
       const d = f.D[k]; if (d > HALF) return;
@@ -339,32 +339,6 @@
     for (let h = 6; h < 12; h++) Bf.put(x0, y0 - Ht - h, h > 9 ? N.cyan : N.stoneL);
     for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4, lx = Math.round(x0 + Math.cos(a) * 20), ly = Math.round(y0 + Math.sin(a) * 9); for (let h = 0; h < 6; h++) Bf.put(lx, ly - h, K.jerseyTop); Bf.put(lx, ly - 6, K.white); }
   }
-  // ---------- the three districts, planned in district coordinates (3 × 3 screens of 800 × 640)
-  const R96 = P['world.roundaboutEntryRadius'];
-  const fil = (pts) => X.filletAny(pts, R96, 0);
-  const DISTRICTS = [
-    { id: 'parkland', name: 'Parkland', mood: 'Calm, water, concrete and lawn. The highway loops over the pools; a road passes beneath.', quota: P['world.district.parkland.quota'], storeys: [2, 5],
-      roads: [[[1200, -200], [1200, 2120]], fil([[400, -200], [400, 300], [200, 500], [200, 2120]]), fil([[2000, -200], [2000, 1420], [2200, 1620], [2200, 2120]])],
-      decks: [{ row: 1, off: 288, z: 1 }], park: ['B1', 'A2', 'B2', 'C2', 'B3'], centre: 'B2' }, // the ring replaces the B2 stretch; off 288 puts it in the upper half (Edit 51.3)
-    { id: 'circus', name: 'Circus', mood: 'Busy and circling, walled by monumental concrete towers. Traffic gives way at the four-way roundabout, then rushes.', quota: P['world.district.circus.quota'], storeys: [6, 14],
-      roads: [[[-200, 960], [2600, 960]], [[1200, -200], [1200, 2120]], fil([[200, -200], [200, 200], [80, 320], [-200, 320]]), fil([[2200, -200], [2200, 200], [2320, 320], [2600, 320]]),
-        fil([[200, 2120], [200, 1540], [80, 1420], [-200, 1420]]), fil([[2200, 2120], [2200, 1540], [2320, 1420], [2600, 1420]])],
-      decks: [{ row: 2, off: 400, z: 1 }], park: [], centre: 'B2' },
-    { id: 'monument', name: 'Monument', mood: 'Neon commerce, LED walls. The road splits round the monument; walkways bridge it at Z1.', quota: P['world.district.monument.quota'], storeys: [6, 12],
-      roads: [fil([[-200, 560], [2000, 560], [2000, 960], [400, 960], [400, 1440], [2600, 1440]])],
-      decks: [{ row: 0, off: 272, z: 2 }, { row: 2, off: 380, z: 1 }], park: [], centre: 'B2' },
-  ];
-  // ---------- one screen of a district
-  function sceneSim(center, decks, deckLanes, lanes, busOK) {
-    const s = new X.Sim('straight', { 'run.appearances.road': 2000 });
-    s.level = Object.assign({}, s.level, { center, ring: null, lanes: lanes || X.lanesOf(center, P), statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }], patches: [], floors: [], stairs: [], checkpoints: [], theme: 'plain',
-      decks: decks.map((d) => ({ hz: true, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] })), deckLanes });
-    s.cones = []; s.cars = []; s.drones = []; s.checkTerminal = () => {}; s.checkFlip = () => {};
-    s.schedule = s.schedule.map((sl, j) => { const cls = X.fleetClass(P, 0.25, (j * 0.6180339887 + 0.53) % 1); return Object.assign({}, sl, { cls: cls === 'bus' && !busOK ? 'sedan' : cls }); }); // buses only where the road allows (Edit 50)
-    s.admissionInterval = () => 3.2;
-    Object.assign(s.body, { x: -900, y: -900 }); s.fillDeckCars();
-    return s;
-  }
   // Monument B2: the road splits round the monument's island. Two one-way lanes, 45° tapers, fillets 96 (no buses).
   function splitRoad(cy) {
     const o = P['world.splitLaneOffset'], h = LW / 2, d = o - h, xa = 120, xb = W - 120;
@@ -386,184 +360,392 @@
     });
     return m;
   }
+  // ---------- level design (Edit 52). Each district is planned in district coordinates (3 × 3 screens of 800 × 640).
+  // Every tile reveals its own mechanic and landmark. Roads and highways cross at 90° or 45°; highways may run across,
+  // down or at 45°. Every roundabout has three or more arms, and its inner lane is the orbit lane (traffic.ringOrbit).
+  const R96 = P['world.roundaboutEntryRadius'], RB = P['vehicles.bus.minRadius'];
+  const fil = (pts, r) => X.filletAny(pts, r || R96, 0);
+  const loop2 = (pts) => pts.concat(pts.slice(1)); // a closed road twice round: every screen clips one unbroken run
+  const DISTRICTS = [
+    { id: 'parkland', name: 'Parkland', quota: P['world.district.parkland.quota'], storeys: [2, 5], start: ['A1', 'top'],
+      mood: 'Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath.',
+      roads: [{ id: 'boulevard', pts: [[40, -200], [2360, 2120]] }, { id: 'loop', pts: fil([[400, 160], [400, 1600], [2240, 1600], [2240, 1200], [1760, 720], [1760, -200]], RB) }],
+      junctions: [{ tile: 'A1', at: [400, 160], major: 'boulevard' }, { tile: 'C3', at: [240, 320], major: 'boulevard' }],
+      ring: { tile: 'B2', z: 1, arms: ['W', 'N', 'E', 'S'] },
+      decks: [{ hz: true, at: 960, z: 1 }, { hz: false, at: 1200, z: 1 }], park: true,
+      tiles: {
+        A1: ['Start, top edge. The 45° boulevard; a T junction at 45°: the avenue gives way', 'Reservoir terraces: three stepped pools'],
+        B1: ['The Z1 highway runs north–south; escalators west (north end) and east (south end). The boulevard cuts the corner', 'Cascade: water steps beside the highway'],
+        C1: ['The avenue under a Z1 footbridge: escalators at both ends, drop onto cars', 'Lantern pavilion'],
+        A2: ['The avenue passes under the Z1 highway at 90°; escalators north (west end) and south (east end)', 'Canal along the highway'],
+        B2: ['Four-arm Z1 roundabout (W, N, E, S). Give way to the ring; the inner lane is the orbit lane. The boulevard passes beneath, through the hole', 'Reflecting pools under the ring'],
+        C2: ['The avenue crosses under the Z1 highway at 45°', 'Amphitheatre terraces'],
+        A3: ['A wide R160 bend (buses may use it)', 'Monolith orchard'],
+        B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Obelisk on the axis'],
+        C3: ['Crossroads at 45°: the street gives way to the boulevard; then a wide R160 bend north', 'Sculpture court'] } },
+    { id: 'circus', name: 'Circus', quota: P['world.district.circus.quota'], storeys: [6, 14], start: ['A2', 'west'],
+      mood: 'Busy and circling, walled by monumental concrete. An octagon of streets rings the four-arm roundabout.',
+      roads: [{ id: 'octagon', pts: loop2(fil([[800, 480], [560, 480], [480, 560], [480, 1360], [560, 1440], [1840, 1440], [1920, 1360], [1920, 560], [1840, 480], [800, 480]])) },
+        { id: 'west', pts: [[-200, 960], [1000, 960]] }, { id: 'north', pts: [[1200, 480], [1200, 840]] }, { id: 'east', pts: [[1400, 960], [1920, 960]] }, { id: 'south', pts: [[1200, 1100], [1200, 2120]] }],
+      junctions: [{ tile: 'A2', at: [480, 320], major: 'octagon' }, { tile: 'B1', at: [400, 480], major: 'octagon' }, { tile: 'C2', at: [320, 320], major: 'octagon' }, { tile: 'B3', at: [400, 160], major: 'octagon' }],
+      roundabout: { tile: 'B2', arms: ['W', 'N', 'E', 'S'] },
+      decks: [{ hz: true, at: 1680, z: 1 }],
+      tiles: {
+        A1: ['The octagon turns two 45° corners; roadworks close a lane (cones)', 'A tower cut parallel to the diagonal'],
+        B1: ['T junction: the north arm gives way to the octagon', 'Twin towers and their bridge'],
+        C1: ['The octagon turns two 45° corners on a flooded road (puddles: cars skid)', 'A ziggurat stepping toward the diagonal'],
+        A2: ['Start, west edge. Crossroads: the entry road gives way to the octagon', 'LED billboard wall facing the entry'],
+        B2: ['Four-arm roundabout: give way at entry; orbit on the inner lane when the exit is blocked', 'The plinth and its lit slab'],
+        C2: ['T junction: the east arm gives way to the octagon', 'Cantilevered crown tower'],
+        A3: ['The octagon turns two 45° corners under the row-3 Z1 highway; escalators', 'Finned slab'],
+        B3: ['Crossroads, then under the Z1 highway at 90° to the exit', 'Arcade on pilotis'],
+        C3: ['The octagon turns two 45° corners through a cone chicane; Z1 highway and escalators', 'Twin slabs'] } },
+    { id: 'monument', name: 'Monument', quota: P['world.district.monument.quota'], storeys: [6, 12], start: ['A1', 'west'],
+      mood: 'Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument.',
+      roads: [{ id: 'snake', pts: fil([[-200, 320], [2240, 320], [2240, 864], [2144, 960], [240, 960], [240, 1504], [336, 1600], [1120, 1600], [1280, 1760], [2600, 1760]]) }],
+      split: { tile: 'B2' },
+      decks: [{ hz: false, at: 560, z: 1 }, { hz: false, at: 1840, z: 2 }],
+      tiles: {
+        A1: ['Start, west edge. The road passes under the Z1 highway (north–south) at 90°; escalators', 'LED-wall tower facing the entry'],
+        B1: ['A Z1 skybridge crosses the road at 90°, from a podium roof to the walkway ring', 'Podium and tower at the bridge head'],
+        C1: ['Under the Z2 highway at 90°, then an R96 bend south; Z2 escalators (run 112)', 'LED drum tower in the bend'],
+        A2: ['Under the Z1 highway at 90°, then an R96 bend south', 'Neon arcade along the road'],
+        B2: ['The road splits round the monument\'s island; the walkway ring bridges both lanes at Z1; skybridge north', 'The monument'],
+        C2: ['A 45° corner cut, then under the Z2 highway at 90°', 'Billboard mast'],
+        A3: ['A 45° corner cut, then under the Z1 highway at 90°', 'Stacked LED cubes'],
+        B3: ['A 45° jog between two LED walls', 'LED canyon'],
+        C3: ['Under the Z2 highway at 90°; the exit through an LED gateway', 'LED gateway arch over the road'] } },
+  ];
+  const TILE = (c, r) => 'ABC'[c] + (r + 1);
+  // ---------- traffic on one screen (the dummy away)
+  function sceneSim(center, decks, deckLanes, lanes, busOK) {
+    const s = new X.Sim('straight', { 'run.appearances.road': 2000 });
+    s.level = Object.assign({}, s.level, { center, ring: null, lanes: lanes || X.lanesOf(center, P), statics: [], coneHomes: [], spawns: [{ x: -900, y: -900, f: 0 }], patches: [], floors: [], stairs: [], checkpoints: [], theme: 'plain',
+      decks: decks.map((d) => ({ hz: d.hz !== false, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] })), deckLanes });
+    s.cones = []; s.cars = []; s.drones = []; s.checkTerminal = () => {}; s.checkFlip = () => {}; s.dispatchDrone = () => {};
+    s.schedule = s.schedule.map((sl, j) => { const cls = X.fleetClass(P, 0.25, (j * 0.6180339887 + 0.53) % 1); return Object.assign({}, sl, { cls: cls === 'bus' && !busOK ? 'sedan' : cls }); }); // buses only where the road allows (Edit 50)
+    const dc = s.deckCls.bind(s); s.deckCls = (n) => { const c = dc(n); return c === 'bus' && s.noDeckBus ? 'sedan' : c; };
+    s.admissionInterval = () => 3.2;
+    Object.assign(s.body, { x: -900, y: -900 }); s.fillDeckCars();
+    return s;
+  }
+  let pieceSeq = 0;
+  function labSim(geo, fleet, overrides) { // a lab sim on custom geometry (junctions, roundabouts): the P4 driver with give-way rules
+    const key = 'mock' + (++pieceSeq); L.PIECES[key] = { name: key, params: [], build: () => geo };
+    const s = L.makeSim(X, key, {}, { fleet, interval: 1.8, seconds: 60, seed: 11 + pieceSeq, overrides: overrides || {} });
+    s.dispatchDrone = () => {};
+    return s;
+  }
+  // arms out of a junction point J along each road through it (district polylines already clipped to the screen)
+  function junctionArms(runs, J, majorId) {
+    const arms = {}, major = [];
+    for (const r of runs) {
+      const pts = r.pts; let best = null;
+      for (let i = 1; i < pts.length; i++) { const [ax, ay] = pts[i - 1], [bx, by] = pts[i], dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy || 1, t = Math.max(0, Math.min(1, ((J[0] - ax) * dx + (J[1] - ay) * dy) / l2)), d = hyp(ax + dx * t - J[0], ay + dy * t - J[1]); if (!best || d < best.d) best = { i, d }; }
+      if (!best || best.d > 2) continue;
+      const before = pts.slice(0, best.i).reverse().filter((p) => hyp(p[0] - J[0], p[1] - J[1]) > 1), after = pts.slice(best.i).filter((p) => hyp(p[0] - J[0], p[1] - J[1]) > 1);
+      [before, after].forEach((side, k) => { if (side.length && hyp(side[side.length - 1][0] - J[0], side[side.length - 1][1] - J[1]) > 40) { const nm = r.id + k; arms[nm] = [J].concat(side); if (r.id === majorId) major.push(nm); } });
+    }
+    return { arms, major };
+  }
+  // ---------- a vertical highway (Edit 52): the game's deck sprite run north–south, lamps on both parapets
+  function vDeck(off, z, roadOk, stairs) {
+    const hgt = z === 2 ? P['world.highHeight'] : P['world.deckHeight'], dk = { hz: false, off, z, height: hgt, gaps: [], openings: stairs.map((st) => [st.y, st.y + st.h, st.side]) }, { S } = PIX.deck(dk, P);
+    const Lr = new PIX.Buf(AW, AH), x0 = Math.round((off - HALF) / U), wpx = Math.round(2 * HALF / U), glow = mixK(K.deck2, K.white, 0.38);
+    PIX.blit(Lr, S, x0, 0);
+    for (let wy = P['world.deckLampSpacing'] / 2; wy < H; wy += P['world.deckLampSpacing']) for (const sd of [-1, 1]) { // paired lamps, poles rising screen-up from the parapet
+      if (stairs.some((st) => st.side === sd && wy > st.y - 12 && wy < st.y + st.h + 12)) continue;
+      const bx = sd < 0 ? x0 + 1 : x0 + wpx - 2, by = Math.round(wy / U), ix = sd < 0 ? x0 + 6 : x0 + wpx - 7;
+      for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) if (Math.abs(i) + Math.abs(j) <= 2) Lr.put(ix + i, by + j, glow);
+      for (let h = 1; h < PIX.LAMP_H; h++) { Lr.put(bx, by - h, K.jerseyTop); Lr.put(bx + 1, by - h, K.bldgOutline); }
+      for (let i = -1; i <= 2; i++) { Lr.put(bx + i, by - PIX.LAMP_H + 1, i === 0 || i === 1 ? K.white : K.head); Lr.put(bx + i, by - PIX.LAMP_H, K.bldgOutline); }
+    }
+    return { dk, L: Lr, lift: 0, vert: true, cols: [], front: 9e5, inBand: (wx) => Math.abs(wx - off) < HALF + 12, shadeOn: (B) => {
+      const k = P['proto.art.shadowScale'], ox = PIX.SUN.x * hgt * k / U, oy = PIX.SUN.y * hgt * k / U;
+      each((x, y, wx) => { if (Math.abs(wx - off) <= HALF) return; for (const t of [0.5, 1]) { const sx = (x - ox * t + 0.5) * U; if (Math.abs(sx - off) <= HALF) { B.shade(x, y, 0.72); break; } } });
+    } };
+  }
+  function vEscalators(off, z) { // west side at the north end, east side at the south end
+    const run = X.stairRun(P, 0, z);
+    return [{ x: off - HALF - run, y: INSET, w: run, h: SWD, axis: 'x', low: off - HALF - run, high: off - HALF, side: -1, z },
+      { x: off + HALF, y: H - INSET - SWD, w: run, h: SWD, axis: 'x', low: off + HALF + run, high: off + HALF, side: 1, z }];
+  }
+  // ---------- landmark art (each district its own kit: water and gardens; brutalist concrete; LED and neon)
+  function waterBlock(B, x0, y0, x1, y1, k, base, h) { // a pool raised on a concrete step
+    const fp = chamf(Math.round(x0), Math.round(y0), Math.round(x1), Math.round(y1), k);
+    mass(B, fp, x0, y0, x1, y1, base, h, 'conc', null, base === 0);
+    for (let y = Math.round(y0); y <= y1; y++) for (let x = Math.round(x0); x <= x1; x++) if (fp(x, y, 2)) B.put(x, y - base - h, (y % 4 === 0 && (x * 5 + y) % 11 < 4) ? N.water2 : (x * 3 + y * 7) % 89 === 0 ? N.cyan : N.water);
+  }
+  function poolFP(B, fp) { // a reflecting pool from a footprint test in world units: coping, shadowed wall, water
+    each((x, y, wx, wy) => {
+      if (!fp(wx, wy, -6)) return;
+      if (!fp(wx, wy, 0)) B.put(x, y, CON.l);
+      else if (!fp(wx, wy, 4)) B.put(x, y, CON.d);
+      else { let c = N.water; if (y % 4 === 0 && ((x * 5 + y) % 11) < 4) c = N.water2; if ((x * 3 + y * 7) % 97 === 0) c = LEDS[(x + y) % LEDS.length]; B.put(x, y, c); }
+    });
+  }
+  function ledPanel(S, H0, cols) { // an LED screen over the lower part of a building sprite's front face
+    const top = S.h - Math.round(H0 * 0.85), bot = S.h - 4;
+    for (let y = top; y < bot; y++) for (let x = 3; x < S.w - 4; x++) { const c = S.d[y * S.w + x]; if (!c) continue; S.d[y * S.w + x] = (y === top || y === bot - 1 || x === 3 || x === S.w - 5) ? K.bldgOutline : mixK(cols[Math.floor((x + y * 0.5) / 6) % cols.length], K.white, ((x + y) % 7 === 0) ? 0.4 : 0); }
+    return S;
+  }
+  function drum(rx, ry, H0, led) { // an LED drum tower: elliptical plan, bands of light
+    const pad = 2, S = { w: rx * 2 + 2 * pad + 1, h: ry * 2 + H0 + 6, ox: rx + pad, oy: ry + H0 + 3 }; S.d = new Uint32Array(S.w * S.h);
+    const put = (x, y, c) => { const X0 = x + S.ox, Y0 = y + S.oy; if (X0 >= 0 && Y0 >= 0 && X0 < S.w && Y0 < S.h) S.d[Y0 * S.w + X0] = c; };
+    for (let x = -rx; x <= rx; x++) { const yb = Math.round(ry * Math.sqrt(Math.max(0, 1 - (x * x) / (rx * rx)))), u = x / rx; for (let z = 0; z < H0; z++) put(x, yb - z, z % 5 === 4 ? led : (z % 5 === 1 && (x + z) % 9 === 0) ? K.white : u < -0.5 ? CON.d : u > 0.4 ? CON.l : CON.m); }
+    for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) if ((x * x) / (rx * rx) + (y * y) / (ry * ry) <= 1) put(x, y - H0, (x * x) / (rx * rx) + (y * y) / (ry * ry) > 0.7 ? led : CON.t);
+    return S;
+  }
+  function billboard(B, ax, ay, w, h, legs, led) { // a lit board on legs (art px; anchored at the foot centre)
+    const x0 = Math.round(ax - w / 2), y0 = Math.round(ay);
+    for (const lx of [x0 + 2, x0 + w - 3]) for (let z = 0; z < legs; z++) B.put(lx, y0 - z, CON.l);
+    for (let z = legs; z < legs + h; z++) for (let x = x0; x <= x0 + w; x++) B.put(x, y0 - z, z === legs || z === legs + h - 1 || x === x0 || x === x0 + w ? K.bldgOutline : (Math.floor((x - x0) / 4) + Math.floor(z / 3)) % 3 === 0 ? mixK(led, K.white, 0.45) : led);
+    for (let t = 0; t < legs; t++) for (let x = x0; x <= x0 + w; x++) B.shade(x - t * 0.7, y0 + t * 0.7, 0.8);
+  }
+  // ---------- one screen
   function buildScreen(D, col, row) {
-    const name = 'ABC'[col] + (row + 1), ox = col * W, oy = row * H, rng = PIX.rng(1000 + col * 37 + row * 101 + D.id.length * 7);
-    const sc = { D, name, col, row, props: [], layers: [], sculpts: [], note: '', stairs: [] };
-    const isPark = D.park.includes(name), isCentre = name === D.centre;
-    const roadsLocal = [];
-    for (const r of D.roads) { const run = clipRun(shift(r, -ox, -oy), -200, -200, W + 200, H + 200); if (run) roadsLocal.push(run); }
-    let center = roadsLocal[0] || [[-900, -900], [-850, -900]], lanes = null, busOK = X.minBend(center, W, H) >= P['vehicles.bus.minRadius'];
-    const decks = D.decks.filter((d) => d.row === row), dkList = decks.map((d) => ({ hz: true, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] }));
-    const lvl = (c, extra) => Object.assign({ center: c, ring: null, statics: [], spawns: [], coneHomes: [], patches: [], decks: dkList, floors: [], canal: false, solid: [] }, extra || {});
-    let ground, labSim = null, ringDeck = null, roadD;
-    if (D.id === 'circus' && isCentre) {
-      labSim = L.makeSim(X, 'roundabout4', { Rf: R96 }, { fleet: 'expanded', interval: 1.6, seconds: 60, seed: 11, overrides: {} });
-      const geo = labSim.lab.geo;
-      ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), decks: [] }), P, 23);
+    const name = TILE(col, row), ox = col * W, oy = row * H, rng = PIX.rng(1000 + col * 37 + row * 101 + D.id.length * 7), plan = D.tiles[name];
+    const sc = { D, name, col, row, props: [], layers: [], tops: [], note: plan[0] + '. Landmark: ' + plan[1] + '.', stairs: [], reserve: [] };
+    for (const rb of [D.roundabout, D.ring]) if (rb && rb.arms.length < P['world.roundaboutMinArms']) console.warn('a roundabout with too few arms', D.id); // Edit 52
+    const runs = [];
+    for (const r of D.roads) { const run = clipRun(shift(r.pts, -ox, -oy), -200, -200, W + 200, H + 200); if (run) runs.push({ id: r.id, pts: run }); }
+    const decks = D.decks.map((d) => ({ hz: d.hz, z: d.z, off: d.hz ? d.at - oy : d.at - ox })).filter((d) => d.off > -HALF && d.off < (d.hz ? H : W) + HALF);
+    const hDecks = decks.filter((d) => d.hz), vDecks = decks.filter((d) => !d.hz);
+    const groundDecks = D.ring && D.ring.tile === name ? [] : hDecks;
+    const lvl = (c, extra) => Object.assign({ center: c, ring: null, statics: [], spawns: [], coneHomes: [], patches: [], decks: groundDecks.map((d) => ({ hz: true, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] })), floors: [], canal: false, solid: [] }, extra || {});
+    const J = (D.junctions || []).find((j) => j.tile === name);
+    let ground, roadD, sims = [], center = runs.length ? runs[0].pts : [[-900, -900], [-850, -900]], lanes = null, busOK = runs.every((r) => X.minBend(r.pts, W, H) >= RB), patches = [];
+    if (D.id === 'circus' && name === 'C1') patches = [[480, 520], [512, 552], [448, 584], [544, 496], [480, 608]].map(([x, y]) => ({ x, y, w: 32, h: 32, kind: 'puddle' })); // a flooded corner
+    // ground roads and their traffic
+    if (D.roundabout && D.roundabout.tile === name) { // a ground roundabout: every route, give way at entry, the inner lane for orbiting (Edit 52)
+      const geo = L.multiRoundabout(X, P, D.roundabout.arms, R96), s = labSim(geo, 'nobus', {});
+      sims.push(s); sc.lab = s;
+      ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), decks: [] }), P, 23);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
       roadD = (k) => rf.D[k];
-    } else if (D.id === 'monument' && isCentre) {
+    } else if (J) { // a junction at 90° or 45°: the minor road gives way (Edit 49.3)
+      const { arms, major } = junctionArms(runs, J.at, J.major), geo = L.junction(X, P, arms, major, P['world.junctionTurnRadius']), s = labSim(geo, 'nobus', {});
+      sims.push(s); sc.lab = s;
+      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), patches }), P, 29 + col * 7 + row * 13);
+      const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })), OUTER + 80);
+      roadD = (k) => rf.D[k];
+    } else if (D.split && D.split.tile === name) {
       const sp = splitRoad(320); center = [[-200, 320], [W + 200, 320]]; lanes = [X.makePath(sp.E), X.makePath(sp.Wl)]; busOK = false; sc.split = sp;
       ground = PIX.ground(lvl([[-900, -900], [-850, -900]]), P, 41);
       tiles(ground, () => true, false);
       const m = paintSplit(ground, sp.E, sp.Wl); roadD = (k) => LW - m[k];
     } else {
-      ground = PIX.ground(lvl(center, D.id === 'parkland' && isCentre ? { decks: [] } : {}), P, 31 + col * 7 + row * 13);
-      const rf = PIX.roadField(roadsLocal.map((pts) => ({ pts, dash: false })), OUTER + 80);
+      ground = PIX.ground(lvl(center, { arms: runs.length > 1 ? runs.map((r) => r.pts) : undefined, surfaces: runs.length > 1 ? [] : undefined, patches }), P, 31 + col * 7 + row * 13);
+      if (runs.length > 1) lanes = [].concat(...runs.map((r) => X.lanesOf(r.pts, P)));
+      const rf = PIX.roadField(runs.map((r) => ({ pts: r.pts, dash: false })), OUTER + 80);
       roadD = (k) => rf.D[k];
     }
     const B = ground; sc.B = B;
     const rd = (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH ? roadD(k) : 1e9; };
     const roadOk = (wx, wy, m) => rd(wx, wy) > (m || OUTER + 4);
     // highways, each with its two escalators
-    if (D.id === 'parkland' && isCentre) {
-      const cx = 400, cy = decks[0].off, Rc = P['world.deckRingRadius'], rr = ringRoutes(cx, cy, Rc, R96);
-      if (cy - Rc - HALF - Z1 * U < P['world.deckRingTopClear']) console.warn('ring too close to the top edge');
-      sc.stairs = escalators(cy, 1, HALF).slice(0, P['world.deckEscalators']);
-      ringDeck = ringLayer(rr, 1, cx, cy, Rc, (x, y) => !roadOk(x, y, OUTER + C + 4) || sc.stairs.some((st) => x > st.x - C && x < st.x + st.w + C && Math.abs(y - st.y - st.h / 2) < st.h / 2 + HALF), sc.stairs.map((st) => [st.x + 2, st.x + st.w - 2, st.side]));
-      sc.layers.push(ringDeck); sc.ring = rr;
-    } else for (const d of decks) { const st = escalators(d.off, d.z, HALF).slice(0, P['world.deckEscalators']); sc.stairs.push(...st); sc.layers.push(straightDeck(d.off, d.z, roadOk, st)); }
-    for (const st of sc.stairs) { sc.props.push(stairProp(st, st.z === 2 ? Z2 : Z1)); if (rd(st.x + SWD / 2, st.side > 0 ? st.y + st.h : st.y) < LW) console.warn('escalator foot in a lane', D.id, name); }
+    let ringSim = null;
+    if (D.ring && D.ring.tile === name) { // the Z1 ring (Parkland): a four-arm roundabout lifted onto the deck
+      const ov = { 'world.roundaboutRadius': P['world.deckRingRadius'] }, Pr = Object.assign({}, P, ov), geo = L.multiRoundabout(X, Pr, D.ring.arms, R96);
+      ringSim = labSim(geo, 'nobus', ov); sc.ringSim = ringSim;
+      const cx = 400, cy = 320, Rc = P['world.deckRingRadius'];
+      sc.stairs = escalators(cy, 1, HALF);
+      const rr = { geoms: [{ pts: geo.ring.concat([geo.ring[0]]), dash: true }].concat(geo.arms.map((pts) => ({ pts, dash: true })), geo.roads.map((pts) => ({ pts }))) };
+      const ringDeck = ringLayer(rr, 1, cx, cy, Rc, (x, y) => !roadOk(x, y, OUTER + C + 4) || sc.stairs.some((st) => x > st.x - C && x < st.x + st.w + C && Math.abs(y - st.y - st.h / 2) < st.h / 2 + HALF), sc.stairs.map((st) => [st.x + 2, st.x + st.w - 2, st.side]));
+      ringDeck.front = 1e5; ringDeck.extend = true; ringDeck.cars = () => ringSim.cars;
+      sc.layers.push(ringDeck); sc.ringDeck = ringDeck;
+    } else {
+      for (const d of hDecks) { const st = escalators(d.off, d.z, HALF); sc.stairs.push(...st); sc.layers.push(straightDeck(d.off, d.z, roadOk, st)); }
+      for (const d of vDecks) { const st = vEscalators(d.off, d.z); sc.stairs.push(...st); sc.layers.push(vDeck(d.off, d.z, roadOk, st)); }
+    }
+    for (const st of sc.stairs) { sc.props.push(stairProp(st, st.z === 2 ? Z2 : Z1)); const fx = st.axis === 'x' ? (st.side < 0 ? st.x : st.x + st.w) : st.x + SWD / 2, fy = st.axis === 'x' ? st.y + st.h / 2 : (st.side > 0 ? st.y + st.h : st.y); if (rd(fx, fy) < LW) console.warn('escalator foot in a lane', D.id, name); }
     const blocked = sc.stairs.map((st) => [st.x - 24, st.y - 24, st.w + 48, st.h + 48]);
     const underDeck = (wx, wy) => sc.layers.some((l) => l.inBand(wx, wy));
-    const free = (wx, wy, m) => roadOk(wx, wy, OUTER + (m || 24)) && !underDeck(wx, wy) && !blocked.some((r) => wx > r[0] && wx < r[0] + r[2] && wy > r[1] && wy < r[1] + r[3]);
-    let reserved = false;
-    // centrepieces
-    if (D.id === 'parkland' && isCentre) {
-      const okL = (wx, wy) => roadOk(wx, wy, OUTER), cy = decks[0].off, pools = [[112, cy - 184, 304, cy + 184], [496, cy - 184, 688, cy + 184]];
-      const inPools = (wx, wy, m) => pools.some(([a, b, c, d]) => wx > a - m && wx < c + m && wy > b - m && wy < d + m);
-      gardenPave(B, okL, null);
-      for (const [a, b, c, d] of pools) pool(B, (wx, wy) => roadOk(wx, wy, OUTER + 2), a, b, c, d, 48);
-      gardenBeds(B, { bedOk: (wx, wy) => free(wx, wy, 8) && !inPools(wx, wy, 24), diag: null, rng, leds: LEDS, pools: false });
-      gardenSculptures(B, (wx, wy) => free(wx, wy, 16) && !inPools(wx, wy, 16), null, rng, 3);
-      ringDeck.shadeOn(B);
-      reserved = true;
-      sc.note = 'The Z1 highway turns once round the ring (world.deckRingRadius), now in the upper half, over two reflecting pools. A ground road passes north–south beneath it, seen through the ring. A garden of paving, light lines and planted beds below. Escalators: north side at the west end, south side at the east end.';
-    } else if (D.id === 'circus' && isCentre) {
+    const inRects = (rs, wx, wy, m) => rs.some((r) => wx > r[0] - m && wx < r[0] + r[2] + m && wy > r[1] - m && wy < r[1] + r[3] + m);
+    const free = (wx, wy, m) => roadOk(wx, wy, OUTER + (m || 24)) && !underDeck(wx, wy) && !inRects(blocked, wx, wy, 0) && !inRects(sc.reserve, wx, wy, 0);
+    // ---- the district's kit
+    if (D.id === 'parkland') parkTile(sc, B, name, roadOk, free, rng, runs);
+    else if (D.id === 'circus') circusTile(sc, B, name, roadOk, free, rng, labSimOf(sc), runs);
+    else monumentTile(sc, B, name, roadOk, free, rng, runs);
+    for (const l of sc.layers) if (l.shadeOn) l.shadeOn(B);
+    // traffic
+    if (!sc.lab) {
+      const dl = X.deckLanesOf(sc.layers.filter((l) => l.dk).map((l) => ({ hz: l.dk.hz, off: l.dk.off })), P);
+      const s = sceneSim(center, sc.layers.filter((l) => l.dk).map((l) => ({ hz: l.dk.hz, off: l.dk.off, z: l.dk.z })), dl, lanes, busOK);
+      s.level.patches = patches; s.noDeckBus = D.id === 'parkland';
+      if (sc.cones) s.cones = sc.cones.map(([x, y], i) => ({ id: 'cone' + i, x, y, hx: x, hy: y, vx: 0, vy: 0, state: 'free', flightT: 0, flightDur: 1 }));
+      sims.push(s); sc.main = s;
+    } else if (sc.layers.some((l) => l.dk)) { // a junction screen under a highway: the highway's own traffic
+      const ls = sc.layers.filter((l) => l.dk), s = sceneSim([[-900, -900], [-850, -900]], ls.map((l) => ({ hz: l.dk.hz, off: l.dk.off, z: l.dk.z })), X.deckLanesOf(ls.map((l) => ({ hz: l.dk.hz, off: l.dk.off })), P), [], false);
+      s.schedule = []; sims.push(s); sc.deckOnly = s;
+    }
+    if (ringSim) sims.push(ringSim);
+    sc.sims = sims;
+    return sc;
+  }
+  const labSimOf = (sc) => sc.lab;
+  // ---------- Parkland: gardens, water, the Z1 ring
+  function parkTile(sc, B, name, roadOk, free, rng, runs) {
+    const okP = (wx, wy) => roadOk(wx, wy, OUTER);
+    gardenPave(B, okP, null);
+    const R = sc.reserve, led = (i) => LEDS[i % LEDS.length];
+    if (name === 'B2') { // pools under the ring, cut at 45° along the boulevard (x − y = 80 in B2)
+      const side = (wx, wy, s0, m) => s0 * (wx - wy - 80) / Math.SQRT2 > OUTER + 16 + (m || 0);
+      const ne = (wx, wy, ins) => chamf(440, 56, 760, 300, 40)(wx, wy, ins) && side(wx, wy, 1, ins), sw = (wx, wy, ins) => chamf(40, 340, 360, 584, 40)(wx, wy, ins) && side(wx, wy, -1, ins);
+      poolFP(B, ne); poolFP(B, sw); R.push([430, 46, 340, 264], [30, 330, 340, 264]);
+    }
+    if (name === 'A1') R.push([24, 300, 300, 280]);
+    if (name === 'B1') R.push([150, 24, 160, 560]);
+    if (name === 'C1') R.push([440, 120, 240, 160], [0, 280, 440, 80]);
+    if (name === 'A2') R.push([500, 416, 300, 72]);
+    if (name === 'C2') R.push([40, 440, 340, 190]);
+    if (name === 'A3') R.push([500, 24, 280, 200]);
+    if (name === 'B3') R.push([90, 430, 200, 190]);
+    if (name === 'C3') R.push([420, 100, 200, 140]);
+    gardenBeds(B, { bedOk: (wx, wy) => free(wx, wy, 8), diag: null, rng, leds: LEDS, pools: name !== 'B2' });
+    gardenSculptures(B, (wx, wy) => free(wx, wy, 16), null, rng, 2);
+    const u = (v) => v / U;
+    if (name === 'A1') for (let i = 0; i < 3; i++) waterBlock(B, u(40 + i * 40), u(320 + i * 50), u(300 - i * 20), u(560), 8, 6 - i * 3, 3); // reservoir terraces, stepping down to the south
+    if (name === 'B1') for (let i = 0; i < 5; i++) waterBlock(B, u(170), u(40 + i * 108), u(290), u(124 + i * 108), 6, 14 - i * 3, 3); // cascade, falling south beside the highway
+    if (name === 'C1') { // footbridge over the avenue (x = 160) at Z1, escalators at both ends; a lantern pavilion
+      const run = X.stairRun(P, 0, 1), esc = [{ x: 24, y: 336, w: SWD, h: run, axis: 'y', low: 336 + run, high: 336, side: 1, z: 1 }, { x: 420, y: 304, w: run, h: SWD, axis: 'x', low: 420 + run, high: 420, side: 0, z: 1 }];
+      const wl = walkwayLayer([[[24, 304], [420, 304], [420, 336], [24, 336]]], [], esc.map((st) => [st.x, st.y, st.w, st.h]), () => true);
+      for (const st of esc) sc.props.push(stairProp(st, Z1));
+      wl.cols = [[60, 320], [300, 320]].map(([x, y]) => ({ cx: x, cy: y, key: y + 8, x: x - 8, y: y - 8, spr: PIX.column(4, 4, Z1) }));
+      wl.front = 9e5; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B);
+      block(B, u(480), u(150), u(640), u(250), 4, 0, 10, 'conc', LEDS[0], true); block(B, u(500), u(165), u(620), u(235), 3, 10, 2, 'grass', LEDS[3 % LEDS.length], false);
+    }
+    if (name === 'A2') poolFP(B, (wx, wy, ins) => chamf(510, 424, 800 + 40, 480, 8)(wx, wy, ins)); // canal along the highway
+    if (name === 'C2') for (let i = 0; i < 4; i++) block(B, u(60 + i * 24), u(460 + i * 32), u(360 - i * 24), u(620), 10, 0, 3 + i * 3, i === 3 ? 'grass' : 'conc', i === 0 ? LEDS[0] : null, i === 0); // amphitheatre terraces
+    if (name === 'A3') for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) monolith(B, u(530 + i * 66), u(60 + j * 60), 0, 14 + ((i + j) % 3) * 5, led(i + j)); // monolith orchard
+    if (name === 'B3') { tiles(B, (wx, wy) => wx > 100 && wx < 280 && wy > 440 && wy < 610 && roadOk(wx, wy, OUTER), true); sculpture(B, u(190), u(560), 'obelisk', LEDS[0]); sculpture(B, u(130), u(500), 'ring', led(2)); sculpture(B, u(250), u(500), 'ring', led(2)); }
+    if (name === 'C3') { tiles(B, (wx, wy) => wx > 430 && wx < 610 && wy > 110 && wy < 230 && roadOk(wx, wy, OUTER), true); for (const [x, k] of [[460, 'cubes'], [520, 'arch'], [580, 'fins']]) sculpture(B, u(x), u(200), k, led(x)); }
+  }
+  // ---------- Circus: brutalist towers, the octagon, the roundabout
+  function circusTile(sc, B, name, roadOk, free, rng, lab, runs) {
+    const u = (v) => v / U, put = (x, y, w, h, st, style, cut, rear, i) => { const Hh = st * STY; brutalShadow(B, u(x), u(y), u(w), u(h), Math.round(Hh * 0.55), cut); sc.props.push({ spr: brutal(u(w), u(h), Hh, PIX.rng(311 + i * 17 + sc.col * 7 + sc.row * 3), LEDS[(i + sc.col + sc.row) % LEDS.length], cut, rear, style), x: u(x), y: u(y), by: y + h }); sc.reserve.push([x, y, w, h]); };
+    if (name === 'B2') { // the island: a stepped concrete plinth, a lawn tier, a slab with a lit slot and a halo
       const Rc = P['world.roundaboutRadius'], ci = Rc - OUTER - 2;
       each((x, y, wx, wy) => { const d = hyp(wx - 400, wy - 320); if (d < ci) B.put(x, y, d > ci - 4 ? CON.l : (x % 8 === 0 || y % 8 === 0) ? CON.d : CON.t); });
-      const ax = 400 / U, ay = 320 / U, led = LEDS[3 % LEDS.length]; // a stepped plinth: concrete, a lawn tier, a slab with a lit slot and a halo
-      block(B, ax - 26, ay - 20, ax + 26, ay + 20, 12, 0, 4, 'conc', null, true);
-      block(B, ax - 18, ay - 13, ax + 18, ay + 13, 8, 4, 4, 'grass', led, false);
-      block(B, ax - 9, ay - 6, ax + 9, ay + 6, 4, 8, 3, 'conc', LEDS[0], false);
+      const ax = 400 / U, ay = 320 / U, led = LEDS[3 % LEDS.length];
+      block(B, ax - 26, ay - 20, ax + 26, ay + 20, 12, 0, 4, 'conc', null, true); block(B, ax - 18, ay - 13, ax + 18, ay + 13, 8, 4, 4, 'grass', led, false); block(B, ax - 9, ay - 6, ax + 9, ay + 6, 4, 8, 3, 'conc', LEDS[0], false);
       for (let t = 0; t < 46; t++) for (let j = -2; j <= 2; j++) B.shade(ax - t * 0.7 + j * 0.7 - 10, ay + t * 0.7 + j * 0.7 + 4, 0.8);
-      block(B, ax - 3, ay - 1, ax + 3, ay + 1, 0, 11, 40, 'conc', null, false);
-      for (let t = 4; t < 36; t++) B.put(ax, ay + 1 - 11 - t, led);
+      block(B, ax - 3, ay - 1, ax + 3, ay + 1, 0, 11, 40, 'conc', null, false); for (let t = 4; t < 36; t++) B.put(ax, ay + 1 - 11 - t, led);
       for (let a = 0; a < 48; a++) { const th = a / 48 * Math.PI * 2, hx = Math.round(ax + Math.cos(th) * 10), hy = Math.round(ay - 40 + Math.sin(th) * 3); if (Math.sin(th) > 0 || Math.abs(Math.cos(th)) > 0.3) B.put(hx, hy, a % 6 < 4 ? N.cyan : K.white); }
-      const rz = PIX.roadField(labSim.lab.geo.roads.map((pts) => ({ pts, dash: false })), LW + 2);
+      const rz = PIX.roadField(lab.lab.geo.roads.map((pts) => ({ pts, dash: false })), LW + 2);
       each((x, y, wx, wy, k) => { if (rz.D[k] > LW - 4) return; const zx = Math.abs(wx - 400) < LW && (Math.abs(wy - 36) < 16 || Math.abs(wy - 604) < 16) && Math.floor(wx / 8) % 2 === 0, zy = Math.abs(wy - 320) < LW && (Math.abs(wx - 70) < 16 || Math.abs(wx - 730) < 16) && Math.floor(wy / 8) % 2 === 0; if (zx || zy) B.put(x, y, K.lane); });
-      [[8, 8, 280, 200, 'se', 'n', 12, 'ziggurat'], [512, 8, 280, 200, 'sw', 'n', 14, 'cantilever'], [8, 432, 280, 200, 'ne', 's', 10, 'twin'], [512, 432, 280, 200, 'nw', 's', 9, 'slab']].forEach(([x, y, w, h, c, rear, st, sty], i) => { // the circus walls: each tower cut at 45° to face the roundabout
-        const cut = { c, k: 65 }, Hh = st * STY; brutalShadow(B, x / U, y / U, w / U, h / U, Math.round(Hh * 0.55), cut);
-        sc.props.push({ spr: brutal(w / U, h / U, Hh, PIX.rng(311 + i * 17), LEDS[i % LEDS.length], cut, rear, sty), x: x / U, y: y / U, by: y + h });
-      });
-      reserved = true;
-      sc.note = 'Every route between four arms, one way round, give way at entry (Edit 49.1). The island: a stepped concrete plinth, a lawn tier, a slab with a lit slot and a halo. Zebra crossings. Four monumental concrete towers, each cut at 45° to face the roundabout.';
-    } else if (D.id === 'monument' && isCentre) {
-      const cx = 400, cy = 320, A = P['world.walkwayRingHalf'], w = P['world.walkwayWidth'], k = P['world.walkwayRingChamfer'], ki = k - 0.586 * w, Lk = P['world.walkwayLinkLength'];
-      const sq = (a, kk) => [[cx - a + kk, cy - a], [cx + a - kk, cy - a], [cx + a, cy - a + kk], [cx + a, cy + a - kk], [cx + a - kk, cy + a], [cx - a + kk, cy + a], [cx - a, cy + a - kk], [cx - a, cy - a + kk]];
-      const outerP = sq(A, k), innerP = sq(A - w, ki), dCut = (2 * A - k) / 2, dFace = dCut + Lk / Math.SQRT2;
-      const ringQuads = outerP.map((p, i) => [p, outerP[(i + 1) % 8], innerP[(i + 1) % 8], innerP[i]]);
-      const mid = sq(A - w / 2, k - 0.293 * w); ringQuads[0].spine = mid.concat([mid[0]]);
-      const diag = (sx, sy) => { const d0 = (2 * A - k - 1.414 * w) / 2, d2 = dFace + 40 / Math.SQRT2, nx = -sy * Math.SQRT1_2 * w / 2, ny = sx * Math.SQRT1_2 * w / 2, a = [cx + sx * d0, cy + sy * d0], b = [cx + sx * d2, cy + sy * d2];
-        const q = [[a[0] + nx, a[1] + ny], [b[0] + nx, b[1] + ny], [b[0] - nx, b[1] - ny], [a[0] - nx, a[1] - ny]]; q.spine = [[cx + sx * dCut, cy + sy * dCut], [cx + sx * dFace, cy + sy * dFace]]; return q; };
-      // podium roofs at Z1 in the four corners; each 45° walkway meets one square-on through its inner face
-      const fx = Math.round(cx - dFace), fyN = Math.ceil(cy - dFace + 0.707 * w + 6), fyS = Math.floor(cy + dFace - 0.707 * w - 6);
-      const podiums = [[16, 8, fx - 16, fyN - 8], [W - fx, 8, fx - 16, fyN - 8], [16, fyS, fx - 16, H - 8 - fyS], [W - fx, fyS, fx - 16, H - 8 - fyS]];
-      // escalators: outer ones at opposite ends of the north and south sides; inner ones down to the monument's island
-      const run = X.stairRun(P, 0, 1);
-      const esc = [{ x: cx - A + k + 8, y: cy - A - run, w: SWD, h: run, axis: 'y', low: cy - A - run, high: cy - A, side: -1, z: 1 },
-        { x: cx + A - k - 8 - SWD, y: cy + A, w: SWD, h: run, axis: 'y', low: cy + A + run, high: cy + A, side: 1, z: 1 },
-        { x: cx - A + w, y: cy - SWD / 2, w: run, h: SWD, axis: 'x', low: cx - A + w + run, high: cx - A + w, side: 0, z: 1 },
-        { x: cx + A - w - run, y: cy - SWD / 2, w: run, h: SWD, axis: 'x', low: cx + A - w - run, high: cx + A - w, side: 0, z: 1 }];
-      const sp = sc.split, fE = PIX.roadField([{ pts: sp.E }], 120), fW = PIX.roadField([{ pts: sp.Wl }], 120);
-      const laneD = (x, y) => { const kk = Math.floor(y / U) * AW + Math.floor(x / U); return Math.min(fE.D[kk], fW.D[kk]); };
-      const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1)]), podiums, esc.map((s) => [s.x, s.y, s.w, s.h]), (x, y) => laneD(x, y) > LW / 2 + 14);
-      sc.layers.push(wl); sc.walk = wl;
-      // ground: plazas north and south with the LED lattice, the island in pale stone, planters, sculptures
-      const okP = (wx, wy) => roadOk(wx, wy, OUTER) && wx > fx + 8 && wx < W - fx - 8;
-      tiles(B, okP, true);
-      each((x, y, wx, wy, kk) => { // the island between the carriageways
-        if (!roadOk(wx, wy, OUTER) || wx < 150 || wx > W - 150 || Math.abs(wy - cy) > P['world.splitLaneOffset']) return;
-        B.put(x, y, (x % 8 === 0 || y % 8 === 0) ? CON.m : ((x + y) % 16 === 0 ? CON.l : ISL));
-      });
-      planter(B, 520, 96, 48, 26, 'monolith', LEDS[0]); planter(B, 280, 552, 48, 26, 'tiers', LEDS[3 % LEDS.length]);
-      for (const [sx, sy, kind] of [[400, 60, 'arch'], [400, 600, 'fins'], [330, 372, 'cubes'], [470, 372, 'ring']]) sculpture(B, sx / U, sy / U, kind, LEDS[(sx + sy) % LEDS.length]);
-      wl.shadeOn(B);
-      for (const st of esc) sc.props.push(stairProp(st, Z1));
-      sc.stairs = esc;
-      podiums.forEach(([x, y, pw, ph], i) => sc.props.push({ spr: PIX.building(Math.round(pw / U), Math.round(ph / U), Z1, PIX.rng(91 + i * 13), LEDS[(i + 1) % LEDS.length], 1), x: x / U, y: y / U, by: y + ph, podium: true }));
-      [[16, 8, 96, 56], [W - 112, 8, 96, 56], [16, fyS, 96, 64], [W - 112, fyS, 96, 64]].forEach(([x, y, tw, th], i) => sc.props.push({ spr: PIX.building(Math.round(tw / U), Math.round(th / U), (7 + i * 2) * EXT(P['world.storeyHeight']), PIX.rng(57 + i * 29), LEDS[(i + 2) % LEDS.length], 7 + i * 2), x: x / U, y: y / U - Z1, by: y + th, tower: true })); // towers stand on the podiums
-      sc.monument = { cx, cy };
-      reserved = true;
-      sc.note = 'The road splits round the monument\'s island (lanes world.splitLaneOffset from the centre, 45° tapers). A square walkway ring at Z1 bridges both carriageways on round columns. 45° walkways run to podium roofs at Z1. Escalators: two out to the plazas, two down to the island.';
+      [[8, 8, 200, 120, 'se', 'n', 12, 'ziggurat'], [592, 8, 200, 120, 'sw', 'n', 14, 'cantilever'], [8, 512, 200, 120, 'ne', 's', 10, 'twin'], [592, 512, 200, 120, 'nw', 's', 9, 'slab']].forEach(([x, y, w, h, c, rear, st, sty], i) => put(x, y, w, h, st, sty, { c, k: 40 }, rear, i));
+      return;
     }
-    // the rest of the screen: park or city
-    if (!reserved) {
-      if (isPark) {
-        const diag = { c: 640, w: 32 };
-        gardenPave(B, (wx, wy) => roadOk(wx, wy, OUTER), diag);
-        gardenBeds(B, { bedOk: (wx, wy) => free(wx, wy, 8), diag, rng, leds: LEDS });
-        gardenSculptures(B, (wx, wy) => free(wx, wy, 16), diag, rng, 2);
-        sc.pond = null;
-      }
-      if (!isPark) { // buildings: greedy blocks clear of roads, highways, escalators and each other
-        const placed = [], [s0, s1] = D.storeys;
-        const mono = D.id === 'circus';
-        for (let t = 0; t < 900 && placed.length < (mono ? 7 : 10); t++) { // big blocks first, then infill
-          const big = t < 450, w = mono ? (big ? 192 : 112) + Math.floor(rng() * (big ? 9 : 5)) * 16 : (big ? 128 : 64) + Math.floor(rng() * (big ? 7 : 5)) * 16, h = mono ? (big ? 144 : 96) + Math.floor(rng() * (big ? 7 : 4)) * 16 : (big ? 96 : 64) + Math.floor(rng() * (big ? 5 : 3)) * 16, x = 8 + Math.floor(rng() * ((W - 16 - w) / 16)) * 16, y = 8 + Math.floor(rng() * ((H - 16 - h) / 16)) * 16;
-          const pts = []; for (let i = 0; i <= w; i += 16) for (let j = 0; j <= h; j += 16) pts.push([x + i, y + j]);
-          const deckClear = (py) => sc.layers.some((l) => l.dk && py > l.dk.off - HALF - 12 && py < l.dk.off + HALF + P['world.deckBottomClear']); // tall blocks keep clear south of a highway
-          if (!pts.every(([px, py]) => free(px, py, 16) && !deckClear(py)) || placed.some((q) => x < q.x + q.w + 16 && x + w + 16 > q.x && y < q.y + q.h + 16 && y + h + 16 > q.y)) continue;
-          placed.push({ x, y, w, h });
-        }
-        if (mono) placed.forEach((q, i) => { // monumental: the corner nearest a road cut at 45°, towers set back from the street
-          const st = s0 + Math.floor(rng() * (s1 - s0 + 1)), Hh = st * STY, cs = [[q.x, q.y, 'nw'], [q.x + q.w, q.y, 'ne'], [q.x, q.y + q.h, 'sw'], [q.x + q.w, q.y + q.h, 'se']].map(([x, y, c]) => ({ c, d: rd(x, y) })).sort((a, b2) => a.d - b2.d);
-          const cut = cs[0].d < OUTER + 72 ? { c: cs[0].c, k: Math.round(Math.min(q.w, q.h) / U * 0.3) } : null, rear = rd(q.x + q.w / 2, q.y - 8) < rd(q.x + q.w / 2, q.y + q.h + 8) ? 's' : 'n';
-          brutalShadow(B, q.x / U, q.y / U, q.w / U, q.h / U, Math.round(Hh * 0.55), cut);
-          sc.props.push({ spr: brutal(q.w / U, q.h / U, Hh, PIX.rng(700 + i * 31 + col * 7 + row * 3), LEDS[(i + col + row) % LEDS.length], cut, rear), x: q.x / U, y: q.y / U, by: q.y + q.h });
-        });
-        else placed.forEach((q, i) => { const st = s0 + Math.floor(rng() * (s1 - s0 + 1)); sc.props.push({ spr: PIX.building(Math.round(q.w / U), Math.round(q.h / U), st * EXT(P['world.storeyHeight']), PIX.rng(700 + i * 31 + col * 7 + row * 3), LEDS[(i + col + row) % LEDS.length], st), x: q.x / U, y: q.y / U, by: q.y + q.h }); });
-        sc.blocks = placed;
-        for (let t = 0, n = 0; t < 120 && n < 1; t++) { // a small plaza with a planter
-          const px = 60 + rng() * 680, py = 60 + rng() * 520;
-          if (![[0, 0], [-48, -48], [48, 48], [-48, 48], [48, -48]].every(([a, b]) => free(px + a, py + b, 24)) || placed.some((q) => px > q.x - 60 && px < q.x + q.w + 60 && py > q.y - 60 && py < q.y + q.h + 60)) continue;
-          tiles(B, (wx, wy) => free(wx, wy, 8) && Math.abs(wx - px) < 56 && Math.abs(wy - py) < 56, true); planter(B, px, py + 8, 36, 22, n % 2 ? 'tiers' : 'monolith', LEDS[(col + row) % LEDS.length]); sc.sculpts.push([px, py]); n++;
-        }
-      }
-      const sk = [];
-      for (let t = 0; t < 200 && sk.length < (isPark ? 0 : 2); t++) { // sculptures on pavements (gardens place their own)
-        const px = 30 + rng() * 740, py = 40 + rng() * 570;
-        if (!free(px, py, 30) || sk.concat(sc.sculpts).some(([a, b]) => hyp(a - px, b - py) < 100) || (sc.pond && px > sc.pond[0] && px < sc.pond[0] + sc.pond[2] && py > sc.pond[1] && py < sc.pond[1] + sc.pond[3] + 30) || Math.abs(px + py - 640) < 30 || (sc.blocks || []).some((q) => px > q.x - 30 && px < q.x + q.w + 30 && py > q.y - 20 && py < q.y + q.h + 60)) continue;
-        sk.push([px, py]);
-      }
-      for (const p of sk) sculpture(B, p[0] / U, p[1] / U, SCULPT[Math.floor(rng() * SCULPT.length)], LEDS[Math.floor(rng() * LEDS.length)]);
-      sc.note = (isPark ? 'Parkland garden: running-bond paving, light lines, a 45° promenade, beds of hedge, grasses, lawn, moss, terraces and pools; sculptures on the crossings.' : D.id === 'circus' ? 'Monumental concrete towers on pilotis: ziggurats, cantilevered crowns, finned slabs, twin towers; corners cut at 45° to the street.' : 'City blocks, LED façades; a plaza with a concrete planter.') + (decks.length ? ' Highway Z' + decks[0].z + ' along this row, with its two escalators: north side at the west end, south side at the east end.' : '');
+    if (name === 'A1') { put(40, 40, 360, 300, 13, 'ziggurat', { c: 'se', k: 60 }, 'n', 1); sc.cones = [[700, 452], [660, 452], [620, 452]]; } // roadworks: one lane coned off
+    if (name === 'B1') put(200, 24, 400, 300, 14, 'twin', null, 'n', 2);
+    if (name === 'C1') put(420, 40, 340, 300, 12, 'ziggurat', { c: 'sw', k: 60 }, 'n', 3);
+    if (name === 'A2') { put(40, 24, 320, 200, 9, 'slab', null, 'n', 4); billboard(B, u(230), u(600), u(240), 26, 12, LEDS[3 % LEDS.length]); sc.reserve.push([100, 440, 260, 180]); }
+    if (name === 'C2') put(440, 24, 340, 210, 14, 'cantilever', null, 'n', 5);
+    if (name === 'A3') put(40, 240, 340, 60, 4, 'slab', null, 'n', 6);
+    if (name === 'B3') put(520, 0, 260, 60, 3, 'slab', null, 'n', 7);
+    if (name === 'C3') { put(440, 240, 320, 60, 4, 'twin', null, 'n', 8); sc.cones = [[80, 132], [160, 188], [240, 132]]; } // a cone chicane on the octagon
+    // further blocks: big first, then infill; corners nearest a street cut at 45°
+    const placed = [], [s0, s1] = sc.D.storeys;
+    for (let t = 0; t < 900 && placed.length < 6; t++) {
+      const big = t < 450, w = (big ? 192 : 112) + Math.floor(rng() * (big ? 9 : 5)) * 16, h = (big ? 144 : 96) + Math.floor(rng() * (big ? 7 : 4)) * 16, x = 8 + Math.floor(rng() * ((W - 16 - w) / 16)) * 16, y = 8 + Math.floor(rng() * ((H - 16 - h) / 16)) * 16;
+      const pts = []; for (let i = 0; i <= w; i += 16) for (let j = 0; j <= h; j += 16) pts.push([x + i, y + j]);
+      const deckClear = (py) => sc.layers.some((l) => l.dk && l.dk.hz && py > l.dk.off - HALF - 12 && py < l.dk.off + HALF + P['world.deckBottomClear']);
+      if (!pts.every(([px, py]) => free(px, py, 16) && !deckClear(py)) || placed.some((q) => x < q.x + q.w + 16 && x + w + 16 > q.x && y < q.y + q.h + 16 && y + h + 16 > q.y)) continue;
+      placed.push({ x, y, w, h });
     }
-    // traffic
-    if (labSim) sc.s = labSim, sc.lab = true;
-    else if (sc.ring) {
-      const dl = [{ path: X.lanesOf(sc.ring.WE, P)[0], deck: 0, dir: 0 }, { path: X.lanesOf(sc.ring.EW, P)[0], deck: 0, dir: 1 }];
-      sc.s = sceneSim(center, [{ off: decks[0].off, z: 1 }], dl, null, busOK);
-    } else sc.s = sceneSim(center, decks, X.deckLanesOf(decks.map((d) => ({ hz: true, off: d.off })), P), lanes, busOK);
-    return sc;
+    placed.forEach((q, i) => { const st = s0 + Math.floor(rng() * (s1 - s0 + 1)); put(q.x, q.y, q.w, q.h, st, null, null, 'n', 20 + i); });
+  }
+  // ---------- Monument: LED commerce, the snake road, two north–south highways, the walkway ring
+  function monumentTile(sc, B, name, roadOk, free, rng, runs) {
+    const u = (v) => v / U, R = sc.reserve, bld = (x, y, w, h, st, i, panel) => { let S = PIX.building(Math.round(u(w)), Math.round(u(h)), st * EXT(P['world.storeyHeight']), PIX.rng(700 + i * 31 + sc.col * 7 + sc.row * 3), LEDS[(i + sc.col + sc.row) % LEDS.length], st); if (panel) S = ledPanel(S, st * EXT(P['world.storeyHeight']), [N.magenta, N.cyan, LEDS[2 % LEDS.length]]); sc.props.push({ spr: S, x: u(x), y: u(y), by: y + h }); R.push([x, y, w, h]); };
+    if (name === 'B2') return monumentCentre(sc, B, roadOk);
+    if (name === 'A1') bld(40, 24, 240, 180, 12, 1, true); // LED-wall tower facing the entry
+    if (name === 'B1') { // the skybridge from a podium roof south over the road to the walkway ring
+      const pod = [300, 16, 200, 140];
+      sc.props.push({ spr: PIX.building(Math.round(u(pod[2])), Math.round(u(pod[3])), Z1, PIX.rng(77), LEDS[1], 1), x: u(pod[0]), y: u(pod[1]), by: pod[1] + pod[3], podium: true });
+      sc.props.push({ spr: PIX.building(Math.round(u(120)), Math.round(u(70)), 10 * EXT(P['world.storeyHeight']), PIX.rng(78), LEDS[2 % LEDS.length], 10), x: u(310), y: u(20) - Z1, by: 90, tower: true });
+      const poly = [[386, 140], [414, 140], [414, H + 40], [386, H + 40]]; poly.spine = [[400, 160], [400, H]];
+      const wl = walkwayLayer([poly], [pod], [], (x, y) => roadOk(x, y, OUTER));
+      wl.front = 1e6; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); R.push([290, 0, 220, 170]);
+    }
+    if (name === 'C1') { const S = drum(28, 14, 12 * EXT(P['world.storeyHeight']), N.cyan); sc.props.push({ spr: S, x: u(450), y: u(540), by: 570 }); R.push([380, 480, 140, 110]); } // LED drum in the bend
+    if (name === 'A2') { bld(656, 416, 136, 96, 3, 2, true); bld(336, 430, 128, 80, 3, 5, true); } // neon arcades either side of the highway, south of the road
+    if (name === 'C2') { billboard(B, u(480), u(560), 60, 30, 40, N.magenta); R.push([420, 480, 140, 100]); }
+    if (name === 'A3') { sculpture(B, u(700), u(560), 'cubes', N.cyan); sculpture(B, u(760), u(500), 'cubes', N.magenta); sculpture(B, u(700), u(440), 'cubes', LEDS[2 % LEDS.length]); R.push([650, 380, 150, 220]); }
+    if (name === 'B3') { bld(40, 440, 240, 120, 6, 3, true); bld(520, 140, 260, 110, 6, 4, true); } // the LED canyon either side of the jog
+    if (name === 'C3') { // an LED gateway arch over the road: pylons either side, a lit beam above the traffic
+      const ax = 560, top = 400 - 24, bot = 560 + 24, Hh = 40;
+      const Lr = new PIX.Buf(AW, AH);
+      for (const py of [top, bot]) for (let z = 0; z < Hh; z++) for (let i = -2; i <= 2; i++) Lr.put(u(ax) + i, u(py) - z, i < 0 ? CON.d : i > 0 ? CON.l : CON.m);
+      for (let y = u(top) - Hh; y <= u(bot) - Hh; y++) for (let i = -3; i <= 3; i++) Lr.put(u(ax) + i, y, Math.abs(i) === 3 ? K.bldgOutline : (y + i) % 4 < 2 ? N.magenta : N.cyan);
+      sc.layers.push({ L: Lr, lift: 0, cols: [], front: 1e6 + 5, inBand: () => false, gate: true });
+    }
+    // further blocks: commerce with LED façades
+    const placed = [], [s0, s1] = sc.D.storeys;
+    for (let t = 0; t < 900 && placed.length < 8; t++) {
+      const big = t < 450, w = (big ? 128 : 64) + Math.floor(rng() * (big ? 7 : 5)) * 16, h = (big ? 96 : 64) + Math.floor(rng() * (big ? 5 : 3)) * 16, x = 8 + Math.floor(rng() * ((W - 16 - w) / 16)) * 16, y = 8 + Math.floor(rng() * ((H - 16 - h) / 16)) * 16;
+      const pts = []; for (let i = 0; i <= w; i += 16) for (let j = 0; j <= h; j += 16) pts.push([x + i, y + j]);
+      if (!pts.every(([px, py]) => free(px, py, 16)) || placed.some((q) => x < q.x + q.w + 16 && x + w + 16 > q.x && y < q.y + q.h + 16 && y + h + 16 > q.y)) continue;
+      placed.push({ x, y, w, h });
+    }
+    placed.forEach((q, i) => bld(q.x, q.y, q.w, q.h, s0 + Math.floor(rng() * (s1 - s0 + 1)), 10 + i, i % 3 === 0));
+  }
+  function monumentCentre(sc, B, roadOk) {
+    const cx = 400, cy = 320, A = P['world.walkwayRingHalf'], w = P['world.walkwayWidth'], k = P['world.walkwayRingChamfer'], ki = k - 0.586 * w, Lk = P['world.walkwayLinkLength'];
+    const sq = (a, kk) => [[cx - a + kk, cy - a], [cx + a - kk, cy - a], [cx + a, cy - a + kk], [cx + a, cy + a - kk], [cx + a - kk, cy + a], [cx - a + kk, cy + a], [cx - a, cy + a - kk], [cx - a, cy - a + kk]];
+    const outerP = sq(A, k), innerP = sq(A - w, ki), dCut = (2 * A - k) / 2, dFace = dCut + Lk / Math.SQRT2;
+    const ringQuads = outerP.map((p, i) => [p, outerP[(i + 1) % 8], innerP[(i + 1) % 8], innerP[i]]);
+    const mid = sq(A - w / 2, k - 0.293 * w); ringQuads[0].spine = mid.concat([mid[0]]);
+    const diag = (sx, sy) => { const d0 = (2 * A - k - 1.414 * w) / 2, d2 = dFace + 40 / Math.SQRT2, nx = -sy * Math.SQRT1_2 * w / 2, ny = sx * Math.SQRT1_2 * w / 2, a = [cx + sx * d0, cy + sy * d0], b = [cx + sx * d2, cy + sy * d2];
+      const q = [[a[0] + nx, a[1] + ny], [b[0] + nx, b[1] + ny], [b[0] - nx, b[1] - ny], [a[0] - nx, a[1] - ny]]; q.spine = [[cx + sx * dCut, cy + sy * dCut], [cx + sx * dFace, cy + sy * dFace]]; return q; };
+    const fx = Math.round(cx - dFace), fyN = Math.ceil(cy - dFace + 0.707 * w + 6), fyS = Math.floor(cy + dFace - 0.707 * w - 6);
+    const podiums = [[16, 8, fx - 16, fyN - 8], [W - fx, 8, fx - 16, fyN - 8], [16, fyS, fx - 16, H - 8 - fyS], [W - fx, fyS, fx - 16, H - 8 - fyS]];
+    const run = X.stairRun(P, 0, 1);
+    const esc = [{ x: cx - A + k + 8, y: cy - A - run, w: SWD, h: run, axis: 'y', low: cy - A - run, high: cy - A, side: -1, z: 1 },
+      { x: cx + A - k - 8 - SWD, y: cy + A, w: SWD, h: run, axis: 'y', low: cy + A + run, high: cy + A, side: 1, z: 1 },
+      { x: cx - A + w, y: cy - SWD / 2, w: run, h: SWD, axis: 'x', low: cx - A + w + run, high: cx - A + w, side: 0, z: 1 },
+      { x: cx + A - w - run, y: cy - SWD / 2, w: run, h: SWD, axis: 'x', low: cx + A - w - run, high: cx + A - w, side: 0, z: 1 }];
+    const sp = sc.split, fE = PIX.roadField([{ pts: sp.E }], 120), fW = PIX.roadField([{ pts: sp.Wl }], 120);
+    const laneD = (x, y) => { const kk = Math.floor(y / U) * AW + Math.floor(x / U); return Math.min(fE.D[kk], fW.D[kk]); };
+    const sky = [[386, -40], [414, -40], [414, cy - A + 8], [386, cy - A + 8]]; // the skybridge from B1 joins the ring's north side
+    const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1), sky]), podiums, esc.map((s) => [s.x, s.y, s.w, s.h]), (x, y) => laneD(x, y) > LW / 2 + 14);
+    sc.layers.push(wl); sc.walk = wl;
+    const okP = (wx, wy) => roadOk(wx, wy, OUTER) && wx > fx + 8 && wx < W - fx - 8;
+    tiles(B, okP, true);
+    each((x, y, wx, wy) => { if (!roadOk(wx, wy, OUTER) || wx < 150 || wx > W - 150 || Math.abs(wy - cy) > P['world.splitLaneOffset']) return; B.put(x, y, (x % 8 === 0 || y % 8 === 0) ? CON.m : ((x + y) % 16 === 0 ? CON.l : ISL)); });
+    planter(B, 540, 96, 48, 26, 'monolith', LEDS[0]); planter(B, 280, 552, 48, 26, 'tiers', LEDS[3 % LEDS.length]);
+    for (const [sx, sy, kind] of [[250, 60, 'arch'], [400, 600, 'fins'], [330, 372, 'cubes'], [470, 372, 'ring']]) sculpture(B, sx / U, sy / U, kind, LEDS[(sx + sy) % LEDS.length]);
+    for (const st of esc) sc.props.push(stairProp(st, Z1));
+    sc.stairs = esc;
+    podiums.forEach(([x, y, pw, ph], i) => sc.props.push({ spr: PIX.building(Math.round(pw / U), Math.round(ph / U), Z1, PIX.rng(91 + i * 13), LEDS[(i + 1) % LEDS.length], 1), x: x / U, y: y / U, by: y + ph, podium: true }));
+    [[16, 8, 96, 56], [W - 112, 8, 96, 56], [16, fyS, 96, 64], [W - 112, fyS, 96, 64]].forEach(([x, y, tw, th], i) => sc.props.push({ spr: PIX.building(Math.round(tw / U), Math.round(th / U), (7 + i * 2) * EXT(P['world.storeyHeight']), PIX.rng(57 + i * 29), LEDS[(i + 2) % LEDS.length], 7 + i * 2), x: x / U, y: y / U - Z1, by: y + th, tower: true }));
+    sc.monument = { cx, cy };
   }
   // ---------- drawing a screen into its frame buffer
   const carSpr = (c) => PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(P['vehicles.' + c.cls + '.height']), c.h, false);
-  function step(sc) { if (sc.lab) L.tick(sc.s); else { sc.s.step({}); sc.s.body.x = -900; sc.s.body.y = -900; } }
+  function step(sc) { for (const s of sc.sims) { if (s.lab) L.tick(s); else { s.step({}); s.body.x = -900; s.body.y = -900; } } }
   function render(sc, FB, DL) {
-    const s = sc.s; FB.d.set(sc.B.d);
+    FB.d.set(sc.B.d);
+    const ground = [], deckCars = [];
+    for (const s of sc.sims) { if (s === sc.ringSim) continue; for (const c of s.cars) (c.deck ? deckCars : ground).push(c); }
     const layer = (l) => {
       DL.d.set(l.L.d);
-      if (l !== sc.walk) for (const c of s.cars.filter((c) => c.deck).sort((a, b) => a.y - b.y)) PIX.blit(DL, carSpr(c), c.x / U, c.y / U);
+      if (l !== sc.walk && !l.gate) {
+        const cs = l.cars ? l.cars() : l.dk ? deckCars.filter((c) => (l.dk.hz ? Math.abs(c.y - l.dk.off) < HALF + 40 : Math.abs(c.x - l.dk.off) < HALF + 40)) : [];
+        for (const c of cs.slice().sort((a, b) => a.y - b.y)) PIX.blit(DL, carSpr(c), c.x / U, c.y / U);
+      }
       for (let y = 0; y < AH; y++) { const ty = y - l.lift; if (ty < 0) continue; for (let x = 0; x < AW; x++) { const c = DL.d[y * AW + x]; if (c) FB.d[ty * AW + x] = c; } }
+      if (l.extend && l.lift) for (let x = 0; x < AW; x++) { const c = DL.d[(AH - 1) * AW + x]; if (c) for (let ty = AH - l.lift; ty < AH; ty++) FB.d[ty * AW + x] = c; } // an arm running off the bottom edge
     };
-    const items = s.cars.filter((c) => !c.deck).map((c) => [c.y, () => PIX.blit(FB, carSpr(c), c.x / U, c.y / U)]);
+    const items = ground.map((c) => [c.y, () => PIX.blit(FB, carSpr(c), c.x / U, c.y / U)]);
+    for (const s of sc.sims) for (const cn of s.cones || []) if (cn.state === 'free') items.push([cn.y, () => PIX.blit(FB, PIX.CONE, cn.x / U, cn.y / U)]);
     for (const p of sc.props) if (!p.podium && !p.tower) items.push([p.over ? 1e6 + 1 : p.by, () => PIX.blit(FB, p.spr, p.x, p.y)]);
     for (const l of sc.layers) { // a deck sorts at its front edge: buildings south of it stand in front
       for (const c of l.cols) items.push([Math.min(c.key, l.front - 1), () => PIX.blit(FB, c.spr, Math.round(c.x / U), Math.round(c.y / U))]);
       items.push([l.front, () => layer(l)]);
     }
-    for (const p of sc.props) if (p.podium) items.push([1e6 - 1, () => PIX.blit(FB, p.spr, p.x, p.y)]); // podium roofs at Z1, under the walkway's ends
+    for (const p of sc.props) if (p.podium) items.push([1e6 - 1, () => PIX.blit(FB, p.spr, p.x, p.y)]);
     for (const p of sc.props) if (p.tower) items.push([1e6 + 2, () => PIX.blit(FB, p.spr, p.x, p.y)]);
     items.sort((a, b) => a[0] - b[0]).forEach((it) => it[1]());
     if (sc.monument) drawMonument(FB, sc.monument.cx, sc.monument.cy);
@@ -572,7 +754,7 @@
   const built = [{}, {}, {}], FB = new PIX.Buf(AW, AH), DL = new PIX.Buf(AW, AH), off = Object.assign(document.createElement('canvas'), { width: AW, height: AH }), og = off.getContext('2d'), img = og.createImageData(AW, AH);
   const grid = $('grid'), gg = grid.getContext('2d'), zoom = $('zoom'), zg = zoom.getContext('2d'), cents = [0, 1, 2].map((i) => $('c' + i));
   grid.width = AW * 3; grid.height = AH * 3; zoom.width = AW * 2; zoom.height = AH * 2; cents.forEach((c) => { c.width = AW * 2; c.height = AH * 2; });
-  let cur = 0, sel = [1, 1], playing = true;
+  let cur = 0, sel = [1, 1], playing = true, labels = true;
   function screen(i, col, row) {
     const key = col + row * 3; let sc = built[i][key];
     if (!sc) { sc = built[i][key] = buildScreen(DISTRICTS[i], col, row); for (let k = 0; k < 12 * 60; k++) step(sc); }
@@ -582,7 +764,8 @@
   function show(i) {
     cur = i; const D = DISTRICTS[i];
     document.querySelectorAll('#tabs button').forEach((b, k) => b.classList.toggle('on', k === i));
-    $('dname').textContent = (i + 1) + ' · ' + D.name; $('dmood').textContent = D.mood + ' Write-offs required: ' + D.quota + '.';
+    $('dname').textContent = (i + 1) + ' · ' + D.name; $('dmood').textContent = D.mood + ' Start: ' + D.start[0] + ', ' + D.start[1] + ' edge. Write-offs required: ' + D.quota + '.';
+    $('plan').innerHTML = '<tr><th>Tile</th><th>Mechanic revealed</th><th>Landmark</th></tr>' + ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'].map((t) => `<tr${t === 'B2' ? ' class="centre"' : ''}><td>${t}</td><td>${D.tiles[t][0]}</td><td>${D.tiles[t][1]}</td></tr>`).join('');
     districtScreens(i);
   }
   function paint(sc) { render(sc, FB, DL); new Uint32Array(img.data.buffer).set(FB.d); og.putImageData(img, 0, 0); }
@@ -597,13 +780,21 @@
       }
       const ci = centres.indexOf(sc); if (ci >= 0) { const g = cents[ci].getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(off, 0, 0, AW * 2, AH * 2); }
     }
-    gg.strokeStyle = 'rgba(230,244,255,0.55)'; gg.lineWidth = 1; gg.font = '600 12px system-ui';
-    for (const sc of screens) { gg.strokeRect(sc.col * AW + 0.5, sc.row * AH + 0.5, AW - 1, AH - 1); gg.fillStyle = 'rgba(12,16,24,0.75)'; gg.fillRect(sc.col * AW + 6, sc.row * AH + 6, 30, 18); gg.fillStyle = '#e6f4ff'; gg.fillText(sc.name, sc.col * AW + 12, sc.row * AH + 19); }
+    const D = DISTRICTS[cur];
+    gg.strokeStyle = 'rgba(230,244,255,0.55)'; gg.lineWidth = 1;
+    for (const sc of screens) {
+      gg.strokeRect(sc.col * AW + 0.5, sc.row * AH + 0.5, AW - 1, AH - 1);
+      gg.font = '600 12px system-ui'; gg.fillStyle = 'rgba(12,16,24,0.78)';
+      const t = D.tiles[sc.name][0].split(/[.;:]/)[0], tw = labels ? Math.min(AW - 12, gg.measureText(sc.name + '  ' + t).width + 12) : 30;
+      gg.fillRect(sc.col * AW + 6, sc.row * AH + 6, tw, 18); gg.fillStyle = '#e6f4ff'; gg.fillText(labels ? sc.name + '  ' + t : sc.name, sc.col * AW + 12, sc.row * AH + 19, AW - 24);
+    }
+    const [st, edge] = D.start, sc0 = screens.find((q) => q.name === st); // the start: an arrow on its edge
+    if (sc0) { const x0 = sc0.col * AW, y0 = sc0.row * AH, [ax, ay, dx, dy] = edge === 'top' ? [x0 + AW * 0.35, y0 + 4, 0, 1] : [x0 + 4, y0 + AH / 2, 1, 0]; gg.fillStyle = '#57e389'; gg.beginPath(); gg.moveTo(ax + dx * 26, ay + dy * 26); gg.lineTo(ax - dy * 12, ay - dx * 12); gg.lineTo(ax + dy * 12, ay + dx * 12); gg.closePath(); gg.fill(); gg.font = '700 12px system-ui'; gg.fillText('START', ax + dx * 30 + (dy ? 14 : 0), ay + dy * 30 + (dx ? 4 : 0)); }
     gg.strokeStyle = '#49d3ff'; gg.lineWidth = 3; gg.strokeRect(sel[0] * AW + 1.5, sel[1] * AH + 1.5, AW - 3, AH - 3);
     const sc = screens.find((q) => q.col === sel[0] && q.row === sel[1]);
-    $('zname').textContent = DISTRICTS[cur].name + ' · ' + sc.name; $('znote').textContent = sc.note;
-    const deck = sc.s.cars.filter((c) => c.deck);
-    $('zlive').textContent = `Live: ground cars ${sc.s.cars.length - deck.length}` + (deck.length ? ` · highway cars ${deck.length}` : '') + (sc.lab ? ` · waiting to give way ${sc.s.cars.filter((c) => c.yielding).length}` : '') + (sc.stairs.length ? ` · escalators ${sc.stairs.length}` : '');
+    $('zname').textContent = D.name + ' · ' + sc.name; $('znote').textContent = sc.note;
+    const all = [].concat(...sc.sims.map((s) => s.cars)), deck = all.filter((c) => c.deck || (sc.ringSim && sc.ringSim.cars.includes(c))), orb = all.filter((c) => c.orbit && c.orbit.lane === 'in').length;
+    $('zlive').textContent = `Live: ground cars ${all.length - deck.length}` + (deck.length ? ` · highway cars ${deck.length}` : '') + (sc.lab ? ` · waiting to give way ${sc.lab.cars.filter((c) => c.yielding).length}` : '') + (orb ? ` · orbiting on the inner lane ${orb}` : '') + (sc.stairs.length ? ` · escalators ${sc.stairs.length}` : '');
     centres.forEach((c, i) => { $('n' + i).textContent = c.note; });
     requestAnimationFrame(frame);
   }
@@ -611,6 +802,7 @@
   cents.forEach((c, i) => { c.onclick = () => { sel = [1, 1]; show(i); $('district').scrollIntoView({ behavior: 'smooth' }); }; });
   DISTRICTS.forEach((D, i) => { const b = document.createElement('button'); b.textContent = (i + 1) + ' · ' + D.name; b.onclick = () => { sel = [1, 1]; show(i); }; $('tabs').appendChild(b); $('t' + i).textContent = (i + 1) + ' · ' + D.name + ' · B2'; });
   $('play').onclick = () => { playing = !playing; $('play').textContent = playing ? 'Pause' : 'Play'; };
-  window.__district = { show, select: (c, r) => { sel = [c, r]; }, built, screen };
+  $('labels').onclick = () => { labels = !labels; $('labels').textContent = labels ? 'Hide labels' : 'Show labels'; };
+  window.__district = { show, select: (c, r) => { sel = [c, r]; }, built, screen, labels: (v) => { labels = v; }, DISTRICTS };
   show(0); requestAnimationFrame(frame);
 })();

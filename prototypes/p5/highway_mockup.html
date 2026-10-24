@@ -125,6 +125,7 @@
     'world.deckRingRadius': 132, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
     'world.walkwayRingHalf': 168, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 100, 'world.plazaHalf': 190, // Edit 51.1–51.2: the square walkway ring (district mock-up only)
     'world.deckEscalators': 2, 'world.deckEscalatorInset': 64, 'world.splitLaneOffset': 104, 'world.walkwayColumn': 16, // Edit 51.2 (district mock-up only)
+    'world.roundaboutMinArms': 3, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
     'world.deckRingTopClear': 32, 'world.gardenCellWidth': 160, 'world.gardenCellHeight': 128, 'world.gardenPath': 32, // Edit 51.3 (district mock-up only)
     'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
@@ -1955,7 +1956,7 @@
       const toLine = g.s - (c.s + c.L / 2);
       if (toLine < -4 || toLine > 200) return null; // over the line: committed
       for (const o of this.cars) {
-        if (o === c || lay(o) !== 0 || Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22) continue;
+        if (o === c || lay(o) !== 0 || (Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22 && !(o.orbit && o.orbit.lane === 'out' && hyp(o.x - g.cx, o.y - g.cy) < g.R))) continue; // P5 (Edit 52): a car moving out of the inner lane counts as circulating
         if (o.path.giveWay && o.path === c.path) continue;
         const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), arc = d * g.R;
         if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) return { line: g.s - c.L / 2 };
@@ -2028,6 +2029,8 @@
     jamCause(c, seen) {
       if (c.hz && c.hz.inPath) return 'body';
       if (c.yielding) return 'giveway'; // P4 (Edit 49.1): waiting for a gap at a roundabout entry
+      if (c.orbit && c.orbit.wait != null && c.orbit.wait < 4) return 'ring'; // P5 (Edit 52): on the inner lane, waiting to move out
+      if (c.letOut && this.cars.includes(c.letOut) && c.v < 2) { if (seen.has(c.letOut)) return 'cycle'; seen.add(c); return this.jamCause(c.letOut, seen); } // letting an inner-lane car out
       const ln = c.path.junction && c.path.junction.line != null ? c.path.junction.line : c.path.giveWay ? c.path.giveWay.s : null;
       if (ln != null && this.P['traffic.giveWayGap'] > 0 && Math.abs(c.s + c.L / 2 - ln) < 4) return 'giveway'; // P4 (Edit 49.3): at its line, waiting or just let go
       if (c.letIn && this.cars.includes(c.letIn) && c.v < 2) { if (seen.has(c.letIn)) return 'cycle'; seen.add(c); return this.jamCause(c.letIn, seen); } // P4 (Edit 49.3)
@@ -2199,11 +2202,93 @@
       if (this.occluded(c, nx, ny, b.x, b.y)) return null;
       return { kind: 'body', id: 'body', inPath, lx: ahead, ly: lat, gapLat, s: pr.s, r: br };
     }
+    // P5 (Edit 52): the inner ring lane. Cars join the ring on its outer lane (giving way, Edit 49.1). A circulating car
+    // whose exit is blocked, or that is stuck behind a car crawling below traffic.ringPassRatio of its cruise, moves to the
+    // inner lane when it is clear (traffic.ringMergeGap s behind) and orbits there. It moves back out only in the window
+    // before its exit, when the exit and the outer lane beside it are clear; else it goes round again, up to
+    // traffic.ringMaxLaps, then waits on the inner lane for a gap. Entering cars give way to the outer lane only.
+    ringStep(c) {
+      const P = this.P, rg = c.path.ring;
+      if (!rg || !(P['traffic.ringOrbit'] > 0) || lay(c) !== 0) return false;
+      const g = c.path.giveWay, Lc = P['traffic.ringLaneChange'];
+      if (c.orbit && c.orbit.lane === 'out' && Math.abs(c.d) < 0.5) { c.orbit = null; c.ringOutT = this.t; }
+      const shift = (d1, vR) => this.commit(c, { type: 'shift', d1, len: Lc, vCap: Math.min(c.cruise, Math.sqrt(P['traffic.cornerAccel'] * vR)) }, 'ring', null);
+      if (c.orbit && c.orbit.lane === 'in' && c.s >= rg.exitS - 2) { // past the change point on the inner lane (never planned): move out when the lane is clear
+        if (this.ringLaneClear(c, false)) { c.orbit.lane = 'out'; c.orbit.wait = null; shift(0, rg.Rout); return true; }
+        c.orbit.wait = 0; return false;
+      }
+      if (c.s <= g.sj + c.L / 2 || c.s >= rg.exitS) return false;
+      const q = pathAt(c.path, c.s), inward = (rg.cx - q.x) * q.nx + (rg.cy - q.y) * q.ny > 0 ? 1 : -1, dIn = inward * P['world.laneWidth'];
+      const lap = 2 * Math.PI * rg.Rout, rem0 = rg.exitS - c.s;
+      if (!c.orbit) { // move in for a blocked exit, or to pass a stopped or crawling car, any time before the change point
+        const spare = rem0 - Lc - 20, laps = rg.variants.length - 1 - rg.k; // a car that cannot get back out before its exit must have a lap left
+        if (spare < 0 || (laps < 1 && spare < 0.5 * lap) || this.t - (c.ringOutT || -9) < 3 || !(this.ringExitBlocked(c) || (spare > Lc && this.ringCrawl(c))) || !this.ringLaneClear(c, true)) return false;
+        c.orbit = { lane: 'in', laps: 0 }; shift(dIn, rg.Rin); this.emit('ring', { car: c.id, to: 'inner' }); return true;
+      }
+      if (c.orbit.lane === 'out' && Math.abs(c.d) > 0.5) { // a move out was cut short: finish it, or go back in
+        if (this.ringLaneClear(c, false)) shift(0, rg.Rout); else { c.orbit.lane = 'in'; shift(dIn, rg.Rin); } return true;
+      }
+      if (c.orbit.lane !== 'in') return false;
+      if (Math.abs(c.d - dIn) > 0.5) { shift(dIn, rg.Rin); return true; } // a move in was cut short: finish it
+      const rem = rg.exitS - c.s, last = !rg.variants[rg.k + 1];
+      if (rem < Lc + 0.5 * lap && rem > (last ? 0 : Lc + 8) && (last || !this.ringExitBlocked(c)) && this.ringLaneClear(c, false)) {
+        c.orbit.lane = 'out'; c.orbit.wait = false; shift(0, rg.Rout); this.emit('ring', { car: c.id, to: 'outer', laps: c.orbit.laps }); return true;
+      }
+      if (rem <= Lc + 10) { if (!last) { this.ringLap(c); c.orbit.laps++; } }
+      c.orbit.wait = last ? Math.max(0, rem - Lc - 20) : null; // the last lap: stop short of the change point and wait for a gap
+      return false;
+    }
+    ringKeep(c) {
+      const rg = c.path.ring, P = this.P;
+      if (!rg || !c.orbit || c.orbit.lane !== 'in' || !(P['traffic.ringOrbit'] > 0)) return;
+      if (rg.exitS - c.s <= P['traffic.ringLaneChange'] + 10 && rg.variants[rg.k + 1]) { this.ringLap(c); c.orbit.laps++; }
+    }
+    ringLap(c) { // the same route with one more lap: identical up to here, so s carries over
+      const rg = c.path.ring, nx = rg.variants[rg.k + 1];
+      if (!nx) return false;
+      c.path = nx; return true;
+    }
+    ringExitBlocked(c) { // a stopped car, or the dummy, on the first traffic.ringExitCheck of the exit
+      const rg = c.path.ring, P = this.P, pts = [];
+      for (let ds = 0; ds <= P['traffic.ringExitCheck']; ds += 12) pts.push(pathAt(c.path, rg.exitS + ds));
+      for (const o of this.cars) if (o !== c && lay(o) === 0 && o.v < 15 && pts.some((p) => hyp(o.x - p.x, o.y - p.y) < (o.L + c.W) / 2)) return true;
+      const b = this.body;
+      return !!(b && b.alive && lay(b) === 0 && pts.some((p) => hyp(b.x - p.x, b.y - p.y) < P['body.radius'] + c.W / 2 + 8));
+    }
+    ringCrawl(c) {
+      const a = this.leadGap(c), P = this.P;
+      return !!(a && a.gap < P['traffic.minimumGap'] + 2 * P['traffic.timeGap'] * Math.max(c.v, 20) && a.v < P['traffic.ringPassRatio'] * c.cruise);
+    }
+    ringLaneClear(c, inner) { // the target lane is clear beside, ahead and traffic.ringMergeGap s behind
+      const rg = c.path.ring, P = this.P, R = inner ? rg.Rin : rg.Rout, ac = Math.atan2(c.y - rg.cy, c.x - rg.cx);
+      for (const o of this.cars) {
+        if (o === c || lay(o) !== 0) continue;
+        const go = o.path.giveWay, joining = !inner && go && go.cx === rg.cx && go.cy === rg.cy && o.s + o.L / 2 > go.s - 30 && o.s < go.sj + o.L; // over (or at) its line: it is about to take the outer lane at its join
+        if (!joining && Math.abs(hyp(o.x - rg.cx, o.y - rg.cy) - R) > 34) continue;
+        const ao = joining ? go.aj + (go.sj - o.s) / R * (-rg.dir) : Math.atan2(o.y - rg.cy, o.x - rg.cx);
+        let d = ((((ao - ac) * rg.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI); if (d > Math.PI) d -= 2 * Math.PI;
+        const arc = d * R, body = (c.L + o.L) / 2;
+        if (arc > -body - 6 - Math.max(0, o.v - c.v) * P['traffic.ringMergeGap'] - 0.25 * o.v && arc < body + 12 + (o.v < c.v ? P['traffic.ringLaneChange'] + (c.v - o.v) * 0.6 : 0)) return false; // room behind for a faster car; room ahead to finish the change behind a slower one
+      }
+      return true;
+    }
     leadGap(c) {
       let best = null;
       const ca = Math.cos(c.h), sa = Math.sin(c.h), road = this.P['traffic.followRoad'];
+      const rgc = c.path.ring, band = (q) => { const r = hyp(q.x - rgc.cx, q.y - rgc.cy); return r > rgc.Rin - 22 && r < rgc.Rout + 22; };
+      const cRing = !!(rgc && lay(c) === 0 && c.s < rgc.exitS + 2 && band(c)), ac = cRing ? Math.atan2(c.y - rgc.cy, c.x - rgc.cx) : 0, rc = cRing ? hyp(c.x - rgc.cx, c.y - rgc.cy) : 0;
       for (const o of this.cars) {
         if (o === c || lay(o) !== lay(c)) continue;
+        if (cRing && band(o)) { // P5 (Edit 52): on a two-lane ring, follow by arc and lane (radius); a path may loop, so no projection
+          const ro = hyp(o.x - rgc.cx, o.y - rgc.cy);
+          const wide = (q) => !!(q.orbit && q.man && q.man.type === 'shift'); // a car changing lanes holds both
+          if (Math.abs(ro - rc) < (c.W + o.W) / 2 + 6 + (wide(c) || wide(o) ? this.P['world.laneWidth'] : 0)) {
+            const arc = ((((Math.atan2(o.y - rgc.cy, o.x - rgc.cx) - ac) * rgc.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * rc;
+            if (arc > 0 && arc < 420 && !this.mergingPast(c, o)) { const gap = arc - (c.L + o.L) / 2; if (!best || gap < best.gap) best = { gap, v: o.v, car: o, oncoming: false }; }
+          }
+          continue;
+        }
+        if (cRing && Math.abs(c.d) > 1) continue; // in or moving to the inner lane: only ring traffic matters (its offset would line up with the oncoming arm lane)
         let gap = null, v = 0, oncoming = false;
         if (o.lane === c.lane) {
           if (o.s > c.s && Math.abs(o.d - c.d) < (c.W + o.W) / 2 + 6) { gap = o.s - c.s - (c.L + o.L) / 2; v = o.v; }
@@ -2484,6 +2569,7 @@
           if (!c.honking) { c.honking = true; c.honkAt = blk.body ? 'body' : 'cone'; this.emit('honk', { car: c.id, at: blk.body ? 'body' : blk.id }); }
           if (!blk.body && !this.drones.some((d) => d.cone === blk.id)) this.dispatchDrone(blk);
         }
+        this.ringKeep(c); // P5 (Edit 52): an inner-lane car's route keeps looping until it is back out
         // reversing to unstick: stop at the target, after the time limit, or when something is behind
         if (c.man && c.man.type === 'reverse') {
           const m = c.man, rs = P['proto.unstick.reverseSpeed'];
@@ -2495,7 +2581,7 @@
         // proto.unstick.reverseGap when the way behind is clear, then returns to its lane. A stopped car behind it backs up first
         // to give it room. Two cars on their own sides that each wait for the other: the later car backs up, or the one with room.
         const GT = P['traffic.gridlockSeconds'];
-        if (GT > 0 && P['traffic.jamReverse'] && c.stopT >= GT && !(c.man && c.man.type === 'reverse') && c.s - c.L / 2 > 20 && !this.rearBlocked(c) && this.needsRoom(c)) {
+        if (GT > 0 && P['traffic.jamReverse'] && c.stopT >= GT && !c.orbit && !(c.man && c.man.type === 'reverse') && c.s - c.L / 2 > 20 && !this.rearBlocked(c) && this.needsRoom(c)) {
           c.man = null; c.dodge = null; c.intent = null; c.signal = null;
           this.commit(c, { type: 'reverse', sTarget: Math.max(c.L / 2, c.s - P['proto.unstick.reverseGap']) }, 'unstick', null); // never back off the road's start
           this.emit('unstick', { car: c.id, how: 'jam' });
@@ -2546,11 +2632,12 @@
           c.state = 'cruise'; this.emit('unstick', { car: c.id, how: 'replan' });
         }
         if (c.man) continue;
+        if (this.ringStep(c)) continue; // P5 (Edit 52): move to or from the inner ring lane
         const lw = P['world.laneWidth'];
         const inPath = !!(hz && hz.inPath);
         const urgent = Math.abs(c.d) > lw / 2 && this.oncomingAhead(c, 420);
         const passed = !c.dodge || c.s - c.L / 2 > c.dodge.s + P['proto.returnClearance'];
-        const canReturn = Math.abs(c.d) > 0.5 && !this.bodyBeside(c, -c.d) && !this.carBeside(c, -c.d) &&
+        const canReturn = !(c.orbit && c.orbit.lane === 'in') && Math.abs(c.d) > 0.5 && !this.bodyBeside(c, -c.d) && !this.carBeside(c, -c.d) &&
           (urgent || (!det.fwd && !inPath && passed && !this.corridorBlocked(c, -c.d)));
         let holdSpeed = false;
         if (canReturn) {
@@ -2582,6 +2669,7 @@
         }
         // speed control: speed limit, corners (Edit 43), caution near a pedestrian, two-second following gap
         let vT = Math.min(c.cruise, this.cornerSpeed(c)), decel = null;
+        if (c.orbit && c.path.ring) { vT = Math.min(vT, Math.sqrt(P['traffic.cornerAccel'] * c.path.ring.Rin)); if (c.orbit.wait != null) vT = Math.min(vT, Math.sqrt(2 * P['traffic.comfortBraking'] * c.orbit.wait)); } // the inner lane is tighter; at the last lap, wait for a gap
         if (hz && !inPath && c.nearT >= P['perception.reactionDelay'] - 1e-9 && !holdSpeed) {
           const vc = P['proto.driver.cautionSpeed'];
           vT = Math.min(vT, vc);
@@ -2603,6 +2691,15 @@
             if (o === c || lay(o) !== 0 || !go || go.cx !== rg.cx || go.cy !== rg.cy || o.yielding || o.s + o.L / 2 <= go.s || o.s > go.sj + o.L / 2) continue; // only a car that is going
             const d = ((((go.aj - ac) * rg.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * rg.R;
             if (d < 300) vT = Math.min(vT, Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, d - (c.L + o.L) / 2 - P['traffic.minimumGap'])));
+          }
+        }
+        const ring = c.path.ring; c.letOut = null;
+        if (ring && P['traffic.ringOrbit'] > 0 && !c.orbit && lay(c) === 0 && Math.abs(hyp(c.x - ring.cx, c.y - ring.cy) - ring.Rout) < 22) { // P5 (Edit 52): let a waiting inner-lane car out
+          const ac = Math.atan2(c.y - ring.cy, c.x - ring.cx);
+          for (const o of this.cars) {
+            if (o === c || !o.orbit || o.orbit.lane !== 'in' || o.orbit.wait == null || o.orbit.wait > 4 || !o.path.ring || o.path.ring.cx !== ring.cx || o.path.ring.cy !== ring.cy) continue;
+            const d = ((((Math.atan2(o.y - ring.cy, o.x - ring.cx) - ac) * ring.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) * ring.Rout;
+            if (d < 300) { const v2 = Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, d - (c.L + o.L) / 2 - P['traffic.minimumGap'] - 40)); if (v2 < vT) { vT = v2; c.letOut = o; } }
           }
         }
         const ahead = this.leadGap(c);

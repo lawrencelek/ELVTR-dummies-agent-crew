@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit51.3-2026-10-22",
+ "registryVersion": "edit52-2026-10-24",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5",
  "entries": [
@@ -5737,6 +5737,153 @@
    "integrationStatus": "prototype-p4",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "A car can still stop when a gap closes late"
+  },
+  {
+   "id": "traffic.ringOrbit",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring orbit lane",
+   "description": "On (1): a circulating car whose exit is blocked, or that is stuck behind a stopped or crawling car, moves to the inner ring lane and orbits until its exit and the outer lane beside it are clear. Off (0): the inner lane stays empty.",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Uses the inner lane, as on a real roundabout; a blocked exit no longer stops the whole ring"
+  },
+  {
+   "id": "traffic.ringLaneChange",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring lane change length",
+   "description": "Distance a car travels while moving between the outer and inner ring lanes.",
+   "unit": "world units",
+   "type": "number",
+   "default": 72,
+   "status": "proposed",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 40
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "About one and a half car lengths; fits between two arms on a Rc 132 ring"
+  },
+  {
+   "id": "traffic.ringExitCheck",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring exit check",
+   "description": "Length of exit road checked for a stopped car or the dummy. Something there means the exit is blocked: orbit, or keep orbiting.",
+   "unit": "world units",
+   "type": "number",
+   "default": 120,
+   "status": "proposed",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 48
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two car lengths past the point where the exit leaves the ring"
+  },
+  {
+   "id": "traffic.ringMergeGap",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring merge gap",
+   "description": "Seconds of closing speed a car needs behind it on the lane it moves into, on top of the two bodies and a margin.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.2,
+   "status": "proposed",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.5
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A faster car behind is never cut off"
+  },
+  {
+   "id": "traffic.ringPassRatio",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring pass ratio",
+   "description": "A circulating car may pass on the inner lane when the car ahead on the outer lane goes slower than this share of its cruise speed.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.4,
+   "status": "proposed",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Passing only round a stopped or crawling car"
+  },
+  {
+   "id": "traffic.ringMaxLaps",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring laps",
+   "description": "Extra laps a car may orbit on the inner lane. After the last, it stops at its change point and waits for a gap; outer-lane cars let it out.",
+   "unit": "laps",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Long enough for most blocks to clear; never endless"
+  },
+  {
+   "id": "world.roundaboutMinArms",
+   "group": "World",
+   "owner": "World",
+   "label": "Roundabout arms",
+   "description": "Every roundabout, ground or elevated, has at least this many arms.",
+   "unit": "arms",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 3
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A ring with two arms is a bend: nobody gives way"
   },
   {
    "id": "traffic.deckGapScale",

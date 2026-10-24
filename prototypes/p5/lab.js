@@ -147,6 +147,14 @@
         if (aj == null && d <= R + 2) { aj = Math.atan2(y - cy, x - cx); sj = lane.cum[i]; break; }
       }
       lane.giveWay = { s: sLine, sj, cx, cy, R, dir: -1, aj }; // stop line, join point (s and angle), circulating lane
+      // P5 (Edit 52): the same route with 1..traffic.ringMaxLaps extra laps, for the inner-lane orbit. Identical up to the end of the arc.
+      let iEnd = -1; center.forEach(([x, y], i) => { if (Math.abs(hyp(x - cx, y - cy) - Rc) < 0.6) iEnd = i; });
+      const aEnd = Math.atan2(center[iEnd][1] - cy, center[iEnd][0] - cx), nLap = 48, variants = [lane];
+      for (let k = 1; k <= (P['traffic.ringMaxLaps'] || 0); k++) {
+        const loop = X.arcPts(cx, cy, Rc, aEnd, aEnd - 2 * Math.PI * k, nLap * k).slice(1);
+        const vl = X.lanesOf(center.slice(0, iEnd + 1).concat(loop, center.slice(iEnd + 1)), P)[0]; vl.giveWay = lane.giveWay; variants.push(vl);
+      }
+      variants.forEach((vl, k) => { vl.ring = { variants, k, exitS: vl.cum[iEnd + k * nLap], cx, cy, Rout: R, Rin: Rc - half, dir: -1 }; });
       lanes.push(lane); roads.push(center); names.push(a + '→' + b);
     }
     lanes.forEach((ln, i) => { const a = names[i].split('→')[0]; ln.giveWay.s = Math.min(...lanes.filter((_, j) => names[j].split('→')[0] === a).map((m) => m.giveWay.s)); }); // one line per arm
@@ -278,6 +286,7 @@
       exitedPerMin: +(st.exited / opts.seconds * 60).toFixed(1), maxStop: +st.maxStop.toFixed(1), jamAt: st.jamAt, jamCars: st.jamCars, overlapS: +st.overlapT.toFixed(1),
       heldS: +st.held.toFixed(1), peak: st.peak, routes: st.routes, rankStop: Object.fromEntries(Object.entries(st.rankStop).map(([k, v]) => [k, +v.toFixed(1)])) };
   }
-  const api = { PIECES, FLEETS, CLASSES, makeSim, tick, run, minRadius, radii, overlap, overhang: (c, P) => overhang(c, P), W, H };
+  FLEETS.nobus = [['sedan', 0.36], ['hatchback', 0.28], ['police', 0.1], ['van', 0.26]]; // P5 (Edit 52): screens whose bends are under vehicles.bus.minRadius
+  const api = { PIECES, FLEETS, CLASSES, makeSim, tick, run, minRadius, radii, overlap, overhang: (c, P) => overhang(c, P), junction, multiRoundabout, W, H };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.TURNLAB = api;
 })(typeof window !== 'undefined' ? window : globalThis);

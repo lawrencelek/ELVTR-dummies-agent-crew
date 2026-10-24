@@ -21,6 +21,11 @@
   figcaption { font-size: 12px; color: var(--dim); margin-top: 6px; }
   figcaption b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
   .grid3 canvas { cursor: pointer; }
+  table.plan { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: 10px; }
+  table.plan th, table.plan td { border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+  table.plan th { color: var(--dim); font-weight: 600; }
+  table.plan td:first-child { font-weight: 700; white-space: nowrap; }
+  table.plan tr.centre td { color: var(--accent); }
   .tabs button.on { background: #1b4a66; border-color: var(--accent); }
   #grid { cursor: pointer; }
   .mood { color: var(--ink); margin: 0 0 10px; }
@@ -35,7 +40,7 @@
 <body>
 <header>
   <h1>Three districts · P5 mock-up</h1>
-  <p>The three centres first, then each district as 3 × 3 screens of 800 × 640, in game art with live P5 traffic. Every highway screen has two escalators, on opposite sides at opposite ends. No trees or flower beds: concrete planters, monoliths and public sculptures. The P5 game is unchanged until these are approved.</p>
+  <p>The three centres first, then each district as 3 × 3 screens of 800 × 640, in game art with live P5 traffic. Every tile reveals its own mechanic and landmark; roads and highways cross at 90° or 45°; every roundabout has four arms, and cars orbit on its inner lane when their exit is blocked. The P5 game is unchanged until these are approved.</p>
 </header>
 <main>
   <section>
@@ -54,8 +59,9 @@
       <div><canvas id="grid"></canvas><p class="cap">The whole district. Tap a screen to see it at 2×.</p></div>
       <div><canvas id="zoom"></canvas><h3 id="zname"></h3><p class="cap" id="znote"></p><p class="cap" id="zlive"></p></div>
     </div>
-    <div class="row" style="margin-top:10px"><button id="play">Pause</button></div>
-    <p class="note">Roads are planned across the whole district, so every screen edge lines up. Ground roads turn at 90° or 45° on fillets of world.roundaboutEntryRadius (96). Highways run square along a row (decision 152) at P5.2's width (160). Escalators: world.deckEscalators (2) per highway screen, world.deckEscalatorInset (64) from the screen edge. Colours follow the style guide: no red or yellow décor.</p>
+    <div class="row" style="margin-top:10px"><button id="play">Pause</button><button id="labels">Hide labels</button></div>
+    <table class="plan" id="plan"></table>
+    <p class="note">Roads are planned across the whole district, so every screen edge lines up. Ground roads turn at 90° or 45° on fillets of world.roundaboutEntryRadius (96). Highways run across, down or at 45°, always crossing roads at 90° or 45°, at P5.2's width (160). Escalators: world.deckEscalators (2) per highway screen, world.deckEscalatorInset (64) from the screen edge. Colours follow the style guide: no red or yellow décor.</p>
   </section>
 </main>
 <!--SCRIPTS-->
