@@ -145,11 +145,12 @@
     'world.deckRingRadius': 200, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
     'world.walkwayRingHalf': 168, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 100, 'world.plazaHalf': 190, // Edit 51.1–51.2: the square walkway ring (district mock-up only)
     'world.deckEscalators': 2, 'world.deckEscalatorInset': 64, 'world.splitLaneOffset': 104, 'world.walkwayColumn': 16, // Edit 51.2 (district mock-up only)
-    'world.roundaboutMinArms': 3, 'traffic.ringInnerTurn': 0, 'world.deckRingInnerTurn': 135, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
+    'world.portalClearance': 72, // Edit 54: headroom over a highway where it runs through a tower (two storeys)
+    'world.roundaboutMinArms': 3, 'traffic.ringInnerExit': 3, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
     'traffic.continuous': 1, 'traffic.warmSeconds': 30, 'traffic.exitAfterSeams': 9, // P5.3 (Edit 53): one traffic for the whole district; a car crosses a shared edge with its id, speed and plan. warmSeconds: the district mock-up runs before it is shown; exitAfterSeams: after that many seams a mock-up car takes the way out at a junction
     'world.deckRingTopClear': 32, 'world.gardenCellWidth': 160, 'world.gardenCellHeight': 128, 'world.gardenPath': 32, // Edit 51.3 (district mock-up only)
     'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
-    'world.district.parkland.interval': 4.5, 'world.district.circus.interval': 3.2, 'world.district.monument.interval': 2.4, // Edit 53: mock-up traffic; each lane entering the district runs one car per 2 × interval, as the game's roads
+    'world.district.parkland.interval': 4.5, 'world.district.parkland.deckInterval': 8, 'world.district.circus.interval': 3.2, 'world.district.monument.interval': 2.4, // Edit 53: mock-up traffic; each lane entering the district runs one car per 2 × interval, as the game's roads
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
@@ -2283,9 +2284,10 @@
       const q = pathAt(c.path, c.s), inward = (rg.cx - q.x) * q.nx + (rg.cy - q.y) * q.ny > 0 ? 1 : -1, dIn = inward * P['world.laneWidth'];
       const lap = 2 * Math.PI * rg.Rout, rem0 = rg.exitS - c.s;
       if (!c.orbit) { // move in for a blocked exit, or to pass a stopped or crawling car, any time before the change point
-        const spare = rem0 - Lc - 20, laps = rg.variants.length - 1 - rg.k; // a car that cannot get back out before its exit must have a lap left
-        const turn = (rg.variants[0].ring.exitS - g.sj) / rg.Rout * 180 / Math.PI, plan = P['traffic.ringInnerTurn'] > 0 && !c.ringInnerDone && turn >= P['traffic.ringInnerTurn']; // Edit 53.1: a two-lane ring: a car going far round circulates inside
-        if (spare < 0 || (laps < 1 && spare < 0.5 * lap) || this.t - (c.ringOutT || -9) < 3 || !(plan || this.ringExitBlocked(c) || (spare > Lc && this.ringCrawl(c))) || !this.ringLaneClear(c, true)) return false;
+        const spare = rem0 - Lc - 20, ie = P['traffic.ringInnerExit'], far = !(ie > 0) || (rg.exitNo || 0) >= ie, blocked = this.ringExitBlocked(c);
+        if (!far && !blocked) return false; // Edit 54: only a car leaving at traffic.ringInnerExit or later (the third exit, 270°) uses the inner lane; a blocked exit means a full lap more, so that car may too
+        const plan = far && ie > 0 && !c.ringInnerDone; // ...and it moves in once it has joined
+        if (spare < 0 || this.t - (c.ringOutT || -9) < 3 || !(plan || blocked || (far && spare > Lc && this.ringCrawl(c))) || !this.ringLaneClear(c, true)) return false;
         if (plan) c.ringInnerDone = true;
         c.orbit = { lane: 'in', laps: 0 }; shift(dIn, rg.Rin); this.emit('ring', { car: c.id, to: 'inner', planned: plan }); return true;
       }
@@ -4557,7 +4559,8 @@
         const loop = X.arcPts(cx, cy, Rc, aEnd, aEnd - 2 * Math.PI * k, nLap * k).slice(1);
         const vl = X.lanesOf(center.slice(0, iEnd + 1).concat(loop, center.slice(iEnd + 1)), P)[0]; vl.giveWay = lane.giveWay; variants.push(vl);
       }
-      variants.forEach((vl, k) => { vl.ring = { variants, k, exitS: vl.cum[iEnd + k * nLap], cx, cy, Rout: R, Rin: Rc - half, dir: -1 }; });
+      const turnOf = (k) => ((ang[a] - ang[k]) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI), exitNo = arms.filter((k) => k !== a && turnOf(k) <= turnOf(b) + 1e-9).length; // Edit 54: which exit, counted from the entry
+      variants.forEach((vl, k) => { vl.ring = { variants, k, exitS: vl.cum[iEnd + k * nLap], cx, cy, Rout: R, Rin: Rc - half, dir: -1, exitNo }; });
       lanes.push(lane); roads.push(center); names.push(a + '→' + b);
     }
     lanes.forEach((ln, i) => { const a = names[i].split('→')[0]; ln.giveWay.s = Math.min(...lanes.filter((_, j) => names[j].split('→')[0] === a).map((m) => m.giveWay.s)); }); // one line per arm
@@ -5072,15 +5075,15 @@
       ring: { tile: 'B2', z: 1, arms: ['W', 'N', 'E', 'S'] },
       decks: [{ hz: true, at: 960, z: 1 }, { hz: false, at: 1200, z: 1 }], park: true,
       tiles: {
-        A1: ['Start, top edge. The 45° boulevard; a T junction at 45°: the avenue gives way', 'Reservoir terraces: three stepped pools'],
-        B1: ['The Z1 highway runs north–south; escalators west (north end) and east (south end). The boulevard cuts the corner', 'Cascade: water steps beside the highway'],
-        C1: ['The avenue under a Z1 footbridge: escalators at both ends, drop onto cars', 'Lantern pavilion'],
-        A2: ['The avenue passes under the Z1 highway at 90°; escalators north (west end) and south (east end)', 'Canal along the highway'],
-        B2: ['Four-arm Z1 roundabout (W, N, E, S). Give way to the ring; the inner lane is the orbit lane. The boulevard passes beneath, through the hole', 'Reflecting pools under the ring'],
-        C2: ['The avenue crosses under the Z1 highway at 45°', 'Amphitheatre terraces'],
-        A3: ['A wide R160 bend (buses may use it)', 'Monolith orchard'],
-        B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Obelisk on the axis'],
-        C3: ['Crossroads at 45°: the street gives way to the boulevard; then a wide R160 bend north', 'Sculpture court'] } },
+        A1: ['Start, top edge. The 45° boulevard; a T junction at 45°: the avenue gives way', 'Reservoir terraces: three stepped pools', 'both'],
+        B1: ['The Z1 highway runs north–south; escalators west (north end) and east (south end). The boulevard cuts the corner', 'Cascade: water steps beside the highway', 'both'],
+        C1: ['The avenue under a Z1 footbridge: escalators at both ends, drop onto cars', 'Lantern pavilion', 'both'],
+        A2: ['The avenue passes under the Z1 highway at 90°; escalators north (west end) and south (east end)', 'Canal along the highway', 'both'],
+        B2: ['Four-arm Z1 roundabout (W, N, E, S). Give way to the ring; the inner lane is the orbit lane. The boulevard passes beneath, through the hole', 'Reflecting pools under the ring', 'both'],
+        C2: ['The avenue crosses under the Z1 highway at 45°', 'Amphitheatre terraces', 'both'],
+        A3: ['A wide R160 bend (buses may use it)', 'Belvedere: four tiers and a stair up to a lawn, the monolith orchard on top', 'both'],
+        B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Obelisk on the axis', 'both'],
+        C3: ['Crossroads at 45°: the street gives way to the boulevard; then a wide R160 bend north', 'Sunken sculpture court, three lit steps down', 'both'] } },
     { id: 'circus', name: 'Circus', quota: P['world.district.circus.quota'], storeys: [6, 14], start: ['A2', 'west'],
       mood: 'Busy and circling, walled by monumental concrete. An octagon of streets rings the four-arm roundabout.',
       roads: [{ id: 'octagon', pts: loop2(fil([[800, 480], [560, 480], [480, 560], [480, 1360], [560, 1440], [1840, 1440], [1920, 1360], [1920, 560], [1840, 480], [800, 480]])) },
@@ -5089,30 +5092,31 @@
       roundabout: { tile: 'B2', arms: ['W', 'N', 'E', 'S'] },
       decks: [{ hz: true, at: 1680, z: 1 }],
       tiles: {
-        A1: ['The octagon turns two 45° corners; roadworks close a lane (cones)', 'A tower cut parallel to the diagonal'],
-        B1: ['T junction: the north arm gives way to the octagon', 'Twin towers and their bridge'],
-        C1: ['The octagon turns two 45° corners on a flooded road (puddles: cars skid)', 'A ziggurat stepping toward the diagonal'],
-        A2: ['Start, west edge. Crossroads: the entry road gives way to the octagon', 'LED billboard wall facing the entry'],
-        B2: ['Four-arm roundabout: give way at entry; orbit on the inner lane when the exit is blocked', 'The plinth and its lit slab'],
-        C2: ['T junction: the east arm gives way to the octagon', 'Cantilevered crown tower'],
-        A3: ['The octagon turns two 45° corners under the row-3 Z1 highway; escalators', 'Finned slab'],
-        B3: ['Crossroads, then under the Z1 highway at 90° to the exit', 'Arcade on pilotis'],
-        C3: ['The octagon turns two 45° corners; a cone closes the eastbound lane: cars pass across the centre line. Z1 highway and escalators', 'Twin slabs'] } },
+        A1: ['The octagon turns two 45° corners; roadworks close a lane (cones)', 'A tower cut parallel to the diagonal', 'scenery'],
+        B1: ['T junction: the north arm gives way to the octagon', 'Twin towers and their bridge', 'scenery'],
+        C1: ['The octagon turns two 45° corners on a flooded road (puddles: cars skid)', 'A ziggurat stepping toward the diagonal', 'scenery'],
+        A2: ['Start, west edge. Crossroads: the entry road gives way to the octagon', 'LED billboard wall facing the entry', 'scenery'],
+        B2: ['Four-arm roundabout: give way at entry; orbit on the inner lane when the exit is blocked', 'The plinth and its lit slab', 'scenery'],
+        C2: ['T junction: the east arm gives way to the octagon', 'Cantilevered crown tower', 'scenery'],
+        A3: ['The octagon turns two 45° corners under the row-3 Z1 highway; escalators', 'Finned slab', 'both'],
+        B3: ['Crossroads, then under the Z1 highway at 90° to the exit', 'Arcade on pilotis', 'both'],
+        C3: ['The octagon turns two 45° corners; a cone closes the eastbound lane: cars pass across the centre line. Z1 highway and escalators', 'Twin slabs', 'both'] } },
     { id: 'monument', name: 'Monument', quota: P['world.district.monument.quota'], storeys: [6, 12], start: ['A1', 'west'],
       mood: 'Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument.',
       roads: [{ id: 'snake', pts: fil([[-200, 320], [2240, 320], [2240, 864], [2144, 960], [240, 960], [240, 1504], [336, 1600], [1120, 1600], [1280, 1760], [2600, 1760]]) }],
       split: { tile: 'B2' },
       decks: [{ hz: false, at: 560, z: 1 }, { hz: false, at: 1840, z: 2 }],
+      chongqing: { tile: 'C2', tower: [112, 140, 256, 90], storeys: 12, plaza: [16, 530, 144, 100], link: [490, 546] }, // Edit 54: the Z2 highway runs through a tower; a roof plaza opens off it
       tiles: {
-        A1: ['Start, west edge. The road passes under the Z1 highway (north–south) at 90°; escalators', 'LED-wall tower facing the entry'],
-        B1: ['A Z1 skybridge crosses the road at 90°, from a podium roof to the walkway ring', 'Podium and tower at the bridge head'],
-        C1: ['Under the Z2 highway at 90°, then an R96 bend south; Z2 escalators (run 112)', 'LED drum tower in the bend'],
-        A2: ['Under the Z1 highway at 90°, then an R96 bend south', 'Neon arcade along the road'],
-        B2: ['The road splits round the monument\'s island; the walkway ring bridges both lanes at Z1; skybridge north', 'The monument'],
-        C2: ['A 45° corner cut, then under the Z2 highway at 90°', 'Billboard mast'],
-        A3: ['A 45° corner cut, then under the Z1 highway at 90°', 'Stacked LED cubes'],
-        B3: ['A 45° jog between two LED walls', 'LED canyon'],
-        C3: ['Under the Z2 highway at 90°; the exit through an LED gateway', 'LED gateway arch over the road'] } },
+        A1: ['Start, west edge. The road passes under the Z1 highway (north–south) at 90°; escalators', 'LED-wall tower facing the entry', 'both'],
+        B1: ['A Z1 skybridge crosses the road at 90°, from a podium roof to the walkway ring', 'Podium and tower at the bridge head', 'both'],
+        C1: ['Under the Z2 highway at 90°, then an R96 bend south; Z2 escalators (run 112)', 'LED drum tower in the bend', 'both'],
+        A2: ['Under the Z1 highway at 90°, then an R96 bend south', 'Neon arcade along the road', 'both'],
+        B2: ['The road splits round the monument\'s island; the walkway ring bridges both lanes at Z1; skybridge north', 'The monument', 'both'],
+        C2: ['A 45° corner cut, then under the Z2 highway at 90°. The highway runs through a tower; a roof plaza at Z2 opens off its parapet, and an escalator drops from the plaza to the street', 'Portal tower and roof plaza (Chongqing)', 'both'],
+        A3: ['A 45° corner cut, then under the Z1 highway at 90°', 'Stacked LED cubes, each cantilevered off the one below', 'both'],
+        B3: ['A 45° jog between two LED walls; a Z1 skybridge crosses the jog at 90°', 'LED canyon and its skybridge', 'both'],
+        C3: ['Under the Z2 highway at 90°; the exit through an LED gateway', 'LED gateway arch over the road', 'both'] } },
   ];
   const TILE = (c, r) => 'ABC'[c] + (r + 1);
   // ---------- traffic on one screen (the dummy away)
@@ -5147,7 +5151,8 @@
     return { arms, major };
   }
   // ---------- a vertical highway (Edit 52): the game's deck sprite run north–south, lamps on both parapets
-  function vDeck(off, z, roadOk, stairs) {
+  function vDeck(off, z, roadOk, stairs, links) { // links (Edit 54): parapet openings onto a roof at the deck's level
+    stairs = stairs.concat(links || []);
     const hgt = z === 2 ? P['world.highHeight'] : P['world.deckHeight'], dk = { hz: false, off, z, height: hgt, gaps: [], openings: stairs.map((st) => [st.y, st.y + st.h, st.side]) }, { S } = PIX.deck(dk, P);
     const Lr = new PIX.Buf(AW, AH), x0 = Math.round((off - HALF) / U), wpx = Math.round(2 * HALF / U), glow = mixK(K.deck2, K.white, 0.38);
     PIX.blit(Lr, S, x0, 0);
@@ -5173,6 +5178,27 @@
     const fp = chamf(Math.round(x0), Math.round(y0), Math.round(x1), Math.round(y1), k);
     mass(B, fp, x0, y0, x1, y1, base, h, 'conc', null, base === 0);
     for (let y = Math.round(y0); y <= y1; y++) for (let x = Math.round(x0); x <= x1; x++) if (fp(x, y, 2)) B.put(x, y - base - h, (y % 4 === 0 && (x * 5 + y) % 11 < 4) ? N.water2 : (x * 3 + y * 7) % 89 === 0 ? N.cyan : N.water);
+  }
+  // Edit 54: a sunken court (art px). n steps down, each st in and dh deep. The north risers face the viewer and carry step
+  // lights; the south part of each level hides behind the rim above it.
+  function sunken(B, x0, y0, x1, y1, k, n, st, dh) {
+    const R = (i) => chamf(x0 + i * st, y0 + i * st, x1 - i * st, y1 - i * st, Math.max(2, k - i * st * 0.6));
+    const seen = (i, x, sy) => { for (let j = 0; j < i; j++) if (!R(j)(x, sy - j * dh)) return false; return true; };
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (R(0)(x, y) && !R(1)(x, y)) B.put(x, y, (x + y) % 6 === 0 ? CON.m : CON.l); // the coping round the rim
+    for (let i = 1; i <= n; i++) {
+      const fp = R(i), tone = mixK(CON.t, K.bldgDark, 0.12 * i);
+      for (let x = x0; x <= x1; x++) { let yN = -1; for (let y = y0; y <= y1; y++) if (fp(x, y)) { yN = y; break; } if (yN < 0) continue; for (let t = 0; t < dh; t++) { const sy = yN + (i - 1) * dh + t; if (seen(i, x, sy)) B.put(x, sy, t === 0 ? (x % 4 < 2 ? N.cyan : K.jerseyTop) : CON.d); } } // riser, lit along its nosing
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (!fp(x, y)) continue; const sy = y + i * dh; if (!seen(i, x, sy)) continue; B.put(x, sy, i === n ? ((x % 8 === 0 || y % 8 === 0) ? N.tile2 : N.tile) : (x % 6 === 0 ? CON.t2 : tone)); }
+    }
+  }
+  // Edit 54: a stack of cantilevered LED cubes (art px), each sitting on the one below; pushed as props sorted from the base
+  function cubeStack(sc, B, cubes, by, seed) {
+    let base = 0;
+    cubes.forEach(([x, y, w, h, H], i) => {
+      const S = ledPanel(PIX.building(w, h, H, PIX.rng(seed + i), [N.magenta, N.cyan, LEDS[2 % LEDS.length]][i % 3], Math.max(2, Math.round(H / STY))), H, [[N.magenta, N.cyan], [N.cyan, LEDS[2 % LEDS.length]], [LEDS[2 % LEDS.length], N.magenta]][i % 3]);
+      if (i === 0) brutalShadow(B, x, y, w, h, Math.round(cubes.reduce((a, c) => a + c[4], 0) * 0.55), null);
+      sc.props.push({ spr: S, x, y: y - base, by, key: by + i * 0.01 }); base += H;
+    });
   }
   function poolFP(B, fp) { // a reflecting pool from a footprint test in world units: coping, shadowed wall, water
     each((x, y, wx, wy) => {
@@ -5244,7 +5270,7 @@
     // highways, each with its two escalators
     let ringSim = null;
     if (D.ring && D.ring.tile === name) { // the Z1 ring (Parkland): a four-arm roundabout lifted onto the deck
-      const ov = { 'world.roundaboutRadius': P['world.deckRingRadius'], 'traffic.ringInnerTurn': P['world.deckRingInnerTurn'], 'traffic.ringFill': P['world.deckRingFill'] }, Pr = Object.assign({}, P, ov), geo = L.multiRoundabout(X, Pr, D.ring.arms, R96); // Edit 53.1: two circulating lanes
+      const ov = { 'world.roundaboutRadius': P['world.deckRingRadius'], 'traffic.ringFill': P['world.deckRingFill'] }, Pr = Object.assign({}, P, ov), geo = L.multiRoundabout(X, Pr, D.ring.arms, R96); // Edit 53.1: entry metered (Edit 54: the inner lane for the third exit only, as every ring)
       ringSim = labSim(geo, 'nobus', ov); sc.ringSim = ringSim;
       const cx = 400, cy = 320, Rc = P['world.deckRingRadius'];
       sc.stairs = escalators(cy, 1, HALF);
@@ -5254,7 +5280,8 @@
       sc.layers.push(ringDeck); sc.ringDeck = ringDeck;
     } else {
       for (const d of hDecks) { const st = escalators(d.off, d.z, HALF); sc.stairs.push(...st); sc.layers.push(straightDeck(d.off, d.z, roadOk, st)); }
-      for (const d of vDecks) { const st = vEscalators(d.off, d.z); sc.stairs.push(...st); sc.layers.push(vDeck(d.off, d.z, roadOk, st)); }
+      const cq = D.chongqing && D.chongqing.tile === name ? D.chongqing : null; // Edit 54: the west escalator lands on the roof plaza instead
+      for (const d of vDecks) { const st = vEscalators(d.off, d.z).filter((q) => !cq || q.side > 0); sc.stairs.push(...st); sc.layers.push(vDeck(d.off, d.z, roadOk, st, cq ? [{ y: cq.link[0], h: cq.link[1] - cq.link[0], side: -1 }] : [])); }
     }
     for (const st of sc.stairs) { sc.props.push(stairProp(st, st.z === 2 ? Z2 : Z1)); const fx = st.axis === 'x' ? (st.side < 0 ? st.x : st.x + st.w) : st.x + SWD / 2, fy = st.axis === 'x' ? st.y + st.h / 2 : (st.side > 0 ? st.y + st.h : st.y); if (rd(fx, fy) < LW) console.warn('escalator foot in a lane', D.id, name); }
     const blocked = sc.stairs.map((st) => [st.x - 24, st.y - 24, st.w + 48, st.h + 48]);
@@ -5266,6 +5293,8 @@
     else if (D.id === 'circus') circusTile(sc, B, name, roadOk, free, rng, labSimOf(sc), runs);
     else monumentTile(sc, B, name, roadOk, free, rng, runs);
     for (const l of sc.layers) if (l.shadeOn) l.shadeOn(B);
+    sc.setPiece = plan[2]; sc.hasLevel = !!(sc.stairs.length || sc.walk || sc.terraces || sc.ringDeck || sc.layers.some((l) => l.dk)); // Edit 54: scenography and/or a change of level on every tile
+    if (!sc.setPiece || (sc.setPiece !== 'scenery' && !sc.hasLevel)) console.warn('tile without its set piece', D.id, name, sc.setPiece);
     // traffic
     if (!sc.lab) {
       const dl = X.deckLanesOf(sc.layers.filter((l) => l.dk).map((l) => ({ hz: l.dk.hz, off: l.dk.off })), P);
@@ -5297,13 +5326,13 @@
     if (name === 'C1') R.push([440, 120, 240, 160], [0, 280, 440, 80]);
     if (name === 'A2') R.push([500, 416, 300, 72]);
     if (name === 'C2') R.push([40, 440, 340, 190]);
-    if (name === 'A3') R.push([500, 24, 280, 200]);
+    if (name === 'A3') R.push([496, 20, 288, 212]);
     if (name === 'B3') R.push([90, 430, 200, 190]);
-    if (name === 'C3') R.push([420, 100, 200, 140]);
+    if (name === 'C3') R.push([290, 24, 270, 216]);
     gardenBeds(B, { bedOk: (wx, wy) => free(wx, wy, 8), diag: null, rng, leds: LEDS, pools: name !== 'B2' });
     gardenSculptures(B, (wx, wy) => free(wx, wy, 16), null, rng, 2);
     const u = (v) => v / U;
-    if (name === 'A1') for (let i = 0; i < 3; i++) waterBlock(B, u(40 + i * 40), u(320 + i * 50), u(300 - i * 20), u(560), 8, 6 - i * 3, 3); // reservoir terraces, stepping down to the south
+    if (name === 'A1') { for (let i = 0; i < 3; i++) waterBlock(B, u(40 + i * 40), u(320 + i * 50), u(300 - i * 20), u(560), 8, 6 - i * 3, 3); sc.terraces = true; } // reservoir terraces, stepping down to the south
     if (name === 'B1') for (let i = 0; i < 5; i++) waterBlock(B, u(170), u(40 + i * 108), u(290), u(124 + i * 108), 6, 14 - i * 3, 3); // cascade, falling south beside the highway
     if (name === 'C1') { // footbridge over the avenue (x = 160) at Z1, escalators at both ends; a lantern pavilion
       const run = X.stairRun(P, 0, 1), esc = [{ x: 24, y: 336, w: SWD, h: run, axis: 'y', low: 336 + run, high: 336, side: 1, z: 1 }, { x: 420, y: 304, w: run, h: SWD, axis: 'x', low: 420 + run, high: 420, side: 0, z: 1 }];
@@ -5314,10 +5343,18 @@
       block(B, u(480), u(150), u(640), u(250), 4, 0, 10, 'conc', LEDS[0], true); block(B, u(500), u(165), u(620), u(235), 3, 10, 2, 'grass', LEDS[3 % LEDS.length], false);
     }
     if (name === 'A2') poolFP(B, (wx, wy, ins) => chamf(510, 424, 800 + 40, 480, 8)(wx, wy, ins)); // canal along the highway
-    if (name === 'C2') for (let i = 0; i < 4; i++) block(B, u(60 + i * 24), u(460 + i * 32), u(360 - i * 24), u(620), 10, 0, 3 + i * 3, i === 3 ? 'grass' : 'conc', i === 0 ? LEDS[0] : null, i === 0); // amphitheatre terraces
-    if (name === 'A3') for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) monolith(B, u(530 + i * 66), u(60 + j * 60), 0, 14 + ((i + j) % 3) * 5, led(i + j)); // monolith orchard
+    if (name === 'C2') { for (let i = 0; i < 4; i++) block(B, u(60 + i * 24), u(460 + i * 32), u(360 - i * 24), u(620), 10, 0, 3 + i * 3, i === 3 ? 'grass' : 'conc', i === 0 ? LEDS[0] : null, i === 0); sc.terraces = true; } // amphitheatre terraces
+    if (name === 'A3') { // Edit 54: the belvedere. Four one-storey tiers to a lawn, a stair up the south face, the monolith orchard on top
+      const t = EXT(P['world.storeyHeight']);
+      for (let i = 0; i < 4; i++) block(B, u(504 + i * 24), u(28 + i * 16), u(776 - i * 24), u(224 - i * 8), 12 - i * 2, i * t, t, i === 3 ? 'grass' : 'conc', i === 3 ? LEDS[0] : null, i === 0);
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) monolith(B, u(580 + i * 60), u(110 + j * 36), 4 * t, 12 + ((i + j) % 3) * 5, led(i + j));
+      const st = { x: 624, y: 196, w: SWD, h: 48, axis: 'y', low: 244, high: 196, side: 0, z: 1 }; sc.props.push({ spr: PIX.stairs(st, 0, 4 * t), x: u(st.x), y: u(st.y), by: 244 }); sc.terraces = true;
+    }
     if (name === 'B3') { tiles(B, (wx, wy) => wx > 100 && wx < 280 && wy > 440 && wy < 610 && roadOk(wx, wy, OUTER), true); sculpture(B, u(190), u(560), 'obelisk', LEDS[0]); sculpture(B, u(130), u(500), 'ring', led(2)); sculpture(B, u(250), u(500), 'ring', led(2)); }
-    if (name === 'C3') { tiles(B, (wx, wy) => wx > 430 && wx < 610 && wy > 110 && wy < 230 && roadOk(wx, wy, OUTER), true); for (const [x, k] of [[460, 'cubes'], [520, 'arch'], [580, 'fins']]) sculpture(B, u(x), u(200), k, led(x)); }
+    if (name === 'C3') { // Edit 54: the sculpture court sunk three steps below the garden; its south-west side runs parallel to the boulevard
+      const dh = 3; sunken(B, u(300), u(32), u(552), u(232), 40, 3, 6, dh); sc.terraces = true;
+      for (const [x, k] of [[380, 'cubes'], [440, 'arch'], [500, 'fins']]) sculpture(B, u(x), u(170) + 3 * dh, k, led(x));
+    }
   }
   // ---------- Circus: brutalist towers, the octagon, the roundabout
   function circusTile(sc, B, name, roadOk, free, rng, lab, runs) {
@@ -5369,9 +5406,14 @@
     }
     if (name === 'C1') { const S = drum(28, 14, 12 * EXT(P['world.storeyHeight']), N.cyan); sc.props.push({ spr: S, x: u(450), y: u(540), by: 570 }); R.push([380, 480, 140, 110]); } // LED drum in the bend
     if (name === 'A2') { bld(656, 416, 136, 96, 3, 2, true); bld(336, 430, 128, 80, 3, 5, true); } // neon arcades either side of the highway, south of the road
-    if (name === 'C2') { billboard(B, u(480), u(560), 60, 30, 40, N.magenta); R.push([420, 480, 140, 100]); }
-    if (name === 'A3') { sculpture(B, u(700), u(560), 'cubes', N.cyan); sculpture(B, u(760), u(500), 'cubes', N.magenta); sculpture(B, u(700), u(440), 'cubes', LEDS[2 % LEDS.length]); R.push([650, 380, 150, 220]); }
-    if (name === 'B3') { bld(40, 440, 240, 120, 6, 3, true); bld(520, 140, 260, 110, 6, 4, true); } // the LED canyon either side of the jog
+    if (name === 'C2') chongqing(sc, B, sc.D.chongqing);
+    if (name === 'A3') { tiles(B, (wx, wy) => wx > 200 && wx < 472 && wy > 416 && wy < 632 && roadOk(wx, wy, OUTER), true); cubeStack(sc, B, [[144, 262, 64, 40, 28], [166, 252, 62, 38, 26], [134, 258, 56, 34, 24]], 604, 640); R.push([184, 400, 300, 240]); } // on a lit plaza // Edit 54: stacked LED cubes, each cantilevered off the one below
+    if (name === 'B3') { // the LED canyon either side of the jog; Edit 54: a Z1 skybridge crosses the jog at 90° between the two walls
+      bld(40, 440, 240, 120, 6, 3, true); bld(520, 140, 260, 110, 6, 4, true);
+      const hw = P['world.walkwayWidth'] / 2 / Math.SQRT2, a = [262, 538], b = [566, 234], poly = [[a[0] + hw, a[1] + hw], [b[0] + hw, b[1] + hw], [b[0] - hw, b[1] - hw], [a[0] - hw, a[1] - hw]]; poly.spine = [[300, 500], [530, 270]];
+      const wl = walkwayLayer([poly], [], [], (x, y) => roadOk(x, y, OUTER) && !(x < 290 && y > 430) && !(x > 510 && y < 260));
+      wl.front = 300; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); R.push([250, 230, 330, 320]);
+    }
     if (name === 'C3') { // an LED gateway arch over the road: pylons either side, a lit beam above the traffic
       const ax = 560, top = 400 - 24, bot = 560 + 24, Hh = 40;
       const Lr = new PIX.Buf(AW, AH);
@@ -5388,6 +5430,29 @@
       placed.push({ x, y, w, h });
     }
     placed.forEach((q, i) => bld(q.x, q.y, q.w, q.h, s0 + Math.floor(rng() * (s1 - s0 + 1)), 10 + i, i % 3 === 0));
+  }
+  // Edit 54 (Chongqing): the Z2 highway runs through a tower at deck level, and a roof plaza at Z2 opens off its parapet.
+  // The tower draws after the deck, cut open where the deck passes in front of its lower face; the portal shows the deck in shade.
+  function chongqing(sc, B, q) {
+    const [x, y, w, h] = q.tower, Ht = q.storeys * STY, dk = sc.layers.find((l) => l.dk && !l.dk.hz && l.dk.z === 2).dk, Zd = Z2, clr = EXT(P['world.portalClearance']);
+    const S = PIX.building(Math.round(w / U), Math.round(h / U), Ht, PIX.rng(54 + sc.col), LEDS[2 % LEDS.length], q.storeys), ax = Math.round(x / U), ay = Math.round(y / U);
+    const b0 = Math.round((dk.off - HALF - x) / U), b1 = Math.round((dk.off + HALF - x) / U), jDeck = S.h - Zd, jTop = jDeck - clr, put = (i, j, c) => { if (i >= 0 && j >= 0 && i < S.w && j < S.h && S.d[j * S.w + i]) S.d[j * S.w + i] = c; };
+    for (let j = jTop; j < S.h; j++) for (let i = b0; i < b1; i++) S.d[j * S.w + i] = 0; // the portal, and the lower face hidden behind the deck
+    for (let i = b0 - 2; i < b1 + 2; i++) { put(i, jTop - 3, K.bldgOutline); put(i, jTop - 2, N.cyan); put(i, jTop - 1, i % 3 ? N.cyan : K.white); } // a lit lintel
+    for (let j = jTop - 1; j < S.h - 1; j++) for (const i of [b0 - 2, b0 - 1, b1, b1 + 1]) put(i, j, i === b0 - 1 || i === b1 ? (j < jDeck ? N.magenta : K.bldgOutline) : CON.d); // jambs: lit to the deck, then the wall
+    brutalShadow(B, ax, ay, Math.round(w / U), Math.round(h / U), Math.round(Ht * 0.55), null);
+    sc.props.push({ spr: S, x: ax, y: ay, by: y + h, key: 9e5 + 1 });
+    sc.props.push({ key: 9e5 + 2, draw: (F) => { for (let j = jTop; j < jDeck; j++) for (let i = b0; i < b1; i++) F.shade(ax + i, ay - Ht + j, 0.28 + 0.4 * (j - jTop) / clr); } }); // inside the portal: the deck and its cars in shade
+    // the roof plaza: a platform at Z2 (6 storeys), its east parapet open onto the highway, its north edge open to the escalator
+    const [px, py, pw, ph] = q.plaza, run = X.stairRun(P, 0, 2), st = { x: 40, y: py - run, w: SWD, h: run, axis: 'y', low: py - run, high: py, side: 0, z: 2 };
+    const top = Math.round(py / U) - Zd, open = [['E', Math.round(q.link[0] / U) - top, Math.round(q.link[1] / U) - top], ['N', Math.round((st.x - px) / U), Math.round((st.x + st.w - px) / U)]];
+    const Sp = PIX.building(Math.round(pw / U), Math.round(ph / U), Zd, PIX.rng(55 + sc.row), LEDS[1], 6, { ledges: [], open }), sp = (i, j, c) => { if (i >= 0 && j >= 0 && i < Sp.w && j < Sp.h) Sp.d[j * Sp.w + i] = c; };
+    for (const [i0, j0] of [[8, 20], [8, 34], [40, 34]]) for (let j = 0; j < 7; j++) for (let i = 0; i < 12; i++) sp(i0 + i, j0 + j, j === 0 || j === 6 || i === 0 || i === 11 ? (j === 6 ? K.bldgOutline : CON.l) : (i + j) % 4 === 0 ? K.foliageL : K.foliage); // planters on the plaza
+    for (let i = 4; i < Sp.w - 6; i += 6) sp(i, Math.round(ph / U) - 4, N.cyan); // bollard lights along the south parapet
+    sc.props.push({ spr: Sp, x: Math.round(px / U), y: Math.round(py / U), by: py + ph });
+    sc.props.push({ key: 9e5 + 3, draw: (F) => { for (let wy = q.link[0] + 6; wy < q.link[1] - 4; wy += 8) for (let wx = dk.off - HALF - 10; wx < dk.off - HALF + 12; wx += U) for (let k = 0; k < 2; k++) F.put(wx / U, wy / U + k, k ? K.jerseyTop : K.white); } }); // a zebra over the open parapet: walk off the highway onto the roof
+    sc.props.push(stairProp(st, Z2)); sc.stairs.push(st);
+    sc.reserve.push([x, 0, w, y + h + 8], [0, st.y - 24, px + pw + 8, H - st.y + 24]);
   }
   function monumentCentre(sc, B, roadOk) {
     const cx = 400, cy = 320, A = P['world.walkwayRingHalf'], w = P['world.walkwayWidth'], k = P['world.walkwayRingChamfer'], ki = k - 0.586 * w, Lk = P['world.walkwayLinkLength'];
@@ -5454,6 +5519,8 @@
       s.admit = function () { if (!gs.length) return; const sl = this.schedule[this.slot]; if (!sl) return; if (!gs.includes(sl.lane)) sl.lane = gs[sl.i % gs.length]; return admit0.call(this); };
       const arms = new Set(src.filter((r) => r.deck == null).map((r) => r.ends.in.side + Math.round(r.ends.in.off))).size, iv = 2 * P['world.district.' + sc.D.id + '.interval'] / Math.max(1, arms);
       s.admissionInterval = () => iv; // each road entry: one car per 2 × world.district.<id>.interval, as a game road lane; highways run at the game's rate
+      const dki = P['world.district.' + sc.D.id + '.deckInterval']; // Edit 54: a district whose highways meet at a ring feeds them no faster than the ring passes
+      if (s.deckSrc.size && dki) s.P = Object.assign({}, s.P, { 'world.deckInterval': dki / s.P['traffic.deckGapScale'] });
       s.netSrc = src.length;
       // a bus enters only if every ground lane it can reach keeps vehicles.bus.minRadius (it cannot leave its route at a seam)
       const seen = new Set(), todo = src.filter((r) => r.deck == null).slice();
@@ -5534,7 +5601,7 @@
     };
     const items = ground.map((c) => [c.y, () => PIX.blit(FB, carSpr(c), c.x / U, c.y / U)]);
     for (const s of sc.sims) for (const cn of s.cones || []) if (cn.state === 'free') items.push([cn.y, () => PIX.blit(FB, PIX.CONE, cn.x / U, cn.y / U)]);
-    for (const p of sc.props) if (!p.podium && !p.tower) items.push([p.over ? 1e6 + 1 : p.by, () => PIX.blit(FB, p.spr, p.x, p.y)]);
+    for (const p of sc.props) if (!p.podium && !p.tower) items.push([p.key != null ? p.key : p.over ? 1e6 + 1 : p.by, p.draw ? () => p.draw(FB) : () => PIX.blit(FB, p.spr, p.x, p.y)]); // key (Edit 54): a building the deck runs through draws after it
     for (const l of sc.layers) { // a deck sorts at its front edge: buildings south of it stand in front
       for (const c of l.cols) items.push([Math.min(c.key, l.front - 1), () => PIX.blit(FB, c.spr, Math.round(c.x / U), Math.round(c.y / U))]);
       items.push([l.front, () => layer(l)]);
@@ -5560,7 +5627,8 @@
     cur = i; const D = DISTRICTS[i];
     document.querySelectorAll('#tabs button').forEach((b, k) => b.classList.toggle('on', k === i));
     $('dname').textContent = (i + 1) + ' · ' + D.name; $('dmood').textContent = D.mood + ' Start: ' + D.start[0] + ', ' + D.start[1] + ' edge. Write-offs required: ' + D.quota + '.';
-    $('plan').innerHTML = '<tr><th>Tile</th><th>Mechanic revealed</th><th>Landmark</th></tr>' + ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'].map((t) => `<tr${t === 'B2' ? ' class="centre"' : ''}><td>${t}</td><td>${D.tiles[t][0]}</td><td>${D.tiles[t][1]}</td></tr>`).join('');
+    const SP = { both: 'Level change + scenography', level: 'Level change', scenery: 'Scenography' }; // Edit 54: every tile carries one
+    $('plan').innerHTML = '<tr><th>Tile</th><th>Mechanic revealed</th><th>Landmark</th><th>Set piece</th></tr>' + ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'].map((t) => `<tr${t === 'B2' ? ' class="centre"' : ''}><td>${t}</td><td>${D.tiles[t][0]}</td><td>${D.tiles[t][1]}</td><td>${SP[D.tiles[t][2]] || '—'}</td></tr>`).join('');
     districtScreens(i);
   }
   function paint(sc) { render(sc, FB, DL); new Uint32Array(img.data.buffer).set(FB.d); og.putImageData(img, 0, 0); }

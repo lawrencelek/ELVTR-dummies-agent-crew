@@ -154,7 +154,8 @@
         const loop = X.arcPts(cx, cy, Rc, aEnd, aEnd - 2 * Math.PI * k, nLap * k).slice(1);
         const vl = X.lanesOf(center.slice(0, iEnd + 1).concat(loop, center.slice(iEnd + 1)), P)[0]; vl.giveWay = lane.giveWay; variants.push(vl);
       }
-      variants.forEach((vl, k) => { vl.ring = { variants, k, exitS: vl.cum[iEnd + k * nLap], cx, cy, Rout: R, Rin: Rc - half, dir: -1 }; });
+      const turnOf = (k) => ((ang[a] - ang[k]) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI), exitNo = arms.filter((k) => k !== a && turnOf(k) <= turnOf(b) + 1e-9).length; // Edit 54: which exit, counted from the entry
+      variants.forEach((vl, k) => { vl.ring = { variants, k, exitS: vl.cum[iEnd + k * nLap], cx, cy, Rout: R, Rin: Rc - half, dir: -1, exitNo }; });
       lanes.push(lane); roads.push(center); names.push(a + '→' + b);
     }
     lanes.forEach((ln, i) => { const a = names[i].split('→')[0]; ln.giveWay.s = Math.min(...lanes.filter((_, j) => names[j].split('→')[0] === a).map((m) => m.giveWay.s)); }); // one line per arm

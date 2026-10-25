@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit53.1-2026-10-25",
+ "registryVersion": "edit54-2026-10-25",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -6131,7 +6131,7 @@
    "unit": "degrees",
    "type": "number",
    "default": 0,
-   "status": "proposed",
+   "status": "retired (user, 25 October): the inner lane is chosen by exit, traffic.ringInnerExit",
    "source": "Edit 53.1 (25 October)",
    "editable": true,
    "protectedReason": null,
@@ -6153,7 +6153,7 @@
    "unit": "degrees",
    "type": "number",
    "default": 135,
-   "status": "proposed",
+   "status": "retired (user, 25 October): the inner lane is chosen by exit, traffic.ringInnerExit",
    "source": "Edit 53.1 (25 October)",
    "editable": true,
    "protectedReason": null,
@@ -6230,6 +6230,72 @@
    "integrationStatus": "planned-p6",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Ground buses back in the game (user, 25 October)"
+  },
+  {
+   "id": "traffic.ringInnerExit",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Inner lane from this exit",
+   "description": "Only a car leaving a ring at this exit or later (counted round from its own arm) moves to the inner lane after joining; it moves out in the half lap before its exit. 3 on four arms: the third exit, 270°. A car whose exit is blocked goes round again and may use the inner lane. 0: off; the inner lane is for orbiting only.",
+   "unit": "exits",
+   "type": "number",
+   "default": 3,
+   "status": "user-directed",
+   "source": "Edit 54 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 8
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Cars turning 90° or 180° keep the outer lane (user, 25 October)"
+  },
+  {
+   "id": "world.district.parkland.deckInterval",
+   "group": "World",
+   "owner": "World",
+   "label": "Parkland: highway entry interval",
+   "description": "Parkland mock-up: seconds between cars entering at each highway end on the district edge. Its four highways all feed the Z1 ring.",
+   "unit": "s",
+   "type": "number",
+   "default": 8,
+   "status": "proposed",
+   "source": "Edit 54 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1,
+    "max": 30
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Free-flowing highways at the game density (about 0.5 cars per lane per screen)"
+  },
+  {
+   "id": "world.portalClearance",
+   "group": "World",
+   "owner": "World",
+   "label": "Portal headroom",
+   "description": "Where a highway runs through a tower, the opening rises this far above the deck. The tower rises at least two storeys (world.storeyHeight) above the opening.",
+   "unit": "world units",
+   "type": "number",
+   "default": 72,
+   "status": "proposed",
+   "source": "Edit 54 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 36,
+    "max": 144
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A highway through a building, Chongqing style (user, 25 October)"
   }
  ],
  "tables": {

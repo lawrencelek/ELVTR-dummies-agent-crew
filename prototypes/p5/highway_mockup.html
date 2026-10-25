@@ -125,11 +125,12 @@
     'world.deckRingRadius': 200, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
     'world.walkwayRingHalf': 168, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 100, 'world.plazaHalf': 190, // Edit 51.1–51.2: the square walkway ring (district mock-up only)
     'world.deckEscalators': 2, 'world.deckEscalatorInset': 64, 'world.splitLaneOffset': 104, 'world.walkwayColumn': 16, // Edit 51.2 (district mock-up only)
-    'world.roundaboutMinArms': 3, 'traffic.ringInnerTurn': 0, 'world.deckRingInnerTurn': 135, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
+    'world.portalClearance': 72, // Edit 54: headroom over a highway where it runs through a tower (two storeys)
+    'world.roundaboutMinArms': 3, 'traffic.ringInnerExit': 3, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
     'traffic.continuous': 1, 'traffic.warmSeconds': 30, 'traffic.exitAfterSeams': 9, // P5.3 (Edit 53): one traffic for the whole district; a car crosses a shared edge with its id, speed and plan. warmSeconds: the district mock-up runs before it is shown; exitAfterSeams: after that many seams a mock-up car takes the way out at a junction
     'world.deckRingTopClear': 32, 'world.gardenCellWidth': 160, 'world.gardenCellHeight': 128, 'world.gardenPath': 32, // Edit 51.3 (district mock-up only)
     'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
-    'world.district.parkland.interval': 4.5, 'world.district.circus.interval': 3.2, 'world.district.monument.interval': 2.4, // Edit 53: mock-up traffic; each lane entering the district runs one car per 2 × interval, as the game's roads
+    'world.district.parkland.interval': 4.5, 'world.district.parkland.deckInterval': 8, 'world.district.circus.interval': 3.2, 'world.district.monument.interval': 2.4, // Edit 53: mock-up traffic; each lane entering the district runs one car per 2 × interval, as the game's roads
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
@@ -2263,9 +2264,10 @@
       const q = pathAt(c.path, c.s), inward = (rg.cx - q.x) * q.nx + (rg.cy - q.y) * q.ny > 0 ? 1 : -1, dIn = inward * P['world.laneWidth'];
       const lap = 2 * Math.PI * rg.Rout, rem0 = rg.exitS - c.s;
       if (!c.orbit) { // move in for a blocked exit, or to pass a stopped or crawling car, any time before the change point
-        const spare = rem0 - Lc - 20, laps = rg.variants.length - 1 - rg.k; // a car that cannot get back out before its exit must have a lap left
-        const turn = (rg.variants[0].ring.exitS - g.sj) / rg.Rout * 180 / Math.PI, plan = P['traffic.ringInnerTurn'] > 0 && !c.ringInnerDone && turn >= P['traffic.ringInnerTurn']; // Edit 53.1: a two-lane ring: a car going far round circulates inside
-        if (spare < 0 || (laps < 1 && spare < 0.5 * lap) || this.t - (c.ringOutT || -9) < 3 || !(plan || this.ringExitBlocked(c) || (spare > Lc && this.ringCrawl(c))) || !this.ringLaneClear(c, true)) return false;
+        const spare = rem0 - Lc - 20, ie = P['traffic.ringInnerExit'], far = !(ie > 0) || (rg.exitNo || 0) >= ie, blocked = this.ringExitBlocked(c);
+        if (!far && !blocked) return false; // Edit 54: only a car leaving at traffic.ringInnerExit or later (the third exit, 270°) uses the inner lane; a blocked exit means a full lap more, so that car may too
+        const plan = far && ie > 0 && !c.ringInnerDone; // ...and it moves in once it has joined
+        if (spare < 0 || this.t - (c.ringOutT || -9) < 3 || !(plan || blocked || (far && spare > Lc && this.ringCrawl(c))) || !this.ringLaneClear(c, true)) return false;
         if (plan) c.ringInnerDone = true;
         c.orbit = { lane: 'in', laps: 0 }; shift(dIn, rg.Rin); this.emit('ring', { car: c.id, to: 'inner', planned: plan }); return true;
       }

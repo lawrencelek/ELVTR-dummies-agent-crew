@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53 and 53.1 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1 and 54 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -106,7 +106,14 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 - **Level design (Edit 52):** each tile reveals one mechanic and one landmark; the table under the grid lists them. Critique: `docs/level_design_critique.md`.
 - **Roundabouts (Edit 52):** three or more arms; cars orbit on the inner lane when their exit is blocked (`traffic.ringOrbit`). Evidence: `docs/orbit_report.md`.
-- **Escalators (rule):** two per highway screen, opposite sides, opposite ends.
+- **Escalators (rule):** two per highway screen, opposite sides, opposite ends. Monument C2: the west one drops from the roof plaza (Edit 54).
+- **Set piece (Edit 54):** every tile shows scenography, a change of level, or both. The plan table names it; the page warns on a tile without one.
+- **Portal and roof link (Edit 54):** Monument C2's Z2 highway runs through a 12-storey tower (opening `world.portalClearance`, 72). A roof plaza at Z2 opens off its west parapet.
+- **Redrawn (Edit 54):** Parkland A3 belvedere, C3 sunken court; Monument A3 stacked LED cubes, B3 skybridge across the jog.
+
+![Monument C2: the Z2 highway through a tower; a roof plaza off its parapet (Edit 54)](docs/p59_chongqing.png)
+
+![Set pieces: Parkland A3 and C3; Monument A3 and B3 (Edit 54)](docs/p59_tile_set_pieces.png)
 
 ![Monument B2: the split road, the raised walkway ring on columns, escalators, podium roofs](docs/p54_monument_b2.png)
 
@@ -126,7 +133,8 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 | Mock-up: a district runs this long before it is shown | `traffic.warmSeconds` | 30 s |
 | Cars see across a seam within the fastest highway car's stopping distance (Edit 53.1) | `traffic.hardBraking`, `world.spawnLeadIn` | 398 in the game |
 | Parkland Z1 ring radius (Edit 53.1; was 132) | `world.deckRingRadius` | 200 |
-| Parkland Z1 ring: cars going this far round use the inner lane | `world.deckRingInnerTurn` | 135° |
+| Every ring: only a car leaving at this exit or later (third: 270°) uses the inner lane; a blocked exit may go round on it (Edit 54) | `traffic.ringInnerExit` | 3 |
+| Mock-up: each Parkland highway end admits one car per (Edit 54) | `world.district.parkland.deckInterval` | 8 s |
 | Parkland Z1 ring: entry metered at this share of the outer lane | `world.deckRingFill` | 0.5 |
 | Every ring: an inner-lane car orbits until it can leave (no last-lap wait) | `traffic.ringMaxLaps` | 3 lap paths, then repeat |
 | P6: whole bus routes per district | `world.busRoutesPerDistrict` | 1 |
@@ -144,7 +152,8 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ## Evidence
 
-- `node test_sim.js` → 102/102: P3.4 and P4 checks, plus P5 fleet, buses, highways, points and district traffic.
+- `node test_sim.js` → 103/103: P3.4 and P4 checks, plus P5 fleet, buses, highways, points, district traffic and ring lanes by exit.
+- **Highway density (Edit 54):** game 1.24–1.29 cars per lane per screen (unchanged). Mock-up Parkland 3.02 → 0.53; Circus 1.22; Monument 0.96. 30 min per district: no car stopped over 20 s.
 - **Parkland ring (Edit 53.1), 30 min at the game's highway rate:** no lock; 36–40 cars/min through the ring (P5.3 fed it 27).
 - `node tools/continuity_report.js` → `docs/continuity_report.md`: 15 layouts, 120 s each. No jump, no car lost or doubled, no seam overlap, exits only at the district edge.
 - **Rebake (P5.2):** 15 layouts of 32 candidates at the 160 deck; bot first write-off 18–87 s.
@@ -186,13 +195,14 @@ node tools/continuity_report.js   # district-wide traffic: seams, start, queues,
 | `tools/p5_report.js` | Bus roads and highway traffic on the baked layouts |
 | `tools/points_report.js` | Walk-in and dash play on every start screen, P5.0 and P5.1 points |
 | `highway_view.js`, `highway_shell.html` | Highway width mock-up (P5.1's diagonal mock-up retired) |
-| `cityscape_view.js`, `cityscape_shell.html` | Three districts mock-up: centres, then 3 × 3 screens with a mechanic and landmark per tile (Edit 52); screens linked into one traffic (Edit 53) |
+| `cityscape_view.js`, `cityscape_shell.html` | Three districts mock-up: centres, then 3 × 3 screens with a mechanic and landmark per tile (Edit 52); screens linked into one traffic (Edit 53); a set piece per tile, the Chongqing portal (Edit 54) |
 | `tools/orbit_report.js` | Inner-lane orbit evidence (Edit 52) |
 | `tools/continuity_report.js` | District-wide traffic evidence (Edit 53) |
 
 ## Open
 
-- **Ring capacity (Edit 53.1):** the widened ring passes about 37 cars/min of the 67 the four highways offer; the rest wait at the district edge.
+- **Ring capacity (Edit 53.1):** the widened ring passes about 37 cars/min. Edit 54 feeds Parkland's highways one car per 8 s per end, so nothing waits.
+- **Portals and roof links (Edit 54):** mock-up only. P6: towers may straddle a deck band as portals; a bridge floor joins roof and deck.
 - **Bus routes (decision 264):** P6 builds them; until then no ground buses.
 - **Districts (decisions 225–255):** approve the three layouts, then P6 rebuilds the planner: a curved deck, split roads, walkways on columns, podium roofs, two escalators per highway screen.
 - **No-walkway highway (decision 223):** 128 wide, lanes and parapets only. Mocked up, not adopted.

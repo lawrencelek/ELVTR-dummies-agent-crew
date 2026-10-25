@@ -1134,6 +1134,24 @@ check('P5.3 highway queue (Edit 53.1): a dummy on a highway just past an edge ho
     assert(!s.events.some((e) => e.type === 'impact'), id + ': no hit');
   }
 });
+check('Roundabout lanes (Edit 54): only a car taking the third exit or later (270°), or going round a blocked exit, uses the inner lane; 90° and 180° cars stay outer', () => {
+  const LB = require('./lab.js');
+  for (const block of [false, true]) {
+    const s = LB.makeSim(D, 'roundabout4', { Rf: 96 }, { fleet: 'nobus', interval: 1.5, seconds: 120, seed: 23, overrides: {} });
+    const ln = s.level.lanes.find((l) => D.pathAt(l, l.length - 1).x > 700), spot = D.pathAt(ln, ln.ring.exitS + 70);
+    const inner = new Map();
+    for (let i = 0; i < 60 * 120; i++) {
+      LB.tick(s);
+      if (block && s.t > 20 && s.t < 80) { s.body.x = spot.x; s.body.y = spot.y; s.body.alive = true; } else { s.body.x = -900; s.body.y = -900; }
+      for (const c of s.cars) if (c.path.ring && Math.abs(c.d) > 1 && !inner.has(c.id)) inner.set(c.id, { n: c.path.ring.exitNo, east: D.pathAt(c.path, c.path.length - 1).x > 700 });
+    }
+    assert(inner.size > 3, 'cars used the inner lane: ' + inner.size);
+    for (const [id, r] of inner) assert(r.n >= s.P['traffic.ringInnerExit'] || (block && r.east), id + ' on the inner lane for exit ' + r.n); // a car whose exit is blocked goes round again
+    assert.strictEqual(s.P['traffic.ringInnerExit'], 3);
+    if (!block) assert(s.lab.stats.jamAt == null, 'no jam');
+    else assert(s.cars.every((c) => (c.stopT || 0) < 20), 'the queue behind the blocked exit clears within 40 s of the dummy leaving');
+  }
+});
 check('P5.3 off (Edit 53): traffic.continuous 0 keeps the P5.2 screen-by-screen traffic', () => {
   const s = new Sim('interchange', { 'proto.layout': 1, 'traffic.continuous': 0 });
   assert(!s.net && !s.netOn(), 'no district traffic');

@@ -58,7 +58,7 @@
    "outPerMin": 22.3,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 9.9
+   "maxStop": 9.7
   },
   {
    "ring": "Circus ring (Rc 160)",
@@ -95,30 +95,30 @@
    "interval": 1.5,
    "orbit": 1,
    "seed": 11,
-   "outPerMin": 25.7,
+   "outPerMin": 26.3,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 9.5
+   "maxStop": 6.3
   },
   {
    "ring": "Circus ring (Rc 160)",
    "interval": 1.5,
    "orbit": 1,
    "seed": 23,
-   "outPerMin": 24.3,
+   "outPerMin": 23,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 10.3
+   "maxStop": 11.7
   },
   {
    "ring": "Circus ring (Rc 160)",
    "interval": 1.5,
    "orbit": 1,
    "seed": 37,
-   "outPerMin": 28.7,
+   "outPerMin": 28,
    "jamAt": null,
-   "overlapS": 0,
-   "maxStop": 9.5
+   "overlapS": 0.8,
+   "maxStop": 8.2
   },
   {
    "ring": "Circus ring (Rc 160)",
@@ -155,30 +155,30 @@
    "interval": 1.2,
    "orbit": 1,
    "seed": 11,
-   "outPerMin": 26,
+   "outPerMin": 26.3,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 8.2
+   "maxStop": 9
   },
   {
    "ring": "Circus ring (Rc 160)",
    "interval": 1.2,
    "orbit": 1,
    "seed": 23,
-   "outPerMin": 24,
+   "outPerMin": 24.7,
    "jamAt": null,
-   "overlapS": 0.1,
-   "maxStop": 11.3
+   "overlapS": 0,
+   "maxStop": 8.3
   },
   {
    "ring": "Circus ring (Rc 160)",
    "interval": 1.2,
    "orbit": 1,
    "seed": 37,
-   "outPerMin": 28,
+   "outPerMin": 30,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 10
+   "maxStop": 10.2
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
@@ -215,30 +215,30 @@
    "interval": 2.5,
    "orbit": 1,
    "seed": 11,
-   "outPerMin": 22,
+   "outPerMin": 21.7,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 5
+   "maxStop": 5.2
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
    "interval": 2.5,
    "orbit": 1,
    "seed": 23,
-   "outPerMin": 20.7,
+   "outPerMin": 21,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 6.3
+   "maxStop": 5.8
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
    "interval": 2.5,
    "orbit": 1,
    "seed": 37,
-   "outPerMin": 21.7,
+   "outPerMin": 22.3,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 11
+   "maxStop": 4.1
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
@@ -275,30 +275,30 @@
    "interval": 1.5,
    "orbit": 1,
    "seed": 11,
-   "outPerMin": 26,
+   "outPerMin": 26.3,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 6.5
+   "maxStop": 6.3
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
    "interval": 1.5,
    "orbit": 1,
    "seed": 23,
-   "outPerMin": 23.3,
+   "outPerMin": 25,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 9.5
+   "maxStop": 8.5
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
    "interval": 1.5,
    "orbit": 1,
    "seed": 37,
-   "outPerMin": 28.3,
+   "outPerMin": 28,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 11.2
+   "maxStop": 9.1
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
@@ -335,20 +335,20 @@
    "interval": 1.2,
    "orbit": 1,
    "seed": 11,
-   "outPerMin": 26.3,
+   "outPerMin": 27.3,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 7.7
+   "maxStop": 6.1
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
    "interval": 1.2,
    "orbit": 1,
    "seed": 23,
-   "outPerMin": 24.3,
+   "outPerMin": 25.3,
    "jamAt": null,
    "overlapS": 0,
-   "maxStop": 7.7
+   "maxStop": 9.9
   },
   {
    "ring": "Parkland Z1 ring (Rc 132)",
@@ -357,8 +357,8 @@
    "seed": 37,
    "outPerMin": 29.7,
    "jamAt": null,
-   "overlapS": 0.7,
-   "maxStop": 13.3
+   "overlapS": 0,
+   "maxStop": 11.1
   }
  ],
  "block": [
@@ -406,12 +406,12 @@
    "interval": 2.5,
    "orbit": 1,
    "seed": 11,
-   "other": 20,
-   "east": 6,
-   "inner": 11,
+   "other": 21,
+   "east": 8,
+   "inner": 12,
    "maxLaps": 3,
-   "overlapS": 0,
-   "maxStop": 54.9,
+   "overlapS": 0.2,
+   "maxStop": 41.3,
    "jamAt": null
   },
   {
@@ -421,10 +421,10 @@
    "seed": 23,
    "other": 31,
    "east": 10,
-   "inner": 21,
+   "inner": 20,
    "maxLaps": 4,
    "overlapS": 0,
-   "maxStop": 13.8,
+   "maxStop": 13.1,
    "jamAt": null
   },
   {
@@ -432,12 +432,12 @@
    "interval": 2.5,
    "orbit": 1,
    "seed": 37,
-   "other": 21,
-   "east": 9,
+   "other": 22,
+   "east": 11,
    "inner": 11,
-   "maxLaps": 2,
+   "maxLaps": 3,
    "overlapS": 0,
-   "maxStop": 41.8,
+   "maxStop": 36.7,
    "jamAt": null
   },
   {
@@ -485,11 +485,11 @@
    "orbit": 1,
    "seed": 11,
    "other": 21,
-   "east": 8,
-   "inner": 16,
+   "east": 9,
+   "inner": 18,
    "maxLaps": 3,
-   "overlapS": 0,
-   "maxStop": 56.5,
+   "overlapS": 0.1,
+   "maxStop": 45.4,
    "jamAt": null
   },
   {
@@ -497,12 +497,12 @@
    "interval": 1.5,
    "orbit": 1,
    "seed": 23,
-   "other": 34,
-   "east": 10,
-   "inner": 15,
-   "maxLaps": 5,
-   "overlapS": 0,
-   "maxStop": 11.6,
+   "other": 32,
+   "east": 8,
+   "inner": 18,
+   "maxLaps": 4,
+   "overlapS": 0.8,
+   "maxStop": 28.2,
    "jamAt": null
   },
   {
@@ -512,10 +512,10 @@
    "seed": 37,
    "other": 23,
    "east": 10,
-   "inner": 15,
-   "maxLaps": 3,
-   "overlapS": 1.4,
-   "maxStop": 38.1,
+   "inner": 14,
+   "maxLaps": 4,
+   "overlapS": 0.8,
+   "maxStop": 49,
    "jamAt": null
   },
   {
@@ -562,12 +562,12 @@
    "interval": 2.5,
    "orbit": 1,
    "seed": 11,
-   "other": 19,
-   "east": 6,
-   "inner": 12,
-   "maxLaps": 2,
-   "overlapS": 0.8,
-   "maxStop": 55.7,
+   "other": 18,
+   "east": 7,
+   "inner": 11,
+   "maxLaps": 5,
+   "overlapS": 0,
+   "maxStop": 42,
    "jamAt": null
   },
   {
@@ -575,12 +575,12 @@
    "interval": 2.5,
    "orbit": 1,
    "seed": 23,
-   "other": 21,
+   "other": 20,
    "east": 4,
-   "inner": 9,
+   "inner": 12,
    "maxLaps": 3,
    "overlapS": 0,
-   "maxStop": 46,
+   "maxStop": 45.9,
    "jamAt": null
   },
   {
@@ -588,12 +588,12 @@
    "interval": 2.5,
    "orbit": 1,
    "seed": 37,
-   "other": 19,
-   "east": 8,
-   "inner": 7,
+   "other": 20,
+   "east": 9,
+   "inner": 11,
    "maxLaps": 4,
-   "overlapS": 0.5,
-   "maxStop": 46.1,
+   "overlapS": 0.6,
+   "maxStop": 46.2,
    "jamAt": null
   },
   {
@@ -640,12 +640,12 @@
    "interval": 1.5,
    "orbit": 1,
    "seed": 11,
-   "other": 21,
-   "east": 9,
+   "other": 16,
+   "east": 6,
    "inner": 12,
    "maxLaps": 5,
-   "overlapS": 1.2,
-   "maxStop": 49.7,
+   "overlapS": 0.8,
+   "maxStop": 73.1,
    "jamAt": null
   },
   {
@@ -653,12 +653,12 @@
    "interval": 1.5,
    "orbit": 1,
    "seed": 23,
-   "other": 26,
-   "east": 8,
-   "inner": 17,
-   "maxLaps": 4,
-   "overlapS": 0.3,
-   "maxStop": 56.6,
+   "other": 22,
+   "east": 4,
+   "inner": 14,
+   "maxLaps": 2,
+   "overlapS": 0,
+   "maxStop": 53.6,
    "jamAt": null
   },
   {
@@ -666,11 +666,11 @@
    "interval": 1.5,
    "orbit": 1,
    "seed": 37,
-   "other": 21,
-   "east": 9,
+   "other": 20,
+   "east": 10,
    "inner": 14,
-   "maxLaps": 1,
-   "overlapS": 0,
+   "maxLaps": 2,
+   "overlapS": 0.1,
    "maxStop": 48.7,
    "jamAt": null
   }
