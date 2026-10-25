@@ -62,6 +62,7 @@
     <div class="row" style="margin-top:10px"><button id="play">Pause</button><button id="labels">Hide labels</button></div>
     <table class="plan" id="plan"></table>
     <p class="note">Roads are planned across the whole district, so every screen edge lines up. Ground roads turn at 90° or 45° on fillets of world.roundaboutEntryRadius (96). Highways run across, down or at 45°, always crossing roads at 90° or 45°, at P5.2's width (160). Escalators: world.deckEscalators (2) per highway screen, world.deckEscalatorInset (64) from the screen edge. Colours follow the style guide: no red or yellow décor.</p>
+    <p class="note">Edit 53: each district runs one traffic. A car crossing a screen edge drives on into the next screen at the same speed; at a junction or roundabout it picks its route there. Cars enter only where a road or highway crosses the district edge, one per 2 × world.district.&lt;id&gt;.interval per entry, and the district runs traffic.warmSeconds (30) before it is shown.</p>
   </section>
 </main>
 <!--SCRIPTS-->

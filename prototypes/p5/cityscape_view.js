@@ -399,7 +399,7 @@
         C2: ['T junction: the east arm gives way to the octagon', 'Cantilevered crown tower'],
         A3: ['The octagon turns two 45° corners under the row-3 Z1 highway; escalators', 'Finned slab'],
         B3: ['Crossroads, then under the Z1 highway at 90° to the exit', 'Arcade on pilotis'],
-        C3: ['The octagon turns two 45° corners through a cone chicane; Z1 highway and escalators', 'Twin slabs'] } },
+        C3: ['The octagon turns two 45° corners; a cone closes the eastbound lane: cars pass across the centre line. Z1 highway and escalators', 'Twin slabs'] } },
     { id: 'monument', name: 'Monument', quota: P['world.district.monument.quota'], storeys: [6, 12], start: ['A1', 'west'],
       mood: 'Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument.',
       roads: [{ id: 'snake', pts: fil([[-200, 320], [2240, 320], [2240, 864], [2144, 960], [240, 960], [240, 1504], [336, 1600], [1120, 1600], [1280, 1760], [2600, 1760]]) }],
@@ -552,7 +552,7 @@
       sc.stairs = escalators(cy, 1, HALF);
       const rr = { geoms: [{ pts: geo.ring.concat([geo.ring[0]]), dash: true }].concat(geo.arms.map((pts) => ({ pts, dash: true })), geo.roads.map((pts) => ({ pts }))) };
       const ringDeck = ringLayer(rr, 1, cx, cy, Rc, (x, y) => !roadOk(x, y, OUTER + C + 4) || sc.stairs.some((st) => x > st.x - C && x < st.x + st.w + C && Math.abs(y - st.y - st.h / 2) < st.h / 2 + HALF), sc.stairs.map((st) => [st.x + 2, st.x + st.w - 2, st.side]));
-      ringDeck.front = 1e5; ringDeck.extend = true; ringDeck.cars = () => ringSim.cars;
+      ringDeck.front = 1e5; ringDeck.extend = true; ringDeck.cars = () => ringSim.cars.concat((sc.seam || []).filter((g) => g.deck)); // P5.3: and highway cars arriving from next door
       sc.layers.push(ringDeck); sc.ringDeck = ringDeck;
     } else {
       for (const d of hDecks) { const st = escalators(d.off, d.z, HALF); sc.stairs.push(...st); sc.layers.push(straightDeck(d.off, d.z, roadOk, st)); }
@@ -573,7 +573,7 @@
       const dl = X.deckLanesOf(sc.layers.filter((l) => l.dk).map((l) => ({ hz: l.dk.hz, off: l.dk.off })), P);
       const s = sceneSim(center, sc.layers.filter((l) => l.dk).map((l) => ({ hz: l.dk.hz, off: l.dk.off, z: l.dk.z })), dl, lanes, busOK);
       s.level.patches = patches; s.noDeckBus = D.id === 'parkland';
-      if (sc.cones) s.cones = sc.cones.map(([x, y], i) => ({ id: 'cone' + i, x, y, hx: x, hy: y, vx: 0, vy: 0, state: 'free', flightT: 0, flightDur: 1 }));
+      if (sc.cones) { s.cones = sc.cones.map(([x, y], i) => ({ id: 'cone' + i, x, y, hx: x, hy: y, vx: 0, vy: 0, state: 'free', flightT: 0, flightDur: 1 })); s.dispatchDrone = X.Sim.prototype.dispatchDrone; } // Edit 53: as in the game, a car held at a knocked cone calls a FARSIGHT drone, which sets the cone back
       sims.push(s); sc.main = s;
     } else if (sc.layers.some((l) => l.dk)) { // a junction screen under a highway: the highway's own traffic
       const ls = sc.layers.filter((l) => l.dk), s = sceneSim([[-900, -900], [-850, -900]], ls.map((l) => ({ hz: l.dk.hz, off: l.dk.off, z: l.dk.z })), X.deckLanesOf(ls.map((l) => ({ hz: l.dk.hz, off: l.dk.off })), P), [], false);
@@ -644,7 +644,7 @@
     if (name === 'C2') put(440, 24, 340, 210, 14, 'cantilever', null, 'n', 5);
     if (name === 'A3') put(40, 240, 340, 60, 4, 'slab', null, 'n', 6);
     if (name === 'B3') put(520, 0, 260, 60, 3, 'slab', null, 'n', 7);
-    if (name === 'C3') { put(440, 240, 320, 60, 4, 'twin', null, 'n', 8); sc.cones = [[80, 132], [160, 188], [240, 132]]; } // a cone chicane on the octagon
+    if (name === 'C3') { put(440, 240, 320, 60, 4, 'twin', null, 'n', 8); sc.cones = [[110, 188]]; } // a cone closes one lane (Edit 53: the three-cone chicane could not be passed either way, and with traffic continuous it jammed the octagon)
     // further blocks: big first, then infill; corners nearest a street cut at 45°
     const placed = [], [s0, s1] = sc.D.storeys;
     for (let t = 0; t < 900 && placed.length < 6; t++) {
@@ -722,13 +722,109 @@
     [[16, 8, 96, 56], [W - 112, 8, 96, 56], [16, fyS, 96, 64], [W - 112, fyS, 96, 64]].forEach(([x, y, tw, th], i) => sc.props.push({ spr: PIX.building(Math.round(tw / U), Math.round(th / U), (7 + i * 2) * EXT(P['world.storeyHeight']), PIX.rng(57 + i * 29), LEDS[(i + 2) % LEDS.length], 7 + i * 2), x: x / U, y: y / U - Z1, by: y + th, tower: true }));
     sc.monument = { cx, cy };
   }
+  // ---------- P5.3 (Edit 53): one traffic for the district. Every screen's sims link at the seams.
+  // A car whose centre crosses a shared edge moves to the next screen's lane that starts there, keeping its id, model,
+  // speed and plan; at a junction or roundabout screen it picks its route there. Cars within world.spawnLeadIn of a seam
+  // are seen next door (drivers follow them) and drawn on both screens. Cars enter only where a road or highway crosses
+  // the district boundary; the district runs traffic.warmSeconds before it is shown, so no screen waits for cars.
+  const NETS = [], SIDE = X.SIDE, OPPS = { N: 'S', S: 'N', E: 'W', W: 'E' }, GL = P['world.spawnLeadIn'];
+  const hashId = (id) => { let h = 2166136261; for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619); return h >>> 0; };
+  function linkDistrict(i, scs) {
+    const recs = [], at = (c, r) => scs.find((q) => q.col === c && q.row === r), admit0 = X.Sim.prototype.admit;
+    for (const sc of scs) for (const s of sc.sims) {
+      s.netLane = new Map();
+      const ring = s === sc.ringSim, nc = s.newCar.bind(s);
+      s.newCar = (id, ...a) => nc(sc.D.id + '·' + sc.name + '·' + id, ...a); // ids unique across the district
+      for (const c of s.cars) c.id = sc.D.id + '·' + sc.name + '·' + c.id;
+      const add = (r) => { Object.assign(r, { sc, s, ends: X.laneEnds(r.path, W, H), next: [], prev: [] }); s.netLane.set(r.path, r); recs.push(r); };
+      s.level.lanes.forEach((path, k) => add({ i: k, path, simLayer: 0, layer: ring ? 1 : 0, deck: null })); // the Z1 ring's lab sim runs its routes as ground
+      (s.level.deckLanes || []).forEach((ln, j) => { const z = (s.level.decks[ln.deck] && s.level.decks[ln.deck].z) || 1; add({ i: 2 + j, path: ln.path, simLayer: z, layer: z, deck: ln.deck }); });
+    }
+    for (const a of recs) {
+      const o = a.ends.out, nb = o && at(a.sc.col + SIDE[o.side][0], a.sc.row + SIDE[o.side][1]);
+      if (!nb) continue;
+      for (const b of recs) if (b.sc === nb && b.layer === a.layer && b.ends.in && b.ends.in.side === OPPS[o.side] && Math.abs(b.ends.in.off - o.off) < 6 && b.ends.in.tx * o.tx + b.ends.in.ty * o.ty > 0.9) { a.next.push(b); b.prev.push(a); }
+    }
+    const outside = (sc, e) => !at(sc.col + SIDE[e.side][0], sc.row + SIDE[e.side][1]);
+    // seams to the nearest way out of the district, for drivers heading home (traffic.exitAfterSeams)
+    for (const r of recs) r.toExit = !r.next.length ? 0 : Infinity;
+    for (let changed = true; changed;) { changed = false; for (const r of recs) for (const q of r.next) if (q.toExit + 1 < r.toExit) { r.toExit = q.toExit + 1; changed = true; } }
+    for (const sc of scs) for (const s of sc.sims) { // admission only where a lane enters from outside the district
+      const src = recs.filter((r) => r.s === s && !r.prev.length && r.ends.in && outside(sc, r.ends.in)), gs = src.filter((r) => r.deck == null).map((r) => r.i);
+      s.deckSrc = new Set(src.filter((r) => r.deck != null).map((r) => r.i - 2));
+      s.admit = function () { if (!gs.length) return; const sl = this.schedule[this.slot]; if (!sl) return; if (!gs.includes(sl.lane)) sl.lane = gs[sl.i % gs.length]; return admit0.call(this); };
+      const arms = new Set(src.filter((r) => r.deck == null).map((r) => r.ends.in.side + Math.round(r.ends.in.off))).size, iv = 2 * P['world.district.' + sc.D.id + '.interval'] / Math.max(1, arms);
+      s.admissionInterval = () => iv; // each entry: one car per 2 × world.district.<id>.interval, as a game road lane
+      if (s.deckSrc.size) s.P = Object.assign({}, s.P, { 'world.deckInterval': 2 * P['world.district.' + sc.D.id + '.interval'] / s.P['traffic.deckGapScale'] }); // a highway entry too (the Z1 ring takes all four)
+      s.netSrc = src.length;
+      // a bus enters only if every ground lane it can reach keeps vehicles.bus.minRadius (it cannot leave its route at a seam)
+      const seen = new Set(), todo = src.filter((r) => r.deck == null).slice();
+      while (todo.length) { const r = todo.pop(); if (seen.has(r)) continue; seen.add(r); todo.push(...r.next.filter((q) => q.layer === 0)); }
+      const busOK = [...seen].every((r) => !r.s.lab && X.minBend(r.path.pts, W, H) >= RB * 0.9);
+      if (!busOK) for (const sl of s.schedule) if (sl.cls === 'bus') sl.cls = 'sedan';
+    }
+    NETS[i] = { scs, recs, sims: [].concat(...scs.map((sc) => sc.sims)) };
+    for (let k = 0; k < Math.round(P['traffic.warmSeconds'] * 60); k++) netStep(i, true);
+    seamView(NETS[i]);
+  }
+  function recOf(s, c) { // a lap variant on a ring shares its route's ends and links
+    const m = s.netLane; if (!m) return null;
+    let r = m.get(c.path);
+    if (!r && c.path.ring && c.path.ring.variants) { const base = m.get(c.path.ring.variants[0]); if (base) { r = Object.assign({}, base, { path: c.path, ends: X.laneEnds(c.path, W, H) }); m.set(c.path, r); } }
+    return r || null;
+  }
+  const routeOf = (r, c) => { // a junction: the car's route next door, chosen afresh at every seam (a fixed choice could circle for ever)
+    if (r.next.length === 1) return r.next[0];
+    const h = hashId(c.id + r.sc.name + (c.hops || 0)), ns = (c.hops || 0) >= P['traffic.exitAfterSeams'] ? r.next.filter((q) => q.toExit === Math.min(...r.next.map((z) => z.toExit))) : r.next; // after that many seams, the way out
+    return ns[h % ns.length];
+  };
+  function ghostOf(o, r, s) {
+    const g = Object.create(o), p = X.pathAt(r.path, s);
+    Object.assign(g, { ghost: true, real: o, lane: r.i, path: r.path, s, layer: r.simLayer, deck: r.simLayer > 0, x: p.x + p.nx * o.d, y: p.y + p.ny * o.d, h: o.h, vx: o.vx, vy: o.vy });
+    if (r.deck != null) g.deckIdx = r.deck;
+    return g;
+  }
+  function netStep(i, quiet) {
+    const net = NETS[i], add = new Map(net.sims.map((s) => [s, []]));
+    for (const s of net.sims) for (const o of s.cars) { // ghosts: cars near a seam, on the lanes next door that lead to or from theirs
+      const r = recOf(s, o); if (!r) continue;
+      if (r.prev.length && o.s - r.ends.in.s < GL) for (const a of r.prev) add.get(a.s).push(ghostOf(o, a, a.ends.out.s + (o.s - r.ends.in.s)));
+      if (r.next.length && r.ends.out.s - o.s < GL) { const b = routeOf(r, o), sb = b.ends.in.s - (r.ends.out.s - o.s); if (sb > 0) add.get(b.s).push(ghostOf(o, b, sb)); }
+    }
+    for (const s of net.sims) { const gs = add.get(s); if (gs.length) s.cars = s.cars.concat(gs); }
+    for (const s of net.sims) { if (s.lab) L.tick(s); else { s.step({}); s.body.x = -900; s.body.y = -900; } }
+    for (const s of net.sims) { s.cars = s.cars.filter((c) => !c.ghost); if (s.events.length > 4000) s.events.length = 0; }
+    const moved = [];
+    for (const s of net.sims) s.cars = s.cars.filter((c) => { const r = recOf(s, c); if (!r || !r.next.length || c.s < r.ends.out.s) return true; moved.push([c, r]); return false; });
+    for (const [c, r] of moved) {
+      const nx = routeOf(r, c), ds = nx.ends.in.s - r.ends.out.s; // a junction: the car picks its route at the seam
+      Object.assign(c, { s: c.s + ds, path: nx.path, lane: nx.i, layer: nx.simLayer, deck: nx.simLayer > 0, orbit: null, letOut: null, yielding: false, hops: (c.hops || 0) + 1 });
+      if (nx.deck != null) c.deckIdx = nx.deck;
+      for (const m of [c.man, c.intent]) if (m) for (const k of ['s0', 'sTarget', 'sStop']) if (m[k] != null) m[k] += ds;
+      if (c.dodge && c.dodge.s != null) c.dodge = Object.assign({}, c.dodge, { s: c.dodge.s + ds });
+      const p = X.pathAt(c.path, c.s); c.x = p.x + p.nx * c.d; c.y = p.y + p.ny * c.d;
+      nx.s.cars.push(c); net.crossings = (net.crossings || 0) + 1;
+    }
+    if (!quiet) seamView(net);
+  }
+  function seamView(net) { // each screen draws the cars next door whose bodies reach onto it
+    for (const sc of net.scs) sc.seam = [];
+    for (const sc of net.scs) for (const s of sc.sims) for (const c of s.cars) {
+      const r = (c.L + c.W) / 2 + 4, z = s === sc.ringSim ? 1 : c.layer || 0;
+      for (const nb of net.scs) {
+        if (nb === sc || Math.abs(nb.col - sc.col) > 1 || Math.abs(nb.row - sc.row) > 1) continue;
+        const x = c.x + (sc.col - nb.col) * W, y = c.y + (sc.row - nb.row) * H;
+        if (x > -r && x < W + r && y > -r && y < H + r) nb.seam.push({ x, y, h: c.h, cls: c.cls, L: c.L, W: c.W, deck: z > 0 });
+      }
+    }
+  }
   // ---------- drawing a screen into its frame buffer
   const carSpr = (c) => PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(P['vehicles.' + c.cls + '.height']), c.h, false);
-  function step(sc) { for (const s of sc.sims) { if (s.lab) L.tick(s); else { s.step({}); s.body.x = -900; s.body.y = -900; } } }
   function render(sc, FB, DL) {
     FB.d.set(sc.B.d);
     const ground = [], deckCars = [];
     for (const s of sc.sims) { if (s === sc.ringSim) continue; for (const c of s.cars) (c.deck ? deckCars : ground).push(c); }
+    for (const g of sc.seam || []) (g.deck ? deckCars : ground).push(g); // P5.3: cars next door reaching onto this screen
     const layer = (l) => {
       DL.d.set(l.L.d);
       if (l !== sc.walk && !l.gate) {
@@ -749,6 +845,7 @@
     for (const p of sc.props) if (p.tower) items.push([1e6 + 2, () => PIX.blit(FB, p.spr, p.x, p.y)]);
     items.sort((a, b) => a[0] - b[0]).forEach((it) => it[1]());
     if (sc.monument) drawMonument(FB, sc.monument.cx, sc.monument.cy);
+    for (const s of sc.sims) for (const d of s.drones || []) { const x = Math.round(d.x / U), y = Math.round(d.y / U - d.alt * 4); if (d.state === 'carry') PIX.blit(FB, PIX.CONE, x - 2, y + 13); PIX.blit(FB, PIX.DRONE, x, y); }
   }
   // ---------- page: the three centres live at the top; one district at a time below, 3 × 3, any screen at 2×
   const built = [{}, {}, {}], FB = new PIX.Buf(AW, AH), DL = new PIX.Buf(AW, AH), off = Object.assign(document.createElement('canvas'), { width: AW, height: AH }), og = off.getContext('2d'), img = og.createImageData(AW, AH);
@@ -757,10 +854,10 @@
   let cur = 0, sel = [1, 1], playing = true, labels = true;
   function screen(i, col, row) {
     const key = col + row * 3; let sc = built[i][key];
-    if (!sc) { sc = built[i][key] = buildScreen(DISTRICTS[i], col, row); for (let k = 0; k < 12 * 60; k++) step(sc); }
+    if (!sc) sc = built[i][key] = buildScreen(DISTRICTS[i], col, row);
     return sc;
   }
-  const districtScreens = (i) => { const out = []; for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) out.push(screen(i, col, row)); return out; };
+  const districtScreens = (i) => { const out = []; for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) out.push(screen(i, col, row)); if (!NETS[i]) linkDistrict(i, out); return out; }; // P5.3: built and linked whole
   function show(i) {
     cur = i; const D = DISTRICTS[i];
     document.querySelectorAll('#tabs button').forEach((b, k) => b.classList.toggle('on', k === i));
@@ -770,8 +867,8 @@
   }
   function paint(sc) { render(sc, FB, DL); new Uint32Array(img.data.buffer).set(FB.d); og.putImageData(img, 0, 0); }
   function frame() {
-    const screens = districtScreens(cur), centres = [0, 1, 2].map((i) => screen(i, 1, 1)), live = new Set(screens.concat(centres));
-    if (playing) for (const sc of live) step(sc);
+    const screens = districtScreens(cur), centres = [0, 1, 2].map((i) => (districtScreens(i), screen(i, 1, 1))), live = new Set(screens.concat(centres));
+    if (playing) for (const i of [0, 1, 2]) netStep(i); // P5.3: every district runs whole (the centres row shows all three)
     for (const sc of live) {
       paint(sc);
       if (sc.D === DISTRICTS[cur]) {
@@ -803,6 +900,6 @@
   DISTRICTS.forEach((D, i) => { const b = document.createElement('button'); b.textContent = (i + 1) + ' · ' + D.name; b.onclick = () => { sel = [1, 1]; show(i); }; $('tabs').appendChild(b); $('t' + i).textContent = (i + 1) + ' · ' + D.name + ' · B2'; });
   $('play').onclick = () => { playing = !playing; $('play').textContent = playing ? 'Pause' : 'Play'; };
   $('labels').onclick = () => { labels = !labels; $('labels').textContent = labels ? 'Hide labels' : 'Show labels'; };
-  window.__district = { show, select: (c, r) => { sel = [c, r]; }, built, screen, labels: (v) => { labels = v; }, DISTRICTS };
+  window.__district = { show, select: (c, r) => { sel = [c, r]; }, built, screen, labels: (v) => { labels = v; }, DISTRICTS, NETS, netStep };
   show(0); requestAnimationFrame(frame);
 })();

@@ -114,7 +114,7 @@
         if (cur) zones.push(cur);
       });
       for (const z of zones) if (info[i].to === info[z.lane].to) { z.s1 = Math.min(z.s1, z.s0 + CAP); z.o1 = Math.min(z.o1, z.o0 + CAP); z.merge = true; }
-      const first = zones.filter((z) => info[z.lane].rank < info[i].rank).reduce((m, z) => Math.min(m, z.s0), Infinity);
+      const first = zones.filter((z) => info[z.lane].rank < info[i].rank || (info[i].rank > 0 && !z.merge)).reduce((m, z) => Math.min(m, z.s0), Infinity); // P5.3: a waiting car stands clear of every path it could block, whatever its rank
       a.junction = { rank: info[i].rank, line: info[i].rank > 0 && first < Infinity ? Math.max(0, first - GAP) : null, zones, route: info[i].from + '→' + info[i].to };
     });
     // the minor road has one give-way line per arm: every route from it stops at the earliest of their lines

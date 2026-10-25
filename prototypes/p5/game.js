@@ -56,7 +56,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = 'P5.2';
+  const BUILD = 'P5.3';
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -245,7 +245,7 @@
   const SENIORITY = ['New', 'Practised', 'Experienced', 'Senior'];
   function seniorityOf(c) { return c.applied >= 5 ? 3 : c.applied >= 3 ? 2 : c.applied >= 1 ? 1 : 0; } // the notches drawn beside the tag
   function trackCars(s) {
-    for (const c of s.cars) fx.cars.set(c.id, { id: c.id, model: c.model, cls: c.cls, slot: c.slot || 0, seniority: seniorityOf(c), x: c.x, y: c.y, h: c.h, L: c.L, W: c.W });
+    for (const c of carsOf(s)) fx.cars.set(c.id, { id: c.id, model: c.model, cls: c.cls, slot: c.slot || 0, seniority: seniorityOf(c), x: c.x, y: c.y, h: c.h, L: c.L, W: c.W });
   }
   function upm() { return (app.sim && app.sim.P['proto.scale.unitsPerMetre']) || 12.2; }
   function whenOk(when, e) {
@@ -294,7 +294,7 @@
     const b = s.body, P = s.P;
     if (s.phase !== 'play' || !b.alive) { fx.lungeWatch = null; return; }
     const gapMax = pv('proto.barks.nearMissGap') || 26, vMin = pv('proto.barks.nearMissSpeed') || 60, R = P['body.radius'];
-    for (const c of s.cars) {
+    for (const c of carsOf(s)) {
       if (fx.nmDone.has(c.id)) continue;
       const g = carGap(b, c, R), st = fx.nm.get(c.id);
       if (g < gapMax && Math.abs(c.v) >= vMin) {
@@ -305,13 +305,13 @@
         if (!st.contact) present(s, 'near-miss', { car: c.id, gap: +(Math.max(0, st.min) / upm()).toFixed(1), speed: Math.round(st.v), lunging: st.lunging });
       }
     }
-    for (const id of fx.nm.keys()) if (!s.cars.some((c) => c.id === id)) fx.nm.delete(id);
+    for (const id of fx.nm.keys()) if (!carsOf(s).some((c) => c.id === id)) fx.nm.delete(id);
     const lw = fx.lungeWatch;
     if (lw && b.mode !== 'lunge') {
       fx.lungeWatch = null;
       if (!lw.contact) {
         let best = null, bd = pv('proto.barks.missRadius') || 120;
-        for (const c of s.cars) { const g = carGap(b, c, R); if (g < bd) { bd = g; best = c; } }
+        for (const c of carsOf(s)) { const g = carGap(b, c, R); if (g < bd) { bd = g; best = c; } }
         present(s, 'miss', best ? { car: best.id, gap: +(Math.max(0, bd) / upm()).toFixed(1) } : { car: null, gap: null });
       }
     }
@@ -325,7 +325,7 @@
 
   // Generated hit juice (content/hits.json): base and accent layers per event; presentation only.
   function contactOf(e, s) {
-    const b = s.body, car = e.car && (s.cars.find((c) => c.id === e.car) || fx.cars.get(e.car));
+    const b = s.body, car = e.car && (carsOf(s).find((c) => c.id === e.car) || fx.cars.get(e.car));
     let x = b.x, y = b.y;
     const eff = (type) => { for (let i = s.effects.length - 1; i >= 0; i--) if (s.effects[i].type === type && Math.abs(s.effects[i].t - e.t) < 1e-3) return s.effects[i]; return null; };
     const be = e.type === 'impact' ? eff('burst') : e.type === 'writeoff' ? eff('wreck') : null;
@@ -429,7 +429,7 @@
   function drawBarks(s) {
     if (!fx.bubbles.size) return;
     const dur = pv('proto.barks.seconds') || 2.4, now = app.realT, placed = [];
-    for (const c of s.cars) { // tags and car bodies are cues: bubbles keep off them
+    for (const c of carsOf(s)) { // tags and car bodies are cues: bubbles keep off them
       const t = tagRect(c), r = Math.ceil(Math.max(c.L, c.W) / U / 2) + 1;
       placed.push({ x: t.x0 - 1, y: t.y0 - 1, w: t.w + 10, h: t.h + 2, car: c.id }, { x: Math.round(c.x / U) - r, y: Math.round(c.y / U) - r - 4, w: 2 * r, h: 2 * r + 4, car: c.id });
     }
@@ -437,7 +437,7 @@
     const hits = (r, own) => placed.some((q) => q.car !== own && r.x < q.x + q.w && r.x + r.w > q.x && r.y < q.y + q.h && r.y + r.h > q.y);
     const order = [...fx.bubbles.entries()].sort((a, b2) => b2[1].priority - a[1].priority || b2[1].t0 - a[1].t0);
     for (const [id, bk] of order) {
-      const live = s.cars.find((x) => x.id === id), c = live || fx.cars.get(id), age = now - bk.t0;
+      const live = carsOf(s).find((x) => x.id === id), c = live || fx.cars.get(id), age = now - bk.t0;
       if (!c || age > dur) { fx.bubbles.delete(id); continue; }
       const lines = wrapSmall(bk.text, 92), lh = PIX.SMALL_H + 2;
       const w = Math.max(...lines.map((l) => PIX.smallWidth(l))) + 7, h = lines.length * lh + 4, cx = Math.round(c.x / U);
@@ -471,6 +471,7 @@
     trackCars(s);
     for (let i = app.lastEv; i < ev.length; i++) {
       const e0 = ev[i];
+      if (e0.away) continue; // P5.3: traffic on another screen makes no sound or effect here
       if (e0.type === 'lunge') fx.lungeWatch = { contact: false };
       if (/^(impact|knock|touch|touch-spent|contact-ignored)$/.test(e0.type)) noteContact(e0);
       if (e0.type === 'impact') { fx.lastImpact = e0; if (e0.part) fx.lastPart = { part: e0.part, lost: e0.lost, t: app.realT }; }
@@ -531,7 +532,7 @@
         }
         case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
         case 'slip': { fx.slipT = e.t; const b = s.body; puff(b.x, b.y + 8, 8, { type: 'spark', role: 'puddleHi', speed: 90, life: 0.3, size: 2 }); toast(copy('toast.slip', 'No dash on water. Step off the puddle.')); break; } // D18
-        case 'skid': { const c = s.cars.find((q) => q.id === e.car); if (c) puff(c.x, c.y, 10, { type: 'spark', role: 'puddleHi', dir: c.h + Math.PI, spread: 2.2, speed: 120, life: 0.35, size: 2 }); Snd.tone(1800, 900, 0.18, 'sawtooth', 0.02); break; }
+        case 'skid': { const c = carsOf(s).find((q) => q.id === e.car); if (c) puff(c.x, c.y, 10, { type: 'spark', role: 'puddleHi', dir: c.h + Math.PI, spread: 2.2, speed: 120, life: 0.35, size: 2 }); Snd.tone(1800, 900, 0.18, 'sawtooth', 0.02); break; }
         case 'screen': { // D24: first visit names the screen
           Snd.tone(300, 520, 0.12, 'triangle', 0.04);
           if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (THEME_NAME[e.focal || e.theme] || '') + (e.turns === 'diagonal' ? ' · 45° road' : '')); } // P4: generated screen names were checked against P3's layouts, so P4 shows the screen's theme
@@ -807,7 +808,7 @@
       if (Math.hypot(st.x + st.w / 2 - nx, st.y + st.h / 2 - ny) > reach) continue;
       add([[st.x, st.y], [st.x + st.w, st.y], [st.x + st.w, st.y + st.h], [st.x, st.y + st.h]]);
     }
-    for (const o of s.cars) {
+    for (const o of carsOf(s)) {
       if (o === c || (o.cls !== 'van' && o.cls !== 'bus') || Math.hypot(o.x - nx, o.y - ny) > reach) continue; // P5: a bus casts a sensor shadow too
       add(rotRect(o.x, o.y, o.h, o.L, o.W));
     }
@@ -892,6 +893,7 @@
     for (const m of fx.marks) PIX.line(m.a[0] / U, m.a[1] / U, m.b[0] / U, m.b[1] / U, (x, y) => FB.mix(x, y, K.tyre, al * (1 - (app.realT - m.t) / fade)));
   }
   // ----- Edit 44 levels: Z0 ground, Z1 low highway, Z2 high highway, platform roofs and skybridges
+  const carsOf = (s) => s.view || s.cars; // P5.3: the screen's cars and those next door reaching onto it
   const lay = (c) => (c.layer == null ? 0 : c.layer);
   const zLift = (s, z) => EXT(zHeight(s.P, z || 0)); // art px a level is drawn above its footprint
   function bodyFloor(s) { const b = s.body; return b.floor != null ? (s.level.floors || [])[b.floor] || null : null; }
@@ -929,7 +931,7 @@
       if (cn.state !== 'free' && cn.state !== 'flight') continue;
       const o = off(P['proto.art.coneHeight'] + coneLift(cn)); PIX.disc((cn.x + o[0]) / U, (cn.y + o[1]) / U, Math.round(P['props.cone.radius'] / U), sh);
     }
-    for (const c of s.cars) if (lay(c) === 0) carShadow(s, c);
+    for (const c of carsOf(s)) if (lay(c) === 0) carShadow(s, c);
     if (onGroundDraw(s) || (b.alive && b.mode === 'drop' && b.drop && b.drop.toZ === 0)) { const o = off(P['proto.art.dummyHeight']); PIX.ellipse(b.x / U + o[0] / U, b.y / U + 3, 5.5, 2.2, sh); } // falling: the shadow marks the landing
     for (const d of s.drones) {
       const o = off(P['proto.art.droneHeight'] * d.alt), x = (d.x + o[0]) / U, y = (d.y + o[1]) / U, pts = [];
@@ -1086,7 +1088,7 @@
     DL.d.fill(0); FB = DL;
     PIX.blit(FB, d.S, 0, top);
     (s.level.checkpoints || []).forEach((cp, i) => { if (cp.deck && cp.off === d.dk.off) drawBoom(s, cp, i); }); // the deck's own checkpoint
-    const cars = still ? [] : s.cars.filter((c) => lay(c) >= 1 && c.deckIdx === k), mine = !still && onDeck(s) && bodyFloor(s).deck === k;
+    const cars = still ? [] : carsOf(s).filter((c) => lay(c) >= 1 && c.deckIdx === k), mine = !still && onDeck(s) && bodyFloor(s).deck === k;
     if (!still) {
       drawLights(s, cars);
       for (const c of cars) carShadow(s, c);
@@ -1154,7 +1156,7 @@
     (s.level.checkpoints || []).forEach((cp, i) => { if (!cp.deck) list.push([s.boomPoint(cp).y + 2, () => drawBoom(s, cp, i)]); });
     for (const cn of s.cones) if (cn.state === 'free' || cn.state === 'flight') list.push([cn.y + 6, () => PIX.blit(FB, PIX.CONE, cn.x / U, (cn.y - coneLift(cn) * 1.2) / U)]);
     if (!still) {
-      for (const c of s.cars) if (lay(c) === 0) list.push([c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
+      for (const c of carsOf(s)) if (lay(c) === 0) list.push([c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2, () => drawCarSprite(s, c)]);
       if (b.alive) { // the dummy, unless its deck draws it: on the ground or falling by its feet; on a roof or skybridge after it; on a platform stair after the flight
         const L = () => bodyLift(s), me = () => { const l = L(); if (l) drawBodyGround(s, l); drawBodySprite(s, false, l); }, f = bodyFloor(s);
         if (b.stair) { if (stairDeck(s, b.stair) == null) list.push([b.stair.y + b.stair.h + 0.26, me]); }
@@ -1167,7 +1169,7 @@
     list.sort((a, b2) => a[0] - b2[0]);
     for (const it of list) it[1]();
     if (!still) { // x-ray pass: a checker of each actor's own pixels, so an occluded car or dummy still reads (4.2.4 tier 1)
-      for (const c of s.cars) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0));
+      for (const c of carsOf(s)) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0));
       if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
     }
   }
@@ -1264,11 +1266,11 @@
   }
   function drawLive(s, la) {
     const P = s.P, b = s.body;
-    for (const c of s.cars) { c._brk = (c.man && c.man.type === 'brake') || c.state === 'interrupted' || (c._pv != null && c.v < c._pv - 0.4); c._pv = c.v; markCar(c, c._brk); }
+    for (const c of carsOf(s)) { c._brk = (c.man && c.man.type === 'brake') || c.state === 'interrupted' || (c._pv != null && c.v < c._pv - 0.4); c._pv = c.v; markCar(c, c._brk); }
     drawMarks();
-    for (const c of s.cars) c._lift = 0;
-    drawLights(s, s.cars.filter((c) => lay(c) === 0)); // ground traffic; deck traffic lights its own deck (drawDeck)
-    const inCone = coneFn(s), lvl = cueLevel(s), dq = cueDeck(s), mine = s.cars.filter((c) => lay(c) === lvl && (lvl === 0 || c.deckIdx === dq)); // Edit 42, 44: cues for cars that can meet the dummy
+    for (const c of carsOf(s)) c._lift = 0;
+    drawLights(s, carsOf(s).filter((c) => lay(c) === 0)); // ground traffic; deck traffic lights its own deck (drawDeck)
+    const inCone = coneFn(s), lvl = cueLevel(s), dq = cueDeck(s), mine = carsOf(s).filter((c) => lay(c) === lvl && (lvl === 0 || c.deckIdx === dq)); // Edit 42, 44: cues for cars that can meet the dummy
     const cues = () => {
       if (b.alive || P['proto.zonesEverywhere']) for (const c of mine) drawZones(s, c, P['proto.zonesEverywhere'] ? ALL : inCone);
       if (b.alive || P['proto.pathsEverywhere']) for (const c of mine) drawPath(s, c, P['proto.pathsEverywhere'] ? ALL : inCone);
@@ -1380,7 +1382,7 @@
   }
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function drawTopBar(s) {
-    const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - s.cars.filter((c) => !c.deck).length)); // deck traffic is off the shift's clock
+    const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // deck traffic is off the shift's clock; P5.3: every car still in the district
     const b = s.body, f = bodyFloor(s), where = !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44
     const items = [[null, roadLabel(s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });

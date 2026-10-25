@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit52-2026-10-24",
+ "registryVersion": "edit53-2026-10-25",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -5994,6 +5994,133 @@
    "integrationStatus": "prototype-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "The light, quick model of the five"
+  },
+  {
+   "id": "traffic.continuous",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "District-wide traffic",
+   "description": "On (1): every screen of a district runs its traffic every tick. A car crossing a shared edge moves to the matching lane next door with its id, model, speed, offset and plan. Cars within world.spawnLeadIn of an edge are seen and drawn next door. The shift's cars enter only where a road or highway crosses the district boundary; at the start every lane runs at its steady headway. Off (0): P5.2, one screen at a time.",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 53 (25 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A car followed across a screen edge is the same car at the same speed (user decision, 25 October)"
+  },
+  {
+   "id": "traffic.warmSeconds",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "District warm-up",
+   "description": "The district mock-up runs its linked traffic this long before it is shown, so every screen is already busy.",
+   "unit": "s",
+   "type": "number",
+   "default": 30,
+   "status": "proposed",
+   "source": "Edit 53 (25 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "No screen waits for cars (mock-up only)"
+  },
+  {
+   "id": "traffic.exitAfterSeams",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Way out after",
+   "description": "In the district mock-up a car picks its route afresh at every seam. After this many seams it takes the route with fewest seams to a district exit.",
+   "unit": "seams",
+   "type": "number",
+   "default": 9,
+   "status": "proposed",
+   "source": "Edit 53 (25 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "No car circles a closed street for ever; the district never fills (mock-up only)"
+  },
+  {
+   "id": "world.district.parkland.interval",
+   "group": "World",
+   "owner": "World",
+   "label": "Parkland traffic interval",
+   "description": "Each lane entering Parkland (road or highway) admits one car per 2 × this. The four highway entries all feed the Z1 ring.",
+   "unit": "s",
+   "type": "number",
+   "default": 4.5,
+   "status": "proposed",
+   "source": "Edit 53 (25 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.5
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The calm opener; the Z1 ring flows (mock-up)"
+  },
+  {
+   "id": "world.district.circus.interval",
+   "group": "World",
+   "owner": "World",
+   "label": "Circus traffic interval",
+   "description": "Each lane entering Circus admits one car per 2 × this.",
+   "unit": "s",
+   "type": "number",
+   "default": 3.2,
+   "status": "proposed",
+   "source": "Edit 53 (25 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.5
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Busier than Parkland (mock-up)"
+  },
+  {
+   "id": "world.district.monument.interval",
+   "group": "World",
+   "owner": "World",
+   "label": "Monument traffic interval",
+   "description": "Each lane entering Monument admits one car per 2 × this.",
+   "unit": "s",
+   "type": "number",
+   "default": 2.4,
+   "status": "proposed",
+   "source": "Edit 53 (25 October), P5 sim and district mock-up",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.5
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Steady flow on the one snake road (mock-up)"
   }
  ],
  "tables": {

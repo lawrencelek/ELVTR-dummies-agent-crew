@@ -1007,6 +1007,120 @@ check('P4 diagonals (Edit 49): 45° roads appear in the baked layouts, never und
   }
   assert(screens >= 5 && diag >= 3, 'screens with a 45° segment: ' + screens + ' (diagonal style ' + diag + ')');
 });
+// ---------- P5.3 (Edit 53): one traffic for the whole district
+const SAT = (a, b) => { // two car bodies overlap (separating axis), in district coordinates
+  const ax = [Math.cos(a.h), Math.sin(a.h)], ay = [-ax[1], ax[0]], bx = [Math.cos(b.h), Math.sin(b.h)], by = [-bx[1], bx[0]], d = [b.x - a.x, b.y - a.y];
+  for (const n of [ax, ay, bx, by]) {
+    const pa = Math.abs(n[0] * ax[0] + n[1] * ax[1]) * a.L / 2 + Math.abs(n[0] * ay[0] + n[1] * ay[1]) * a.W / 2, pb = Math.abs(n[0] * bx[0] + n[1] * bx[1]) * b.L / 2 + Math.abs(n[0] * by[0] + n[1] * by[1]) * b.W / 2;
+    if (Math.abs(n[0] * d[0] + n[1] * d[1]) > pa + pb - 0.5) return false;
+  }
+  return true;
+};
+const districtCars = (s) => [].concat(...s.net.cells.map((q) => (q === s.netCur ? s.cars : q.tr.cars).map((c) => ({ c, q, x: q.cell[0] * 800 + c.x, y: q.cell[1] * 640 + c.y, h: c.h, L: c.L, W: c.W, layer: c.layer || 0 }))));
+check('P5.3 continuity (Edit 53): every lane leaving a screen by a shared edge goes on next door, same level, same point', () => {
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
+    const s = new Sim(id, { 'proto.layout': k });
+    assert(s.netOn(), id + ' runs one traffic');
+    for (const q of s.net.cells) for (const l of q.tr.lanes) {
+      if (!l) continue;
+      const shared = (e) => e && [q.cell[0] + D.SIDE[e.side][0], q.cell[1] + D.SIDE[e.side][1]].every((v) => v >= 0 && v < 3);
+      if (shared(l.ends.out)) { assert(l.next, id + '/' + k + ' ' + D.cellName(q.cell) + ' lane ' + l.i + ' ends at a shared edge'); const p = l.next.lane.ends.in; assert(l.next.lane.layer === l.layer && Math.abs(p.off - l.ends.out.off) < 6, 'same level and point'); }
+      if (shared(l.ends.in)) assert(l.prev, id + '/' + k + ' ' + D.cellName(q.cell) + ' lane ' + l.i + ' starts at a shared edge');
+    }
+    assert.strictEqual(s.net.ground.length, 2, id + ': one source per road direction');
+    for (const g of s.net.ground.concat(s.net.decks)) assert(!g.lane.prev, 'a source is fed by nothing inside the district');
+  }
+});
+check('P5.3 start (Edit 53): the start screen runs from the first frame, a car on each road lane; highways running', () => {
+  for (const id of D.DISTRICT_LIST) for (const k of [1, 2, 3]) {
+    const s = new Sim(id, { 'proto.layout': k }), q = s.netCur, W = 800, H = 640;
+    const onScreen = (c) => c.x > 0 && c.x < W && c.y > 0 && c.y < H;
+    for (const i of [0, 1]) assert(s.cars.some((c) => !c.deck && c.lane === i && onScreen(c)), id + '/' + k + ': no car on lane ' + i + ' of the start screen');
+    if (q.level.decks.length) assert(s.allCars().some((c) => c.deck), id + ': highways empty');
+    assert(s.allCars().every((c) => c.deck || Math.hypot(c.x - s.body.x, c.y - s.body.y) > 100 || s.net.cells.find((z) => z.tr.cars.includes(c)) !== q), 'no car on the dummy');
+    assert.strictEqual(s.run.admitted, s.slot, 'the cars already running are the shift\'s first');
+  }
+});
+check('P5.3 sources (Edit 53): the shift\'s cars enter only where the road crosses the district boundary', () => {
+  const s = new Sim('interchange', { 'proto.layout': 1 }); s.checkTerminal = () => {};
+  const n0 = s.events.length, src = new Set(s.net.ground.map((g) => D.cellName(g.q.cell) + ':' + g.lane.i));
+  for (let i = 0; i < 60 * 40; i++) { s.step({}); s.body.x = -400; s.body.y = -400; }
+  const adm = s.events.slice(n0).filter((e) => e.type === 'admit');
+  assert(adm.length >= 10, 'admissions ' + adm.length);
+  for (const e of adm) { const car = s.allCars().find((c) => c.id === e.car); const cell = e.away || 'B1'; void car; assert(src.has(cell + ':' + e.lane), 'admitted at ' + cell + ' lane ' + e.lane); }
+});
+check('P5.3 follow (Edit 53): a car crossing a shared edge keeps id, model, speed and line; the dummy following finds it next door', () => {
+  const s = new Sim('interchange', { 'proto.layout': 1 }); s.checkTerminal = () => {};
+  s.body.x = -400; s.body.y = -400;
+  const q0 = s.netCur, c = s.cars.find((c) => !c.deck && q0.tr.lanes[c.lane].next && c.s < q0.tr.lanes[c.lane].ends.out.s - 150);
+  assert(c, 'a car heading off the start screen');
+  const ln = q0.tr.lanes[c.lane], model = c.model, cls = c.cls;
+  let prev = null, crossed = null;
+  for (let i = 0; i < 60 * 12 && !crossed; i++) {
+    const before = { v: c.v, x: q0.cell[0] * 800 + c.x, y: q0.cell[1] * 640 + c.y };
+    s.step({}); s.body.x = -400; s.body.y = -400;
+    const at = s.net.cells.find((q) => (q === s.netCur ? s.cars : q.tr.cars).includes(c));
+    assert(at, 'the car is somewhere in the district');
+    const gx = at.cell[0] * 800 + c.x, gy = at.cell[1] * 640 + c.y;
+    assert(Math.hypot(gx - before.x, gy - before.y) <= before.v / 60 + 1.5, 'no jump: ' + Math.hypot(gx - before.x, gy - before.y).toFixed(2));
+    if (at !== q0) crossed = { at, v: c.v, vBefore: before.v };
+    prev = before;
+  }
+  void prev;
+  assert(crossed, 'crossed the edge');
+  assert(crossed.at === ln.next.q && c.lane === ln.next.lane.i && c.model === model && c.cls === cls, 'same car, next lane');
+  assert(Math.abs(crossed.v - crossed.vBefore) <= s.P['traffic.acceleration'] / 60 + 1e-6 || Math.abs(crossed.v - crossed.vBefore) <= s.P['traffic.comfortBraking'] / 60 + 1e-6, 'speed carries: ' + crossed.vBefore.toFixed(2) + ' → ' + crossed.v.toFixed(2));
+  // the dummy follows across the same edge: the car is on the new screen, still driving
+  const sd = ln.ends.out.side, to = [q0.cell[0] + D.SIDE[sd][0], q0.cell[1] + D.SIDE[sd][1]];
+  s.body.x = 400; s.body.y = 320; s.flip(sd, to);
+  assert(s.cars.includes(c) && s.view.includes(c), 'on the new screen');
+  const v0 = c.v; for (let i = 0; i < 60; i++) s.step({});
+  assert(c.v > 0 || v0 === 0, 'still driving');
+});
+check('P5.3 seams (Edit 53): two minutes in every district: no car lost or doubled, no jump, no overlap, exits only at the district edge', () => {
+  for (const id of D.DISTRICT_LIST) {
+    const s = new Sim(id, { 'proto.layout': 1, 'world.terrain.puddle.carBraking': 1 }); s.checkTerminal = () => {};
+    const last = new Map(); let crossings = 0;
+    for (let i = 0; i < 60 * 120; i++) {
+      const lanes = new Map(districtCars(s).map((e) => [e.c.id, e.q.tr.lanes[e.c.lane]]));
+      const n0 = s.events.length;
+      s.step({}); s.body.x = -400; s.body.y = -400;
+      for (const e of s.events.slice(n0)) { if (e.type === 'cross') crossings++; if (e.type === 'exit') assert(!lanes.get(e.car).next, id + ': ' + e.car + ' left at a shared edge'); }
+      const all = districtCars(s), ids = new Set();
+      for (const e of all) {
+        assert(!ids.has(e.c.id), 'doubled ' + e.c.id); ids.add(e.c.id);
+        assert(Number.isFinite(e.x + e.y + e.c.v), 'NaN');
+        const p = last.get(e.c.id); if (p) assert(Math.hypot(e.x - p[0], e.y - p[1]) <= e.c.v / 60 + 2, id + ': ' + e.c.id + ' jumped');
+        last.set(e.c.id, [e.x, e.y]);
+      }
+      if (i % 6 === 0) for (let a = 0; a < all.length; a++) for (let b = a + 1; b < all.length; b++) if (all[a].layer === all[b].layer && Math.hypot(all[a].x - all[b].x, all[a].y - all[b].y) < 110) assert(!SAT(all[a], all[b]), id + ': ' + all[a].c.id + ' overlaps ' + all[b].c.id);
+    }
+    const live = s.allCars().filter((c) => !c.deck).length;
+    assert.strictEqual(s.run.admitted, s.run.exited + live, id + ': admitted = exited + on the road');
+    assert(crossings > 150, id + ': crossings ' + crossings);
+  }
+});
+check('P5.3 queue (Edit 53): a dummy just inside an edge holds traffic on the screen before it; no overlap at the seam', () => {
+  const s = new Sim('market', { 'proto.layout': 1, 'proto.driver.patienceSeconds': 999, 'world.terrain.puddle.carBraking': 1 }); s.checkTerminal = () => {};
+  const ln = s.netCur.tr.lanes[0], p = D.pathAt(ln.path, ln.ends.in.s + 60), back = ln.prev.q;
+  let queued = 0;
+  for (let i = 0; i < 60 * 45; i++) {
+    s.body.x = p.x; s.body.y = p.y; s.body.vx = s.body.vy = 0; s.body.health = 1e9;
+    s.step({});
+    queued = Math.max(queued, back.tr.cars.filter((c) => c.lane === ln.prev.lane.i && c.v < 2).length);
+    const all = districtCars(s);
+    if (i % 4 === 0) for (let a = 0; a < all.length; a++) for (let b = a + 1; b < all.length; b++) if (all[a].layer === all[b].layer && Math.hypot(all[a].x - all[b].x, all[a].y - all[b].y) < 110) assert(!SAT(all[a], all[b]), 'overlap');
+  }
+  assert(queued >= 3, 'cars queued on the screen before: ' + queued);
+  assert(!s.events.some((e) => e.type === 'impact'), 'the dummy seen across the edge: no hit');
+});
+check('P5.3 off (Edit 53): traffic.continuous 0 keeps the P5.2 screen-by-screen traffic', () => {
+  const s = new Sim('interchange', { 'proto.layout': 1, 'traffic.continuous': 0 });
+  assert(!s.net && !s.netOn(), 'no district traffic');
+  for (let i = 0; i < 60; i++) s.step({});
+  const D0 = s.district; s.body.x = 801; s.flip('E', [D0.cur[0] + 1, D0.cur[1]]);
+  assert(s.cars.every((c) => c.deck), 'a new screen starts with its flyovers only');
+});
 for (const id of D.DISTRICT_LIST) {
   check(`smoke ${id}: 5 min scripted play across screens, no NaN`, () => {
     const s = new Sim(id, { 'proto.layout': 1 });
