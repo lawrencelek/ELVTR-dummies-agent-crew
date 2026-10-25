@@ -156,21 +156,21 @@
   }
   // P4 (Edit 49.1): a roundabout with several arms. Traffic keeps right and circulates one way (anticlockwise on screen) in the
   // outer ring lane. One route per ordered pair of arms, each with its own lane path and a give-way line where it joins the ring.
-  function multiRoundabout(X, P, arms, Rf) {
+  function multiRoundabout(X, P, arms, Rf, ctr) { // ctr (Edit 55.2): the ring's centre, default the screen's
     const arms0 = arms;
     const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2, SW: 3 * Math.PI / 4, NW: -3 * Math.PI / 4, SE: Math.PI / 4, NE: -Math.PI / 4 }, diag = (k) => k.length === 2; // Edit 55: every 45° arm
-    const cx = W / 2, cy = H / 2, ring = X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 48), lanes = [], roads = [], names = [];
+    const cx = ctr ? ctr[0] : W / 2, cy = ctr ? ctr[1] : H / 2, Wv = 2 * cx, Hv = 2 * cy, ring = X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 48), lanes = [], roads = [], names = [];
     const wrapA = (a) => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
     for (const a of arms) for (const b of arms) {
       if (a === b) continue;
-      const arm = (k) => (diag(k) ? { side: k[0], ang: ang[k], pt: toEdge([Math.cos(ang[k]), Math.sin(ang[k])], [W / 2, H / 2]) } : { side: k, off: k === 'W' || k === 'E' ? H / 2 : W / 2 });
+      const arm = (k) => (diag(k) ? { side: k[0], ang: ang[k], pt: toEdge([Math.cos(ang[k]), Math.sin(ang[k])], [cx, cy]) } : { side: k, off: k === 'W' || k === 'E' ? cy : cx });
       const ea = arm(a), eb = arm(b);
       const nat = wrapA(ang[b] - ang[a]), opposite = Math.abs(Math.abs(nat) - Math.PI) < 1e-6;
       const r = () => (opposite ? 0.9 : nat > 0 ? 0.1 : 0.9); // always the anticlockwise way round (decreasing angle)
       // arms close together (45°): both fillets must fit the short way between them, with world.roundaboutArmGap of ring; never below world.turnRadiusTight
       const short = Math.abs(nat) < Math.PI - 1e-6 && nat < 0 ? Math.abs(nat) : 2 * Math.PI, hs = (short - P['world.roundaboutArmGap'] * Math.PI / 180) / 2;
       const Rfp = short < Math.PI ? Math.max(P['world.turnRadiusTight'], Math.min(Rf || 96, Rc * Math.sin(hs) / (1 - Math.sin(hs)))) : Rf || 96;
-      const center = X.roundaboutCenter(ea, eb, W, H, LEAD, Rc, r, Rfp), lane = X.lanesOf(center, P)[0];
+      const center = X.roundaboutCenter(ea, eb, Wv, Hv, LEAD, Rc, r, Rfp), lane = X.lanesOf(center, P)[0];
       let sLine = null, aj = null, sj = null;
       for (let i = 0; i < lane.pts.length; i++) {
         const [x, y] = lane.pts[i], d = hyp(x - cx, y - cy);
@@ -190,7 +190,7 @@
       lanes.push(lane); roads.push(center); names.push(a + '→' + b);
     }
     lanes.forEach((ln, i) => { const a = names[i].split('→')[0]; ln.giveWay.s = Math.min(...lanes.filter((_, j) => names[j].split('→')[0] === a).map((m) => m.giveWay.s)); }); // one line per arm
-    const armLines = arms0.map((k) => { const t = ang[k], c = [cx + Math.cos(t) * (Rc + (Rf || 96) + 8), cy + Math.sin(t) * (Rc + (Rf || 96) + 8)]; return [diag(k) ? toEdge([Math.cos(t), Math.sin(t)], [cx, cy]) : X.edgePoint(k, k === 'W' || k === 'E' ? H / 2 : W / 2, W, H, LEAD), c]; });
+    const armLines = arms0.map((k) => { const t = ang[k], c = [cx + Math.cos(t) * (Rc + (Rf || 96) + 8), cy + Math.sin(t) * (Rc + (Rf || 96) + 8)]; return [diag(k) ? toEdge([Math.cos(t), Math.sin(t)], [cx, cy]) : X.edgePoint(k, k === 'W' || k === 'E' ? cy : cx, Wv, Hv, LEAD), c]; });
     return { center: roads[0], ring, lanes, roads, routes: names, arms: armLines };
   }
   // P3's roundabout path, rebuilt here so the lab can compare it on the same driver (P3 sim.js, Edit 41.1).

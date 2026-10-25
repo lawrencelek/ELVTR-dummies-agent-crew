@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55 and 55.1 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54 and 55–55.2 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -129,7 +129,8 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 `crossing_options.html`: today's 45° four-way crossing and four treatments from road design practice, one screen each with live traffic.
 
 - **Decided (Edit 55.1):** A is the rule. C only in a district's centre tile (B2). D only where a level design names it. B is not used.
-- **Parkland C3:** realigned. The loop bends 45° at B3's east edge, crosses the boulevard at 90°, and turns 90° in C2. The mock-up warns on any four-way crossing off 90°.
+- **Edit 55.2:** every junction's arms meet at 90°, three-way included, and every junction sits in its tile's central `world.junctionZone` (75%). The mock-up warns otherwise.
+- **Parkland:** A1's avenue curves to join the boulevard square. Row 3's road moves to local y 448, so C3's crossing sits mid-tile. The B2 ring is drawn centred, radius 160 (`world.deckRingRadius`), straight arm runs visible at every edge. The C1 footbridge runs west across B1, meets the Z1 highway at both parapets, and lands in A1 by escalator.
 
 | Option | Conflict points | Cars out /min at 1.8 s | Longest wait on the 45° road |
 |---|---:|---:|---:|
@@ -141,7 +142,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ![Today and the four options](docs/p60_crossing_options.png)
 
-![Parkland with the C3 crossing realigned to 90° (Edit 55.1)](docs/p61_parkland_realigned.png)
+![Parkland, Edit 55.2: square central junctions, the centred ring, the walkway joining the B1 highway](docs/p62_parkland_552.png)
 
 ## District traffic (P5.3, Edit 53)
 

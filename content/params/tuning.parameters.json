@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit55.1-2026-10-25",
+ "registryVersion": "edit55.2-2026-10-25",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -5214,10 +5214,10 @@
    "group": "World",
    "owner": "World",
    "label": "Elevated ring radius (Z1)",
-   "description": "Centre-line radius of a Z1 elevated roundabout (Parkland). Highway arms join it on fillets of world.roundaboutEntryRadius. One way round, anticlockwise on screen. Edit 53.1: 132 → 200 (user, 25 October: \"widen the ring so highways can carry more\"). Outer lane 228, inner 172.",
+   "description": "Centre-line radius of a Z1 elevated roundabout (Parkland). Highway arms join it on fillets of world.roundaboutEntryRadius. One way round, anticlockwise on screen. Edit 53.1: 132 → 200 (user, 25 October: \"widen the ring so highways can carry more\"). Outer lane 228, inner 172. Edit 55.2: 200 → 160 (user, 25 October: \"centred on the screen and slightly smaller\"). Outer lane 188, inner 132.",
    "unit": "world units",
    "type": "number",
-   "default": 200,
+   "default": 160,
    "status": "proposed",
    "source": "Edit 51 (22 October), P5 cityscape mock-up",
    "editable": true,
@@ -6449,6 +6449,28 @@
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "A rhythm under the centrepiece and its pair"
+  },
+  {
+   "id": "world.junctionZone",
+   "group": "World",
+   "owner": "World",
+   "label": "Junction zone",
+   "description": "Every junction sits inside this central share of its tile, each way (0.75: x 100–700, y 80–560 on an 800 × 640 screen).",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.75,
+   "status": "user-directed",
+   "source": "Edit 55.2 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.5,
+    "max": 0.9
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "No junction cut by a screen edge (user, 25 October)"
   }
  ],
  "tables": {
