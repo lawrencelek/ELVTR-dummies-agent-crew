@@ -122,10 +122,10 @@
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
     'traffic.deckSpeedScale': 1.4, 'traffic.deckGapScale': 1.5, 'damage.deckMultiplier': 1, // P5.1: highway hits pay through speed alone (user, 21 October)
-    'world.deckRingRadius': 132, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
+    'world.deckRingRadius': 200, 'world.deckRingRadiusHigh': 120, 'world.walkwayRingRadius': 112, 'world.walkwayWidth': 28, 'world.plazaRadius': 168, 'world.plazaStreetWidth': 56, // Edit 51 (cityscape mock-up only)
     'world.walkwayRingHalf': 168, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 100, 'world.plazaHalf': 190, // Edit 51.1–51.2: the square walkway ring (district mock-up only)
     'world.deckEscalators': 2, 'world.deckEscalatorInset': 64, 'world.splitLaneOffset': 104, 'world.walkwayColumn': 16, // Edit 51.2 (district mock-up only)
-    'world.roundaboutMinArms': 3, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
+    'world.roundaboutMinArms': 3, 'traffic.ringInnerTurn': 0, 'world.deckRingInnerTurn': 135, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
     'traffic.continuous': 1, 'traffic.warmSeconds': 30, 'traffic.exitAfterSeams': 9, // P5.3 (Edit 53): one traffic for the whole district; a car crosses a shared edge with its id, speed and plan. warmSeconds: the district mock-up runs before it is shown; exitAfterSeams: after that many seams a mock-up car takes the way out at a junction
     'world.deckRingTopClear': 32, 'world.gardenCellWidth': 160, 'world.gardenCellHeight': 128, 'world.gardenPath': 32, // Edit 51.3 (district mock-up only)
     'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
@@ -374,6 +374,9 @@
     }
     return out;
   }
+  // P5.3 (Edit 53.1): how far across a seam cars see each other: the lead-in, or the fastest highway car's stopping distance
+  // at traffic.hardBraking plus a bus length, whichever is longer.
+  const seamSight = (P) => Math.max(P['world.spawnLeadIn'], Math.max(...['sedan', 'van', 'hatchback', 'police', 'bus'].map((k) => P['vehicles.' + k + '.cruiseSpeed'] || 0)) ** 2 * P['traffic.deckSpeedScale'] ** 2 / (2 * P['traffic.hardBraking']) + P['vehicles.bus.length']);
   // P5.3 (Edit 53): where a lane enters the screen (first inward crossing) and leaves it (last outward crossing).
   // Each: side, offset along that edge, s on the lane, heading. A lane that starts or ends on screen has none at that end.
   function laneEnds(path, W, H) {
@@ -1979,11 +1982,18 @@
       if (!g || !(gap > 0) || lay(c) !== 0) return null;
       const toLine = g.s - (c.s + c.L / 2);
       if (toLine < -4 || toLine > 200) return null; // over the line: committed
+      const fill = this.P['traffic.ringFill'];
+      if (fill > 0) { // Edit 53.1: the ring takes a car only while its cars fill less than traffic.ringFill of the outer lane (a full ring locks)
+        let used = c.L + this.P['traffic.minimumGap'];
+        for (const o of this.cars) if (o !== c && lay(o) === 0 && o.path.giveWay && o.path.giveWay.cx === g.cx && o.path.giveWay.cy === g.cy && o.s + o.L / 2 > o.path.giveWay.s && o.path.ring && o.s < o.path.ring.exitS) used += o.L + this.P['traffic.minimumGap'];
+        if (used > fill * 2 * Math.PI * g.R) return { line: g.s - c.L / 2 };
+      }
       for (const o of this.cars) {
         if (o === c || lay(o) !== 0 || (Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22 && !(o.orbit && o.orbit.lane === 'out' && hyp(o.x - g.cx, o.y - g.cy) < g.R))) continue; // P5 (Edit 52): a car moving out of the inner lane counts as circulating
         if (o.path.giveWay && o.path === c.path) continue;
         const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), arc = d * g.R;
         if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) return { line: g.s - c.L / 2 };
+        if (o.v < 15 && 2 * Math.PI * g.R - arc < c.L + o.L / 2 + this.P['traffic.minimumGap'] + this.P['traffic.ringLaneChange']) return { line: g.s - c.L / 2 }; // Edit 53.1: never join onto a stopped ring (the ring would fill and lock)
       }
       return null;
     }
@@ -2147,8 +2157,8 @@
         if (src && !src.has(i)) return;
         if (this.t + 1e-9 < this.deckNext[i]) return;
         const dk = this.level.decks[ln.deck]; if (this.jammed((dk && dk.z) || 1)) return; // P4: nor onto a jammed deck
-        const cls = this.deckCls(this.deckSeq + 1), L = P['vehicles.' + cls + '.length'], room = L * P['traffic.entryRoomLengths'] + P['traffic.minimumGap'] + L / 2;
-        if (this.cars.some((c) => c.lane === 2 + i && c.s - c.L / 2 < room)) return;
+        const cls = this.deckCls(this.deckSeq + 1), L = P['vehicles.' + cls + '.length'], room = L * P['traffic.entryRoomLengths'] + P['traffic.minimumGap'] + L / 2, vc = P['vehicles.' + cls + '.cruiseSpeed'] * P['traffic.deckSpeedScale'];
+        if (this.cars.some((c) => c.lane === 2 + i && c.s - c.L / 2 < room + Math.max(0, vc * vc - c.v * c.v) / (2 * P['traffic.hardBraking']))) return; // P5.3: as on the ground, never into a queue (room to stop from highway cruise)
         const c = this.addDeckCar(i, 0, cls); c.s = c.L / 2; this.pose(c);
         this.deckNext[i] = this.t + P['world.deckInterval'] * P['traffic.deckGapScale'] * (0.8 + 0.4 * ((this.deckSeq * 0.618) % 1)); // P5: traffic.deckGapScale
       });
@@ -2254,31 +2264,34 @@
       const lap = 2 * Math.PI * rg.Rout, rem0 = rg.exitS - c.s;
       if (!c.orbit) { // move in for a blocked exit, or to pass a stopped or crawling car, any time before the change point
         const spare = rem0 - Lc - 20, laps = rg.variants.length - 1 - rg.k; // a car that cannot get back out before its exit must have a lap left
-        if (spare < 0 || (laps < 1 && spare < 0.5 * lap) || this.t - (c.ringOutT || -9) < 3 || !(this.ringExitBlocked(c) || (spare > Lc && this.ringCrawl(c))) || !this.ringLaneClear(c, true)) return false;
-        c.orbit = { lane: 'in', laps: 0 }; shift(dIn, rg.Rin); this.emit('ring', { car: c.id, to: 'inner' }); return true;
+        const turn = (rg.variants[0].ring.exitS - g.sj) / rg.Rout * 180 / Math.PI, plan = P['traffic.ringInnerTurn'] > 0 && !c.ringInnerDone && turn >= P['traffic.ringInnerTurn']; // Edit 53.1: a two-lane ring: a car going far round circulates inside
+        if (spare < 0 || (laps < 1 && spare < 0.5 * lap) || this.t - (c.ringOutT || -9) < 3 || !(plan || this.ringExitBlocked(c) || (spare > Lc && this.ringCrawl(c))) || !this.ringLaneClear(c, true)) return false;
+        if (plan) c.ringInnerDone = true;
+        c.orbit = { lane: 'in', laps: 0 }; shift(dIn, rg.Rin); this.emit('ring', { car: c.id, to: 'inner', planned: plan }); return true;
       }
       if (c.orbit.lane === 'out' && Math.abs(c.d) > 0.5) { // a move out was cut short: finish it, or go back in
         if (this.ringLaneClear(c, false)) shift(0, rg.Rout); else { c.orbit.lane = 'in'; shift(dIn, rg.Rin); } return true;
       }
       if (c.orbit.lane !== 'in') return false;
       if (Math.abs(c.d - dIn) > 0.5) { shift(dIn, rg.Rin); return true; } // a move in was cut short: finish it
-      const rem = rg.exitS - c.s, last = !rg.variants[rg.k + 1];
+      const rem = rg.exitS - c.s, last = false; // Edit 53.1: every lap can repeat
       if (rem < Lc + 0.5 * lap && rem > (last ? 0 : Lc + 8) && (last || !this.ringExitBlocked(c)) && this.ringLaneClear(c, false)) {
         c.orbit.lane = 'out'; c.orbit.wait = false; shift(0, rg.Rout); this.emit('ring', { car: c.id, to: 'outer', laps: c.orbit.laps }); return true;
       }
-      if (rem <= Lc + 10) { if (!last) { this.ringLap(c); c.orbit.laps++; } }
-      c.orbit.wait = last ? Math.max(0, rem - Lc - 20) : null; // the last lap: stop short of the change point and wait for a gap
+      if (rem <= Lc + 10) { this.ringLap(c); c.orbit.laps++; }
+      c.orbit.wait = null; // Edit 53.1: no last lap; the car orbits until its exit and the outer lane are clear (a waiting car could lock the ring)
       return false;
     }
     ringKeep(c) {
       const rg = c.path.ring, P = this.P;
       if (!rg || !c.orbit || c.orbit.lane !== 'in' || !(P['traffic.ringOrbit'] > 0)) return;
-      if (rg.exitS - c.s <= P['traffic.ringLaneChange'] + 10 && rg.variants[rg.k + 1]) { this.ringLap(c); c.orbit.laps++; }
+      if (rg.exitS - c.s <= P['traffic.ringLaneChange'] + 10) { this.ringLap(c); c.orbit.laps++; }
     }
     ringLap(c) { // the same route with one more lap: identical up to here, so s carries over
       const rg = c.path.ring, nx = rg.variants[rg.k + 1];
-      if (!nx) return false;
-      c.path = nx; return true;
+      if (nx) { c.path = nx; return true; }
+      if (rg.k < 1 || c.man) return false;
+      c.s -= rg.exitS - rg.variants[rg.k - 1].ring.exitS; return true; // Edit 53.1: past traffic.ringMaxLaps the last lap repeats (the ring is periodic, so the car stays where it is)
     }
     ringExitBlocked(c) { // a stopped car, or the dummy, on the first traffic.ringExitCheck of the exit
       const rg = c.path.ring, P = this.P, pts = [];
@@ -2450,7 +2463,7 @@
       const P = this.P, path = c.path, a = P['traffic.cornerAccel'], b = P['traffic.comfortBraking'];
       if (!(a > 0)) return Infinity;
       if (!path.rad) path.rad = path.pts.map((q, i) => { const p0 = path.pts[i - 1], p2 = path.pts[i + 1]; if (!p0 || !p2) return Infinity; const A = hyp(q[0] - p0[0], q[1] - p0[1]), Bq = hyp(p2[0] - q[0], p2[1] - q[1]), Cq = hyp(p2[0] - p0[0], p2[1] - p0[1]), cr = Math.abs((q[0] - p0[0]) * (p2[1] - p0[1]) - (q[1] - p0[1]) * (p2[0] - p0[0])); return cr < 1e-6 ? Infinity : A * Bq * Cq / (2 * cr); });
-      const s0 = c.s + c.L / 2, reach = c.v * c.v / (2 * b) + c.L, out = this.netOn() ? path.netOut : null;
+      const s0 = c.s + c.L / 2, reach = c.v * c.v / (2 * b) + c.L, out = path.netOut || null; // set only where a lane goes on next door
       let v = Infinity;
       for (let i = 0; i < path.pts.length; i++) {
         const ds = path.cum[i] - s0;
@@ -3069,7 +3082,7 @@
       return g;
     }
     netGhosts(q) {
-      const D = this.district, G = this.P['world.spawnLeadIn'], out = [];
+      const D = this.district, G = seamSight(this.P), out = [];
       for (const sd of SIDES) {
         const x = q.cell[0] + SIDE[sd][0], y = q.cell[1] + SIDE[sd][1];
         if (x < 0 || y < 0 || x >= D.cols || y >= D.rows) continue;
@@ -3240,7 +3253,7 @@
   }
 
   const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
-    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, laneEnds, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, checkZone, buildableArea, zHeight, stairRun, LEVELS3,
+    planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, laneEnds, seamSight, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, checkZone, buildableArea, zHeight, stairRun, LEVELS3,
     lanesOf, makePath, offsetPts, fillet, filletAny, arcPts, roundaboutCenter, skeletons, routeCenter, edgePoint, deckLanesOf, fleetClass, minBend }; // P4: the Turn Lab builds its tracks with these
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.DUMMIES = api;

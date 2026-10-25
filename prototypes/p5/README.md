@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52 and 53 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53 and 53.1 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -10,6 +10,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ## Why
 
+- **O3.73:** P6 builds whole bus routes. Parkland: widen the ring so highways can carry more.
 - **O3.72:** vehicles continuous across the whole map. Cars come from the start, not tile by tile; a car followed to the next tile keeps its speed. A final decision; check how before building.
 - **O3.65:** buses only on roads with centre radius 160, and on the elevated highways.
 - **O3.65:** highway traffic faster, with fewer vehicles, and better to go there.
@@ -120,9 +121,15 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 | At the start every lane runs at its steady headway; a car on each start-screen lane | district interval × 2 | — |
 | A bus enters only if its whole route keeps the bus radius (no game district does) | `vehicles.bus.minRadius` | 160 |
 | Junction waits that would close a circle are broken (after this long) | `traffic.gridlockSeconds` | 6 s |
-| Mock-up: each entry admits one car per 2 × interval | `world.district.<id>.interval` | 4.5 / 3.2 / 2.4 s |
+| Mock-up: each road entry admits one car per 2 × interval; highways run the game's rate (Edit 53.1) | `world.district.<id>.interval` | 4.5 / 3.2 / 2.4 s |
 | Mock-up: after this many seams a car takes the way out | `traffic.exitAfterSeams` | 9 |
 | Mock-up: a district runs this long before it is shown | `traffic.warmSeconds` | 30 s |
+| Cars see across a seam within the fastest highway car's stopping distance (Edit 53.1) | `traffic.hardBraking`, `world.spawnLeadIn` | 398 in the game |
+| Parkland Z1 ring radius (Edit 53.1; was 132) | `world.deckRingRadius` | 200 |
+| Parkland Z1 ring: cars going this far round use the inner lane | `world.deckRingInnerTurn` | 135° |
+| Parkland Z1 ring: entry metered at this share of the outer lane | `world.deckRingFill` | 0.5 |
+| Every ring: an inner-lane car orbits until it can leave (no last-lap wait) | `traffic.ringMaxLaps` | 3 lap paths, then repeat |
+| P6: whole bus routes per district | `world.busRoutesPerDistrict` | 1 |
 
 - **CARS LEFT:** the shift's cars not yet entered, plus those still in the district.
 - **Off:** `traffic.continuous` 0 restores P5.2, one screen at a time.
@@ -133,9 +140,12 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ![The three districts after 30 s of linked traffic: cars cross every seam](docs/p57_districts.png)
 
+![Parkland B2: the Z1 ring at radius 132, and at 200 with two lanes in use (Edit 53.1)](docs/p58_parkland_ring.png)
+
 ## Evidence
 
-- `node test_sim.js` → 101/101: P3.4 and P4 checks, plus P5 fleet, buses, highways, points and district traffic.
+- `node test_sim.js` → 102/102: P3.4 and P4 checks, plus P5 fleet, buses, highways, points and district traffic.
+- **Parkland ring (Edit 53.1), 30 min at the game's highway rate:** no lock; 36–40 cars/min through the ring (P5.3 fed it 27).
 - `node tools/continuity_report.js` → `docs/continuity_report.md`: 15 layouts, 120 s each. No jump, no car lost or doubled, no seam overlap, exits only at the district edge.
 - **Rebake (P5.2):** 15 layouts of 32 candidates at the 160 deck; bot first write-off 18–87 s.
 - **Bake:** 15 layouts kept of 30 candidates (`content/districts/districts_p5.json`, `p5-edit50-2026-10-21`). Contract clauses 25–26 hold with the P5 fleet.
@@ -182,8 +192,8 @@ node tools/continuity_report.js   # district-wide traffic: seams, start, queues,
 
 ## Open
 
-- **Ring capacity (Edit 53):** Parkland's Z1 ring takes all four highway entries. At one car per 6 s per entry it locks within minutes; the mock-up runs one per 9 s.
-- **Ground buses (Edit 53):** none until the planner builds whole bus routes.
+- **Ring capacity (Edit 53.1):** the widened ring passes about 37 cars/min of the 67 the four highways offer; the rest wait at the district edge.
+- **Bus routes (decision 264):** P6 builds them; until then no ground buses.
 - **Districts (decisions 225–255):** approve the three layouts, then P6 rebuilds the planner: a curved deck, split roads, walkways on columns, podium roofs, two escalators per highway screen.
 - **No-walkway highway (decision 223):** 128 wide, lanes and parapets only. Mocked up, not adopted.
 - **Walk share:** 0.25 stops walk-in write-offs; dashing play slows (first write-off 35 → 49 s).

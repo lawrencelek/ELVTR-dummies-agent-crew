@@ -546,7 +546,7 @@
     // highways, each with its two escalators
     let ringSim = null;
     if (D.ring && D.ring.tile === name) { // the Z1 ring (Parkland): a four-arm roundabout lifted onto the deck
-      const ov = { 'world.roundaboutRadius': P['world.deckRingRadius'] }, Pr = Object.assign({}, P, ov), geo = L.multiRoundabout(X, Pr, D.ring.arms, R96);
+      const ov = { 'world.roundaboutRadius': P['world.deckRingRadius'], 'traffic.ringInnerTurn': P['world.deckRingInnerTurn'], 'traffic.ringFill': P['world.deckRingFill'] }, Pr = Object.assign({}, P, ov), geo = L.multiRoundabout(X, Pr, D.ring.arms, R96); // Edit 53.1: two circulating lanes
       ringSim = labSim(geo, 'nobus', ov); sc.ringSim = ringSim;
       const cx = 400, cy = 320, Rc = P['world.deckRingRadius'];
       sc.stairs = escalators(cy, 1, HALF);
@@ -727,7 +727,7 @@
   // speed and plan; at a junction or roundabout screen it picks its route there. Cars within world.spawnLeadIn of a seam
   // are seen next door (drivers follow them) and drawn on both screens. Cars enter only where a road or highway crosses
   // the district boundary; the district runs traffic.warmSeconds before it is shown, so no screen waits for cars.
-  const NETS = [], SIDE = X.SIDE, OPPS = { N: 'S', S: 'N', E: 'W', W: 'E' }, GL = P['world.spawnLeadIn'];
+  const NETS = [], SIDE = X.SIDE, OPPS = { N: 'S', S: 'N', E: 'W', W: 'E' }, GL = X.seamSight(P); // Edit 53.1: within the fastest highway car's stopping distance
   const hashId = (id) => { let h = 2166136261; for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619); return h >>> 0; };
   function linkDistrict(i, scs) {
     const recs = [], at = (c, r) => scs.find((q) => q.col === c && q.row === r), admit0 = X.Sim.prototype.admit;
@@ -744,6 +744,7 @@
       const o = a.ends.out, nb = o && at(a.sc.col + SIDE[o.side][0], a.sc.row + SIDE[o.side][1]);
       if (!nb) continue;
       for (const b of recs) if (b.sc === nb && b.layer === a.layer && b.ends.in && b.ends.in.side === OPPS[o.side] && Math.abs(b.ends.in.off - o.off) < 6 && b.ends.in.tx * o.tx + b.ends.in.ty * o.ty > 0.9) { a.next.push(b); b.prev.push(a); }
+      if (a.next.length) a.path.netOut = { s: o.s, path: a.next[0].path, ds: a.next[0].ends.in.s - o.s }; // corner speed reads the next screen's bends (a ring entry, say)
     }
     const outside = (sc, e) => !at(sc.col + SIDE[e.side][0], sc.row + SIDE[e.side][1]);
     // seams to the nearest way out of the district, for drivers heading home (traffic.exitAfterSeams)
@@ -754,8 +755,7 @@
       s.deckSrc = new Set(src.filter((r) => r.deck != null).map((r) => r.i - 2));
       s.admit = function () { if (!gs.length) return; const sl = this.schedule[this.slot]; if (!sl) return; if (!gs.includes(sl.lane)) sl.lane = gs[sl.i % gs.length]; return admit0.call(this); };
       const arms = new Set(src.filter((r) => r.deck == null).map((r) => r.ends.in.side + Math.round(r.ends.in.off))).size, iv = 2 * P['world.district.' + sc.D.id + '.interval'] / Math.max(1, arms);
-      s.admissionInterval = () => iv; // each entry: one car per 2 × world.district.<id>.interval, as a game road lane
-      if (s.deckSrc.size) s.P = Object.assign({}, s.P, { 'world.deckInterval': 2 * P['world.district.' + sc.D.id + '.interval'] / s.P['traffic.deckGapScale'] }); // a highway entry too (the Z1 ring takes all four)
+      s.admissionInterval = () => iv; // each road entry: one car per 2 × world.district.<id>.interval, as a game road lane; highways run at the game's rate
       s.netSrc = src.length;
       // a bus enters only if every ground lane it can reach keeps vehicles.bus.minRadius (it cannot leave its route at a seam)
       const seen = new Set(), todo = src.filter((r) => r.deck == null).slice();
@@ -798,7 +798,7 @@
     for (const s of net.sims) s.cars = s.cars.filter((c) => { const r = recOf(s, c); if (!r || !r.next.length || c.s < r.ends.out.s) return true; moved.push([c, r]); return false; });
     for (const [c, r] of moved) {
       const nx = routeOf(r, c), ds = nx.ends.in.s - r.ends.out.s; // a junction: the car picks its route at the seam
-      Object.assign(c, { s: c.s + ds, path: nx.path, lane: nx.i, layer: nx.simLayer, deck: nx.simLayer > 0, orbit: null, letOut: null, yielding: false, hops: (c.hops || 0) + 1 });
+      Object.assign(c, { s: c.s + ds, path: nx.path, lane: nx.i, layer: nx.simLayer, deck: nx.simLayer > 0, orbit: null, letOut: null, yielding: false, ringInnerDone: false, hops: (c.hops || 0) + 1 });
       if (nx.deck != null) c.deckIdx = nx.deck;
       for (const m of [c.man, c.intent]) if (m) for (const k of ['s0', 'sTarget', 'sStop']) if (m[k] != null) m[k] += ds;
       if (c.dodge && c.dodge.s != null) c.dodge = Object.assign({}, c.dodge, { s: c.dodge.s + ds });

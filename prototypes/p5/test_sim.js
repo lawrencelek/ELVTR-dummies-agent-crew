@@ -1114,6 +1114,26 @@ check('P5.3 queue (Edit 53): a dummy just inside an edge holds traffic on the sc
   assert(queued >= 3, 'cars queued on the screen before: ' + queued);
   assert(!s.events.some((e) => e.type === 'impact'), 'the dummy seen across the edge: no hit');
 });
+check('P5.3 highway queue (Edit 53.1): a dummy on a highway just past an edge holds highway cars on the screen before; seen from stopping distance', () => {
+  assert(D.seamSight(D.REG) >= D.REG['world.spawnLeadIn'], 'seam sight at least the lead-in');
+  for (const id of ['interchange', 'campus']) {
+    const s = new Sim(id, { 'proto.layout': 1, 'proto.driver.patienceSeconds': 999 }); s.checkTerminal = () => {};
+    assert(D.seamSight(s.P) > s.P['world.spawnLeadIn'], 'highway stopping distance reaches past the lead-in');
+    const q = s.net.cells.find((z) => z.cell[0] === 1 && z.level.decks.length);
+    s.district.cur = q.cell.slice(); s.loadCell(q);
+    const ln = q.tr.lanes.find((l) => l && l.deck != null && l.prev && l.ends.in.side === 'W'), z = q.level.decks[ln.deck].z || 1;
+    const p = D.pathAt(ln.path, ln.ends.in.s + 60), fl = q.level.floors.findIndex((f) => f.kind === 'deck' && f.deck === ln.deck);
+    let queued = 0;
+    for (let i = 0; i < 60 * 40; i++) {
+      Object.assign(s.body, { x: p.x, y: p.y, vx: 0, vy: 0, health: 1e9, level: z, floor: fl, mode: 'idle', stair: null });
+      s.step({});
+      queued = Math.max(queued, ln.prev.q.tr.cars.filter((c) => c.lane === ln.prev.lane.i && c.v < 2).length);
+      if (i % 6 === 0) { const all = districtCars(s).filter((e) => e.layer > 0); for (let a = 0; a < all.length; a++) for (let b = a + 1; b < all.length; b++) if (all[a].layer === all[b].layer && Math.hypot(all[a].x - all[b].x, all[a].y - all[b].y) < 110) assert(!SAT(all[a], all[b]), id + ': ' + all[a].c.id + ' overlaps ' + all[b].c.id); }
+    }
+    assert(queued >= 3, id + ': highway cars queued on the screen before: ' + queued);
+    assert(!s.events.some((e) => e.type === 'impact'), id + ': no hit');
+  }
+});
 check('P5.3 off (Edit 53): traffic.continuous 0 keeps the P5.2 screen-by-screen traffic', () => {
   const s = new Sim('interchange', { 'proto.layout': 1, 'traffic.continuous': 0 });
   assert(!s.net && !s.netOn(), 'no district traffic');

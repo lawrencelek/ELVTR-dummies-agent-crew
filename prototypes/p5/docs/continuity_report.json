@@ -16,7 +16,7 @@
    "queued": 6,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.43
+   "msPerTick": 0.474
   },
   {
    "district": "riverside",
@@ -34,7 +34,7 @@
    "queued": 5,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.403
+   "msPerTick": 0.482
   },
   {
    "district": "riverside",
@@ -52,14 +52,14 @@
    "queued": 5,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.483
+   "msPerTick": 0.573
   },
   {
    "district": "market",
    "layout": 1,
    "startCars": 2,
    "prefill": 14,
-   "crossings": 290,
+   "crossings": 288,
    "maxJump": 0.32,
    "seamOverlaps": 0,
    "exitsInside": 0,
@@ -70,7 +70,7 @@
    "queued": 3,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.401
+   "msPerTick": 0.485
   },
   {
    "district": "market",
@@ -88,7 +88,7 @@
    "queued": 6,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.462
+   "msPerTick": 0.558
   },
   {
    "district": "market",
@@ -106,7 +106,7 @@
    "queued": 4,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.36
+   "msPerTick": 0.491
   },
   {
    "district": "interchange",
@@ -124,7 +124,7 @@
    "queued": 7,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.437
+   "msPerTick": 1.032
   },
   {
    "district": "interchange",
@@ -142,7 +142,7 @@
    "queued": 6,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.506
+   "msPerTick": 1.177
   },
   {
    "district": "interchange",
@@ -160,7 +160,7 @@
    "queued": 5,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.411
+   "msPerTick": 0.589
   },
   {
    "district": "cbd",
@@ -178,7 +178,7 @@
    "queued": 6,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.641
+   "msPerTick": 0.744
   },
   {
    "district": "cbd",
@@ -196,7 +196,7 @@
    "queued": 7,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.537
+   "msPerTick": 0.628
   },
   {
    "district": "cbd",
@@ -214,7 +214,7 @@
    "queued": 5,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.451
+   "msPerTick": 0.591
   },
   {
    "district": "campus",
@@ -229,10 +229,10 @@
    "admitted": 65,
    "exited": 38,
    "live": 27,
-   "queued": 9,
+   "queued": 8,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.4
+   "msPerTick": 0.483
   },
   {
    "district": "campus",
@@ -250,7 +250,7 @@
    "queued": 5,
    "queueOverlaps": 0,
    "queueHits": 1,
-   "msPerTick": 0.34
+   "msPerTick": 0.454
   },
   {
    "district": "campus",
@@ -268,7 +268,7 @@
    "queued": 7,
    "queueOverlaps": 0,
    "queueHits": 0,
-   "msPerTick": 0.394
+   "msPerTick": 0.506
   }
  ],
  "follow": [

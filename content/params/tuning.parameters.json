@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit53-2026-10-25",
+ "registryVersion": "edit53.1-2026-10-25",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -5214,10 +5214,10 @@
    "group": "World",
    "owner": "World",
    "label": "Elevated ring radius (Z1)",
-   "description": "Centre-line radius of a Z1 elevated roundabout (Parkland). Highway arms join it on fillets of world.roundaboutEntryRadius. One way round, anticlockwise on screen.",
+   "description": "Centre-line radius of a Z1 elevated roundabout (Parkland). Highway arms join it on fillets of world.roundaboutEntryRadius. One way round, anticlockwise on screen. Edit 53.1: 132 → 200 (user, 25 October: \"widen the ring so highways can carry more\"). Outer lane 228, inner 172.",
    "unit": "world units",
    "type": "number",
-   "default": 132,
+   "default": 200,
    "status": "proposed",
    "source": "Edit 51 (22 October), P5 cityscape mock-up",
    "editable": true,
@@ -5848,7 +5848,7 @@
    "group": "Traffic",
    "owner": "Traffic",
    "label": "Ring laps",
-   "description": "Extra laps a car may orbit on the inner lane. After the last, it stops at its change point and waits for a gap; outer-lane cars let it out.",
+   "description": "Lap paths built per ring route. Edit 53.1: past the last, the last lap repeats; a car orbits until its exit and the outer lane are clear (no last-lap wait).",
    "unit": "laps",
    "type": "number",
    "default": 3,
@@ -6121,6 +6121,115 @@
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Steady flow on the one snake road (mock-up)"
+  },
+  {
+   "id": "traffic.ringInnerTurn",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Inner lane by turn",
+   "description": "A car going this far round a ring (degrees from its join to its exit) takes the inner lane after joining, then moves out in the half lap before its exit. 0: off; the inner lane is for orbiting only.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 0,
+   "status": "proposed",
+   "source": "Edit 53.1 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 360
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two circulating lanes where a ring asks for them"
+  },
+  {
+   "id": "world.deckRingInnerTurn",
+   "group": "World",
+   "owner": "World",
+   "label": "Z1 ring: inner lane by turn",
+   "description": "Parkland Z1 ring: cars going to the second exit or beyond (135° or more round) circulate on the inner lane.",
+   "unit": "degrees",
+   "type": "number",
+   "default": 135,
+   "status": "proposed",
+   "source": "Edit 53.1 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 360
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The widened ring uses both lanes (user, 25 October)"
+  },
+  {
+   "id": "traffic.ringFill",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring fill limit",
+   "description": "A car joins a ring only while the cars on it (length plus traffic.minimumGap each) fill less than this share of the outer lane. 0: off.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0,
+   "status": "proposed",
+   "source": "Edit 53.1 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A full ring locks; a metered ring keeps moving and queues wait on the arms"
+  },
+  {
+   "id": "world.deckRingFill",
+   "group": "World",
+   "owner": "World",
+   "label": "Z1 ring: fill limit",
+   "description": "Parkland Z1 ring: entry metering at half the outer lane.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 53.1 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Four highways at the game rate without a lock"
+  },
+  {
+   "id": "world.busRoutesPerDistrict",
+   "group": "World",
+   "owner": "World",
+   "label": "Bus routes per district",
+   "description": "The P6 planner builds at least this many whole bus routes per district, edge to edge, every bend at vehicles.bus.minRadius or wider, no ring. Buses enter only on bus routes.",
+   "unit": "routes",
+   "type": "number",
+   "default": 1,
+   "status": "user-confirmed",
+   "source": "Edit 53.1 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "planned-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Ground buses back in the game (user, 25 October)"
   }
  ],
  "tables": {
