@@ -22,6 +22,8 @@
   figcaption ul { margin: 4px 0 0; padding-left: 18px; }
   .plus { color: var(--good); } .minus { color: var(--warn); }
   .live { color: var(--accent); margin-top: 4px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 1px; }
+  .yes { background: #173a26; color: var(--good); } .no { background: #3a2417; color: var(--warn); } .some { background: #16304a; color: var(--accent); }
   table { border-collapse: collapse; width: 100%; font-size: 12px; }
   th, td { border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
   th { color: var(--dim); font-weight: 600; }
@@ -36,28 +38,29 @@
 <header>
   <h1>A 45° crossroads · four engineered options</h1>
   <p>Example only, not in the districts. A W–E road (priority) crossed by a 45° road, in game art with live P5 traffic. Road design guides want crossings at 90°, accept 75° and realign anything under 60°. A 45° four-way crossing is below every guide's minimum. These are the four standard ways out.</p>
+  <p><b style="color:var(--ink)">Decided (user, 25 October):</b> A is the rule. C only in a district's centre tile (B2). D only where a level design names it. B is rejected.</p>
 </header>
 <main>
   <section>
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><button id="play">Pause</button><span class="note" style="margin:0">Each option runs its own traffic. Cars enter at its edges about every 1.6 s.</span></div>
     <div class="opts">
-      <figure><canvas id="x0"></canvas><figcaption><b>Today: crossroads at 45°</b>
+      <figure><canvas id="x0"></canvas><figcaption><b>Today: crossroads at 45°<span class="tag no">Retired</span></b>
         Four arms meet at one point. The 45° road gives way.
         <ul><li class="minus">Two turns are 135° hairpins; drivers on the 45° road look back over their shoulder.</li><li class="minus">Paths cross in the middle of a wide, skewed box.</li></ul>
         <div class="live" id="l0"></div></figcaption></figure>
-      <figure><canvas id="x1"></canvas><figcaption><b>A · Realigned to 90°</b>
+      <figure><canvas id="x1"></canvas><figcaption><b>A · Realigned to 90°<span class="tag yes">Adopted: the rule</span></b>
         The 45° road bends to meet the W–E road square, then bends back out. The standard fix below 60°.
         <ul><li class="plus">One junction, every turn 90°, clear sightlines.</li><li class="minus">Needs land for the reverse curves (R 224 bends); the 45° road slows for them.</li></ul>
         <div class="live" id="l1"></div></figcaption></figure>
-      <figure><canvas id="x2"></canvas><figcaption><b>B · Staggered T junctions</b>
+      <figure><canvas id="x2"></canvas><figcaption><b>B · Staggered T junctions<span class="tag no">Rejected</span></b>
         The crossing splits into two T junctions 256 apart. Crossing traffic turns left onto the W–E road, then right off it (the preferred stagger, keep right).
         <ul><li class="plus">Only three-way junctions, each at 90°; one conflict at a time.</li><li class="minus">Crossing traffic shares the W–E road for a block; left turns queue on the link.</li></ul>
         <div class="live" id="l2"></div></figcaption></figure>
-      <figure><canvas id="x3"></canvas><figcaption><b>C · Roundabout, skew kept</b>
+      <figure><canvas id="x3"></canvas><figcaption><b>C · Roundabout, skew kept<span class="tag some">Centre tile (B2) only</span></b>
         A four-arm ring takes the arms as they come. Nothing crosses; everything merges.
         <ul><li class="plus">No crossing conflicts; every turn allowed; the game's ring rules apply.</li><li class="minus">Arms 45° apart get short, tight entries (R 64). Takes the most space.</li></ul>
         <div class="live" id="l3"></div></figcaption></figure>
-      <figure><canvas id="x4"></canvas><figcaption><b>D · Flyover (grade separated)</b>
+      <figure><canvas id="x4"></canvas><figcaption><b>D · Flyover (grade separated)<span class="tag some">Named level designs only</span></b>
         The 45° road rises on a Z1 deck and passes over. The interchange answer for heavy traffic.
         <ul><li class="plus">No conflict at all; uses the game's Z1 highway kit and its drop-onto-cars play.</li><li class="minus">No turns between the two roads without ramps or link roads elsewhere.</li></ul>
         <div class="live" id="l4"></div></figcaption></figure>

@@ -5135,8 +5135,8 @@
   const DISTRICTS = [
     { id: 'parkland', name: 'Parkland', quota: P['world.district.parkland.quota'], storeys: [2, 5], start: ['A1', 'top'],
       mood: 'Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath.',
-      roads: [{ id: 'boulevard', pts: [[40, -200], [2360, 2120]] }, { id: 'loop', pts: fil([[400, 160], [400, 1600], [2240, 1600], [2240, 1200], [1760, 720], [1760, -200]], RB) }],
-      junctions: [{ tile: 'A1', at: [400, 160], major: 'boulevard' }, { tile: 'C3', at: [240, 320], major: 'boulevard' }],
+      roads: [{ id: 'boulevard', pts: [[40, -200], [2360, 2120]] }, { id: 'loop', pts: fil([[400, 160], [400, 1600], [1560, 1600], [2100, 1060], [1760, 720], [1760, -200]], RB) }], // Edit 55.1: realigned to cross the boulevard at 90° (option A)
+      junctions: [{ tile: 'A1', at: [400, 160], major: 'boulevard' }, { tile: 'C3', at: [100, 180], major: 'boulevard' }],
       ring: { tile: 'B2', z: 1, arms: ['W', 'N', 'E', 'S'] },
       decks: [{ hz: true, at: 960, z: 1 }, { hz: false, at: 1200, z: 1 }], park: true,
       tiles: {
@@ -5145,10 +5145,10 @@
         C1: ['The avenue under a Z1 footbridge: escalators at both ends, drop onto cars', 'Lantern pavilion', 'both'],
         A2: ['The avenue passes under the Z1 highway at 90°; escalators north (west end) and south (east end)', 'Canal along the highway', 'both'],
         B2: ['Four-arm Z1 roundabout (W, N, E, S). Give way to the ring; the inner lane is the orbit lane. The boulevard passes beneath, through the hole', 'Reflecting pools under the ring', 'both'],
-        C2: ['The avenue crosses under the Z1 highway at 45°', 'Amphitheatre terraces', 'both'],
+        C2: ['The avenue comes up from the crossing at 45°, turns 90° and passes under the Z1 highway at 45°', 'Amphitheatre terraces', 'both'],
         A3: ['A wide R160 bend (buses may use it)', 'Belvedere: four tiers and a stair up to a lawn, the monolith orchard on top', 'both'],
-        B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Sculpture court: a large obelisk, two rings, a row of lit bollards', 'both'],
-        C3: ['Crossroads at 45°: the street gives way to the boulevard; then a wide R160 bend north', 'Sculpture court at grade: a large arch, two medium pieces, a row of lit bollards', 'scenery'] } },
+        B3: ['The garden street passes under the Z1 highway at 90°; escalators. At the east edge it bends 45° toward the crossing', 'Sculpture court: a large obelisk, two rings, a row of lit bollards', 'both'],
+        C3: ['Crossroads realigned to 90°: the street bends 45° to cross the boulevard square, and gives way', 'Sculpture court at grade: a large arch, two medium pieces, a row of lit bollards', 'scenery'] } },
     { id: 'circus', name: 'Circus', quota: P['world.district.circus.quota'], storeys: [6, 14], start: ['A2', 'west'],
       mood: 'Busy and circling, walled by monumental concrete. An octagon of streets rings the four-arm roundabout.',
       roads: [{ id: 'octagon', pts: loop2(fil([[800, 480], [560, 480], [480, 560], [480, 1360], [560, 1440], [1840, 1440], [1920, 1360], [1920, 560], [1840, 480], [800, 480]])) },
@@ -5294,6 +5294,10 @@
     const name = TILE(col, row), ox = col * W, oy = row * H, rng = PIX.rng(1000 + col * 37 + row * 101 + D.id.length * 7), plan = D.tiles[name];
     const sc = { D, name, col, row, props: [], layers: [], tops: [], note: plan[0] + '. Landmark: ' + plan[1] + '.', stairs: [], reserve: [] };
     for (const rb of [D.roundabout, D.ring]) if (rb && rb.arms.length < P['world.roundaboutMinArms']) console.warn('a roundabout with too few arms', D.id); // Edit 52
+    if (D.kit !== 'example') { // Edit 55.1 (user, 25 October): a 45° four-way crossing is realigned to 90° (A); a ring keeps a 45° skew only in the centre tile (C); a flyover only where the plan names it (D)
+      for (const rb of [D.roundabout, D.ring]) if (rb && rb.tile === name && rb.arms.some((k) => k.length === 2) && name !== 'B2') console.warn('a skewed roundabout outside the centre tile', D.id, name);
+      if (D.flyover && !D.flyoverNamed) console.warn('a 45° flyover the plan does not name', D.id);
+    }
     const runs = [];
     for (const r of D.roads) { const run = clipRun(shift(r.pts, -ox, -oy), -200, -200, W + 200, H + 200); if (run) runs.push({ id: r.id, pts: run }); }
     const decks = D.decks.map((d) => ({ hz: d.hz, z: d.z, off: d.hz ? d.at - oy : d.at - ox })).filter((d) => d.off > -HALF && d.off < (d.hz ? H : W) + HALF);
@@ -5318,6 +5322,8 @@
       roadD = (k) => rf.D[k];
     } else if (J) { // a junction at 90° or 45°: the minor road gives way (Edit 49.3)
       const { arms, major } = junctionArms(runs, J.at, J.major), geo = L.junction(X, P, arms, major, P['world.junctionTurnRadius']), s = labSim(geo, 'nobus', {});
+      const dirs = Object.values(arms).map((A) => Math.atan2(A[1][1] - A[0][1], A[1][0] - A[0][0]) * 180 / Math.PI); // Edit 55.1: four arms meet square
+      if (dirs.length >= 4 && dirs.some((a) => dirs.some((b) => { const d = Math.abs(((a - b) % 90 + 90) % 90); return Math.min(d, 90 - d) > 2; }))) console.warn('a four-way crossing off 90° (realign: option A)', D.id, name);
       sims.push(s); sc.lab = s;
       ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), patches }), P, 29 + col * 7 + row * 13);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })), OUTER + 80);
@@ -5402,11 +5408,11 @@
     if (name === 'B1') R.push([150, 24, 160, 560]);
     if (name === 'C1') R.push([440, 120, 240, 160], [0, 280, 440, 80]);
     if (name === 'A2') R.push([500, 416, 300, 72]);
-    if (name === 'C2') R.push([40, 440, 340, 190]);
+    if (name === 'C2') R.push([440, 40, 340, 190]);
     if (name === 'A3') R.push([496, 20, 288, 212]);
     if (name === 'B3') R.push([90, 430, 200, 190]);
-    if (name === 'C3') R.push([290, 24, 270, 216]);
-    const ANCHOR = { A1: [24, 300, 300, 280], B1: [150, 24, 160, 560], B2: [200, 100, 400, 440], C2: [40, 440, 340, 190], A3: [496, 20, 288, 212], C3: [290, 24, 270, 216] }; // Edit 55: the tile's set piece is its large unit
+    if (name === 'C3') R.push([430, 50, 280, 230]);
+    const ANCHOR = { A1: [24, 300, 300, 280], B1: [150, 24, 160, 560], B2: [200, 100, 400, 440], C2: [440, 40, 340, 190], A3: [496, 20, 288, 212], C3: [430, 50, 280, 230] }; // Edit 55: the tile's set piece is its large unit
     const left = gardenPlan(B, { bedOk: (wx, wy) => free(wx, wy, 8), rng, leds: LEDS, pools: name !== 'B2', anchor: ANCHOR[name] || null });
     gardenSculptures(B, (wx, wy) => free(wx, wy, 16), null, rng, 2, left);
     const u = (v) => v / U;
@@ -5421,7 +5427,7 @@
       block(B, u(480), u(150), u(640), u(250), 4, 0, 10, 'conc', LEDS[0], true); block(B, u(500), u(165), u(620), u(235), 3, 10, 2, 'grass', LEDS[3 % LEDS.length], false);
     }
     if (name === 'A2') poolFP(B, (wx, wy, ins) => chamf(510, 424, 800 + 40, 480, 8)(wx, wy, ins)); // canal along the highway
-    if (name === 'C2') { for (let i = 0; i < 4; i++) block(B, u(60 + i * 24), u(460 + i * 32), u(360 - i * 24), u(620), 10, 0, 3 + i * 3, i === 3 ? 'grass' : 'conc', i === 0 ? LEDS[0] : null, i === 0); sc.terraces = true; } // amphitheatre terraces
+    if (name === 'C2') { for (let i = 0; i < 4; i++) block(B, u(460 + i * 24), u(60 + i * 32), u(760 - i * 24), u(220), 10, 0, 3 + i * 3, i === 3 ? 'grass' : 'conc', i === 0 ? LEDS[0] : null, i === 0); sc.terraces = true; } // amphitheatre terraces
     if (name === 'A3') { // Edit 54: the belvedere. Four one-storey tiers to a lawn, a stair up the south face, the monolith orchard on top
       const t = EXT(P['world.storeyHeight']);
       for (let i = 0; i < 4; i++) block(B, u(504 + i * 24), u(28 + i * 16), u(776 - i * 24), u(224 - i * 8), 12 - i * 2, i * t, t, i === 3 ? 'grass' : 'conc', i === 3 ? LEDS[0] : null, i === 0);
@@ -5429,7 +5435,7 @@
       const st = { x: 624, y: 196, w: SWD, h: 48, axis: 'y', low: 244, high: 196, side: 0, z: 1 }; sc.props.push({ spr: PIX.stairs(st, 0, 4 * t), x: u(st.x), y: u(st.y), by: 244 }); sc.terraces = true;
     }
     if (name === 'B3') sculptureCourt(B, u(96), u(436), u(284), u(616), 10, 'obelisk', ['ring', 'ring'], LEDS[0]); // Edit 55: the obelisk large, two rings, a row of lit bollards
-    if (name === 'C3') sculptureCourt(B, u(300), u(32), u(552), u(232), 20, 'arch', ['cubes', 'fins'], led(3)); // Edit 55: at grade (nothing below ground); its south-west side runs parallel to the boulevard
+    if (name === 'C3') sculptureCourt(B, u(440), u(60), u(700), u(270), 20, 'arch', ['cubes', 'fins'], led(3)); // Edit 55: at grade (nothing below ground); Edit 55.1: east of the realigned crossing
   }
   // ---------- Circus: brutalist towers, the octagon, the roundabout
   function circusTile(sc, B, name, roadOk, free, rng, lab, runs) {

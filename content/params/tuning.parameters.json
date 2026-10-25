@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit55-2026-10-25",
+ "registryVersion": "edit55.1-2026-10-25",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -6306,7 +6306,7 @@
    "unit": "world units",
    "type": "number",
    "default": 256,
-   "status": "proposed",
+   "status": "retired (user, 25 October): staggered T junctions are not used; only options A and C were accepted",
    "source": "Edit 55 (25 October)",
    "editable": true,
    "protectedReason": null,

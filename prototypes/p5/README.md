@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54 and 55 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55 and 55.1 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -126,7 +126,10 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ## A 45° crossroads: four options (example, Edit 55)
 
-`crossing_options.html`: today's 45° four-way crossing and four treatments from road design practice, one screen each with live traffic. Not in the districts; the user picks (open question D31).
+`crossing_options.html`: today's 45° four-way crossing and four treatments from road design practice, one screen each with live traffic.
+
+- **Decided (Edit 55.1):** A is the rule. C only in a district's centre tile (B2). D only where a level design names it. B is not used.
+- **Parkland C3:** realigned. The loop bends 45° at B3's east edge, crosses the boulevard at 90°, and turns 90° in C2. The mock-up warns on any four-way crossing off 90°.
 
 | Option | Conflict points | Cars out /min at 1.8 s | Longest wait on the 45° road |
 |---|---:|---:|---:|
@@ -137,6 +140,8 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 | D · Flyover | 0 | 32–33 | none |
 
 ![Today and the four options](docs/p60_crossing_options.png)
+
+![Parkland with the C3 crossing realigned to 90° (Edit 55.1)](docs/p61_parkland_realigned.png)
 
 ## District traffic (P5.3, Edit 53)
 
@@ -225,7 +230,6 @@ node tools/continuity_report.js   # district-wide traffic: seams, start, queues,
 
 ## Open
 
-- **D31 (Edit 55):** which treatment for a 45° crossroads: realign, stagger, roundabout or flyover.
 
 - **Ring capacity (Edit 53.1):** the widened ring passes about 37 cars/min. Edit 54 feeds Parkland's highways one car per 8 s per end, so nothing waits.
 - **Portals and roof links (Edit 54):** mock-up only. P6: towers may straddle a deck band as portals; a bridge floor joins roof and deck.
