@@ -1152,6 +1152,19 @@ check('Roundabout lanes (Edit 54): only a car taking the third exit or later (27
     else assert(s.cars.every((c) => (c.stopT || 0) < 20), 'the queue behind the blocked exit clears within 40 s of the dummy leaving');
   }
 });
+check('Crossing options (Edit 55, example only): each 45° crossing treatment builds every route and runs without a lock; the stagger gives way once, at 90°', () => {
+  const LB = require('./lab.js'), P = Object.assign({}, D.REG, D.PROTO, D.OVERRIDES);
+  for (const k of ['cross45', 'cross45realign', 'cross45stagger', 'cross45ring']) {
+    const pc = LB.PIECES[k], q = { R: P['world.junctionTurnRadius'], Rf: 96 }, g = pc.build(D, q, P);
+    assert.strictEqual(g.routes.length, 12, k + ': every route between four arms');
+    const r = LB.run(D, k, q, { fleet: 'nobus', interval: 2.5, seconds: 90, seed: 11 });
+    assert(r.jamAt == null && r.overlapS === 0, k + ': no lock, no overlap');
+  }
+  const g = LB.PIECES.cross45stagger.build(D, { R: P['world.junctionTurnRadius'] }, P);
+  assert(g.info.every((i) => i.turn <= 90), 'every turn at the two T junctions is 90° or straight');
+  g.lanes.forEach((l, i) => { if (['NW', 'SE'].includes(g.info[i].from)) assert(l.junction.rank === 2 && l.junction.line != null, 'the crossing road gives way at its first T'); });
+  assert.strictEqual(P['world.junctionStagger'], 256);
+});
 check('P5.3 off (Edit 53): traffic.continuous 0 keeps the P5.2 screen-by-screen traffic', () => {
   const s = new Sim('interchange', { 'proto.layout': 1, 'traffic.continuous': 0 });
   assert(!s.net && !s.netOn(), 'no district traffic');

@@ -1,0 +1,526 @@
+{
+ "geo": [
+  {
+   "name": "Today: crossroads at 45°",
+   "points": 32,
+   "minR": 68
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "points": 32,
+   "minR": 68
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "points": 22,
+   "minR": 68
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "points": 8,
+   "minR": 36
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "points": 0,
+   "minR": null
+  }
+ ],
+ "rows": [
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 2.5,
+   "seed": 11,
+   "outPerMin": 20.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 23.4,
+   "minorWait": 23.4
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 2.5,
+   "seed": 23,
+   "outPerMin": 19.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 22.2,
+   "minorWait": 22.2
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 2.5,
+   "seed": 37,
+   "outPerMin": 22.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 18.8,
+   "minorWait": 18.8
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 1.8,
+   "seed": 11,
+   "outPerMin": 21.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 24.1,
+   "minorWait": 24.1
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 1.8,
+   "seed": 23,
+   "outPerMin": 21.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 39.6,
+   "minorWait": 39.6
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 1.8,
+   "seed": 37,
+   "outPerMin": 22.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 36.1,
+   "minorWait": 36.1
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 1.2,
+   "seed": 11,
+   "outPerMin": 24.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 23.5,
+   "minorWait": 23.5
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 1.2,
+   "seed": 23,
+   "outPerMin": 23.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 31,
+   "minorWait": 31
+  },
+  {
+   "name": "Today: crossroads at 45°",
+   "piece": "cross45",
+   "interval": 1.2,
+   "seed": 37,
+   "outPerMin": 23.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 30.6,
+   "minorWait": 30.6
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 2.5,
+   "seed": 11,
+   "outPerMin": 21.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 20.8,
+   "minorWait": 20.8
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 2.5,
+   "seed": 23,
+   "outPerMin": 20,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 29.9,
+   "minorWait": 29.9
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 2.5,
+   "seed": 37,
+   "outPerMin": 21,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 34.1,
+   "minorWait": 34.1
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 1.8,
+   "seed": 11,
+   "outPerMin": 22,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 28.8,
+   "minorWait": 28.8
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 1.8,
+   "seed": 23,
+   "outPerMin": 21,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 28.5,
+   "minorWait": 28.5
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 1.8,
+   "seed": 37,
+   "outPerMin": 22.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 33.1,
+   "minorWait": 33.1
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 1.2,
+   "seed": 11,
+   "outPerMin": 25,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 27.6,
+   "minorWait": 27.6
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 1.2,
+   "seed": 23,
+   "outPerMin": 22.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 33.1,
+   "minorWait": 33.1
+  },
+  {
+   "name": "A · Realigned to 90°",
+   "piece": "cross45realign",
+   "interval": 1.2,
+   "seed": 37,
+   "outPerMin": 23.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 39.4,
+   "minorWait": 39.4
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 2.5,
+   "seed": 11,
+   "outPerMin": 19.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 43.5,
+   "minorWait": 43.5
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 2.5,
+   "seed": 23,
+   "outPerMin": 20,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 21.1,
+   "minorWait": 21.1
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 2.5,
+   "seed": 37,
+   "outPerMin": 21,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 25.1,
+   "minorWait": 25.1
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 1.8,
+   "seed": 11,
+   "outPerMin": 22,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 42.3,
+   "minorWait": 42.3
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 1.8,
+   "seed": 23,
+   "outPerMin": 21.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 27.5,
+   "minorWait": 27.5
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 1.8,
+   "seed": 37,
+   "outPerMin": 24,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 41.7,
+   "minorWait": 41.7
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 1.2,
+   "seed": 11,
+   "outPerMin": 22,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 34.2,
+   "minorWait": 34.2
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 1.2,
+   "seed": 23,
+   "outPerMin": 20.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 28.5,
+   "minorWait": 28.5
+  },
+  {
+   "name": "B · Staggered T junctions",
+   "piece": "cross45stagger",
+   "interval": 1.2,
+   "seed": 37,
+   "outPerMin": 25,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 33.8,
+   "minorWait": 33.8
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 2.5,
+   "seed": 11,
+   "outPerMin": 21.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 5.5,
+   "minorWait": 5.5
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 2.5,
+   "seed": 23,
+   "outPerMin": 20.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 7.7,
+   "minorWait": 7.7
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 2.5,
+   "seed": 37,
+   "outPerMin": 21.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 13.2,
+   "minorWait": 13.2
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.8,
+   "seed": 11,
+   "outPerMin": 26.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 9,
+   "minorWait": 9
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.8,
+   "seed": 23,
+   "outPerMin": 23,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 10.3,
+   "minorWait": 10.3
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.8,
+   "seed": 37,
+   "outPerMin": 27.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 10.3,
+   "minorWait": 10.3
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.2,
+   "seed": 11,
+   "outPerMin": 27.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 11.5,
+   "minorWait": 11.5
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.2,
+   "seed": 23,
+   "outPerMin": 25,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 14.2,
+   "minorWait": 14.2
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.2,
+   "seed": 37,
+   "outPerMin": 29.3,
+   "jam": true,
+   "overlapS": 0,
+   "maxStop": 11.3,
+   "minorWait": 11.3
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 2.5,
+   "seed": 11,
+   "outPerMin": 23,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 2.5,
+   "seed": 23,
+   "outPerMin": 23.4,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 2.5,
+   "seed": 37,
+   "outPerMin": 23.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 1.8,
+   "seed": 11,
+   "outPerMin": 32,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 1.8,
+   "seed": 23,
+   "outPerMin": 31.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 1.8,
+   "seed": 37,
+   "outPerMin": 32.6,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 1.2,
+   "seed": 11,
+   "outPerMin": 47,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 1.2,
+   "seed": 23,
+   "outPerMin": 47,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  },
+  {
+   "name": "D · Flyover (grade separated)",
+   "piece": "cross45flyMajor+cross45flyDiag",
+   "interval": 1.2,
+   "seed": 37,
+   "outPerMin": 48.3,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 0,
+   "minorWait": 0
+  }
+ ]
+}

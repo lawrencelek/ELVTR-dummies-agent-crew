@@ -39,7 +39,15 @@
     y45fork: { name: 'Y junction, 45°, no hairpin turns (fork)', params: ['R'], defaults: { R: 'world.junctionTurnRadius' }, build: (X, q, P) => junction(X, P, { W: ARM.W(), E: ARM.E(), SW: ARM.SW() }, ['W', 'E'], q.R, 100) },
     tee45: { name: 'T junction, 45° road squared off', params: ['R', 'run'], defaults: { R: 'world.junctionTurnRadius', run: 'world.junctionApproach' }, build: (X, q, P) => junction(X, P, { W: ARM.W(), E: ARM.E(), SQ: ARM.SQ(X, Math.max(q.run != null ? q.run : P['world.junctionApproach'], q.R + P['world.turnRadiusWide'] * Math.tan(Math.PI / 8) + 8), P['world.turnRadiusWide']) }, ['W', 'E'], q.R) },
     roundabout45: { name: 'Roundabout, three arms, one at 45° (W, E, SW)', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'E', 'SW'], q.Rf) },
+    // Edit 55 (example only): a 45° road crossing a W–E road, today and four engineered treatments
+    cross45: { name: 'Crossroads at 45° (W, E, NW, SE): today', params: ['R'], defaults: { R: 'world.junctionTurnRadius' }, build: (X, q, P) => junction(X, P, { W: ARM.W(), E: ARM.E(), NW: ARM.D([-D45, -D45]), SE: ARM.D([D45, D45]) }, ['W', 'E'], q.R) },
+    cross45realign: { name: 'A · Realigned to 90°: the 45° road bends in', params: ['R'], defaults: { R: 'world.junctionTurnRadius' }, build: (X, q, P) => { const run = squareRun(P, q.R); return junction(X, P, { W: ARM.W(), E: ARM.E(), N: ARM.bent(X, [JX, JY], [0, -1], [-D45, -D45], run, P['world.turnRadiusWide']), S: ARM.bent(X, [JX, JY], [0, 1], [D45, D45], run, P['world.turnRadiusWide']) }, ['W', 'E'], q.R); } },
+    cross45stagger: { name: 'B · Staggered: two T junctions, left then right', params: ['R'], defaults: { R: 'world.junctionTurnRadius' }, build: (X, q, P) => staggered(X, P, P['world.junctionStagger'], q.R) },
+    cross45ring: { name: 'C · Roundabout: four arms, the skew kept', params: ['Rf'], build: (X, q, P) => multiRoundabout(X, P, ['W', 'NW', 'E', 'SE'], q.Rf) },
+    cross45flyMajor: { name: 'D · Flyover: the W–E road at grade', params: [], build: () => ({ center: [[-LEAD, JY], [W + LEAD, JY]] }) },
+    cross45flyDiag: { name: 'D · Flyover: the 45° road on the deck', params: [], build: () => ({ center: [toEdge([-D45, -D45], [JX, JY]), toEdge([D45, D45], [JX, JY])] }) },
   };
+  const squareRun = (P, R) => Math.max(P['world.junctionApproach'], R + P['world.turnRadiusWide'] * Math.tan(Math.PI / 8) + 8); // straight before J on a squared-off 45° road
   // ---------- P4 (Edit 49.3): junctions. Arms run out from the junction point J. A route is arm A reversed, a fillet of
   // radius R at J, then arm B. Traffic keeps right. Rank 0: the major road, through and turning right off it. Rank 1:
   // turning left off the major road (gives way to oncoming traffic). Rank 2: the minor road (gives way to both).
@@ -56,7 +64,30 @@
     W: () => [[JX, JY], toEdge([-1, 0], [JX, JY])], E: () => [[JX, JY], toEdge([1, 0], [JX, JY])], S: () => [[JX, JY], toEdge([0, 1], [JX, JY])],
     SW: () => [[JX, JY], toEdge([-D45, D45], [JX, JY])],
     SQ: (X, run, Rb) => { const b = [JX, JY + run]; return X.filletAny([[JX, JY], b, toEdge([-D45, D45], b)], Rb, 0); }, // 45° road, straight for `run` before J
+    D: (dir, J) => { J = J || [JX, JY]; return [J, toEdge(dir, J)]; }, // Edit 55: any direction out of J
+    bent: (X, J, ax, dg, run, Rb) => { const b = [J[0] + ax[0] * run, J[1] + ax[1] * run]; return X.filletAny([J, b, toEdge(dg, b)], Rb, 0); }, // Edit 55: square to the major road for `run`, then out at 45°
   };
+  // Edit 55: a staggered crossing. The 45° road meets the W–E road at two T junctions `stagger` apart, each squared to 90°.
+  // Keep right: the NW arm meets at the west T, the SE arm at the east T, so the crossing road turns left onto the major
+  // road, then right off it (the preferred stagger). Routes through both junctions give way once, at their first.
+  function staggered(X, P, stagger, R) {
+    const T1 = [JX - stagger / 2, JY], T2 = [JX + stagger / 2, JY], run = squareRun(P, R), Rb = P['world.turnRadiusWide'];
+    const at = { W: { T: 0, A: ARM.D([-1, 0], T1) }, NW: { T: 0, A: ARM.bent(X, T1, [0, -1], [-D45, -D45], run, Rb) }, E: { T: 1, A: ARM.D([1, 0], T2) }, SE: { T: 1, A: ARM.bent(X, T2, [0, 1], [D45, D45], run, Rb) } };
+    const link = [[T1, T2], [T2, T1]], major = ['W', 'E'], lanes = [], roads = [], routes = [], info = [];
+    const turnOf = (A, B) => { const u = unit(A[0], A[1]), v = unit(B[0], B[1]); return { th: Math.acos(Math.max(-1, Math.min(1, -(u[0] * v[0] + u[1] * v[1])))) * 180 / Math.PI, right: (-u[0]) * v[1] - (-u[1]) * v[0] > 1e-9 }; };
+    for (const a of Object.keys(at)) for (const b of Object.keys(at)) {
+      if (a === b) continue;
+      const A = at[a].A, B = at[b].A; let center, turns;
+      if (at[a].T === at[b].T) { center = jRoute(X, A, B, R); turns = [turnOf(A, B)]; }
+      else { const L1 = link[at[a].T], L2 = link[at[b].T], p1 = jRoute(X, A, L1, R), p2 = jRoute(X, L2, B, R); if (!p1 || !p2) continue; center = p1.slice(0, -1).concat(p2.slice(1)); turns = [turnOf(A, L1), turnOf(L2, B)]; }
+      if (!center) continue;
+      const left = turns.some((t) => t.th > 1 && !t.right), rank = !major.includes(a) ? 2 : left ? 1 : 0;
+      lanes.push(X.lanesOf(center, P)[0]); roads.push(center); routes.push(a + '→' + b); info.push({ from: a, to: b, rank, turn: Math.round(Math.max(...turns.map((t) => t.th))) });
+    }
+    conflictZones(X, lanes, info, P);
+    const lw = P['world.laneWidth'], majorLine = at.W.A.slice().reverse().concat(at.E.A);
+    return { center: roads[0], ring: null, lanes, roads, routes, info, arms: [majorLine, trimFrom(at.NW.A, lw + R), trimFrom(at.SE.A, lw + R)], junction: T1, junctions: [T1, T2] };
+  }
   function jRoute(X, A, B, R) {
     const u = unit(A[0], A[1]), v = unit(B[0], B[1]), th = Math.acos(Math.max(-1, Math.min(1, -(u[0] * v[0] + u[1] * v[1])))); // deflection
     const back = A.slice(1).reverse(), [jx, jy] = A[0];
@@ -127,12 +158,12 @@
   // outer ring lane. One route per ordered pair of arms, each with its own lane path and a give-way line where it joins the ring.
   function multiRoundabout(X, P, arms, Rf) {
     const arms0 = arms;
-    const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2, SW: 3 * Math.PI / 4 };
+    const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2, SW: 3 * Math.PI / 4, NW: -3 * Math.PI / 4, SE: Math.PI / 4, NE: -Math.PI / 4 }, diag = (k) => k.length === 2; // Edit 55: every 45° arm
     const cx = W / 2, cy = H / 2, ring = X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 48), lanes = [], roads = [], names = [];
     const wrapA = (a) => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
     for (const a of arms) for (const b of arms) {
       if (a === b) continue;
-      const arm = (k) => (k === 'SW' ? { side: 'S', ang: ang.SW, pt: toEdge([Math.cos(ang.SW), Math.sin(ang.SW)], [W / 2, H / 2]) } : { side: k, off: k === 'W' || k === 'E' ? H / 2 : W / 2 });
+      const arm = (k) => (diag(k) ? { side: k[0], ang: ang[k], pt: toEdge([Math.cos(ang[k]), Math.sin(ang[k])], [W / 2, H / 2]) } : { side: k, off: k === 'W' || k === 'E' ? H / 2 : W / 2 });
       const ea = arm(a), eb = arm(b);
       const nat = wrapA(ang[b] - ang[a]), opposite = Math.abs(Math.abs(nat) - Math.PI) < 1e-6;
       const r = () => (opposite ? 0.9 : nat > 0 ? 0.1 : 0.9); // always the anticlockwise way round (decreasing angle)
@@ -159,7 +190,7 @@
       lanes.push(lane); roads.push(center); names.push(a + '→' + b);
     }
     lanes.forEach((ln, i) => { const a = names[i].split('→')[0]; ln.giveWay.s = Math.min(...lanes.filter((_, j) => names[j].split('→')[0] === a).map((m) => m.giveWay.s)); }); // one line per arm
-    const armLines = arms0.map((k) => { const t = ang[k], c = [cx + Math.cos(t) * (Rc + (Rf || 96) + 8), cy + Math.sin(t) * (Rc + (Rf || 96) + 8)]; return [k === 'SW' ? toEdge([Math.cos(t), Math.sin(t)], [cx, cy]) : X.edgePoint(k, k === 'W' || k === 'E' ? H / 2 : W / 2, W, H, LEAD), c]; });
+    const armLines = arms0.map((k) => { const t = ang[k], c = [cx + Math.cos(t) * (Rc + (Rf || 96) + 8), cy + Math.sin(t) * (Rc + (Rf || 96) + 8)]; return [diag(k) ? toEdge([Math.cos(t), Math.sin(t)], [cx, cy]) : X.edgePoint(k, k === 'W' || k === 'E' ? H / 2 : W / 2, W, H, LEAD), c]; });
     return { center: roads[0], ring, lanes, roads, routes: names, arms: armLines };
   }
   // P3's roundabout path, rebuilt here so the lab can compare it on the same driver (P3 sim.js, Edit 41.1).
@@ -288,6 +319,6 @@
       heldS: +st.held.toFixed(1), peak: st.peak, routes: st.routes, rankStop: Object.fromEntries(Object.entries(st.rankStop).map(([k, v]) => [k, +v.toFixed(1)])) };
   }
   FLEETS.nobus = [['sedan', 0.36], ['hatchback', 0.28], ['police', 0.1], ['van', 0.26]]; // P5 (Edit 52): screens whose bends are under vehicles.bus.minRadius
-  const api = { PIECES, FLEETS, CLASSES, makeSim, tick, run, minRadius, radii, overlap, overhang: (c, P) => overhang(c, P), junction, multiRoundabout, W, H };
+  const api = { PIECES, FLEETS, CLASSES, makeSim, tick, run, minRadius, radii, overlap, overhang: (c, P) => overhang(c, P), junction, multiRoundabout, staggered, W, H };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.TURNLAB = api;
 })(typeof window !== 'undefined' ? window : globalThis);

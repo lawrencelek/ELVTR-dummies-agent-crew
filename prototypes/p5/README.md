@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1 and 54 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54 and 55 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -109,13 +109,34 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 - **Escalators (rule):** two per highway screen, opposite sides, opposite ends. Monument C2: the west one drops from the roof plaza (Edit 54).
 - **Set piece (Edit 54):** every tile shows scenography, a change of level, or both. The plan table names it; the page warns on a tile without one.
 - **Portal and roof link (Edit 54):** Monument C2's Z2 highway runs through a 12-storey tower (opening `world.portalClearance`, 72). A roof plaza at Z2 opens off its west parapet.
-- **Redrawn (Edit 54):** Parkland A3 belvedere, C3 sunken court; Monument A3 stacked LED cubes, B3 skybridge across the jog.
+- **Redrawn (Edit 54):** Parkland A3 belvedere; Monument A3 stacked LED cubes, B3 skybridge across the jog.
+- **Nothing below ground (Edit 55):** Z0 is the lowest level. Parkland C3's court is at grade.
+- **Planting in three sizes (Edit 55):** a great lawn over the largest free block (`world.gardenLargeCells`), beds only where they frame it or the set piece (`world.gardenBedTypes` types), planters `world.gardenPlanter` across in the open squares.
+- **Sculpture in three sizes (Edit 55):** courts with one large piece (`world.sculptureScaleLarge`), two medium, `world.courtSmallCount` lit bollards. Parkland B3 and C3.
+
+![Parkland replanted: great lawns, framing beds, planters (Edit 55)](docs/p60_parkland_planting.png)
+
+![Sculpture courts at grade, Parkland C3 and B3 (Edit 55)](docs/p60_sculpture_courts.png)
 
 ![Monument C2: the Z2 highway through a tower; a roof plaza off its parapet (Edit 54)](docs/p59_chongqing.png)
 
 ![Set pieces: Parkland A3 and C3; Monument A3 and B3 (Edit 54)](docs/p59_tile_set_pieces.png)
 
 ![Monument B2: the split road, the raised walkway ring on columns, escalators, podium roofs](docs/p54_monument_b2.png)
+
+## A 45° crossroads: four options (example, Edit 55)
+
+`crossing_options.html`: today's 45° four-way crossing and four treatments from road design practice, one screen each with live traffic. Not in the districts; the user picks (open question D31).
+
+| Option | Conflict points | Cars out /min at 1.8 s | Longest wait on the 45° road |
+|---|---:|---:|---:|
+| Today | 32 | 21–22 | 24–40 s |
+| A · Realigned to 90° | 32, all at 90° | 21–22 | 29–33 s |
+| B · Staggered T junctions (`world.junctionStagger` 256) | 22 | 21–24 | 28–42 s |
+| C · Roundabout, skew kept | 8 | 23–28 | 9–10 s |
+| D · Flyover | 0 | 32–33 | none |
+
+![Today and the four options](docs/p60_crossing_options.png)
 
 ## District traffic (P5.3, Edit 53)
 
@@ -152,7 +173,8 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ## Evidence
 
-- `node test_sim.js` → 103/103: P3.4 and P4 checks, plus P5 fleet, buses, highways, points, district traffic and ring lanes by exit.
+- `node test_sim.js` → 104/104: P3.4 and P4 checks, plus P5 fleet, buses, highways, points, district traffic, ring lanes by exit and the crossing options.
+- `node tools/crossing_report.js` → `docs/crossing_report.md`: the four crossing options on the P5 driver.
 - **Highway density (Edit 54):** game 1.24–1.29 cars per lane per screen (unchanged). Mock-up Parkland 3.02 → 0.53; Circus 1.22; Monument 0.96. 30 min per district: no car stopped over 20 s.
 - **Parkland ring (Edit 53.1), 30 min at the game's highway rate:** no lock; 36–40 cars/min through the ring (P5.3 fed it 27).
 - `node tools/continuity_report.js` → `docs/continuity_report.md`: 15 layouts, 120 s each. No jump, no car lost or doubled, no seam overlap, exits only at the district edge.
@@ -190,7 +212,7 @@ node tools/continuity_report.js   # district-wide traffic: seams, start, queues,
 |---|---|
 | `sim.js` | P4.3 sim plus Edit 50: `fleetClass`, `minBend`, `busRoad`, deck speed and spacing, highway points, bus without swerve. Edit 53: `netBuild`, `netBegin`/`netEnd` (district traffic), `laneEnds`, ghosts, junction lock breakers |
 | `game.js`, `pixel.js`, `shell.html` | P4.3 renderer. Highway popup; bus sensor shadow; P5 tuning rows |
-| `lab.js` | Test helper only (road pieces for `test_sim.js`). The Turn Lab stays in P4 |
+| `lab.js` | Test helper only (road pieces for `test_sim.js`). The Turn Lab stays in P4. Edit 55: the 45° crossing options |
 | `tools/district_bake.js`, `tools/district_check.js` | Bake and contract, as P4 |
 | `tools/p5_report.js` | Bus roads and highway traffic on the baked layouts |
 | `tools/points_report.js` | Walk-in and dash play on every start screen, P5.0 and P5.1 points |
@@ -198,8 +220,12 @@ node tools/continuity_report.js   # district-wide traffic: seams, start, queues,
 | `cityscape_view.js`, `cityscape_shell.html` | Three districts mock-up: centres, then 3 × 3 screens with a mechanic and landmark per tile (Edit 52); screens linked into one traffic (Edit 53); a set piece per tile, the Chongqing portal (Edit 54) |
 | `tools/orbit_report.js` | Inner-lane orbit evidence (Edit 52) |
 | `tools/continuity_report.js` | District-wide traffic evidence (Edit 53) |
+| `crossing_shell.html` → `crossing_options.html` | The 45° crossing options example (Edit 55), built from the mock-up kit |
+| `tools/crossing_report.js` | Crossing options evidence (Edit 55) |
 
 ## Open
+
+- **D31 (Edit 55):** which treatment for a 45° crossroads: realign, stagger, roundabout or flyover.
 
 - **Ring capacity (Edit 53.1):** the widened ring passes about 37 cars/min. Edit 54 feeds Parkland's highways one car per 8 s per end, so nothing waits.
 - **Portals and roof links (Edit 54):** mock-up only. P6: towers may straddle a deck band as portals; a bridge floor joins roof and deck.

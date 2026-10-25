@@ -25,3 +25,11 @@ cs_scripts = ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</scr
 out3 = here / 'cityscape_mockup.html'
 out3.write_text(cs.replace('<!--SCRIPTS-->', cs_scripts), encoding='utf-8')
 print(out3.name, out3.stat().st_size, 'bytes')
+# Edit 55 (example only): a 45° crossroads and four engineered options, one screen each, live traffic and the lab's numbers
+xs = (here / 'crossing_shell.html').read_text(encoding='utf-8')
+rep = here / 'docs' / 'crossing_report.json'
+xs_scripts = '<script>window.CROSSINGS = true;' + (f'\nwindow.CROSS_REPORT = {rep.read_text(encoding="utf-8")};' if rep.exists() else '') + '</script>\n'
+xs_scripts += ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</script>\n' for f in ('sim.js', 'pixel.js', 'lab.js', 'cityscape_view.js'))
+out4 = here / 'crossing_options.html'
+out4.write_text(xs.replace('<!--SCRIPTS-->', xs_scripts), encoding='utf-8')
+print(out4.name, out4.stat().st_size, 'bytes')

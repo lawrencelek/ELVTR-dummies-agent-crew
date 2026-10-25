@@ -15,6 +15,7 @@
   const CON = { m: c32('#4A5160'), d: c32('#363C49'), l: c32('#7D8799'), x: c32('#22262F'), g: c32('#1F3A27'), g2: c32('#2A4A32'), t: c32('#3B4250'), t2: c32('#444B5A') }; // board-marked concrete
   const ISL = c32('#5F6878'); // the monument's island paving
   const $ = (id) => document.getElementById(id);
+  const CROSS = !!window.CROSSINGS; // Edit 55: the crossing-options example page reuses this kit, one screen per option
   const Z1 = EXT(P['world.deckHeight']), Z2 = EXT(P['world.highHeight']), SWD = P['world.stairWidth'], INSET = P['world.deckEscalatorInset'];
   // ---------- small helpers
   function each(fn) { for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) fn(x, y, (x + 0.5) * U, (y + 0.5) * U, y * AW + x); }
@@ -116,35 +117,54 @@
     if (type === 'pool') { pool(B, () => true, x0, y0, x1, y1, 24); return; }
     tiles(B, (wx, wy) => fpW(wx, wy), true); monolith(B, (x0 + x1) / 2 / U, (y0 + y1) / 2 / U + 2, 0, 22, led); // plaza
   }
-  function gardenBeds(B, o) { // o: { bedOk(wx, wy), diag, rng, leds, pools }
-    const TYPES = ['hedge', 'reeds', 'lawn', 'moss', 'terrace', 'pool', 'plaza', 'open'], WT = [3, 3, 2, 2, 2, o.pools === false ? 0 : 1.5, 1, 2], tot = WT.reduce((a, q) => a + q, 0), out = [];
-    let skip = -1;
-    const pick = () => { let r = o.rng() * tot; for (let i = 0; i < TYPES.length; i++) { r -= WT[i]; if (r < 0) return TYPES[i]; } return 'hedge'; };
-    let prev = null;
-    for (let gy = 0; gy < Math.ceil(H / GH); gy++) for (let gx = 0; gx < Math.ceil(W / GW); gx++) {
-      if (skip === gy * 99 + gx) { continue; }
-      const x0 = gx * GW + GP / 2, y0 = gy * GH + GP / 2, y1 = Math.min(H - 8, (gy + 1) * GH - GP / 2);
-      let x1 = Math.min(W - 8, (gx + 1) * GW - GP / 2);
-      const pts = []; for (let x = x0; x <= x1; x += 16) for (let y = y0; y <= y1; y += 16) pts.push([x, y]); pts.push([x1, y1], [x1, y0], [x0, y1]);
-      const band = (p) => o.diag && Math.abs(p[0] + p[1] - o.diag.c) < o.diag.w / 2 + 12, outside = pts.filter((p) => !band(p));
-      if (outside.length < pts.length * 0.45 || !outside.every((p) => o.bedOk(p[0], p[1]))) { prev = null; continue; }
-      let side = 0; if (outside.length < pts.length) side = Math.sign(outside.reduce((a, p) => a + Math.sign(p[0] + p[1] - o.diag.c), 0)) || 1;
-      if (side && outside.some((p) => Math.sign(p[0] + p[1] - o.diag.c) !== side)) { prev = null; continue; } // split by the promenade: leave it paved
-      let type = pick(); if (type === prev) type = pick(); if (side && type === 'pool') type = 'reeds';
-      if (type === 'open') { prev = type; continue; } // left as paving: a small square
-      if (!side && ['hedge', 'reeds', 'lawn', 'pool'].includes(type) && o.rng() < 0.3 && gx + 1 < Math.ceil(W / GW)) { // a long bed across two cells
-        const nx1 = Math.min(W - 8, (gx + 2) * GW - GP / 2), more = []; for (let x = x1; x <= nx1; x += 16) for (let y = y0; y <= y1; y += 16) more.push([x, y]); more.push([nx1, y1], [nx1, y0]);
-        if (more.every((p) => o.bedOk(p[0], p[1]) && !band(p))) { x1 = nx1; skip = gy * 99 + gx + 1; }
-      }
-      const cw = chamf(x0, y0, x1, y1, 16), fpW = (wx, wy, ins) => cw(wx, wy, ins) && (!side || side * (wx + wy - o.diag.c) > o.diag.w / 2 + 8 + (ins || 0) * 1.42);
-      const fpA = (x, y, ins) => fpW((x + 0.5) * U, (y + 0.5) * U, (ins || 0) * U);
-      drawBed(B, type, fpA, fpW, Math.floor(x0 / U), Math.floor(y0 / U), Math.ceil(x1 / U), Math.ceil(y1 / U), [x0, y0, x1, y1], o.leds[(gx + gy * 2) % o.leds.length]);
-      out.push({ x0, y0, x1, y1, type }); prev = type;
-    }
-    return out;
+  // Edit 55: planting in three sizes. Large: a great lawn over the largest free block of cells, at least
+  // world.gardenLargeCells square and at most one cell more each way; inner paths go. Medium: one-cell beds only where they
+  // frame the lawn or the tile's set piece, in at most world.gardenBedTypes types. Small: planters world.gardenPlanter across,
+  // two to each open square and one at each corner of the lawn. Returns the path crossings left free (for sculptures).
+  const GLC = P['world.gardenLargeCells'], GBT = P['world.gardenBedTypes'], GPL = P['world.gardenPlanter'];
+  const MED = [['hedge', 'reeds'], ['terrace', 'hedge'], ['reeds', 'moss'], ['hedge', 'terrace']];
+  const GREAT = [c32('#23432C'), c32('#2A5034'), c32('#5E9E4A')], greatC = (x, y) => (hsh(x, y) % 47 === 0 ? GREAT[2] : GREAT[Math.floor(x / 8) % 2]);
+  function smallPlanter(B, wx, wy) { // a concrete box with a clipped hedge top
+    const a = GPL / U / 2, b = a * 0.7, x = wx / U, y = wy / U, fp = chamf(Math.round(x - a), Math.round(y - b), Math.round(x + a), Math.round(y + b), 3);
+    mass(B, fp, x - a, y - b, x + a, y + b, 0, 3, 'conc', LEDS[1], true); mass(B, (px, py, i) => fp(px, py, (i || 0) + 2), x - a, y - b, x + a, y + b, 3, 4, 'hedge', null, false, 'hedge');
   }
-  function gardenSculptures(B, ok, diag, rng, n) { // on the path crossings
-    const c = []; for (let gy = 1; gy < Math.ceil(H / GH); gy++) for (let gx = 1; gx < Math.ceil(W / GW); gx++) { const x = gx * GW, y = gy * GH; if (ok(x, y) && (!diag || Math.abs(x + y - diag.c) > diag.w / 2 + 16)) c.push([x, y]); }
+  function gardenPlan(B, o) { // o: { bedOk(wx, wy), rng, leds, pools, anchor: [x, y, w, h] or null }
+    const nc = Math.ceil(W / GW), nr = Math.ceil(H / GH), rect = (gx, gy, nx, ny) => [gx * GW + GP / 2, gy * GH + GP / 2, Math.min(W - 8, (gx + nx) * GW - GP / 2), Math.min(H - 8, (gy + ny) * GH - GP / 2)];
+    const okR = ([x0, y0, x1, y1]) => { for (let x = x0; x <= x1; x += 16) for (let y = y0; y <= y1; y += 16) if (!o.bedOk(x, y)) return false; return o.bedOk(x1, y1) && o.bedOk(x1, y0) && o.bedOk(x0, y1); };
+    const used = Array.from({ length: nr }, (_, gy) => Array.from({ length: nc }, (_, gx) => (okR(rect(gx, gy, 1, 1)) ? 0 : -1))); // -1 not free, 0 free, 1 bed, 2 lawn, 3 open square
+    let best = null; // the largest free block: area first, then nearest the screen's centre
+    for (let ny = GLC; ny <= GLC + 1; ny++) for (let nx = GLC; nx <= GLC + 1; nx++) for (let gy = 0; gy + ny <= nr; gy++) for (let gx = 0; gx + nx <= nc; gx++) {
+      let all = true; for (let j = 0; j < ny && all; j++) for (let i = 0; i < nx; i++) if (used[gy + j][gx + i] !== 0) { all = false; break; }
+      if (!all) continue;
+      const r = rect(gx, gy, nx, ny), a = nx * ny, d = hyp((r[0] + r[2]) / 2 - W / 2, (r[1] + r[3]) / 2 - H / 2);
+      if (!best || a > best.a || (a === best.a && d < best.d)) best = { gx, gy, nx, ny, r, a, d };
+    }
+    const lawn = best ? [best.r[0], best.r[1], best.r[2] - best.r[0], best.r[3] - best.r[1]] : null;
+    if (best) {
+      for (let j = 0; j < best.ny; j++) for (let i = 0; i < best.nx; i++) used[best.gy + j][best.gx + i] = 2;
+      const [x0, y0, x1, y1] = best.r;
+      { const cw = chamf(x0, y0, x1, y1, 24), fpA = (x, y, ins) => cw((x + 0.5) * U, (y + 0.5) * U, (ins || 0) * U), ax0 = Math.floor(x0 / U), ay0 = Math.floor(y0 / U), ax1 = Math.ceil(x1 / U), ay1 = Math.ceil(y1 / U);
+        for (let y = ay0; y <= ay1; y++) for (let x = ax0; x <= ax1; x++) if (fpA(x, y)) B.put(x, y, !fpA(x, y, 1) ? CON.l : greatC(x, y)); // the great lawn, mown in broad stripes
+        mass(B, (x, y) => fpA(x, y, 1) && !fpA(x, y, 4), ax0, ay0, ax1, ay1, 0, 3, 'hedge', o.leds[0], true, 'hedge'); } // a clipped hedge frames it
+    }
+    const pair = MED[Math.floor(o.rng() * MED.length)].slice(0, Math.max(1, GBT)), m = GP + 8;
+    const touch = (r, A) => !!A && r[0] <= A[0] + A[2] + m && r[2] >= A[0] - m && r[1] <= A[1] + A[3] + m && r[3] >= A[1] - m;
+    const open = [];
+    for (let gy = 0; gy < nr; gy++) for (let gx = 0; gx < nc; gx++) {
+      if (used[gy][gx] !== 0) continue;
+      const r = rect(gx, gy, 1, 1), [x0, y0, x1, y1] = r, type = touch(r, lawn) ? pair[0] : touch(r, o.anchor) ? pair[pair.length - 1] : null;
+      if (!type) { used[gy][gx] = 3; open.push(r); continue; } // an open square
+      const cw = chamf(x0, y0, x1, y1, 16), fpA = (x, y, ins) => cw((x + 0.5) * U, (y + 0.5) * U, (ins || 0) * U);
+      drawBed(B, type, fpA, cw, Math.floor(x0 / U), Math.floor(y0 / U), Math.ceil(x1 / U), Math.ceil(y1 / U), r, o.leds[(gx + gy * 2) % o.leds.length]); used[gy][gx] = 1;
+    }
+    for (const [x0, y0, x1, y1] of open) for (const f of [1 / 3, 2 / 3]) smallPlanter(B, x0 + (x1 - x0) * f, (y0 + y1) / 2); // small: two to each open square, on its axis
+    if (best) for (const [x, y] of [[best.r[0] - GP / 2, best.r[1] - GP / 2], [best.r[2] + GP / 2, best.r[1] - GP / 2], [best.r[0] - GP / 2, best.r[3] + GP / 2], [best.r[2] + GP / 2, best.r[3] + GP / 2]]) if (o.bedOk(x, y)) smallPlanter(B, x, y); // and one at each corner of the lawn
+    const crossings = []; // the crossings left for sculptures: away from the lawn's corners
+    for (let j = 1; j < nr; j++) for (let i = 1; i < nc; i++) { const x = i * GW, y = j * GH; if (o.bedOk(x, y) && !(best && touch([x - 1, y - 1, x + 1, y + 1], lawn))) crossings.push([x, y]); }
+    return crossings;
+  }
+  function gardenSculptures(B, ok, diag, rng, n, free) { // medium sculptures on path crossings (Edit 55: those the planters leave)
+    const c = []; for (let gy = 1; gy < Math.ceil(H / GH); gy++) for (let gx = 1; gx < Math.ceil(W / GW); gx++) { const x = gx * GW, y = gy * GH; if (ok(x, y) && (!diag || Math.abs(x + y - diag.c) > diag.w / 2 + 16) && (!free || free.some((q) => q[0] === x && q[1] === y))) c.push([x, y]); }
     for (let i = 0; i < n && c.length; i++) { const [x, y] = c.splice(Math.floor(rng() * c.length), 1)[0]; sculpture(B, x / U, y / U + 1, SCULPT[Math.floor(rng() * SCULPT.length)], LEDS[Math.floor(rng() * LEDS.length)]); }
   }
   // ---------- brutalist towers (Edit 51.3): a podium on pilotis, then a ziggurat, a cantilevered crown, a finned slab or twin towers and a bridge.
@@ -245,14 +265,26 @@
     else { block(B, x - a, y - b, x + a, y + b, k, 0, 5, 'grass', led, true); if (kind === 'monolith') monolith(B, x + a * 0.4, y, 5, 20, led); }
   }
   // ---------- public sculptures (art px; anchored at the footprint centre)
-  function sculpture(B, ax, ay, kind, led) {
-    const x0 = Math.round(ax), y0 = Math.round(ay), put = (x, y, c) => B.put(x0 + x, y0 + y, c), sh = (n, w) => { for (let t = 0; t < n; t++) for (let j = -w; j <= w; j++) B.shade(x0 - t * 0.7 + j * 0.7, y0 + t * 0.7 + j * 0.7, 0.72); };
-    for (let x = -5; x <= 5; x++) for (let y = -2; y <= 2; y++) if (Math.abs(x) + Math.abs(y) * 2 <= 6) put(x, y, y > 0 ? CON.d : CON.l); // chamfered plinth
-    if (kind === 'obelisk') { sh(16, 2); for (let h = 1; h < 26; h++) { const w = h > 20 ? 1 : 2; for (let i = -w; i <= w; i++) put(i, -h, i === -w ? CON.l : i === w ? led : CON.m); } put(0, -26, K.white); put(0, -27, led); }
-    else if (kind === 'ring') { sh(12, 3); for (let h = 1; h < 6; h++) put(0, -h, CON.m); for (let a = 0; a < 64; a++) { const t = a / 64 * Math.PI * 2; put(Math.round(Math.cos(t) * 6), Math.round(-14 + Math.sin(t) * 9), a % 8 < 5 ? led : K.white); } }
-    else if (kind === 'cubes') { sh(12, 4); for (const [s, ox, h0] of [[8, -1, 0], [6, 1, 8], [4, 0, 14]]) for (let y = 0; y < s; y++) for (let x = 0; x < s; x++) put(ox + x - s / 2, -h0 - y - 1, x === 0 || y === s - 1 ? led : y === 0 ? CON.l : CON.m); }
-    else if (kind === 'arch') { sh(14, 5); for (let h = 1; h < 20; h++) for (const px of [-6, 5]) { put(px, -h, CON.l); put(px + 1, -h, CON.m); } for (let x = -6; x <= 6; x++) { put(x, -20, CON.l); put(x, -19, led); } }
-    else { sh(10, 4); for (let k = 0; k < 5; k++) for (let h = 1; h < 10 + k * 3; h++) put(-6 + k * 3, -h, h > 6 + k * 3 ? led : CON.m); } // light fins
+  // Edit 55: three sizes. k = 1 medium; world.sculptureScaleLarge for a court's centrepiece; small pieces are lit bollards.
+  function sculpture(B, ax, ay, kind, led, k) {
+    k = k || 1; const R = (v) => Math.max(1, Math.round(v * k)), x0 = Math.round(ax), y0 = Math.round(ay), put = (x, y, c) => B.put(x0 + x, y0 + y, c), sh = (n, w) => { for (let t = 0; t < n; t++) for (let j = -w; j <= w; j++) B.shade(x0 - t * 0.7 + j * 0.7, y0 + t * 0.7 + j * 0.7, 0.72); };
+    for (let x = -R(5); x <= R(5); x++) for (let y = -R(2); y <= R(2); y++) if (Math.abs(x) + Math.abs(y) * 2 <= R(6)) put(x, y, y > 0 ? CON.d : CON.l); // chamfered plinth
+    if (kind === 'obelisk') { sh(R(16), R(2)); for (let h = 1; h < R(26); h++) { const w = h > R(20) ? R(1) : R(2); for (let i = -w; i <= w; i++) put(i, -h, i === -w ? CON.l : i === w ? led : CON.m); } put(0, -R(26), K.white); put(0, -R(26) - 1, led); }
+    else if (kind === 'ring') { sh(R(12), R(3)); for (let h = 1; h < R(6); h++) for (let i = 0; i < R(1); i++) put(i, -h, CON.m); const n = Math.round(64 * k); for (let a = 0; a < n; a++) { const t = a / n * Math.PI * 2; for (let w = 0; w < R(1); w++) put(Math.round(Math.cos(t) * (R(6) - w)), Math.round(-R(14) + Math.sin(t) * (R(9) - w)), a % 8 < 5 ? led : K.white); } }
+    else if (kind === 'cubes') { sh(R(12), R(4)); for (const [s0, ox, h0] of [[8, -1, 0], [6, 1, 8], [4, 0, 14]]) { const sz = R(s0); for (let y = 0; y < sz; y++) for (let x = 0; x < sz; x++) put(R(ox) + x - Math.floor(sz / 2), -R(h0) - y - 1, x === 0 || y === sz - 1 ? led : y === 0 ? CON.l : CON.m); } }
+    else if (kind === 'arch') { sh(R(14), R(5)); for (let h = 1; h < R(20); h++) for (const px of [-R(6), R(5)]) for (let i = 0; i < R(2); i++) put(px + i, -h, i === 0 ? CON.l : CON.m); for (let x = -R(6); x <= R(6); x++) for (let t = 0; t < R(2); t++) put(x, -R(20) + t, t === 0 ? CON.l : led); }
+    else { sh(R(10), R(4)); for (let q = 0; q < 5; q++) for (let h = 1; h < R(10 + q * 3); h++) for (let i = 0; i < R(1); i++) put(-R(6) + R(q * 3) + i, -h, h > R(6 + q * 3) ? led : CON.m); } // light fins
+  }
+  function bollard(B, ax, ay, led) { monolith(B, ax, ay, 0, Math.round(16 * P['world.sculptureScaleSmall']), led); } // the small piece: a lit post
+  // A sculpture court at grade: lattice paving and a low kerb; one large piece on the axis, two medium either side,
+  // world.courtSmallCount lit bollards along the front edge (art px box).
+  function sculptureCourt(B, x0, y0, x1, y1, k, big, mids, led) {
+    const fp = chamf(x0, y0, x1, y1, k);
+    each((x, y) => { if (!fp(x, y, -2)) return; B.put(x, y, !fp(x, y, 0) ? CON.l : !fp(x, y, 1) ? CON.m : ((x + y) % 12 === 0 || ((x - y) % 12 + 12) % 12 === 0) ? mixK(N.tile, N.cyan, 0.45) : (x % 6 === 0 || y % 6 === 0) ? N.tile2 : N.tile); });
+    const cx = (x0 + x1) / 2, n = P['world.courtSmallCount'], L2 = P['world.sculptureScaleLarge'];
+    sculpture(B, cx, y0 + (y1 - y0) * 0.42, big, led, L2);
+    mids.forEach((kd, i) => sculpture(B, i ? x1 - (x1 - x0) * 0.2 : x0 + (x1 - x0) * 0.2, y0 + (y1 - y0) * 0.6, kd, LEDS[(i + 1) % LEDS.length], 1));
+    for (let i = 0; i < n; i++) bollard(B, x0 + k * 0.5 + (x1 - x0 - k) * i / (n - 1), y1 - 4, LEDS[i % 2 ? 0 : 3 % LEDS.length]);
   }
   const SCULPT = ['obelisk', 'ring', 'cubes', 'arch', 'fins'];
   // ---------- escalators: two per highway screen, on opposite sides, at opposite ends (Edit 51.2)
@@ -381,8 +413,8 @@
         B2: ['Four-arm Z1 roundabout (W, N, E, S). Give way to the ring; the inner lane is the orbit lane. The boulevard passes beneath, through the hole', 'Reflecting pools under the ring', 'both'],
         C2: ['The avenue crosses under the Z1 highway at 45°', 'Amphitheatre terraces', 'both'],
         A3: ['A wide R160 bend (buses may use it)', 'Belvedere: four tiers and a stair up to a lawn, the monolith orchard on top', 'both'],
-        B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Obelisk on the axis', 'both'],
-        C3: ['Crossroads at 45°: the street gives way to the boulevard; then a wide R160 bend north', 'Sunken sculpture court, three lit steps down', 'both'] } },
+        B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Sculpture court: a large obelisk, two rings, a row of lit bollards', 'both'],
+        C3: ['Crossroads at 45°: the street gives way to the boulevard; then a wide R160 bend north', 'Sculpture court at grade: a large arch, two medium pieces, a row of lit bollards', 'scenery'] } },
     { id: 'circus', name: 'Circus', quota: P['world.district.circus.quota'], storeys: [6, 14], start: ['A2', 'west'],
       mood: 'Busy and circling, walled by monumental concrete. An octagon of streets rings the four-arm roundabout.',
       roads: [{ id: 'octagon', pts: loop2(fil([[800, 480], [560, 480], [480, 560], [480, 1360], [560, 1440], [1840, 1440], [1920, 1360], [1920, 560], [1840, 480], [800, 480]])) },
@@ -416,6 +448,16 @@
         A3: ['A 45° corner cut, then under the Z1 highway at 90°', 'Stacked LED cubes, each cantilevered off the one below', 'both'],
         B3: ['A 45° jog between two LED walls; a Z1 skybridge crosses the jog at 90°', 'LED canyon and its skybridge', 'both'],
         C3: ['Under the Z2 highway at 90°; the exit through an LED gateway', 'LED gateway arch over the road', 'both'] } },
+  ];
+  // ---------- Edit 55 (example only): a 45° road crossing a W–E road, today and four engineered treatments. One screen each.
+  const RJ = P['world.junctionTurnRadius'], DIAG = [[-200, -280], [1080, 1000]]; // the 45° road through the screen centre (x − y = 80)
+  const ex = (key, name, extra) => Object.assign({ id: 'circus', kit: 'example', key, name, roads: [], decks: [], start: ['A1', 'west'], tiles: { A1: [name, '', 'scenery'] } }, extra);
+  const EXAMPLES = [
+    ex('today', 'Today: crossroads at 45°', { geo: () => L.PIECES.cross45.build(X, { R: RJ }, P) }),
+    ex('realign', 'A · Realigned to 90°', { geo: () => L.PIECES.cross45realign.build(X, { R: RJ }, P) }),
+    ex('stagger', 'B · Staggered T junctions', { geo: () => L.PIECES.cross45stagger.build(X, { R: RJ }, P) }),
+    ex('ring', 'C · Roundabout, skew kept', { roundabout: { tile: 'A1', arms: ['W', 'NW', 'E', 'SE'] } }),
+    ex('flyover', 'D · Flyover (grade separated)', { roads: [{ id: 'major', pts: [[-200, 320], [1000, 320]] }], flyover: DIAG }),
   ];
   const TILE = (c, r) => 'ABC'[c] + (r + 1);
   // ---------- traffic on one screen (the dummy away)
@@ -478,18 +520,6 @@
     mass(B, fp, x0, y0, x1, y1, base, h, 'conc', null, base === 0);
     for (let y = Math.round(y0); y <= y1; y++) for (let x = Math.round(x0); x <= x1; x++) if (fp(x, y, 2)) B.put(x, y - base - h, (y % 4 === 0 && (x * 5 + y) % 11 < 4) ? N.water2 : (x * 3 + y * 7) % 89 === 0 ? N.cyan : N.water);
   }
-  // Edit 54: a sunken court (art px). n steps down, each st in and dh deep. The north risers face the viewer and carry step
-  // lights; the south part of each level hides behind the rim above it.
-  function sunken(B, x0, y0, x1, y1, k, n, st, dh) {
-    const R = (i) => chamf(x0 + i * st, y0 + i * st, x1 - i * st, y1 - i * st, Math.max(2, k - i * st * 0.6));
-    const seen = (i, x, sy) => { for (let j = 0; j < i; j++) if (!R(j)(x, sy - j * dh)) return false; return true; };
-    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (R(0)(x, y) && !R(1)(x, y)) B.put(x, y, (x + y) % 6 === 0 ? CON.m : CON.l); // the coping round the rim
-    for (let i = 1; i <= n; i++) {
-      const fp = R(i), tone = mixK(CON.t, K.bldgDark, 0.12 * i);
-      for (let x = x0; x <= x1; x++) { let yN = -1; for (let y = y0; y <= y1; y++) if (fp(x, y)) { yN = y; break; } if (yN < 0) continue; for (let t = 0; t < dh; t++) { const sy = yN + (i - 1) * dh + t; if (seen(i, x, sy)) B.put(x, sy, t === 0 ? (x % 4 < 2 ? N.cyan : K.jerseyTop) : CON.d); } } // riser, lit along its nosing
-      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (!fp(x, y)) continue; const sy = y + i * dh; if (!seen(i, x, sy)) continue; B.put(x, sy, i === n ? ((x % 8 === 0 || y % 8 === 0) ? N.tile2 : N.tile) : (x % 6 === 0 ? CON.t2 : tone)); }
-    }
-  }
   // Edit 54: a stack of cantilevered LED cubes (art px), each sitting on the one below; pushed as props sorted from the base
   function cubeStack(sc, B, cubes, by, seed) {
     let base = 0;
@@ -546,6 +576,12 @@
       ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), decks: [] }), P, 23);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
       roadD = (k) => rf.D[k];
+    } else if (D.geo) { // Edit 55 (example): a lab geometry built whole (realigned, staggered)
+      const geo = D.geo(), s = labSim(geo, 'nobus', {});
+      sims.push(s); sc.lab = s;
+      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })) }), P, 29);
+      const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })), OUTER + 80);
+      roadD = (k) => rf.D[k];
     } else if (J) { // a junction at 90° or 45°: the minor road gives way (Edit 49.3)
       const { arms, major } = junctionArms(runs, J.at, J.major), geo = L.junction(X, P, arms, major, P['world.junctionTurnRadius']), s = labSim(geo, 'nobus', {});
       sims.push(s); sc.lab = s;
@@ -582,13 +618,20 @@
       const cq = D.chongqing && D.chongqing.tile === name ? D.chongqing : null; // Edit 54: the west escalator lands on the roof plaza instead
       for (const d of vDecks) { const st = vEscalators(d.off, d.z).filter((q) => !cq || q.side > 0); sc.stairs.push(...st); sc.layers.push(vDeck(d.off, d.z, roadOk, st, cq ? [{ y: cq.link[0], h: cq.link[1] - cq.link[0], side: -1 }] : [])); }
     }
+    let flySim = null;
+    if (D.flyover) { // Edit 55 (example): the 45° road on a Z1 deck over the W–E road; its own traffic, which never meets the road below
+      flySim = sceneSim(D.flyover, [], [], X.lanesOf(D.flyover, P), false); flySim.raised = true;
+      const fl = ringLayer({ geoms: [{ pts: D.flyover, dash: true }] }, 1, 400, 320, 0, (x, y) => !roadOk(x, y, OUTER + C + 4), []);
+      fl.front = 1e5; fl.cars = () => flySim.cars; sc.layers.push(fl);
+    }
     for (const st of sc.stairs) { sc.props.push(stairProp(st, st.z === 2 ? Z2 : Z1)); const fx = st.axis === 'x' ? (st.side < 0 ? st.x : st.x + st.w) : st.x + SWD / 2, fy = st.axis === 'x' ? st.y + st.h / 2 : (st.side > 0 ? st.y + st.h : st.y); if (rd(fx, fy) < LW) console.warn('escalator foot in a lane', D.id, name); }
     const blocked = sc.stairs.map((st) => [st.x - 24, st.y - 24, st.w + 48, st.h + 48]);
     const underDeck = (wx, wy) => sc.layers.some((l) => l.inBand(wx, wy));
     const inRects = (rs, wx, wy, m) => rs.some((r) => wx > r[0] - m && wx < r[0] + r[2] + m && wy > r[1] - m && wy < r[1] + r[3] + m);
     const free = (wx, wy, m) => roadOk(wx, wy, OUTER + (m || 24)) && !underDeck(wx, wy) && !inRects(blocked, wx, wy, 0) && !inRects(sc.reserve, wx, wy, 0);
     // ---- the district's kit
-    if (D.id === 'parkland') parkTile(sc, B, name, roadOk, free, rng, runs);
+    if (D.kit === 'example') { gardenPave(B, (wx, wy) => roadOk(wx, wy, OUTER), null); }
+    else if (D.id === 'parkland') parkTile(sc, B, name, roadOk, free, rng, runs);
     else if (D.id === 'circus') circusTile(sc, B, name, roadOk, free, rng, labSimOf(sc), runs);
     else monumentTile(sc, B, name, roadOk, free, rng, runs);
     for (const l of sc.layers) if (l.shadeOn) l.shadeOn(B);
@@ -606,6 +649,7 @@
       s.schedule = []; sims.push(s); sc.deckOnly = s;
     }
     if (ringSim) sims.push(ringSim);
+    if (flySim) sims.push(flySim);
     sc.sims = sims;
     return sc;
   }
@@ -628,8 +672,9 @@
     if (name === 'A3') R.push([496, 20, 288, 212]);
     if (name === 'B3') R.push([90, 430, 200, 190]);
     if (name === 'C3') R.push([290, 24, 270, 216]);
-    gardenBeds(B, { bedOk: (wx, wy) => free(wx, wy, 8), diag: null, rng, leds: LEDS, pools: name !== 'B2' });
-    gardenSculptures(B, (wx, wy) => free(wx, wy, 16), null, rng, 2);
+    const ANCHOR = { A1: [24, 300, 300, 280], B1: [150, 24, 160, 560], B2: [200, 100, 400, 440], C2: [40, 440, 340, 190], A3: [496, 20, 288, 212], C3: [290, 24, 270, 216] }; // Edit 55: the tile's set piece is its large unit
+    const left = gardenPlan(B, { bedOk: (wx, wy) => free(wx, wy, 8), rng, leds: LEDS, pools: name !== 'B2', anchor: ANCHOR[name] || null });
+    gardenSculptures(B, (wx, wy) => free(wx, wy, 16), null, rng, 2, left);
     const u = (v) => v / U;
     if (name === 'A1') { for (let i = 0; i < 3; i++) waterBlock(B, u(40 + i * 40), u(320 + i * 50), u(300 - i * 20), u(560), 8, 6 - i * 3, 3); sc.terraces = true; } // reservoir terraces, stepping down to the south
     if (name === 'B1') for (let i = 0; i < 5; i++) waterBlock(B, u(170), u(40 + i * 108), u(290), u(124 + i * 108), 6, 14 - i * 3, 3); // cascade, falling south beside the highway
@@ -649,11 +694,8 @@
       for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) monolith(B, u(580 + i * 60), u(110 + j * 36), 4 * t, 12 + ((i + j) % 3) * 5, led(i + j));
       const st = { x: 624, y: 196, w: SWD, h: 48, axis: 'y', low: 244, high: 196, side: 0, z: 1 }; sc.props.push({ spr: PIX.stairs(st, 0, 4 * t), x: u(st.x), y: u(st.y), by: 244 }); sc.terraces = true;
     }
-    if (name === 'B3') { tiles(B, (wx, wy) => wx > 100 && wx < 280 && wy > 440 && wy < 610 && roadOk(wx, wy, OUTER), true); sculpture(B, u(190), u(560), 'obelisk', LEDS[0]); sculpture(B, u(130), u(500), 'ring', led(2)); sculpture(B, u(250), u(500), 'ring', led(2)); }
-    if (name === 'C3') { // Edit 54: the sculpture court sunk three steps below the garden; its south-west side runs parallel to the boulevard
-      const dh = 3; sunken(B, u(300), u(32), u(552), u(232), 40, 3, 6, dh); sc.terraces = true;
-      for (const [x, k] of [[380, 'cubes'], [440, 'arch'], [500, 'fins']]) sculpture(B, u(x), u(170) + 3 * dh, k, led(x));
-    }
+    if (name === 'B3') sculptureCourt(B, u(96), u(436), u(284), u(616), 10, 'obelisk', ['ring', 'ring'], LEDS[0]); // Edit 55: the obelisk large, two rings, a row of lit bollards
+    if (name === 'C3') sculptureCourt(B, u(300), u(32), u(552), u(232), 20, 'arch', ['cubes', 'fins'], led(3)); // Edit 55: at grade (nothing below ground); its south-west side runs parallel to the boulevard
   }
   // ---------- Circus: brutalist towers, the octagon, the roundabout
   function circusTile(sc, B, name, roadOk, free, rng, lab, runs) {
@@ -887,7 +929,7 @@
   function render(sc, FB, DL) {
     FB.d.set(sc.B.d);
     const ground = [], deckCars = [];
-    for (const s of sc.sims) { if (s === sc.ringSim) continue; for (const c of s.cars) (c.deck ? deckCars : ground).push(c); }
+    for (const s of sc.sims) { if (s === sc.ringSim || s.raised) continue; for (const c of s.cars) (c.deck ? deckCars : ground).push(c); }
     for (const g of sc.seam || []) (g.deck ? deckCars : ground).push(g); // P5.3: cars next door reaching onto this screen
     const layer = (l) => {
       DL.d.set(l.L.d);
@@ -912,6 +954,7 @@
     for (const s of sc.sims) for (const d of s.drones || []) { const x = Math.round(d.x / U), y = Math.round(d.y / U - d.alt * 4); if (d.state === 'carry') PIX.blit(FB, PIX.CONE, x - 2, y + 13); PIX.blit(FB, PIX.DRONE, x, y); }
   }
   // ---------- page: the three centres live at the top; one district at a time below, 3 × 3, any screen at 2×
+  if (CROSS) return crossingPage();
   const built = [{}, {}, {}], FB = new PIX.Buf(AW, AH), DL = new PIX.Buf(AW, AH), off = Object.assign(document.createElement('canvas'), { width: AW, height: AH }), og = off.getContext('2d'), img = og.createImageData(AW, AH);
   const grid = $('grid'), gg = grid.getContext('2d'), zoom = $('zoom'), zg = zoom.getContext('2d'), cents = [0, 1, 2].map((i) => $('c' + i));
   grid.width = AW * 3; grid.height = AH * 3; zoom.width = AW * 2; zoom.height = AH * 2; cents.forEach((c) => { c.width = AW * 2; c.height = AH * 2; });
@@ -967,4 +1010,25 @@
   $('labels').onclick = () => { labels = !labels; $('labels').textContent = labels ? 'Hide labels' : 'Show labels'; };
   window.__district = { show, select: (c, r) => { sel = [c, r]; }, built, screen, labels: (v) => { labels = v; }, DISTRICTS, NETS, netStep };
   show(0); requestAnimationFrame(frame);
+  // ---------- Edit 55: the crossing-options page. Each option is one screen with its own traffic (cars enter at its edges).
+  function crossingPage() {
+    const FB = new PIX.Buf(AW, AH), DL = new PIX.Buf(AW, AH), off = Object.assign(document.createElement('canvas'), { width: AW, height: AH }), og = off.getContext('2d'), img = og.createImageData(AW, AH);
+    const scs = EXAMPLES.map((D, i) => { const sc = buildScreen(D, 0, 0); linkDistrict(i, [sc]); return sc; }), stat = scs.map(() => ({ out: 0, t0: 0, wait: 0 }));
+    const cv = scs.map((_, i) => { const c = $('x' + i); c.width = AW * 2; c.height = AH * 2; return c; });
+    let playing = true;
+    function frame() {
+      scs.forEach((sc, i) => {
+        if (playing) netStep(i);
+        render(sc, FB, DL); new Uint32Array(img.data.buffer).set(FB.d); og.putImageData(img, 0, 0);
+        const g = cv[i].getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(off, 0, 0, AW * 2, AH * 2);
+        const cars = [].concat(...sc.sims.map((s) => s.cars)), st = stat[i]; st.out = NETS[i].sims.reduce((a, s) => a + (s.run ? s.run.exited || 0 : 0), 0);
+        const yld = sc.lab ? sc.lab.cars.filter((c) => c.yielding).length : 0, longest = Math.max(0, ...cars.map((c) => c.stopT || 0));
+        $('l' + i).textContent = `Live: cars ${cars.length} · waiting to give way ${yld} · longest stop now ${longest.toFixed(0)} s`;
+      });
+      requestAnimationFrame(frame);
+    }
+    $('play').onclick = () => { playing = !playing; $('play').textContent = playing ? 'Pause' : 'Play'; };
+    window.__cross = { scs, NETS, netStep, EXAMPLES };
+    requestAnimationFrame(frame);
+  }
 })();

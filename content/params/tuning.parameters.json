@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit54-2026-10-25",
+ "registryVersion": "edit55-2026-10-25",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -6296,6 +6296,159 @@
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "A highway through a building, Chongqing style (user, 25 October)"
+  },
+  {
+   "id": "world.junctionStagger",
+   "group": "World",
+   "owner": "World",
+   "label": "Junction stagger",
+   "description": "Option B for a 45° crossroads (example only): the 45° road meets the major road at two T junctions this far apart, each squared to 90°. Crossing traffic turns left onto the major road, then right off it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 256,
+   "status": "proposed",
+   "source": "Edit 55 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 192
+   },
+   "integrationStatus": "example-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two fillets of world.junctionTurnRadius and a queue fit between the junctions"
+  },
+  {
+   "id": "world.gardenLargeCells",
+   "group": "World",
+   "owner": "World",
+   "label": "Garden: large unit",
+   "description": "A great lawn covers the largest free block of garden cells, at least this many cells square and at most one cell more each way; paths inside it go. One per tile where room allows.",
+   "unit": "cells",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 55 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 2,
+    "max": 3
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The large unit of the planting hierarchy (user, 25 October)"
+  },
+  {
+   "id": "world.gardenBedTypes",
+   "group": "World",
+   "owner": "World",
+   "label": "Garden: bed types",
+   "description": "Most medium bed types on one tile. Beds framing the great lawn take the first; beds framing the set piece the second.",
+   "unit": "types",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 55 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1,
+    "max": 3
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Medium beds read as one family"
+  },
+  {
+   "id": "world.gardenPlanter",
+   "group": "World",
+   "owner": "World",
+   "label": "Garden: small planter",
+   "description": "Width of a small planter (a concrete box with a clipped hedge top). Two to each open square, one at each corner of the great lawn.",
+   "unit": "world units",
+   "type": "number",
+   "default": 40,
+   "status": "proposed",
+   "source": "Edit 55 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 24,
+    "max": 64
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The small unit: about a third of a bed across"
+  },
+  {
+   "id": "world.sculptureScaleLarge",
+   "group": "World",
+   "owner": "World",
+   "label": "Sculpture: large",
+   "description": "Scale of a sculpture court's centrepiece against a medium piece.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 55 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1.5,
+    "max": 3
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The large piece of the sculpture hierarchy"
+  },
+  {
+   "id": "world.sculptureScaleSmall",
+   "group": "World",
+   "owner": "World",
+   "label": "Sculpture: small",
+   "description": "Scale of the small pieces: lit bollards, 8 art px tall at 0.5.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 55 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.3,
+    "max": 0.8
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The small piece of the sculpture hierarchy"
+  },
+  {
+   "id": "world.courtSmallCount",
+   "group": "World",
+   "owner": "World",
+   "label": "Sculpture court: small pieces",
+   "description": "Lit bollards in a row along a sculpture court's front edge.",
+   "unit": "pieces",
+   "type": "number",
+   "default": 7,
+   "status": "proposed",
+   "source": "Edit 55 (25 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 3,
+    "max": 12
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A rhythm under the centrepiece and its pair"
   }
  ],
  "tables": {
