@@ -1345,7 +1345,7 @@
   function where6(s) { // where the dummy draws
     const b = s.body, f = bodyFloor(s), r = s.P['body.radius'];
     if (!b.alive) return { at: 'none' };
-    if (b.mode === 'rescue') return { at: 'item', key: 2e6, rescue: true };
+    if (b.mode === 'rescue') return { at: 'rescue', key: 2e6, rescue: true };
     if (b.mode === 'drop') return { at: 'item', key: 2e6 }; // falling: above everything, so the landing reads
     if (b.stair) return { at: 'item', key: (b.stair.key != null ? b.stair.key : b.stair.y + b.stair.h) + 0.01 };
     if (b.level === 0) return { at: 'ground', key: b.y + r };
@@ -1375,13 +1375,17 @@
     for (const cn of s.cones) if (cn.state === 'free' || cn.state === 'flight') items.push([cn.y + 6, () => PIX.blit(FB, PIX.CONE, cn.x / U, (cn.y - coneLift(cn) * 1.2) / U)]);
     if (wh.at === 'ground') items.push([wh.key, () => drawBodySprite(s, false, 0)]);
     else if (wh.at === 'item') items.push([wh.key, meItem]);
+    else if (wh.at === 'rescue') items.push([wh.key, () => drawRescue6(s)]);
+    (s.level.checkpoints || []).forEach((cp, i) => { if (!cp.deck && !cp.z) items.push([s.boomPoint(cp).y + 2, () => drawBoom(s, cp, i)]); }); // P6.1: a road leaving the district
     W6.compose(sc, MAIN, DL, {
       cars, layerOf: (c) => c._layer, items,
       car: (c, buf, lift) => { into(buf, () => drawCarSprite(s, c)); if (lift) { c._lift = lift; if (c._top != null) c._top -= lift; } },
-      under: () => { drawMarks(); drawLights(s, cars.filter((c) => !elevOf(c))); if (lvl === 0) cues(); shadows6(s, cars.filter((c) => !elevOf(c)), false); if (wh.at === 'ground') drawBodyGround(s); },
+      under: () => { drawMarks(); if (lvl === 0) { drawLights(s, mine); cues(); } shadows6(s, cars.filter((c) => !elevOf(c)), false); if (wh.at === 'ground') drawBodyGround(s); }, // P6.1: headlights and cues for the dummy's level only
       bodyOn: wh.at === 'layer' ? wh.layer : null, bodyKey: wh.key,
       body: (buf, lift) => { into(buf, () => { drawBodyGround(s, 0); drawBodySprite(s, false, 0); }); if (b._sy != null) b._sy -= lift; },
-      layerUnder: (l, buf, lcars, me) => into(buf, () => { drawLights(s, lcars); shadows6(s, lcars, me ? true : 'no'); if (l === cueLayer) cues(); }),
+      layerUnder: (l, buf, lcars, me) => into(buf, () => {
+        (s.level.checkpoints || []).forEach((cp, i) => { if ((cp.deck && l.dk && l.dk.off === cp.off && l.z === cp.z) || (cp.hill && l.hill)) drawBoom(s, cp, i); }); // a highway or hill street leaving the district
+        if (l === cueLayer) drawLights(s, lcars.filter((c) => elevOf(c) === lvl)); shadows6(s, lcars, me ? true : 'no'); if (l === cueLayer) cues(); }),
     });
     for (const c of cars) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
     if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
@@ -1389,7 +1393,12 @@
     for (const c of mine) drawCarMarks(s, c);
     if (b.mode !== 'rescue') drawNose(s);
     drawEffects(s); drawRingsStreaks(); drawParts(s);
-    for (const d of s.drawDrones()) { if (!d.rescue) { drawDrone(s, d); continue; } const up = rescueLift(s) + 18, x = Math.round(d.x / U), y = Math.round(d.y / U) - up; PIX.line(x, y + 2, x, y + 6, (px, py) => FB.put(px, py, K.label)); drawDrone(s, Object.assign({}, d, { y: d.y - up * U + d.alt * 4 * U })); } // P6 (D37): the rescue drone above the dummy it carries
+    for (const d of s.drawDrones()) { // P6.1 (D37): the rescue drone flies in from the edge, then carries the dummy below it
+      const rs = s.rescue, held = d.rescue && rs && rs.drone === d && (rs.phase === 'lift' || rs.phase === 'carry' || rs.phase === 'drop');
+      if (!held) { drawDrone(s, d); continue; }
+      const up = rs.up + 20, x = Math.round(d.x / U), y = Math.round(d.y / U) - up; PIX.line(x, y + 2, x, y + 7, (px, py) => FB.put(px, py, K.label));
+      drawDrone(s, Object.assign({}, d, { y: d.y - up * U + d.alt * 4 * U }));
+    }
     for (const c of mine) drawTag(s, c);
     drawBarks(s);
     drawEffects(s, true);
@@ -1398,7 +1407,16 @@
     drawStamp(s);
     if (b.alive) { const wear = 1 - b.health / P['damage.bodyHealth'], vf = lowHealth('vignetteFrom', 0.7); if (wear > vf) { const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf), band = 8; for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const d = Math.min(x, y, AW - 1 - x, AH - 1 - y); if (d >= band) { x = AW - 1 - band; continue; } if ((x + y) % 2 === 0 || d < 3) FB.mix(x, y, K.warn, (0.12 + 0.3 * pulse) * (1 - d / band)); } } }
   }
-  function rescueLift(s) { const rs = s.rescue; return rs ? Math.round(14 * Math.min(1, rs.t / Math.max(1e-6, rs.lift))) : 0; } // the drone lifts the dummy clear of the water
+  function rescueLift(s) { const rs = s.rescue; return rs ? Math.round(rs.up) : 0; }
+  function drawRescue6(s) { // P6.1 (D37): the dummy sinks below the waterline, a drone lifts it out and sets it down on land
+    const rs = s.rescue, b = s.body; if (!rs) return;
+    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift';
+    if (wet) for (let k = 0; k < 2; k++) { const r = 3 + ((t * 7 + k * 5) % 10); for (const [x, y] of PIX.circle(r)) FB.mix(cx + x, wl + Math.round(y * 0.45), K.white, 0.4 * (1 - r / 13)); } // ripples
+    if (rs.under >= 0.999) { if (Math.floor(t * 5) % 2) FB.put(cx + (Math.floor(t * 9) % 3) - 1, wl - 1 - (Math.floor(t * 12) % 4), K.white); return; } // bubbles: under the surface
+    const wear = clamp(1 - b.health / s.P['damage.bodyHealth'], 0, 1), S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
+    const ay = Math.round(b.y / U) + Math.round(rs.under * 18) - Math.round(rs.up), x0 = cx - S.ox, y0 = ay - S.oy;
+    for (let j = 0; j < S.h; j++) { const yy = y0 + j; if (wet && yy > wl) break; for (let i = 0; i < S.w; i++) { const c = S.d[j * S.w + i]; if (c) FB.put(x0 + i, yy, c); } }
+  }
   function drawLoading() {
     const ld = app.loading || { name: '' }, x = FX + 60, y = FY + FH / 2 - 70, w = FW - 120;
     ctx.fillStyle = FT.veil; ctx.fillRect(FX, FY, FW, FH);
@@ -1484,7 +1502,7 @@
   const WHERE6 = { walk: 'WALKWAY', hill: 'HILLTOP', terrace: 'TERRACE', ring: 'RING', deck: 'HIGHWAY', roof: 'ROOF' }; // P6 floors
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function drawTopBar(s) {
-    const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // deck traffic is off the shift's clock; P5.3: every car still in the district
+    const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
     const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? ' · RIVER RESCUE' : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
     const items = [[null, roadLabel(s.p6 ? s.levelId : s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });

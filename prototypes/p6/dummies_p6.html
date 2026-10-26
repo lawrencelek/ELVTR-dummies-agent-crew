@@ -191,8 +191,9 @@ document.getElementById('btn-full').addEventListener('click', () => {
     'world.deckRingTopClear': 32, 'world.gardenCellWidth': 160, 'world.gardenCellHeight': 128, 'world.gardenPath': 32, // Edit 51.3 (district mock-up only)
     'world.gardenLargeCells': 2, 'world.gardenBedTypes': 2, 'world.gardenPlanter': 40, 'world.sculptureScaleLarge': 2, 'world.sculptureScaleSmall': 0.5, 'world.courtSmallCount': 7, // Edit 55: planting and sculpture in three sizes (district mock-up only)
     'world.district.parkland.quota': 2, 'world.district.circus.quota': 3, 'world.district.monument.quota': 4, // Edit 51: three districts (mock-up; the game still runs five)
+    'traffic.offscreenCullSeconds': 12, 'proto.rescueSinkSeconds': 2, // P6.1 (Edit 63): off-screen jam cleanup; the river rescue's sink before the drone comes
     'world.district.waterfront.quota': 3, 'world.district.waterfront.interval': 3.2, 'world.district.waterfront.deckInterval': 8, // P6 (Edit 62): Waterfront replaces Circus (district 2 of 3); its bridges end at T junctions on the ridge road, fed no faster than they pass (as Parkland's ring, Edit 54)
-    'world.district.parkland.interval': 4.5, 'world.district.parkland.deckInterval': 8, 'world.district.circus.interval': 3.2, 'world.district.monument.interval': 2.4, // Edit 53: mock-up traffic; each lane entering the district runs one car per 2 × interval, as the game's roads
+    'world.district.parkland.interval': 3.2, 'world.district.parkland.deckInterval': 8, 'world.district.circus.interval': 3.2, 'world.district.monument.interval': 2.4, // Edit 53: mock-up traffic; each lane entering the district runs one car per 2 × interval, as the game's roads
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
   };
@@ -5572,15 +5573,33 @@ document.getElementById('btn-full').addEventListener('click', () => {
     return { dk, L: Lr, lift: ext, z, cols, front: off + HALF, openings: stairs.map((st) => ({ a0: st.x, a1: st.x + st.w, side: st.side })), inBand: (wx, wy) => Math.abs(wy - off) < HALF + 12 };
   }
   // ---------- the walkway at Z1: a union of polygons, square ends where it meets a podium roof or an escalator head
-  function walkwayLayer(polys, roofs, joins, colOk) {
+  // P6.1 (Edit 63): the parapets break over each lane below, one world.tileSize module per lane, both sides: drops onto cars.
+  // laneC(x, y): distance to the nearest Z0 lane centre line. A gap centres where the spine crosses one.
+  function walkGaps(polys, laneC) {
+    const T = P['world.tileSize'];
+    return polys.filter((p) => p.spine).map((p) => {
+      const path = X.makePath(p.spine), gaps = [];
+      if (laneC) {
+        const ds = []; for (let a = 0; a <= path.length; a += 2) { const q = X.pathAt(path, a); ds.push(laneC(q.x, q.y)); }
+        for (let i = 1; i + 1 < ds.length; i++) if (ds[i] < 8 && ds[i] <= ds[i - 1] && ds[i] < ds[i + 1]) { const c = i * 2; if (c > T && c < path.length - T && !gaps.some(([a0, a1]) => c > a0 - T && c < a1 + T)) gaps.push([c - T / 2, c + T / 2]); }
+      }
+      p.gaps = gaps;
+      return { p, path, gaps };
+    });
+  }
+  function walkwayLayer(polys, roofs, joins, colOk, laneC) {
     const M = new Uint8Array(AW * AH), R = new Uint8Array(AW * AH), Lr = new PIX.Buf(AW, AH), inRect = (r, wx, wy) => wx >= r[0] && wx <= r[0] + r[2] && wy >= r[1] && wy <= r[1] + r[3];
+    const spines = walkGaps(polys, laneC), HW = P['world.walkwayWidth'] / 2;
+    const gapAt = (wx, wy) => { for (const sp of spines) { if (!sp.gaps.length) continue; const pr = X.pathProject(sp.path, wx, wy); if (Math.abs(pr.lat) < HW + 6 && sp.gaps.some(([a0, a1]) => pr.s >= a0 && pr.s <= a1)) return true; } return false; };
     each((x, y, wx, wy, k) => { if (polys.some((p) => PIX.inPoly(p, wx, wy))) M[k] = 1; if (roofs.some((r) => inRect(r, wx, wy))) R[k] = 1; else if (joins.some((r) => inRect(r, wx, wy))) R[k] = 2; });
     const out = (x, y) => x < 0 || y < 0 || x >= AW || y >= AH || (!M[y * AW + x] && !R[y * AW + x]), on = (k) => M[k] && !R[k];
     each((x, y, wx, wy, k) => {
       if (!on(k)) return;
       let edge = 9; for (let j = -3; j <= 3; j++) for (let i = -3; i <= 3; i++) if (out(x + i, y + j)) edge = Math.min(edge, Math.max(Math.abs(i), Math.abs(j)));
+      if (edge <= 3 && gapAt(wx, wy)) { Lr.put(x, y, edge === 1 ? ((x + y) % 3 ? K.deckJoint : K.bldgDark) : K.deck2); return; } // broken parapet: the slab edge shows
       Lr.put(x, y, edge === 1 ? K.jerseyO : edge === 2 ? (((x + y) % 6) < 3 ? N.magenta : K.jerseyTop) : edge === 3 ? K.jersey : (x + y) % 10 === 0 ? K.deckJoint : (((x >> 2) + (y >> 2)) % 2 ? K.deck : K.deck2));
     });
+    each((x, y, wx, wy, k) => { if (!on(k)) return; let edge = 9; for (let j = -3; j <= 3; j++) for (let i = -3; i <= 3; i++) if (out(x + i, y + j)) edge = Math.min(edge, Math.max(Math.abs(i), Math.abs(j))); if (edge > 3 || gapAt(wx, wy)) return; if (gapAt(wx + U, wy) !== gapAt(wx - U, wy) || gapAt(wx, wy + U) !== gapAt(wx, wy - U)) Lr.put(x, y, K.white); }); // snapped parapet ends
     each((x, y, wx, wy, k) => { if (M[k] && !R[k]) return; for (let d = 1; d <= 4; d++) { const kk = (y - d) * AW + x; if (y - d >= 0 && on(kk)) { Lr.put(x, y, d === 1 ? K.jerseyTop : d === 2 ? CON.m : d === 3 ? N.cyan : K.bldgOutline); break; } } }); // fascia with an LED strip
     // round columns under the walkway, on pavements and the island, never in a lane
     const cols = [], cw = P['world.walkwayColumn'];
@@ -5588,7 +5607,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       if (!colOk(x, y) || roofs.concat(joins).some((r) => inRect([r[0] - 16, r[1] - 16, r[2] + 32, r[3] + 32], x, y)) || cols.some((q) => hyp(q.cx - x, q.cy - y) < 64)) return;
       cols.push({ cx: x, cy: y, key: y + cw / 2, x: x - cw / 2, y: y - cw / 2, spr: PIX.column(Math.round(cw / U), Math.round(cw / U), Z1) });
     });
-    return { L: Lr, lift: Z1, z: 1, cols, front: 1e6, walk: true, polys, roofs, joins, inBand: (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH && M[k] === 1; }, shadeOn: (B) => {
+    return { L: Lr, lift: Z1, z: 1, cols, front: 1e6, walk: true, polys, roofs, joins, spines, gapAt, inBand: (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH && M[k] === 1; }, shadeOn: (B) => {
       const k = P['proto.art.shadowScale'], hgt = P['world.deckHeight'], ox = PIX.SUN.x * hgt * k / U, oy = PIX.SUN.y * hgt * k / U;
       each((x, y) => { for (const t of [0.5, 1]) { const sx = Math.round(x - ox * t), sy = Math.round(y - oy * t); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && M[sy * AW + sx] && !R[sy * AW + sx]) { B.shade(x, y, 0.66); break; } } });
     } };
@@ -5632,7 +5651,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
   const fil = (pts, r) => X.filletAny(pts, r || R96, 0);
   const loop2 = (pts) => pts.concat(pts.slice(1)); // a closed road twice round: every screen clips one unbroken run
   const DISTRICTS = [
-    { id: 'parkland', name: 'Parkland', quota: P['world.district.parkland.quota'], storeys: [2, 5], start: ['A1', 'top'],
+    { id: 'parkland', name: 'Parkland', quota: P['world.district.parkland.quota'], storeys: [2, 5], start: ['B2', 'center'], // P6.1: every district starts in its centre tile
       mood: 'Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath.',
       roads: [{ id: 'boulevard', pts: [[40, -200], [2360, 2120]] }, { id: 'loop', pts: fil([[527, 287], [400, 414], [400, 1736], [1636, 1736], [1806, 1566], [2206, 1166], [1760, 720], [1760, -200]], [0, RB, RB, 96, RB, RB, RB, 0]) }], // Edit 56: joins the boulevard at 90° in A1; meets it at a roundabout in C3
       junctions: [{ tile: 'A1', at: [527, 287], major: 'boulevard' }],
@@ -5650,7 +5669,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
         A3: ['A wide R160 bend (buses may use it)', 'Belvedere: four tiers and a stair up to a lawn, the monolith orchard on top', 'both'],
         B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Sculpture court: a large obelisk, two rings, a row of lit bollards', 'both'],
         C3: ['Street roundabout where the street meets the boulevard: four arms at 90°, the street turning west outside it', 'Sculpture court at grade: a large arch, two medium pieces, a row of lit bollards', 'scenery'] } },
-    { id: 'monument', name: 'Monument', quota: P['world.district.monument.quota'], storeys: [6, 12], start: ['A1', 'west'],
+    { id: 'monument', name: 'Monument', quota: P['world.district.monument.quota'], storeys: [6, 12], start: ['B2', 'center'],
       mood: 'Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument.',
       roads: [{ id: 'snake', pts: fil([[-200, 320], [2240, 320], [2240, 864], [2144, 960], [240, 960], [240, 1504], [336, 1600], [1120, 1600], [1280, 1760], [2600, 1760]]) }],
       split: { tile: 'B2' },
@@ -5691,7 +5710,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
   })();
   const WROAD = (id) => VP.roads.find((r) => r.id === id), RIDGE = WROAD('North Ridge Road');
   const BRIDGE_GAPS = [[920, 1000], [1400, 1480], [1740, 1820]]; // broken parapets: over the avenue, over the drive, over the river (drops)
-  const WATER = { id: 'waterfront', name: 'Waterfront', quota: P['world.district.waterfront.quota'], storeys: [4, 10], start: ['A2', 'west'],
+  const WATER = { id: 'waterfront', name: 'Waterfront', quota: P['world.district.waterfront.quota'], storeys: [4, 10], start: ['B2', 'center'],
     mood: 'A hill walled by towers; a river below. The valley avenue meets the tunnel and the beach road at the circus; the hill\'s bridges cross the drive and the river.',
     roads: VP.roads.filter((r) => r.z === 0).map((r) => ({ id: r.id, pts: r.pts })), // Valley Avenue, North Tunnel, Beach Road, Coastal Drive
     junctions: [{ tile: 'B3', at: [400, 320], major: 'Coastal Drive' }],
@@ -5861,7 +5880,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       const p = shift(q, -ox, -oy); p.spine = shift(w.pts, -ox, -oy); return p; }).filter((p) => p.some(([x, y]) => x > -40 && x < W + 40 && y > -40 && y < H + 40));
     if (polys.length) {
       const deckJoins = sc.layers.filter((l) => l.dk).map((l) => [l.dk.off - HALF - 4, -100, 2 * HALF + 8, H + 200]);
-      const wl = walkwayLayer(polys, ends, deckJoins, (x, y) => roadOk(x, y, OUTER + 8) && !inHill(x + ox, y + oy));
+      const wl = walkwayLayer(polys, ends, deckJoins, (x, y) => roadOk(x, y, OUTER + 8) && !inHill(x + ox, y + oy), sc.laneC);
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl;
     }
   }
@@ -5998,7 +6017,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     // ground roads and their traffic
     if (rbHere) { // a ground roundabout: every route, give way at entry, the inner lane for the third exit (Edit 52, 54). Edit 56: street radius, any centre, bent arms
       const ov = D.kit === 'example' ? {} : { 'world.roundaboutRadius': P['world.roundaboutRadiusStreet'] }, geo = L.multiRoundabout(X, Object.assign({}, P, ov), rbHere.arms, R96, rbHere.at, rbHere.bends), s = labSim(geo, 'nobus', ov);
-      sims.push(s); sc.lab = s;
+      sims.push(s); sc.lab = s; const ca = rbHere.at || [W / 2, H / 2]; sc.islands = [{ x: ca[0], y: ca[1], r: P['world.roundaboutRadiusStreet'] + OUTER + 24 }]; // P6.1: no spawn on a roundabout's island
       ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops, decks: [] }), P, 23);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
       roadD = (k) => rf.D[k];
@@ -6033,6 +6052,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     const B = ground; sc.B = B;
     const rd = (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH ? roadD(k) : 1e9; };
     const roadOk = (wx, wy, m) => rd(wx, wy) > (m || OUTER + 4);
+    sc.laneC = (wx, wy) => { const d = rd(wx, wy); return d <= LW ? Math.abs(d - LW / 2) : 1e9; }; // P6.1: distance to the nearest Z0 lane centre (a split road's lanes too)
     // highways, each with its two escalators
     let ringSim = null;
     if (D.ring && D.ring.tile === name) { // the Z1 ring (Parkland): a four-arm roundabout lifted onto the deck
@@ -6122,7 +6142,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     if (name === 'B1') for (let i = 0; i < 5; i++) waterBlock(B, u(170), u(40 + i * 108), u(290), u(124 + i * 108), 6, 14 - i * 3, 3); // cascade, falling south beside the highway
     if (name === 'C1') { // footbridge over the avenue (x = 160) at Z1, escalator at the east end; Edit 55.2: it runs on west to the B1 highway; a lantern pavilion
       const run = X.stairRun(P, 0, 1), esc = [{ x: 420, y: 304, w: run, h: SWD, axis: 'x', low: 420 + run, high: 420, side: 0, z: 1 }];
-      const wl = walkwayLayer([[[-40, 304], [420, 304], [420, 336], [-40, 336]]], [], esc.map((st) => [st.x, st.y, st.w, st.h]), () => true);
+      const wpoly = [[-40, 304], [420, 304], [420, 336], [-40, 336]]; wpoly.spine = [[-40, 320], [420, 320]]; const wl = walkwayLayer([wpoly], [], esc.map((st) => [st.x, st.y, st.w, st.h]), () => true, sc.laneC);
       for (const st of esc) { sc.props.push(stairProp(st, Z1)); sc.stairs.push(st); }
       wl.cols = [[40, 320], [300, 320]].map(([x, y]) => ({ cx: x, cy: y, key: y + 8, x: x - 8, y: y - 8, spr: PIX.column(4, 4, Z1) }));
       wl.front = 9e5; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true;
@@ -6134,7 +6154,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       if (name === 'B1') { const a = off.dk.off - HALF, b = off.dk.off + HALF; polys.push([[-40, 304], [a + 4, 304], [a + 4, 336], [-40, 336]], [[b - 4, 304], [840, 304], [840, 336], [b - 4, 336]]); joins.push([a - 6, 300, 12, 40], [b - 6, 300, 12, 40]); }
       else { const run = X.stairRun(P, 0, 1); esc.push({ x: 740, y: 304 - run, w: SWD, h: run, axis: 'y', low: 304 - run, high: 304, side: -1, z: 1 }); polys.push([[724, 304], [840, 304], [840, 336], [724, 336]]); joins.push(...esc.map((st) => [st.x, st.y, st.w, st.h])); }
       for (const p of polys) p.spine = [[p[0][0] + 24, 320], [p[1][0] - 24, 320]];
-      const wl = walkwayLayer(polys, [], joins, (x, y) => roadOk(x, y, OUTER) && !(off && Math.abs(x - off.dk.off) < HALF + 16));
+      const wl = walkwayLayer(polys, [], joins, (x, y) => roadOk(x, y, OUTER) && !(off && Math.abs(x - off.dk.off) < HALF + 16), sc.laneC);
       for (const st of esc) { sc.props.push(stairProp(st, Z1)); sc.stairs.push(st); }
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true;
       if (name === 'B1') { const lk = sc.D.deckLinks.B1[0], xs = [off.dk.off - HALF, off.dk.off + HALF]; sc.props.push({ key: 1e6 + 3, draw: (F) => { for (const x0 of xs) for (let wy = lk.y + 4; wy < lk.y + lk.h - 2; wy += 8) for (let wx = x0 - 10; wx < x0 + 12; wx += U) for (let k = 0; k < 2; k++) F.put(wx / U, wy / U - Z1 + k, k ? K.jerseyTop : K.white); } }); } // zebras over the open parapets, at the lift
@@ -6159,7 +6179,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       sc.props.push({ spr: PIX.building(Math.round(u(pod[2])), Math.round(u(pod[3])), Z1, PIX.rng(77), LEDS[1], 1), x: u(pod[0]), y: u(pod[1]), by: pod[1] + pod[3], podium: true });
       sc.props.push({ spr: PIX.building(Math.round(u(120)), Math.round(u(70)), 10 * EXT(P['world.storeyHeight']), PIX.rng(78), LEDS[2 % LEDS.length], 10), x: u(310), y: u(20) - Z1, by: 90, tower: true });
       const poly = [[386, 140], [414, 140], [414, H + 40], [386, H + 40]]; poly.spine = [[400, 160], [400, H]];
-      const wl = walkwayLayer([poly], [pod], [], (x, y) => roadOk(x, y, OUTER));
+      const wl = walkwayLayer([poly], [pod], [], (x, y) => roadOk(x, y, OUTER), sc.laneC);
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true; R.push([290, 0, 220, 170]);
     }
     if (name === 'C1') { captureRect(394, 512, 112, 56); const S = drum(28, 14, 12 * EXT(P['world.storeyHeight']), N.cyan); sc.props.push({ spr: S, x: u(450), y: u(540), by: 570 }); R.push([380, 480, 140, 110]); } // LED drum in the bend
@@ -6169,7 +6189,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     if (name === 'B3') { // the LED canyon either side of the jog; Edit 54: a Z1 skybridge crosses the jog at 90° between the two walls
       bld(40, 440, 240, 120, 6, 3, true); bld(520, 140, 260, 110, 6, 4, true);
       const hw = P['world.walkwayWidth'] / 2 / Math.SQRT2, a = [262, 538], b = [566, 234], poly = [[a[0] + hw, a[1] + hw], [b[0] + hw, b[1] + hw], [b[0] - hw, b[1] - hw], [a[0] - hw, a[1] - hw]]; poly.spine = [[300, 500], [530, 270]];
-      const wl = walkwayLayer([poly], [], [], (x, y) => roadOk(x, y, OUTER) && !(x < 290 && y > 430) && !(x > 510 && y < 260));
+      const wl = walkwayLayer([poly], [], [], (x, y) => roadOk(x, y, OUTER) && !(x < 290 && y > 430) && !(x > 510 && y < 260), sc.laneC);
       wl.front = 300; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true; R.push([250, 230, 330, 320]);
     }
     if (name === 'C3') { // an LED gateway arch over the road: pylons either side, a lit beam above the traffic
@@ -6230,7 +6250,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     const sp = sc.split, fE = PIX.roadField([{ pts: sp.E }], 120), fW = PIX.roadField([{ pts: sp.Wl }], 120);
     const laneD = (x, y) => { const kk = Math.floor(y / U) * AW + Math.floor(x / U); return Math.min(fE.D[kk], fW.D[kk]); };
     const sky = [[386, -40], [414, -40], [414, cy - A + 8], [386, cy - A + 8]]; // the skybridge from B1 joins the ring's north side
-    const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1), sky]), podiums, esc.map((s) => [s.x, s.y, s.w, s.h]), (x, y) => laneD(x, y) > LW / 2 + 14);
+    const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1), sky]), podiums, esc.map((s) => [s.x, s.y, s.w, s.h]), (x, y) => laneD(x, y) > LW / 2 + 14, (x, y) => laneD(x, y));
     sc.layers.push(wl); sc.walk = wl;
     const okP = (wx, wy) => roadOk(wx, wy, OUTER) && wx > fx + 8 && wx < W - fx - 8;
     tiles(B, okP, true);
@@ -6283,7 +6303,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
   function gameData(sc) {
     const floors = [];
     for (const l of sc.layers) {
-      const f = l.dk ? deckFloor(l) : l.ring ? ringFloor(l) : l.walk ? { kind: 'walk', z: 1, layer: l, drop: true, has: (x, y) => l.polys.some((p) => PIX.inPoly(p, x, y)) } : null;
+      const f = l.dk ? deckFloor(l) : l.ring ? ringFloor(l) : l.walk ? { kind: 'walk', z: 1, layer: l, drop: false, dropAt: (x, y) => l.gapAt(x, y), has: (x, y) => l.polys.some((p) => PIX.inPoly(p, x, y)) } : null; // P6.1: a walkway drops only through its broken parapets
       if (f) floors.push(f);
     }
     for (const q of sc.floorsX) floors.push(q.poly ? { kind: q.kind, z: q.z, layer: q.layer, drop: q.drop, poly: q.poly, has: (x, y) => PIX.inPoly(q.poly, x, y) } : Object.assign(rectFloor(q.kind, q.z, q.x, q.y, q.w, q.h), { key: q.key, drop: q.drop }));
@@ -6306,9 +6326,9 @@ document.getElementById('btn-full').addEventListener('click', () => {
     const ground = (x, y, m) => sc.roadOk(x, y, OUTER + m) && !statics.some((s) => inR(s, x, y, R0 + 6)) && offPoly(x, y, R0 + 6) && !sc.waterPolys.some((p) => PIX.inPoly(p, x, y) || polyDist(p, x, y).d < R0 + 12) && !stairs.some((s) => inR(s, x, y, R0 + 10));
     const pick = (cands, score, n, gap) => { const out = []; for (const c of cands.sort((a, b) => score(a) - score(b))) { if (out.length >= n) break; if (out.every((o) => hyp(o.x - c.x, o.y - c.y) >= gap)) out.push(c); } return out; };
     const cands = [];
-    for (let y = 48; y <= H - 32; y += 16) for (let x = 32; x <= W - 32; x += 16) if (ground(x, y, 12) && !sc.layers.some((l) => l.inBand && l.inBand(x, y))) cands.push({ x, y, f: 90, level: 0, floor: null });
+    for (let y = 48; y <= H - 32; y += 16) for (let x = 32; x <= W - 32; x += 16) if (ground(x, y, 12) && !sc.layers.some((l) => l.inBand && l.inBand(x, y)) && !(sc.islands || []).some((q) => hyp(x - q.x, y - q.y) < q.r)) cands.push({ x, y, f: 90, level: 0, floor: null });
     const st0 = sc.D.start, edge = st0 && st0[0] === sc.name ? st0[1] : null;
-    const score = (c) => (edge === 'top' ? c.y + Math.abs(c.x - W / 2) * 0.2 : edge === 'west' ? c.x + Math.abs(c.y - H / 2) * 0.2 : hyp(c.x - W / 2, c.y - H / 2));
+    const score = (c) => (edge === 'top' ? c.y + Math.abs(c.x - W / 2) * 0.2 : edge === 'west' ? c.x + Math.abs(c.y - H / 2) * 0.2 : edge === 'center' ? hyp(c.x - W / 2, c.y - 0.65 * H) : hyp(c.x - W / 2, c.y - H / 2)); // the centre start: below the intro banner
     let spawns = pick(cands, score, 3, 120);
     if (!spawns.length) { // a hilltop screen: stand on the hill, off its streets and clear of its buildings
       const hf = floors.find((f) => f.kind === 'hill');
@@ -6320,8 +6340,80 @@ document.getElementById('btn-full').addEventListener('click', () => {
     const homes = sc.sims.some((s) => s.elev0 === 0 && s.level.lanes.length) ? pick(cands.filter((c) => !sc.roadOk(c.x, c.y, OUTER + 40)), (c) => hyp(c.x - W / 2, c.y - H / 2), 2, 240) : [];
     const runs = (sc.runs || []).concat(sc.hillRuns || []), longest = runs.reduce((a, r) => (!a || X.makePath(r.pts).length > X.makePath(a.pts).length ? r : a), null);
     return { id: sc.D.id, name: sc.name, cell: [sc.col, sc.row], statics, floors, stairs, solidsZ: sc.solidsZ.slice(), polys0: sc.polys0, water: sc.waterPolys, spawns, coneHomes: homes.map((c) => [c.x, c.y]),
-      patches: [], checkpoints: [], decks: [], deckLanes: [], lanes: [], center: longest ? longest.pts : [], ring: sc.ringDeck ? sc.ringDeck.ring.geoms[0].pts : null,
+      patches: [], checkpoints: sc.checkpoints || [], decks: [], deckLanes: [], lanes: [], center: longest ? longest.pts : [], ring: sc.ringDeck ? sc.ringDeck.ring.geoms[0].pts : null,
       deckLines: sc.layers.filter((l) => l.dk).map((l) => ({ hz: l.dk.hz, off: l.dk.off, z: l.dk.z })), theme: 'p6', landmark: sc.D.tiles[sc.name][1] };
+  }
+  // ---------- P6.1 (Edit 63): every screen edge says whether it can be crossed. Where the dummy can reach an edge but not
+  // cross it (a building, the hill or a pool next door; the district's edge), a barrier stands on this side: a low planter
+  // between screens; the perimeter wall at the district's edge (Edit 42), a booth and boom where a road leaves, a boom across a
+  // highway or hill street that leaves, a parapet along the hill. Where a walkway crosses into the next screen, chevrons say so.
+  const horizE = (sd) => sd === 'N' || sd === 'S';
+  const edgePt = (sd, v, d) => (sd === 'N' ? [v, d] : sd === 'S' ? [v, H - d] : sd === 'W' ? [d, v] : [W - d, v]);
+  const edgeRect = (sd, a0, a1, t) => (sd === 'N' ? { x: a0, y: 0, w: a1 - a0, h: t } : sd === 'S' ? { x: a0, y: H - t, w: a1 - a0, h: t } : sd === 'W' ? { x: 0, y: a0, w: t, h: a1 - a0 } : { x: W - t, y: a0, w: t, h: a1 - a0 });
+  function groundFree(sc, x, y, m) { const g = sc.game; m = m == null ? R0 - 2 : m; return !g.statics.some((q) => inR(q, x, y, m)) && g.polys0.every((q) => !PIX.inPoly(q, x, y)) && !g.stairs.some((q) => inR(q, x, y, m)); } // m: the margin (where the dummy can stand: R0 − 2; where it can arrive across an edge: 0, the push-out slides it along)
+  const cpZone = (cp) => { const o = cp.half != null ? cp.half : cp.deck ? HALF : OUTER, l = cp.line; return cp.side === 'W' ? { x: 0, y: cp.off - o, w: l, h: 2 * o } : cp.side === 'E' ? { x: W - l, y: cp.off - o, w: l, h: 2 * o } : cp.side === 'N' ? { x: cp.off - o, y: 0, w: 2 * o, h: l } : { x: cp.off - o, y: H - l, w: 2 * o, h: l }; };
+  function runsOf(flags, step) { const out = []; let a = null; flags.forEach((f, i) => { if (f && a == null) a = i * step; if (!f && a != null) { out.push([a, i * step]); a = null; } }); if (a != null) out.push([a, flags.length * step]); return out.map(([p, q]) => (q - p < 12 ? [Math.max(0, (p + q) / 2 - 6), (p + q) / 2 + 6] : [p, q])); }
+  function edgePass(Wd) {
+    const step = 4, WT = P['world.wallThickness'], WH = EXT(P['proto.art.wallHeight']), d0 = R0 + 1, bd = 32, depth = 8;
+    for (const sc of Wd.scs) { sc.checkpoints = []; sc.edgeLog = []; sc.gamePre = sc.game; }
+    const pre = (q) => ({ game: q.gamePre, roadOk: q.roadOk }); // every screen judged on its own art, before any barrier goes in
+    for (const sc of Wd.scs) {
+      CAP = sc.solids;
+      const g = sc.gamePre, water = (x, y) => g.water.some((q) => PIX.inPoly(q, x, y));
+      for (const sd of ['N', 'E', 'S', 'W']) {
+        const nb = Wd.at(sc.col + SIDE[sd][0], sc.row + SIDE[sd][1]), len = horizE(sd) ? W : H, n = Math.ceil(len / step);
+        const plant = [], wall = [], road = [];
+        for (let i = 0; i < n; i++) {
+          const v = i * step + step / 2, [x, y] = edgePt(sd, v, d0), here = groundFree(pre(sc), x, y) && !water(x, y), onRoad = !sc.roadOk(x, y, OUTER);
+          let there = false; if (nb) { const [qx, qy] = edgePt(OPPS[sd], v, d0); there = groundFree(pre(nb), qx, qy, 0); }
+          const inLane = !sc.roadOk(x, y, LW); // a planter may stand on a shoulder, never in a lane
+          plant.push(!!nb && here && !there && !inLane); wall.push(!nb && here && !onRoad); road.push(!nb && here && onRoad);
+        }
+        for (const [a0, a1] of runsOf(plant, step)) { // a low planter: concrete, a clipped hedge, an LED seam
+          const r = edgeRect(sd, a0, a1, WT), fp = chamf(Math.round(r.x / U), Math.round(r.y / U), Math.round((r.x + r.w) / U) - 1, Math.round((r.y + r.h) / U) - 1, 2);
+          CAP = null; mass(sc.B, fp, r.x / U, r.y / U, (r.x + r.w) / U - 1, (r.y + r.h) / U - 1, 0, 3, 'conc', LEDS[1], true); mass(sc.B, (px, py, k) => fp(px, py, (k || 0) + 2), r.x / U, r.y / U, (r.x + r.w) / U - 1, (r.y + r.h) / U - 1, 3, 4, 'hedge', null, false, 'hedge'); CAP = sc.solids;
+          captureRect(r.x, r.y, r.w, r.h, 'planter');
+          sc.edgeLog.push(sd + ' planter ' + a0 + '–' + a1);
+        }
+        for (const [a0, a1] of runsOf(wall, step)) { // the district's bounds (Edit 42): the perimeter wall
+          const r = edgeRect(sd, a0, a1, WT); captureRect(r.x, r.y, r.w, r.h, 'wall');
+          sc.props.push({ spr: PIX.wall(Math.round(r.w / U), Math.round(r.h / U), WH), x: r.x / U, y: r.y / U, by: r.y + r.h });
+          sc.edgeLog.push(sd + ' wall ' + a0 + '–' + a1);
+        }
+        for (const [a0, a1] of runsOf(road, step)) { // a road leaves the district: a booth on its shoulder, a boom across it (Edit 42)
+          const off = (a0 + a1) / 2, [mx, my] = edgePt(sd, off, d0); if (sc.hillLayer && sc.hillLayer.inBand(mx, my)) { sc.edgeLog.push(sd + ' tunnel ' + Math.round(off)); continue; } // in the tunnel the screen's edge holds (Edit 62)
+          const pv = off + LW, b = sd === 'W' ? { x: depth, y: pv, w: bd, h: OUTER - LW } : sd === 'E' ? { x: W - depth - bd, y: pv, w: bd, h: OUTER - LW } : sd === 'N' ? { x: pv, y: depth, w: OUTER - LW, h: bd } : { x: pv, y: H - depth - bd, w: OUTER - LW, h: bd };
+          captureRect(b.x, b.y, b.w, b.h, 'booth'); sc.props.push({ spr: PIX.booth(Math.round(b.w / U), Math.round(b.h / U), WH), x: b.x / U, y: b.y / U, by: b.y + b.h });
+          sc.checkpoints.push({ side: sd, off, line: depth + bd / 2, half: (a1 - a0) / 2 }); sc.edgeLog.push(sd + ' booth ' + Math.round(off)); // half: the asphalt across the edge (a 45° road is wider)
+        }
+        // raised floors at this edge: open where next door has a floor at the level; else a boom (highway, hill street) or a parapet (hill)
+        sc.gamePre.floors.forEach((f) => {
+          if (!f.z) return;
+          const open = [], shut = [], street = [];
+          for (let i = 0; i < n; i++) {
+            const v = i * step + step / 2, [x, y] = edgePt(sd, v, d0); if (!f.has(x, y)) { open.push(false); shut.push(false); street.push(false); continue; }
+            let ok = false; if (nb) { const [qx, qy] = edgePt(OPPS[sd], v, d0); ok = nb.gamePre.floors.some((q) => q.z === f.z && q.has(qx, qy)); }
+            const hs = f.kind === 'hill' && sc.hillOk && !sc.hillOk(x, y, OUTER);
+            open.push(ok); shut.push(!ok && !hs); street.push(!ok && hs);
+          }
+          if (f.kind === 'deck' && shut.some(Boolean) && !nb && !sc.checkpoints.some((c) => c.deck && c.off === f.layer.dk.off && c.side === sd)) { sc.checkpoints.push({ side: sd, off: f.layer.dk.off, line: depth + bd / 2, deck: true, z: f.z }); sc.edgeLog.push(sd + ' deck boom ' + f.layer.dk.off); return; }
+          for (const [a0, a1] of runsOf(street, step)) { sc.checkpoints.push({ side: sd, off: (a0 + a1) / 2, line: depth + bd / 2, z: f.z, hill: true, half: (a1 - a0) / 2 }); sc.edgeLog.push(sd + ' hill boom ' + Math.round((a0 + a1) / 2)); }
+          if (f.kind === 'hill') for (const [a0, a1] of runsOf(shut, step)) { // a parapet along the hill's edge: concrete, an LED line
+            const r = edgeRect(sd, a0, a1, WT); sc.solidsZ.push(Object.assign({ z: 1 }, r));
+            const HB = f.layer.L; for (let yy = Math.floor(r.y / U); yy < Math.ceil((r.y + r.h) / U); yy++) for (let xx = Math.floor(r.x / U); xx < Math.ceil((r.x + r.w) / U); xx++) { const e = xx === Math.floor(r.x / U) || yy === Math.floor(r.y / U) || xx === Math.ceil((r.x + r.w) / U) - 1 || yy === Math.ceil((r.y + r.h) / U) - 1; HB.put(xx, yy, e ? CON.l : (xx + yy) % 4 < 2 ? N.cyan : CON.m); }
+            sc.edgeLog.push(sd + ' hill parapet ' + a0 + '–' + a1);
+          }
+          if (f.kind === 'walk') { // chevrons where a walkway runs on into the next screen
+            for (const [a0, a1] of runsOf(open, step)) { const L = f.layer.L, c = (a0 + a1) / 2, dir = SIDE[sd];
+              for (const k of [0, 1]) { const [cx, cy] = edgePt(sd, c, 18 + k * 10); for (let t = -4; t <= 4; t++) { const ax = Math.round(cx / U) + (dir[0] ? -Math.abs(t) * dir[0] * 0.5 : t), ay = Math.round(cy / U) + (dir[1] ? -Math.abs(t) * dir[1] * 0.5 : t); L.put(Math.round(ax), Math.round(ay), k ? N.cyan : K.white); } }
+              sc.edgeLog.push(sd + ' walkway on ' + Math.round(c)); }
+            if (shut.some(Boolean)) sc.edgeLog.push(sd + ' walkway shut (check)');
+          }
+        });
+      }
+      CAP = null;
+    }
+    for (const sc of Wd.scs) sc.game = gameData(sc);
   }
   // ---------- P6 (Edit 53 in play): one traffic for the district. Every screen's sims link at the seams by level: a lane
   // leaving by a shared edge continues on the lane that enters next door at the same point and elevation (Z0 streets, the
@@ -6337,7 +6429,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     if (s.elev0 === 0) s.dispatchDrone = X.Sim.prototype.dispatchDrone; else s.dispatchDrone = NOOP;
   }
   function linkWorld(Wd) {
-    const scs = Wd.scs, recs = [], at = (c, r) => scs.find((q) => q.col === c && q.row === r), admit0 = X.Sim.prototype.admit;
+    const scs = Wd.scs, recs = [], at = (c, r) => scs.find((q) => q.col === c && q.row === r);
     for (const sc of scs) for (const s of sc.sims) {
       s.sc = sc; s.netLane = new Map(); quiet(s);
       const nc = s.newCar.bind(s);
@@ -6356,26 +6448,30 @@ document.getElementById('btn-full').addEventListener('click', () => {
     const outside = (sc, e) => !at(sc.col + SIDE[e.side][0], sc.row + SIDE[e.side][1]);
     for (const r of recs) r.toExit = !r.next.length ? 0 : Infinity; // seams to the nearest way out (traffic.exitAfterSeams)
     for (let changed = true; changed;) { changed = false; for (const r of recs) for (const q of r.next) if (q.toExit + 1 < r.toExit) { r.toExit = q.toExit + 1; changed = true; } }
-    for (const sc of scs) for (const s of sc.sims) { // admission only where a lane enters from outside the district
-      const src = recs.filter((r) => r.s === s && !r.prev.length && r.ends.in && outside(sc, r.ends.in)), gs = src.filter((r) => r.deck == null).map((r) => r.i);
-      s.deckSrc = new Set(src.filter((r) => r.deck != null).map((r) => r.i - 2));
-      const shift = s.elev0 === 0; // the shift's cars enter by the Z0 roads
-      s.admit = function () {
-        if (!gs.length) return;
-        const sl = this.schedule[this.slot]; if (!sl) return;
-        if (shift && Wd.live && Wd.admitted >= Wd.budget) return;
-        if (!gs.includes(sl.lane)) sl.lane = gs[sl.i % gs.length];
-        const n = this.cars.length; admit0.call(this);
-        if (this.cars.length > n && shift) { this.cars[this.cars.length - 1].shift = true; if (Wd.live) Wd.admitted++; }
-      };
-      const arms = new Set(src.filter((r) => r.deck == null).map((r) => r.ends.in.side + Math.round(r.ends.in.off))).size, iv = 2 * P['world.district.' + sc.D.id + '.interval'] / Math.max(1, arms);
-      s.admissionInterval = () => iv; // each road entry: one car per 2 × world.district.<id>.interval
-      const dki = P['world.district.' + sc.D.id + '.deckInterval']; // Edit 54: highways that meet at a ring are fed no faster than it passes
-      if (s.deckSrc.size && dki) s.P = Object.assign({}, s.P, { 'world.deckInterval': dki / s.P['traffic.deckGapScale'] });
-      const seen = new Set(), todo = src.filter((r) => r.deck == null).slice(); // a bus enters only if every lane it can reach keeps vehicles.bus.minRadius
-      while (todo.length) { const r = todo.pop(); if (seen.has(r)) continue; seen.add(r); todo.push(...r.next.filter((q) => q.deck == null)); }
-      const busOK = [...seen].every((r) => !r.s.lab && X.minBend(r.path.pts, W, H) >= RB * 0.9);
-      if (!busOK) for (const sl of s.schedule) if (sl.cls === 'bus') sl.cls = 'sedan';
+    // P6.1 (Edit 63): managed traffic. No sim admits on its own schedule: manage() spawns off-screen to a density target.
+    const cruise = P['vehicles.sedan.cruiseSpeed'], dki = P['world.district.' + Wd.D.id + '.deckInterval'];
+    const SG = 2 * P['world.district.' + Wd.D.id + '.interval'] * cruise; // street spacing: one car per lane per 2 × interval at cruise
+    const SD = (dki || P['world.deckInterval'] * P['traffic.deckGapScale']) * cruise * P['traffic.deckSpeedScale']; // highway spacing (Edit 54 feed)
+    for (const sc of scs) {
+      sc.flow = new Map();
+      for (const s of sc.sims) {
+        Object.assign(s, { admit: NOOP, admitDeck: NOOP });
+        if (dki) s.P = Object.assign({}, s.P, { 'world.deckInterval': dki / s.P['traffic.deckGapScale'] });
+        for (const r of recs.filter((q) => q.s === s && q.ends.in)) { // one group per physical inlet: a junction's routes share their approach
+          const cls = r.deck != null ? 'deck' + r.elev : s.elev0 && s.lab && s === sc.ringSim ? 'ring' : 'street' + r.elev, key = cls + ':' + r.ends.in.side + Math.round(r.ends.in.off);
+          if (!sc.flow.has(cls)) sc.flow.set(cls, { cls, S: cls.startsWith('street') ? SG : SD, groups: new Map(), target: 0, n: 0, rr: 0 });
+          const F = sc.flow.get(cls);
+          if (!F.groups.has(key)) F.groups.set(key, { key, recs: [], len: 0, boundary: outside(sc, r.ends.in), busOK: true });
+          const g = F.groups.get(key); g.recs.push(r); r.group = g; r.cls = cls;
+          g.len = Math.max(g.len, (r.ends.out ? r.ends.out.s : r.path.length) - r.ends.in.s);
+        }
+      }
+      for (const F of sc.flow.values()) { F.target = [...F.groups.values()].reduce((a, g) => a + g.len, 0) / F.S; F.list = [...F.groups.values()]; }
+    }
+    for (const r of recs) if (r.group && r.deck == null) { // a bus enters only where every lane it can reach keeps vehicles.bus.minRadius
+      const seen = new Set(), todo = [r];
+      while (todo.length) { const q = todo.pop(); if (seen.has(q)) continue; seen.add(q); todo.push(...q.next.filter((z) => z.deck == null)); }
+      if (![...seen].every((q) => !q.s.lab && X.minBend(q.path.pts, W, H) >= RB * 0.9)) r.group.busOK = false;
     }
     Wd.recs = recs; Wd.sims = [].concat(...scs.map((sc) => sc.sims));
   }
@@ -6447,15 +6543,70 @@ document.getElementById('btn-full').addEventListener('click', () => {
       if (c.dodge && c.dodge.s != null) c.dodge = Object.assign({}, c.dodge, { s: c.dodge.s + ds });
       if (c.holdX != null) { c.holdX -= dx; c.holdY -= dy; }
       const p = X.pathAt(c.path, c.s); c.x = p.x + p.nx * c.d; c.y = p.y + p.ny * c.d;
-      nx.s.cars.push(c); Wd.crossings++;
+      nx.s.cars.push(c); Wd.crossings++; if (nx.group) nx.group.lastIn = Wd.t; // an arrival from upstream: this inlet's flow
     }
     for (const s of Wd.sims) for (const c of s.cars) { c.elev = s.elev0 + (c.layer || 0); c.sim = s; }
+    if (++Wd.tick % 15 === 0) manage(Wd, act); // P6.1: four times a second
     if (Wd.events.length > 400) Wd.events.splice(0, Wd.events.length - 400);
   }
-  function goLive(Wd) { // the shift starts: the Z0 cars already on the road are its first cars
-    Wd.live = true; Wd.admitted = 0;
-    for (const s of Wd.sims) for (const c of s.cars) if (c.shift) Wd.admitted++;
-    Wd.admitted = Math.min(Wd.admitted, Wd.budget); Wd.events.length = 0;
+  // P6.1 (Edit 63): traffic managed as GTA does it, but never in view. Off-screen, each screen's streets, highways and ring
+  // are filled to one car per spacing of lane (2 × world.district.<id>.interval at cruise; highways at their feed); a car
+  // spawns at an inlet with room, never one fed from the screen in view. Off-screen, a car stopped traffic.offscreenCullSeconds
+  // is removed (no jam survives out of sight); once the shift's cars have all appeared, its unseen cars go. In view, nothing
+  // appears or vanishes: cars on screen persist, and a car followed to the next screen keeps its speed (O3.72).
+  function seen(act, sc, c, m) { // is this car on the screen in view, or reaching onto it?
+    if (!act) return false;
+    const dc = sc.col - act.col, dr = sc.row - act.row; if (Math.abs(dc) > 1 || Math.abs(dr) > 1) return false;
+    const x = c.x + dc * W, y = c.y + dr * H; m = m == null ? (c.L || 0) + 24 : m;
+    return x > -m && x < W + m && y > -m && y < H + m;
+  }
+  function groupCars(g) { const out = []; const ss = new Set(g.recs.map((r) => r.s)); for (const s of ss) for (const c of s.cars) { const r = recOf(s, c); if (r && r.group === g) out.push(c); } return out; }
+  function roomAt(Wd, g, r, s0, ahead, behind) { // clear ahead along the inlet's lanes, and no car coming up behind across the seam
+    for (const c of groupCars(g)) if (c.s + c.L / 2 > s0 - 40 && c.s - c.L / 2 < s0 + ahead) return false;
+    for (const q0 of g.recs) for (const q of q0.prev) for (const c of q.s.cars) { if (recOf(q.s, c) !== q) continue; if (q.ends.out.s - c.s < behind + c.L) return false; }
+    return true;
+  }
+  function queued(g) { // a queue on the inlet's lanes, or on the lanes they feed next door: add nothing (no car into a jam)
+    for (const c of groupCars(g)) if ((c.stopT || 0) > 0.5) return true;
+    for (const r of g.recs) for (const q of r.next) for (const c of q.s.cars) if (recOf(q.s, c) === q && (c.stopT || 0) > 0.5) return true;
+    return false;
+  }
+  function spawn(Wd, r, s0) {
+    const s = r.s, n = ++Wd.spawnSeq, u = (n * 0.6180339887 + 0.53) % 1;
+    let c;
+    if (r.deck != null) c = s.addDeckCar(r.i - 2, s0, s.deckCls(n));
+    else { let cls = X.fleetClass(P, 0.25, u); if (cls === 'bus' && !r.group.busOK) cls = 'sedan'; c = s.newCar('car' + n, cls, r.i, r.path, s0, 0); s.cars.push(c); }
+    c.v = Math.min(c.v, s.cornerSpeed(c)); s.pose(c);
+    c.elev = s.elev0 + (c.layer || 0); c.sim = s; c.slot = n;
+    if (!c.elev && r.deck == null) c.shift = true;
+    return c;
+  }
+  function manage(Wd, act) {
+    const exhausted = Wd.live && Wd.admitted >= Wd.budget, cull = P['traffic.offscreenCullSeconds'], Lb = P['vehicles.bus.length'], cruise = P['vehicles.sedan.cruiseSpeed'];
+    for (const sc of Wd.scs) for (const F of sc.flow.values()) {
+      let n = 0; for (const s of sc.sims) for (const c of s.cars) { const r = recOf(s, c); if (r && r.cls === F.cls) n++; }
+      F.n = n;
+      if (n >= F.target + 1 || (exhausted && F.cls === 'street0')) continue; // a cap; the shift's streets stop filling once it is spent
+      const cands = F.list.filter((g) => sc !== act || g.boundary);
+      const hw = F.S / (cruise * (F.cls.startsWith('street') ? 1 : P['traffic.deckSpeedScale'])); // the target headway at an inlet
+      for (let k = 0; k < cands.length; k++) { // an inlet from beyond the district meters at the headway; any other fills only a missing car (1.5 headways)
+        const g = cands[(F.rr + k) % cands.length], r = g.recs[(Wd.spawnSeq + k) % g.recs.length], jit = 0.85 + 0.3 * ((Wd.spawnSeq * 0.6180339887) % 1);
+        if (Wd.t - (g.lastIn != null ? g.lastIn : -1e9) < hw * (g.boundary ? jit : 1.5)) continue;
+        const s0 = g.boundary ? Lb / 2 + 2 : r.ends.in.s + 2, ahead = Math.max(Lb * (1 + P['traffic.entryRoomLengths']) + P['traffic.minimumGap'], F.S * 0.5);
+        if (sc === act && seen(act, sc, X.pathAt(r.path, s0), 40)) continue; // the screen in view: only from beyond the district edge, out of sight
+        if (!roomAt(Wd, g, r, s0, ahead, F.S * 0.5) || queued(g)) continue;
+        spawn(Wd, r, s0); g.lastIn = Wd.t; if (++n >= F.target + 1) break;
+      }
+      F.rr = (F.rr + 1) % Math.max(1, cands.length);
+    }
+    for (const s of Wd.sims) { // off-screen: no jam survives out of sight; a finished shift's unseen cars go
+      if (!s.cars.length) continue;
+      s.cars = s.cars.filter((c) => { if (seen(act, s.sc, c)) return true; if ((c.stopT || 0) > cull) { Wd.culled++; return false; } if (exhausted && c.shift) return false; return true; });
+    }
+  }
+  function goLive(Wd) { // the shift starts: it counts Z0 cars as they appear on the screen in view (P6.1)
+    Wd.live = true; Wd.admitted = 0; Wd.events.length = 0;
+    for (const s of Wd.sims) for (const c of s.cars) if (!(c.elev || 0) && c.deck !== true) c.shift = true;
   }
   // The district: nine screens, linked, warmed for traffic.warmSeconds so no screen waits for cars.
   function buildWorld(id, opts) {
@@ -6464,7 +6615,8 @@ document.getElementById('btn-full').addEventListener('click', () => {
     if (!D) throw new Error('no P6 district ' + id);
     const scs = [];
     for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) scs.push(buildScreen(D, c, r));
-    const Wd = { id, D, scs, at: (c, r) => scs[r * 3 + c] || null, t: 0, live: false, budget: opts.budget != null ? opts.budget : P['run.appearances.road'], admitted: 0, exited: 0, crossings: 0, events: [] };
+    edgePass({ scs, at: (c, r) => (c >= 0 && c < 3 && r >= 0 && r < 3 ? scs[r * 3 + c] : null) }); // P6.1: barriers and booms where an edge cannot be crossed
+    const Wd = { id, D, scs, at: (c, r) => (c >= 0 && c < 3 && r >= 0 && r < 3 ? scs[r * 3 + c] : null), t: 0, live: false, budget: opts.budget != null ? opts.budget : P['run.appearances.road'], admitted: 0, exited: 0, crossings: 0, events: [], tick: 0, spawnSeq: 0, culled: 0 }; // admitted (P6.1): shift cars that have appeared on the screen in view
     linkWorld(Wd);
     for (const sc of scs) { // cones live on their screen; ground drivers and the dummy share them
       sc.cones.length = 0;
@@ -6562,9 +6714,10 @@ document.getElementById('btn-full').addEventListener('click', () => {
       this.spawnBody();
       this.buildView();
     }
-    enter(sc) { this.sc = sc; this.level = sc.game; this.cones = sc.cones; this.district.cur = [sc.col, sc.row]; }
+    enter(sc) { this.sc = sc; this.level = sc.game; this.cones = sc.cones; this.booms = sc.booms || (sc.booms = {}); this.district.cur = [sc.col, sc.row]; }
     screenName() { return nameOf(this.district.cur[0], this.district.cur[1]); }
     buildView() { this.cars = viewCars(this.W6, this.sc); this.view = this.cars; }
+    carsLeft() { return Math.max(0, this.W6.budget - this.W6.admitted); } // P6.1: shift cars still to appear
     allCars() { const out = []; for (const s of this.W6.sims) for (const c of s.cars) if (c.shift && !c.ghost) out.push(c); return out; } // the shift's cars still in the district
     bodyLayer() { const b = this.body; return b && b.alive && !b.stair && b.mode !== 'drop' && b.mode !== 'rescue' ? b.level : null; }
     meets(c) { return this.bodyLayer() === (c.elev || 0); } // P6: by elevation (no two traffic surfaces share a level and a footprint)
@@ -6599,6 +6752,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       for (const e of Wd.events) if (FORWARD.has(e.type)) { const d = Object.assign({}, e); delete d.t; delete d.type; this.emit(e.type, d); }
       Wd.events.length = 0;
       this.buildView();
+      for (const c of this.cars) { const o = c.ghost ? c.real : c; if (o.shift && !o.appeared && c.x > 0 && c.x < W && c.y > 0 && c.y < H) { o.appeared = true; if (Wd.admitted < Wd.budget) Wd.admitted++; } } // P6.1: the shift's clock counts cars as they appear here
       this.slot = Wd.admitted; this.run.admitted = Wd.admitted; this.run.exited = Wd.exited;
       for (const c of this.cars) c.touched = false;
       this.bodyControl(cmd, dt);
@@ -6610,6 +6764,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       const positive = this.account(contacts);
       this.retryPending();
       this.stepRescue(dt);
+      this.stepBooms(dt); // P6.1: booms where a road or highway leaves the district
       this.trackUse();
       this.checkTerminal();
       if (this.phase === 'play') this.checkFlip();
@@ -6693,15 +6848,18 @@ document.getElementById('btn-full').addEventListener('click', () => {
     }
     // ----- the river (D37): a drone lifts the dummy and sets it down on the nearest land at Z0 or Z1, never a lane, a deck
     // or a building. Time: proto.droneLiftSeconds, then the distance at proto.droneSpeed.
-    startRescue() {
-      const b = this.body, P = this.P, G = this.level, sc = this.sc;
+    startRescue() { // P6.1 (Edit 63): the dummy sinks for proto.rescueSinkSeconds; then a drone flies in from the nearest screen edge
+      const b = this.body, P = this.P, G = this.level;
       let best = null;
       for (const sp of this.landPoints()) { const d = hyp(sp.x - b.x, sp.y - b.y); if (!best || d < best.d) best = Object.assign({ d }, sp); }
       if (!best) best = Object.assign({ d: 0 }, G.spawns[0] || { x: W / 2, y: H / 2, level: 0, floor: null });
-      b.mode = 'rescue'; b.lunge = null; b.stair = null; b.vx = b.vy = 0; b.level = 0; b.floor = null;
-      this.rescue = { t: 0, lift: P['proto.droneLiftSeconds'], x0: b.x, y0: b.y, to: best, T: P['proto.droneLiftSeconds'] + best.d / P['proto.droneSpeed'], drone: { x: b.x, y: b.y, alt: 1, state: 'lift', rescue: true } };
-      this.emit('splash', { x: +b.x.toFixed(1), y: +b.y.toFixed(1) }); this.emit('drone-dispatch', { rescue: true });
-      this.mile('firstRescue'); void sc;
+      const edges = [[b.x, -40], [b.x, H + 40], [-40, b.y], [W + 40, b.y]].sort((p, q) => hyp(p[0] - b.x, p[1] - b.y) - hyp(q[0] - b.x, q[1] - b.y)), ex = edges[0];
+      if (b.held) { const cn = b.held; b.held = null; b.gesture = null; Object.assign(cn, { state: 'pending', px: b.x, py: b.y }); } // the cone goes home (retryPending)
+      b.mode = 'rescue'; b.lunge = null; b.stair = null; b.vx = b.vy = 0; b.level = 0; b.floor = null; b._spr = null;
+      this.rescue = { t: 0, phase: 'sink', k: 0, x0: b.x, y0: b.y, to: best, under: 0, up: 0, sink: P['proto.rescueSinkSeconds'], lift: P['proto.droneLiftSeconds'], v: P['proto.droneSpeed'],
+        drone: { x: ex[0], y: ex[1], alt: 1, state: 'wait', rescue: true, hx: ex[0], hy: ex[1] } };
+      this.emit('splash', { x: +b.x.toFixed(1), y: +b.y.toFixed(1) });
+      this.mile('firstRescue');
     }
     landPoints() { // land beside the water, by screen, cached
       const sc = this.sc;
@@ -6714,18 +6872,26 @@ document.getElementById('btn-full').addEventListener('click', () => {
       sc.land = out;
       return out;
     }
-    stepRescue(dt) {
+    stepRescue(dt) { // sink → the drone flies in → lift → carry → set down → the drone leaves
       const rs = this.rescue, b = this.body;
+      for (const d of this.leaving || []) { const dx = d.hx - d.x, dy = d.hy - d.y, l = hyp(dx, dy), st = (rs ? rs.v : this.P['proto.droneSpeed']) * dt; if (l <= st) d.gone = true; else { d.x += dx / l * st; d.y += dy / l * st; } }
+      this.leaving = (this.leaving || []).filter((d) => !d.gone);
       if (!rs) return;
-      rs.t += dt;
-      const d = rs.drone, f = Math.min(1, (rs.t - rs.lift) / Math.max(1e-6, rs.T - rs.lift));
-      if (rs.t < rs.lift) { d.state = 'lift'; d.alt = 1 - 0.6 * Math.sin(Math.PI * Math.min(1, rs.t / rs.lift)); }
-      else { d.state = 'carry'; d.alt = 1; b.x = rs.x0 + (rs.to.x - rs.x0) * f; b.y = rs.y0 + (rs.to.y - rs.y0) * f; }
-      d.x = b.x; d.y = b.y;
-      if (rs.t >= rs.T) {
-        Object.assign(b, { x: rs.to.x, y: rs.to.y, px: rs.to.x, py: rs.to.y, level: rs.to.level, floor: rs.to.floor, mode: 'recover', recoverT: 0, vx: 0, vy: 0 });
-        this.rescue = null;
-        this.emit('rescued', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level, seconds: +rs.T.toFixed(2) });
+      rs.t += dt; rs.k += dt;
+      const d = rs.drone, fly = (x, y) => { const dx = x - d.x, dy = y - d.y, l = hyp(dx, dy), st = rs.v * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
+      const next = (ph) => { rs.phase = ph; rs.k = 0; };
+      if (rs.phase === 'sink') { rs.under = Math.min(1, rs.k / rs.sink); if (rs.k >= rs.sink) { next('inbound'); d.state = 'inbound'; this.emit('drone-dispatch', { rescue: true }); } }
+      else if (rs.phase === 'inbound') { if (fly(b.x, b.y)) { next('lift'); d.state = 'lift'; } }
+      else if (rs.phase === 'lift') { const f = Math.min(1, rs.k / rs.lift); rs.under = 1 - f; rs.up = 14 * f; d.alt = 1 - 0.6 * Math.sin(Math.PI * f); if (f >= 1) { next('carry'); d.state = 'carry'; d.alt = 1; } }
+      else if (rs.phase === 'carry') { const arrived = fly(rs.to.x, rs.to.y); b.x = d.x; b.y = d.y; b.px = b.x; b.py = b.y; if (arrived) next('drop'); }
+      else if (rs.phase === 'drop') {
+        const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * (1 - f);
+        if (f >= 1) {
+          Object.assign(b, { x: rs.to.x, y: rs.to.y, px: rs.to.x, py: rs.to.y, level: rs.to.level, floor: rs.to.floor, mode: 'recover', recoverT: 0, vx: 0, vy: 0 });
+          d.state = 'outbound'; (this.leaving = this.leaving || []).push(d);
+          this.rescue = null;
+          this.emit('rescued', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level, seconds: +rs.t.toFixed(2) });
+        }
       }
     }
     // ----- solids: rects and the hill at Z0; rects above at their level. Screen edges open onto open ground next door.
@@ -6739,6 +6905,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       if (ground) {
         for (const s of G.statics) rect(s);
         for (const st of G.stairs) if (!this.stairFoot(st)) rect(st);
+        for (const cp of G.checkpoints) if (!cp.deck && !cp.z) rect(cpZone(cp)); // between a boom and the district edge
         for (const poly of G.polys0) {
           const inside = PIX.inPoly(poly, b.x, b.y), q = polyDist(poly, b.x, b.y);
           if (!inside && q.d >= r) continue;
@@ -6749,7 +6916,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
         if ((b.x < r && this.edgeOpen('W', b.y)) || (b.x > W - r && this.edgeOpen('E', b.y))) ex = b.x;
         if ((b.y < r && this.edgeOpen('N', b.x)) || (b.y > H - r && this.edgeOpen('S', b.x))) ey = b.y;
         if (ex !== b.x || ey !== b.y) { b.x = ex; b.y = ey; block(); }
-      } else for (const s of G.solidsZ) if (s.z === b.level) rect(s);
+      } else { for (const s of G.solidsZ) if (s.z === b.level) rect(s); for (const cp of G.checkpoints) if ((cp.z || 0) === b.level) rect(cpZone(cp)); }
       for (const c of this.cars) {
         if (!this.meets(c)) continue; // cars meet the dummy on their own level only
         const res = X.circleCar(b.x, b.y, r, c);
@@ -6788,7 +6955,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       const nb = this.W6.at(this.district.cur[0] + SIDE[sd][0], this.district.cur[1] + SIDE[sd][1]);
       if (!nb) return false;
       const r = this.P['body.radius'], x = sd === 'E' ? r + 1 : sd === 'W' ? W - r - 1 : v, y = sd === 'S' ? r + 1 : sd === 'N' ? H - r - 1 : v, G = nb.game;
-      return x >= r && x <= W - r && y >= r && y <= H - r && G.statics.every((s) => !circleRect(x, y, r, s)) && G.polys0.every((p) => !PIX.inPoly(p, x, y));
+      return x >= r && x <= W - r && y >= r && y <= H - r && G.statics.every((s) => !inR(s, x, y, 0)) && G.polys0.every((p) => !PIX.inPoly(p, x, y)); // arrival free (P6.1): the push-out slides the body clear of a corner
     }
     moveCones(h) { const all = this.cars; this.cars = all.filter((c) => !(c.elev || 0)); try { super.moveCones(h); } finally { this.cars = all; } }
     coneSpotValid(x, y, ignore) { return super.coneSpotValid(x, y, ignore) && this.level.polys0.every((p) => !PIX.inPoly(p, x, y)) && this.level.water.every((p) => !PIX.inPoly(p, x, y)); }
@@ -6828,7 +6995,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       this.slot = this.W6.admitted;
       return super.checkTerminal();
     }
-    drawDrones() { const out = []; for (const s of this.sc.sims) for (const d of s.drones || []) out.push(d); if (this.rescue) out.push(this.rescue.drone); return out; }
+    drawDrones() { const out = []; for (const s of this.sc.sims) for (const d of s.drones || []) out.push(d); if (this.rescue && this.rescue.phase !== 'sink') out.push(this.rescue.drone); for (const d of this.leaving || []) out.push(d); return out; }
     trace() {
       const D = this.district;
       return { build: 'dummies-p6', level: this.levelId, params: this.P, run: this.run, milestones: this.milestones, models: this.models, events: this.events,
@@ -6847,7 +7014,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     if (m === t) return { nx: 0, ny: -1, pen: t + r };
     return { nx: 0, ny: 1, pen: b + r };
   }
-  const api = { DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY };
+  const api = { DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY, groundFree, edgePt, inR, cpZone };
   if (NODE) module.exports = api; else root.WORLD6 = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -10950,7 +11117,7 @@ window.FLEET_DB = {
   function where6(s) { // where the dummy draws
     const b = s.body, f = bodyFloor(s), r = s.P['body.radius'];
     if (!b.alive) return { at: 'none' };
-    if (b.mode === 'rescue') return { at: 'item', key: 2e6, rescue: true };
+    if (b.mode === 'rescue') return { at: 'rescue', key: 2e6, rescue: true };
     if (b.mode === 'drop') return { at: 'item', key: 2e6 }; // falling: above everything, so the landing reads
     if (b.stair) return { at: 'item', key: (b.stair.key != null ? b.stair.key : b.stair.y + b.stair.h) + 0.01 };
     if (b.level === 0) return { at: 'ground', key: b.y + r };
@@ -10980,13 +11147,17 @@ window.FLEET_DB = {
     for (const cn of s.cones) if (cn.state === 'free' || cn.state === 'flight') items.push([cn.y + 6, () => PIX.blit(FB, PIX.CONE, cn.x / U, (cn.y - coneLift(cn) * 1.2) / U)]);
     if (wh.at === 'ground') items.push([wh.key, () => drawBodySprite(s, false, 0)]);
     else if (wh.at === 'item') items.push([wh.key, meItem]);
+    else if (wh.at === 'rescue') items.push([wh.key, () => drawRescue6(s)]);
+    (s.level.checkpoints || []).forEach((cp, i) => { if (!cp.deck && !cp.z) items.push([s.boomPoint(cp).y + 2, () => drawBoom(s, cp, i)]); }); // P6.1: a road leaving the district
     W6.compose(sc, MAIN, DL, {
       cars, layerOf: (c) => c._layer, items,
       car: (c, buf, lift) => { into(buf, () => drawCarSprite(s, c)); if (lift) { c._lift = lift; if (c._top != null) c._top -= lift; } },
-      under: () => { drawMarks(); drawLights(s, cars.filter((c) => !elevOf(c))); if (lvl === 0) cues(); shadows6(s, cars.filter((c) => !elevOf(c)), false); if (wh.at === 'ground') drawBodyGround(s); },
+      under: () => { drawMarks(); if (lvl === 0) { drawLights(s, mine); cues(); } shadows6(s, cars.filter((c) => !elevOf(c)), false); if (wh.at === 'ground') drawBodyGround(s); }, // P6.1: headlights and cues for the dummy's level only
       bodyOn: wh.at === 'layer' ? wh.layer : null, bodyKey: wh.key,
       body: (buf, lift) => { into(buf, () => { drawBodyGround(s, 0); drawBodySprite(s, false, 0); }); if (b._sy != null) b._sy -= lift; },
-      layerUnder: (l, buf, lcars, me) => into(buf, () => { drawLights(s, lcars); shadows6(s, lcars, me ? true : 'no'); if (l === cueLayer) cues(); }),
+      layerUnder: (l, buf, lcars, me) => into(buf, () => {
+        (s.level.checkpoints || []).forEach((cp, i) => { if ((cp.deck && l.dk && l.dk.off === cp.off && l.z === cp.z) || (cp.hill && l.hill)) drawBoom(s, cp, i); }); // a highway or hill street leaving the district
+        if (l === cueLayer) drawLights(s, lcars.filter((c) => elevOf(c) === lvl)); shadows6(s, lcars, me ? true : 'no'); if (l === cueLayer) cues(); }),
     });
     for (const c of cars) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
     if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
@@ -10994,7 +11165,12 @@ window.FLEET_DB = {
     for (const c of mine) drawCarMarks(s, c);
     if (b.mode !== 'rescue') drawNose(s);
     drawEffects(s); drawRingsStreaks(); drawParts(s);
-    for (const d of s.drawDrones()) { if (!d.rescue) { drawDrone(s, d); continue; } const up = rescueLift(s) + 18, x = Math.round(d.x / U), y = Math.round(d.y / U) - up; PIX.line(x, y + 2, x, y + 6, (px, py) => FB.put(px, py, K.label)); drawDrone(s, Object.assign({}, d, { y: d.y - up * U + d.alt * 4 * U })); } // P6 (D37): the rescue drone above the dummy it carries
+    for (const d of s.drawDrones()) { // P6.1 (D37): the rescue drone flies in from the edge, then carries the dummy below it
+      const rs = s.rescue, held = d.rescue && rs && rs.drone === d && (rs.phase === 'lift' || rs.phase === 'carry' || rs.phase === 'drop');
+      if (!held) { drawDrone(s, d); continue; }
+      const up = rs.up + 20, x = Math.round(d.x / U), y = Math.round(d.y / U) - up; PIX.line(x, y + 2, x, y + 7, (px, py) => FB.put(px, py, K.label));
+      drawDrone(s, Object.assign({}, d, { y: d.y - up * U + d.alt * 4 * U }));
+    }
     for (const c of mine) drawTag(s, c);
     drawBarks(s);
     drawEffects(s, true);
@@ -11003,7 +11179,16 @@ window.FLEET_DB = {
     drawStamp(s);
     if (b.alive) { const wear = 1 - b.health / P['damage.bodyHealth'], vf = lowHealth('vignetteFrom', 0.7); if (wear > vf) { const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf), band = 8; for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const d = Math.min(x, y, AW - 1 - x, AH - 1 - y); if (d >= band) { x = AW - 1 - band; continue; } if ((x + y) % 2 === 0 || d < 3) FB.mix(x, y, K.warn, (0.12 + 0.3 * pulse) * (1 - d / band)); } } }
   }
-  function rescueLift(s) { const rs = s.rescue; return rs ? Math.round(14 * Math.min(1, rs.t / Math.max(1e-6, rs.lift))) : 0; } // the drone lifts the dummy clear of the water
+  function rescueLift(s) { const rs = s.rescue; return rs ? Math.round(rs.up) : 0; }
+  function drawRescue6(s) { // P6.1 (D37): the dummy sinks below the waterline, a drone lifts it out and sets it down on land
+    const rs = s.rescue, b = s.body; if (!rs) return;
+    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift';
+    if (wet) for (let k = 0; k < 2; k++) { const r = 3 + ((t * 7 + k * 5) % 10); for (const [x, y] of PIX.circle(r)) FB.mix(cx + x, wl + Math.round(y * 0.45), K.white, 0.4 * (1 - r / 13)); } // ripples
+    if (rs.under >= 0.999) { if (Math.floor(t * 5) % 2) FB.put(cx + (Math.floor(t * 9) % 3) - 1, wl - 1 - (Math.floor(t * 12) % 4), K.white); return; } // bubbles: under the surface
+    const wear = clamp(1 - b.health / s.P['damage.bodyHealth'], 0, 1), S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
+    const ay = Math.round(b.y / U) + Math.round(rs.under * 18) - Math.round(rs.up), x0 = cx - S.ox, y0 = ay - S.oy;
+    for (let j = 0; j < S.h; j++) { const yy = y0 + j; if (wet && yy > wl) break; for (let i = 0; i < S.w; i++) { const c = S.d[j * S.w + i]; if (c) FB.put(x0 + i, yy, c); } }
+  }
   function drawLoading() {
     const ld = app.loading || { name: '' }, x = FX + 60, y = FY + FH / 2 - 70, w = FW - 120;
     ctx.fillStyle = FT.veil; ctx.fillRect(FX, FY, FW, FH);
@@ -11089,7 +11274,7 @@ window.FLEET_DB = {
   const WHERE6 = { walk: 'WALKWAY', hill: 'HILLTOP', terrace: 'TERRACE', ring: 'RING', deck: 'HIGHWAY', roof: 'ROOF' }; // P6 floors
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function drawTopBar(s) {
-    const r = s.run, left = Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // deck traffic is off the shift's clock; P5.3: every car still in the district
+    const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
     const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? ' · RIVER RESCUE' : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
     const items = [[null, roadLabel(s.p6 ? s.levelId : s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });

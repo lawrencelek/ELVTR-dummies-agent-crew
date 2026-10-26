@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit62-2026-10-26",
+ "registryVersion": "edit63-2026-10-26",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -5083,6 +5083,27 @@
    "purpose": "A jam never grows (user-directed hold; value proposed)"
   },
   {
+   "id": "traffic.offscreenCullSeconds",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Off-screen jam cleanup",
+   "description": "A car stopped this long on a screen out of view is removed (P6.1 managed traffic). Cars in view never vanish.",
+   "unit": "s",
+   "type": "number",
+   "default": 12,
+   "status": "proposed",
+   "source": "Edit 63 (26 October), P6.1",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 2
+   },
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "No jam survives out of sight"
+  },
+  {
    "id": "world.roundaboutEntryRadius",
    "group": "World",
    "owner": "World",
@@ -6088,9 +6109,9 @@
    "description": "Each lane entering Parkland (road or highway) admits one car per 2 × this. The four highway entries all feed the Z1 ring.",
    "unit": "s",
    "type": "number",
-   "default": 4.5,
+   "default": 3.2,
    "status": "proposed",
-   "source": "Edit 53 (25 October), P5 sim and district mock-up",
+   "source": "Edit 53 (25 October), P5 sim and district mock-up; Edit 63 (26 October): 3.2, as Waterfront (equal flow)",
    "editable": true,
    "protectedReason": null,
    "applyAt": "checkpoint",
@@ -6099,7 +6120,7 @@
    },
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "The calm opener; the Z1 ring flows (mock-up)"
+   "purpose": "Equal flow with Waterfront under managed traffic (Edit 63)"
   },
   {
    "id": "world.district.circus.interval",
@@ -6645,6 +6666,27 @@
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "US junction markings (user, 26 October)"
+  },
+  {
+   "id": "proto.rescueSinkSeconds",
+   "group": "Dummy",
+   "owner": "Dummy",
+   "label": "River rescue: sink",
+   "description": "Seconds the dummy sinks in the river before the rescue drone flies in from the screen edge (D37).",
+   "unit": "s",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 63 (26 October): user-directed",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The fall reads; the rescue takes time"
   }
  ],
  "tables": {

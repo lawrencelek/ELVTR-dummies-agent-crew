@@ -32,35 +32,66 @@ const kind = (s) => { const f = s.floorOf(); return f ? f.kind : null; };
   ok(bad === 0 && poly.length > 3, `hill floor test matches the plan polygon (${n} points, ${bad} off)`);
 }
 
-// 2. each district: build, links, every flight lands, spawns, traffic over MIN minutes
+// 2. each district: build, edges, links, every flight lands, spawns, traffic over MIN minutes
+const SIDE = X.SIDE, OPP = { N: 'S', S: 'N', E: 'W', W: 'E' }, horizE = (sd) => sd === 'N' || sd === 'S';
+function edgeAudit(w) { // every edge point the dummy can reach is crossable, or shows a barrier, booth or boom
+  let bad = [], open = 0, n = 0;
+  for (const sc of w.scs) for (const sd of ['N', 'E', 'S', 'W']) {
+    const nb = w.at(sc.col + SIDE[sd][0], sc.row + SIDE[sd][1]), len = horizE(sd) ? W : H, g = sc.game;
+    for (let v = 24; v < len - 24; v += 6) { // corners: within a body of a perpendicular edge, two edges meet
+      const [x, y] = W6.edgePt(sd, v, R + 1);
+      if (W6.groundFree(sc, x, y) && !g.water.some((p) => PIX.inPoly(p, x, y)) && !g.checkpoints.some((cp) => !cp.deck && !cp.z && W6.inR(W6.cpZone(cp), x, y, R))) {
+        n++; const [qx, qy] = W6.edgePt(OPP[sd], v, R + 1), tunnel = sc.hillLayer && sc.hillLayer.inBand(x, y);
+        if ((nb && W6.groundFree(nb, qx, qy, 0)) || tunnel) open++; else bad.push(sc.name + sd + Math.round(v));
+      }
+      const [ex, ey] = W6.edgePt(sd, v, 1);
+      for (const f of g.floors) if (f.z && f.has(x, y) && f.has(ex, ey)) { // a floor that ends short of the edge drops or holds in view
+        n++; const [qx, qy] = W6.edgePt(OPP[sd], v, R + 1);
+        const held = (nb && nb.game.floors.some((q) => q.z === f.z && q.has(qx, qy))) || g.solidsZ.some((q) => q.z === f.z && W6.inR(q, x, y, R)) || g.checkpoints.some((cp) => (cp.z || 0) === f.z && W6.inR(W6.cpZone(cp), x, y, R));
+        if (!held) bad.push(sc.name + sd + Math.round(v) + 'z' + f.z + f.kind);
+      }
+    }
+  }
+  return { bad, open, n };
+}
 for (const id of W6.LEVEL_LIST) {
   const t0 = Date.now(), w = W6.buildWorld(id), tb = Date.now() - t0;
+  ok(W6.DISTRICTS.find((d) => d.id === id).start[0] === 'B2', `${id}: starts in the centre tile, B2`);
+  const ea = edgeAudit(w);
+  ok(ea.bad.length === 0, `${id}: no invisible walls: ${ea.n} edge points reachable, ${ea.open} cross, the rest show a barrier, booth or boom${ea.bad.length ? ' (unmarked: ' + ea.bad.slice(0, 8).join(', ') + ')' : ''}`);
   ok(w.scs.length === 9, `${id}: nine screens built in ${tb} ms (with ${P['traffic.warmSeconds']} s warm-up)`);
   const links = w.recs.filter((r) => r.next.length).length, entries = w.recs.filter((r) => !r.prev.length && r.ends.in).length;
   ok(links > 10 && w.crossings > 0, `${id}: ${links} lanes continue next door; ${entries} enter; ${w.crossings} seam crossings while warming`);
   const dead = w.scs.reduce((a, sc) => a + sc.game.statics.filter((q) => q.kind === 'stair').length, 0), flights = w.scs.reduce((a, sc) => a + sc.game.stairs.length, 0);
   ok(dead === 0, `${id}: ${flights} flights, every head on a floor`);
   ok(w.scs.every((sc) => sc.game.spawns.length > 0), `${id}: a spawn on every screen`);
-  const T = Math.round(MIN * 60 * 60);
-  let maxStop = 0, who = null; const ex0 = w.exited, cr0 = w.crossings;
+  const T = Math.round(Math.max(3, MIN) * 60 * 60), act = w.at(1, 1), away = { alive: true, x: -9999, y: -9999, vx: 0, vy: 0, level: 9, floor: null, stair: null, mode: 'idle', parts: null, facing: 0 };
+  let maxStop = 0, who = null; const cr0 = w.crossings, occ = new Map();
   for (let k = 0; k < T; k++) {
-    W6.stepWorld(w, null, null);
-    if (k % 60 === 0) for (const s of w.sims) for (const c of s.cars) if ((c.stopT || 0) > maxStop) { maxStop = c.stopT; who = c.id + ' @ ' + c.sim.sc.name; }
+    W6.stepWorld(w, away, act);
+    if (k % 60 === 0) {
+      for (const s of w.sims) for (const c of s.cars) if ((c.stopT || 0) > maxStop) { maxStop = c.stopT; who = c.id + ' @ ' + c.sim.sc.name; }
+      for (const sc of w.scs) { const F = sc.flow.get('street0'); if (!F || F.target < 1) continue; let n = 0; for (const s of sc.sims) for (const c of s.cars) if (!(c.elev || 0)) n++; const a = occ.get(sc.name) || []; a.push(n); occ.set(sc.name, a); }
+    }
   }
   let cars = 0; for (const s of w.sims) cars += s.cars.length;
-  ok(maxStop < 60 && w.crossings > cr0, `${id}: ${MIN} min of traffic, ${cars} cars on the road, ${w.crossings - cr0} crossings, ${w.exited - ex0} shift cars out, longest stop ${maxStop.toFixed(1)} s${who ? ' (' + who + ')' : ''}`);
+  const tiles = [...occ.entries()].map(([nm, a]) => { a = a.slice(30); const m = a.reduce((x, y) => x + y, 0) / a.length, sd = Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / a.length); return { nm, m, cv: sd / (m || 1), empty: a.filter((v) => !v).length / a.length }; });
+  const worstEmpty = Math.max(...tiles.map((q) => q.empty)), worstCV = Math.max(...tiles.map((q) => q.cv));
+  ok(maxStop < 30 && worstEmpty < 0.2 && worstCV < 0.7 && w.crossings > cr0, `${id}: ${Math.max(3, MIN)} min of managed traffic (player in B2): ${cars} cars; street tiles never empty over ${(worstEmpty * 100).toFixed(0)}% of the time; count CV ≤ ${(worstCV * 100).toFixed(0)}%; ${w.culled} stuck cars culled off-screen; longest stop ${maxStop.toFixed(1)} s${who ? ' (' + who + ')' : ''}`);
 }
 
 // 3. the dummy on the P6 world
 {
   const s = new W6.Sim6('parkland', {}, null, { warm: 2 }); empty(s);
-  const st = s.level.stairs[0]; place(s, 'A1', st.x + st.w / 2, st.low - 20);
+  place(s, 'A1', 100, 100); const st = s.level.stairs[0]; place(s, 'A1', st.x + st.w / 2, st.low - 20);
   walk(s, st.x + st.w / 2, st.high + 30, 6);
   ok(s.body.level === 1 && kind(s) === 'walk', 'Parkland A1: up the escalator onto the Z1 walkway');
   walk(s, 900, 320, 10, (q) => q.screenName() === 'C1');
   ok(s.screenName() === 'C1' && s.body.level === 1 && kind(s) === 'walk', 'Parkland: along the walkway across the B1 highway into C1 (two screen flips at Z1)');
-  walk(s, s.body.x + 60, 260, 3, (q) => q.body.level === 0 && q.body.mode !== 'drop');
-  ok(s.body.level === 0, 'Parkland C1: off the walkway side, down to the street');
+  const wl = s.sc.walk, gap = wl.spines[0].gaps[0], gp = X.pathAt(wl.spines[0].path, (gap[0] + gap[1]) / 2);
+  walk(s, gp.x + 40, 320, 4); walk(s, gp.x + 40, 250, 2, (q) => q.body.level === 0); const held = s.body.level === 1;
+  walk(s, gp.x, 320, 4); walk(s, gp.x, 250, 3, (q) => q.body.level === 0 && q.body.mode !== 'drop');
+  ok(held && s.body.level === 0, `Parkland C1: the walkway's parapet holds; its broken parapet over the avenue (x ${gp.x.toFixed(0)}) drops the dummy to the street`);
   place(s, 'B2', 80, 260); const e = s.level.stairs.find((q) => q.y < 300); place(s, 'B2', e.x + e.w / 2, e.low - 20); walk(s, e.x + e.w / 2, e.high + 40, 6);
   walk(s, -100, 356, 10, (q) => q.screenName() === 'A2');
   ok(s.screenName() === 'A2' && kind(s) === 'deck' && s.body.level === 1, 'Parkland B2: up to the ring, west along its arm onto the A2 highway');
@@ -82,9 +113,9 @@ for (const id of W6.LEVEL_LIST) {
   place(s, 'A3', 250, 330); const T0 = s.t;
   walk(s, 250, 400, 2, (q) => q.body.mode === 'rescue');
   const d0 = s.rescue ? s.rescue.to.d : 0;
-  walk(s, 250, 0, 4, (q) => q.body.mode !== 'rescue');
-  const T = s.t - T0, spec = d0 / P['proto.droneSpeed'] + P['proto.droneLiftSeconds'], lane = !s.sc.roadOk(s.body.x, s.body.y, P['world.laneWidth']);
-  ok(s.body.mode !== 'rescue' && !s.level.water.some((p) => PIX.inPoly(p, s.body.x, s.body.y)) && !lane, `Waterfront A3: into the river; the drone sets the dummy on land, off the lanes, in ${T.toFixed(2)} s (spec ${spec.toFixed(2)} s, ${d0.toFixed(0)} units)`);
+  walk(s, 250, 0, 10, (q) => q.body.mode !== 'rescue');
+  const T = s.t - T0, spec = P['proto.rescueSinkSeconds'] + 2 * P['proto.droneLiftSeconds'] + d0 / P['proto.droneSpeed'], lane = !s.sc.roadOk(s.body.x, s.body.y, P['world.laneWidth']);
+  ok(s.body.mode !== 'rescue' && !s.level.water.some((p) => PIX.inPoly(p, s.body.x, s.body.y)) && !lane && T > spec, `Waterfront A3: into the river; sinks ${P['proto.rescueSinkSeconds']} s, the drone flies in from the edge, lifts and sets the dummy on land, off the lanes: ${T.toFixed(2)} s (sink, lifts and carry alone ${spec.toFixed(2)} s; ${d0.toFixed(0)} units)`);
 }
 { // a dash into a car scores
   const s = new W6.Sim6('monument', {}, null, { warm: 8 });
