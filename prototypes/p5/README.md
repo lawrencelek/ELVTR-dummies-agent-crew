@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55–55.2, 56, 57 and 58 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55–55.2, 56–59 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -110,7 +110,8 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 - **Set piece (Edit 54):** every tile shows scenography, a change of level, or both. The plan table names it; the page warns on a tile without one.
 - **Portal and roof link (Edit 54):** Monument C2's Z2 highway runs through a 12-storey tower (opening `world.portalClearance`, 72). A roof plaza at Z2 opens off its west parapet.
 - **Redrawn (Edit 54):** Parkland A3 belvedere; Monument A3 stacked LED cubes, B3 skybridge across the jog.
-- **Nothing below ground (Edit 55):** Z0 is the lowest level. Parkland C3's court is at grade.
+- **Nothing below ground (Edit 55):** Z0 is the lowest level. Parkland C3's court is at grade. Exception (Edit 59): a river's surface below its seawall; water, not a floor.
+- **No street zebras (Edit 59):** removed from Circus B2. Parapet zebras stay where the dummy steps onto a highway.
 - **Planting in three sizes (Edit 55):** a great lawn over the largest free block (`world.gardenLargeCells`), beds only where they frame it or the set piece (`world.gardenBedTypes` types), planters `world.gardenPlanter` across in the open squares.
 - **Sculpture in three sizes (Edit 55):** courts with one large piece (`world.sculptureScaleLarge`), two medium, `world.courtSmallCount` lit bollards. Parkland B3 and C3.
 
@@ -192,6 +193,18 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 ![Circus · Valley: plan](docs/p65_valley_plan.png)
 
 ![Sections through the west bridge and through the circus](docs/p65_valley_sections.png)
+
+- **Edit 59, the riverbank:** row 2 runs cliff, avenue, beach. The bridges run straight south over a Z0 coastal drive (horizontal, 45°, horizontal on the seawall) and the river, with no Z1 link south of the hill. The circus's south arm is the beach road to the drive.
+
+![Circus · Valley by the river (Edit 59)](docs/p66_valley_river_plan.png)
+
+![Sections, Edit 59](docs/p66_valley_river_sections.png)
+
+## Shadows: four options (Edit 59, not built)
+
+`tools/shadow_options.py` renders one test scene five ways (hill, cove ramp, valley, Z1 bridge on columns, tower, cars). Today stamps every shadow on one ground buffer, so a bridge at grade shadows its own hill. Options: 1 noon sun; 2 oblique sun, a mask per level (recommended); 3 height-field sweep; 4 occlusion and height tint. Moving objects take a noon blob in all four (D36).
+
+![Today and the four shadow options](docs/p66_shadow_options.png)
 
 ## District traffic (P5.3, Edit 53)
 
@@ -281,12 +294,14 @@ node -e "const C=require('./circus_plans.js'); for (const p of C.PLANS) console.
 | `crossing_shell.html` → `crossing_options.html` | The 45° crossing options example (Edit 55), built from the mock-up kit |
 | `tools/crossing_report.js` | Crossing options evidence (Edit 55) |
 | `circus_plans.js`, `circus_shell.html` → `circus_options.html` | Circus layout options as plans, with the level rules checked (Edit 57; set aside) |
-| `circus_valley.js`, `circus_valley_shell.html` → `circus_valley.html` | Circus as a valley city: terrain, plan, sections, transport checks (Edit 58) |
+| `circus_valley.js`, `circus_valley_shell.html` → `circus_valley.html` | Circus as a valley city by the river: terrain, plan, sections, transport checks (Edits 58–59) |
+| `tools/shadow_options.py` | Five shadow treatments of one test scene (Edit 59; offline, not P5) |
 
 ## Open
 
-- **Circus · Valley (D34, D35, Edit 58):** second hill or riverbank to the south; cars climbing the coves or stairs only.
-- **Street zebras (D33, Edit 57):** paint only today. Remove, keep, or a liability rule (a walk-in on a zebra counts full speed).
+- **Circus · Valley (D35, Edit 58):** cars climbing the cove, or stairs only.
+- **Shadows (D36, Edit 59):** pick one of four; not in P5 yet.
+- **River (D37, Edit 59):** a dummy that falls in.
 - **Circus overload (Edit 56):** at +23% flow a car passing C3's cone meets an oncoming car head-on; queues close the loop. No pass while its own lane queues ahead, or move the cone.
 - **Circus exit (Edit 56):** east instead of south. Confirm.
 - **Parkland C3 (Edit 56):** the ring sits left of centre; B3's south-end escalator caps row 3's road at local 456.

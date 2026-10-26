@@ -6082,8 +6082,7 @@ window.CROSS_REPORT = {
       for (let t = 0; t < 46; t++) for (let j = -2; j <= 2; j++) B.shade(ax - t * 0.7 + j * 0.7 - 10, ay + t * 0.7 + j * 0.7 + 4, 0.8);
       block(B, ax - 3, ay - 1, ax + 3, ay + 1, 0, 11, 40, 'conc', null, false); for (let t = 4; t < 36; t++) B.put(ax, ay + 1 - 11 - t, led);
       for (let a = 0; a < 48; a++) { const th = a / 48 * Math.PI * 2, hx = Math.round(ax + Math.cos(th) * 10), hy = Math.round(ay - 40 + Math.sin(th) * 3); if (Math.sin(th) > 0 || Math.abs(Math.cos(th)) > 0.3) B.put(hx, hy, a % 6 < 4 ? N.cyan : K.white); }
-      const rz = PIX.roadField(lab.lab.geo.roads.map((pts) => ({ pts, dash: false })), LW + 2);
-      each((x, y, wx, wy, k) => { if (rz.D[k] > LW - 4) return; const zx = Math.abs(wx - 400) < LW && (Math.abs(wy - 36) < 16 || Math.abs(wy - 604) < 16) && Math.floor(wx / 8) % 2 === 0, zy = Math.abs(wy - 320) < LW && (Math.abs(wx - 70) < 16 || Math.abs(wx - 730) < 16) && Math.floor(wy / 8) % 2 === 0; if (zx || zy) B.put(x, y, K.lane); });
+      // Edit 59 (decision 306, D33): no street zebras. Cars ignore them; they promised a rule the game lacks
       [[8, 8, 200, 120, 'se', 'n', 12, 'ziggurat'], [592, 8, 200, 120, 'sw', 'n', 14, 'cantilever'], [8, 512, 200, 120, 'ne', 's', 10, 'twin'], [592, 512, 200, 120, 'nw', 's', 9, 'slab']].forEach(([x, y, w, h, c, rear, st, sty], i) => put(x, y, w, h, st, sty, { c, k: 40 }, rear, i));
       return;
     }
