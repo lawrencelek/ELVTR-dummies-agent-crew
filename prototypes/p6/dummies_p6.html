@@ -5573,24 +5573,35 @@ document.getElementById('btn-full').addEventListener('click', () => {
     return { dk, L: Lr, lift: ext, z, cols, front: off + HALF, openings: stairs.map((st) => ({ a0: st.x, a1: st.x + st.w, side: st.side })), inBand: (wx, wy) => Math.abs(wy - off) < HALF + 12 };
   }
   // ---------- the walkway at Z1: a union of polygons, square ends where it meets a podium roof or an escalator head
-  // P6.1 (Edit 63): the parapets break over each lane below, one world.tileSize module per lane, both sides: drops onto cars.
-  // laneC(x, y): distance to the nearest Z0 lane centre line. A gap centres where the spine crosses one.
-  function walkGaps(polys, laneC) {
+  // P6.2 (Edit 64): one opening per road crossing, one world.tileSize module, centred on the road's centre line, one side only:
+  // the front (south) of a cross walkway, the east of a long one. A straight drop lands on the centre line; steer to a lane.
+  // roadC(x, y): distance to the nearest Z0 road centre line (each carriageway of a split road).
+  function walkGaps(polys, roadC) {
     const T = P['world.tileSize'];
     return polys.filter((p) => p.spine).map((p) => {
       const path = X.makePath(p.spine), gaps = [];
-      if (laneC) {
-        const ds = []; for (let a = 0; a <= path.length; a += 2) { const q = X.pathAt(path, a); ds.push(laneC(q.x, q.y)); }
-        for (let i = 1; i + 1 < ds.length; i++) if (ds[i] < 8 && ds[i] <= ds[i - 1] && ds[i] < ds[i + 1]) { const c = i * 2; if (c > T && c < path.length - T && !gaps.some(([a0, a1]) => c > a0 - T && c < a1 + T)) gaps.push([c - T / 2, c + T / 2]); }
+      if (roadC) {
+        const ds = []; for (let a = 0; a <= path.length; a += 2) { const q = X.pathAt(path, a); ds.push(roadC(q.x, q.y)); }
+        for (let i = 0; i < ds.length; i++) {
+          if (!(ds[i] < 8) || (i > 0 && ds[i - 1] < 8)) continue; // the start of a run over the centre line
+          let j = i; while (j + 1 < ds.length && ds[j + 1] < 8) j++;
+          if ((j - i) * 2 > 120) continue; // along a road, not across it
+          let m = Infinity; for (let k = i; k <= j; k++) m = Math.min(m, ds[k]);
+          const at = []; for (let k = i; k <= j; k++) if (ds[k] === m) at.push(k * 2);
+          const c = (at[0] + at[at.length - 1]) / 2;
+          if (c <= T || c >= path.length - T || gaps.some(([a0, a1]) => c > a0 - T && c < a1 + T)) continue;
+          const q0 = X.pathAt(path, c - 2), q1 = X.pathAt(path, c + 2), tl = hyp(q1.x - q0.x, q1.y - q0.y) || 1, nx = -(q1.y - q0.y) / tl, ny = (q1.x - q0.x) / tl;
+          gaps.push([c - T / 2, c + T / 2, ny + 0.5 * nx >= 0 ? 1 : -1]); // the open side, as a sign of the spine's lateral offset
+        }
       }
       p.gaps = gaps;
       return { p, path, gaps };
     });
   }
-  function walkwayLayer(polys, roofs, joins, colOk, laneC) {
+  function walkwayLayer(polys, roofs, joins, colOk, roadC) {
     const M = new Uint8Array(AW * AH), R = new Uint8Array(AW * AH), Lr = new PIX.Buf(AW, AH), inRect = (r, wx, wy) => wx >= r[0] && wx <= r[0] + r[2] && wy >= r[1] && wy <= r[1] + r[3];
-    const spines = walkGaps(polys, laneC), HW = P['world.walkwayWidth'] / 2;
-    const gapAt = (wx, wy) => { for (const sp of spines) { if (!sp.gaps.length) continue; const pr = X.pathProject(sp.path, wx, wy); if (Math.abs(pr.lat) < HW + 6 && sp.gaps.some(([a0, a1]) => pr.s >= a0 && pr.s <= a1)) return true; } return false; };
+    const spines = walkGaps(polys, roadC), HW = P['world.walkwayWidth'] / 2;
+    const gapAt = (wx, wy) => { for (const sp of spines) { if (!sp.gaps.length) continue; const pr = X.pathProject(sp.path, wx, wy); if (Math.abs(pr.lat) < HW + 6 && sp.gaps.some(([a0, a1, sd]) => pr.s >= a0 && pr.s <= a1 && pr.lat * sd > 0)) return true; } return false; };
     each((x, y, wx, wy, k) => { if (polys.some((p) => PIX.inPoly(p, wx, wy))) M[k] = 1; if (roofs.some((r) => inRect(r, wx, wy))) R[k] = 1; else if (joins.some((r) => inRect(r, wx, wy))) R[k] = 2; });
     const out = (x, y) => x < 0 || y < 0 || x >= AW || y >= AH || (!M[y * AW + x] && !R[y * AW + x]), on = (k) => M[k] && !R[k];
     each((x, y, wx, wy, k) => {
@@ -5880,7 +5891,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       const p = shift(q, -ox, -oy); p.spine = shift(w.pts, -ox, -oy); return p; }).filter((p) => p.some(([x, y]) => x > -40 && x < W + 40 && y > -40 && y < H + 40));
     if (polys.length) {
       const deckJoins = sc.layers.filter((l) => l.dk).map((l) => [l.dk.off - HALF - 4, -100, 2 * HALF + 8, H + 200]);
-      const wl = walkwayLayer(polys, ends, deckJoins, (x, y) => roadOk(x, y, OUTER + 8) && !inHill(x + ox, y + oy), sc.laneC);
+      const wl = walkwayLayer(polys, ends, deckJoins, (x, y) => roadOk(x, y, OUTER + 8) && !inHill(x + ox, y + oy), sc.roadC);
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl;
     }
   }
@@ -6052,7 +6063,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     const B = ground; sc.B = B;
     const rd = (wx, wy) => { const k = Math.floor(wy / U) * AW + Math.floor(wx / U); return k >= 0 && k < AW * AH ? roadD(k) : 1e9; };
     const roadOk = (wx, wy, m) => rd(wx, wy) > (m || OUTER + 4);
-    sc.laneC = (wx, wy) => { const d = rd(wx, wy); return d <= LW ? Math.abs(d - LW / 2) : 1e9; }; // P6.1: distance to the nearest Z0 lane centre (a split road's lanes too)
+    sc.roadC = (wx, wy) => rd(wx, wy); // P6.2: distance to the nearest Z0 road centre line (walkway openings)
     // highways, each with its two escalators
     let ringSim = null;
     if (D.ring && D.ring.tile === name) { // the Z1 ring (Parkland): a four-arm roundabout lifted onto the deck
@@ -6142,7 +6153,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     if (name === 'B1') for (let i = 0; i < 5; i++) waterBlock(B, u(170), u(40 + i * 108), u(290), u(124 + i * 108), 6, 14 - i * 3, 3); // cascade, falling south beside the highway
     if (name === 'C1') { // footbridge over the avenue (x = 160) at Z1, escalator at the east end; Edit 55.2: it runs on west to the B1 highway; a lantern pavilion
       const run = X.stairRun(P, 0, 1), esc = [{ x: 420, y: 304, w: run, h: SWD, axis: 'x', low: 420 + run, high: 420, side: 0, z: 1 }];
-      const wpoly = [[-40, 304], [420, 304], [420, 336], [-40, 336]]; wpoly.spine = [[-40, 320], [420, 320]]; const wl = walkwayLayer([wpoly], [], esc.map((st) => [st.x, st.y, st.w, st.h]), () => true, sc.laneC);
+      const wpoly = [[-40, 304], [420, 304], [420, 336], [-40, 336]]; wpoly.spine = [[-40, 320], [420, 320]]; const wl = walkwayLayer([wpoly], [], esc.map((st) => [st.x, st.y, st.w, st.h]), () => true, sc.roadC);
       for (const st of esc) { sc.props.push(stairProp(st, Z1)); sc.stairs.push(st); }
       wl.cols = [[40, 320], [300, 320]].map(([x, y]) => ({ cx: x, cy: y, key: y + 8, x: x - 8, y: y - 8, spr: PIX.column(4, 4, Z1) }));
       wl.front = 9e5; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true;
@@ -6154,7 +6165,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       if (name === 'B1') { const a = off.dk.off - HALF, b = off.dk.off + HALF; polys.push([[-40, 304], [a + 4, 304], [a + 4, 336], [-40, 336]], [[b - 4, 304], [840, 304], [840, 336], [b - 4, 336]]); joins.push([a - 6, 300, 12, 40], [b - 6, 300, 12, 40]); }
       else { const run = X.stairRun(P, 0, 1); esc.push({ x: 740, y: 304 - run, w: SWD, h: run, axis: 'y', low: 304 - run, high: 304, side: -1, z: 1 }); polys.push([[724, 304], [840, 304], [840, 336], [724, 336]]); joins.push(...esc.map((st) => [st.x, st.y, st.w, st.h])); }
       for (const p of polys) p.spine = [[p[0][0] + 24, 320], [p[1][0] - 24, 320]];
-      const wl = walkwayLayer(polys, [], joins, (x, y) => roadOk(x, y, OUTER) && !(off && Math.abs(x - off.dk.off) < HALF + 16), sc.laneC);
+      const wl = walkwayLayer(polys, [], joins, (x, y) => roadOk(x, y, OUTER) && !(off && Math.abs(x - off.dk.off) < HALF + 16), sc.roadC);
       for (const st of esc) { sc.props.push(stairProp(st, Z1)); sc.stairs.push(st); }
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true;
       if (name === 'B1') { const lk = sc.D.deckLinks.B1[0], xs = [off.dk.off - HALF, off.dk.off + HALF]; sc.props.push({ key: 1e6 + 3, draw: (F) => { for (const x0 of xs) for (let wy = lk.y + 4; wy < lk.y + lk.h - 2; wy += 8) for (let wx = x0 - 10; wx < x0 + 12; wx += U) for (let k = 0; k < 2; k++) F.put(wx / U, wy / U - Z1 + k, k ? K.jerseyTop : K.white); } }); } // zebras over the open parapets, at the lift
@@ -6179,7 +6190,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
       sc.props.push({ spr: PIX.building(Math.round(u(pod[2])), Math.round(u(pod[3])), Z1, PIX.rng(77), LEDS[1], 1), x: u(pod[0]), y: u(pod[1]), by: pod[1] + pod[3], podium: true });
       sc.props.push({ spr: PIX.building(Math.round(u(120)), Math.round(u(70)), 10 * EXT(P['world.storeyHeight']), PIX.rng(78), LEDS[2 % LEDS.length], 10), x: u(310), y: u(20) - Z1, by: 90, tower: true });
       const poly = [[386, 140], [414, 140], [414, H + 40], [386, H + 40]]; poly.spine = [[400, 160], [400, H]];
-      const wl = walkwayLayer([poly], [pod], [], (x, y) => roadOk(x, y, OUTER), sc.laneC);
+      const wl = walkwayLayer([poly], [pod], [], (x, y) => roadOk(x, y, OUTER), sc.roadC);
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true; R.push([290, 0, 220, 170]);
     }
     if (name === 'C1') { captureRect(394, 512, 112, 56); const S = drum(28, 14, 12 * EXT(P['world.storeyHeight']), N.cyan); sc.props.push({ spr: S, x: u(450), y: u(540), by: 570 }); R.push([380, 480, 140, 110]); } // LED drum in the bend
@@ -6189,7 +6200,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     if (name === 'B3') { // the LED canyon either side of the jog; Edit 54: a Z1 skybridge crosses the jog at 90° between the two walls
       bld(40, 440, 240, 120, 6, 3, true); bld(520, 140, 260, 110, 6, 4, true);
       const hw = P['world.walkwayWidth'] / 2 / Math.SQRT2, a = [262, 538], b = [566, 234], poly = [[a[0] + hw, a[1] + hw], [b[0] + hw, b[1] + hw], [b[0] - hw, b[1] - hw], [a[0] - hw, a[1] - hw]]; poly.spine = [[300, 500], [530, 270]];
-      const wl = walkwayLayer([poly], [], [], (x, y) => roadOk(x, y, OUTER) && !(x < 290 && y > 430) && !(x > 510 && y < 260), sc.laneC);
+      const wl = walkwayLayer([poly], [], [], (x, y) => roadOk(x, y, OUTER) && !(x < 290 && y > 430) && !(x > 510 && y < 260), sc.roadC);
       wl.front = 300; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true; R.push([250, 230, 330, 320]);
     }
     if (name === 'C3') { // an LED gateway arch over the road: pylons either side, a lit beam above the traffic
@@ -6250,7 +6261,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
     const sp = sc.split, fE = PIX.roadField([{ pts: sp.E }], 120), fW = PIX.roadField([{ pts: sp.Wl }], 120);
     const laneD = (x, y) => { const kk = Math.floor(y / U) * AW + Math.floor(x / U); return Math.min(fE.D[kk], fW.D[kk]); };
     const sky = [[386, -40], [414, -40], [414, cy - A + 8], [386, cy - A + 8]]; // the skybridge from B1 joins the ring's north side
-    const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1), sky]), podiums, esc.map((s) => [s.x, s.y, s.w, s.h]), (x, y) => laneD(x, y) > LW / 2 + 14, (x, y) => laneD(x, y));
+    const wl = walkwayLayer(ringQuads.concat([diag(-1, -1), diag(1, -1), diag(-1, 1), diag(1, 1), sky]), podiums, esc.map((s) => [s.x, s.y, s.w, s.h]), (x, y) => laneD(x, y) > LW / 2 + 14, (x, y) => laneD(x, y)); // each carriageway is one lane: its centre is the road's
     sc.layers.push(wl); sc.walk = wl;
     const okP = (wx, wy) => roadOk(wx, wy, OUTER) && wx > fx + 8 && wx < W - fx - 8;
     tiles(B, okP, true);
@@ -6303,7 +6314,7 @@ document.getElementById('btn-full').addEventListener('click', () => {
   function gameData(sc) {
     const floors = [];
     for (const l of sc.layers) {
-      const f = l.dk ? deckFloor(l) : l.ring ? ringFloor(l) : l.walk ? { kind: 'walk', z: 1, layer: l, drop: false, dropAt: (x, y) => l.gapAt(x, y), has: (x, y) => l.polys.some((p) => PIX.inPoly(p, x, y)) } : null; // P6.1: a walkway drops only through its broken parapets
+      const f = l.dk ? deckFloor(l) : l.ring ? ringFloor(l) : l.walk ? { kind: 'walk', z: 1, layer: l, drop: false, dropAt: (x, y) => l.gapAt(x, y), has: (x, y) => l.polys.some((p) => PIX.inPoly(p, x, y)) } : null; // P6.2: a walkway drops only through its one opening per road
       if (f) floors.push(f);
     }
     for (const q of sc.floorsX) floors.push(q.poly ? { kind: q.kind, z: q.z, layer: q.layer, drop: q.drop, poly: q.poly, has: (x, y) => PIX.inPoly(q.poly, x, y) } : Object.assign(rectFloor(q.kind, q.z, q.x, q.y, q.w, q.h), { key: q.key, drop: q.drop }));

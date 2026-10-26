@@ -1,6 +1,6 @@
 # DUMMIES — P6 prototype: three districts, managed traffic across levels
 
-**P6.1 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–63 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**P6.2 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–64 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
 P6 is the game on the three districts of the mock-ups. District 2, Waterfront, replaces Circus.
 
@@ -23,7 +23,9 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 
 - **Floors:** a test on the dummy's centre at its level.
   - Deck and ring: inside the parapets, less `body.radius`. Open at stair heads, links and broken parapets.
-  - Walkway: holds, except its broken parapets over each Z0 lane (`world.tileSize`, both sides).
+  - Walkway: holds, except one opening per road below (P6.2).
+    - One `world.tileSize` module, centred on the road's centre line. One side: south on an east–west walkway, east on a north–south one.
+    - A straight drop lands on the centre line. Steer a little to land in a lane.
   - Hill, terrace, roof: every edge drops.
 - **Edges:** another floor at the level, then a stair, then the next screen, then a drop. Else the parapet holds.
 - **Screen edges:** no invisible walls. Where an edge holds, a barrier shows on this side.
@@ -62,7 +64,7 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 
 ## Evidence
 
-- `node test_p6.js 3` → 34/34: starts, edge audit, managed traffic, climbs, drops, tunnel, rescue, hits, the shift.
+- `node test_p6.js 3` → 35/35: starts, edge audit, managed traffic, climbs, walkway openings, drops, tunnel, rescue, hits, the shift.
 - `node test_sim.js` → 104/104 (this copy and P5).
 - Browser: no page errors over scripted play in all three districts.
 
@@ -71,6 +73,8 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 ![Waterfront](docs/p62_waterfront_3x3.png)
 
 ![Monument](docs/p62_monument_3x3.png)
+
+![Waterfront A2: four lane gaps (P6.1) → one opening (P6.2)](docs/p64_walkway_opening.png)
 
 ## Known gaps
 

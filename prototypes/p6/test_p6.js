@@ -88,13 +88,30 @@ for (const id of W6.LEVEL_LIST) {
   ok(s.body.level === 1 && kind(s) === 'walk', 'Parkland A1: up the escalator onto the Z1 walkway');
   walk(s, 900, 320, 10, (q) => q.screenName() === 'C1');
   ok(s.screenName() === 'C1' && s.body.level === 1 && kind(s) === 'walk', 'Parkland: along the walkway across the B1 highway into C1 (two screen flips at Z1)');
-  const wl = s.sc.walk, gap = wl.spines[0].gaps[0], gp = X.pathAt(wl.spines[0].path, (gap[0] + gap[1]) / 2);
-  walk(s, gp.x + 40, 320, 4); walk(s, gp.x + 40, 250, 2, (q) => q.body.level === 0); const held = s.body.level === 1;
-  walk(s, gp.x, 320, 4); walk(s, gp.x, 250, 3, (q) => q.body.level === 0 && q.body.mode !== 'drop');
-  ok(held && s.body.level === 0, `Parkland C1: the walkway's parapet holds; its broken parapet over the avenue (x ${gp.x.toFixed(0)}) drops the dummy to the street`);
+  const wl = s.sc.walk, gap = wl.spines[0].gaps[0], gp = X.pathAt(wl.spines[0].path, (gap[0] + gap[1]) / 2), oy = 320 + gap[2] * 70;
+  walk(s, gp.x + 40, 320, 4); walk(s, gp.x + 40, oy, 2, (q) => q.body.level === 0); const held = s.body.level === 1;
+  walk(s, gp.x, 320, 4); walk(s, gp.x, 640 - oy, 2, (q) => q.body.level === 0); const back = s.body.level === 1;
+  walk(s, gp.x, 320, 4); walk(s, gp.x, oy, 3, (q) => q.body.level === 0 && q.body.mode !== 'drop');
+  ok(held && back && s.body.level === 0 && wl.spines[0].gaps.length === 1 && Math.abs(gp.x - 160) < 4 && gap[2] === 1, `Parkland C1: one opening over the avenue, at its centre line (x ${gp.x.toFixed(0)}), on the front side; the parapet holds beside it and opposite; the opening drops the dummy to the street`);
   place(s, 'B2', 80, 260); const e = s.level.stairs.find((q) => q.y < 300); place(s, 'B2', e.x + e.w / 2, e.low - 20); walk(s, e.x + e.w / 2, e.high + 40, 6);
   walk(s, -100, 356, 10, (q) => q.screenName() === 'A2');
   ok(s.screenName() === 'A2' && kind(s) === 'deck' && s.body.level === 1, 'Parkland B2: up to the ring, west along its arm onto the A2 highway');
+}
+{ // P6.2 (Edit 64): one walkway opening per road crossing, on one side, over the road's centre line
+  let n = 0; const bad = [], HW = P['world.walkwayWidth'] / 2 + 2, apart = 2 * P['world.laneWidth'] + P['world.tileSize'];
+  for (const id of ['parkland', 'waterfront', 'monument']) {
+    const s = new W6.Sim6(id, {}, null, { warm: 0 });
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+      const sc = s.W6.at(c, r); if (!sc || !sc.walk) continue;
+      for (const sp of sc.walk.spines) sp.gaps.forEach((g, i) => {
+        const m = (g[0] + g[1]) / 2, q = X.pathAt(sp.path, m), q0 = X.pathAt(sp.path, m - 2), q1 = X.pathAt(sp.path, m + 2), l = Math.hypot(q1.x - q0.x, q1.y - q0.y), nx = -(q1.y - q0.y) / l * g[2], ny = (q1.x - q0.x) / l * g[2];
+        n++;
+        const open = sc.walk.gapAt(q.x + nx * HW, q.y + ny * HW), shut = sc.walk.gapAt(q.x - nx * HW, q.y - ny * HW), near = sp.gaps.some((h, k) => k !== i && Math.abs((h[0] + h[1]) / 2 - m) < apart);
+        if (!open || shut || near) bad.push(id + ' ' + 'ABC'[c] + (r + 1));
+      });
+    }
+  }
+  ok(n >= 8 && !bad.length, `Walkway openings: ${n} in three districts; one per road crossing, one side each${bad.length ? ' (not: ' + bad.join(', ') + ')' : ''}`);
 }
 {
   const s = new W6.Sim6('waterfront', {}, null, { warm: 2 }); empty(s);
