@@ -38,7 +38,7 @@
 <header>
   <h1>A 45° crossroads · four engineered options</h1>
   <p>Example only, not in the districts. A W–E road (priority) crossed by a 45° road, in game art with live P5 traffic. Road design guides want crossings at 90°, accept 75° and realign anything under 60°. A 45° four-way crossing is below every guide's minimum. These are the four standard ways out.</p>
-  <p><b style="color:var(--ink)">Decided (user, 25 October):</b> A is the rule. C only in a district's centre tile (B2). D only where a level design names it. B is rejected.</p>
+  <p><b style="color:var(--ink)">Decided (user, 26 October; supersedes 25 October):</b> every four-way junction takes a roundabout (C), its arms brought in 90° apart; street rings smaller than highway rings. Three-way joins meet at 90° after a transition bend (A's method). D only where a level design names it. B is not used.</p>
 </header>
 <main>
   <section>
@@ -48,15 +48,15 @@
         Four arms meet at one point. The 45° road gives way.
         <ul><li class="minus">Two turns are 135° hairpins; drivers on the 45° road look back over their shoulder.</li><li class="minus">Paths cross in the middle of a wide, skewed box.</li></ul>
         <div class="live" id="l0"></div></figcaption></figure>
-      <figure><canvas id="x1"></canvas><figcaption><b>A · Realigned to 90°<span class="tag yes">Adopted: the rule</span></b>
+      <figure><canvas id="x1"></canvas><figcaption><b>A · Realigned to 90°<span class="tag some">Three-way joins only</span></b>
         The 45° road bends to meet the W–E road square, then bends back out. The standard fix below 60°.
         <ul><li class="plus">One junction, every turn 90°, clear sightlines.</li><li class="minus">Needs land for the reverse curves (R 224 bends); the 45° road slows for them.</li></ul>
         <div class="live" id="l1"></div></figcaption></figure>
-      <figure><canvas id="x2"></canvas><figcaption><b>B · Staggered T junctions<span class="tag no">Rejected</span></b>
+      <figure><canvas id="x2"></canvas><figcaption><b>B · Staggered T junctions<span class="tag no">Not used</span></b>
         The crossing splits into two T junctions 256 apart. Crossing traffic turns left onto the W–E road, then right off it (the preferred stagger, keep right).
         <ul><li class="plus">Only three-way junctions, each at 90°; one conflict at a time.</li><li class="minus">Crossing traffic shares the W–E road for a block; left turns queue on the link.</li></ul>
         <div class="live" id="l2"></div></figcaption></figure>
-      <figure><canvas id="x3"></canvas><figcaption><b>C · Roundabout, skew kept<span class="tag some">Centre tile (B2) only</span></b>
+      <figure><canvas id="x3"></canvas><figcaption><b>C · Roundabout, skew kept<span class="tag yes">Every four-way, arms 90° apart</span></b>
         A four-arm ring takes the arms as they come. Nothing crosses; everything merges.
         <ul><li class="plus">No crossing conflicts; every turn allowed; the game's ring rules apply.</li><li class="minus">Arms 45° apart get short, tight entries (R 64). Takes the most space.</li></ul>
         <div class="live" id="l3"></div></figcaption></figure>

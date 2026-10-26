@@ -140,6 +140,8 @@
     'world.junctionTurnRadius': 96, 'world.junctionApproach': 192, 'world.roundaboutArmGap': 10, // P4 (Edit 49.3)
     'world.junctionStagger': 256, // Edit 55 (example only): two T junctions this far apart replace a 45° crossroads
     'world.junctionZone': 0.75, // Edit 55.2: every junction sits in this central share of its tile, each way
+    'world.roundaboutRadiusStreet': 112, // Edit 56: a ground (street) roundabout's centre radius in the district plans; highway rings keep world.deckRingRadius
+    'world.markYieldBase': 12, 'world.markYieldHeight': 18, 'world.markYieldGap': 6, // Edit 56: yield line teeth (MUTCD 3B.16 shape, 1 : 1.5), drawn over-size to read in pixels
     // P5 (Edit 50): five models (hatchback, sedan, police, van, bus); buses on wide roads and highways; faster, sparser, richer highways
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
@@ -148,7 +150,7 @@
     'world.walkwayRingHalf': 168, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 100, 'world.plazaHalf': 190, // Edit 51.1–51.2: the square walkway ring (district mock-up only)
     'world.deckEscalators': 2, 'world.deckEscalatorInset': 64, 'world.splitLaneOffset': 104, 'world.walkwayColumn': 16, // Edit 51.2 (district mock-up only)
     'world.portalClearance': 72, // Edit 54: headroom over a highway where it runs through a tower (two storeys)
-    'world.roundaboutMinArms': 3, 'traffic.ringInnerExit': 3, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
+    'world.roundaboutMinArms': 3, 'traffic.ringOrbitMax': 2, 'traffic.ringInnerExit': 3, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
     'traffic.continuous': 1, 'traffic.warmSeconds': 30, 'traffic.exitAfterSeams': 9, // P5.3 (Edit 53): one traffic for the whole district; a car crosses a shared edge with its id, speed and plan. warmSeconds: the district mock-up runs before it is shown; exitAfterSeams: after that many seams a mock-up car takes the way out at a junction
     'world.deckRingTopClear': 32, 'world.gardenCellWidth': 160, 'world.gardenCellHeight': 128, 'world.gardenPath': 32, // Edit 51.3 (district mock-up only)
     'world.gardenLargeCells': 2, 'world.gardenBedTypes': 2, 'world.gardenPlanter': 40, 'world.sculptureScaleLarge': 2, 'world.sculptureScaleSmall': 0.5, 'world.courtSmallCount': 7, // Edit 55: planting and sculpture in three sizes (district mock-up only)
@@ -981,7 +983,7 @@
       if (l1 < 1e-6 || l2 < 1e-6) continue;
       const ux = (x1 - x0) / l1, uy = (y1 - y0) / l1, vx = (x2 - x1) / l2, vy = (y2 - y1) / l2, cr = ux * vy - uy * vx, th = Math.atan2(Math.abs(cr), ux * vx + uy * vy);
       if (th < 1e-6) { out.push([x1, y1]); continue; }
-      const tn = Math.tan(th / 2), R = Math.min(rad, Math.min(i === 1 ? l1 : l1 / 2, i + 2 === pts.length ? l2 : l2 / 2) / tn);
+      const tn = Math.tan(th / 2), R = Math.min(Array.isArray(rad) ? rad[i] : rad, Math.min(i === 1 ? l1 : l1 / 2, i + 2 === pts.length ? l2 : l2 / 2) / tn); // Edit 56: a radius per corner
       if (minR && R < minR - 1e-6) return null;
       const T = R * tn, sg = Math.sign(cr), ax = x1 - ux * T, ay = y1 - uy * T, cx = ax - uy * sg * R, cy = ay + ux * sg * R;
       const t0 = Math.atan2(ay - cy, ax - cx), t1 = Math.atan2(y1 + vy * T - cy, x1 + vx * T - cx), sw = wrap(t1 - t0), n = Math.max(3, Math.round(R * th / 12));
@@ -2006,6 +2008,11 @@
       if (!g || !(gap > 0) || lay(c) !== 0) return null;
       const toLine = g.s - (c.s + c.L / 2);
       if (toLine < -4 || toLine > 200) return null; // over the line: committed
+      const om = this.P['traffic.ringOrbitMax'];
+      if (om > 0 && c.path.ring && this.ringExitBlocked(c)) { // Edit 56: a car whose exit is blocked waits at the line once traffic.ringOrbitMax cars already orbit (orbiters fill a ring and lock it)
+        let n = 0; for (const o of this.cars) if (o !== c && o.orbit && o.path.ring && o.path.ring.cx === g.cx && o.path.ring.cy === g.cy) n++;
+        if (n >= om) return { line: g.s - c.L / 2 };
+      }
       const fill = this.P['traffic.ringFill'];
       if (fill > 0) { // Edit 53.1: the ring takes a car only while its cars fill less than traffic.ringFill of the outer lane (a full ring locks)
         let used = c.L + this.P['traffic.minimumGap'];
@@ -4356,7 +4363,7 @@
     }
     for (const st of level.statics) if (st.kind !== 'river' && !st.deck && (!PAL.spill || st.kind !== 'block' || st.storeys)) rectShadow(B, st, st.height || P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
     for (const f of level.floors || []) if (f.kind === 'bridge') rectShadow(B, f, P['world.highHeight'], P); // skybridges cast theirs across the alley
-    for (const g of level.giveWays || []) giveWayMark(B, g); // P4 (Edit 49.1, 49.3): double broken line across the lane
+    for (const g of level.giveWays || []) giveWayMark(B, g, P); // Edit 56: MUTCD yield line across the approach lane
     edgeMarks(B, level);
     return B;
   }
@@ -4378,9 +4385,21 @@
     }
     return { D, SD, S, dash };
   }
-  function giveWayMark(B, g) { // yield line (US, decision 84): shark's teeth across the lane, pointing at the approaching car. g: lane point at the line, with its direction (world units)
-    const nx = -g.ty, ny = g.tx;
-    for (let l0 = -21; l0 <= 21; l0 += 10.5) for (let a = 0; a <= 7; a += U / 2) { const half = 3.5 * (1 - a / 7); for (let l = -half; l <= half; l += U / 2) B.put(Math.floor((g.x + nx * (l0 + l) - g.tx * a) / U), Math.floor((g.y + ny * (l0 + l) - g.ty * a) / U), K.lane); }
+  // Yield line (MUTCD 3B.16; Edit 56): a row of solid white isosceles triangles across the approach lane, each pointing at
+  // the approaching car. Base world.markYieldBase, height world.markYieldHeight (1 : 1.5), gaps world.markYieldGap; filled
+  // pixel by pixel so the teeth stay triangles at any angle. White: yellow is the dummy's alone (Edit 37).
+  function giveWayMark(B, g, P) {
+    const b = P ? P['world.markYieldBase'] : 12, h = P ? P['world.markYieldHeight'] : 18, gap = P ? P['world.markYieldGap'] : 6, lw = P ? P['world.laneWidth'] : 56;
+    const n = Math.max(1, Math.floor((lw - 4 + gap) / (b + gap))), span = n * b + (n - 1) * gap, nx = -g.ty, ny = g.tx;
+    for (let i = 0; i < n; i++) {
+      const c0 = -span / 2 + b / 2 + i * (b + gap); // tooth centre across the lane; its base on the line, its apex h back toward the car
+      const pts = [[g.x + nx * (c0 - b / 2), g.y + ny * (c0 - b / 2)], [g.x + nx * (c0 + b / 2), g.y + ny * (c0 + b / 2)], [g.x + nx * c0 - g.tx * h, g.y + ny * c0 - g.ty * h]];
+      const xs = pts.map((p) => p[0] / U), ys = pts.map((p) => p[1] / U);
+      for (let y = Math.floor(Math.min(...ys)); y <= Math.ceil(Math.max(...ys)); y++) for (let x = Math.floor(Math.min(...xs)); x <= Math.ceil(Math.max(...xs)); x++) {
+        const px = x + 0.5, py = y + 0.5, s1 = (xs[1] - xs[0]) * (py - ys[0]) - (ys[1] - ys[0]) * (px - xs[0]), s2 = (xs[2] - xs[1]) * (py - ys[1]) - (ys[2] - ys[1]) * (px - xs[1]), s3 = (xs[0] - xs[2]) * (py - ys[2]) - (ys[0] - ys[2]) * (px - xs[2]);
+        if ((s1 >= 0 && s2 >= 0 && s3 >= 0) || (s1 <= 0 && s2 <= 0 && s3 <= 0)) B.put(x, y, K.lane);
+      }
+    }
   }
 
   // Deck column (Edit 43): concrete, lit on the left, from its footprint up to the deck's underside.
@@ -4461,6 +4480,7 @@
   // turning left off the major road (gives way to oncoming traffic). Rank 2: the minor road (gives way to both).
   const JX = W / 2, JY = H / 2, D45 = Math.SQRT1_2;
   const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = hyp(dx, dy); return [dx / l, dy / l]; };
+  function toEdgeAny(dir, from, Wv, Hv) { const [x, y] = from, ts = []; if (dir[0] > 1e-9) ts.push((Wv - x) / dir[0]); if (dir[0] < -1e-9) ts.push(-x / dir[0]); if (dir[1] > 1e-9) ts.push((Hv - y) / dir[1]); if (dir[1] < -1e-9) ts.push(-y / dir[1]); const t = Math.min(...ts) + LEAD; return [x + dir[0] * t, y + dir[1] * t]; }
   function toEdge(dir, from) { // from a point along dir to LEAD beyond the screen edge
     const [x, y] = from, ts = [];
     if (dir[0] > 1e-9) ts.push((W - x) / dir[0]); if (dir[0] < -1e-9) ts.push(-x / dir[0]);
@@ -4521,9 +4541,8 @@
     }
     conflictZones(X, lanes, info, P);
     const lw = P['world.laneWidth'];
-    const show = Object.entries(arms).map(([k, A]) => (major.includes(k) ? A : trimFrom(A, lw + R))); // minor arm: no centre line inside the junction
-    const majorLine = arms[major[0]].slice().reverse().concat(arms[major[1]].slice(1));
-    return { center: roads[0], ring: null, lanes, roads, routes, info, arms: [majorLine].concat(show.filter((_, i) => !major.includes(Object.keys(arms)[i]))), junction: [JX, JY] };
+    const show = Object.values(arms).map((A) => trimFrom(A, lw + R)); // Edit 56 (MUTCD 3B.08): no centre line through the junction, major road included
+    return { center: roads[0], ring: null, lanes, roads, routes, info, arms: show, junction: [JX, JY] };
   }
   function trimFrom(A, d) { // the arm beyond distance d from its start
     const out = []; let acc = 0;
@@ -4564,7 +4583,9 @@
   }
   // P4 (Edit 49.1): a roundabout with several arms. Traffic keeps right and circulates one way (anticlockwise on screen) in the
   // outer ring lane. One route per ordered pair of arms, each with its own lane path and a give-way line where it joins the ring.
-  function multiRoundabout(X, P, arms, Rf, ctr) { // ctr (Edit 55.2): the ring's centre, default the screen's
+  // Edit 56: bends { k: { dir: [dx, dy], at, Rb } }: arm k runs radially out to the vertex at distance `at`, then turns to dir
+  // (a fillet of Rb) and runs to the edge. A 45° road reaches a ring square to it without moving the ring.
+  function multiRoundabout(X, P, arms, Rf, ctr, bends) { // ctr (Edit 55.2): the ring's centre, default the screen's
     const arms0 = arms;
     const Rc = P['world.roundaboutRadius'], half = P['world.laneWidth'] / 2, R = Rc + half, ang = { W: Math.PI, E: 0, N: -Math.PI / 2, S: Math.PI / 2, SW: 3 * Math.PI / 4, NW: -3 * Math.PI / 4, SE: Math.PI / 4, NE: -Math.PI / 4 }, diag = (k) => k.length === 2; // Edit 55: every 45° arm
     const cx = ctr ? ctr[0] : W / 2, cy = ctr ? ctr[1] : H / 2, Wv = 2 * cx, Hv = 2 * cy, ring = X.arcPts(cx, cy, Rc, 0, 2 * Math.PI, 48), lanes = [], roads = [], names = [];
@@ -4578,7 +4599,13 @@
       // arms close together (45°): both fillets must fit the short way between them, with world.roundaboutArmGap of ring; never below world.turnRadiusTight
       const short = Math.abs(nat) < Math.PI - 1e-6 && nat < 0 ? Math.abs(nat) : 2 * Math.PI, hs = (short - P['world.roundaboutArmGap'] * Math.PI / 180) / 2;
       const Rfp = short < Math.PI ? Math.max(P['world.turnRadiusTight'], Math.min(Rf || 96, Rc * Math.sin(hs) / (1 - Math.sin(hs)))) : Rf || 96;
-      const center = X.roundaboutCenter(ea, eb, Wv, Hv, LEAD, Rc, r, Rfp), lane = X.lanesOf(center, P)[0];
+      const bent = (k) => bends && bends[k], Ds = (Rc + Rfp) * Math.cos(Math.asin(Rfp / (Rc + Rfp))) + 8;
+      const outer = (k) => { const b = bent(k), u = [Math.cos(ang[k]), Math.sin(ang[k])], v = [cx + u[0] * b.at, cy + u[1] * b.at]; return X.filletAny([toEdgeAny(b.dir, v, Wv, Hv), v, [cx + u[0] * Ds, cy + u[1] * Ds]], b.Rb, 0); };
+      if (bent(a)) ea.pt = outer(a).slice(-1)[0]; if (bent(b)) eb.pt = outer(b).slice(-1)[0];
+      let center = X.roundaboutCenter(ea, eb, Wv, Hv, LEAD, Rc, r, Rfp);
+      if (bent(a)) center = outer(a).slice(0, -1).concat(center);
+      if (bent(b)) center = center.concat(outer(b).reverse().slice(1));
+      const lane = X.lanesOf(center, P)[0];
       let sLine = null, aj = null, sj = null;
       for (let i = 0; i < lane.pts.length; i++) {
         const [x, y] = lane.pts[i], d = hyp(x - cx, y - cy);
@@ -4598,7 +4625,9 @@
       lanes.push(lane); roads.push(center); names.push(a + '→' + b);
     }
     lanes.forEach((ln, i) => { const a = names[i].split('→')[0]; ln.giveWay.s = Math.min(...lanes.filter((_, j) => names[j].split('→')[0] === a).map((m) => m.giveWay.s)); }); // one line per arm
-    const armLines = arms0.map((k) => { const t = ang[k], c = [cx + Math.cos(t) * (Rc + (Rf || 96) + 8), cy + Math.sin(t) * (Rc + (Rf || 96) + 8)]; return [diag(k) ? toEdge([Math.cos(t), Math.sin(t)], [cx, cy]) : X.edgePoint(k, k === 'W' || k === 'E' ? cy : cx, Wv, Hv, LEAD), c]; });
+    const armLines = arms0.map((k) => { const t = ang[k], u = [Math.cos(t), Math.sin(t)], c = [cx + u[0] * (Rc + (Rf || 96) + 8), cy + u[1] * (Rc + (Rf || 96) + 8)];
+      if (bends && bends[k]) { const b = bends[k], v = [cx + u[0] * b.at, cy + u[1] * b.at]; return X.filletAny([toEdgeAny(b.dir, v, Wv, Hv), v, c], b.Rb, 0); }
+      return [diag(k) ? toEdge(u, [cx, cy]) : X.edgePoint(k, k === 'W' || k === 'E' ? cy : cx, Wv, Hv, LEAD), c]; });
     return { center: roads[0], ring, lanes, roads, routes: names, arms: armLines };
   }
   // P3's roundabout path, rebuilt here so the lab can compare it on the same driver (P3 sim.js, Edit 41.1).
@@ -4768,7 +4797,7 @@
       if (!cur || t0 > 0) { cur = [A]; runs.push(cur); }
       cur.push(Bp); if (t1 < 1) cur = null;
     }
-    const onScreen = (r) => { let s = 0; for (let i = 1; i < r.length; i++) { const mx = (r[i][0] + r[i - 1][0]) / 2, my = (r[i][1] + r[i - 1][1]) / 2; if (mx >= 0 && mx <= W && my >= 0 && my <= H) s += hyp(r[i][0] - r[i - 1][0], r[i][1] - r[i - 1][1]); } return s; };
+    const onScreen = (r) => { let s = 0; for (let i = 1; i < r.length; i++) for (let k = 0; k < 16; k++) { const f = (k + 0.5) / 16, mx = r[i - 1][0] + (r[i][0] - r[i - 1][0]) * f, my = r[i - 1][1] + (r[i][1] - r[i - 1][1]) * f; if (mx >= 0 && mx <= W && my >= 0 && my <= H) s += hyp(r[i][0] - r[i - 1][0], r[i][1] - r[i - 1][1]) / 16; } return s; }; // Edit 56: sampled, so a short run ending inside the screen counts
     return runs.filter((r) => r.length > 1 && onScreen(r) > 0).sort((a, b) => onScreen(b) - onScreen(a))[0] || null;
   }
   const shift = (pts, dx, dy) => pts.map(([x, y]) => [x + dx, y + dy]);
@@ -5136,8 +5165,9 @@
   const DISTRICTS = [
     { id: 'parkland', name: 'Parkland', quota: P['world.district.parkland.quota'], storeys: [2, 5], start: ['A1', 'top'],
       mood: 'Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath.',
-      roads: [{ id: 'boulevard', pts: [[40, -200], [2360, 2120]] }, { id: 'loop', pts: fil([[527, 287], [400, 414], [400, 1728], [1714, 1728], [2241, 1201], [1760, 720], [1760, -200]], RB) }], // Edit 55.2: joins and crosses the boulevard at 90°, both junctions in their tiles' central 75%
-      junctions: [{ tile: 'A1', at: [527, 287], major: 'boulevard' }, { tile: 'C3', at: [241, 321], major: 'boulevard' }],
+      roads: [{ id: 'boulevard', pts: [[40, -200], [2360, 2120]] }, { id: 'loop', pts: fil([[527, 287], [400, 414], [400, 1736], [1636, 1736], [1806, 1566], [2206, 1166], [1760, 720], [1760, -200]], [0, RB, RB, 96, RB, RB, RB, 0]) }], // Edit 56: joins the boulevard at 90° in A1; meets it at a roundabout in C3
+      junctions: [{ tile: 'A1', at: [527, 287], major: 'boulevard' }],
+      roundabouts: [{ tile: 'C3', at: [206, 286], arms: ['NW', 'NE', 'SE', 'SW'], bends: { SW: { dir: [-1, 0], at: 240.3, Rb: 96 } } }], // Edit 56: the four-way takes a street roundabout; the street's SW arm turns west outside it
       ring: { tile: 'B2', z: 1, arms: ['W', 'N', 'E', 'S'] },
       decks: [{ hz: true, at: 996, z: 1 }, { hz: false, at: 1200, z: 1 }], park: true, // Edit 55.2: row 2 at 996 so the lifted B2 ring draws at the screen's centre
       deckLinks: { B1: [{ y: 268, h: 32, side: -1 }, { y: 268, h: 32, side: 1 }] }, // Edit 55.2: the Z1 walkway joins the B1 highway at both parapets (deck rows)
@@ -5147,26 +5177,27 @@
         C1: ['The avenue under a Z1 footbridge that runs west to the B1 highway; escalator at its east end; drop onto cars', 'Lantern pavilion', 'both'],
         A2: ['The avenue passes under the Z1 highway at 90°; escalators north (west end) and south (east end)', 'Canal along the highway', 'both'],
         B2: ['Four-arm Z1 roundabout (W, N, E, S). Give way to the ring; the inner lane is the orbit lane. The boulevard passes beneath, through the hole', 'Reflecting pools under the ring', 'both'],
-        C2: ['The avenue comes up from the crossing at 45°, turns 90° and passes under the Z1 highway at 45°', 'Amphitheatre terraces', 'both'],
+        C2: ['The avenue comes up from the C3 roundabout at 45°, turns 90° and passes under the Z1 highway at 45°', 'Amphitheatre terraces', 'both'],
         A3: ['A wide R160 bend (buses may use it)', 'Belvedere: four tiers and a stair up to a lawn, the monolith orchard on top', 'both'],
         B3: ['The garden street passes under the Z1 highway at 90°; escalators', 'Sculpture court: a large obelisk, two rings, a row of lit bollards', 'both'],
-        C3: ['Crossroads realigned to 90° in the middle of the tile: the street bends 45° to cross the boulevard square, and gives way', 'Sculpture court at grade: a large arch, two medium pieces, a row of lit bollards', 'scenery'] } },
+        C3: ['Street roundabout where the street meets the boulevard: four arms at 90°, the street turning west outside it', 'Sculpture court at grade: a large arch, two medium pieces, a row of lit bollards', 'scenery'] } },
     { id: 'circus', name: 'Circus', quota: P['world.district.circus.quota'], storeys: [6, 14], start: ['A2', 'west'],
       mood: 'Busy and circling, walled by monumental concrete. An octagon of streets rings the four-arm roundabout.',
       roads: [{ id: 'octagon', pts: loop2(fil([[800, 480], [560, 480], [480, 560], [480, 1360], [560, 1440], [1840, 1440], [1920, 1360], [1920, 560], [1840, 480], [800, 480]])) },
-        { id: 'west', pts: [[-200, 960], [1000, 960]] }, { id: 'north', pts: [[1200, 480], [1200, 840]] }, { id: 'east', pts: [[1400, 960], [1920, 960]] }, { id: 'south', pts: [[1200, 1100], [1200, 2120]] }],
-      junctions: [{ tile: 'A2', at: [480, 320], major: 'octagon' }, { tile: 'B1', at: [400, 480], major: 'octagon' }, { tile: 'C2', at: [320, 320], major: 'octagon' }, { tile: 'B3', at: [400, 160], major: 'octagon' }],
+        { id: 'west', pts: [[-200, 960], [1000, 960]] }, { id: 'north', pts: [[1200, 480], [1200, 840]] }, { id: 'east', pts: [[1400, 960], [2600, 960]] }, { id: 'south', pts: [[1200, 1100], [1200, 1440]] }], // Edit 56: the east road runs on to the district edge; the south road ends at the octagon
+      junctions: [{ tile: 'B1', at: [400, 480], major: 'octagon' }, { tile: 'B3', at: [400, 160], major: 'octagon' }],
       roundabout: { tile: 'B2', arms: ['W', 'N', 'E', 'S'] },
+      roundabouts: [{ tile: 'A2', at: [480, 320], arms: ['W', 'N', 'E', 'S'] }, { tile: 'C2', at: [320, 320], arms: ['W', 'N', 'E', 'S'] }], // Edit 56: every four-way takes a street roundabout
       decks: [{ hz: true, at: 1680, z: 1 }],
       tiles: {
         A1: ['The octagon turns two 45° corners; roadworks close a lane (cones)', 'A tower cut parallel to the diagonal', 'scenery'],
         B1: ['T junction: the north arm gives way to the octagon', 'Twin towers and their bridge', 'scenery'],
         C1: ['The octagon turns two 45° corners on a flooded road (puddles: cars skid)', 'A ziggurat stepping toward the diagonal', 'scenery'],
-        A2: ['Start, west edge. Crossroads: the entry road gives way to the octagon', 'LED billboard wall facing the entry', 'scenery'],
-        B2: ['Four-arm roundabout: give way at entry; orbit on the inner lane when the exit is blocked', 'The plinth and its lit slab', 'scenery'],
-        C2: ['T junction: the east arm gives way to the octagon', 'Cantilevered crown tower', 'scenery'],
+        A2: ['Start, west edge. Street roundabout where the entry road crosses the octagon', 'LED billboard wall facing the entry', 'scenery'],
+        B2: ['Four-arm street roundabout: give way at entry; the inner lane for the third exit', 'The plinth and its lit slab', 'scenery'],
+        C2: ['Street roundabout where the east road crosses the octagon and leaves the district', 'Cantilevered crown tower', 'scenery'],
         A3: ['The octagon turns two 45° corners under the row-3 Z1 highway; escalators', 'Finned slab', 'both'],
-        B3: ['Crossroads, then under the Z1 highway at 90° to the exit', 'Arcade on pilotis', 'both'],
+        B3: ['T junction: the south arm meets the octagon at 90° and gives way; the Z1 highway beyond', 'Arcade on pilotis', 'both'],
         C3: ['The octagon turns two 45° corners; a cone closes the eastbound lane: cars pass across the centre line. Z1 highway and escalators', 'Twin slabs', 'both'] } },
     { id: 'monument', name: 'Monument', quota: P['world.district.monument.quota'], storeys: [6, 12], start: ['A1', 'west'],
       mood: 'Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument.',
@@ -5296,8 +5327,14 @@
     const name = TILE(col, row), ox = col * W, oy = row * H, rng = PIX.rng(1000 + col * 37 + row * 101 + D.id.length * 7), plan = D.tiles[name];
     const sc = { D, name, col, row, props: [], layers: [], tops: [], note: plan[0] + '. Landmark: ' + plan[1] + '.', stairs: [], reserve: [] };
     for (const rb of [D.roundabout, D.ring]) if (rb && rb.arms.length < P['world.roundaboutMinArms']) console.warn('a roundabout with too few arms', D.id); // Edit 52
-    if (D.kit !== 'example') { // Edit 55.1 (user, 25 October): a 45° four-way crossing is realigned to 90° (A); a ring keeps a 45° skew only in the centre tile (C); a flyover only where the plan names it (D)
-      for (const rb of [D.roundabout, D.ring]) if (rb && rb.tile === name && rb.arms.some((k) => k.length === 2) && name !== 'B2') console.warn('a skewed roundabout outside the centre tile', D.id, name);
+    const RBS = (D.roundabouts || []).concat(D.roundabout ? [D.roundabout] : []), rbHere = RBS.find((q) => q.tile === name); // Edit 56: street roundabouts
+    if (D.kit !== 'example') { // Edit 56 (user, 26 October): every four-way takes a roundabout, its arms 90° apart, inside its tile; a flyover only where the plan names it
+      const ANG = { W: 180, N: 270, E: 0, S: 90, NW: 225, NE: 315, SE: 45, SW: 135 }, zq = (1 - P['world.junctionZone']) / 2, rS = P['world.roundaboutRadiusStreet'] + OUTER;
+      for (const rb of RBS.concat(D.ring ? [D.ring] : [])) if (rb.tile === name) {
+        const a = rb.arms.map((k) => ANG[k]).sort((p, q) => p - q); if (a.some((v, i) => ((a[(i + 1) % a.length] - v + 360) % 360 || 360) < 90)) console.warn('a roundabout with arms under 90° apart', D.id, name);
+        const c = rb.at || [W / 2, H / 2]; if (rb !== D.ring && (c[0] - rS < 0 || c[0] + rS > W || c[1] - rS < 0 || c[1] + rS > H)) console.warn('a roundabout crossing its tile edge', D.id, name);
+        if (c[0] < W * zq || c[0] > W * (1 - zq) || c[1] < H * zq || c[1] > H * (1 - zq)) console.warn('a roundabout outside the central zone', D.id, name);
+      }
       if (D.flyover && !D.flyoverNamed) console.warn('a 45° flyover the plan does not name', D.id);
     }
     const runs = [];
@@ -5310,8 +5347,8 @@
     let ground, roadD, sims = [], center = runs.length ? runs[0].pts : [[-900, -900], [-850, -900]], lanes = null, busOK = runs.every((r) => X.minBend(r.pts, W, H) >= RB), patches = [];
     if (D.id === 'circus' && name === 'C1') patches = [[480, 520], [512, 552], [448, 584], [544, 496], [480, 608]].map(([x, y]) => ({ x, y, w: 32, h: 32, kind: 'puddle' })); // a flooded corner
     // ground roads and their traffic
-    if (D.roundabout && D.roundabout.tile === name) { // a ground roundabout: every route, give way at entry, the inner lane for orbiting (Edit 52)
-      const geo = L.multiRoundabout(X, P, D.roundabout.arms, R96), s = labSim(geo, 'nobus', {});
+    if (rbHere) { // a ground roundabout: every route, give way at entry, the inner lane for the third exit (Edit 52, 54). Edit 56: street radius, any centre, bent arms
+      const ov = D.kit === 'example' ? {} : { 'world.roundaboutRadius': P['world.roundaboutRadiusStreet'] }, geo = L.multiRoundabout(X, Object.assign({}, P, ov), rbHere.arms, R96, rbHere.at, rbHere.bends), s = labSim(geo, 'nobus', ov);
       sims.push(s); sc.lab = s;
       ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), decks: [] }), P, 23);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
@@ -5326,6 +5363,7 @@
       const { arms, major } = junctionArms(runs, J.at, J.major), geo = L.junction(X, P, arms, major, P['world.junctionTurnRadius']), s = labSim(geo, 'nobus', {});
       const dirs = Object.values(arms).map((A) => Math.atan2(A[1][1] - A[0][1], A[1][0] - A[0][0]) * 180 / Math.PI); // Edit 55.1: four arms meet square
       if (dirs.length >= 3 && dirs.some((a) => dirs.some((b) => { const d = Math.abs(((a - b) % 90 + 90) % 90); return Math.min(d, 90 - d) > 2; }))) console.warn('a junction arm off 90° (realign: option A)', D.id, name); // Edit 55.2: three-way joins too
+      if (dirs.length >= 4 && D.kit !== 'example') console.warn('a four-way junction without a roundabout', D.id, name); // Edit 56
       const zq = (1 - P['world.junctionZone']) / 2; if (J.at[0] < W * zq || J.at[0] > W * (1 - zq) || J.at[1] < H * zq || J.at[1] > H * (1 - zq)) console.warn('a junction outside the central zone', D.id, name); // Edit 55.2
       sims.push(s); sc.lab = s;
       ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), patches }), P, 29 + col * 7 + row * 13);
@@ -5456,10 +5494,10 @@
   function circusTile(sc, B, name, roadOk, free, rng, lab, runs) {
     const u = (v) => v / U, put = (x, y, w, h, st, style, cut, rear, i) => { const Hh = st * STY; brutalShadow(B, u(x), u(y), u(w), u(h), Math.round(Hh * 0.55), cut); sc.props.push({ spr: brutal(u(w), u(h), Hh, PIX.rng(311 + i * 17 + sc.col * 7 + sc.row * 3), LEDS[(i + sc.col + sc.row) % LEDS.length], cut, rear, style), x: u(x), y: u(y), by: y + h }); sc.reserve.push([x, y, w, h]); };
     if (name === 'B2') { // the island: a stepped concrete plinth, a lawn tier, a slab with a lit slot and a halo
-      const Rc = P['world.roundaboutRadius'], ci = Rc - OUTER - 2;
+      const Rc = P['world.roundaboutRadiusStreet'], ci = Rc - OUTER - 2 + 24, f = ci / 78; // Edit 56: the street radius; the island reaches the kerb
       each((x, y, wx, wy) => { const d = hyp(wx - 400, wy - 320); if (d < ci) B.put(x, y, d > ci - 4 ? CON.l : (x % 8 === 0 || y % 8 === 0) ? CON.d : CON.t); });
-      const ax = 400 / U, ay = 320 / U, led = LEDS[3 % LEDS.length];
-      block(B, ax - 26, ay - 20, ax + 26, ay + 20, 12, 0, 4, 'conc', null, true); block(B, ax - 18, ay - 13, ax + 18, ay + 13, 8, 4, 4, 'grass', led, false); block(B, ax - 9, ay - 6, ax + 9, ay + 6, 4, 8, 3, 'conc', LEDS[0], false);
+      const ax = 400 / U, ay = 320 / U, led = LEDS[3 % LEDS.length], q = (v) => Math.max(2, Math.round(v * f));
+      block(B, ax - q(26), ay - q(20), ax + q(26), ay + q(20), q(12), 0, 4, 'conc', null, true); block(B, ax - q(18), ay - q(13), ax + q(18), ay + q(13), q(8), 4, 4, 'grass', led, false); block(B, ax - q(9), ay - q(6), ax + q(9), ay + q(6), q(4), 8, 3, 'conc', LEDS[0], false);
       for (let t = 0; t < 46; t++) for (let j = -2; j <= 2; j++) B.shade(ax - t * 0.7 + j * 0.7 - 10, ay + t * 0.7 + j * 0.7 + 4, 0.8);
       block(B, ax - 3, ay - 1, ax + 3, ay + 1, 0, 11, 40, 'conc', null, false); for (let t = 4; t < 36; t++) B.put(ax, ay + 1 - 11 - t, led);
       for (let a = 0; a < 48; a++) { const th = a / 48 * Math.PI * 2, hx = Math.round(ax + Math.cos(th) * 10), hy = Math.round(ay - 40 + Math.sin(th) * 3); if (Math.sin(th) > 0 || Math.abs(Math.cos(th)) > 0.3) B.put(hx, hy, a % 6 < 4 ? N.cyan : K.white); }
@@ -5471,8 +5509,8 @@
     if (name === 'A1') { put(40, 40, 360, 300, 13, 'ziggurat', { c: 'se', k: 60 }, 'n', 1); sc.cones = [[700, 452], [660, 452], [620, 452]]; } // roadworks: one lane coned off
     if (name === 'B1') put(200, 24, 400, 300, 14, 'twin', null, 'n', 2);
     if (name === 'C1') put(420, 40, 340, 300, 12, 'ziggurat', { c: 'sw', k: 60 }, 'n', 3);
-    if (name === 'A2') { put(40, 24, 320, 200, 9, 'slab', null, 'n', 4); billboard(B, u(230), u(600), u(240), 26, 12, LEDS[3 % LEDS.length]); sc.reserve.push([100, 440, 260, 180]); }
-    if (name === 'C2') put(440, 24, 340, 210, 14, 'cantilever', null, 'n', 5);
+    if (name === 'A2') { put(40, 24, 220, 160, 9, 'slab', null, 'n', 4); billboard(B, u(190), u(600), u(240), 26, 12, LEDS[3 % LEDS.length]); sc.reserve.push([60, 480, 260, 140]); } // Edit 56: clear of the A2 roundabout
+    if (name === 'C2') put(560, 24, 220, 190, 14, 'cantilever', null, 'n', 5); // Edit 56: clear of the C2 roundabout
     if (name === 'A3') put(40, 240, 340, 60, 4, 'slab', null, 'n', 6);
     if (name === 'B3') put(520, 0, 260, 60, 3, 'slab', null, 'n', 7);
     if (name === 'C3') { put(440, 240, 320, 60, 4, 'twin', null, 'n', 8); sc.cones = [[110, 188]]; } // a cone closes one lane (Edit 53: the three-cone chicane could not be passed either way, and with traffic continuous it jammed the octagon)

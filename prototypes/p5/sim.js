@@ -72,6 +72,8 @@
     'world.junctionTurnRadius': 96, 'world.junctionApproach': 192, 'world.roundaboutArmGap': 10, // P4 (Edit 49.3)
     'world.junctionStagger': 256, // Edit 55 (example only): two T junctions this far apart replace a 45° crossroads
     'world.junctionZone': 0.75, // Edit 55.2: every junction sits in this central share of its tile, each way
+    'world.roundaboutRadiusStreet': 112, // Edit 56: a ground (street) roundabout's centre radius in the district plans; highway rings keep world.deckRingRadius
+    'world.markYieldBase': 12, 'world.markYieldHeight': 18, 'world.markYieldGap': 6, // Edit 56: yield line teeth (MUTCD 3B.16 shape, 1 : 1.5), drawn over-size to read in pixels
     // P5 (Edit 50): five models (hatchback, sedan, police, van, bus); buses on wide roads and highways; faster, sparser, richer highways
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
@@ -80,7 +82,7 @@
     'world.walkwayRingHalf': 168, 'world.walkwayRingChamfer': 60, 'world.walkwayLinkLength': 100, 'world.plazaHalf': 190, // Edit 51.1–51.2: the square walkway ring (district mock-up only)
     'world.deckEscalators': 2, 'world.deckEscalatorInset': 64, 'world.splitLaneOffset': 104, 'world.walkwayColumn': 16, // Edit 51.2 (district mock-up only)
     'world.portalClearance': 72, // Edit 54: headroom over a highway where it runs through a tower (two storeys)
-    'world.roundaboutMinArms': 3, 'traffic.ringInnerExit': 3, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
+    'world.roundaboutMinArms': 3, 'traffic.ringOrbitMax': 2, 'traffic.ringInnerExit': 3, 'traffic.ringFill': 0, 'world.deckRingFill': 0.5, 'traffic.ringOrbit': 1, 'traffic.ringLaneChange': 72, 'traffic.ringExitCheck': 120, 'traffic.ringMergeGap': 1.2, 'traffic.ringPassRatio': 0.4, 'traffic.ringMaxLaps': 3, // Edit 52: the inner ring lane
     'traffic.continuous': 1, 'traffic.warmSeconds': 30, 'traffic.exitAfterSeams': 9, // P5.3 (Edit 53): one traffic for the whole district; a car crosses a shared edge with its id, speed and plan. warmSeconds: the district mock-up runs before it is shown; exitAfterSeams: after that many seams a mock-up car takes the way out at a junction
     'world.deckRingTopClear': 32, 'world.gardenCellWidth': 160, 'world.gardenCellHeight': 128, 'world.gardenPath': 32, // Edit 51.3 (district mock-up only)
     'world.gardenLargeCells': 2, 'world.gardenBedTypes': 2, 'world.gardenPlanter': 40, 'world.sculptureScaleLarge': 2, 'world.sculptureScaleSmall': 0.5, 'world.courtSmallCount': 7, // Edit 55: planting and sculpture in three sizes (district mock-up only)
@@ -913,7 +915,7 @@
       if (l1 < 1e-6 || l2 < 1e-6) continue;
       const ux = (x1 - x0) / l1, uy = (y1 - y0) / l1, vx = (x2 - x1) / l2, vy = (y2 - y1) / l2, cr = ux * vy - uy * vx, th = Math.atan2(Math.abs(cr), ux * vx + uy * vy);
       if (th < 1e-6) { out.push([x1, y1]); continue; }
-      const tn = Math.tan(th / 2), R = Math.min(rad, Math.min(i === 1 ? l1 : l1 / 2, i + 2 === pts.length ? l2 : l2 / 2) / tn);
+      const tn = Math.tan(th / 2), R = Math.min(Array.isArray(rad) ? rad[i] : rad, Math.min(i === 1 ? l1 : l1 / 2, i + 2 === pts.length ? l2 : l2 / 2) / tn); // Edit 56: a radius per corner
       if (minR && R < minR - 1e-6) return null;
       const T = R * tn, sg = Math.sign(cr), ax = x1 - ux * T, ay = y1 - uy * T, cx = ax - uy * sg * R, cy = ay + ux * sg * R;
       const t0 = Math.atan2(ay - cy, ax - cx), t1 = Math.atan2(y1 + vy * T - cy, x1 + vx * T - cx), sw = wrap(t1 - t0), n = Math.max(3, Math.round(R * th / 12));
@@ -1938,6 +1940,11 @@
       if (!g || !(gap > 0) || lay(c) !== 0) return null;
       const toLine = g.s - (c.s + c.L / 2);
       if (toLine < -4 || toLine > 200) return null; // over the line: committed
+      const om = this.P['traffic.ringOrbitMax'];
+      if (om > 0 && c.path.ring && this.ringExitBlocked(c)) { // Edit 56: a car whose exit is blocked waits at the line once traffic.ringOrbitMax cars already orbit (orbiters fill a ring and lock it)
+        let n = 0; for (const o of this.cars) if (o !== c && o.orbit && o.path.ring && o.path.ring.cx === g.cx && o.path.ring.cy === g.cy) n++;
+        if (n >= om) return { line: g.s - c.L / 2 };
+      }
       const fill = this.P['traffic.ringFill'];
       if (fill > 0) { // Edit 53.1: the ring takes a car only while its cars fill less than traffic.ringFill of the outer lane (a full ring locks)
         let used = c.L + this.P['traffic.minimumGap'];

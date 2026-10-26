@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 25 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54 and 55–55.2 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55–55.2 and 56 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -100,8 +100,8 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 | District | Start | Centre (B2) | The rest |
 |---|---|---|---|
-| 1 Parkland | A1, top edge | Four-arm Z1 ring; the 45° boulevard passes beneath | Z1 highways across row 2 and down column B; T and crossroads at 45°; footbridge; R160 bends |
-| 2 Circus | A2, west edge | Four-arm roundabout; orbit lane | Octagon street with 45° corners; crossroads and T junctions; roadworks, flooded corner, a coned lane (C3, Edit 53) |
+| 1 Parkland | A1, top edge | Four-arm Z1 ring; the 45° boulevard passes beneath | Z1 highways across row 2 and down column B; a 90° T at A1; a street ring at C3 (Edit 56); footbridge to the highway; R160 bends |
+| 2 Circus | A2, west edge | Four-arm street ring; orbit lane | Octagon street with 45° corners; street rings at A2 and C2, T junctions at B1 and B3 (Edit 56); exit east; roadworks, flooded corner, a coned lane (C3, Edit 53) |
 | 3 Monument | A1, west edge | Split road under the walkway ring | Z1 and Z2 highways down columns A and C; skybridge; bends, corner cuts, a 45° jog |
 
 - **Level design (Edit 52):** each tile reveals one mechanic and one landmark; the table under the grid lists them. Critique: `docs/level_design_critique.md`.
@@ -130,6 +130,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 - **Decided (Edit 55.1):** A is the rule. C only in a district's centre tile (B2). D only where a level design names it. B is not used.
 - **Edit 55.2:** every junction's arms meet at 90°, three-way included, and every junction sits in its tile's central `world.junctionZone` (75%). The mock-up warns otherwise.
+- **Edit 56 (supersedes 55.1 for four-ways):** every four-way takes a roundabout (C); three-way joins use A's 90° bend.
 - **Parkland:** A1's avenue curves to join the boulevard square. Row 3's road moves to local y 448, so C3's crossing sits mid-tile. The B2 ring is drawn centred, radius 160 (`world.deckRingRadius`), straight arm runs visible at every edge. The C1 footbridge runs west across B1, meets the Z1 highway at both parapets, and lands in A1 by escalator.
 
 | Option | Conflict points | Cars out /min at 1.8 s | Longest wait on the 45° road |
@@ -143,6 +144,25 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 ![Today and the four options](docs/p60_crossing_options.png)
 
 ![Parkland, Edit 55.2: square central junctions, the centred ring, the walkway joining the B1 highway](docs/p62_parkland_552.png)
+
+## Four-way roundabouts; US junction markings (Edit 56)
+
+- **Four-way:** always a roundabout, arms 90° apart, wholly inside its tile, centre in `world.junctionZone`.
+  - Street rings `world.roundaboutRadiusStreet` (112): outer lane 140, inner 84. Highway rings `world.deckRingRadius` (160).
+  - A 45° road reaches its arm through a bend outside the ring.
+- **Three-way:** arms meet at 90° after a transition bend (Parkland A1).
+- **Markings (MUTCD):** yield line of white triangles at every give-way and ring entry (3B.16, 3C.04). Teeth `world.markYieldBase` 12, `world.markYieldHeight` 18, `world.markYieldGap` 6.
+  - Centre lines stop at the junction (3B.08). Rings: a dashed lane line only (3C.02). All white: yellow is the dummy's.
+- **Parkland C3:** a street ring at (206, 286); the street's SW arm turns west outside it.
+- **Circus:** street rings at A2, B2 and C2. The east road runs to the district edge: the exit moves from south to east. B3 is a T.
+- **Orbit cap:** a car whose exit is blocked waits at the yield line once `traffic.ringOrbitMax` (2) cars orbit. Without it Circus locked at 13 min.
+- **The mock-up warns** on a four-way without a ring, arms under 90°, a ring over its tile edge or outside the zone.
+
+![Parkland: the C3 street roundabout (Edit 56)](docs/p63_parkland.png)
+
+![Circus: street roundabouts at A2, B2 and C2 (Edit 56)](docs/p63_circus.png)
+
+![Markings: A1's three-way join, Circus B2's ring, Circus B3's T, Parkland C3's ring (Edit 56)](docs/p63_markings.png)
 
 ## District traffic (P5.3, Edit 53)
 
@@ -159,11 +179,12 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 | Mock-up: after this many seams a car takes the way out | `traffic.exitAfterSeams` | 9 |
 | Mock-up: a district runs this long before it is shown | `traffic.warmSeconds` | 30 s |
 | Cars see across a seam within the fastest highway car's stopping distance (Edit 53.1) | `traffic.hardBraking`, `world.spawnLeadIn` | 398 in the game |
-| Parkland Z1 ring radius (Edit 53.1; was 132) | `world.deckRingRadius` | 200 |
+| Highway (Z1) ring radius (Edit 53.1: 132 → 200; Edit 55.2: 160) | `world.deckRingRadius` | 160 |
 | Every ring: only a car leaving at this exit or later (third: 270°) uses the inner lane; a blocked exit may go round on it (Edit 54) | `traffic.ringInnerExit` | 3 |
 | Mock-up: each Parkland highway end admits one car per (Edit 54) | `world.district.parkland.deckInterval` | 8 s |
 | Parkland Z1 ring: entry metered at this share of the outer lane | `world.deckRingFill` | 0.5 |
 | Every ring: an inner-lane car orbits until it can leave (no last-lap wait) | `traffic.ringMaxLaps` | 3 lap paths, then repeat |
+| Every ring: a car whose exit is blocked waits at the line once this many orbit (Edit 56) | `traffic.ringOrbitMax` | 2 |
 | P6: whole bus routes per district | `world.busRoutesPerDistrict` | 1 |
 
 - **CARS LEFT:** the shift's cars not yet entered, plus those still in the district.
@@ -180,6 +201,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 ## Evidence
 
 - `node test_sim.js` → 104/104: P3.4 and P4 checks, plus P5 fleet, buses, highways, points, district traffic, ring lanes by exit and the crossing options.
+- **District mock-up, Edit 56, 40 min at design flow:** no lock. Longest stop: Circus 22 s, Parkland 10 s, Monument 0 s. At one Circus car per 2.6 s (+23%) Circus locks at 5 min (Edit 55.2: 19 min).
 - `node tools/crossing_report.js` → `docs/crossing_report.md`: the four crossing options on the P5 driver.
 - **Highway density (Edit 54):** game 1.24–1.29 cars per lane per screen (unchanged). Mock-up Parkland 3.02 → 0.53; Circus 1.22; Monument 0.96. 30 min per district: no car stopped over 20 s.
 - **Parkland ring (Edit 53.1), 30 min at the game's highway rate:** no lock; 36–40 cars/min through the ring (P5.3 fed it 27).
@@ -204,7 +226,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ```
 python3 build.py                 # dummies_p5.html
-node test_sim.js                 # P3.4, P4 and P5 checks (94)
+node test_sim.js                 # P3.4, P4 and P5 checks (104)
 node tools/district_bake.js 60   # P5 layouts → content/districts/districts_p5.json
 node tools/p5_report.js 120      # bus roads, highway traffic
 node tools/points_report.js 150  # walk-in against dash play, before and after damage.walkShare
@@ -231,6 +253,9 @@ node tools/continuity_report.js   # district-wide traffic: seams, start, queues,
 
 ## Open
 
+- **Circus overload (Edit 56):** at +23% flow a car passing C3's cone meets an oncoming car head-on; queues close the loop. No pass while its own lane queues ahead, or move the cone.
+- **Circus exit (Edit 56):** east instead of south. Confirm.
+- **Parkland C3 (Edit 56):** the ring sits left of centre; B3's south-end escalator caps row 3's road at local 456.
 
 - **Ring capacity (Edit 53.1):** the widened ring passes about 37 cars/min. Edit 54 feeds Parkland's highways one car per 8 s per end, so nothing waits.
 - **Portals and roof links (Edit 54):** mock-up only. P6: towers may straddle a deck band as portals; a bridge floor joins roof and deck.

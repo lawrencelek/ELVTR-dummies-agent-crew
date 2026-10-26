@@ -1068,7 +1068,7 @@
     }
     for (const st of level.statics) if (st.kind !== 'river' && !st.deck && (!PAL.spill || st.kind !== 'block' || st.storeys)) rectShadow(B, st, st.height || P[st.kind === 'barrier' || st.kind === 'jersey' ? 'proto.art.barrierHeight' : st.kind === 'crate' ? 'proto.art.crateHeight' : 'proto.art.pillarHeight'], P);
     for (const f of level.floors || []) if (f.kind === 'bridge') rectShadow(B, f, P['world.highHeight'], P); // skybridges cast theirs across the alley
-    for (const g of level.giveWays || []) giveWayMark(B, g); // P4 (Edit 49.1, 49.3): double broken line across the lane
+    for (const g of level.giveWays || []) giveWayMark(B, g, P); // Edit 56: MUTCD yield line across the approach lane
     edgeMarks(B, level);
     return B;
   }
@@ -1090,9 +1090,21 @@
     }
     return { D, SD, S, dash };
   }
-  function giveWayMark(B, g) { // yield line (US, decision 84): shark's teeth across the lane, pointing at the approaching car. g: lane point at the line, with its direction (world units)
-    const nx = -g.ty, ny = g.tx;
-    for (let l0 = -21; l0 <= 21; l0 += 10.5) for (let a = 0; a <= 7; a += U / 2) { const half = 3.5 * (1 - a / 7); for (let l = -half; l <= half; l += U / 2) B.put(Math.floor((g.x + nx * (l0 + l) - g.tx * a) / U), Math.floor((g.y + ny * (l0 + l) - g.ty * a) / U), K.lane); }
+  // Yield line (MUTCD 3B.16; Edit 56): a row of solid white isosceles triangles across the approach lane, each pointing at
+  // the approaching car. Base world.markYieldBase, height world.markYieldHeight (1 : 1.5), gaps world.markYieldGap; filled
+  // pixel by pixel so the teeth stay triangles at any angle. White: yellow is the dummy's alone (Edit 37).
+  function giveWayMark(B, g, P) {
+    const b = P ? P['world.markYieldBase'] : 12, h = P ? P['world.markYieldHeight'] : 18, gap = P ? P['world.markYieldGap'] : 6, lw = P ? P['world.laneWidth'] : 56;
+    const n = Math.max(1, Math.floor((lw - 4 + gap) / (b + gap))), span = n * b + (n - 1) * gap, nx = -g.ty, ny = g.tx;
+    for (let i = 0; i < n; i++) {
+      const c0 = -span / 2 + b / 2 + i * (b + gap); // tooth centre across the lane; its base on the line, its apex h back toward the car
+      const pts = [[g.x + nx * (c0 - b / 2), g.y + ny * (c0 - b / 2)], [g.x + nx * (c0 + b / 2), g.y + ny * (c0 + b / 2)], [g.x + nx * c0 - g.tx * h, g.y + ny * c0 - g.ty * h]];
+      const xs = pts.map((p) => p[0] / U), ys = pts.map((p) => p[1] / U);
+      for (let y = Math.floor(Math.min(...ys)); y <= Math.ceil(Math.max(...ys)); y++) for (let x = Math.floor(Math.min(...xs)); x <= Math.ceil(Math.max(...xs)); x++) {
+        const px = x + 0.5, py = y + 0.5, s1 = (xs[1] - xs[0]) * (py - ys[0]) - (ys[1] - ys[0]) * (px - xs[0]), s2 = (xs[2] - xs[1]) * (py - ys[1]) - (ys[2] - ys[1]) * (px - xs[1]), s3 = (xs[0] - xs[2]) * (py - ys[2]) - (ys[0] - ys[2]) * (px - xs[2]);
+        if ((s1 >= 0 && s2 >= 0 && s3 >= 0) || (s1 <= 0 && s2 <= 0 && s3 <= 0)) B.put(x, y, K.lane);
+      }
+    }
   }
 
   // Deck column (Edit 43): concrete, lit on the left, from its footprint up to the deck's underside.

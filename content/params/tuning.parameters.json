@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit55.2-2026-10-25",
+ "registryVersion": "edit56-2026-10-26",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -6254,6 +6254,28 @@
    "purpose": "Cars turning 90° or 180° keep the outer lane (user, 25 October)"
   },
   {
+   "id": "traffic.ringOrbitMax",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Ring: most orbiting cars",
+   "description": "A car whose ring exit is blocked waits at the yield line once this many cars already orbit that ring. Orbiters no longer fill a ring and lock the roads round it. 0: off; every car enters and orbits.",
+   "unit": "cars",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 56 (26 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0,
+    "max": 8
+   },
+   "integrationStatus": "prototype-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Circus locked at 13 minutes once every four-way became a ring; 2 holds 35 minutes at design flow"
+  },
+  {
    "id": "world.district.parkland.deckInterval",
    "group": "World",
    "owner": "World",
@@ -6471,6 +6493,94 @@
    "integrationStatus": "mock-up-p5",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "No junction cut by a screen edge (user, 25 October)"
+  },
+  {
+   "id": "world.roundaboutRadiusStreet",
+   "group": "World",
+   "owner": "World",
+   "label": "Street roundabout radius",
+   "description": "Centre radius of a ground (street) roundabout in the district plans. Outer lane 140, inner 84, central island to the inner kerb. Highway rings keep world.deckRingRadius; the P5 game keeps world.roundaboutRadius until P6.",
+   "unit": "world units",
+   "type": "number",
+   "default": 112,
+   "status": "proposed",
+   "source": "Edit 56 (26 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 96,
+    "max": 160
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Smaller rings for streets, larger for highways (user, 26 October)"
+  },
+  {
+   "id": "world.markYieldBase",
+   "group": "World",
+   "owner": "World",
+   "label": "Yield line: tooth base",
+   "description": "Base of each yield-line triangle (MUTCD 3B.16: 12-24 in). Drawn about 1 m so a tooth reads in pixels.",
+   "unit": "world units",
+   "type": "number",
+   "default": 12,
+   "status": "proposed",
+   "source": "Edit 56 (26 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 8,
+    "max": 20
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "US junction markings (user, 26 October)"
+  },
+  {
+   "id": "world.markYieldHeight",
+   "group": "World",
+   "owner": "World",
+   "label": "Yield line: tooth height",
+   "description": "Height of each yield-line triangle, pointing at the approaching car: 1.5 × the base (MUTCD 3B.16).",
+   "unit": "world units",
+   "type": "number",
+   "default": 18,
+   "status": "proposed",
+   "source": "Edit 56 (26 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 12,
+    "max": 30
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "US junction markings (user, 26 October)"
+  },
+  {
+   "id": "world.markYieldGap",
+   "group": "World",
+   "owner": "World",
+   "label": "Yield line: gap",
+   "description": "Gap between yield-line triangles (MUTCD 3B.16: 3-12 in).",
+   "unit": "world units",
+   "type": "number",
+   "default": 6,
+   "status": "proposed",
+   "source": "Edit 56 (26 October)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 2,
+    "max": 12
+   },
+   "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "US junction markings (user, 26 October)"
   }
  ],
  "tables": {
