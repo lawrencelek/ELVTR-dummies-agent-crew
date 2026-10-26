@@ -213,6 +213,19 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ![Tunnel portal asset](docs/p67_tunnel_portal.png)
 
+- **Edit 61, nothing over the tunnel:** the ridge road runs at Z1 over it, unbroken. B1's block is gone; the plan draws nothing underground.
+- **No connector buildings:** walkways start at Z1 on the hill, a bridge deck or a beach landing. The cliff houses are gone.
+- **Beach park:** terraces and landings on pilotis with stairs, raised-lawn planters, an obelisk, an arch, lit bollards. No trees.
+- **Game view (`circus_valley_view.js`):** every piece in the game's projection: y − z × `proto.art.extrusion`, south faces only, no vanishing points. The tunnel's lane runs on into the dark at the same width, its centre line on axis.
+
+![Circus · Valley, Edit 61](docs/p68_valley_plan.png)
+
+![The valley in the game's projection](docs/p68_valley_game_view.png)
+
+![B1 and the tunnel portal](docs/p68_tunnel_portal.png)
+
+![A2 beach terrace; B3 landings and stilt houses](docs/p68_shore_pieces.png)
+
 ## Shadows: four options (Edit 59; option 2 chosen, Edit 60)
 
 `tools/shadow_options.py` renders one test scene five ways (hill, cove ramp, valley, Z1 bridge on columns, tower, cars). Today stamps every shadow on one ground buffer, so a bridge at grade shadows its own hill. Options: 1 noon sun; 2 oblique sun, a mask per level (recommended); 3 height-field sweep; 4 occlusion and height tint. Moving objects take a noon blob in all four. Decided: option 2 (decision 309). Not in P5 game art yet.
@@ -307,13 +320,14 @@ node -e "const C=require('./circus_plans.js'); for (const p of C.PLANS) console.
 | `crossing_shell.html` → `crossing_options.html` | The 45° crossing options example (Edit 55), built from the mock-up kit |
 | `tools/crossing_report.js` | Crossing options evidence (Edit 55) |
 | `circus_plans.js`, `circus_shell.html` → `circus_options.html` | Circus layout options as plans, with the level rules checked (Edit 57; set aside) |
-| `circus_valley.js`, `circus_valley_shell.html` → `circus_valley.html` | Circus as a valley city by the river: terrain, plan, sections, transport checks, tunnel asset (Edits 58–60) |
+| `circus_valley.js`, `circus_valley_shell.html` → `circus_valley.html` | Circus as a valley city by the river: terrain, plan, sections, transport checks (Edits 58–61) |
+| `circus_valley_view.js` | The valley in the game's projection: buildings, decks, stairs, the tunnel portal, option 2 shadows (Edit 61) |
 | `tools/shadow_options.py` | Five shadow treatments of one test scene (Edit 59; offline, not P5) |
 
 ## Open
 
 - **Ramps (D38, Edit 60):** a future mechanic: z-interpolated lanes, z-band hits. Not for Circus.
-- **Valley in game art (Edit 60):** terrain floors, tunnel portal, four shore types, option 2 shadows (P6 kit).
+- **Valley in game art (Edits 60–61):** the game view fixes the look; P6 needs terrain floors, the tunnel portal, the shore pieces and option 2 shadows as pixel sprites.
 - **Circus overload (Edit 56):** at +23% flow a car passing C3's cone meets an oncoming car head-on; queues close the loop. No pass while its own lane queues ahead, or move the cone.
 - **Circus exit (Edit 56):** east instead of south. Confirm.
 - **Parkland C3 (Edit 56):** the ring sits left of centre; B3's south-end escalator caps row 3's road at local 456.
