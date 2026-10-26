@@ -39,3 +39,9 @@ cp_scripts = ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</scr
 out5 = here / 'circus_options.html'
 out5.write_text(cp.replace('<!--SCRIPTS-->', cp_scripts), encoding='utf-8')
 print(out5.name, out5.stat().st_size, 'bytes')
+# Edit 58 (concept, plans only): Circus as a valley city: hills at Z1, the valley at Z0, roads that keep their level
+vs = (here / 'circus_valley_shell.html').read_text(encoding='utf-8')
+vs_scripts = ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</script>\n' for f in ('sim.js', 'circus_valley.js'))
+out6 = here / 'circus_valley.html'
+out6.write_text(vs.replace('<!--SCRIPTS-->', vs_scripts), encoding='utf-8')
+print(out6.name, out6.stat().st_size, 'bytes')

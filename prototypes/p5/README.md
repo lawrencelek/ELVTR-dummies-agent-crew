@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55–55.2, 56 and 57 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55–55.2, 56, 57 and 58 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -180,6 +180,19 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ![Today and the three options](docs/p64_circus_options.png)
 
+## Circus as a valley city (Edit 58, plans)
+
+`circus_valley.html`: A, B and C are set aside (decision 302). Terrain now sets the levels: hills (rows 1, 3) are Z1 ground, the valley floor (row 2) Z0. Roads keep their level: a Z1 road is a street on a hill and stands on columns only over the valley.
+
+- **Valley Avenue (Z0):** along the valley floor, through the circus.
+- **Ridge roads (Z1):** along both hilltops. **Bridges (Z1):** hill to hill, on columns over the valley only.
+- **Climbs:** the circus's north and south arms ramp up coves (27%) to the ridge roads. The circus is the valley's one way uphill.
+- **The page checks** the transport logic (no dead ends, levels meet only at the circus, columns only over the valley) and the level rules. All hold.
+
+![Circus · Valley: plan](docs/p65_valley_plan.png)
+
+![Sections through the west bridge and through the circus](docs/p65_valley_sections.png)
+
 ## District traffic (P5.3, Edit 53)
 
 | Rule | Parameter | Value |
@@ -267,11 +280,12 @@ node -e "const C=require('./circus_plans.js'); for (const p of C.PLANS) console.
 | `tools/continuity_report.js` | District-wide traffic evidence (Edit 53) |
 | `crossing_shell.html` → `crossing_options.html` | The 45° crossing options example (Edit 55), built from the mock-up kit |
 | `tools/crossing_report.js` | Crossing options evidence (Edit 55) |
-| `circus_plans.js`, `circus_shell.html` → `circus_options.html` | Circus layout options as plans, with the level rules checked (Edit 57) |
+| `circus_plans.js`, `circus_shell.html` → `circus_options.html` | Circus layout options as plans, with the level rules checked (Edit 57; set aside) |
+| `circus_valley.js`, `circus_valley_shell.html` → `circus_valley.html` | Circus as a valley city: terrain, plan, sections, transport checks (Edit 58) |
 
 ## Open
 
-- **Circus layout (D32, Edit 57):** A Diamond, B Crown or C Twin rings.
+- **Circus · Valley (D34, D35, Edit 58):** second hill or riverbank to the south; cars climbing the coves or stairs only.
 - **Street zebras (D33, Edit 57):** paint only today. Remove, keep, or a liability rule (a walk-in on a zebra counts full speed).
 - **Circus overload (Edit 56):** at +23% flow a car passing C3's cone meets an oncoming car head-on; queues close the loop. No pass while its own lane queues ahead, or move the cone.
 - **Circus exit (Edit 56):** east instead of south. Confirm.

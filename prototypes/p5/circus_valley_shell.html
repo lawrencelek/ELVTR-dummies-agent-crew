@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Circus Valley City</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --good: #57e389; --warn: #ffb347; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 4px 0 0; color: var(--dim); max-width: 1050px; }
+  main { padding: 12px 16px 32px; display: grid; gap: 12px; max-width: 1500px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+  svg { display: block; width: 100%; height: auto; border-radius: 6px; background: #10141c; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(560px, 100%), 1fr)); gap: 12px; align-items: start; }
+  .two > * { min-width: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { color: var(--dim); font-weight: 600; }
+  td:first-child { font-weight: 700; }
+  tr.centre td { color: var(--accent); }
+  .scroll { overflow-x: auto; }
+  ol, ul { margin: 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  .ok { color: var(--good); } .bad { color: var(--warn); }
+  .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 1050px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--dim); align-items: center; margin-top: 8px; }
+  .legend i { display: inline-block; width: 26px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Circus · a valley city</h1>
+  <p>Question (user, 26 October): A, B and C don't make sense as transport networks. How might a Chongqing-style landscape work, with a topography that explains the levels, and some city-planning logic round the circus?</p>
+  <p>Answer in one line: the ground moves, the roads don't. Hills are Z1 ground; the valley is Z0. A road on a hill is a street; where the valley opens under it, the same road stands on columns. The circus sits on the valley floor because that is where the valley road meets the only roads up the hills.</p>
+  <div class="legend">
+    <span><i style="background:#2b3548;box-shadow:inset 0 0 0 1px #303b50"></i>Hill (Z1 ground)</span>
+    <span><i style="background:#171d29;box-shadow:inset 0 0 0 1px #2a3650"></i>Valley floor (Z0)</span>
+    <span><i style="background:#59626f"></i>Cliff face (retaining wall)</span>
+    <span><i style="background:linear-gradient(0deg,#171d29,#2b3548)"></i>Cove: the floor ramps up</span>
+    <span><i style="background:#262c37;box-shadow:inset 0 0 0 2px #49d3ff"></i>Street at Z1 (dotted LED edge)</span>
+    <span><i style="background:#c3ccd3;box-shadow:inset 0 0 0 2px #49d3ff"></i>The same road on columns</span>
+    <span>⌃ climbing · ▼ in a disc: drop point · white bars: public escalators</span>
+  </div>
+</header>
+<main>
+  <section>
+    <h2>The logic</h2>
+    <ol>
+      <li><b>Roads keep their level; the ground moves.</b> A hill is Z1 ground, the valley Z0. A Z1 road is a street on the hill and a bridge over the valley.</li>
+      <li><b>Every road goes somewhere.</b> Each runs edge to edge or ends at a junction. No loops for their own sake.</li>
+      <li><b>Roads follow the terrain.</b> The arterial runs along the valley floor. Ridge roads run along the hilltops. Bridges link hill to hill across the valley.</li>
+      <li><b>Levels meet where the terrain allows.</b> Roads climb in coves (side valleys) where the floor ramps up. People climb by public escalators and through buildings with doors on both levels.</li>
+      <li><b>The circus is a real junction.</b> It is where the valley avenue meets both climbs: the one place valley traffic can turn uphill.</li>
+    </ol>
+  </section>
+  <section>
+    <h2>Plan</h2>
+    <div id="plan"></div>
+    <p class="note" id="idea"></p>
+  </section>
+  <section>
+    <h2>Sections, north to south</h2>
+    <div class="two"><div id="secA"></div><div id="secB"></div></div>
+    <p class="note">A–A through the west bridge: a street on both hills, a bridge on columns over the valley, the avenue passing under. B–B through the circus: the climbs ramp up the coves to the ridge roads.</p>
+  </section>
+  <section>
+    <h2>Every road: where it goes and why</h2>
+    <div class="scroll"><table id="roads"></table></div>
+  </section>
+  <section>
+    <h2>Screen by screen</h2>
+    <div class="scroll"><table id="tiles"></table></div>
+  </section>
+  <section class="two">
+    <div><h2>Rules</h2><ul id="rules" class="note"></ul></div>
+    <div><h2>Chongqing, for reference</h2>
+      <ul class="note">
+        <li><a href="https://intotravelchina.com/attractions/chongqing_attraction/kuixing-tower.html">Kuixinglou</a>: entered from the riverside road at floor 1; skybridges join floor 22 to a square at street level on the hill.</li>
+        <li><a href="https://goasia.cc/en/article/hongya-cave-chongqing">Hongya Cave</a>: 11 floors against a cliff; one entrance on the upper road, one by the river.</li>
+        <li><a href="https://en.wikipedia.org/wiki/Huangjuewan_interchange">Huangjuewan interchange</a>: five levels, five expressways joined by 14 ramps. Roads stay level and stack.</li>
+      </ul>
+      <p class="note">Used here: buildings with doors on two levels (the cliff house in A2, the tower in C2); a skybridge from a roof to the hill; roads that keep level over a falling ground.</p>
+    </div>
+  </section>
+</main>
+<!--SCRIPTS-->
+<script>
+(function () {
+  const V = window.CIRCUS_VALLEY, $ = (id) => document.getElementById(id), esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const p = V.PLAN, r = V.check(p);
+  $('plan').innerHTML = V.svgPlan(p, r); $('idea').textContent = p.idea;
+  $('secA').innerHTML = V.svgSection(p, 400, 'A–A · through the west bridge (x 400)');
+  $('secB').innerHTML = V.svgSection(p, 1200, 'B–B · through the circus (x 1200)');
+  const lvl = (rd) => { const a = rd.z(rd.pts[0][0], rd.pts[0][1]), b = rd.z(rd.pts[rd.pts.length - 1][0], rd.pts[rd.pts.length - 1][1]); return Math.round(a) === Math.round(b) ? 'Z' + Math.round(a) + (r.bridges.some((q) => q.r === rd) ? '; columns over the valley' : '') : 'Z' + Math.round(a) + ' → Z' + Math.round(b) + ' (climbs)'; };
+  $('roads').innerHTML = '<tr><th>Road</th><th>Level</th><th>From</th><th>To</th><th>Why it exists</th></tr>' + p.roads.map((rd) => `<tr><td>${esc(rd.id)}</td><td>${lvl(rd)}</td><td>${esc(rd.from)}</td><td>${esc(rd.to)}</td><td>${esc(rd.why)}</td></tr>`).join('') + '<tr class="centre"><td>The circus</td><td>Z0</td><td colspan="2">Valley Avenue west and east; the two climbs north and south</td><td>The valley\'s centre: the only place valley traffic turns uphill.</td></tr>';
+  const up = (t) => { const e = r.esc.filter((q) => q.tile === t).length, d = r.drops.filter((q) => q.tile === t).length; return [d ? d + ' drop' : '', e ? e + ' escalators' : ''].filter(Boolean).join(' · ') || '—'; };
+  $('tiles').innerHTML = '<tr><th>Screen</th><th>Mechanic revealed</th><th>Landmark</th><th>Levels</th></tr>' + ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'].map((t) => `<tr${t === 'B2' ? ' class="centre"' : ''}><td>${t}</td><td>${esc(p.tiles[t][0])}</td><td>${esc(p.tiles[t][1])}</td><td>${(t[1] === '2' ? 'valley floor' : 'hill') + ' · ' + up(t)}</td></tr>`).join('');
+  const seen = new Map(); for (const q of r.rows) { if (!seen.has(q.rule)) seen.set(q.rule, { ok: 0, bad: [], detail: [] }); const e = seen.get(q.rule); if (q.ok) { e.ok++; e.detail.push(q.detail); } else e.bad.push(q.detail); }
+  $('rules').innerHTML = [...seen.entries()].map(([k, e]) => `<li class="${e.bad.length ? 'bad' : 'ok'}">${esc(k)}: ${e.bad.length ? esc(e.bad.join('; ')) : (e.ok > 3 ? 'holds (' + e.ok + ')' : esc(e.detail.filter(Boolean).join('; ')) || 'holds')}</li>`).join('');
+  window.__valley = { r };
+})();
+</script>
+</body>
+</html>
