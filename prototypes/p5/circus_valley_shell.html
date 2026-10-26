@@ -27,38 +27,42 @@
   li { margin: 3px 0; }
   .ok { color: var(--good); } .bad { color: var(--warn); }
   .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 1050px; }
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--dim); align-items: center; margin-top: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: var(--dim); align-items: center; margin-top: 8px; }
   .legend i { display: inline-block; width: 26px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  code { color: var(--ink); font-size: 11px; }
   a { color: var(--accent); }
 </style>
 </head>
 <body>
 <header>
   <h1>Circus · a valley city by the river</h1>
-  <p>Question (user, 26 October): A, B and C don't make sense as transport networks. How might a Chongqing-style landscape work, with a topography that explains the levels, and some city-planning logic round the circus?</p>
-  <p>Answer in one line: the ground moves, the roads don't. The hill is Z1 ground; the valley and beach are Z0; the river lies below the seawall. A road on the hill is a street; where the ground falls away under it, the same road stands on columns. The circus sits on the valley floor where the avenue meets the climb up the hill and the road down to the river.</p>
-  <p>Edit 59 (user, 26 October): the south side is a riverbank. Row 2 runs cliff, avenue, beach. The two Z1 roads go straight south over the river; a coastal drive at Z0 winds along the seawall, horizontal, 45°, horizontal, under both.</p>
-  <div class="legend">
+  <p>The ground moves; the roads don't. The hill is Z1 ground; the valley and the beach are Z0; the river lies below the seawall. A Z1 road is a street on the hill and stands on columns where the ground falls away.</p>
+  <p>Edit 60 (user, 26 October): no ramps. The valley road leaves north through a tunnel at the cove head; stairs climb both cove walls. The seawall runs parallel to the coastal drive. Building mass on the hill, with the bridges and the ridge road passing between and under it; a wall of buildings along the top edge. Overhead walkways and four new building types along the shore. Shadows by option 2 (one mask per level).</p>
+  <div class="legend" id="legend">
     <span><i style="background:#2b3548;box-shadow:inset 0 0 0 1px #303b50"></i>Hill (Z1 ground)</span>
-    <span><i style="background:#171d29;box-shadow:inset 0 0 0 1px #2a3650"></i>Valley floor (Z0)</span>
-    <span><i style="background:#59626f"></i>Cliff face (retaining wall)</span>
-    <span><i style="background:linear-gradient(0deg,#171d29,#2b3548)"></i>Cove: the floor ramps up</span>
+    <span><i style="background:#171d29;box-shadow:inset 0 0 0 1px #2a3650"></i>Valley floor and cove (Z0)</span>
+    <span><i style="background:#59626f"></i>Cliff face and seawall</span>
     <span><i style="background:#5c5a57"></i>Beach (pale stone, never yellow)</span>
     <span><i style="background:#0f2a40;box-shadow:inset 0 0 0 1px #2f6b8f"></i>River, below the seawall</span>
-    <span><i style="background:#262c37;box-shadow:inset 0 0 0 2px #49d3ff"></i>Street at Z1 (dotted LED edge)</span>
+    <span><i style="background:#262c37;box-shadow:inset 0 0 0 2px #49d3ff"></i>Street at Z1 (LED edge)</span>
     <span><i style="background:#c3ccd3;box-shadow:inset 0 0 0 2px #49d3ff"></i>The same road on columns</span>
-    <span>⌃ climbing · ▼ white disc: drop onto cars · ▼ blue disc: drop into the river · white bars: public escalators</span>
+    <span><i style="background:repeating-linear-gradient(90deg,#e6f4ff 0 6px,transparent 6px 11px)"></i>Tunnel lanes under the hill</span>
+    <span><i style="background:#d7dee3;box-shadow:inset 0 0 0 2px #3a4350"></i>Overhead walkway (Z1)</span>
+    <span><i style="background:#c3ccd3;box-shadow:inset 0 0 0 1px #0c1018"></i>Stairs</span>
+    <span><i style="background:#e6f4ff;box-shadow:inset 0 0 0 1px #0c1018"></i>Public escalators</span>
+    <span>▼ white disc: drop onto cars · ▼ blue disc: drop into the river · dashed line to ◇: drone lift to land (D37) · numbers: storeys</span>
   </div>
 </header>
 <main>
   <section>
     <h2>The logic</h2>
     <ol>
-      <li><b>Roads keep their level; the ground moves.</b> A hill is Z1 ground, the valley Z0. A Z1 road is a street on the hill and a bridge over the valley.</li>
-      <li><b>Every road goes somewhere.</b> Each runs edge to edge or ends at a junction. No loops for their own sake.</li>
-      <li><b>Roads follow the terrain.</b> The arterial runs along the valley floor; the ridge road along the hilltop; the coastal drive along the shore. The bridges carry the hill's traffic straight over the valley and the river.</li>
-      <li><b>Levels meet where the terrain allows.</b> Roads climb in coves (side valleys) where the floor ramps up. People climb by public escalators and through buildings with doors on both levels.</li>
-      <li><b>The circus is a real junction.</b> The valley avenue meets the climb up the hill and the road down to the river: the one place the valley turns uphill or to the water.</li>
+      <li><b>Roads keep their level; the ground moves.</b> A Z1 road is a street on the hill and a bridge over the valley.</li>
+      <li><b>Every road goes somewhere.</b> Each runs edge to edge or ends at a junction.</li>
+      <li><b>Roads follow the terrain.</b> The arterial follows the valley; the ridge road the hilltop; the drive the shore. The tunnel takes the valley north through the hill.</li>
+      <li><b>No ramps (D35).</b> Valley and hill roads meet beyond the district. People climb by stairs, escalators, cliff houses and walkways.</li>
+      <li><b>The circus is a real junction.</b> The avenue meets the tunnel road and the beach road: the valley's only way north or to the water.</li>
+      <li><b>The edges hold.</b> A wall of buildings closes the top; the river closes the bottom. Only roads leave.</li>
     </ol>
   </section>
   <section>
@@ -68,12 +72,36 @@
   </section>
   <section>
     <h2>Sections, north to south</h2>
-    <div class="two"><div id="secA"></div><div id="secB"></div></div>
-    <p class="note">A–A through the west bridge: a street on the hill, then columns over the valley, the beach and the coastal drive, piers in the river. B–B through the circus: the climb ramps up the cove; the beach road runs down to the drive on the seawall.</p>
+    <div class="two"><div id="secA"></div><div id="secB"></div><div id="secC"></div></div>
+    <p class="note">A–A, the west bridge: under the edge wall and a portal block; columns over the valley, beach and drive; piers in the river. B–B, the circus: the tunnel bore under the hill; the level cove; the beach road down to the drive. C–C, the shore stack: hill block, cliff house, the walkway over the avenue to a pavilion, the seawall, a pier tower.</p>
+  </section>
+  <section class="two">
+    <div>
+      <h2>Tunnel portal asset</h2>
+      <div id="tunnel"></div>
+    </div>
+    <div>
+      <h2>Spec (game art, P6 kit)</h2>
+      <ol class="note">
+        <li><b>Portal frame:</b> concrete, set in the cove head wall. Road width plus 8 art px pillars. Lintel 2 px proud of the wall.</li>
+        <li><b>Soffit:</b> one LED line in cyan (<code>#49d3ff</code>). Never yellow or red.</li>
+        <li><b>Lamps:</b> two on the pillars. White core, cyan glow.</li>
+        <li><b>Mouth:</b> three dark steps, deepest at the top. Lane dashes fade to 15% inside.</li>
+        <li><b>Occlusion:</b> a car clips at the mouth line. The hill draws over the tunnel lanes (draw order; no new code).</li>
+        <li><b>Belvedere:</b> the portal block over the ridge road, lit windows in its face.</li>
+        <li><b>Cove stairs:</b> one up each wall. Run <code>world.stairLength</code> per level; width <code>world.stairWidth</code>.</li>
+        <li><b>Shadow:</b> option 2. The hill casts a band on the cove floor: <code>world.deckHeight</code> × <code>proto.art.shadowScale</code>.</li>
+      </ol>
+      <p class="note">Wall height: <code>world.deckHeight</code> × <code>proto.art.extrusion</code> = 18 art px. Dummies stop at the mouth, as at a screen edge (proposed).</p>
+    </div>
   </section>
   <section>
     <h2>Every road: where it goes and why</h2>
     <div class="scroll"><table id="roads"></table></div>
+  </section>
+  <section>
+    <h2>Buildings and walkways</h2>
+    <div class="scroll"><table id="buildings"></table></div>
   </section>
   <section>
     <h2>Screen by screen</h2>
@@ -81,13 +109,23 @@
   </section>
   <section class="two">
     <div><h2>Rules</h2><ul id="rules" class="note"></ul></div>
-    <div><h2>Chongqing, for reference</h2>
+    <div><h2>Ramps (D35): how they would work</h2>
       <ul class="note">
-        <li><a href="https://intotravelchina.com/attractions/chongqing_attraction/kuixing-tower.html">Kuixinglou</a>: entered from the riverside road at floor 1; skybridges join floor 22 to a square at street level on the hill.</li>
-        <li><a href="https://goasia.cc/en/article/hongya-cave-chongqing">Hongya Cave</a>: 11 floors against a cliff; one entrance on the upper road, one by the river.</li>
-        <li><a href="https://en.wikipedia.org/wiki/Huangjuewan_interchange">Huangjuewan interchange</a>: five levels, five expressways joined by 14 ramps. Roads stay level and stack.</li>
+        <li><b>Lane:</b> a ramp lane carries z from its foot to its head. A car's z interpolates along it.</li>
+        <li><b>Drawing:</b> the art lift interpolates too, 0 to 18 art px per level.</li>
+        <li><b>Hits:</b> today a hit needs the same level. On a ramp: |z car − z dummy| under the car's height (<code>vehicles.*.height</code>).</li>
+        <li><b>Drops:</b> fall height is dummy z minus car z.</li>
+        <li><b>Network:</b> the ramp joins a Z0 lane at its foot and a Z1 lane at its head. Lanes already link by endpoint.</li>
+        <li><b>Shadows:</b> option 2 sees a ramp as steps; edges quantise.</li>
+        <li><b>New verticality:</b> on-ramps to the highways, spiral car-park ramps, climbs up coves, dummies sliding down a ramp's pavement.</li>
+        <li><b>Here:</b> a tunnel instead. Ramps logged as a future mechanic (D38).</li>
       </ul>
-      <p class="note">Used here: buildings with doors on two levels (the cliff house in A2, the tower in C2); a skybridge from a roof to the hill; roads that keep level over a falling ground; bridges that leave a hill and cross a river without coming down.</p>
+      <h2 style="margin-top:14px">Chongqing, for reference</h2>
+      <ul class="note">
+        <li><a href="https://intotravelchina.com/attractions/chongqing_attraction/kuixing-tower.html">Kuixinglou</a>: floor 1 on the riverside road; skybridges join floor 22 to a square on the hill.</li>
+        <li><a href="https://goasia.cc/en/article/hongya-cave-chongqing">Hongya Cave</a>: 11 floors against a cliff; entrances on the upper road and by the river.</li>
+        <li><a href="https://en.wikipedia.org/wiki/Huangjuewan_interchange">Huangjuewan interchange</a>: five levels, five expressways, 14 ramps.</li>
+      </ul>
     </div>
   </section>
 </main>
@@ -97,12 +135,18 @@
   const V = window.CIRCUS_VALLEY, $ = (id) => document.getElementById(id), esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const p = V.PLAN, r = V.check(p);
   $('plan').innerHTML = V.svgPlan(p, r); $('idea').textContent = p.idea;
-  $('secA').innerHTML = V.svgSection(p, 400, 'A–A · through the west bridge (x 400)');
-  $('secB').innerHTML = V.svgSection(p, 1200, 'B–B · through the circus (x 1200)');
-  const lvl = (rd) => { const a = rd.z(rd.pts[0][0], rd.pts[0][1]), b = rd.z(rd.pts[rd.pts.length - 1][0], rd.pts[rd.pts.length - 1][1]); return Math.round(a) === Math.round(b) ? 'Z' + Math.round(a) + (r.bridges.some((q) => q.r === rd) ? '; columns over lower ground' : '') : 'Z' + Math.round(a) + ' → Z' + Math.round(b) + ' (climbs)'; };
-  $('roads').innerHTML = '<tr><th>Road</th><th>Level</th><th>From</th><th>To</th><th>Why it exists</th></tr>' + p.roads.map((rd) => `<tr><td>${esc(rd.id)}</td><td>${lvl(rd)}</td><td>${esc(rd.from)}</td><td>${esc(rd.to)}</td><td>${esc(rd.why)}</td></tr>`).join('') + '<tr class="centre"><td>The circus</td><td>Z0</td><td colspan="2">Valley Avenue west and east; the climb north; the beach road south</td><td>The valley\'s centre: the only place valley traffic turns uphill or down to the river.</td></tr>';
-  const up = (t) => { const e = r.esc.filter((q) => q.tile === t).length, d = r.drops.filter((q) => q.tile === t).length, w = r.river.filter((q) => q.tile === t).length; return [d ? d + ' drop onto cars' : '', w ? 'drop into the river' : '', e ? e + ' escalators' : ''].filter(Boolean).join(' · ') || '—'; };
-  $('tiles').innerHTML = '<tr><th>Screen</th><th>Mechanic revealed</th><th>Landmark</th><th>Levels</th></tr>' + ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'].map((t) => `<tr${t === 'B2' ? ' class="centre"' : ''}><td>${t}</td><td>${esc(p.tiles[t][0])}</td><td>${esc(p.tiles[t][1])}</td><td>${({ 1: 'hill', 2: 'cliff, valley floor, beach', 3: 'beach, seawall, river' })[t[1]] + ' · ' + up(t)}</td></tr>`).join('');
+  $('secA').innerHTML = V.svgSection(p, 400, 'A–A · the west bridge (x 400)');
+  $('secB').innerHTML = V.svgSection(p, 1200, 'B–B · the circus and the tunnel (x 1200)');
+  $('secC').innerHTML = V.svgSection(p, 660, 'C–C · the shore stack (x 660)');
+  $('tunnel').innerHTML = V.svgTunnel();
+  $('legend').insertAdjacentHTML('beforeend', Object.values(V.TYPES).map((t) => `<span><i style="background:${t.fill};box-shadow:inset 0 0 0 1px #0c1018"></i>${esc(t.label)}</span>`).join(''));
+  const lvl = (rd) => (rd.tunnel != null ? 'Z0; tunnel under the hill' : 'Z' + rd.z + (r.bridges.some((q) => q.r === rd) ? '; columns over lower ground' : ''));
+  $('roads').innerHTML = '<tr><th>Road</th><th>Level</th><th>From</th><th>To</th><th>Why it exists</th></tr>' + p.roads.map((rd) => `<tr><td>${esc(rd.id)}</td><td>${lvl(rd)}</td><td>${esc(rd.from)}</td><td>${esc(rd.to)}</td><td>${esc(rd.why)}</td></tr>`).join('') + '<tr class="centre"><td>The circus</td><td>Z0</td><td colspan="2">Valley Avenue west and east; the tunnel road north; the beach road south</td><td>The valley\'s centre: its only way north or down to the river.</td></tr>';
+  const where = (b) => { const x = b.rect[0] + b.rect[2] / 2, y = b.rect[1] + Math.min(b.rect[3] / 2, 8); return 'ABC'[Math.min(2, Math.floor(x / 800))] + (Math.min(2, Math.floor(y / 640)) + 1); };
+  const byType = new Map(); for (const b of p.buildings) { if (!byType.has(b.type)) byType.set(b.type, []); byType.get(b.type).push(b); }
+  $('buildings').innerHTML = '<tr><th>Type</th><th>Where</th><th>Storeys</th><th>Role</th></tr>' + [...byType].map(([k, bs]) => `<tr><td>${esc(V.TYPES[k].label)}</td><td>${[...new Set(bs.map(where))].join(', ')}</td><td>${[...new Set(bs.map((b) => b.storeys + (b.towers ? ' (towers ' + [...new Set(b.towers.map((t) => t[4]))].join(', ') + ')' : '')))].join(', ')}</td><td>${esc(V.TYPES[k].note)}${bs.some((b) => b.spans) ? ' Spans: ' + bs.map((b) => b.spans).join(', ') + '.' : ''}</td></tr>`).join('') + p.walkways.map((w) => `<tr><td>${esc(w.id)}</td><td>${esc(w.id.split(' ')[0])}</td><td>Z1</td><td>${esc(w.from)} → ${esc(w.to)}${r.drops.some((d) => d.by === w.id) ? '; over ' + r.drops.filter((d) => d.by === w.id).map((d) => d.over).join(', ') + ': drop onto cars' : ''}</td></tr>`).join('');
+  const up = (t) => { const e = r.esc.filter((q) => q.tile === t).length, st = p.coveStairs.filter((q) => (t === 'B1')).length, d = r.drops.filter((q) => q.tile === t).length, w = r.river.filter((q) => q.tile === t).length; return [d ? d + ' drop' + (d > 1 ? 's' : '') + ' onto cars' : '', w ? 'drop into the river; drone lift' : '', e ? e + ' escalators' : '', st ? st + ' stairs' : ''].filter(Boolean).join(' · ') || '—'; };
+  $('tiles').innerHTML = '<tr><th>Screen</th><th>Mechanic revealed</th><th>Landmark</th><th>Levels</th></tr>' + ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'].map((t) => `<tr${t === 'B2' ? ' class="centre"' : ''}><td>${t}</td><td>${esc(p.tiles[t][0])}</td><td>${esc(p.tiles[t][1])}</td><td>${({ 1: t === 'B1' ? 'hill; cove floor; tunnel' : 'hill; edge wall', 2: 'cliff, valley floor, beach', 3: 'beach, seawall, river' })[t[1]] + ' · ' + up(t)}</td></tr>`).join('');
   const seen = new Map(); for (const q of r.rows) { if (!seen.has(q.rule)) seen.set(q.rule, { ok: 0, bad: [], detail: [] }); const e = seen.get(q.rule); if (q.ok) { e.ok++; e.detail.push(q.detail); } else e.bad.push(q.detail); }
   $('rules').innerHTML = [...seen.entries()].map(([k, e]) => `<li class="${e.bad.length ? 'bad' : 'ok'}">${esc(k)}: ${e.bad.length ? esc(e.bad.join('; ')) : (e.ok > 3 ? 'holds (' + e.ok + ')' : esc(e.detail.filter(Boolean).join('; ')) || 'holds')}</li>`).join('');
   window.__valley = { r };

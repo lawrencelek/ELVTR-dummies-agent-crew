@@ -110,7 +110,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 - **Set piece (Edit 54):** every tile shows scenography, a change of level, or both. The plan table names it; the page warns on a tile without one.
 - **Portal and roof link (Edit 54):** Monument C2's Z2 highway runs through a 12-storey tower (opening `world.portalClearance`, 72). A roof plaza at Z2 opens off its west parapet.
 - **Redrawn (Edit 54):** Parkland A3 belvedere; Monument A3 stacked LED cubes, B3 skybridge across the jog.
-- **Nothing below ground (Edit 55):** Z0 is the lowest level. Parkland C3's court is at grade. Exception (Edit 59): a river's surface below its seawall; water, not a floor.
+- **Nothing below ground (Edit 55):** Z0 is the lowest level. Parkland C3's court is at grade. Exception (Edit 59): a river's surface below its seawall; water, not a floor. Edit 60: a Z0 road may pass under Z1 ground in a tunnel.
 - **No street zebras (Edit 59):** removed from Circus B2. Parapet zebras stay where the dummy steps onto a highway.
 - **Planting in three sizes (Edit 55):** a great lawn over the largest free block (`world.gardenLargeCells`), beds only where they frame it or the set piece (`world.gardenBedTypes` types), planters `world.gardenPlanter` across in the open squares.
 - **Sculpture in three sizes (Edit 55):** courts with one large piece (`world.sculptureScaleLarge`), two medium, `world.courtSmallCount` lit bollards. Parkland B3 and C3.
@@ -200,9 +200,22 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 
 ![Sections, Edit 59](docs/p66_valley_river_sections.png)
 
-## Shadows: four options (Edit 59, not built)
+- **Edit 60, no ramps:** the North Climb becomes the North Tunnel (Z0). It runs up the level cove and enters the hill at the cove head. Stairs climb both cove walls. B1's T is gone.
+- **Seawall:** parallel to the drive, kerb to wall `world.walkwayWidth`.
+- **Building mass:** hill blocks; portal blocks over both bridges and the ridge road; an edge wall along the top (podium and four towers). Impassable.
+- **Shore:** cliff houses, beach pavilions, river stilt houses, pier towers. Six Z1 walkways, four over streets.
+- **River (D37):** a drone lifts the dummy to the nearest land, never a lane or a deck. 1.4 s here.
+- **Shadows:** option 2 (decision 309), drawn in the plan.
 
-`tools/shadow_options.py` renders one test scene five ways (hill, cove ramp, valley, Z1 bridge on columns, tower, cars). Today stamps every shadow on one ground buffer, so a bridge at grade shadows its own hill. Options: 1 noon sun; 2 oblique sun, a mask per level (recommended); 3 height-field sweep; 4 occlusion and height tint. Moving objects take a noon blob in all four (D36).
+![Circus · Valley, Edit 60](docs/p67_valley_tunnel_plan.png)
+
+![Sections, Edit 60: the west bridge; the circus and tunnel; the shore stack](docs/p67_valley_sections.png)
+
+![Tunnel portal asset](docs/p67_tunnel_portal.png)
+
+## Shadows: four options (Edit 59; option 2 chosen, Edit 60)
+
+`tools/shadow_options.py` renders one test scene five ways (hill, cove ramp, valley, Z1 bridge on columns, tower, cars). Today stamps every shadow on one ground buffer, so a bridge at grade shadows its own hill. Options: 1 noon sun; 2 oblique sun, a mask per level (recommended); 3 height-field sweep; 4 occlusion and height tint. Moving objects take a noon blob in all four. Decided: option 2 (decision 309). Not in P5 game art yet.
 
 ![Today and the four shadow options](docs/p66_shadow_options.png)
 
@@ -294,14 +307,13 @@ node -e "const C=require('./circus_plans.js'); for (const p of C.PLANS) console.
 | `crossing_shell.html` → `crossing_options.html` | The 45° crossing options example (Edit 55), built from the mock-up kit |
 | `tools/crossing_report.js` | Crossing options evidence (Edit 55) |
 | `circus_plans.js`, `circus_shell.html` → `circus_options.html` | Circus layout options as plans, with the level rules checked (Edit 57; set aside) |
-| `circus_valley.js`, `circus_valley_shell.html` → `circus_valley.html` | Circus as a valley city by the river: terrain, plan, sections, transport checks (Edits 58–59) |
+| `circus_valley.js`, `circus_valley_shell.html` → `circus_valley.html` | Circus as a valley city by the river: terrain, plan, sections, transport checks, tunnel asset (Edits 58–60) |
 | `tools/shadow_options.py` | Five shadow treatments of one test scene (Edit 59; offline, not P5) |
 
 ## Open
 
-- **Circus · Valley (D35, Edit 58):** cars climbing the cove, or stairs only.
-- **Shadows (D36, Edit 59):** pick one of four; not in P5 yet.
-- **River (D37, Edit 59):** a dummy that falls in.
+- **Ramps (D38, Edit 60):** a future mechanic: z-interpolated lanes, z-band hits. Not for Circus.
+- **Valley in game art (Edit 60):** terrain floors, tunnel portal, four shore types, option 2 shadows (P6 kit).
 - **Circus overload (Edit 56):** at +23% flow a car passing C3's cone meets an oncoming car head-on; queues close the loop. No pass while its own lane queues ahead, or move the cone.
 - **Circus exit (Edit 56):** east instead of south. Confirm.
 - **Parkland C3 (Edit 56):** the ring sits left of centre; B3's south-end escalator caps row 3's road at local 456.
