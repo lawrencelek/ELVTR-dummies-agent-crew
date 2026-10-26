@@ -53,6 +53,24 @@
   // turning left off the major road (gives way to oncoming traffic). Rank 2: the minor road (gives way to both).
   const JX = W / 2, JY = H / 2, D45 = Math.SQRT1_2;
   const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = hyp(dx, dy); return [dx / l, dy / l]; };
+  // Edit 57: a yield line sits square to the approach lane's last straight. Walk back from s to the first point whose heading
+  // is a multiple of 45°; the line goes there, the teeth point back up that straight (MUTCD 3B.16).
+  function yieldAt(X, lane, s, reach) {
+    const q45 = Math.PI / 4;
+    for (let ds = 0; ds <= (reach || 200); ds += 1) {
+      const p = X.pathAt(lane, s - ds), a = Math.atan2(p.ty, p.tx), k = Math.round(a / q45);
+      if (Math.abs(a - k * q45) < 0.004) return { s: s - ds, ds, x: p.x, y: p.y, ux: Math.round(Math.cos(k * q45) * 1e6) / 1e6, uy: Math.round(Math.sin(k * q45) * 1e6) / 1e6 };
+    }
+    const p = X.pathAt(lane, s), a = Math.round(Math.atan2(p.ty, p.tx) / q45) * q45;
+    return { s, ds: 0, x: p.x, y: p.y, ux: Math.cos(a), uy: Math.sin(a) };
+  }
+  function yieldMarks(X, lanes) { // one mark per approach: deduplicated by place and heading
+    const out = [], seen = new Set();
+    const add = (ln, s) => { const m = yieldAt(X, ln, s, 40), key = Math.round(m.x / 4) + ',' + Math.round(m.y / 4) + ',' + Math.round(Math.atan2(m.uy, m.ux) * 4 / Math.PI); if (!seen.has(key)) { seen.add(key); out.push(m); } };
+    for (const l of lanes) if (l.giveWay) add(l, l.giveWay.s);
+    for (const l of lanes) if (l.junction && l.junction.rank === 2 && l.junction.line != null) add(l, l.junction.line); // a left turn off the major road waits unmarked
+    return out;
+  }
   function toEdgeAny(dir, from, Wv, Hv) { const [x, y] = from, ts = []; if (dir[0] > 1e-9) ts.push((Wv - x) / dir[0]); if (dir[0] < -1e-9) ts.push(-x / dir[0]); if (dir[1] > 1e-9) ts.push((Hv - y) / dir[1]); if (dir[1] < -1e-9) ts.push(-y / dir[1]); const t = Math.min(...ts) + LEAD; return [x + dir[0] * t, y + dir[1] * t]; }
   function toEdge(dir, from) { // from a point along dir to LEAD beyond the screen edge
     const [x, y] = from, ts = [];
@@ -185,6 +203,7 @@
         if (sLine == null && d <= R + 45) sLine = lane.cum[i];
         if (aj == null && d <= R + 2) { aj = Math.atan2(y - cy, x - cx); sj = lane.cum[i]; break; }
       }
+      { const m = yieldAt(X, lane, sLine, 40); if (m.ds > 0 && m.ds < 40) sLine = m.s; } // Edit 57: the line at the end of the arm's last straight, square to it
       lane.giveWay = { s: sLine, sj, cx, cy, R, dir: -1, aj }; // stop line, join point (s and angle), circulating lane
       // P5 (Edit 52): the same route with 1..traffic.ringMaxLaps extra laps, for the inner-lane orbit. Identical up to the end of the arc.
       let iEnd = -1; center.forEach(([x, y], i) => { if (Math.abs(hyp(x - cx, y - cy) - Rc) < 0.6) iEnd = i; });
@@ -278,7 +297,7 @@
     s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: pickClass(opts.fleet, opts.vanShare, rnd()), lane: Math.min(lanes.length - 1, Math.floor(rnd() * lanes.length)), mult: 0.8 + 0.4 * rnd() }));
     s.admissionInterval = () => opts.interval;
     Object.assign(s.body, { x: -900, y: -900 });
-    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: lanes.filter((l) => l.giveWay).map((l) => X.pathAt(l, l.giveWay.s)).concat(lanes.filter((l) => l.junction && l.junction.rank === 2).map((l) => X.pathAt(l, l.junction.line))), // a left turn off the major road waits unmarked
+    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: yieldMarks(X, lanes), // Edit 57: square to the last straight
       arms: g.arms || null, info: g.info || null, junction: g.junction || null }, stats: null };
     s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity, over: {}, overT: 0, routes: {}, rankStop: {} };
     return s;

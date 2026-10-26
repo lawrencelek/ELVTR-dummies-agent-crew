@@ -1,6 +1,6 @@
 # DUMMIES — P5 prototype: five models, bus roads, faster highways, one traffic per district
 
-**P5.3 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55–55.2 and 56 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
+**P5.3 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 50–50.2, 51–51.3, 52, 53, 53.1, 54, 55–55.2, 56 and 57 (proposed). P3 (P3.4) and P4 (P4.3) are unchanged.
 
 P5 is the game with P4's road and traffic learnings, plus the fleet, highway and points rules of Edits 50 and 50.1.
 
@@ -138,7 +138,7 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 | Today | 32 | 21–22 | 24–40 s |
 | A · Realigned to 90° | 32, all at 90° | 21–22 | 29–33 s |
 | B · Staggered T junctions (`world.junctionStagger` 256) | 22 | 21–24 | 28–42 s |
-| C · Roundabout, skew kept | 8 | 23–28 | 9–10 s |
+| C · Roundabout, skew kept | 8 | 22–27 | 6–10 s |
 | D · Flyover | 0 | 32–33 | none |
 
 ![Today and the four options](docs/p60_crossing_options.png)
@@ -151,7 +151,9 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
   - Street rings `world.roundaboutRadiusStreet` (112): outer lane 140, inner 84. Highway rings `world.deckRingRadius` (160).
   - A 45° road reaches its arm through a bend outside the ring.
 - **Three-way:** arms meet at 90° after a transition bend (Parkland A1).
-- **Markings (MUTCD):** yield line of white triangles at every give-way and ring entry (3B.16, 3C.04). Teeth `world.markYieldBase` 12, `world.markYieldHeight` 18, `world.markYieldGap` 6.
+- **Markings (MUTCD):** yield line of white triangles at every give-way and ring entry (3B.16, 3C.04).
+  - Edit 57: three identical teeth at equal steps, square to the approach lane's last straight, each pointing back up it. The line sits at the straight's end; ring stop lines moved back 8–9.
+  - Teeth `world.markYieldBase` 14, `world.markYieldHeight` 21, `world.markYieldGap` 4 (7 × 10.5 art px).
   - Centre lines stop at the junction (3B.08). Rings: a dashed lane line only (3C.02). All white: yellow is the dummy's.
 - **Parkland C3:** a street ring at (206, 286); the street's SW arm turns west outside it.
 - **Circus:** street rings at A2, B2 and C2. The east road runs to the district edge: the exit moves from south to east. B3 is a T.
@@ -163,6 +165,20 @@ P5 is the game with P4's road and traffic learnings, plus the fleet, highway and
 ![Circus: street roundabouts at A2, B2 and C2 (Edit 56)](docs/p63_circus.png)
 
 ![Markings: A1's three-way join, Circus B2's ring, Circus B3's T, Parkland C3's ring (Edit 56)](docs/p63_markings.png)
+
+![Yield lines square to the last straight (Edit 57)](docs/p64_yield_lines.png)
+
+## Circus: three layouts (Edit 57, plans)
+
+`circus_options.html`: today's Circus and three options round the kept central roundabout, as plans in district units. The page checks each plan's level rules live. The chosen one (D32) is built in game art next.
+
+| | Today | A · Diamond | B · Crown | C · Twin rings |
+|---|---|---|---|---|
+| Highways | Z1 along row 3 | Z1 and Z2 45° chevrons crossing at A2, C2 | Z1 crown (45° shoulders), Z2 bar on row 3 | Z1 roundabouts at A1, C3; a loop with 45° corners |
+| Drop points / stacks | 0 / 0 | 10 / 2 | 6 / 2 | 4 / 0 |
+| Screens with a street / highway | 9 / 3 | 9 / 9 | 9 / 8 | 5 / 8 |
+
+![Today and the three options](docs/p64_circus_options.png)
 
 ## District traffic (P5.3, Edit 53)
 
@@ -232,6 +248,7 @@ node tools/p5_report.js 120      # bus roads, highway traffic
 node tools/points_report.js 150  # walk-in against dash play, before and after damage.walkShare
 node tools/orbit_report.js        # the inner-lane orbit, free flow and a blocked exit
 node tools/continuity_report.js   # district-wide traffic: seams, start, queues, one car followed
+node -e "const C=require('./circus_plans.js'); for (const p of C.PLANS) console.log(p.name, C.check(p).rows.filter((q) => !q.ok).length)"  # Circus options: rule breaks per plan
 ```
 
 ## Files
@@ -250,9 +267,12 @@ node tools/continuity_report.js   # district-wide traffic: seams, start, queues,
 | `tools/continuity_report.js` | District-wide traffic evidence (Edit 53) |
 | `crossing_shell.html` → `crossing_options.html` | The 45° crossing options example (Edit 55), built from the mock-up kit |
 | `tools/crossing_report.js` | Crossing options evidence (Edit 55) |
+| `circus_plans.js`, `circus_shell.html` → `circus_options.html` | Circus layout options as plans, with the level rules checked (Edit 57) |
 
 ## Open
 
+- **Circus layout (D32, Edit 57):** A Diamond, B Crown or C Twin rings.
+- **Street zebras (D33, Edit 57):** paint only today. Remove, keep, or a liability rule (a walk-in on a zebra counts full speed).
 - **Circus overload (Edit 56):** at +23% flow a car passing C3's cone meets an oncoming car head-on; queues close the loop. No pass while its own lane queues ahead, or move the cone.
 - **Circus exit (Edit 56):** east instead of south. Confirm.
 - **Parkland C3 (Edit 56):** the ring sits left of centre; B3's south-end escalator caps row 3's road at local 456.

@@ -586,13 +586,13 @@
     if (rbHere) { // a ground roundabout: every route, give way at entry, the inner lane for the third exit (Edit 52, 54). Edit 56: street radius, any centre, bent arms
       const ov = D.kit === 'example' ? {} : { 'world.roundaboutRadius': P['world.roundaboutRadiusStreet'] }, geo = L.multiRoundabout(X, Object.assign({}, P, ov), rbHere.arms, R96, rbHere.at, rbHere.bends), s = labSim(geo, 'nobus', ov);
       sims.push(s); sc.lab = s;
-      ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), decks: [] }), P, 23);
+      ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops, decks: [] }), P, 23);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
       roadD = (k) => rf.D[k];
     } else if (D.geo) { // Edit 55 (example): a lab geometry built whole (realigned, staggered)
       const geo = D.geo(), s = labSim(geo, 'nobus', {});
       sims.push(s); sc.lab = s;
-      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })) }), P, 29);
+      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops }), P, 29);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })), OUTER + 80);
       roadD = (k) => rf.D[k];
     } else if (J) { // a junction at 90° or 45°: the minor road gives way (Edit 49.3)
@@ -602,7 +602,7 @@
       if (dirs.length >= 4 && D.kit !== 'example') console.warn('a four-way junction without a roundabout', D.id, name); // Edit 56
       const zq = (1 - P['world.junctionZone']) / 2; if (J.at[0] < W * zq || J.at[0] > W * (1 - zq) || J.at[1] < H * zq || J.at[1] > H * (1 - zq)) console.warn('a junction outside the central zone', D.id, name); // Edit 55.2
       sims.push(s); sc.lab = s;
-      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), patches }), P, 29 + col * 7 + row * 13);
+      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops, patches }), P, 29 + col * 7 + row * 13);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })), OUTER + 80);
       roadD = (k) => rf.D[k];
     } else if (D.split && D.split.tile === name) {

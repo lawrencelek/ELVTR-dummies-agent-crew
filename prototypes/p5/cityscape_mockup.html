@@ -141,7 +141,7 @@
     'world.junctionStagger': 256, // Edit 55 (example only): two T junctions this far apart replace a 45° crossroads
     'world.junctionZone': 0.75, // Edit 55.2: every junction sits in this central share of its tile, each way
     'world.roundaboutRadiusStreet': 112, // Edit 56: a ground (street) roundabout's centre radius in the district plans; highway rings keep world.deckRingRadius
-    'world.markYieldBase': 12, 'world.markYieldHeight': 18, 'world.markYieldGap': 6, // Edit 56: yield line teeth (MUTCD 3B.16 shape, 1 : 1.5), drawn over-size to read in pixels
+    'world.markYieldBase': 14, 'world.markYieldHeight': 21, 'world.markYieldGap': 4, // Edit 56–57: yield line teeth (MUTCD 3B.16 shape, 1 : 1.5), 7 × 10.5 art px, stamped identical
     // P5 (Edit 50): five models (hatchback, sedan, police, van, bus); buses on wide roads and highways; faster, sparser, richer highways
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,
@@ -4388,16 +4388,33 @@
   // Yield line (MUTCD 3B.16; Edit 56): a row of solid white isosceles triangles across the approach lane, each pointing at
   // the approaching car. Base world.markYieldBase, height world.markYieldHeight (1 : 1.5), gaps world.markYieldGap; filled
   // pixel by pixel so the teeth stay triangles at any angle. White: yellow is the dummy's alone (Edit 37).
+  // Edit 57: MUTCD 3B.16 yield line. Identical teeth, stamped at equal steps along a line square to the approach's last straight;
+  // each points back up that straight. g = { x, y, ux, uy }: the lane centre on the line, the heading (a multiple of 45°).
+  const TOOTH = {};
+  function toothMask(diag, b, h) { // pixels of one tooth whose base centre sits on pixel (0, 0); heading +x (axis) or +x+y (diagonal)
+    const key = diag + ':' + b + ':' + h; if (TOOTH[key]) return TOOTH[key];
+    const r2 = (v) => Math.round(v * 2) / 2, a = r2(b / (2 * Math.SQRT2)), t = r2(h / Math.SQRT2); // diagonal: 1 : 2 edges read clean in pixels
+    const [A, Bv, C] = diag ? [[a, -a], [-a, a], [-t, -t]] : [[0, -b / 2], [0, b / 2], [-h, 0]], out = [];
+    const side = (P0, P1, x, y) => (P1[0] - P0[0]) * (y - P0[1]) - (P1[1] - P0[1]) * (x - P0[0]);
+    for (let y = -Math.ceil(h) - 1; y <= Math.ceil(h) + 1; y++) for (let x = -Math.ceil(h) - 1; x <= Math.ceil(h) + 1; x++) {
+      const s1 = side(A, Bv, x, y), s2 = side(Bv, C, x, y), s3 = side(C, A, x, y), e = 1e-9;
+      if ((s1 >= -e && s2 >= -e && s3 >= -e) || (s1 <= e && s2 <= e && s3 <= e)) out.push([x, y]);
+    }
+    return (TOOTH[key] = out);
+  }
   function giveWayMark(B, g, P) {
-    const b = P ? P['world.markYieldBase'] : 12, h = P ? P['world.markYieldHeight'] : 18, gap = P ? P['world.markYieldGap'] : 6, lw = P ? P['world.laneWidth'] : 56;
-    const n = Math.max(1, Math.floor((lw - 4 + gap) / (b + gap))), span = n * b + (n - 1) * gap, nx = -g.ty, ny = g.tx;
+    const b = (P ? P['world.markYieldBase'] : 14) / U, h = (P ? P['world.markYieldHeight'] : 21) / U, gap = (P ? P['world.markYieldGap'] : 4) / U, lw = (P ? P['world.laneWidth'] : 56) / U;
+    const ux = g.ux != null ? g.ux : g.tx, uy = g.uy != null ? g.uy : g.ty, diag = Math.abs(ux) > 0.1 && Math.abs(uy) > 0.1;
+    const sx = Math.sign(Math.round(ux * 2)), sy = Math.sign(Math.round(uy * 2)); // heading in whole pixels
+    const step = diag ? Math.round((b + gap) / Math.SQRT2) : Math.round(b + gap), across = diag ? [-sy, sx] : [-sy, sx]; // one tooth to the next, in whole pixels
+    const span = diag ? step * Math.SQRT2 : step, n = Math.max(1, Math.floor((lw - 2 - b) / span) + 1);
+    const mask = toothMask(diag, b, h), ox = Math.round(g.x / U), oy = Math.round(g.y / U);
     for (let i = 0; i < n; i++) {
-      const c0 = -span / 2 + b / 2 + i * (b + gap); // tooth centre across the lane; its base on the line, its apex h back toward the car
-      const pts = [[g.x + nx * (c0 - b / 2), g.y + ny * (c0 - b / 2)], [g.x + nx * (c0 + b / 2), g.y + ny * (c0 + b / 2)], [g.x + nx * c0 - g.tx * h, g.y + ny * c0 - g.ty * h]];
-      const xs = pts.map((p) => p[0] / U), ys = pts.map((p) => p[1] / U);
-      for (let y = Math.floor(Math.min(...ys)); y <= Math.ceil(Math.max(...ys)); y++) for (let x = Math.floor(Math.min(...xs)); x <= Math.ceil(Math.max(...xs)); x++) {
-        const px = x + 0.5, py = y + 0.5, s1 = (xs[1] - xs[0]) * (py - ys[0]) - (ys[1] - ys[0]) * (px - xs[0]), s2 = (xs[2] - xs[1]) * (py - ys[1]) - (ys[2] - ys[1]) * (px - xs[1]), s3 = (xs[0] - xs[2]) * (py - ys[2]) - (ys[0] - ys[2]) * (px - xs[2]);
-        if ((s1 >= 0 && s2 >= 0 && s3 >= 0) || (s1 <= 0 && s2 <= 0 && s3 <= 0)) B.put(x, y, K.lane);
+      const k = i - (n - 1) / 2, cx = ox + Math.round(k * step) * across[0], cy = oy + Math.round(k * step) * across[1];
+      for (const [mx, my] of mask) { // rotate the +x (or +x+y) mask to the heading by quarter turns
+        const r = diag ? (sx > 0 ? (sy > 0 ? 0 : 3) : (sy > 0 ? 1 : 2)) : (sx > 0 ? 0 : sx < 0 ? 2 : sy > 0 ? 1 : 3);
+        const [rx, ry] = r === 0 ? [mx, my] : r === 1 ? [-my, mx] : r === 2 ? [-mx, -my] : [my, -mx];
+        B.put(cx + rx, cy + ry, K.lane);
       }
     }
   }
@@ -4480,6 +4497,24 @@
   // turning left off the major road (gives way to oncoming traffic). Rank 2: the minor road (gives way to both).
   const JX = W / 2, JY = H / 2, D45 = Math.SQRT1_2;
   const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = hyp(dx, dy); return [dx / l, dy / l]; };
+  // Edit 57: a yield line sits square to the approach lane's last straight. Walk back from s to the first point whose heading
+  // is a multiple of 45°; the line goes there, the teeth point back up that straight (MUTCD 3B.16).
+  function yieldAt(X, lane, s, reach) {
+    const q45 = Math.PI / 4;
+    for (let ds = 0; ds <= (reach || 200); ds += 1) {
+      const p = X.pathAt(lane, s - ds), a = Math.atan2(p.ty, p.tx), k = Math.round(a / q45);
+      if (Math.abs(a - k * q45) < 0.004) return { s: s - ds, ds, x: p.x, y: p.y, ux: Math.round(Math.cos(k * q45) * 1e6) / 1e6, uy: Math.round(Math.sin(k * q45) * 1e6) / 1e6 };
+    }
+    const p = X.pathAt(lane, s), a = Math.round(Math.atan2(p.ty, p.tx) / q45) * q45;
+    return { s, ds: 0, x: p.x, y: p.y, ux: Math.cos(a), uy: Math.sin(a) };
+  }
+  function yieldMarks(X, lanes) { // one mark per approach: deduplicated by place and heading
+    const out = [], seen = new Set();
+    const add = (ln, s) => { const m = yieldAt(X, ln, s, 40), key = Math.round(m.x / 4) + ',' + Math.round(m.y / 4) + ',' + Math.round(Math.atan2(m.uy, m.ux) * 4 / Math.PI); if (!seen.has(key)) { seen.add(key); out.push(m); } };
+    for (const l of lanes) if (l.giveWay) add(l, l.giveWay.s);
+    for (const l of lanes) if (l.junction && l.junction.rank === 2 && l.junction.line != null) add(l, l.junction.line); // a left turn off the major road waits unmarked
+    return out;
+  }
   function toEdgeAny(dir, from, Wv, Hv) { const [x, y] = from, ts = []; if (dir[0] > 1e-9) ts.push((Wv - x) / dir[0]); if (dir[0] < -1e-9) ts.push(-x / dir[0]); if (dir[1] > 1e-9) ts.push((Hv - y) / dir[1]); if (dir[1] < -1e-9) ts.push(-y / dir[1]); const t = Math.min(...ts) + LEAD; return [x + dir[0] * t, y + dir[1] * t]; }
   function toEdge(dir, from) { // from a point along dir to LEAD beyond the screen edge
     const [x, y] = from, ts = [];
@@ -4612,6 +4647,7 @@
         if (sLine == null && d <= R + 45) sLine = lane.cum[i];
         if (aj == null && d <= R + 2) { aj = Math.atan2(y - cy, x - cx); sj = lane.cum[i]; break; }
       }
+      { const m = yieldAt(X, lane, sLine, 40); if (m.ds > 0 && m.ds < 40) sLine = m.s; } // Edit 57: the line at the end of the arm's last straight, square to it
       lane.giveWay = { s: sLine, sj, cx, cy, R, dir: -1, aj }; // stop line, join point (s and angle), circulating lane
       // P5 (Edit 52): the same route with 1..traffic.ringMaxLaps extra laps, for the inner-lane orbit. Identical up to the end of the arc.
       let iEnd = -1; center.forEach(([x, y], i) => { if (Math.abs(hyp(x - cx, y - cy) - Rc) < 0.6) iEnd = i; });
@@ -4705,7 +4741,7 @@
     s.schedule = Array.from({ length: 2000 }, (_, i) => ({ i, cls: pickClass(opts.fleet, opts.vanShare, rnd()), lane: Math.min(lanes.length - 1, Math.floor(rnd() * lanes.length)), mult: 0.8 + 0.4 * rnd() }));
     s.admissionInterval = () => opts.interval;
     Object.assign(s.body, { x: -900, y: -900 });
-    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: lanes.filter((l) => l.giveWay).map((l) => X.pathAt(l, l.giveWay.s)).concat(lanes.filter((l) => l.junction && l.junction.rank === 2).map((l) => X.pathAt(l, l.junction.line))), // a left turn off the major road waits unmarked
+    s.lab = { piece, q, opts, geo: { center: g.center, ring: g.ring || null, roads: g.roads || [g.center], lanes: s.level.lanes.map((l) => l.pts), stops: yieldMarks(X, lanes), // Edit 57: square to the last straight
       arms: g.arms || null, info: g.info || null, junction: g.junction || null }, stats: null };
     s.lab.stats = { t: 0, exited: 0, maxStop: 0, jamAt: null, jamCars: [], overlapT: 0, held: 0, peak: 0, minV: Infinity, over: {}, overT: 0, routes: {}, rankStop: {} };
     return s;
@@ -5350,13 +5386,13 @@
     if (rbHere) { // a ground roundabout: every route, give way at entry, the inner lane for the third exit (Edit 52, 54). Edit 56: street radius, any centre, bent arms
       const ov = D.kit === 'example' ? {} : { 'world.roundaboutRadius': P['world.roundaboutRadiusStreet'] }, geo = L.multiRoundabout(X, Object.assign({}, P, ov), rbHere.arms, R96, rbHere.at, rbHere.bends), s = labSim(geo, 'nobus', ov);
       sims.push(s); sc.lab = s;
-      ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), decks: [] }), P, 23);
+      ground = PIX.ground(lvl(geo.center, { ring: geo.ring.concat([geo.ring[0]]), arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops, decks: [] }), P, 23);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })).concat([{ pts: geo.ring.concat([geo.ring[0]]), dash: false }]), OUTER + 80);
       roadD = (k) => rf.D[k];
     } else if (D.geo) { // Edit 55 (example): a lab geometry built whole (realigned, staggered)
       const geo = D.geo(), s = labSim(geo, 'nobus', {});
       sims.push(s); sc.lab = s;
-      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })) }), P, 29);
+      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops }), P, 29);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })), OUTER + 80);
       roadD = (k) => rf.D[k];
     } else if (J) { // a junction at 90° or 45°: the minor road gives way (Edit 49.3)
@@ -5366,7 +5402,7 @@
       if (dirs.length >= 4 && D.kit !== 'example') console.warn('a four-way junction without a roundabout', D.id, name); // Edit 56
       const zq = (1 - P['world.junctionZone']) / 2; if (J.at[0] < W * zq || J.at[0] > W * (1 - zq) || J.at[1] < H * zq || J.at[1] > H * (1 - zq)) console.warn('a junction outside the central zone', D.id, name); // Edit 55.2
       sims.push(s); sc.lab = s;
-      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops.map((p) => ({ x: p.x, y: p.y, tx: p.tx, ty: p.ty })), patches }), P, 29 + col * 7 + row * 13);
+      ground = PIX.ground(lvl(geo.center, { arms: geo.arms, surfaces: geo.roads, giveWays: s.lab.geo.stops, patches }), P, 29 + col * 7 + row * 13);
       const rf = PIX.roadField(geo.roads.map((pts) => ({ pts, dash: false })), OUTER + 80);
       roadD = (k) => rf.D[k];
     } else if (D.split && D.split.tile === name) {

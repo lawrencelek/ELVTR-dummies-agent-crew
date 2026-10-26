@@ -73,7 +73,7 @@
     'world.junctionStagger': 256, // Edit 55 (example only): two T junctions this far apart replace a 45° crossroads
     'world.junctionZone': 0.75, // Edit 55.2: every junction sits in this central share of its tile, each way
     'world.roundaboutRadiusStreet': 112, // Edit 56: a ground (street) roundabout's centre radius in the district plans; highway rings keep world.deckRingRadius
-    'world.markYieldBase': 12, 'world.markYieldHeight': 18, 'world.markYieldGap': 6, // Edit 56: yield line teeth (MUTCD 3B.16 shape, 1 : 1.5), drawn over-size to read in pixels
+    'world.markYieldBase': 14, 'world.markYieldHeight': 21, 'world.markYieldGap': 4, // Edit 56–57: yield line teeth (MUTCD 3B.16 shape, 1 : 1.5), 7 × 10.5 art px, stamped identical
     // P5 (Edit 50): five models (hatchback, sedan, police, van, bus); buses on wide roads and highways; faster, sparser, richer highways
     'traffic.share.hatchback': 0.22, 'traffic.share.police': 0.08, 'traffic.share.bus': 0.1,
     'vehicles.bus.minRadius': 160, 'vehicles.bus.swerve': 0,

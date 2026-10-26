@@ -329,99 +329,99 @@
    "piece": "cross45ring",
    "interval": 2.5,
    "seed": 11,
-   "outPerMin": 21.3,
+   "outPerMin": 21.7,
    "jam": false,
    "overlapS": 0,
-   "maxStop": 5.5,
-   "minorWait": 5.5
+   "maxStop": 5.6,
+   "minorWait": 5.6
   },
   {
    "name": "C · Roundabout, skew kept",
    "piece": "cross45ring",
    "interval": 2.5,
    "seed": 23,
-   "outPerMin": 20.3,
+   "outPerMin": 20,
    "jam": false,
    "overlapS": 0,
-   "maxStop": 7.7,
-   "minorWait": 7.7
+   "maxStop": 9.8,
+   "minorWait": 9.8
   },
   {
    "name": "C · Roundabout, skew kept",
    "piece": "cross45ring",
    "interval": 2.5,
    "seed": 37,
-   "outPerMin": 21.7,
+   "outPerMin": 22,
    "jam": false,
    "overlapS": 0,
-   "maxStop": 13.2,
-   "minorWait": 13.2
+   "maxStop": 6.3,
+   "minorWait": 6.3
   },
   {
    "name": "C · Roundabout, skew kept",
    "piece": "cross45ring",
    "interval": 1.8,
    "seed": 11,
-   "outPerMin": 26.7,
+   "outPerMin": 25.7,
    "jam": false,
    "overlapS": 0,
-   "maxStop": 9,
-   "minorWait": 9
+   "maxStop": 6.2,
+   "minorWait": 6.2
   },
   {
    "name": "C · Roundabout, skew kept",
    "piece": "cross45ring",
    "interval": 1.8,
    "seed": 23,
-   "outPerMin": 23,
+   "outPerMin": 21.7,
    "jam": false,
    "overlapS": 0,
-   "maxStop": 10.3,
-   "minorWait": 10.3
+   "maxStop": 7.8,
+   "minorWait": 7.8
   },
   {
    "name": "C · Roundabout, skew kept",
    "piece": "cross45ring",
    "interval": 1.8,
+   "seed": 37,
+   "outPerMin": 27,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 10.1,
+   "minorWait": 10.1
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.2,
+   "seed": 11,
+   "outPerMin": 27.7,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 8.4,
+   "minorWait": 8.4
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.2,
+   "seed": 23,
+   "outPerMin": 24,
+   "jam": false,
+   "overlapS": 0,
+   "maxStop": 11.9,
+   "minorWait": 11.9
+  },
+  {
+   "name": "C · Roundabout, skew kept",
+   "piece": "cross45ring",
+   "interval": 1.2,
    "seed": 37,
    "outPerMin": 27.7,
    "jam": false,
    "overlapS": 0,
-   "maxStop": 10.3,
-   "minorWait": 10.3
-  },
-  {
-   "name": "C · Roundabout, skew kept",
-   "piece": "cross45ring",
-   "interval": 1.2,
-   "seed": 11,
-   "outPerMin": 27.3,
-   "jam": false,
-   "overlapS": 0,
-   "maxStop": 11.5,
-   "minorWait": 11.5
-  },
-  {
-   "name": "C · Roundabout, skew kept",
-   "piece": "cross45ring",
-   "interval": 1.2,
-   "seed": 23,
-   "outPerMin": 25,
-   "jam": false,
-   "overlapS": 0,
-   "maxStop": 14.2,
-   "minorWait": 14.2
-  },
-  {
-   "name": "C · Roundabout, skew kept",
-   "piece": "cross45ring",
-   "interval": 1.2,
-   "seed": 37,
-   "outPerMin": 29.3,
-   "jam": true,
-   "overlapS": 0,
-   "maxStop": 11.3,
-   "minorWait": 11.3
+   "maxStop": 13.1,
+   "minorWait": 13.1
   },
   {
    "name": "D · Flyover (grade separated)",

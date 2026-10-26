@@ -25,9 +25,9 @@ A W–E road (major) crossed by a 45° road (minor). P5 driver, cars only, 180 s
 | B · Staggered T junctions | 2.5 | 19.7–21 | 0 | 0 | 21.1–43.5 | 21.1–43.5 |
 | B · Staggered T junctions | 1.8 | 21.3–24 | 0 | 0 | 27.5–42.3 | 27.5–42.3 |
 | B · Staggered T junctions | 1.2 | 20.7–25 | 0 | 0 | 28.5–34.2 | 28.5–34.2 |
-| C · Roundabout, skew kept | 2.5 | 20.3–21.7 | 0 | 0 | 5.5–13.2 | 5.5–13.2 |
-| C · Roundabout, skew kept | 1.8 | 23–27.7 | 0 | 0 | 9–10.3 | 9–10.3 |
-| C · Roundabout, skew kept | 1.2 | 25–29.3 | 1 | 0 | 11.3–14.2 | 11.3–14.2 |
+| C · Roundabout, skew kept | 2.5 | 20–22 | 0 | 0 | 5.6–9.8 | 5.6–9.8 |
+| C · Roundabout, skew kept | 1.8 | 21.7–27 | 0 | 0 | 6.2–10.1 | 6.2–10.1 |
+| C · Roundabout, skew kept | 1.2 | 24–27.7 | 0 | 0 | 8.4–13.1 | 8.4–13.1 |
 | D · Flyover (grade separated) | 2.5 | 23–23.7 | 0 | 0 | 0 | 0 |
 | D · Flyover (grade separated) | 1.8 | 31.7–32.6 | 0 | 0 | 0 | 0 |
 | D · Flyover (grade separated) | 1.2 | 47–48.3 | 0 | 0 | 0 | 0 |

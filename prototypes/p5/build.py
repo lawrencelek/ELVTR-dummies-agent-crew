@@ -33,3 +33,9 @@ xs_scripts += ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</sc
 out4 = here / 'crossing_options.html'
 out4.write_text(xs.replace('<!--SCRIPTS-->', xs_scripts), encoding='utf-8')
 print(out4.name, out4.stat().st_size, 'bytes')
+# Edit 57 (options only): three Circus layouts as plans, the level rules checked live
+cp = (here / 'circus_shell.html').read_text(encoding='utf-8')
+cp_scripts = ''.join(f'<script>\n{(here / f).read_text(encoding="utf-8")}\n</script>\n' for f in ('sim.js', 'circus_plans.js'))
+out5 = here / 'circus_options.html'
+out5.write_text(cp.replace('<!--SCRIPTS-->', cp_scripts), encoding='utf-8')
+print(out5.name, out5.stat().st_size, 'bytes')
