@@ -1,8 +1,8 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit57-2026-10-26",
+ "registryVersion": "edit62-2026-10-26",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
- "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options)",
+ "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument)",
  "entries": [
   {
    "id": "movement.walkSpeed",
@@ -5630,6 +5630,27 @@
    "purpose": "The busy middle"
   },
   {
+   "id": "world.district.waterfront.quota",
+   "group": "World",
+   "owner": "World",
+   "label": "Waterfront quota",
+   "description": "Write-offs required in Waterfront (district 2 of 3; replaces Circus in P6).",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "Edit 62 (26 October), P6 game",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1
+   },
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The busy middle, by the river"
+  },
+  {
    "id": "world.district.monument.quota",
    "group": "World",
    "owner": "World",
@@ -6102,6 +6123,27 @@
    "purpose": "Busier than Parkland (mock-up)"
   },
   {
+   "id": "world.district.waterfront.interval",
+   "group": "World",
+   "owner": "World",
+   "label": "Waterfront traffic interval",
+   "description": "Each lane entering Waterfront at Z0 admits one car per 2 × this.",
+   "unit": "s",
+   "type": "number",
+   "default": 3.2,
+   "status": "proposed",
+   "source": "Edit 62 (26 October), P6 game",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 0.5
+   },
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "As Circus: busier than Parkland"
+  },
+  {
    "id": "world.district.monument.interval",
    "group": "World",
    "owner": "World",
@@ -6294,6 +6336,28 @@
     "max": 30
    },
    "integrationStatus": "mock-up-p5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Free-flowing highways at the game density (about 0.5 cars per lane per screen)"
+  },
+  {
+   "id": "world.district.waterfront.deckInterval",
+   "group": "World",
+   "owner": "World",
+   "label": "Waterfront: bridge entry interval",
+   "description": "Waterfront: seconds between cars entering each bridge lane at the south edge. The bridges end at T junctions on the ridge road and give way there.",
+   "unit": "s",
+   "type": "number",
+   "default": 8,
+   "status": "proposed",
+   "source": "Edit 62 (26 October), P6 game",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "validation": {
+    "min": 1,
+    "max": 30
+   },
+   "integrationStatus": "game-p6",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Free-flowing highways at the game density (about 0.5 cars per lane per screen)"
   },
