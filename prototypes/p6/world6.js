@@ -15,7 +15,9 @@
   // P6's registry values over the shared sim's (which keeps P2–6.2's). Edit 71: the cone drone; the ring lane change; the ring
   // entry gap; turn signals.
   // Edit 72: every vehicle vehicles.scale (0.9) of its class's size in all three dimensions.
-  const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'vehicles.scale': X.OVERRIDES['vehicles.scale'] != null ? X.OVERRIDES['vehicles.scale'] : 0.9 };
+  // Edit 75 (Prototype 6.5): DIRECT turning; A dash, B jump, X grab, Y throw; combo scoring.
+  const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'vehicles.scale': X.OVERRIDES['vehicles.scale'] != null ? X.OVERRIDES['vehicles.scale'] : 0.9,
+    'proto.turnModel': 2, 'proto.input.fourButtons': 1, 'proto.combo': 1 };
   for (const k of Object.keys(P)) if (/^vehicles\.[a-z]+\.(length|width|height)$/.test(k)) P6SIM[k] = Math.round(P[k] * P6SIM['vehicles.scale'] * 10) / 10;
   Object.assign(P, P6SIM);
   const W = P['world.width'], H = P['world.height'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'], HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'];
@@ -30,7 +32,7 @@
   const apronOf = (st) => { const dir = Math.sign(st.high - st.low); return st.axis === 'y' ? { x: st.x - 8, y: dir < 0 ? st.low : st.low - APRON, w: st.w + 16, h: APRON } : { x: dir < 0 ? st.low : st.low - APRON, y: st.y - 8, w: APRON, h: st.h + 16 }; }; // clear ground beyond a flight's foot
   // P6: solids captured while a screen is built. Every mass, pool and sculpture drawn into the ground records its footprint
   // (16-unit cells, merged into row runs) as a level-0 solid of the screen being built.
-  let CAP = null;
+  let CAP = null, CAPH = null; // CAPH: the drawn top (art px) of the mass being captured (Edit 75: the jumpable tag)
   function capture(fp, x0, y0, x1, y1, world) { // fp in art px (or world units when world), the box in the same units
     if (!CAP) return;
     const s = world ? 1 : U, step = 4 / s, out = CAP; // P6.3 (Edit 65): 4-unit cells, so a solid follows its drawn plan
@@ -40,7 +42,7 @@
         const cx = x + step / 2, cy = y + step / 2, on = fp(cx, cy);
         if (on && !run) run = { x: x * s, y: y * s, w: 0, h: 4 };
         if (on) run.w = x * s + 4 - run.x;
-        if ((!on || x + step > x1) && run) { out.push({ x: run.x, y: run.y, w: run.w, h: run.h, kind: 'mass' }); run = null; }
+        if ((!on || x + step > x1) && run) { out.push({ x: run.x, y: run.y, w: run.w, h: run.h, kind: 'mass', ht: CAPH }); run = null; }
       }
     }
   }
@@ -95,7 +97,7 @@
   const mossC = (x, y) => hsh(x, y) % 31 === 0 ? MOSS[3] : MOSS[hsh(x >> 1, y >> 1) % 3];
   function mass(B, fp, x0, y0, x1, y1, base, h, top, led, shadow, faceKind) { // fp(x, y, ins): the footprint in art px within [x0..x1]×[y0..y1]
     x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
-    capture((x, y) => fp(Math.floor(x), Math.floor(y)), x0, y0, x1, y1); // P6: the mass is solid at Z0
+    CAPH = base + h; capture((x, y) => fp(Math.floor(x), Math.floor(y)), x0, y0, x1, y1); CAPH = null; // P6: the mass is solid at Z0 (Edit 75: with its drawn top)
     if (shadow) {
       const M = new Uint8Array(AW * AH);
       for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (fp(x, y)) for (let t = 1; t <= base + h; t++) { const sx = Math.round(x - t * 0.7), sy = Math.round(y + t * 0.7); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && !fp(sx, sy)) M[sy * AW + sx] = 1; }
@@ -1333,9 +1335,9 @@
   function mergeRects(rs) { // the capture's row runs, stacked where they share a span
     const out = [], open = new Map();
     for (const r of rs.slice().sort((a, b) => a.x - b.x || a.w - b.w || a.y - b.y)) {
-      const k = r.kind + ':' + r.x + ':' + r.w, o = open.get(k);
+      const k = r.kind + ':' + r.ht + ':' + r.x + ':' + r.w, o = open.get(k);
       if (o && Math.abs(o.y + o.h - r.y) < 0.5) { o.h += r.h; continue; }
-      const n = { x: r.x, y: r.y, w: r.w, h: r.h, kind: r.kind }; open.set(k, n); out.push(n);
+      const n = { x: r.x, y: r.y, w: r.w, h: r.h, kind: r.kind }; if (r.ht != null) n.ht = r.ht; open.set(k, n); out.push(n);
     }
     return out;
   }
@@ -1361,8 +1363,18 @@
     }
     for (const q of sc.floorsX) floors.push(q.poly ? { kind: q.kind, z: q.z, layer: q.layer, drop: q.drop, poly: q.poly, has: (x, y) => PIX.inPoly(q.poly, x, y) } : Object.assign(rectFloor(q.kind, q.z, q.x, q.y, q.w, q.h), { key: q.key, drop: q.drop }));
     for (const rf of sc.roofs) floors.push(Object.assign(rectFloor('roof', rf.z, rf.rect[0], rf.rect[1], rf.rect[2], rf.rect[3]), { key: rf.z === 2 ? rf.rect[1] + rf.rect[3] + 0.6 : 1e6 - 0.5 }));
-    floors.forEach((f, i) => { f.i = i; });
+    floors.forEach((f, i) => { f.i = i; if (f.kind === 'walk' || f.kind === 'deck' || f.kind === 'ring') f.rail = true; }); // Edit 75: railed floors (handrails, parapets): jumpable
     const statics = mergeRects(sc.solids);
+    // Edit 75: the jumpable tag (terrain table, column jumpable). At Z0 a mass drawn no taller than proto.art.jumpableTop art
+    // px (a planter and its hedge, a bed, reeds) is a low barrier: jumpable, counted at world.jumpableHeight. Edge pieces
+    // (planter, bound, wall, booth), buildings, columns, stairs and sculptures never are. Above Z0 the rails of walkways,
+    // highway decks and lifted rings are handrails: jumpable, at world.jumpableHeight.
+    // A piece counts whole (its touching runs together): no deeper than world.jumpableDepth across, so a jump clears it.
+    const low = statics.filter((q) => q.kind === 'mass' && q.ht != null && q.ht <= P['proto.art.jumpableTop']);
+    const up = low.map((_, i) => i), find = (i) => (up[i] === i ? i : (up[i] = find(up[i])));
+    for (let i = 0; i < low.length; i++) for (let j = i + 1; j < low.length; j++) { const a = low[i], c = low[j]; if (a.x <= c.x + c.w + 0.5 && c.x <= a.x + a.w + 0.5 && a.y <= c.y + c.h + 0.5 && c.y <= a.y + a.h + 0.5) up[find(i)] = find(j); }
+    const box = new Map(); low.forEach((q, i) => { const k = find(i), bx = box.get(k) || { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }; bx.x0 = Math.min(bx.x0, q.x); bx.y0 = Math.min(bx.y0, q.y); bx.x1 = Math.max(bx.x1, q.x + q.w); bx.y1 = Math.max(bx.y1, q.y + q.h); box.set(k, bx); });
+    low.forEach((q, i) => { const bx = box.get(find(i)); if (Math.min(bx.x1 - bx.x0, bx.y1 - bx.y0) <= P['world.jumpableDepth'] + 1e-9) { q.jumpable = true; q.zTop = P['world.jumpableHeight']; q.piece = [bx.x0, bx.y0, bx.x1 - bx.x0, bx.y1 - bx.y0]; } });
     for (const l of sc.layers) for (const c of l.cols || []) statics.push({ x: c.x, y: c.y, w: 2 * (c.cx - c.x), h: 2 * (c.cy - c.y), kind: 'column' });
     if (sc.monument) statics.push({ x: sc.monument.cx - 40, y: sc.monument.cy - 18, w: 80, h: 36, kind: 'monument' });
     const stairs = [], propOf = new Map(sc.props.filter((p) => p.stair).map((p) => [p.stair, p]));
@@ -1865,7 +1877,7 @@
   const nameOf = (c, r) => 'ABC'[c] + (r + 1);
   class Sim6 extends X.Sim {
     constructor(id, overrides, carry, opts) {
-      super('straight', Object.assign({}, overrides || {}, { 'run.appearances.road': 0 }), carry);
+      super('straight', Object.assign({}, P6SIM, overrides || {}, { 'run.appearances.road': 0 }), carry); // Edit 75: P6's values in the player sim too
       opts = opts || {};
       this.p6 = true; this.levelId = id; this.list = LEVEL_LIST; this.roadIndex = LEVEL_LIST.indexOf(id); this.isFinal = this.roadIndex === LEVEL_LIST.length - 1; this.isCity = true;
       const bud = overrides && overrides['run.appearances.road'] != null ? overrides['run.appearances.road'] : P['run.appearances.road'];
@@ -1958,6 +1970,7 @@
       if (b.mode === 'drop') { if (b.drop.t >= b.drop.T - 1e-9) this.land(contacts, k); return; }
       if (b.stair) return this.stairStep();
       if (b.level > 0) return this.floorMove();
+      if (b.mode === 'jump') return; // Edit 75: in the air over stairs and water; the landing decides
       for (const st of this.level.stairs) { const t = this.stairT(st, b.x, b.y); if (t >= 0 && t < 0.35 && this.stairFoot(st) && this.enterStair(st, 'foot')) return; }
       if (this.level.water.some((p) => PIX.inPoly(p, b.x, b.y))) this.startRescue(); // off the seawall into the river
     }
@@ -1982,13 +1995,17 @@
       const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; };
       const g = this.level.floors.findIndex((q) => q !== f && q.z === z && q.has(b.x, b.y));
       if (g >= 0) { b.floor = g; return; }
-      for (const st of this.level.stairs) {
+      for (const st of b.mode === 'jump' ? [] : this.level.stairs) {
         if (st.head !== b.floor) continue;
         const [l0, l1] = this.stairSpan(st), lat = st.axis === 'y' ? b.x : b.y, t = this.stairT(st, b.x, b.y), ext = (this.P['world.parapetWidth'] + this.P['body.radius']) / Math.abs(st.high - st.low);
         if (lat >= l0 + 2 && lat <= l1 - 2 && t >= 0.5 && t <= 1 + ext + 0.25 && this.enterStair(st, 'head')) return;
       }
       if (b.x < 0 || b.x > W || b.y < 0 || b.y > H) { if (this.neighbourFloor(b.x, b.y, z)) return; }
-      else if (f.drop || (f.dropAt && f.dropAt(b.x, b.y))) { let ux = b.x - b.px, uy = b.y - b.py, l = hyp(ux, uy); if (l < 1e-6) { ux = Math.cos(b.facing); uy = Math.sin(b.facing); l = 1; } return this.startDrop6(ux / l, uy / l); }
+      else if (f.drop || (f.dropAt && f.dropAt(b.x, b.y)) || (f.rail && b.mode === 'jump' && b.z >= this.P['world.jumpableHeight'])) { // Edit 75: a jump clears a handrail or parapet and drops to the level below
+        let ux = b.x - b.px, uy = b.y - b.py, l = hyp(ux, uy); if (l < 1e-6) { ux = Math.cos(b.facing); uy = Math.sin(b.facing); l = 1; }
+        if (f.rail && b.mode === 'jump') this.emit('rail-jump', { kind: f.kind, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level });
+        return this.startDrop6(ux / l, uy / l);
+      }
       if (f.has(b.px, b.y)) { b.x = b.px; b.vx = 0; } else if (f.has(b.x, b.py)) { b.y = b.py; b.vy = 0; } else { b.x = b.px; b.y = b.py; b.vx = 0; b.vy = 0; }
       if (!f.has(b.x, b.y)) { const q = this.level.floors.findIndex((o) => o.z === z && o.has(b.x, b.y)); if (q >= 0) b.floor = q; }
       block();
@@ -2014,7 +2031,7 @@
       this.level.floors.forEach((q, i) => { if (q.z < fromZ && q.z > toZ && q.has(lx, ly)) { toZ = q.z; toFloor = i; } });
       const h = X.zHeight(P, fromZ) - X.zHeight(P, toZ);
       T = P['world.dropSeconds'] * Math.sqrt(h / ref); [dx, dy] = plan(T);
-      b.mode = 'drop'; b.lunge = null; b.stair = null; b.floor = null;
+      b.mode = 'drop'; b.lunge = null; b.stair = null; b.floor = null; b.jump = null; b.z = 0;
       b.drop = { t: 0, T, vx: dx, vy: dy, x0: b.x, y0: b.y, fromZ, toZ, toFloor, h, fromKind }; b.vx = dx; b.vy = dy;
       this.emit('deck-drop', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), from: fromZ, to: toZ, h, fromKind });
       this.mile('firstDeckDrop');
@@ -2033,7 +2050,7 @@
       if (!best) best = Object.assign({ d: 0 }, G.spawns[0] || { x: W / 2, y: H / 2, level: 0, floor: null });
       const edges = [[b.x, -40], [b.x, H + 40], [-40, b.y], [W + 40, b.y]].sort((p, q) => hyp(p[0] - b.x, p[1] - b.y) - hyp(q[0] - b.x, q[1] - b.y)), ex = edges[0];
       if (b.held) { const cn = b.held; b.held = null; b.gesture = null; Object.assign(cn, { state: 'pending', px: b.x, py: b.y }); } // the cone goes home (retryPending)
-      b.mode = 'rescue'; b.lunge = null; b.stair = null; b.vx = b.vy = 0; b.level = 0; b.floor = null; b._spr = null;
+      b.mode = 'rescue'; b.lunge = null; b.stair = null; b.jump = null; b.z = 0; b.vx = b.vy = 0; b.level = 0; b.floor = null; b._spr = null;
       this.rescue = { t: 0, phase: 'sink', k: 0, x0: b.x, y0: b.y, to: best, under: 0, up: 0, sink: P['proto.rescueSinkSeconds'], lift: P['proto.droneLiftSeconds'], v: P['proto.droneSpeed'],
         drone: { x: ex[0], y: ex[1], alt: 1, state: 'wait', rescue: true, hx: ex[0], hy: ex[1] } };
       this.emit('splash', { x: +b.x.toFixed(1), y: +b.y.toFixed(1) });
@@ -2076,12 +2093,13 @@
     collideBody(contacts, k) {
       const P = this.P, b = this.body, r = P['body.radius'], G = this.level;
       if (!b.alive || b.stair || b.mode === 'drop' || b.mode === 'rescue') return;
-      const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; };
+      const air = b.mode === 'jump' ? b.z : 0; // Edit 75: how high the dummy is in a jump
+      const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; if (b.mode === 'jump') b.jump.blocked = true; };
       const push = (nx, ny, pen) => { b.x += nx * pen; b.y += ny * pen; const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= vn * nx; b.vy -= vn * ny; } block(); };
       const rect = (s) => { const res = circleRect(b.x, b.y, r, s); if (res) push(res.nx, res.ny, res.pen); };
       const ground = b.level === 0;
       if (ground) {
-        for (const s of G.statics) rect(s);
+        for (const s of G.statics) if (!(s.jumpable && air >= s.zTop)) rect(s); // a jumpable piece is cleared above its top
         for (const st of G.stairs) if (!this.stairFoot(st)) rect(st);
         for (const cp of G.checkpoints) if (!cp.deck && !cp.z) rect(cpZone(cp)); // between a boom and the district edge
         for (const poly of G.polys0) {
@@ -2097,6 +2115,7 @@
       } else { for (const s of G.solidsZ) if (s.z === b.level) rect(s); for (const cp of G.checkpoints) if ((cp.z || 0) === b.level) rect(cpZone(cp)); }
       for (const c of this.cars) {
         if (!this.meets(c)) continue; // cars meet the dummy on their own level only
+        if (air > 0 && air >= P['vehicles.' + c.cls + '.height']) continue; // Edit 75: over the roof
         const res = X.circleCar(b.x, b.y, r, c);
         if (!res) continue;
         c.touched = true;
@@ -2104,18 +2123,19 @@
         let knock = null;
         if (!c.inEpisode) {
           c.inEpisode = true;
-          const ph = X.impulseImpact(P, b.vx, b.vy, c.vx, c.vy, nx, ny, c.cls, b.mode === 'lunge' || b.mode === 'knock');
+          const rico = b.mode === 'knock' && this.has('ricochet');
+          const ph = X.impulseImpact(P, b.vx, b.vy, c.vx, c.vy, nx, ny, c.cls, b.mode === 'lunge' || b.mode === 'knock' || b.mode === 'jump'); // Edit 75: a jump strikes as a dash does
           contacts.push({ k, car: c, closing: Math.max(0, rel), ph, px: res.cx, py: res.cy, zone: X.zoneOf(res.qx, res.qy, c),
-            carState: this.carCue(c), cause: c.cause, lunging: b.mode === 'lunge', bodySpeed: hyp(b.vx, b.vy), carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff) });
-          if (P['proto.damageModel'] && ph.un > 1e-6) knock = ph.knock;
+            carState: this.carCue(c), cause: c.cause, lunging: b.mode === 'lunge', bodySpeed: hyp(b.vx, b.vy), carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), jump: b.mode === 'jump', ricochet: rico });
+          if (P['proto.damageModel'] && ph.un > 1e-6) knock = this.bounce(ph.knock); // Ricochet: twice the bounce
         }
         b.x += res.nx * res.pen; b.y += res.ny * res.pen;
-        if (knock) { b.mode = 'knock'; b.lunge = null; b.knockT = 0; b.knockVx = knock.x; b.knockVy = knock.y; b.vx = knock.x; b.vy = knock.y; this.emit('knock', { car: c.id, speed: +hyp(knock.x, knock.y).toFixed(2) }); }
+        if (knock) { b.mode = 'knock'; b.lunge = null; b.jump = null; b.z = 0; b.knockT = 0; b.knockVx = knock.x; b.knockVy = knock.y; b.vx = knock.x; b.vy = knock.y; this.emit('knock', { car: c.id, speed: +hyp(knock.x, knock.y).toFixed(2), ricochet: this.has('ricochet') }); }
         else if (rel > 0) { b.vx -= rel * nx; b.vy -= rel * ny; }
         block();
       }
       const rr = r + P['props.cone.radius'];
-      for (const cn of ground ? this.cones : []) {
+      for (const cn of ground && air < P['proto.art.coneHeight'] ? this.cones : []) { // Edit 75: a jump clears cones above their height
         if (cn.state !== 'free') continue;
         const dx = cn.x - b.x, dy = cn.y - b.y, d = hyp(dx, dy);
         if (d >= rr || d < 1e-9) continue;
@@ -2197,6 +2217,6 @@
     if (m === t) return { nx: 0, ny: -1, pen: t + r };
     return { nx: 0, ny: 1, pen: b + r };
   }
-  const api = { DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY, groundFree, arrives, edgePt, inR, cpZone };
+  const api = { P6SIM, DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY, groundFree, arrives, edgePt, inR, cpZone };
   if (NODE) module.exports = api; else root.WORLD6 = api;
 })(typeof window !== 'undefined' ? window : globalThis);

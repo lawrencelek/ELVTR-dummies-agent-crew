@@ -282,7 +282,7 @@
       } else {
         S.view = null; this.cols = null; this.stick.home = null;
         const x0 = sf.l + 14 * u, y0 = sf.t + 12 * u;
-        this.title.setPosition(x0, y0).setText('DUMMIES · CONTROL TEST'); this.legend.setPosition(x0, y0 + 22 * u);
+        this.title.setPosition(x0, y0).setText('DUMMIES · CONTROL TEST · ' + (window.CTRL_BUILD || '').toUpperCase()); this.legend.setPosition(x0, y0 + 22 * u);
         let cx = w - sf.r - 14 * u;
         smallChip(this.small.help, cx - 28 * u, y0 + 2 * u, 28 * u); cx -= 34 * u;
         smallChip(this.small.pad, cx - 92 * u, y0 + 2 * u, 92 * u); cx -= 98 * u;

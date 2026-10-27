@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 6.4](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_4.html` in a browser. Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–72.
+> **Current prototype: [Prototype 6.5](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_5.html` in a browser. Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–75.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 6.4 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_4.html` | Current. Ring stalls diagnosed; vehicles at 0.9; steady roundabout signals |
+> | 6.5 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_5.html` | Current (Edit 75). DIRECT turning; A dash, B jump, X grab, Y throw; jumpable tag; combos; Ricochet; any gamepad; landscape touch |
+> | 6.4 | `prototypes/p6/` | `dummies_p6_4.html` | Frozen (Edit 72). Ring stalls diagnosed; vehicles at 0.9; steady roundabout signals |
 > | Controls | [`prototypes/controls/`](prototypes/controls/README.md) | `dummies_controls.html` | Test (Edits 73–74). Phaser 3.90: landscape touch with an analog stick and A/B columns; any gamepad, with button setup; keys and mouse; three turn models |
 > | 6.3 | `prototypes/p6/` | `dummies_p6_3.html` | Frozen (Edit 71). Smooth turns, turn signals, ring entry, the cone drone |
 > | 6.2 | `prototypes/p6/` | `dummies_p6_2.html` | Frozen (Edit 70). The open ring, one garden grid, navigation checks, the HUD |

@@ -23,7 +23,7 @@ const retired = new Set(reg.entries.filter(RETIRED).map((e) => e.id));
 const missing = IDS.filter((id) => !byId.has(id) || retired.has(id));
 if (missing.length) { console.error('not in the registry, or retired: ' + missing.join(', ')); process.exit(1); }
 const P = Object.fromEntries(IDS.map((id) => [id, byId.get(id)]));
-const params = `window.CTRL_P = ${JSON.stringify(P)}; // registry ${reg.registryVersion}`;
+const params = `window.CTRL_P = ${JSON.stringify(P)}; window.CTRL_BUILD = ${JSON.stringify(reg.registryVersion.split('-')[0])}; // registry ${reg.registryVersion}`;
 const core = fs.readFileSync(path.join(here, 'core.js'), 'utf8'), pads = fs.readFileSync(path.join(here, 'pads.js'), 'utf8'), app = fs.readFileSync(path.join(here, 'app.js'), 'utf8');
 const phaser = fs.readFileSync(path.join(here, 'vendor', 'phaser-3.90.0.min.js'), 'utf8');
 

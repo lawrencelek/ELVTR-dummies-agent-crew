@@ -1,13 +1,13 @@
 # DUMMIES — Controls prototype (Phaser)
 
-**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 73 and 74 (proposed). A small test yard, separate from the game. Prototype 6.4 is unchanged.
+**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 73 and 74 (proposed). The title shows the build ("CONTROL TEST · EDIT75"). DIRECT went into the game in Prototype 6.5 (Edit 75). A small test yard, separate from the game. Prototype 6.4 is unchanged.
 
 One dummy, three ways to play it, three ways for it to turn. Traffic to lunge at, cones to grab, a slalom to turn through.
 
 - **`dummies_controls.html`:** the test, one file with Phaser 3.90.0 inside. Opens offline in a browser; no server. Use this one with a gamepad.
 - **`controls_page.html`:** the same page for hosting (Phaser from jsDelivr). Published as a page to open on a phone.
 - **`core.js`:** the dummy's movement, the three turn models, the stick curve. No Phaser; the tests run it headless.
-- **`pads.js`:** gamepads of any kind: phantom devices, no standard mapping, hat d-pads, button setup, the monitor line.
+- **`pads.js`:** gamepads of any kind: phantom devices, no standard mapping, hat d-pads, button setup, the monitor line. Shared with Prototype 6.5 (four actions; Edit 75).
 - **`app.js`:** the Phaser yard and HUD: keys, mouse, gamepad and touch merged into one intent.
 - **`build.js`:** `node build.js` → both pages. Reads every number from `content/params/tuning.parameters.json`; fails on a missing or retired ID.
 - **`test_controls.js`:** `node test_controls.js [folder]` → the checks; screenshots into the folder.

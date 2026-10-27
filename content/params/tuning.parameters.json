@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit74-2026-10-27",
+ "registryVersion": "edit75-2026-10-27",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -442,12 +442,12 @@
    "group": "Battery",
    "owner": "Body",
    "label": "Additional jump cost",
-   "description": "Paid in addition to the initiating lunge; D15 remains open.",
+   "description": "Charge one B jump spends. The dash meter pays for both (D15).",
    "unit": "charge units",
    "type": "number",
    "default": 1,
    "status": "proposed",
-   "source": "GDD §§5.4",
+   "source": "GDD §§5.4; Edit 75 (27 October): Prototype 6.5",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-tick",
@@ -768,6 +768,72 @@
    "purpose": "Larger than any single impact, so finishing a body always beats farming one"
   },
   {
+   "id": "scoring.comboWindow",
+   "group": "Scoring",
+   "owner": "Scoring",
+   "label": "Combo window",
+   "description": "A hit within this many seconds of the last hit chains a combo.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.5,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0.2,
+    "max": 5
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Two dashes, or a bounce into the next car"
+  },
+  {
+   "id": "scoring.comboStep",
+   "group": "Scoring",
+   "owner": "Scoring",
+   "label": "Combo step",
+   "description": "Each chained hit scores 1 + this × (links − 1) times its points.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 0.5,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0,
+    "max": 2
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Second hit ×1.5, third ×2"
+  },
+  {
+   "id": "scoring.comboMax",
+   "group": "Scoring",
+   "owner": "Scoring",
+   "label": "Combo cap",
+   "description": "The combo multiplier stops here.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 3,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 1,
+    "max": 10
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "×3 at the fifth hit"
+  },
+  {
    "id": "upgrades.widerView",
    "group": "Upgrades",
    "owner": "Body / Economy",
@@ -793,12 +859,12 @@
    "group": "Upgrades",
    "owner": "Body / Economy",
    "label": "Hips turn rate",
-   "description": "Effective turn rate when owned.",
+   "description": "Effective turn rate when owned. Under DIRECT (P6.5) Hips has no job and leaves the shop (D48).",
    "unit": "degrees/s",
    "type": "number",
    "default": 360,
    "status": "proposed",
-   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2; Edit 75 (27 October): Prototype 6.5",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-tick",
@@ -882,7 +948,7 @@
    "unit": "s",
    "type": "number",
    "default": 0.2,
-   "status": "proposed",
+   "status": "retired (user, 27 October): the jump is its own button (B), not a second A press in a dash",
    "source": "GDD §§5.2, 5.6, 5.8, 9.2",
    "editable": true,
    "protectedReason": null,
@@ -899,12 +965,12 @@
    "group": "Upgrades",
    "owner": "Body / Economy",
    "label": "Jump extension",
-   "description": "Extra before wear and terrain composition.",
+   "description": "Jump (Legs, B): ground covered in the air, along the input (else the facing). Leg damage shortens it as it shortens the dash.",
    "unit": "px",
    "type": "number",
-   "default": 60,
+   "default": 112,
    "status": "proposed",
-   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2; Edit 75 (27 October): Prototype 6.5",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-action",
@@ -913,19 +979,19 @@
    },
    "integrationStatus": "not-connected-to-game",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Clears a standard roadwork hole on a fresh body; shrinks with wear"
+   "purpose": "Clears a car lengthwise and a planter world.jumpableDepth deep"
   },
   {
    "id": "upgrades.jumpAirtime",
    "group": "Upgrades",
    "owner": "Body / Economy",
    "label": "Jump airtime",
-   "description": "Airborne interval.",
+   "description": "Jump (Legs, B): time in the air.",
    "unit": "s",
    "type": "number",
-   "default": 0.35,
+   "default": 0.5,
    "status": "proposed",
-   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2; Edit 75 (27 October): Prototype 6.5",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-action",
@@ -934,19 +1000,63 @@
    },
    "integrationStatus": "not-connected-to-game",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Long enough to read as airborne against the ground shadow"
+   "purpose": "Long enough to clear a car crosswise"
+  },
+  {
+   "id": "upgrades.jumpHeight",
+   "group": "Upgrades",
+   "owner": "Upgrades",
+   "label": "Jump height",
+   "description": "Top of the jump arc (a parabola over upgrades.jumpAirtime). The dummy clears a car lower than this, and any jumpable piece above world.jumpableHeight.",
+   "unit": "world units",
+   "type": "number",
+   "default": 44,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 10,
+    "max": 120
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Over a sedan (19.8) and a van (30.6) at vehicles.scale 0.9; not a bus (43.2)"
+  },
+  {
+   "id": "upgrades.ricochetScale",
+   "group": "Upgrades",
+   "owner": "Upgrades",
+   "label": "Ricochet bounce",
+   "description": "Ricochet (Legs, needs Jump): the bounce off a hit goes this many times as fast, so this many times as far.",
+   "unit": "ratio",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 1,
+    "max": 5
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Carry the bounce into the next car for a combo"
   },
   {
    "id": "upgrades.jumpRecovery",
    "group": "Upgrades",
    "owner": "Body / Economy",
    "label": "Jump landing recovery",
-   "description": "Combined with the lunge recovery deadline.",
+   "description": "Jump: recovery after landing before the next move or dash.",
    "unit": "s",
    "type": "number",
    "default": 0.1,
    "status": "proposed",
-   "source": "GDD §§5.2, 5.6, 5.8, 9.2",
+   "source": "GDD §§5.2, 5.6, 5.8, 9.2; Edit 75 (27 October): Prototype 6.5",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-action",
@@ -1960,12 +2070,12 @@
    "group": "Upgrades",
    "owner": "Economy",
    "label": "Jump",
-   "description": "Requires Strafe.",
+   "description": "Jump: Legs, tier 1 in P6.5 (the Legs foundation). B jumps.",
    "unit": "write-offs",
    "type": "number",
-   "default": 3,
+   "default": 1,
    "status": "proposed",
-   "source": "GDD §9.2",
+   "source": "GDD §9.2; Edit 75 (27 October): Prototype 6.5",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-transaction",
@@ -1975,6 +2085,27 @@
    "integrationStatus": "not-connected-to-game",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "Tier 2. New traversal, gated on gaps existing in the level"
+  },
+  {
+   "id": "economy.price.legs.ricochet",
+   "group": "Economy",
+   "owner": "Economy",
+   "label": "Ricochet price",
+   "description": "Ricochet: Legs, tier 2; needs Jump.",
+   "unit": "write-offs",
+   "type": "number",
+   "default": 2,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "A tier-2 number, priced as Throw and Spine"
   },
   {
    "id": "economy.price.battery.kineticCharge",
@@ -4422,6 +4553,72 @@
    "integrationStatus": "prototype-p3",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "A barrier tile the dummy cannot cross except at a gap"
+  },
+  {
+   "id": "world.jumpableHeight",
+   "group": "World",
+   "owner": "World",
+   "label": "Jumpable height",
+   "description": "Pieces tagged jumpable (terrain column jumpable) count at this height: handrails, parapets, crash and jersey barriers, low planters. A jump clears them above it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 20,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 8,
+    "max": 40
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Handrail height; below a sedan (19.8 at 0.9) plus margin"
+  },
+  {
+   "id": "world.jumpableDepth",
+   "group": "World",
+   "owner": "World",
+   "label": "Jumpable depth",
+   "description": "A Z0 piece is tagged jumpable only if, whole, it is no deeper than this across: one jump crosses it.",
+   "unit": "world units",
+   "type": "number",
+   "default": 48,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 16,
+    "max": 96
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "No landing inside a bed"
+  },
+  {
+   "id": "proto.art.jumpableTop",
+   "group": "Presentation",
+   "owner": "Presentation",
+   "label": "Jumpable art height",
+   "description": "P6 art: a mass drawn no taller than this is a planter, a bed or reeds: tagged jumpable when no deeper than world.jumpableDepth. Edge planters and holds never are.",
+   "unit": "art px",
+   "type": "number",
+   "default": 5,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 1,
+    "max": 12
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Planters and their hedges; not podiums or buildings"
   },
   {
    "id": "world.deckLampSpacing",
@@ -7116,17 +7313,17 @@
    "group": "Movement",
    "owner": "Movement",
    "label": "Turn model",
-   "description": "How the dummy turns. 1 LAG (P2–6.4): moves at once, facing follows at movement.turnRate, slowed while misaligned, lunge along facing. 2 DIRECT: facing follows the input at movement.directTurnRate, lunge where the player points. 3 PIVOT: plants and pivots past movement.pivotAngle at movement.pivotRate; lunge along facing.",
+   "description": "How the dummy turns. 1 LAG (P2–6.4): moves at once, facing follows at movement.turnRate, slowed while misaligned, lunge along facing. 2 DIRECT: facing follows the input at movement.directTurnRate, lunge where the player points. 3 PIVOT: plants and pivots past movement.pivotAngle at movement.pivotRate; lunge along facing. Decided 27 October: DIRECT (P6.5). The shared sim keeps 1 for P2–6.4.",
    "unit": "enum 1–3",
    "type": "number",
    "default": 2,
-   "source": "Edit 73 (27 October): controls prototype",
+   "source": "Edit 73 (27 October): controls prototype; Edit 75 (27 October): Prototype 6.5",
    "validation": {
     "min": 1,
     "max": 3
    },
    "purpose": "Test which turn reads right on a d-pad, a stick and keys",
-   "status": "proposed",
+   "status": "user-decided (27 October): DIRECT, \"much more fun\"; P6.5 runs 2",
    "editable": true,
    "protectedReason": null,
    "applyAt": "immediate",
@@ -7142,12 +7339,12 @@
    "unit": "degrees/s",
    "type": "number",
    "default": 1080,
-   "source": "Edit 73 (27 October): controls prototype",
+   "source": "Edit 73 (27 October): controls prototype; Edit 75 (27 October): Prototype 6.5",
    "validation": {
     "min": 180
    },
    "purpose": "The body shows the turn; the input decides the lunge",
-   "status": "proposed",
+   "status": "user-decided (27 October): DIRECT",
    "editable": true,
    "protectedReason": null,
    "applyAt": "immediate",
@@ -7417,6 +7614,50 @@
    "boundaryStatus": "proposed-adapter-contract-not-implemented"
   },
   {
+   "id": "proto.input.fourButtons",
+   "group": "Input",
+   "owner": "Input",
+   "label": "Four buttons",
+   "description": "1: A dash, B jump, X grab or place, Y throw (P6.5). 0: A dash, B carry and throw (P2–6.4).",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "One verb per button, unlocked by the tree"
+  },
+  {
+   "id": "proto.combo",
+   "group": "Scoring",
+   "owner": "Scoring",
+   "label": "Combo scoring",
+   "description": "1: chained hits pay the combo multiplier (scoring.*). 0: off (P2–6.4).",
+   "unit": "flag",
+   "type": "number",
+   "default": 1,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Switch for the shared sim"
+  },
+  {
    "id": "ui.touch.dpadRadius",
    "group": "UI",
    "owner": "UI",
@@ -7499,6 +7740,27 @@
    "applyAt": "immediate",
    "integrationStatus": "prototype-controls",
    "boundaryStatus": "proposed-adapter-contract-not-implemented"
+  },
+  {
+   "id": "ui.touch.faceRadius",
+   "group": "UI",
+   "owner": "UI",
+   "label": "Face button radius",
+   "description": "P6.5 touch: each of Y, X, B, A in the diamond under the chassis. Spaced 1.3 radii from the centre; smaller where the column is short.",
+   "unit": "CSS px",
+   "type": "number",
+   "default": 30,
+   "status": "proposed",
+   "source": "Edit 75 (27 October): Prototype 6.5",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 16
+   },
+   "integrationStatus": "prototype-p6.5",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "Four buttons in the right column"
   },
   {
    "id": "ui.touch.margin",
@@ -7616,6 +7878,11 @@
      "note": "True means Jump clears it and the dummy otherwise falls"
     },
     {
+     "name": "jumpable",
+     "type": "boolean",
+     "note": "Edit 75: B jump (Legs) clears it above world.jumpableHeight. Pieces no taller than that; a Z0 piece no deeper than world.jumpableDepth"
+    },
+    {
      "name": "occluder",
      "type": "boolean",
      "note": "Blocks car side sensors and the player's read"
@@ -7638,6 +7905,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "The reference surface"
     },
@@ -7653,6 +7921,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Pavement or concrete"
     },
@@ -7668,6 +7937,7 @@
      "carSwerving": null,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "A thin strip that slows a step. Cars cannot mount"
     },
@@ -7683,6 +7953,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Cars always stop for anything on it. A safe zone: useless to you, funny on purpose"
     },
@@ -7698,6 +7969,7 @@
      "carSwerving": null,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Island planting"
     },
@@ -7713,6 +7985,7 @@
      "carSwerving": null,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": true,
      "note": "Tall grass or hedge. Natural cover"
     },
@@ -7728,6 +8001,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Cars skid"
     },
@@ -7743,6 +8017,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Not placed in the first version"
     },
@@ -7758,6 +8033,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Standing water. The dummy slides (low grip) and cannot dash from it; cars brake late, so they are easier to hit (D18, Edit 40)"
     },
@@ -7773,6 +8049,7 @@
      "carSwerving": 0.5,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Oil or diesel spill. The best surface to lure a car onto"
     },
@@ -7788,6 +8065,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Rubber crash matting on the roundabout's central island; a springboard"
     },
@@ -7803,6 +8081,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Calibrated impact plate. Hits on it pay damage.plateMultiplier"
     },
@@ -7818,6 +8097,7 @@
      "carSwerving": 1.0,
      "walkable": true,
      "gap": false,
+     "jumpable": false,
      "occluder": false,
      "note": "Speed bump"
     },
@@ -7833,8 +8113,9 @@
      "carSwerving": null,
      "walkable": false,
      "gap": false,
+     "jumpable": true,
      "occluder": true,
-     "note": "Crash barrier. Solid, never jumpable; the gaps are the way through"
+     "note": "Crash barrier. Blocks on foot; Jump clears it (Edit 75)"
     },
     {
      "id": "gardenWall",
@@ -7848,6 +8129,7 @@
      "carSwerving": null,
      "walkable": false,
      "gap": false,
+     "jumpable": false,
      "occluder": true,
      "note": "Solid, never jumpable"
     },
@@ -7863,6 +8145,7 @@
      "carSwerving": null,
      "walkable": false,
      "gap": false,
+     "jumpable": false,
      "occluder": true,
      "note": "Solid, never jumpable"
     },
@@ -7878,6 +8161,7 @@
      "carSwerving": null,
      "walkable": false,
      "gap": true,
+     "jumpable": false,
      "occluder": false,
      "note": "Deep water. Jump clears it; falling in costs world.fallRecovery"
     },
@@ -7893,6 +8177,7 @@
      "carSwerving": null,
      "walkable": false,
      "gap": true,
+     "jumpable": false,
      "occluder": false,
      "note": "Hole or open manhole. Never on roads in the first version"
     },
@@ -7908,6 +8193,7 @@
      "carSwerving": null,
      "walkable": false,
      "gap": false,
+     "jumpable": false,
      "occluder": true,
      "note": "City block. Solid; casts sensor shadows; height drawn only (Edit 38 §7.4)"
     },
@@ -7923,8 +8209,57 @@
      "carSwerving": null,
      "walkable": false,
      "gap": false,
+     "jumpable": true,
      "occluder": true,
-     "note": "Jersey barrier, 44 × 8 units, off the pavement (Edit 38 §7.4)"
+     "note": "Jersey barrier, 44 × 8 units, off the pavement (Edit 38 §7.4). Jump clears it (Edit 75)"
+    },
+    {
+     "id": "handrail",
+     "kind": "structure",
+     "band": 2,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "jumpable": true,
+     "occluder": false,
+     "note": "Edit 75: the rail of a walkway, highway deck or lifted ring. Holds on foot; a jump over it drops to the level below"
+    },
+    {
+     "id": "planter",
+     "kind": "structure",
+     "band": 2,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "jumpable": true,
+     "occluder": false,
+     "note": "Edit 75: a low planter, bed or reeds (drawn ≤ proto.art.jumpableTop), no deeper than world.jumpableDepth"
+    },
+    {
+     "id": "edgeHold",
+     "kind": "structure",
+     "band": 2,
+     "dummySpeed": null,
+     "lunge": null,
+     "grip": null,
+     "carSpeed": null,
+     "carBraking": null,
+     "carSwerving": null,
+     "walkable": false,
+     "gap": false,
+     "jumpable": false,
+     "occluder": false,
+     "note": "Edit 75: an edge planter or hold at a screen edge that cannot be crossed. Never jumpable"
     }
    ]
   },

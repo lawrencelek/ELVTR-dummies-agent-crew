@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DUMMIES P6.4</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="screen-orientation" content="landscape"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>DUMMIES P6.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&family=B612+Mono:wght@400;700&family=Nunito:wght@700;800;900&display=swap">
@@ -50,25 +51,35 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
 .modal-card p { margin: 0; font-size: 12px; color: var(--ink-2); }
 #trace-text { width: 100%; box-sizing: border-box; height: 46vh; font: 400 11px var(--font-mono); color: var(--ink); background: #FFFFFF; border: 1px solid var(--line); border-radius: 8px; padding: 8px; resize: vertical; }
 .modal-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+#padmon { margin: 0; font: 400 11px var(--font-mono); color: var(--ink-2); overflow-wrap: anywhere; }
+[data-palette="night"] #padmon, [data-palette="cyber"] #padmon { color: #9FB8C8; }
+/* Edit 75: touch. The stage fills the screen (landscape only); the controls draw on an overlay. Upright phones see a prompt. */
+body.touch { overflow: hidden; overscroll-behavior: none; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+body.touch .wrap { display: none; }
+body.touch .stage { height: 100vh; height: 100dvh; }
+#rotate { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: #05070D; color: #3FD0FF; font: 700 18px var(--font-ui); text-align: center; line-height: 1.6; padding: 24px; }
+#rotate small { font-weight: 400; font-size: 13px; color: #9FB8C8; }
 </style>
 </head>
 <body>
 <div class="stage" id="stage">
-  <canvas id="game" tabindex="0" aria-label="DUMMIES P6.4 game. Keyboard or gamepad required."></canvas>
+  <canvas id="game" tabindex="0" aria-label="DUMMIES P6.5 game. Keyboard, gamepad or touch (landscape)."></canvas>
 </div>
 <div class="wrap">
   <div class="bar">
-    <p class="keys"><kbd>WASD</kbd> move · <kbd>Space</kbd> dash · <kbd>K</kbd> cone · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · gamepad works · <span id="status"></span></p>
+    <p class="keys"><kbd>WASD</kbd> move · <kbd>Space</kbd>/<kbd>K</kbd> dash (A) · <kbd>L</kbd>/<kbd>Shift</kbd> jump (B) · <kbd>J</kbd>/<kbd>E</kbd> grab (X) · <kbd>I</kbd>/<kbd>Q</kbd> throw (Y) · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · <kbd>G</kbd> pad setup · <span id="status"></span></p>
     <button id="btn-pal" type="button">Night palette</button>
     <button id="btn-full" type="button">Full screen</button>
     <button id="btn-tune" type="button">Tuning</button>
     <button id="btn-sound" type="button" aria-pressed="true">Sound on</button>
   </div>
+  <p id="padmon" aria-live="off"></p>
   <details id="tune">
     <summary>Tuning <small>Registry and prototype IDs. Changes apply live and mark the run as tuned.</small></summary>
     <div id="tune-grid"></div>
     <div class="tune-actions">
       <button id="t-credit" type="button">Grant 1 credit</button>
+      <button id="t-pad" type="button">Set up gamepad buttons</button>
       <button id="t-reset" type="button">Reset to registry values</button>
     </div>
     <p class="note">Snapshot values (car sensor length, car speed) apply to the next car admitted. Body health applies to the next chassis.</p>
@@ -88,12 +99,13 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
 </div>
 <script>
 // Palette: cyber (default: Chongqing city blocks), day (Edit 37 eco-city) or night (Chongqing parkland). Chosen at load: ?palette=
-window.PIX_PALETTE_NAME = { day: 'day', night: 'night', cyber: 'cyber' }[new URLSearchParams(location.search).get('palette')] || 'cyber'; // cyber is the default scheme
+window.PIX_PALETTE_NAME = { day: 'day', night: 'night', cyber: 'cyber' }[new URLSearchParams(location.search).get('palette') || (location.hash.match(/^#palette-(\w+)$/) || [])[1]] || 'cyber'; // cyber is the default scheme; ?palette= or #palette- (a hosted page keeps only the hash)
 document.documentElement.dataset.palette = window.PIX_PALETTE_NAME;
 const PAL_NEXT = { cyber: 'day', day: 'night', night: 'cyber' };
 document.getElementById('btn-pal').textContent = 'Palette: ' + window.PIX_PALETTE_NAME + ' → ' + PAL_NEXT[window.PIX_PALETTE_NAME];
 document.getElementById('btn-pal').addEventListener('click', () => {
-  const u = new URL(location.href); u.searchParams.set('palette', PAL_NEXT[window.PIX_PALETTE_NAME]); location.href = u.toString();
+  if (location.search.includes('palette=')) { const u = new URL(location.href); u.searchParams.set('palette', PAL_NEXT[window.PIX_PALETTE_NAME]); location.href = u.toString(); return; }
+  location.hash = 'palette-' + PAL_NEXT[window.PIX_PALETTE_NAME]; location.reload();
 });
 document.getElementById('btn-full').addEventListener('click', () => {
   const st = document.getElementById('stage');

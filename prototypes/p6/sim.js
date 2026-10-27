@@ -94,6 +94,14 @@
     'world.district.parkland.interval': 3.2, 'world.district.parkland.deckInterval': 8, 'world.district.circus.interval': 3.2, 'world.district.monument.interval': 2.4, // Edit 53: mock-up traffic; each lane entering the district runs one car per 2 × interval, as the game's roads
     'damage.walkShare': 0.25, // P5.1 (Edit 50.1): walking into a car adds a quarter of the walk; only a dash strikes at full speed
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
+    // Edit 75 (Prototype 6.5): DIRECT turning (decision, 27 October); B jumps (Legs); X grabs; Y throws; chained hits pay a combo;
+    // Ricochet doubles the bounce. Switched on by P6.5 (world6.js P6SIM); P1–P6.4 keep their rules (proto.* switches below).
+    'movement.directTurnRate': 1080, 'upgrades.jumpAirtime': 0.5, 'upgrades.jumpDistance': 112, 'upgrades.jumpHeight': 44, 'upgrades.jumpRecovery': 0.1,
+    'battery.jumpCost': 1, 'world.jumpableHeight': 20, 'world.jumpableDepth': 48, 'proto.art.jumpableTop': 5, 'upgrades.ricochetScale': 2, 'scoring.comboWindow': 1.5, 'scoring.comboStep': 0.5, 'scoring.comboMax': 3,
+    'economy.price.legs.jump': 1, 'economy.price.legs.ricochet': 2,
+    // Edits 74–75: input (gamepad stick, touch stick, pad setup) and touch sizes in CSS px
+    'proto.input.deadzone': 0.2, 'proto.input.stickOuter': 0.9, 'proto.input.padSetupHoldSeconds': 1, 'proto.input.touchDeadzone': 0.12, 'proto.input.touchOuter': 0.85,
+    'proto.input.touchFloat': 1, 'ui.touch.stickRadius': 60, 'ui.touch.margin': 16, 'ui.touch.faceRadius': 30,
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
   const PROTO = {
@@ -125,6 +133,7 @@
     'proto.parts.effects': 1,
     'proto.parts.legSpeedLoss': 1, 'proto.parts.legSpeedFloor': 0.5, 'proto.parts.legDashLoss': 1.5, 'proto.parts.torsoTurnLoss': 1.5, 'proto.parts.torsoTurnFloor': 0.5,
     'proto.parts.headConeLoss': 1.5, 'proto.parts.headConeFloor': 0.5, 'proto.parts.armThrowLoss': 1, 'proto.parts.armThrowFloor': 0.5,
+    'proto.turnModel': 1, 'proto.input.fourButtons': 0, 'proto.combo': 0, // Edit 75: 1 LAG (P2–6.4), 2 DIRECT; A/B/X/Y; combo scoring. P6.5 sets 2, 1, 1
   };
 
   // P1.2 prototype overrides of registry values (logged in DUMMIES_Prototype_Log.md).
@@ -149,7 +158,14 @@
       desc: 'Tap B to throw a held cone. Hold B to drop it close.' },
     bigBattery: { name: 'Big battery', branch: 'Battery', price: 'economy.price.battery', pre: null,
       desc: 'Three dash charges, not two. Chain a feint into a strike.' },
+    // Edit 75 (P6.5): Legs. Jump on B clears cars and anything tagged jumpable; Ricochet doubles the bounce off a hit.
+    jump: { name: 'Jump', branch: 'Legs', price: 'economy.price.legs.jump', pre: null,
+      desc: 'B jumps. Clear a car, a handrail or a low planter. Off a walkway, drop onto traffic.' },
+    ricochet: { name: 'Ricochet', branch: 'Legs', price: 'economy.price.legs.ricochet', pre: 'jump',
+      desc: 'Bounce twice as far off a hit. Carry the bounce into the next car for a combo.' },
   };
+  // P6.5 (four buttons): X grabs, Y throws; Spine stands alone (Hips has no job under DIRECT turning, D48)
+  const NODES4 = { carry: { desc: 'X picks up a cone. X again places it. Lay traps in a car’s path.' }, throw: { desc: 'Y throws a held cone.' }, spine: { pre: null, desc: 'Steer a dash as it goes, within a limited angle.' } };
 
   // ---------- math
   const TAU = Math.PI * 2, DEG = Math.PI / 180;
@@ -1542,7 +1558,7 @@
         coastVx: 0, coastVy: 0, coastT: 0, counterVx: 0, counterVy: 0, counterT: 0, counterDur: 0,
         lunge: null, recoverT: 0, held: null, gesture: null, alive: true, chassis: this.run.chassis,
         level: 0, floor: null, stair: null, drop: null, // Edit 44: level 0 ground, 1 low highway, 2 high (highway, roofs, skybridges)
-        hits: [], denied: 0, points0: this.run.points,
+        hits: [], denied: 0, points0: this.run.points, z: 0, jump: null, combo: null, // Edit 75: jump height; the combo in progress
       };
       this.emit('chassis', { chassis: this.run.chassis, x: sp.x, y: sp.y });
     }
@@ -1553,7 +1569,7 @@
       return P['movement.lungeDistance'] * (P['proto.parts.effects'] ? this.partEffect('dash')
         : Math.max(P['movement.wearFloor'], Math.min(1, b.health / P['damage.bodyHealth'])));
     }
-    deny(action) { this.body.denied = 0.25; this.emit('denied', { action }); }
+    deny(action, why) { this.body.denied = 0.25; this.emit('denied', why ? { action, why } : { action }); } // Edit 75: why (locked: not installed)
 
     startLunge(facing0, k) {
       const P = this.P, b = this.body, T = P['movement.lungeDuration'];
@@ -1571,19 +1587,23 @@
       if (b.refillDelay > 0) { b.refillDelay -= dt; if (b.refillDelay < 1e-9) b.refillDelay = 0; }
       else b.charge = Math.min(this.capacity(), b.charge + dt / P['battery.secondsPerCharge']);
       b.denied = Math.max(0, b.denied - dt);
-      if (b.mode === 'drop') return; // in the air: no control until the landing
-      const facing0 = b.facing;
-      const mx = cmd.mx || 0, my = cmd.my || 0, m = hyp(mx, my), has = m > 0.3;
+      if (b.mode === 'drop' || b.mode === 'jump') return; // in the air: no control until the landing
+      const facing0 = b.facing, direct = P['proto.turnModel'] === 2; // Edit 75: DIRECT (P6.5)
+      const mx = cmd.mx || 0, my = cmd.my || 0, m = hyp(mx, my), has = m > (direct ? 0.05 : 0.3), mk = direct ? Math.min(1, m) : 1; // DIRECT: speed scales with tilt (the input arrives dead-zoned)
       const ix = has ? mx / m : 0, iy = has ? my / m : 0, inAng = has ? Math.atan2(iy, ix) : 0;
-      const rate = (this.has('hips') ? P['upgrades.hipsTurnRate'] : P['movement.turnRate']) * DEG * this.partEffect('turn');
+      const rate = (direct ? P['movement.directTurnRate'] : this.has('hips') ? P['upgrades.hipsTurnRate'] : P['movement.turnRate']) * DEG * this.partEffect('turn');
       // leg damage slows every ground speed; so does the surface underfoot (world.terrain.<id>.dummySpeed)
       const carryF = (b.held ? P['upgrades.carrySpeed'] : 1) * this.partEffect('speed') * this.underfoot('dummySpeed') * (b.stair ? P['world.stairSpeed'] : 1);
 
       if (cmd.aPress) {
         const lk = this.underfoot('lunge');
-        if (b.mode !== 'lunge' && b.mode !== 'recover' && !b.stair && b.charge >= P['battery.lungeCost'] - 1e-9 && lk > 0) this.startLunge(facing0, lk);
+        if (b.mode !== 'lunge' && b.mode !== 'recover' && !b.stair && b.charge >= P['battery.lungeCost'] - 1e-9 && lk > 0) this.startLunge(direct && has ? inAng : facing0, lk); // DIRECT: the dash goes where the player points
         else { if (lk <= 0 && b.mode !== 'lunge' && b.mode !== 'recover') this.emit('slip', { surface: this.surfaceAt(b.x, b.y), x: +b.x.toFixed(1), y: +b.y.toFixed(1) }); this.deny('lunge'); }
         if (cmd.bRelease) b.gesture = null; // suppressed gesture cannot fire later
+      } else if (P['proto.input.fourButtons']) { // Edit 75: B jump, X grab or place, Y throw
+        if (cmd.bPress) this.tryJump(has ? inAng : b.facing);
+        if (b.mode !== 'jump') this.handleXY(cmd);
+        if (b.mode === 'jump') return;
       } else this.handleB(cmd, dt);
 
       if (b.mode === 'lunge') {
@@ -1600,8 +1620,8 @@
         b.recoverT += dt;
         if (has) b.facing = turnTo(b.facing, inAng, rate * dt);
         const f = clamp(b.recoverT / P['movement.lungeRecovery'], 0, 1);
-        b.vx = has ? ix * P['movement.walkSpeed'] * f * carryF : 0;
-        b.vy = has ? iy * P['movement.walkSpeed'] * f * carryF : 0;
+        b.vx = has ? ix * P['movement.walkSpeed'] * f * carryF * mk : 0;
+        b.vy = has ? iy * P['movement.walkSpeed'] * f * carryF * mk : 0;
         if (b.recoverT >= P['movement.lungeRecovery'] - 1e-9) { b.mode = has ? 'move' : 'idle'; b.rampT = 0; }
         return;
       }
@@ -1622,7 +1642,7 @@
       }
       const sp = hyp(b.vx, b.vy);
       if (has) {
-        if (sp > 1 && Math.abs(wrap(inAng - Math.atan2(b.vy, b.vx))) > P['movement.counterPressAngle'] * DEG) {
+        if (!direct && sp > 1 && Math.abs(wrap(inAng - Math.atan2(b.vy, b.vx))) > P['movement.counterPressAngle'] * DEG) {
           b.mode = 'counter'; b.counterT = 0; b.counterDur = P['movement.stopSeconds'] * P['movement.counterPressStop'] * (this.onGround() ? this.gripK(b.x, b.y) : 1);
           b.counterVx = b.vx; b.counterVy = b.vy; b.rampT = 0;
           b.facing = turnTo(b.facing, inAng, rate * dt);
@@ -1633,8 +1653,8 @@
         b.rampT += dt;
         let spd = P['movement.walkSpeed'] + (P['movement.runSpeed'] - P['movement.walkSpeed']) *
           clamp(b.rampT / P['movement.rampSeconds'], 0, 1);
-        if (Math.abs(wrap(inAng - b.facing)) > P['movement.alignThreshold'] * DEG) spd *= P['movement.turningSpeedFraction'];
-        spd *= carryF;
+        if (!direct && Math.abs(wrap(inAng - b.facing)) > P['movement.alignThreshold'] * DEG) spd *= P['movement.turningSpeedFraction'];
+        spd *= carryF * mk;
         b.vx = ix * spd; b.vy = iy * spd;
       } else {
         if (b.mode === 'move') { b.mode = 'coast'; b.coastT = 0; b.coastVx = b.vx; b.coastVy = b.vy; b.rampT = 0; b.coastDur = P['movement.stopSeconds'] * (this.onGround() ? this.gripK(b.x, b.y) : 1); }
@@ -1665,6 +1685,41 @@
         else if (b.gesture.t >= P['input.dropHoldSeconds']) { b.gesture = null; this.dropHeld(); }
       }
     }
+    // Edit 75 (P6.5): X picks up or places a cone (Carry); Y throws the held cone (Throw).
+    handleXY(cmd) {
+      const b = this.body, busy = b.mode === 'lunge' || b.mode === 'recover';
+      if (cmd.xPress) {
+        if (!this.has('carry')) this.deny('pickup', 'locked');
+        else if (b.held) this.dropHeld();
+        else {
+          const cn = busy || this.armsBroken() || !this.onGround() ? null : this.nearestCone();
+          if (cn) { cn.state = 'held'; b.held = cn; this.emit('pickup', { cone: cn.id }); this.mile('use:carry'); }
+          else this.deny('pickup');
+        }
+      }
+      if (cmd.yPress) { if (!this.has('throw')) this.deny('throw', 'locked'); else if (!b.held) this.deny('throw', 'empty'); else if (!this.armsBroken()) this.throwHeld(); else this.deny('throw'); }
+    }
+    // B jumps (Legs: Jump). Along the input, else the facing: upgrades.jumpDistance in upgrades.jumpAirtime, up to
+    // upgrades.jumpHeight at the top. Costs battery.jumpCost. Leg damage shortens it as it shortens the dash.
+    tryJump(dir) {
+      const P = this.P, b = this.body;
+      if (!this.has('jump')) return this.deny('jump', 'locked');
+      if (b.mode === 'lunge' || b.mode === 'knock' || b.mode === 'jump' || b.mode === 'drop' || b.mode === 'rescue' || b.stair || b.charge < P['battery.jumpCost'] - 1e-9) return this.deny('jump');
+      const T = P['upgrades.jumpAirtime'], D = P['upgrades.jumpDistance'] * this.partEffect('dash');
+      b.charge -= P['battery.jumpCost']; b.refillDelay = P['battery.refillDelaySeconds'];
+      b.mode = 'jump'; b.facing = dir; b.lunge = null; b.rampT = 0; b.z = 0;
+      b.jump = { t: 0, T, H: P['upgrades.jumpHeight'], dir, spd: D / T, x0: b.x, y0: b.y, blocked: false, level: b.level };
+      this.emit('jump', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), dir: +(dir / DEG).toFixed(1), level: b.level });
+      this.mile('use:jump');
+    }
+    landJump() {
+      const P = this.P, b = this.body, J = b.jump;
+      b.jump = null; b.z = 0; b.mode = 'recover'; b.vx = 0; b.vy = 0;
+      b.recoverT = Math.max(0, P['movement.lungeRecovery'] - P['upgrades.jumpRecovery']); // upgrades.jumpRecovery left to run
+      this.emit('jump-land', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), d: +hyp(b.x - J.x0, b.y - J.y0).toFixed(1), level: b.level });
+    }
+    // Ricochet (Legs): the bounce off a hit goes upgrades.ricochetScale as far
+    bounce(knock) { const k = this.has('ricochet') ? this.P['upgrades.ricochetScale'] : 1; return k === 1 ? knock : { x: knock.x * k, y: knock.y * k }; }
     nearestCone() {
       const P = this.P, b = this.body, rr = P['body.radius'] + P['props.cone.radius'];
       let best = null, bd = Infinity;
@@ -1726,6 +1781,14 @@
       const b = this.body;
       if (!b.alive) return;
       if (b.mode === 'drop') { b.x += b.drop.vx * h; b.y += b.drop.vy * h; b.drop.t += h; return; }
+      if (b.mode === 'jump') { // Edit 75: a parabola, upgrades.jumpHeight at the top
+        const J = b.jump;
+        if (J.blocked) { b.vx = 0; b.vy = 0; } else { b.vx = Math.cos(J.dir) * J.spd; b.vy = Math.sin(J.dir) * J.spd; }
+        b.x += b.vx * h; b.y += b.vy * h; J.t = Math.min(J.T, J.t + h);
+        b.z = 4 * J.H * J.t * (J.T - J.t) / (J.T * J.T);
+        if (J.t >= J.T - 1e-9) this.landJump();
+        return;
+      }
       if (b.mode === 'lunge') {
         const L = b.lunge;
         const spd = L.t < L.tf - 1e-9 ? L.R * L.df / L.tf : L.R * (1 - L.df) / (L.T - L.tf);
@@ -1916,7 +1979,7 @@
           bodySpeed: v, carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), drop: true, dropZ: d.fromZ, dropFrom: d.fromKind });
         b.x += res.nx * res.pen; b.y += res.ny * res.pen;
         this.emit('land', { car: c.id, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level, fromZ: d.fromZ, h: d.h, fromKind: d.fromKind });
-        b.mode = 'knock'; b.lunge = null; b.knockT = 0; b.knockVx = ph.knock.x; b.knockVy = ph.knock.y; b.vx = ph.knock.x; b.vy = ph.knock.y;
+        const kn = this.bounce(ph.knock); b.mode = 'knock'; b.lunge = null; b.knockT = 0; b.knockVx = kn.x; b.knockVy = kn.y; b.vx = kn.x; b.vy = kn.y;
         return;
       }
       this.emit('land', { car: null, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level, fromZ: d.fromZ, h: d.h, fromKind: d.fromKind });
@@ -2902,7 +2965,14 @@
         c.spent = true;
         const plate = b.level === 0 && this.surfaceAt(b.x, b.y) === 'plate' ? P['damage.plateMultiplier'] : 1; // a calibrated plate scores more (7.3)
         const hw = c.deck ? P['damage.deckMultiplier'] : 1; // P5 (Edit 50): a highway hit scores more
-        this.run.points += assessed * plate * hw;
+        let combo = 1, mult = 1; // Edit 75: a hit within scoring.comboWindow of the last chains a combo; each link adds scoring.comboStep, to scoring.comboMax
+        if (P['proto.combo']) {
+          combo = b.combo && this.t - b.combo.t <= P['scoring.comboWindow'] + 1e-9 ? b.combo.n + 1 : 1;
+          mult = Math.min(P['scoring.comboMax'], 1 + P['scoring.comboStep'] * (combo - 1));
+          b.combo = { n: combo, t: this.t, mult };
+        }
+        this.run.points += assessed * plate * hw * mult;
+        if (combo > 1) { this.emit('combo', { n: combo, mult, bonus: Math.round(assessed * plate * hw * (mult - 1)), car: c.id }); this.mile('firstCombo', { n: combo }); }
         const bait = ct.carState === 'committed' || ct.carState === 'expiring' || ct.carState === 'interrupted';
         let learned = null;
         if (P['proto.learningEnabled'] && lost > 0) {
@@ -2919,9 +2989,10 @@
         const ev = { car: c.id, model: c.model, cls: c.cls, zone: ct.zone, part, closing: +ct.closing.toFixed(3),
           angle: +ct.ph.angle.toFixed(1), dv: +ct.ph.dvd.toFixed(2), strike: +ct.ph.un.toFixed(2),
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
-          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, highway: hw > 1, drop: !!ct.drop, deck: !!c.deck, dropZ: ct.drop ? ct.dropZ : 0, dropFrom: ct.drop ? ct.dropFrom : null };
+          carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, highway: hw > 1, drop: !!ct.drop, deck: !!c.deck, dropZ: ct.drop ? ct.dropZ : 0, dropFrom: ct.drop ? ct.dropFrom : null,
+          combo, mult, jump: !!ct.jump, ricochet: !!ct.ricochet };
         this.emit('impact', ev); b.hits.push(ev);
-        this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed * plate * hw, mult: hw, t: this.t, zone: ct.zone, angle: ct.ph.angle, layer: lay(c) });
+        this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed * plate * hw * mult, mult: hw, combo, cmult: mult, t: this.t, zone: ct.zone, angle: ct.ph.angle, layer: lay(c) });
         this.mile('firstHit');
         if (bait) this.mile('firstBaitHit');
         if (ct.cause === 'cone' && bait) this.mile('firstConeAssistHit');
@@ -3274,9 +3345,9 @@
     // ----- menus
     continueReport() { if (this.phase === 'report') { this.phase = 'shop'; this.emit('shop-open', { credits: this.run.credits }); } }
     canBuy(n) {
-      const node = NODES[n], r = this.run;
+      const node = NODES[n], r = this.run, n4 = this.P['proto.input.fourButtons'] && NODES4[n], pre = n4 && 'pre' in n4 ? n4.pre : node && node.pre;
       if (!node || r.owned[n]) return { ok: false, why: 'owned' };
-      if (node.pre && !r.owned[node.pre]) return { ok: false, why: 'needs ' + NODES[node.pre].name };
+      if (pre && !r.owned[pre]) return { ok: false, why: 'needs ' + NODES[pre].name };
       const price = this.P[node.price];
       if (r.credits < price) return { ok: false, why: 'short by ' + (price - r.credits) };
       return { ok: true, price };
@@ -3308,7 +3379,7 @@
     }
   }
 
-  const api = { Sim, REG, PROTO, OVERRIDES, NODES, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
+  const api = { Sim, REG, PROTO, OVERRIDES, NODES, NODES4, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
     planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, laneEnds, seamSight, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, checkZone, buildableArea, zHeight, stairRun, LEVELS3,
     lanesOf, makePath, offsetPts, fillet, filletAny, arcPts, roundaboutCenter, skeletons, routeCenter, edgePoint, deckLanesOf, fleetClass, minBend }; // P4: the Turn Lab builds its tracks with these
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

@@ -1,9 +1,10 @@
-// DUMMIES controls prototype (GDD Edit 74): gamepads, read robustly. No Phaser; the tests run it on emulated pads.
+// DUMMIES gamepads (GDD Edits 74–75), read robustly. Shared by the controls prototype (two actions) and Prototype 6.5 (four:
+// A dash, B jump, X grab, Y throw). No Phaser; the tests run it on emulated pads.
 // - Every connected pad is read; the one used last drives the dummy (a phantom device in slot 0 no longer hides the real pad).
 // - Standard mapping: left stick or d-pad (12–15) moves, right stick aims, A/RT lunge, B/LB grab, SELECT, START.
 // - Other mappings: axes 0/1 move; the d-pad from a hat axis (a value outside ±1 at rest, eight steps inside it) or from
 //   axes 6/7; buttons 0 and 1 lunge and grab until the player sets them up.
-// - Setup: press the button for LUNGE, then for GRAB. Saved per pad name in this browser.
+// - Setup: press the button for each action in turn (cfg.actions). Saved per pad name and action set in this browser.
 // - A monitor line names the pad, its mapping, the buttons held and the axes, so a pad that misbehaves can be read.
 (function (root) {
   'use strict';
@@ -12,12 +13,17 @@
     get(k) { try { return JSON.parse(root.localStorage.getItem(k) || 'null'); } catch (e) { return null; } },
     set(k, v) { try { root.localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private window: keep it for this visit */ } },
   };
+  // cfg.actions: the action names in setup order; cfg.std / cfg.other: default buttons per action for standard and other mappings;
+  // cfg.store: the localStorage key's middle part. Default: the controls prototype's LUNGE and GRAB.
+  const DEF = { actions: ['lunge', 'grab'], std: { lunge: [0, 7], grab: [1, 4] }, other: { lunge: [0], grab: [1] }, store: '' };
+  const conf = (cfg) => ({ actions: cfg.actions || DEF.actions, std: cfg.std || DEF.std, other: cfg.other || DEF.other, store: cfg.store != null ? cfg.store : DEF.store });
   function create() { return { info: new Map(), active: null, prev: {}, setup: null, setupId: null, startHeld: 0, maps: new Map() }; }
   const pressed = (b) => !!(b && (b.pressed || b.value > 0.5));
-  function mapFor(st, pad) {
+  const keyOf = (c, id) => 'dummies.pad.' + (c.store ? c.store + '.' : '') + id;
+  function mapFor(st, pad, c) {
     if (st.maps.has(pad.id)) return st.maps.get(pad.id);
-    const saved = store.get('dummies.pad.' + pad.id);
-    const m = saved || (pad.mapping === 'standard' ? { lunge: [0, 7], grab: [1, 4], sel: 8, start: 9, std: true } : { lunge: [0], grab: [1], sel: 8, start: 9, std: false });
+    const saved = store.get(keyOf(c, pad.id)), std = pad.mapping === 'standard', d = std ? c.std : c.other;
+    const m = saved && c.actions.every((a) => Array.isArray(saved[a])) ? saved : Object.assign({ sel: 8, start: 9, std }, ...c.actions.map((a) => ({ [a]: (d[a] || []).slice() })));
     st.maps.set(pad.id, m); return m;
   }
   function hatDir(v) { // a hat axis's value → direction, or null at rest
@@ -26,11 +32,13 @@
     if (best > 0.08) return null;
     const a = (-90 + k * 45) * Math.PI / 180; return { x: Math.round(Math.cos(a) * 1e6) / 1e6, y: Math.round(Math.sin(a) * 1e6) / 1e6 };
   }
-  // pads: navigator.getGamepads() (any array-like). cfg: { dead, outer, aimDead, holdSetup, stick }. dt in s.
-  // Returns { move, aim, lunge, grab, sel, start, id, mapping, monitor, setup, count }.
+  // pads: navigator.getGamepads() (any array-like). cfg: { dead, outer, aimDead, holdSetup, stick, actions, std, other, store }. dt in s.
+  // Returns { move, aim, <action>: fresh press, held: { <action> }, sel, start, startHeld, id, mapping, map, monitor, setup, count }.
   function read(st, pads, cfg, dt) {
+    const c = conf(cfg);
     const list = []; for (let i = 0; i < (pads ? pads.length : 0); i++) { const p = pads[i]; if (p && p.connected !== false) list.push(p); }
-    const out = { move: null, aim: null, lunge: false, grab: false, sel: false, start: false, id: null, mapping: null, monitor: null, setup: st.setup, count: list.length };
+    const out = { move: null, aim: null, held: {}, sel: false, start: false, startHeld: false, id: null, mapping: null, monitor: null, setup: st.setup, count: list.length };
+    for (const a of c.actions) { out[a] = false; out.held[a] = false; }
     if (!list.length) { st.active = null; return out; }
     for (const p of list) { // learn each pad's hat axis (it rests outside ±1) and find the pads in use
       let inf = st.info.get(p.id + '#' + p.index); if (!inf) { inf = { hat: -1, rest: p.axes.map((v) => v) }; st.info.set(p.id + '#' + p.index, inf); }
@@ -39,25 +47,30 @@
       if (busy) st.active = p.id + '#' + p.index;
     }
     let pad = list.find((p) => p.id + '#' + p.index === st.active) || list.find((p) => p.mapping === 'standard') || list.slice().sort((a, b) => b.buttons.length - a.buttons.length)[0]; // last used; else standard; else the most buttons
-    const key = pad.id + '#' + pad.index, inf = st.info.get(key), m = mapFor(st, pad), bt = (i) => pressed(pad.buttons[i]);
-    out.id = pad.id; out.mapping = pad.mapping || 'none'; out.map = { lunge: m.lunge.slice(), grab: m.grab.slice(), std: !!m.std };
+    const key = pad.id + '#' + pad.index, inf = st.info.get(key), m = mapFor(st, pad, c), bt = (i) => pressed(pad.buttons[i]);
+    out.id = pad.id; out.mapping = pad.mapping || 'none'; out.map = Object.assign({ std: !!m.std }, ...c.actions.map((a) => ({ [a]: m[a].slice() })));
     const held = []; pad.buttons.forEach((b, i) => { if (pressed(b)) held.push(i); });
     const prev = st.prev[key] || []; const fresh = held.filter((i) => !prev.includes(i)); st.prev[key] = held;
-    // setup: the next fresh button is LUNGE, then GRAB
+    // setup: the next fresh button is the first action's, then the next action's, and so on (a button used once is skipped)
     if (st.setup) {
+      if (!c.actions.includes(st.setup)) st.setup = c.actions[0];
       if (fresh.length) {
-        const i = fresh[0];
-        if (st.setup === 'lunge') { m.lunge = [i]; st.setup = 'grab'; }
-        else if (st.setup === 'grab' && !m.lunge.includes(i)) { m.grab = [i]; m.std = false; st.setup = null; store.set('dummies.pad.' + pad.id, m); }
+        const k = c.actions.indexOf(st.setup), taken = c.actions.slice(0, k).flatMap((a) => m[a]), i = fresh.find((b) => !taken.includes(b));
+        if (i != null) {
+          m[st.setup] = [i];
+          if (k + 1 < c.actions.length) st.setup = c.actions[k + 1];
+          else { m.std = false; st.setup = null; store.set(keyOf(c, pad.id), m); }
+        }
       }
       out.setup = st.setup;
       out.monitor = monitor(pad, held, inf); return out;
     }
     // hold START to set up the buttons; a short press (released before the hold) toggles help
-    const startFree = m.start != null && !m.lunge.includes(m.start) && !m.grab.includes(m.start);
+    const startFree = m.start != null && !c.actions.some((a) => m[a].includes(m.start));
+    out.startHeld = startFree && bt(m.start) && st.startHeld > 0;
     if (startFree && bt(m.start)) { if (st.startHeld >= 0) st.startHeld += dt; }
     else { if (st.startHeld > 0 && st.startHeld < cfg.holdSetup) out.start = true; st.startHeld = 0; }
-    if (st.startHeld >= cfg.holdSetup) { st.startHeld = -1; st.setup = 'lunge'; out.setup = st.setup; out.monitor = monitor(pad, held, inf); return out; } // -1: spent until released
+    if (st.startHeld >= cfg.holdSetup) { st.startHeld = -1; st.setup = c.actions[0]; out.setup = st.setup; out.monitor = monitor(pad, held, inf); return out; } // -1: spent until released
     // move: d-pad buttons (standard), hat or axes 6/7 (other mappings), else the left stick
     let dx = 0, dy = 0;
     if (pad.mapping === 'standard') { dx = (bt(15) ? 1 : 0) - (bt(14) ? 1 : 0); dy = (bt(13) ? 1 : 0) - (bt(12) ? 1 : 0); }
@@ -69,16 +82,16 @@
       const s = cfg.stick(ax, ay, cfg.dead, cfg.outer); if (s.m > 0) out.move = s;
     }
     if (pad.mapping === 'standard') { const rx = pad.axes[2] || 0, ry = pad.axes[3] || 0, r = Math.hypot(rx, ry); if (r > cfg.aimDead) out.aim = { x: rx / r, y: ry / r }; }
-    out.lunge = fresh.some((i) => m.lunge.includes(i)); out.grab = fresh.some((i) => m.grab.includes(i));
-    out.sel = m.sel != null && fresh.includes(m.sel);
+    for (const a of c.actions) { out[a] = fresh.some((i) => m[a].includes(i)); out.held[a] = held.some((i) => m[a].includes(i)); }
+    out.sel = m.sel != null && fresh.includes(m.sel) && !c.actions.some((a) => m[a].includes(m.sel));
     out.monitor = monitor(pad, held, inf); return out;
   }
   function monitor(pad, held, inf) {
     const ax = pad.axes.slice(0, 10).map((v, i) => (i === inf.hat ? 'h' : '') + (v >= 0 ? '+' : '') + v.toFixed(2)).join(' ');
     return `#${pad.index} ${pad.id.slice(0, 34)} · ${pad.mapping || 'no'} mapping · buttons ${held.length ? held.join(' ') : '—'} · axes ${ax}`;
   }
-  function startSetup(st) { st.setup = 'lunge'; }
-  function resetMap(st, id) { st.maps.delete(id); store.set('dummies.pad.' + id, null); }
+  function startSetup(st, cfg) { st.setup = conf(cfg || {}).actions[0]; }
+  function resetMap(st, id, cfg) { st.maps.delete(id); store.set(keyOf(conf(cfg || {}), id), null); }
   const api = { create, read, startSetup, resetMap, hatDir, HAT };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.PADS = api;
 })(typeof window !== 'undefined' ? window : globalThis);

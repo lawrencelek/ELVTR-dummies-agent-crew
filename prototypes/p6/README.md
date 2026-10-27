@@ -1,10 +1,12 @@
-# DUMMIES — Prototype 6.4: three districts, managed traffic, ring diagnosis, steady signals
+# DUMMIES — Prototype 6.5: DIRECT turning, four buttons, jump, combos, any gamepad, touch
 
-**Prototype 6.4 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–72 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**Prototype 6.5 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–75 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
-Prototype 6.4 follows 6.3 (Edit 71) with Edit 72: why cars stall at rings, vehicles at 0.9 size, steady roundabout signals. 6.3 (Edit 71) brought smooth turns, turn signals, ring entry, the cone drone, taller cones.
+Prototype 6.5 follows 6.4 (Edit 72) with Edit 75: DIRECT turning; A dash, B jump, X grab, Y throw, each unlocked in the shop; the jumpable tag; combo scoring; Ricochet; gamepads of any kind; landscape touch. 6.4 (Edit 72) brought the ring diagnosis, vehicles at 0.9 size and steady roundabout signals.
 
-- **`dummies_p6_4.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_5.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`p6_5_page.html`:** the same page for hosting (the host adds the document head). Published as a page for phones and gamepads.
+- **`dummies_p6_4.html`:** Prototype 6.4 (Edit 72). Frozen.
 - **`dummies_p6_3.html`:** Prototype 6.3 (Edit 71). Frozen.
 - **`dummies_p6_2.html`:** Prototype 6.2 (Edit 70). Frozen.
 - **`dummies_p6_1.html`:** Prototype 6.1 (Edit 69). Frozen.
@@ -12,12 +14,45 @@ Prototype 6.4 follows 6.3 (Edit 71) with Edit 72: why cars stall at rings, vehic
 - **`world6.js`:** the world. Art, edges, traffic, play data and the player sim (`Sim6`) per district.
 - **`circus_valley.js`:** the Waterfront plan (Edits 58–61). One source for its layout.
 - **`test_p6.js`:** headless checks, the release tests included. `node test_p6.js [minutes]`.
+- **`test_p65.js`:** Prototype 6.5's checks: DIRECT, jump, jumpable tag, X/Y, combo, Ricochet; keys, an emulated USB joypad, touch. `node test_p65.js [screenshot folder]`.
+- **`tools/p65_shots.js`:** the jump, combo and phone shots. `node tools/p65_shots.js [folder]`.
+- **`../controls/pads.js`:** gamepads, shared with the controls prototype. Bundled by `build.py`.
 - **`tools/p6_traffic.js`:** the traffic soak. `node tools/p6_traffic.js [seconds per screen] [district]`. `P6OV=key=value,…` overrides registry values.
 - **`tools/p6_rings.js`:** roundabout entries: waits at the line, signals. `node tools/p6_rings.js [seconds per screen] [district|all] [key=value …]`.
 - **`tools/p6_ringstall.js`:** why cars stall at rings: stopped time by phase and cause, queue heads, ring jams, signal changes. `node tools/p6_ringstall.js [seconds per screen] [district|all] [watch=B2] [block=x,y] [seed=n] [key=value …]`.
 - **`tools/p6_walk.js`:** the walking test. `node tools/p6_walk.js [district]`.
 - **`tools/p6_nav.js`:** the navigation checks: dead space, garden paths, flight forecourts, one ground. `node tools/p6_nav.js [district]`.
 - **`tools/p6_audit.js`:** the playtest audit on all 27 screens. `node tools/p6_audit.js [district]`.
+
+## Controls (6.5)
+
+| | Keys | Gamepad | Touch (landscape) | Unlocked by |
+|---|---|---|---|---|
+| Move | WASD / arrows (8 directions) | left stick or d-pad | analog stick, left column | — |
+| Dash | SPACE or K | A (or RT) | A, the diamond's foot | start |
+| Jump | L or SHIFT | B | B, right | Jump (Legs) |
+| Grab / place | J or E | X | X, left | Carry (Arms) |
+| Throw | I or Q | Y | Y, top | Throw (Arms) |
+| Pause | ESC or P | START | ❚❚ chip | — |
+| Pad setup | G | hold START `proto.input.padSetupHoldSeconds` (1 s) | — | — |
+
+- **DIRECT** (`proto.turnModel` 2): facing follows the input at `movement.directTurnRate` (1080°/s); no turning slow-down; no reversal stop; the dash goes where the player points; speed scales with tilt.
+- **Jump:** `upgrades.jumpDistance` (112) in `upgrades.jumpAirtime` (0.5 s), `upgrades.jumpHeight` (44) at the top; `battery.jumpCost` (1).
+  - Clears a car lower than the arc: sedans and vans; not buses.
+  - Clears a piece tagged jumpable above `world.jumpableHeight` (20): planters drawn ≤ `proto.art.jumpableTop` (5 art px), ≤ `world.jumpableDepth` (48) deep.
+  - Over a walkway's handrail, a highway parapet or a ring's: drops to the level below, onto traffic.
+- **Combo:** a hit within `scoring.comboWindow` (1.5 s) of the last scores × (1 + `scoring.comboStep` (0.5) per link), to `scoring.comboMax` (×3).
+- **Ricochet** (Legs, needs Jump): the bounce off a hit at `upgrades.ricochetScale` (2) × speed and distance.
+- **Shop:** Torso (Spine), Legs (Jump, Ricochet), Arms (Carry, Throw), Battery (Big battery). Hips leaves: no job under DIRECT (D48).
+- **Gamepads:** every pad read, the last used drives; hat d-pads; setup saved per pad. The status line and the pause screen show what the pad sends.
+- **Touch:** the stick floats to the thumb; the diamond's locked buttons are dimmed. Upright: a "turn your phone sideways" screen.
+- **Tuning (T):** install modules for a test run; outline what a jump clears; set up a gamepad.
+
+![Jump over a van](docs/p75_jump.png)
+
+![Combo ×1.5](docs/p75_combo.png)
+
+![Phone, sideways](docs/p75_phone.png)
 
 ## Districts
 
@@ -194,8 +229,10 @@ Prototype 6.4 follows 6.3 (Edit 71) with Edit 72: why cars stall at rings, vehic
 - Copy for the new toasts is literal in `game.js`. Not yet in the content pipeline.
 - Left turns at a two-lane ring join the outer lane, then change lanes (D43).
 - Waterfront's circus runs at capacity: cars still wait at its lines (D44).
-- Parkland A2's street-emptiness check sits at its limit (20% of 3 min with the player in B2).
+- Parkland A2's street-emptiness check sits at its limit (20% of 3 min, 21% of 5 min with the player in B2). Same on 6.4's code.
+- Ricochet doubles a short bounce: a dash into a moving flank bounces about 4 units; with Ricochet about 9 (D49).
+- Few Z0 pieces are low enough to jump: P6's planters mostly carry taller hedges. Handrails and parapets carry the jump (D50).
 
 ## Build
 
-`python3 build.py` → `dummies_p6_4.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
+`python3 build.py` → `dummies_p6_5.html` and `p6_5_page.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.

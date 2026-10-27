@@ -3,7 +3,7 @@
    Screen: 640 × 360 art pixels, integer-scaled. Field: 400 × 300 art pixels at (120, 30). HUD and screens: 1280 × 720 reference units. */
 (function () {
   'use strict';
-  const { Sim, NODES, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
+  const { Sim, NODES, NODES4, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
   const W6 = window.WORLD6 || null; // P6 (Edit 62): Parkland, Waterfront, Monument, built by world6.js
   const LEVEL_LIST = W6 ? W6.LEVEL_LIST : window.DUMMIES.LEVEL_LIST;
   const INFO = (id) => (W6 && W6.INFO(id)) || window.DUMMIES.INFO(id);
@@ -44,6 +44,7 @@
   const app = {
     screen: 'title', level: 0, difficulty: 1, sim: null, paused: false, pauseSel: 0, confirmRefuse: false,
     shopCol: 0, shopRow: 0, endSel: 0, tune: {}, lastEv: 0, toast: null, realT: 0, sound: true, tuned: false,
+    device: 'keys', padCmd: null, layoutY: null, showJumpable: false, // Edit 75: the device last used; pad setup; touch zones; the jumpable outline
   };
   const FIELD = {};
   const previews = W6 ? [] : LEVEL_LIST.map((id) => new Sim(id, Object.assign({ 'run.appearances.road': 0 }, FIELD)));
@@ -65,7 +66,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = W6 ? 'P6.4' : 'P5.3'; // Prototype 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = W6 ? 'P6.5' : 'P5.3'; // Prototype 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -142,27 +143,38 @@
     fx.seenScreens = new Set(D ? [app.sim.screenName()] : []);
   }
 
-  // ---------- input
+  // ---------- input. Edit 75 (P6.5): four buttons, as on a gamepad: A dash, B jump, X grab, Y throw.
+  // Keys: Space or K dash (A) · L or Shift jump (B) · J or E grab (X) · I or Q throw (Y): IJKL sits like the pad's diamond.
+  // Gamepads: pads.js (every pad; hat d-pads; buttons set up by the player). Touch: an analog stick and the diamond (below).
+  const FOUR = !!(W6 && W6.P6SIM && W6.P6SIM['proto.input.fourButtons']);
   const held = new Set();
-  const q = { a: 0, b: 0, bUp: 0 };
+  const q = { a: 0, b: 0, bUp: 0, x: 0, y: 0 };
   const menuQ = [];
-  const MAP = {
+  const MAP = FOUR ? {
+    ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
+    Space: 'a', KeyK: 'a', Enter: 'ok', KeyL: 'b', ShiftLeft: 'b', ShiftRight: 'b', Backspace: 'b', KeyJ: 'x', KeyE: 'x', KeyI: 'y', KeyQ: 'y',
+    Escape: 'pause', KeyP: 'pause', KeyT: 'tune', KeyG: 'padsetup',
+  } : {
     ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left',
     ArrowRight: 'right', KeyD: 'right', Space: 'a', KeyJ: 'a', Enter: 'ok', KeyK: 'b', ShiftLeft: 'b',
     ShiftRight: 'b', Escape: 'pause', KeyP: 'pause', KeyT: 'tune',
   };
-  function clearEdges() { q.a = q.b = q.bUp = 0; menuQ.length = 0; }
+  function clearEdges() { q.a = q.b = q.bUp = q.x = q.y = 0; menuQ.length = 0; }
   function inUI(e) { return e.target && e.target.closest && e.target.closest('#tune, #trace, button'); }
   window.addEventListener('keydown', (e) => {
     const k = MAP[e.code];
     if (!k || inUI(e)) return;
     e.preventDefault();
-    Snd.init();
+    Snd.init(); app.device = 'keys';
     if (k === 'tune') { if (!e.repeat) toggleTune(); return; }
+    if (k === 'padsetup') { if (!e.repeat) app.padCmd = pad.st && pad.st.setup ? 'cancel' : 'setup'; return; }
     held.add(k);
     if (e.repeat) return;
     if (k === 'a') { q.a++; menuQ.push('ok'); }
     else if (k === 'b') { q.b++; menuQ.push('back'); }
+    else if (k === 'x') q.x++;
+    else if (k === 'y') q.y++;
+    else if (k === 'pause' && pad.st && pad.st.setup) app.padCmd = 'cancel';
     else menuQ.push(k);
   });
   window.addEventListener('keyup', (e) => {
@@ -174,40 +186,164 @@
   window.addEventListener('blur', () => { held.clear(); if (app.screen === 'game' && app.sim && !app.sim.run.ending) app.paused = true; });
   cv.addEventListener('pointerdown', () => { cv.focus(); Snd.init(); });
 
-  const pad = { prev: {}, mx: 0, my: 0, bHeld: false };
-  function pollPad() {
+  // Gamepads (Edit 75: pads.js, shared with the controls prototype). Every connected pad is read; the last one used drives.
+  // Standard mapping: stick or d-pad moves; A (or RT) dash, B jump, X grab, Y throw; START pauses; hold START (or G) to set up.
+  const radial = (x, y, dz, outer) => { const m = Math.hypot(x, y); if (m < dz) return { x: 0, y: 0, m: 0 }; const k = clamp((m - dz) / Math.max(1e-6, outer - dz), 0, 1); return { x: x / m * k, y: y / m * k, m: k }; };
+  const PADCFG = FOUR
+    ? { actions: ['a', 'b', 'x', 'y'], std: { a: [0, 7], b: [1], x: [2], y: [3] }, other: { a: [0], b: [1], x: [2], y: [3] }, store: 'p6' }
+    : { actions: ['a', 'b'], std: { a: [0], b: [1] }, other: { a: [0], b: [1] }, store: 'p6' };
+  Object.assign(PADCFG, { dead: pv('proto.input.deadzone'), outer: pv('proto.input.stickOuter'), aimDead: 2, holdSetup: pv('proto.input.padSetupHoldSeconds'), stick: radial });
+  const pad = { st: window.PADS ? window.PADS.create() : null, mx: 0, my: 0, bHeld: false, prevB: false, info: null, dirs: {}, blocked: false };
+  const PAD_NAME = { a: 'DASH (A)', b: 'JUMP (B)', x: 'GRAB (X)', y: 'THROW (Y)' };
+  function pollPad(dt) {
     pad.mx = pad.my = 0; pad.bHeld = false;
-    if (pad.blocked) return;
-    let gp = null;
-    try { gp = navigator.getGamepads ? Array.from(navigator.getGamepads()).find((g) => g && g.connected) : null; }
-    catch (e) { pad.blocked = true; return; } // embedded previews can forbid the gamepad feature; keyboard still works
-    if (!gp) return;
-    const bt = (i) => !!(gp.buttons[i] && gp.buttons[i].pressed);
-    const ax = Math.abs(gp.axes[0] || 0) > 0.25 ? gp.axes[0] : 0, ay = Math.abs(gp.axes[1] || 0) > 0.25 ? gp.axes[1] : 0;
-    pad.mx = ax + (bt(15) ? 1 : 0) - (bt(14) ? 1 : 0); pad.my = ay + (bt(13) ? 1 : 0) - (bt(12) ? 1 : 0);
-    pad.bHeld = bt(1);
-    const now = { a: bt(0), b: bt(1), start: bt(9), up: pad.my < -0.6, down: pad.my > 0.6, left: pad.mx < -0.6, right: pad.mx > 0.6 };
-    const edge = (k) => now[k] && !pad.prev[k];
-    if (edge('a')) { q.a++; menuQ.push('ok'); Snd.init(); }
-    if (edge('b')) { q.b++; menuQ.push('back'); }
-    if (!now.b && pad.prev.b) q.bUp++;
-    if (edge('start')) menuQ.push('pause');
-    for (const d of ['up', 'down', 'left', 'right']) if (edge(d)) menuQ.push(d);
-    pad.prev = now;
+    if (!pad.st) return;
+    let list = null;
+    try { list = navigator.getGamepads ? navigator.getGamepads() : null; pad.blocked = false; }
+    catch (e) { pad.blocked = true; } // a hosting page can forbid the gamepad feature; keys and touch still work
+    if (app.padCmd === 'setup') { window.PADS.startSetup(pad.st, PADCFG); toast('Pad setup: press the button for ' + PAD_NAME[PADCFG.actions[0]]); }
+    else if (app.padCmd === 'cancel') pad.st.setup = null;
+    app.padCmd = null;
+    const was = pad.st.setup, o = window.PADS.read(pad.st, list, PADCFG, dt || 1 / 60); pad.info = o;
+    if (o.setup && o.setup !== was) toast('Pad setup: press the button for ' + PAD_NAME[o.setup]);
+    if (was && !o.setup) toast('Pad buttons saved for this browser');
+    if (!o.id || o.setup) { pad.dirs = {}; pad.prevB = false; return; }
+    if (o.move) { pad.mx = o.move.x; pad.my = o.move.y; app.device = 'pad'; }
+    pad.bHeld = !!o.held.b;
+    if (o.a) { q.a++; menuQ.push('ok'); Snd.init(); app.device = 'pad'; }
+    if (o.b) { q.b++; menuQ.push('back'); app.device = 'pad'; }
+    if (!pad.bHeld && pad.prevB) q.bUp++;
+    pad.prevB = pad.bHeld;
+    if (FOUR && o.x) { q.x++; app.device = 'pad'; }
+    if (FOUR && o.y) { q.y++; app.device = 'pad'; }
+    if (o.start) menuQ.push('pause'); // a short press; holding START opens setup
+    const now = { up: pad.my < -0.6, down: pad.my > 0.6, left: pad.mx < -0.6, right: pad.mx > 0.6 };
+    for (const d of ['up', 'down', 'left', 'right']) if (now[d] && !pad.dirs[d]) menuQ.push(d);
+    pad.dirs = now;
   }
-  function moveVec() {
-    let mx = (held.has('right') ? 1 : 0) - (held.has('left') ? 1 : 0) + pad.mx;
-    let my = (held.has('down') ? 1 : 0) - (held.has('up') ? 1 : 0) + pad.my;
+  function moveVec() { // keys: 8 directions; pad and touch: analog. Summed, at most 1
+    let mx = (held.has('right') ? 1 : 0) - (held.has('left') ? 1 : 0) + pad.mx + TOUCH.move.x;
+    let my = (held.has('down') ? 1 : 0) - (held.has('up') ? 1 : 0) + pad.my + TOUCH.move.y;
     const m = Math.hypot(mx, my);
     if (m > 1) { mx /= m; my /= m; }
     return { mx, my };
   }
   function buildCmd() {
     const v = moveVec();
-    const cmd = { mx: v.mx, my: v.my, aPress: q.a > 0, bPress: q.b > 0, bRelease: q.bUp > 0, bHeld: held.has('b') || pad.bHeld };
-    q.a = q.b = q.bUp = 0;
+    const cmd = { mx: v.mx, my: v.my, aPress: q.a > 0, bPress: q.b > 0, bRelease: q.bUp > 0, bHeld: held.has('b') || pad.bHeld, xPress: q.x > 0, yPress: q.y > 0 };
+    q.a = q.b = q.bUp = q.x = q.y = 0;
     return cmd;
   }
+
+  // ---------- touch (Edit 75): landscape only. An analog stick under the district map (left column); the diamond Y, X, B, A
+  // under the chassis (right column), as on a gamepad. Drawn on an overlay over the stage; the canvas keeps its integer scale.
+  // The stick floats to the thumb (proto.input.touchFloat); dead zone proto.input.touchDeadzone, full at proto.input.touchOuter.
+  const TOUCH = { on: false, el: null, g: null, move: { x: 0, y: 0, m: 0 }, ptr: new Map(), base: null, knob: null, sid: null, L: null, down: {}, portrait: false, dpr: 1 };
+  const FACE = [['y', 0, -1, 'Y', 'THROW', '#4FC3E8'], ['x', -1, 0, 'X', 'GRAB', '#3D7BFF'], ['b', 1, 0, 'B', 'JUMP', '#FF4FD8'], ['a', 0, 1, 'A', 'DASH', '#F5C542']];
+  const FACE_NODE = { a: null, b: 'jump', x: 'carry', y: 'throw' };
+  function touchOn() {
+    if (TOUCH.on) return;
+    TOUCH.on = true; document.body.classList.add('touch');
+    const el = document.createElement('canvas'); el.id = 'touchpad'; el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:5;touch-action:none;';
+    document.body.appendChild(el); TOUCH.el = el; TOUCH.g = el.getContext('2d');
+    const rot = document.createElement('div'); rot.id = 'rotate'; rot.innerHTML = '<div><b>Turn your phone sideways</b><br>DUMMIES plays in landscape.<br><small>Tap for full screen, where the phone allows.</small></div>';
+    document.body.appendChild(rot); TOUCH.rot = rot;
+    rot.addEventListener('pointerdown', fullscreen);
+    for (const t of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel']) el.addEventListener(t, touchEvent, { passive: false });
+    resize();
+  }
+  function fullscreen() {
+    const lock = () => { try { const o = screen.orientation; if (o && o.lock) o.lock('landscape').catch(() => {}); } catch (e) { /* not offered */ } };
+    try { const st = document.documentElement; if (document.fullscreenElement) return; if (st.requestFullscreen) st.requestFullscreen({ navigationUI: 'hide' }).then(lock, () => {}); else lock(); } catch (e) { /* not offered */ }
+  }
+  function touchLayout() { // CSS px. Zones: left of the field, below the district map; right of the field, below the chassis
+    const R = cv.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight, k = R.width / VW, m = pv('ui.touch.margin');
+    const colW = R.left + FX * k, top0 = R.top + (app.layoutY ? app.layoutY.left : 530) * k, top1 = R.top + (app.layoutY ? app.layoutY.right : 450) * k;
+    const zl = { x0: 0, x1: colW, y0: top0, y1: vh }, zr = { x0: R.left + (FX + FW) * k, x1: vw, y0: top1, y1: vh };
+    const sr = Math.max(28, Math.min(pv('ui.touch.stickRadius'), (zl.x1 - zl.x0) / 2 - m / 2, (zl.y1 - zl.y0) / 2 - m / 2));
+    const home = { x: Math.min(zl.x1 - sr - 4, Math.max(zl.x0 + m + sr, R.left + FX * k / 2)), y: zl.y1 - m - sr }; // clear of the field
+    const fr = Math.max(16, Math.min(pv('ui.touch.faceRadius'), (zr.x1 - zr.x0 - m) / 4.6, (zr.y1 - zr.y0 - m) / 4.6)), sp = fr * 1.3;
+    const c = { x: Math.max(zr.x0 + sp + fr + 4, Math.min(zr.x1 - m - sp - fr, R.left + (FX + FW + (VW - FX - FW) / 2) * k)), y: zr.y1 - m - sp - fr }; // clear of the field
+    const face = FACE.map(([id, dx, dy, l, w, col]) => ({ id, x: c.x + dx * sp, y: c.y + dy * sp, r: fr, l, w, col }));
+    const side = R.left >= 74, chip = side ? { pause: { x: R.left - 70, y: Math.max(4, R.top + 4), w: 66, h: 28 }, full: { x: R.left - 70, y: Math.max(4, R.top + 4) + 34, w: 66, h: 28 } } // in the margin beside the screen
+      : { pause: { x: R.left + 4, y: Math.max(2, R.top + 2), w: 66, h: 24 }, full: null }; // no margin: over the brand; full screen from the upright prompt
+    return { zl, zr, sr, home, face, chip, R };
+  }
+  function inChip(c, x, y) { return x >= c.x && x <= c.x + c.w && y >= c.y && y <= c.y + c.h; }
+  function touchEvent(e) {
+    if (e.pointerType === 'mouse') return; // the overlay is for fingers; a mouse plays through keys
+    e.preventDefault(); Snd.init(); app.device = 'touch';
+    const L = TOUCH.L || (TOUCH.L = touchLayout()), x = e.clientX, y = e.clientY, id = e.pointerId;
+    if (e.type === 'pointerdown') {
+      if (TOUCH.portrait) return;
+      if (inChip(L.chip.pause, x, y)) { menuQ.push('pause'); return; }
+      if (L.chip.full && inChip(L.chip.full, x, y)) { fullscreen(); return; }
+      const f = L.face.find((q2) => Math.hypot(x - q2.x, y - q2.y) <= q2.r * 1.25);
+      if (f) { TOUCH.ptr.set(id, f.id); TOUCH.down[f.id] = true; if (f.id === 'a') { q.a++; menuQ.push('ok'); } else if (f.id === 'b') { q.b++; menuQ.push('back'); } else q[f.id]++; return; }
+      if (x < L.zl.x1 + L.sr * 0.5 && y > L.zl.y0 - L.sr * 0.5) { // the left zone takes the thumb
+        TOUCH.ptr.set(id, 'stick'); TOUCH.sid = id;
+        TOUCH.base = pv('proto.input.touchFloat') ? { x: clamp(x, L.sr * 0.6, L.zl.x1), y: clamp(y, L.zl.y0, window.innerHeight - L.sr * 0.6) } : { x: L.home.x, y: L.home.y };
+        stickAt(x, y);
+      }
+      return;
+    }
+    const kind = TOUCH.ptr.get(id);
+    if (e.type === 'pointermove') { if (kind === 'stick') stickAt(x, y); return; }
+    TOUCH.ptr.delete(id); // up or cancel
+    if (kind === 'stick') { TOUCH.sid = null; TOUCH.base = null; TOUCH.knob = null; TOUCH.move = { x: 0, y: 0, m: 0 }; touchDirs(); }
+    else if (kind) { TOUCH.down[kind] = false; if (kind === 'b') q.bUp++; }
+  }
+  function stickAt(x, y) { // analog: any angle; speed by deflection. The base follows a thumb that runs past the rim
+    const L = TOUCH.L, R = L.sr, b = TOUCH.base;
+    let dx = x - b.x, dy = y - b.y; const l = Math.hypot(dx, dy);
+    if (l > R) { b.x += dx / l * (l - R); b.y += dy / l * (l - R); dx = x - b.x; dy = y - b.y; }
+    TOUCH.knob = { x, y };
+    TOUCH.move = radial(dx / R, dy / R, pv('proto.input.touchDeadzone'), pv('proto.input.touchOuter'));
+    touchDirs();
+  }
+  function touchDirs() { // menus: the stick's direction, as edges
+    const mv = TOUCH.move, now = { up: mv.y < -0.6, down: mv.y > 0.6, left: mv.x < -0.6, right: mv.x > 0.6 }, pr = TOUCH.dirs || {};
+    for (const d of ['up', 'down', 'left', 'right']) if (now[d] && !pr[d]) menuQ.push(d);
+    TOUCH.dirs = now;
+  }
+  function drawTouch() {
+    const el = TOUCH.el; if (!el) return;
+    const dpr = window.devicePixelRatio || 1, w = Math.round(window.innerWidth * dpr), h = Math.round(window.innerHeight * dpr);
+    if (el.width !== w || el.height !== h) { el.width = w; el.height = h; }
+    const g = TOUCH.g; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+    TOUCH.portrait = window.innerHeight > window.innerWidth;
+    if (TOUCH.rot) TOUCH.rot.hidden = !TOUCH.portrait;
+    if (TOUCH.portrait) { TOUCH.ptr.clear(); TOUCH.move = { x: 0, y: 0, m: 0 }; TOUCH.base = null; return; }
+    const L = TOUCH.L = touchLayout(), s = app.sim;
+    // the stick
+    const b = TOUCH.base || L.home, R = L.sr, mv = TOUCH.move;
+    g.fillStyle = 'rgba(10,16,32,0.55)'; g.beginPath(); g.arc(b.x, b.y, R, 0, TAU); g.fill();
+    g.lineWidth = 2; g.strokeStyle = 'rgba(63,208,255,0.75)'; g.stroke();
+    g.lineWidth = 1; g.strokeStyle = 'rgba(63,208,255,0.35)'; for (const f of [pv('proto.input.touchDeadzone'), pv('proto.input.touchOuter')]) { g.beginPath(); g.arc(b.x, b.y, R * f, 0, TAU); g.stroke(); }
+    if (mv.m > 0) { const a = Math.atan2(mv.y, mv.x); g.lineWidth = 4; g.strokeStyle = '#3FD0FF'; g.beginPath(); g.arc(b.x, b.y, R + 5, a - 0.35, a + 0.35); g.stroke(); }
+    const kn = TOUCH.knob || b; let kx = kn.x - b.x, ky = kn.y - b.y; const kl = Math.hypot(kx, ky); if (kl > R) { kx *= R / kl; ky *= R / kl; }
+    g.fillStyle = mv.m > 0 ? 'rgba(63,208,255,0.95)' : 'rgba(223,231,236,0.4)'; g.beginPath(); g.arc(b.x + kx, b.y + ky, R * 0.42, 0, TAU); g.fill();
+    // the diamond: a button not yet installed is dimmed
+    for (const f of L.face) {
+      const node = FACE_NODE[f.id], live = !node || (s && s.has(node)), dn = TOUCH.down[f.id];
+      g.globalAlpha = live ? (dn ? 1 : 0.88) : 0.32;
+      g.fillStyle = f.col; g.beginPath(); g.arc(f.x, f.y, f.r * (dn ? 0.93 : 1), 0, TAU); g.fill();
+      g.lineWidth = 2; g.strokeStyle = 'rgba(11,16,22,0.55)'; g.beginPath(); g.arc(f.x, f.y, f.r * 0.84, 0, TAU); g.stroke();
+      g.fillStyle = '#0B1016'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '700 ' + Math.round(f.r * 0.7) + 'px ' + F_UI; g.fillText(f.l, f.x, f.y - f.r * 0.14);
+      g.font = '700 ' + Math.max(8, Math.round(f.r * 0.27)) + 'px ' + F_UI; g.fillText(live ? f.w : 'LOCKED', f.x, f.y + f.r * 0.48);
+      g.globalAlpha = 1;
+    }
+    // pause and full screen
+    for (const [k, label] of [['pause', '❚❚ PAUSE'], ['full', '⤢ FULL']]) {
+      const c = L.chip[k]; if (!c) continue; g.fillStyle = 'rgba(10,16,32,0.8)'; g.strokeStyle = 'rgba(63,208,255,0.85)'; g.lineWidth = 1.5;
+      g.beginPath(); g.roundRect ? g.roundRect(c.x, c.y, c.w, c.h, 8) : g.rect(c.x, c.y, c.w, c.h); g.fill(); g.stroke();
+      g.fillStyle = '#F4F8FA'; g.font = '700 11px ' + F_UI; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(label, c.x + c.w / 2, c.y + c.h / 2 + 1);
+    }
+  }
+  try { if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) touchOn(); } catch (e) { /* no media queries */ }
+  window.addEventListener('touchstart', () => touchOn(), { passive: true, once: true });
 
   // ---------- audio
   const Snd = {
@@ -235,7 +371,8 @@
     monument: 'Lantern monument', fountain: 'Fountain square', roundabout: 'Roundabout', tower: 'FARSIGHT Tower', plate: 'Test plates' };
   const LEVEL6 = { walk: 'Walkway: no traffic up here. Step off the side to drop onto cars below.', hill: 'Hilltop (Z1): streets with traffic. Step off the cliff edge to drop to the valley.',
     terrace: 'Terrace: step off the edge to drop to the beach.', ring: 'Ring deck: highway traffic gives way at the entries. Escalators lead down.' }; // P6 (Edit 62)
-  const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone' };
+  const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone',
+    jump: 'No jump — charge empty, or mid-action', 'jump.locked': 'Jump needs the Jump module (Legs)', 'pickup.locked': 'Grab needs the Carry module (Arms)', 'throw.locked': 'Throw needs the Throw module (Arms)', 'throw.empty': 'Grab a cone first (X), then throw (Y)' }; // Edit 75
   // Generated juice (content/juice.json): one entry per sim event, every value a parameter ID. Returns false if absent.
   function juice(e, s) {
     const spec = CJ && CJ.events ? CJ.events.find((x) => x.event === e.type) : null;
@@ -550,7 +687,11 @@
           }
           break;
         }
-        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
+        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(e.why ? DENY_TEXT[e.action + '.' + e.why] || 'Denied' : copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
+        case 'jump': { Snd.tone(330, 660, 0.12, 'triangle', 0.08); const b = s.body; puff(b.x, b.y + 6, 6, { type: 'dust', speed: 55, life: 0.35, size: 3 }); break; } // Edit 75
+        case 'jump-land': { Snd.tone(160, 90, 0.08, 'square', 0.05); const b = s.body; puff(b.x, b.y + 6, 5, { type: 'dust', speed: 45, life: 0.3, size: 3 }); break; }
+        case 'rail-jump': Snd.tone(520, 880, 0.1, 'triangle', 0.06); toast('Over the rail'); break;
+        case 'combo': [660, 880, 1100].slice(0, Math.min(3, e.n)).forEach((f, j) => Snd.tone(f, f * 1.2, 0.08, 'triangle', 0.08, j * 0.06)); kick(2 + e.n, 0.18); toast('COMBO ×' + e.n + ' · points ×' + e.mult + ' · +' + num(e.bonus)); break;
         case 'slip': { fx.slipT = e.t; const b = s.body; puff(b.x, b.y + 8, 8, { type: 'spark', role: 'puddleHi', speed: 90, life: 0.3, size: 2 }); toast(copy('toast.slip', 'No dash on water. Step off the puddle.')); break; } // D18
         case 'skid': { const c = carsOf(s).find((q) => q.id === e.car); if (c) puff(c.x, c.y, 10, { type: 'spark', role: 'puddleHi', dir: c.h + Math.PI, spread: 2.2, speed: 120, life: 0.35, size: 2 }); Snd.tone(1800, 900, 0.18, 'sawtooth', 0.02); break; }
         case 'screen': { // D24: first visit names the screen
@@ -593,7 +734,8 @@
   // ---------- menus
   const PAUSE_ITEMS = ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title'];
   const END_ITEMS = ['Play again from district 1', 'Choose a district', 'Show trace'];
-  const SHOP_GRID = [['hips', 'spine'], ['carry', 'throw'], ['bigBattery']];
+  const SHOP_GRID = FOUR ? [['spine'], ['jump', 'ricochet'], ['carry', 'throw'], ['bigBattery']] : [['hips', 'spine'], ['carry', 'throw'], ['bigBattery']]; // Edit 75: Legs (Jump, Ricochet); Hips leaves (DIRECT, D48)
+  const nodeDesc = (n) => (FOUR && NODES4 && NODES4[n] && NODES4[n].desc) || NODES[n].desc;
   function handleMenus() {
     const s = app.sim;
     const live = app.screen === 'game' && !app.paused && s && (s.phase === 'play' || s.phase === 'hitstop' || s.phase === 'writeoff' || s.phase === 'scroll');
@@ -1012,7 +1154,7 @@
     if (b.mode === 'knock') jx += Math.round(Math.sin(b.knockT * 38) * 1.5 * MOTION);
     if (b.mode === 'lunge') { jx += Math.round(Math.cos(b.facing)); jy += Math.round(Math.sin(b.facing)); }
     const dk = dropK(), lift = dk ? Math.round(jv(CJ.states.replacementDrop.height) * dk / U / 2) : 0;
-    const hop = liftPx || 0; // above the ground: on a deck, a stair, or falling from a deck
+    const hop = (liftPx || 0) + (b.mode === 'jump' ? EXT(b.z || 0) : 0); // above the ground: on a deck, a stair, falling from a deck, or in a jump (Edit 75)
     const cx = Math.round(b.x / U) + jx, cy = Math.round(b.y / U) + jy - lift - hop;
     if (dk) PIX.line(cx, cy - 16, cx, -1, (x, y) => FB.mix(x, y, K.ink, 0.5 * dk));
     const S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
@@ -1232,6 +1374,7 @@
           const x = clamp(axp + (cf.nx || 0) * (w / 2 + 8) - w / 2, 2, AW - w - 2), y = clamp(ayp - rise / U - PIX.FONT_H * sc, 2, AH - PIX.FONT_H * sc - 2);
           if (age < popDur * 0.8 || Math.floor(app.realT * 20) % 2) {
             PIX.text(FB, label, x, y, K.popInk, K.popOutline, sc);
+            if (e.combo > 1) { const t3 = 'COMBO ' + e.combo + ' X' + e.cmult, w3 = PIX.smallWidth(t3), x3 = clamp(x + w / 2 - w3 / 2, 2, AW - w3 - 2), y3 = y - PIX.SMALL_H - 3; FB.rect(x3 - 1, y3 - 1, x3 + w3, y3 + PIX.SMALL_H, K.popOutline); PIX.smallText(FB, t3, x3, y3, K.popInk); } // Edit 75
             if (e.mult > 1) { const t2 = 'HIGHWAY X' + e.mult, w2 = PIX.smallWidth(t2), x2 = clamp(x + w / 2 - w2 / 2, 2, AW - w2 - 2), y2 = y + PIX.FONT_H * sc + 2; FB.rect(x2 - 1, y2 - 1, x2 + w2, y2 + PIX.SMALL_H, K.popOutline); PIX.smallText(FB, t2, x2, y2, K.popInk); } // P5 (Edit 50): damage.deckMultiplier
           }
         }
@@ -1360,7 +1503,7 @@
     if (b.mode === 'rescue') return { at: 'rescue', key: 2e6, rescue: true };
     if (b.mode === 'drop') return { at: 'item', key: 2e6 }; // falling: above everything, so the landing reads
     if (b.stair) return { at: 'item', key: (b.stair.key != null ? b.stair.key : b.stair.y + b.stair.h) + 0.01 };
-    if (b.level === 0) return { at: 'ground', key: b.y + r };
+    if (b.level === 0) return { at: 'ground', key: b.y + r + (b.mode === 'jump' && b.z > 8 ? 120 : 0) }; // Edit 75: in a jump, over the cars
     if (f && f.layer) return { at: 'layer', layer: f.layer, key: b.y + r };
     return { at: 'item', key: f && f.key != null ? f.key : b.y + r + 0.5 };
   }
@@ -1416,6 +1559,7 @@
     drawEffects(s, true);
     const fa = app.realT - fx.flash.t0;
     if (fa < fx.flash.dur) { const a = 0.55 * (1 - fa / fx.flash.dur) * (RM ? 0.4 : 1); for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) FB.mix(x, y, K.white, a); }
+    if (app.showJumpable) for (const q of s.level.statics) if (q.jumpable) { const x0 = Math.round(q.x / U), y0 = Math.round(q.y / U), x1 = Math.round((q.x + q.w) / U) - 1, y1 = Math.round((q.y + q.h) / U) - 1; for (let x = x0; x <= x1; x++) { FB.put(x, y0, K.label); FB.put(x, y1, K.label); } for (let y = y0; y <= y1; y++) { FB.put(x0, y, K.label); FB.put(x1, y, K.label); } } // Edit 75 (tuning): what a jump clears
     drawStamp(s);
     if (b.alive) { const wear = 1 - b.health / P['damage.bodyHealth'], vf = lowHealth('vignetteFrom', 0.7); if (wear > vf) { const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf), band = 8; for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const d = Math.min(x, y, AW - 1 - x, AH - 1 - y); if (d >= band) { x = AW - 1 - band; continue; } if ((x + y) % 2 === 0 || d < 3) FB.mix(x, y, K.warn, (0.12 + 0.3 * pulse) * (1 - d / band)); } } }
   }
@@ -1549,9 +1693,12 @@
   // Prototype 6.2 (Edit 70): the controls sit in the right column, under the chassis, only while they apply.
   // The strip under the field is the message line.
   function playKeys(s) {
-    if (!s || app.screen !== 'game' || app.paused || s.phase !== 'play') return null;
-    const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']];
-    if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']);
+    if (!s || app.screen !== 'game' || app.paused || s.phase !== 'play' || TOUCH.on) return null; // touch: the diamond is the legend
+    if (!FOUR) { const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']]; if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']); return keys; }
+    const pd = app.device === 'pad', keys = [[pd ? 'STICK' : 'WASD', 'MOVE'], [pd ? 'A' : 'SPACE', 'DASH']]; // Edit 75: A, B, X, Y as installed
+    if (s.has('jump')) keys.push([pd ? 'B' : 'L', 'JUMP']);
+    if (s.has('carry')) keys.push([pd ? 'X' : 'J', s.body.held ? 'PLACE' : 'GRAB']);
+    if (s.has('throw')) keys.push([pd ? 'Y' : 'I', 'THROW']);
     return keys;
   }
   function drawKeysPanel(s, above) { // a glass panel, one key a row; its foot level with the field's, else just under the chassis
@@ -1602,7 +1749,9 @@
       if (f > 0) { rr(x, 266, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
     drawDistrict(s);
-    drawKeysPanel(s, drawBodyPanel(s));
+    const cb = drawBodyPanel(s);
+    drawKeysPanel(s, cb);
+    app.layoutY = { left: s.district ? (() => { const G = mapGeom(s.district); return G.Y + 66 + G.mh; })() : 318, right: cb }; // Edit 75: the touch zones start below these
     drawMessages(s);
   }
   // Left, below the dash: the district map (D24). Visited screens lit; the dummy's dot.
@@ -1699,7 +1848,8 @@
     if (app.previewMods) return PIX.MODULES;
     const sel = s.phase === 'shop' && app.shopRow < 2 ? SHOP_GRID[app.shopCol][app.shopRow] || null : null;
     const tryOn = sel && !s.has(sel) && Math.floor(app.realT * 3) % 2 === 0;
-    return PIX.MODULES.filter((m) => s.has(m) || (tryOn && m === sel));
+    const own = (m) => s.has(m) || (m === 'springStart' && s.has('ricochet')), tried = (m) => tryOn && (m === sel || (m === 'springStart' && sel === 'ricochet')); // Edit 75: Ricochet wears the spring legs
+    return PIX.MODULES.filter((m) => own(m) || tried(m));
   }
   function dollCanvas(levels, flash, mods) {
     const key = JSON.stringify(levels) + flash + mods.join();
@@ -1774,8 +1924,8 @@
     rr(x + w / 2 - dw / 2, y + 392, dw, 40, 20); ctx.fillStyle = app.difficulty === 1 ? FT.item : 'rgba(245,197,66,0.35)'; ctx.fill();
     ctx.strokeStyle = FT.accent; ctx.lineWidth = 1.5; ctx.stroke();
     txt(dt, x + w / 2, y + 420, fKey, FT.text, 'center');
-    drawKeys([['WASD', 'MOVE'], ['SPACE', 'DASH'], ['ESC', 'PAUSE']], x + w / 2, y + 450);
-    txt(TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
+    drawKeys(TOUCH.on ? [['STICK', 'MOVE'], ['A', 'DASH'], ['❚❚', 'PAUSE']] : app.device === 'pad' ? [['STICK', 'MOVE'], ['A', 'DASH'], ['START', 'PAUSE']] : [['WASD', 'MOVE'], ['SPACE', 'DASH'], ['ESC', 'PAUSE']], x + w / 2, y + 450);
+    txt(TOUCH.on || app.device === 'pad' ? 'PRESS A TO START' : TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
   }
   function drawReport(s) {
     veil();
@@ -1793,7 +1943,7 @@
     });
     rr(x + 28, y + h - 116, w - 56, 52, 12); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke();
     txt(copy('report.credit', 'One body credit granted. Balance: {credits}.', { credits: s.run.credits }), x + 46, y + h - 82, fLab, FT.text);
-    txt('SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, FT.accent, 'right');
+    txt(TOUCH.on || app.device === 'pad' ? 'A  CONTINUE' : 'SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, FT.accent, 'right');
   }
   function drawShop(s) {
     veil();
@@ -1804,18 +1954,18 @@
     ctx.font = fLab; const cw = ctx.measureText(ct).width + 36;
     rr(x + w - 28 - cw, y + 16, cw, 44, 12); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.5; ctx.stroke();
     txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center'); // dark on safety yellow in both palettes
-    const nc = SHOP_GRID.length, colW = (w - 28 * (nc + 1)) / nc; // Torso, Arms, Battery (D26)
+    const nc = SHOP_GRID.length, gap = nc > 3 ? 18 : 28, colW = (w - 56 - gap * (nc - 1)) / nc; // Torso, Arms, Battery (D26); P6.5: Torso, Legs, Arms, Battery
     SHOP_GRID.forEach((col, ci) => {
-      const cx = x + 28 + ci * (colW + 28);
+      const cx = x + 28 + ci * (colW + gap);
       col.forEach((n, ri) => {
         const yy = y + 78 + ri * 150, node = NODES[n], own = s.has(n), chk = s.canBuy(n), on = app.shopCol === ci && app.shopRow === ri;
         rr(cx, yy, colW, 140, 12);
         ctx.fillStyle = own ? 'rgba(79,195,232,0.28)' : on ? FT.keyTop : FT.item; ctx.fill();
         ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
-        txt(node.name, cx + 18, yy + 34, '900 26px ' + F_BRAND, FT.text);
+        txt(node.name, cx + 18, yy + 34, '900 ' + (nc > 3 ? 23 : 26) + 'px ' + F_BRAND, FT.text);
         const price = s.P[node.price];
         txt(own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase(), cx + 18, yy + 60, fLab, own ? FT.accent : chk.ok ? FT.text : FT.off);
-        wrapText(dashify(node.desc.split('. ')[0].replace(/\.?$/, '.')), cx + 18, yy + 86, colW - 36, 24, fTxt, FT.dim, 3);
+        wrapText(dashify(nodeDesc(n).split('. ')[0].replace(/\.?$/, '.')), cx + 18, yy + 86, colW - 36, 24, fTxt, FT.dim, 3);
         if (ri === 0 && col.length > 1) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 34, yy + 140); ctx.lineTo(cx + 34, yy + 150); ctx.stroke(); }
       });
     });
@@ -1831,7 +1981,7 @@
     rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
     ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
     txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
-    txt('ARROWS SELECT · SPACE BUY · K DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
+    txt(FOUR ? (TOUCH.on ? 'STICK SELECT · A BUY · B DEPLOY' : app.device === 'pad' ? 'STICK SELECT · A BUY · B DEPLOY' : 'ARROWS SELECT · SPACE BUY · SHIFT DEPLOY') : 'ARROWS SELECT · SPACE BUY · K DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
   }
   // Cue key: the field's own pixel marks, shown at field scale, with what each means.
   const CUE_KEY = [
@@ -1879,6 +2029,7 @@
     if (app.confirmRefuse) items[2] = 'Confirm refusal';
     menuList(items, app.pauseSel, x + 18, y + 62, w - 36, (i) => i === 2 && s.run.writeOffs < 1);
     wrapText(s.run.writeOffs < 1 ? 'Refusal opens after one completed body.' : 'Refusal is a deliberate ending.', x + 22, y + 362, w - 44, 28, fTxt, FT.dim, 4);
+    if (pad.info && pad.info.monitor) wrapText('GAMEPAD ' + pad.info.monitor + ' · hold START to set up', x + 22, y + h - 92, w - 44, 22, fTxt, FT.dim, 4); // Edit 75: what the pad sends
     drawCueKey(x + w + 16, y, FW - 36 - w - 16, h);
   }
   function drawEnding(s) {
@@ -1910,6 +2061,15 @@
     else if (s.phase === 'report') drawReport(s);
     else if (s.phase === 'shop') drawShop(s);
     else if (s.phase === 'ending') drawEnding(s);
+    drawPadSetup();
+  }
+  function drawPadSetup() { // Edit 75: pad setup, over everything
+    const st = pad.st && pad.st.setup; if (!st) return;
+    const w = 640, h = 150, x = VW / 2 - w / 2, y = VH / 2 - h / 2;
+    panel(x, y, w, h);
+    txt('GAMEPAD SETUP', x + w / 2, y + 44, fLab, FT.accent, 'center');
+    txt('Press the button for ' + PAD_NAME[st], x + w / 2, y + 92, '700 30px ' + F_UI, FT.text, 'center');
+    txt('DASH, JUMP, GRAB, THROW in turn · ESC or G cancels', x + w / 2, y + 128, fTxt, FT.dim, 'center');
   }
 
   // ---------- tuning panel
@@ -1934,6 +2094,9 @@
     ['upgrades.spineLimit', 10, 90, 1], ['upgrades.bigCapacity', 2, 6, 1], ['world.puddleShare', 0, 0.1, 0.005], ['proto.district.seed', 0, 20, 1], ['world.flipSeconds', 0, 1, 0.05],
     ['proto.damageExponent', 1, 3, 0.1], ['proto.dummyStrikeSpeed', 0, 400, 5], ['proto.dummyMass', 0.01, 1, 0.005],
     ['proto.restitution', 0, 1, 0.05], ['proto.contactFriction', 0, 1, 0.05], ['proto.recoilScale', 0, 2, 0.05], ['proto.recoilSeconds', 0, 1, 0.05],
+    // Edit 75 (P6.5): DIRECT turning, the jump, Ricochet, combos
+    ['proto.turnModel', 1, 2, 1], ['movement.directTurnRate', 180, 1440, 30], ['upgrades.jumpAirtime', 0.2, 1, 0.05], ['upgrades.jumpDistance', 40, 240, 4], ['upgrades.jumpHeight', 10, 80, 1],
+    ['battery.jumpCost', 0, 2, 0.5], ['upgrades.ricochetScale', 1, 4, 0.25], ['scoring.comboWindow', 0.2, 4, 0.1], ['scoring.comboStep', 0, 2, 0.1], ['scoring.comboMax', 1, 6, 0.5],
   ];
   for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
   const tuneEl = document.getElementById('tune'), grid = document.getElementById('tune-grid');
@@ -1963,6 +2126,21 @@
       const sp = document.createElement('span'); sp.innerHTML = text + ' <code>' + id + '</code>';
       row.append(inp, sp); grid.append(row);
     }
+    if (FOUR) { // Edit 75: install modules for a test run (marks the run as tuned); outline what a jump clears; set up a gamepad
+      const head = document.createElement('p'); head.className = 'note'; head.style.gridColumn = '1 / -1'; head.textContent = 'Test run: install modules now (the run is marked tuned). Start = DASH (A). Then JUMP (B), GRAB (X), THROW (Y).'; grid.append(head);
+      for (const n of [].concat(...SHOP_GRID)) {
+        const row = document.createElement('label'); row.className = 'tcheck';
+        const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-own-' + n; inp.dataset.node = n;
+        inp.addEventListener('change', () => { const sm = app.sim; if (!sm) { inp.checked = false; toast('Start a district first'); return; } if (inp.checked) sm.run.owned[n] = true; else delete sm.run.owned[n]; app.tuned = true; sm.emit('debug-module', { node: n, on: inp.checked }); });
+        const sp = document.createElement('span'); sp.innerHTML = 'Install <b>' + NODES[n].name + '</b> <code>' + n + '</code>';
+        row.append(inp, sp); grid.append(row);
+      }
+      const row = document.createElement('label'); row.className = 'tcheck';
+      const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-show-jumpable';
+      inp.addEventListener('change', () => { app.showJumpable = inp.checked; });
+      const sp = document.createElement('span'); sp.innerHTML = 'Outline what a jump clears (tagged jumpable) <code>world.jumpableHeight</code>';
+      row.append(inp, sp); grid.append(row);
+    }
     { // display only: dress the chassis doll in every module of the tree (not a parameter; the run is untouched)
       const row = document.createElement('label'); row.className = 'tcheck';
       const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-preview-mods'; inp.checked = !!app.previewMods;
@@ -1979,11 +2157,13 @@
       inp.nextSibling; inp.parentNode.querySelector('output').textContent = (+v).toFixed(v % 1 ? 2 : 0) + (REG[id] != null && v !== REG[id] ? '  (registry ' + REG[id] + ')' : '');
     }
     for (const id of ['proto.damageModel', 'proto.pathsEverywhere', 'proto.zonesEverywhere', 'proto.learningEnabled', 'proto.stopCue', 'proto.city', 'proto.parts.effects', 'proto.district']) { const inp = document.getElementById('t-' + id.replace(/\./g, '-')); if (inp) inp.checked = !!current(id); }
+    for (const inp of grid.querySelectorAll('input[data-node]')) inp.checked = !!(app.sim && app.sim.has(inp.dataset.node));
   }
   function toggleTune() { tuneEl.open = !tuneEl.open; if (tuneEl.open) { syncTune(); tuneEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
   document.getElementById('btn-tune').addEventListener('click', toggleTune);
   document.getElementById('t-credit').addEventListener('click', () => { if (app.sim) { app.sim.run.credits++; app.tuned = true; app.sim.emit('debug-credit', {}); toast('Debug credit granted'); } });
-  document.getElementById('t-reset').addEventListener('click', () => { app.tune = {}; if (app.sim) { for (const k of Object.keys(REG)) app.sim.P[k] = REG[k]; for (const k of Object.keys(PROTO)) app.sim.P[k] = PROTO[k]; } syncTune(); });
+  document.getElementById('t-reset').addEventListener('click', () => { app.tune = {}; if (app.sim) { for (const k of Object.keys(REG)) app.sim.P[k] = REG[k]; for (const k of Object.keys(PROTO)) app.sim.P[k] = PROTO[k]; Object.assign(app.sim.P, OVERRIDES, W6 && W6.P6SIM ? W6.P6SIM : {}); } syncTune(); }); // Edit 75: P6's own values too
+  { const bp = document.getElementById('t-pad'); if (bp) bp.addEventListener('click', () => { app.padCmd = 'setup'; cv.focus(); }); }
   const sndBtn = document.getElementById('btn-sound');
   sndBtn.addEventListener('click', () => { app.sound = !app.sound; sndBtn.textContent = app.sound ? 'Sound on' : 'Sound off'; sndBtn.setAttribute('aria-pressed', String(app.sound)); Snd.init(); });
   buildTune();
@@ -2008,7 +2188,7 @@
   let last = performance.now(), acc = 0;
   function frame(now) {
     const dt = clamp((now - last) / 1000, 0, 0.1); last = now; app.realT += dt; // rAF can stamp the first frame before load time
-    pollPad();
+    pollPad(dt);
     handleMenus();
     if (app.screen === 'loading' && app.loading && app.loading.frames++ >= 2) { const ld = app.loading; app.loading = null; const rs = (app.roads || []).slice(); startLevelNow(ld.i, ld.carry); if (ld.carry) app.roads = rs; }
     const s = app.sim;
@@ -2020,12 +2200,17 @@
     } else acc = 0;
     processEvents();
     render();
-    const st = BUILD + ' · ' + SW + ' × ' + SH + ' ×' + kpx + ' · ' + (app.tuned ? 'TUNED RUN · UNRANKED' : 'registry values');
+    if (TOUCH.on) drawTouch();
+    const pi = pad.info, padTxt = pad.blocked ? 'gamepads blocked on this page: open the downloaded file' : pi && pi.id ? 'pad: ' + pi.id.slice(0, 40) + (pi.mapping === 'standard' ? '' : ' (no standard mapping: hold START or G to set up)') : 'pad: none seen — press any button on it';
+    const st = BUILD + ' · ' + SW + ' × ' + SH + ' ×' + kpx + ' · ' + (app.tuned ? 'TUNED RUN · UNRANKED' : 'registry values') + ' · ' + padTxt;
     if (statusEl && statusEl.textContent !== st) statusEl.textContent = st;
+    const mon = document.getElementById('padmon'), mt = pi && pi.monitor ? pi.monitor : '';
+    if (mon && mon.textContent !== mt) mon.textContent = mt;
     requestAnimationFrame(frame);
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {});
   requestAnimationFrame(frame);
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, width: cv.width, height: cv.height });
+  window.__dummiesInput = { TOUCH, pad, touchLayout, FOUR }; // Edit 75: for the tests
 })();
