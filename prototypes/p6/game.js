@@ -65,7 +65,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = W6 ? 'P6.1' : 'P5.3'; // Prototype 6.1 (GDD Edit 69): the P6 release with Edits 63–68 and the release tests
+  const BUILD = W6 ? 'P6.2' : 'P5.3'; // Prototype 6.2 (GDD Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -434,6 +434,7 @@
     fx.barkT = now; fx.carBarkT.set(e.car, { t: now, pr });
     app.present.push({ t: +s.t.toFixed(4), type: 'bark', car: e.car, event: e.type, line: pick.id, text });
   }
+  const BUBBLES_IN_FIELD = false; // P3–P6.1 drew pixel bubbles over the field
   function wrapSmall(text, maxW) {
     const out = []; let cur = '';
     for (const word of String(text).split(/\s+/)) { const t = cur ? cur + ' ' + word : word; if (PIX.smallWidth(t) <= maxW || !cur) cur = t; else { out.push(cur); cur = word; } }
@@ -442,7 +443,10 @@
   }
   // Pixel bubbles above the car's tag (or below the car), never over another car's tag. Styles: speech solid edge,
   // shout double edge, mutter dashed edge and dim ink, thought dotted edge with trailing dots.
-  function drawBarks(s) {
+  function drawBarks(s) { // Prototype 6.2 (Edit 70): barks show in the strip under the field (drawMessages); the field keeps clear
+    const dur0 = pv('proto.barks.seconds') || 2.4;
+    for (const [id, bk] of fx.bubbles) if (app.realT - bk.t0 > dur0) fx.bubbles.delete(id);
+    if (BUBBLES_IN_FIELD !== true) return;
     if (!fx.bubbles.size) return;
     const dur = pv('proto.barks.seconds') || 2.4, now = app.realT, placed = [];
     for (const c of carsOf(s)) { // tags and car bodies are cues: bubbles keep off them
@@ -1464,15 +1468,55 @@
       lines.forEach((l, i) => txt(l, FX + FW / 2, FY + 16 + 38 + i * 30, fLab, FT.text, 'center'));
       ctx.globalAlpha = 1;
     }
-    if (app.toast && app.realT - app.toast.t < 1.6) {
-      ctx.globalAlpha = Math.min(1, 3 * (1.6 - (app.realT - app.toast.t)));
-      const lines = wrapLines(app.toast.msg, FW - 88, fLab), h = 22 + lines.length * 30;
-      rr(FX + 20, FY + FH - 16 - h, FW - 40, h, 12); ctx.fillStyle = FT.toast; ctx.fill();
-      lines.forEach((l, i) => txt(l, FX + FW / 2, FY + FH - 16 - h + 38 + i * 30, fLab, '#FFFFFF', 'center'));
-      ctx.globalAlpha = 1;
-    }
   }
-
+  // Prototype 6.2 (Edit 70): toasts and car barks never sit over the field. They run in the strip under it: one line each;
+  // a toast and a bark together share the strip in smaller type (never under ui.typeFieldLabel). A bark carries its car's tag.
+  const kMin = () => Math.ceil(pv('ui.typeFieldLabel') / CAP), kCss = (k) => 'rgb(' + (k & 255) + ',' + ((k >>> 8) & 255) + ',' + ((k >>> 16) & 255) + ')';
+  function liveBark(s) {
+    const dur = pv('proto.barks.seconds') || 2.4, now = app.realT;
+    let best = null;
+    for (const [id, bk] of fx.bubbles) {
+      const age = now - bk.t0; if (age > dur) continue;
+      const live = carsOf(s).find((c) => c.id === id), info = live || fx.cars.get(id); if (!info) continue;
+      if (!best || bk.priority > best.bk.priority || (bk.priority === best.bk.priority && bk.t0 > best.bk.t0)) best = { bk, tag: shortId(info.model), spent: !!(live && live.spent), a: Math.min(1, 3 * (dur - age)) };
+    }
+    return best;
+  }
+  function drawMessages(s) {
+    const items = [];
+    if (app.toast && app.realT - app.toast.t < 1.6) items.push({ kind: 'toast', text: app.toast.msg, a: Math.min(1, 3 * (1.6 - (app.realT - app.toast.t))) });
+    const bk = s && liveBark(s); if (bk) items.push({ kind: 'bark', text: bk.bk.text, tag: bk.tag, spent: bk.spent, dim: bk.bk.style === 'mutter', a: bk.a });
+    if (!items.length) return;
+    const top = FY + FH + 8, bot = VH - 2, GAP = 28;
+    const widthOf = (it, size, pill) => { ctx.font = '700 ' + size + 'px ' + F_UI; const tw = ctx.measureText(it.text).width; if (it.kind === 'toast') return tw + (pill ? 24 : 0); ctx.font = '700 ' + size + 'px ' + F_MONO; return ctx.measureText(it.tag).width + 14 + 10 + tw; };
+    const lineW = (size, pill) => items.reduce((a, it) => a + widthOf(it, size, pill), 0) + (items.length - 1) * GAP;
+    // one line if it fits (the field's width, else the canvas's), at the secondary size down to ui.typeFieldLabel; else a line each at that size
+    let size = TY.sec, span = FW - 16, cx = FX + FW / 2, rows = 1; const MIN = kMin();
+    const fits = () => lineW(size, true) <= span;
+    while (!fits() && size > MIN) size--;
+    if (!fits()) { span = VW - 32; cx = VW / 2; size = TY.sec; while (!fits() && size > MIN) size--; }
+    if (!fits() && items.length > 1) { rows = 2; size = MIN; span = VW - 32; cx = VW / 2; }
+    const clip = (it, sz, room) => { ctx.font = '700 ' + sz + 'px ' + F_UI; let t = it.text; if (widthOf(it, sz, rows === 1) <= room) return t; while (t.length > 4 && widthOf(Object.assign({}, it, { text: t + '…' }), sz, rows === 1) > room) t = t.slice(0, -1); return t.replace(/\s+\S*$/, '') + '…'; };
+    const drawItem = (it, x0, cy, sz, pill) => { // returns the width used
+      const font = '700 ' + sz + 'px ' + F_UI, base = cy + sz * 0.36, ph = sz + 10;
+      ctx.globalAlpha = it.a;
+      if (it.kind === 'toast') {
+        ctx.font = font; const tw = ctx.measureText(it.text).width;
+        if (pill) { rr(x0, cy - ph / 2, tw + 24, ph, 10); ctx.fillStyle = FT.toast; ctx.fill(); txt(it.text, x0 + 12, base, font, '#FFFFFF'); ctx.globalAlpha = 1; return tw + 24; }
+        txt(it.text, x0, base, font, FT.accent); ctx.globalAlpha = 1; return tw;
+      }
+      const mf = '700 ' + sz + 'px ' + F_MONO; ctx.font = mf; const cw = ctx.measureText(it.tag).width + 14, chh = Math.min(ph, (bot - top) / rows - 1);
+      rr(x0, cy - chh / 2, cw, chh, 4); ctx.fillStyle = kCss(it.spent ? K.tagSpentFill : K.tagFill); ctx.fill(); ctx.strokeStyle = kCss(K.tagBorder); ctx.lineWidth = 1.5; ctx.stroke();
+      txt(it.tag, x0 + cw / 2, base, mf, kCss(it.spent ? K.tagSpentInk : K.tagInk), 'center');
+      txt(it.text, x0 + cw + 10, base, font, it.dim ? FT.dim : FT.text); ctx.font = font;
+      const w = cw + 10 + ctx.measureText(it.text).width; ctx.globalAlpha = 1; return w;
+    };
+    if (rows === 1) {
+      for (const it of items) it.text = clip(it, size, span - (items.length - 1) * GAP - items.filter((q) => q !== it).reduce((a, q) => a + widthOf(q, size, true), 0));
+      let x = cx - lineW(size, true) / 2; const cy = (top + bot) / 2;
+      for (const it of items) x += drawItem(it, x, cy, size, true) + GAP;
+    } else items.forEach((it, i) => { it.text = clip(it, MIN, span); const cy = top + (bot - top) * (i + 0.5) / 2; drawItem(it, cx - widthOf(it, MIN, false) / 2, cy, MIN, false); });
+  }
   // ---------- frame + essentials HUD (V29 D10.3: only facts the player acts on, at registry type size)
   function roadLabel(id) { if (W6) return (LEVEL_LIST.indexOf(id) + 1) + ' · ' + INFO(id).name.toUpperCase(); const d = !!DISTRICTS[id]; return (d ? '' : 'ROAD ') + ((d ? LEVEL_LIST : window.DUMMIES.ROADS).indexOf(id) + 1) + ' · ' + INFO(id).name.replace(/^L\d+\s*/, '').replace('Central Business District', 'CBD').toUpperCase(); }
   function drawFrame() {
@@ -1493,11 +1537,28 @@
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
     rr(FX - 6.5, FY - 6.5, FW + 13, FH + 13, 10); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
-    if (s && app.screen === 'game' && !app.paused && s.phase === 'play') { // controls only while they apply
-      const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']];
-      if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']);
-      drawKeys(keys, FX + FW / 2, FY + FH + 4);
-    }
+  }
+  // Prototype 6.2 (Edit 70): the controls sit in the right column, under the chassis, only while they apply.
+  // The strip under the field is the message line.
+  function playKeys(s) {
+    if (!s || app.screen !== 'game' || app.paused || s.phase !== 'play') return null;
+    const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']];
+    if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']);
+    return keys;
+  }
+  function drawKeysPanel(s, above) { // a glass panel, one key a row; its foot level with the field's, else just under the chassis
+    const keys = playKeys(s); if (!keys) return;
+    const X = FX + FW + 16, W = VW - X - 16, n = keys.length;
+    let pitch = 40, h = n * pitch + 20, y = FY + FH - h;
+    if (y < above + 10) { y = above + 10; const room = VH - 4 - y; if (h > room) { pitch = Math.max(28, Math.floor((room - 20) / n)); h = n * pitch + 20; } }
+    panel(X, y, W, h);
+    const kh = Math.min(32, pitch - 6);
+    ctx.font = fKey; const kw = Math.max(...keys.map((it) => ctx.measureText(it[0]).width + 20));
+    keys.forEach(([k, a], i) => {
+      const ky = y + 10 + i * pitch + (pitch - 6 - kh) / 2;
+      glassKey(X + 14, ky, kw, kh); txt(k, X + 14 + kw / 2, ky + kh / 2 + 8, fKey, FT.text, 'center');
+      txt(a, X + 14 + kw + 12, ky + kh / 2 + 8, fLab, FT.dim);
+    });
   }
   const WHERE6 = { walk: 'WALKWAY', hill: 'HILLTOP', terrace: 'TERRACE', ring: 'RING', deck: 'HIGHWAY', roof: 'ROOF' }; // P6 floors
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
@@ -1533,33 +1594,86 @@
       if (f > 0) { rr(x, 266, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
     drawDistrict(s);
-    drawBodyPanel(s);
+    drawKeysPanel(s, drawBodyPanel(s));
+    drawMessages(s);
   }
-  // Left, below the dash: the district map (D24). The road through all nine screens; visited screens lit; the dummy's dot.
+  // Left, below the dash: the district map (D24). Visited screens lit; the dummy's dot.
+  // Prototype 6.2 (Edit 70): the map draws the district's real roads, from its linked lanes, by level, at one line weight:
+  // Z0 white and solid; Z1 blue, dashed, over Z0; Z2 magenta, dashed, over Z1. Each lane moves to its road's centre line, so
+  // both directions of a road are one line; a stretch already drawn at its level is not drawn again, so dashes stay clean
+  // where junction and ring routes repeat it. Drawn once a district, at the canvas's scale.
+  const MAP_Z = [null, '#3D7BFF', '#FF4FD8'], MAP_LW = 3, MAP_DASH = [6, 4];
+  const mapCache = { key: null, cv: null };
+  function mapGeom(D) {
+    const X = 16, Y = 318, W = FX - 32, g = 6, cw = Math.min(56, Math.floor((W - 16 - (D.cols - 1) * g) / D.cols)), ch = Math.round(cw * 0.75), gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
+    return { X, Y, W, g, cw, ch, gx, gy, mw: D.cols * cw + (D.cols - 1) * g, mh: D.rows * ch + (D.rows - 1) * g };
+  }
+  function mapRoads(s, G) { // per screen and level: road centre lines as runs of map points (unique within the screen and level)
+    const Wd = s.P['world.width'], Hd = s.P['world.height'], half = s.P['world.laneWidth'] / 2, kx = G.cw / Wd, ky = G.ch / Hd, out = [];
+    const off = (pts, d) => pts.map((p, i) => { const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [p[0] - dy / l * d, p[1] + dx / l * d]; });
+    const byKey = new Map();
+    for (const r of s.W6.recs) { const k = r.sc.col + ',' + r.sc.row + ',' + Math.min(2, r.elev); if (!byKey.has(k)) byKey.set(k, { sc: r.sc, z: Math.min(2, r.elev), recs: [] }); byKey.get(k).recs.push(r); }
+    for (const grp of byKey.values()) {
+      const seen = new Set(), cell = 1.5, near = (mx, my) => { const i = Math.floor(mx / cell), j = Math.floor(my / cell); for (let b = -1; b <= 1; b++) for (let a = -1; a <= 1; a++) if (seen.has((i + a) + ',' + (j + b))) return true; return false; };
+      const runs = [];
+      for (const r of grp.recs) {
+        const pts = off(r.path.pts, -half), samp = [];
+        for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], n = Math.max(1, Math.ceil(Math.hypot((x1 - x0) * kx, (y1 - y0) * ky) / 0.75)); for (let t = i === 1 ? 0 : 1; t <= n; t++) samp.push([x0 + (x1 - x0) * t / n, y0 + (y1 - y0) * t / n]); }
+        let run = null; const marks = [];
+        for (const [wx, wy] of samp) {
+          const inside = wx > -60 && wy > -60 && wx < Wd + 60 && wy < Hd + 60, mx = wx * kx, my = wy * ky, dup = !inside || near(mx, my);
+          if (!dup) { if (!run) { run = []; runs.push(run); } run.push([mx, my]); marks.push([mx, my]); } else run = null;
+        }
+        for (const [mx, my] of marks) seen.add(Math.floor(mx / cell) + ',' + Math.floor(my / cell));
+      }
+      out.push({ sc: grp.sc, z: grp.z, runs: runs.filter((q) => q.length > 1) });
+    }
+    return out;
+  }
+  function mapCanvas(s, G) {
+    const k = Math.max(2, Math.ceil(scale)), key = s.levelId + '|' + k + '|' + FT.text + '|' + G.cw;
+    if (mapCache.key === key) return mapCache.cv;
+    const cv = document.createElement('canvas'); cv.width = Math.ceil(G.mw * k); cv.height = Math.ceil(G.mh * k);
+    const c2 = cv.getContext('2d'); c2.scale(k, k); c2.lineCap = 'round'; c2.lineJoin = 'round';
+    const groups = mapRoads(s, G);
+    for (const z of [0, 1, 2]) for (const grp of groups.filter((q) => q.z === z)) {
+      const ox = grp.sc.col * (G.cw + G.g), oy = grp.sc.row * (G.ch + G.g);
+      c2.save(); c2.beginPath(); c2.rect(ox, oy, G.cw, G.ch); c2.clip();
+      c2.strokeStyle = z ? MAP_Z[z] : FT.text; c2.lineWidth = MAP_LW; c2.setLineDash(z ? MAP_DASH : []);
+      for (const run of grp.runs) { c2.beginPath(); run.forEach(([x, y], i) => (i ? c2.lineTo(ox + x, oy + y) : c2.moveTo(ox + x, oy + y))); c2.stroke(); }
+      c2.restore();
+    }
+    mapCache.key = key; mapCache.cv = cv;
+    return cv;
+  }
   function drawDistrict(s) {
     const D = s.district;
     if (!D) return;
-    const X = 16, Y = 318, W = FX - 32, g = 6, cw = Math.min(56, Math.floor((W - 16 - (D.cols - 1) * g) / D.cols)), ch = Math.round(cw * 0.75), gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
+    const G = mapGeom(D), { X, Y, W, g, cw, ch, gx, gy } = G;
     panel(X, Y, W, 50 + D.rows * ch + (D.rows - 1) * g + 16);
     txt('DISTRICT', 30, Y + 32, fLab, FT.dim); txt(s.screenName(), X + W - 14, Y + 32, fLab, FT.text, 'right');
-    const Wd = s.P['world.width'], Hd = s.P['world.height'];
+    const Wd = s.P['world.width'], Hd = s.P['world.height'], lanes = !!(s.W6 && s.W6.recs), mc = lanes ? mapCanvas(s, G) : null;
     for (let iy = 0; iy < D.rows; iy++) for (let ix = 0; ix < D.cols; ix++) {
       const x = gx + ix * (cw + g), y = gy + iy * (ch + g), cur = D.cur[0] === ix && D.cur[1] === iy, seen = D.visited.has(iy * D.cols + ix), cell = D.cells[iy][ix];
-      rr(x, y, cw, ch, 5); ctx.fillStyle = cur ? FT.sel : seen ? FT.item : FT.track; ctx.fill();
-      ctx.strokeStyle = cur ? FT.accent : FT.itemEdge; ctx.lineWidth = cur ? 2 : 1; ctx.stroke();
+      rr(x, y, cw, ch, 5); ctx.fillStyle = lanes ? (seen || cur ? FT.item : FT.track) : cur ? FT.sel : seen ? FT.item : FT.track; ctx.fill();
       ctx.save(); rr(x, y, cw, ch, 5); ctx.clip();
       if (iy === 0 && !W6) { ctx.fillStyle = rgba(PIX.PAL.water.length === 7 ? PIX.PAL.water : '#4FC3E8', 0.9); ctx.fillRect(x, y, cw, 4); }
-      if (W6 && s.levelId === 'waterfront' && iy === 2) { ctx.fillStyle = rgba('#4FC3E8', 0.9); ctx.fillRect(x, y + ch - 6, cw, 6); } // P6: the river along the bottom row
-      ctx.beginPath(); (cell.center || []).forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
-      if (cell.ring) cell.ring.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
-      ctx.strokeStyle = seen ? (cur ? FT.selText : FT.text) : FT.off; ctx.lineWidth = seen ? 5 : 3; ctx.lineJoin = 'round'; ctx.stroke();
-      for (const dk of cell.decks || []) { // flyovers: a dashed line; the high highway (Z2) a heavier one
-        const hi = (dk.z || 1) === 2;
-        ctx.beginPath(); if (dk.hz) { ctx.moveTo(x, y + dk.off / Hd * ch); ctx.lineTo(x + cw, y + dk.off / Hd * ch); } else { ctx.moveTo(x + dk.off / Wd * cw, y); ctx.lineTo(x + dk.off / Wd * cw, y + ch); }
-        ctx.strokeStyle = FT.accent; ctx.lineWidth = hi ? 4 : 2; ctx.setLineDash(hi ? [6, 2] : [3, 2]); ctx.stroke(); ctx.setLineDash([]);
+      if (W6 && s.levelId === 'waterfront' && iy === 2) { ctx.fillStyle = rgba('#4FC3E8', 0.24); ctx.fillRect(x, y + ch * 0.8, cw, ch * 0.2); } // P6: the river along the bottom row, as water
+      if (lanes) { ctx.globalAlpha = seen || cur ? 1 : 0.35; ctx.imageSmoothingEnabled = true; ctx.drawImage(mc, ix * (cw + g) * mc.width / G.mw, iy * (ch + g) * mc.height / G.mh, cw * mc.width / G.mw, ch * mc.height / G.mh, x, y, cw, ch); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = 1; }
+      else {
+        ctx.beginPath(); (cell.center || []).forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
+        if (cell.ring) cell.ring.forEach(([px, py], i) => { const qx = x + px / Wd * cw, qy = y + py / Hd * ch; if (i) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy); });
+        ctx.strokeStyle = seen ? (cur ? FT.selText : FT.text) : FT.off; ctx.lineWidth = seen ? 5 : 3; ctx.lineJoin = 'round'; ctx.stroke();
+        for (const dk of cell.decks || []) { // flyovers: a dashed line; the high highway (Z2) a heavier one
+          const hi = (dk.z || 1) === 2;
+          ctx.beginPath(); if (dk.hz) { ctx.moveTo(x, y + dk.off / Hd * ch); ctx.lineTo(x + cw, y + dk.off / Hd * ch); } else { ctx.moveTo(x + dk.off / Wd * cw, y); ctx.lineTo(x + dk.off / Wd * cw, y + ch); }
+          ctx.strokeStyle = FT.accent; ctx.lineWidth = hi ? 4 : 2; ctx.setLineDash(hi ? [6, 2] : [3, 2]); ctx.stroke(); ctx.setLineDash([]);
+        }
       }
       if (cell.focal) { ctx.beginPath(); ctx.arc(x + cw / 2, y + ch / 2, 3, 0, TAU); ctx.fillStyle = FT.accent; ctx.fill(); }
       ctx.restore();
+      rr(x, y, cw, ch, 5); ctx.strokeStyle = cur ? FT.accent : FT.itemEdge; ctx.lineWidth = cur ? 3 : 1;
+      if (cur && FT.neon) { ctx.save(); ctx.shadowColor = FT.accent; ctx.shadowBlur = 8; ctx.stroke(); ctx.restore(); } else ctx.stroke();
     }
     const b = s.body;
     if (b.alive) { const x = gx + D.cur[0] * (cw + g) + clamp(b.x / Wd, 0, 1) * cw, y = gy + D.cur[1] * (ch + g) + clamp(b.y / Hd, 0, 1) * ch; ctx.beginPath(); ctx.arc(x, y, 5, 0, TAU); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke(); }
@@ -1604,7 +1718,8 @@
   function drawBodyPanel(s) {
     const X = FX + FW + 16, W = VW - X - 16, Y = 62, b = s.body, U = RA, eff = b.alive ? partEffects(s) : []; // U here: reference units per art px
     const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + 36;
-    panel(X, Y, W, yHit - Y + 66 + (eff.length ? 16 + eff.length * 32 : 0));
+    const ph = yHit - Y + 66 + (eff.length ? 16 + eff.length * 32 : 0);
+    panel(X, Y, W, ph);
     txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);
     const lp = fx.lastPart, flash = lp && app.realT - lp.t < 0.3 && Math.floor(app.realT * 16) % 2 === 0 ? lp.part : '';
     const dx = Math.round((X + W / 2 - DW / 2) / U) * U, dy = Math.round(top / U) * U;
@@ -1614,6 +1729,7 @@
     txt('LAST HIT', X + 14, yHit, fTxt, FT.dim);
     txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, yHit + 38, fLab, lp ? FT.text : FT.dim);
     eff.forEach(([k2, v], i) => { const y = yHit + 86 + i * 32; txt(k2, X + 14, y, fTxt, FT.dim); txt(v, X + W - 14, y, fLab, C.warning, 'right'); });
+    return Y + ph;
   }
 
   // ---------- screens (frame layer). Facts at ui.typeLoadBearing, labels and lines at ui.typeSecondary.

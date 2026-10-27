@@ -1,16 +1,18 @@
-# DUMMIES — Prototype 6.1: three districts, managed traffic, tested walking
+# DUMMIES — Prototype 6.2: three districts, managed traffic, navigation on one grid
 
-**Prototype 6.1 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–69 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**Prototype 6.2 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–70 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
-Prototype 6.1 is the release of P6. It holds Edits 63–68 (steps P6.1–P6.6) and the fixes from the release tests (Edit 69).
+Prototype 6.2 follows the 6.1 release (Edit 69) with the playtest of 27 October (Edit 70): the open ring, one garden grid, navigation checks, the HUD.
 
-- **`dummies_p6_1.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_2.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_1.html`:** Prototype 6.1 (Edit 69). Frozen.
 - **`dummies_p6.html`:** P6 as released (Edit 62). Frozen.
 - **`world6.js`:** the world. Art, edges, traffic, play data and the player sim (`Sim6`) per district.
 - **`circus_valley.js`:** the Waterfront plan (Edits 58–61). One source for its layout.
 - **`test_p6.js`:** headless checks, the release tests included. `node test_p6.js [minutes]`.
 - **`tools/p6_traffic.js`:** the traffic soak. `node tools/p6_traffic.js [seconds per screen] [district]`.
 - **`tools/p6_walk.js`:** the walking test. `node tools/p6_walk.js [district]`.
+- **`tools/p6_nav.js`:** the navigation checks: dead space, garden paths, flight forecourts, one ground. `node tools/p6_nav.js [district]`.
 - **`tools/p6_audit.js`:** the playtest audit on all 27 screens. `node tools/p6_audit.js [district]`.
 
 ## Districts
@@ -31,6 +33,7 @@ Prototype 6.1 is the release of P6. It holds Edits 63–68 (steps P6.1–P6.6) a
     - One `world.tileSize` module, on one side of the road's centre line. Ends cyan on the magenta rail.
     - A straight drop lands on the centre line. Steer a little to land in a lane.
   - Hill, terrace, roof: every edge drops. The Parkland A3 belvedere's lawn holds.
+  - **6.2:** the Parkland ring's hole stands open over the boulevard. Its inner parapet opens one `world.tileSize` module over each road centre line; step off onto the traffic below.
 - **Edges:** another floor at the level, then a stair, then the next screen, then a drop. Else the parapet holds.
 - **Screen edges:** no invisible walls. Where an edge holds, a barrier shows on this side.
   - Between screens: a low planter (`world.wallThickness`). Never in a lane.
@@ -39,19 +42,25 @@ Prototype 6.1 is the release of P6. It holds Edits 63–68 (steps P6.1–P6.6) a
   - **6.1:** a crossing needs standing room on arrival: within `body.radius` along the edge, or `world.edgeArrivalDepth` in.
   - **6.1:** an edge that holds holds all along. No sliver narrower than the body stays open.
 - **Ground (6.1):** none out of reach. Unreachable ground is planted: a low planter, a hedge top.
+- **Dead space (6.2):** none. Open ground the body cannot touch (a gap narrower than the body) is planted the same way.
 - **Flights:**
   - A clear apron beyond every foot: `world.stairApron` (40), the flight's width plus 8 each side.
   - A flight as drawn, and its apron, stay `world.stairEdgeMargin` (16) inside the screen.
   - No building stands in an apron or draws over a flight. Every drawn flight walks.
+  - **6.2:** a forecourt `world.stairForecourt` (44) beyond the apron: no block, bed, pool or column.
 - **Buildings:** every plan is solid at its level, to 4 units. Terraces and landings too.
 - **Walkway joints:** the slab stops at the floor it joins. Square at 90°; mitred at 45°.
 - **Raised layers at the screen's edge:** drawn to the edge, past the lift. At a level, a north–south crossing happens at the edge as drawn.
 - **Wayfinding:** every apron a lit mat, chevrons into its flight. Monument B2: square paving; guide strips to the ring escalators.
-- **Parkland: an Expo site.** Paved; every open garden cell takes a programme in a fixed rotation.
-  - Pavilions: dome, shell hall, LED box, canopy, observation tower. Sizes S, M, L. Solid to plan, on a framed lawn.
-  - Parterres, fountains, sculpture courts. Grass verges frame every path. Every screen at least 8% green.
-  - Great lawns: a paved cross-walk (the hedge opens at it, 6.1), a reflecting rill with jets.
-  - A1 reservoir: stepped up to the back. B2: the two pools; the ring's island a fountain at Z1.
+- **Parkland: an Expo site on one garden grid (6.2).** Cells `world.gardenCellWidth` × `world.gardenCellHeight`; paths `world.gardenPath` on the grid lines.
+  - A seam path runs whole inside each screen; at the district's bound inside the wall. Grass verges (`world.gardenVerge`) frame every path.
+  - Every piece sits in cells; nothing in one cell stands on a path. Set pieces span cells and absorb their inner paths.
+  - Pavilions: dome, shell hall, LED box, canopy, observation tower. S a kiosk, M a hall, L the whole cell.
+  - Parterres, fountains, sculpture courts; sculptures on grass squares, never on a crossing.
+  - Great lawns: a paved cross-walk (the hedge opens at it), a reflecting rill with jets.
+  - B1 cascade: one pool a cell. B2: the two pools, four cells each. A1 reservoir: stepped up to the back.
+  - Along a 45° road: the shoulder, a verge, a footpath, then the grid.
+  - Flights: the axis on a path at their own end of the deck (five kept in place by roads). Columns between paths.
 - **Tunnel (Waterfront B1):** the dummy walks in. It stops at the top edge of B1, not the mouth.
 - **River:** sink `proto.rescueSinkSeconds` (2 s). A drone flies in at `proto.droneSpeed`, lifts the dummy (`proto.droneLiftSeconds`) and sets it on the nearest land.
 - **Cues:** only for cars on the dummy's level.
@@ -68,7 +77,7 @@ Prototype 6.1 is the release of P6. It holds Edits 63–68 (steps P6.1–P6.6) a
   - Cars on different laps of one route follow each other.
 - **The shift:** `run.appearances.road` (100) Z0 cars, counted as each first appears in view.
 
-## Release tests (Edit 69)
+## Release tests (Edit 69; rerun on 6.2)
 
 | 13.5 min per district, view touring all nine screens | Parkland | Waterfront | Monument |
 |---|---|---|---|
@@ -79,10 +88,23 @@ Prototype 6.1 is the release of P6. It holds Edits 63–68 (steps P6.1–P6.6) a
 
 | Walking | Parkland | Waterfront | Monument |
 |---|---|---|---|
-| Reach from the B2 spawn | 19/19 | 30/30 | 26/26 |
+| Reach from the B2 spawn | 18/18 | 30/30 | 27/27 |
 | Tour: screen-levels; crossings; flights | 9; 16; 13 | 15; 27; 16 | 9; 16; 18 |
-| Building faces hold | 23/23 | 10/10 | 139/139 |
+| Building faces hold | 30/30 | 10/10 | 140/140 |
 | Wander, 22 × 5 min: traps | 0 | 0 | 0 |
+
+| Navigation (6.2) | Parkland | Waterfront | Monument |
+|---|---|---|---|
+| Dead space | 0 (18 before) | 0 | 0 (25 planted) |
+| Garden paths blocked | 0 | — | — |
+| Flight forecourts blocked | 0 | 0 | 0 |
+| Walk round the B2 ring at ground | yes | — | — |
+
+## HUD (6.2)
+
+- **Controls:** a panel in the right column under the chassis, one key a row, while play is live.
+- **Messages:** toasts and car barks in the strip under the field, never over it. A bark leads with its car's tag. Type `ui.typeSecondary` down to `ui.typeFieldLabel`.
+- **District map:** from the world's lanes. Z0 white solid; Z1 blue dashed over it; Z2 magenta dashed. One line weight; the screen in play outlined.
 
 ## Drawing
 
@@ -93,8 +115,8 @@ Prototype 6.1 is the release of P6. It holds Edits 63–68 (steps P6.1–P6.6) a
 
 ## Evidence
 
-- `node test_p6.js 3` → 59/59. The audit, walking and soak run in it.
-- `node tools/p6_audit.js` → 200/200: 47 flights, 130 building plans, 23 walkway ends.
+- `node test_p6.js 3` → 64/64. The audit, walking, navigation and soak run in it.
+- `node tools/p6_audit.js` → 198/198: 47 flights, 128 building plans, 23 walkway ends.
 - `node test_sim.js` → 104/104 (this copy and P5).
 - Browser: no page errors over scripted play in all three districts.
 
@@ -104,25 +126,29 @@ Prototype 6.1 is the release of P6. It holds Edits 63–68 (steps P6.1–P6.6) a
 
 ![Monument](docs/p62_monument_3x3.png)
 
-![6.1: edges that hold, before and after](docs/p69_edges_before_after.png)
+![6.2: Parkland B2 and B1, 6.1 | 6.2](docs/p70_before_after.png)
 
-![P6.2: one walkway opening](docs/p64_walkway_opening.png)
+![6.2: the HUD](docs/p70_hud.png)
 
-![P6.3: playtest routes](docs/p65_playtest_routes.png)
+![Edit 69: edges that hold, before and after](docs/p69_edges_before_after.png)
 
-![P6.4: Parkland B2 and Monument B2, before and after](docs/p66_before_after.png)
+![Edit 64: one walkway opening](docs/p64_walkway_opening.png)
 
-![P6.5: Parkland as an Expo site](docs/p67_parkland_expo.png)
+![Edit 65: playtest routes](docs/p65_playtest_routes.png)
 
-![P6.6: the pavilions; the A1 reservoir](docs/p68_pavilions.png)
+![Edit 66: Parkland B2 and Monument B2, before and after](docs/p66_before_after.png)
+
+![Edit 67: Parkland as an Expo site](docs/p67_parkland_expo.png)
+
+![Edit 68: the pavilions; the A1 reservoir](docs/p68_pavilions.png)
 
 ## Known gaps
 
 - Cues still crowd at a busy junction on the dummy's level (D40).
 - Tile names: column-row in the game, row-column in playtest notes (D41).
-- Parkland gutters split by a seam are narrow. Some seam paths now end at a planter.
+- Five Parkland flights keep their place beside the boulevard or a street (B2, C2, B3).
 - Copy for the new toasts is literal in `game.js`. Not yet in the content pipeline.
 
 ## Build
 
-`python3 build.py` → `dummies_p6_1.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
+`python3 build.py` → `dummies_p6_2.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.

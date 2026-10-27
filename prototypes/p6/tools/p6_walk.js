@@ -223,7 +223,7 @@ function wander(id, secs, seed) {
   }
   return { traps, screens, levels: [...levels].sort(), falls };
 }
-module.exports = { reach, tour, bump, wander };
+module.exports = { reach, tour, bump, wander, grid, astar, follow, place, calm, empty, standZ };
 if (require.main === module) {
   let bad = 0;
   for (const id of process.argv[2] ? [process.argv[2]] : W6.LEVEL_LIST) {

@@ -154,6 +154,25 @@ for (const id of W6.LEVEL_LIST) {
     ok(!q.popIns.length && !q.overlaps.length && q.maxStop < TR.LIMITS.longestStop && worst < TR.LIMITS.emptyShare, `${id}: traffic soak, ${q.minutes} min touring all nine screens: ${q.popIns.length} pop-ins, ${q.overlaps.length} overlaps, longest stop ${q.maxStop.toFixed(1)} s, street tiles empty ≤ ${Math.round(worst * 100)}%${q.overlaps.length ? ' — ' + q.overlaps[0] : ''}${q.popIns.length ? ' — ' + q.popIns[0] : ''}`);
   }
 }
+{ // Prototype 6.2 (Edit 70): navigation. No dead space, garden paths walk, flights open onto a forecourt, Parkland's ground in one piece
+  const NV = require('./tools/p6_nav.js');
+  for (const id of W6.LEVEL_LIST) {
+    const r = NV.navDistrict(id), all = r.dead.concat(r.paths, r.entries, r.ground);
+    ok(!all.length, `${id}: navigation: no gap narrower than the body; ${id === 'parkland' ? 'every garden path walks node to node; ' : ''}every flight opens onto a forecourt${id === 'parkland' ? ', its axis on a path; each screen\'s ground in one piece' : ''}${all.length ? ' — not: ' + all.slice(0, 3).map((q) => q.where + ' ' + (q.why || q.by || q.area)).join('; ') : ''}`);
+  }
+  const WK = require('./tools/p6_walk.js'), s = new W6.Sim6('parkland', {}, null, { warm: 0 }); WK.empty(s);
+  const sc = s.W6.at(1, 1), rg = sc.ringDeck.ring, G = WK.grid(sc, 0), Go = { nx: G.nx, ny: G.ny, z: 0, ok: G.ok.slice() }, out = rg.Rc;
+  for (let k = 0; k < Go.ok.length; k++) { const i = k % G.nx, j = (k - i) / G.nx; if (Math.hypot((i + 0.5) * 8 - rg.cx, (j + 0.5) * 8 - rg.cy) < out) Go.ok[k] = 0; } // round the ring: under its outer edge at most, never through the middle
+  const at = (deg) => { for (let r = 200; r <= 340; r += 8) for (const dd of [0, -8, 8, -16, 16, -24, 24]) { const t = (deg + dd) * Math.PI / 180, x = rg.cx + r * Math.cos(t), y = rg.cy + r * Math.sin(t), i = Math.floor(x / 8), j = Math.floor(y / 8); if (i > 0 && j > 0 && i < Go.nx && j < Go.ny && Go.ok[j * Go.nx + i]) return [x, y]; } return null; }; // open ground in each quadrant
+  const legs = [[-135, 135], [135, 45], [45, -45], [-45, -135]], done = [];
+  let p0 = at(-135); WK.place(s, sc, ...p0, 0);
+  for (const [a, b] of legs) { const q = at(b), pts = WK.astar(Go, s.body.x, s.body.y, q[0], q[1]); const f = pts ? WK.follow(s, pts, 0) : { ok: false, why: 'no path' }; done.push(f.ok ? 'ok' : f.why); if (!f.ok) break; }
+  ok(done.length === 4 && done.every((d) => d === 'ok'), `Parkland B2: at ground the dummy walks right round the ring, never through its middle: NW → SW → SE → NE → NW (${done.join(', ')})`);
+  const rIn = rg.Rc - 80, ends = [];
+  for (const o of rg.inner) { const a = (o.a0 + o.a1) / 2; WK.place(s, sc, rg.cx + (rIn + 28) * Math.cos(a), rg.cy + (rIn + 28) * Math.sin(a), 1, sc.game.floors.findIndex((f) => f.kind === 'ring')); let dropped = false; for (let k = 0; k < 90; k++) { WK.calm(s); s.step({ mx: -Math.cos(a), my: -Math.sin(a) }); while (s.phase === 'scroll' || s.phase === 'hitstop') s.step({}); if (s.body.mode === 'drop') dropped = true; } ends.push(dropped && s.body.level === 0 && sc.roadC(s.body.x, s.body.y) < 80); }
+  WK.place(s, sc, rg.cx, rg.cy + rIn + 28, 1, sc.game.floors.findIndex((f) => f.kind === 'ring')); for (let k = 0; k < 90; k++) { WK.calm(s); s.step({ mx: 0, my: -1 }); while (s.phase === 'scroll' || s.phase === 'hitstop') s.step({}); } const held = s.body.level === 1;
+  ok(rg.inner.length === 2 && ends.every(Boolean) && held, `Parkland B2: the ring's hole is open over the boulevard; off each of its ${rg.inner.length} openings the dummy drops onto the road below; elsewhere the inner parapet holds`);
+}
 { // P6.3: the playtest routes
   const s = new W6.Sim6('monument', {}, null, { warm: 2 }); empty(s);
   place(s, 'B1', 472, 244); walk(s, 472, 120, 5, (q) => q.body.level === 1 && !q.body.stair && kind(q) === 'roof'); const roof = kind(s) === 'roof';
