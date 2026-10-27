@@ -1,5 +1,16 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
+> **Current prototype: [Prototype 6.1](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_1.html` in a browser. Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–69.
+>
+> | Prototype | Folder | Build | Status |
+> |---|---|---|---|
+> | 6.1 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_1.html` | Current. Release tests: traffic soak, walking |
+> | 6 | `prototypes/p6/` | `dummies_p6.html` | Frozen (Edit 62) |
+> | 5 | [`prototypes/p5/`](prototypes/p5/README.md) | `dummies_p5.html` | Frozen at P5.3 |
+> | 4 | [`prototypes/p4/`](prototypes/p4/README.md) | `dummies_p4.html` | Frozen at P4.3 |
+> | 3 | [`prototypes/p3/`](prototypes/p3/README.md) | `dummies_p3.html` | Frozen at P3.4 |
+> | 2, 1 | `prototypes/p2/`, `prototypes/p1/` | | Frozen at P2.2, P1.9 |
+
 > **Assignment #4 (Dynamic Content Pipeline)** lives in [`content/`](content/README.md). It generates juice, interface and graphics content from the GDD. The playable result is [`prototypes/p3/`](prototypes/p3/README.md) (pixel art, 640 × 360). [`prototypes/p2/`](prototypes/p2/README.md) stays at P2.2; [`prototypes/p1/`](prototypes/p1/README.md) stays frozen at P1.9.
 
 **Capstone game:** DUMMIES, by Lawrence Lek.

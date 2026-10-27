@@ -250,7 +250,8 @@
       const [x0, y0, x1, y1] = best.r;
       { const cw = chamf(x0, y0, x1, y1, 24), fpA = (x, y, ins) => cw((x + 0.5) * U, (y + 0.5) * U, (ins || 0) * U), ax0 = Math.floor(x0 / U), ay0 = Math.floor(y0 / U), ax1 = Math.ceil(x1 / U), ay1 = Math.ceil(y1 / U);
         for (let y = ay0; y <= ay1; y++) for (let x = ax0; x <= ax1; x++) if (fpA(x, y)) B.put(x, y, !fpA(x, y, 1) ? CON.l : greatC(x, y)); // the great lawn, mown in broad stripes
-        mass(B, (x, y) => fpA(x, y, 1) && !fpA(x, y, 4), ax0, ay0, ax1, ay1, 0, 3, 'hedge', o.leds[0], true, 'hedge'); } // a clipped hedge frames it
+        const gapW = (x, y) => (x1 - x0 >= y1 - y0 ? Math.abs((x + 0.5) * U - (x0 + x1) / 2) : Math.abs((y + 0.5) * U - (y0 + y1) / 2)) <= 18; // Prototype 6.1: the hedge opens where the cross-walk meets it
+        mass(B, (x, y) => fpA(x, y, 1) && !fpA(x, y, 4) && !gapW(x, y), ax0, ay0, ax1, ay1, 0, 3, 'hedge', o.leds[0], true, 'hedge'); } // a clipped hedge frames it
       { // P6.5 (Edit 67): the great lawn in four panels: a paved cross-walk on its short axis, a reflecting rill with jets either side on its long axis
         const wide = x1 - x0 >= y1 - y0, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, L = (wide ? x1 - x0 : y1 - y0) * 0.36, inL = chamf(x0, y0, x1, y1, 24);
         each((x, y, wx, wy) => { if (!inL(wx, wy, 6)) return; const d = Math.abs(wide ? wx - cx : wy - cy); if (d > 14) return; B.put(x, y, d > 12 ? CON.l : d > 10 ? ((x + y) % 4 < 2 ? N.cyan : CON.m) : slabC(x, y, wide ? 1 : 0)); });
@@ -1323,30 +1324,58 @@
   const edgePt = (sd, v, d) => (sd === 'N' ? [v, d] : sd === 'S' ? [v, H - d] : sd === 'W' ? [d, v] : [W - d, v]);
   const edgeRect = (sd, a0, a1, t) => (sd === 'N' ? { x: a0, y: 0, w: a1 - a0, h: t } : sd === 'S' ? { x: a0, y: H - t, w: a1 - a0, h: t } : sd === 'W' ? { x: 0, y: a0, w: t, h: a1 - a0 } : { x: W - t, y: a0, w: t, h: a1 - a0 });
   function groundFree(sc, x, y, m) { const g = sc.game; m = m == null ? R0 - 2 : m; return !g.statics.some((q) => inR(q, x, y, m)) && g.polys0.every((q) => !PIX.inPoly(q, x, y)) && !g.stairs.some((q) => inR(q, x, y, m)); } // m: the margin (where the dummy can stand: R0 − 2; where it can arrive across an edge: 0, the push-out slides it along)
+  // Prototype 6.1: the dummy arriving across an edge at (x, y) on side sd of this screen is pushed out to standing room within a
+  // body's radius along the edge or world.edgeArrivalDepth in. Clear of solids alone is not enough: a crevice narrower than the body holds it.
+  const INW = { N: [0, 1], S: [0, -1], W: [1, 0], E: [-1, 0] };
+  function arrives(sc, x, y, sd) {
+    if (!groundFree(sc, x, y, 0)) return false;
+    const [ix, iy] = INW[sd], tx = iy ? 1 : 0, ty = ix ? 1 : 0;
+    for (let d = 0; d <= P['world.edgeArrivalDepth']; d += 4) for (let a = -R0; a <= R0; a += 2) if (groundFree(sc, x + tx * a + ix * d, y + ty * a + iy * d)) return true;
+    return false;
+  }
   const cpZone = (cp) => { const o = cp.half != null ? cp.half : cp.deck ? HALF : OUTER, l = cp.line; return cp.side === 'W' ? { x: 0, y: cp.off - o, w: l, h: 2 * o } : cp.side === 'E' ? { x: W - l, y: cp.off - o, w: l, h: 2 * o } : cp.side === 'N' ? { x: cp.off - o, y: 0, w: 2 * o, h: l } : { x: cp.off - o, y: H - l, w: 2 * o, h: l }; };
   function runsOf(flags, step) { const out = []; let a = null; flags.forEach((f, i) => { if (f && a == null) a = i * step; if (!f && a != null) { out.push([a, i * step]); a = null; } }); if (a != null) out.push([a, flags.length * step]); return out.map(([p, q]) => (q - p < 12 ? [Math.max(0, (p + q) / 2 - 6), (p + q) / 2 + 6] : [p, q])); }
   function edgePass(Wd) {
     const step = 4, WT = P['world.wallThickness'], WH = EXT(P['proto.art.wallHeight']), d0 = R0 + 1, bd = 32, depth = 8;
     for (const sc of Wd.scs) { sc.checkpoints = []; sc.edgeLog = []; sc.gamePre = sc.game; }
     const pre = (q) => ({ game: q.gamePre, roadOk: q.roadOk }); // every screen judged on its own art, before any barrier goes in
+    // Prototype 6.1: planters next door count where the dummy arrives (a planter can close the standing room beside it).
+    // Planters only add, so the plan settles in a few passes.
+    const plan = new Map(), withPlan = (q) => ({ game: Object.assign({}, q.gamePre, { statics: q.gamePre.statics.concat(plan.get(q) || []) }), roadOk: q.roadOk });
+    const plantFlags = (sc, sd) => {
+      const g = sc.gamePre, nb = Wd.at(sc.col + SIDE[sd][0], sc.row + SIDE[sd][1]), n = Math.ceil((horizE(sd) ? W : H) / step), out = [];
+      if (!nb) return out;
+      const there = withPlan(nb), bare = pre(nb), len = horizE(sd) ? W : H;
+      for (let i = 0; i < n; i++) {
+        const v = i * step + step / 2, [x, y] = edgePt(sd, v, d0), [qx, qy] = edgePt(OPPS[sd], v, d0);
+        out.push(groundFree(pre(sc), x, y) && !g.water.some((q) => PIX.inPoly(q, x, y)) && sc.roadOk(x, y, LW) && !arrives(v < 24 || v > len - 24 ? bare : there, qx, qy, OPPS[sd])); // a planter may stand on a shoulder, never in a lane; at a corner, next door's own art
+      }
+      return out;
+    };
+    for (let pass = 0; pass < 6; pass++) {
+      const next = new Map(); let moved = false;
+      for (const sc of Wd.scs) { const rs = []; for (const sd of ['N', 'E', 'S', 'W']) for (const [a0, a1] of runsOf(plantFlags(sc, sd), step)) rs.push(Object.assign(edgeRect(sd, a0, a1, WT), { sd, a0, a1 })); next.set(sc, rs); if (rs.length !== (plan.get(sc) || []).length || rs.some((r, k) => r.a0 !== plan.get(sc)[k].a0 || r.a1 !== plan.get(sc)[k].a1 || r.sd !== plan.get(sc)[k].sd)) moved = true; }
+      for (const [k, v] of next) plan.set(k, v);
+      if (!moved) break;
+    }
     for (const sc of Wd.scs) {
       CAP = sc.solids;
       const g = sc.gamePre, water = (x, y) => g.water.some((q) => PIX.inPoly(q, x, y));
       for (const sd of ['N', 'E', 'S', 'W']) {
         const nb = Wd.at(sc.col + SIDE[sd][0], sc.row + SIDE[sd][1]), len = horizE(sd) ? W : H, n = Math.ceil(len / step);
-        const plant = [], wall = [], road = [];
+        const wall = [], road = [], edgeShut = [];
         for (let i = 0; i < n; i++) {
           const v = i * step + step / 2, [x, y] = edgePt(sd, v, d0), here = groundFree(pre(sc), x, y) && !water(x, y), onRoad = !sc.roadOk(x, y, OUTER);
-          let there = false; if (nb) { const [qx, qy] = edgePt(OPPS[sd], v, d0); there = groundFree(pre(nb), qx, qy, 0); }
-          const inLane = !sc.roadOk(x, y, LW); // a planter may stand on a shoulder, never in a lane
-          plant.push(!!nb && here && !there && !inLane); wall.push(!nb && here && !onRoad); road.push(!nb && here && onRoad);
+          let shut = !nb; if (nb && !here) { const [qx, qy] = edgePt(OPPS[sd], v, d0); shut = !arrives(withPlan(nb), qx, qy, OPPS[sd]); }
+          wall.push(!nb && here && !onRoad); road.push(!nb && here && onRoad); edgeShut.push(shut && !here && !onRoad && !water(x, y) && !(sc.hillLayer && sc.hillLayer.inBand(x, y)));
         }
-        for (const [a0, a1] of runsOf(plant, step)) { // a low planter: concrete, a clipped hedge, an LED seam
+        for (const { a0, a1 } of plan.get(sc).filter((q) => q.sd === sd)) { // a low planter: concrete, a clipped hedge, an LED seam
           const r = edgeRect(sd, a0, a1, WT), fp = chamf(Math.round(r.x / U), Math.round(r.y / U), Math.round((r.x + r.w) / U) - 1, Math.round((r.y + r.h) / U) - 1, 2);
           CAP = null; mass(sc.B, fp, r.x / U, r.y / U, (r.x + r.w) / U - 1, (r.y + r.h) / U - 1, 0, 3, 'conc', LEDS[1], true); mass(sc.B, (px, py, k) => fp(px, py, (k || 0) + 2), r.x / U, r.y / U, (r.x + r.w) / U - 1, (r.y + r.h) / U - 1, 3, 4, 'hedge', null, false, 'hedge'); CAP = sc.solids;
           captureRect(r.x, r.y, r.w, r.h, 'planter');
           sc.edgeLog.push(sd + ' planter ' + a0 + '–' + a1);
         }
+        for (const [a0, a1] of runsOf(edgeShut, step)) { const r = edgeRect(sd, a0, a1, WT); captureRect(r.x, r.y, r.w, r.h, 'bound'); } // Prototype 6.1: an edge that holds holds all along, behind buildings and lawns too (no sliver narrower than the body to wedge in)
         for (const [a0, a1] of runsOf(wall, step)) { // the district's bounds (Edit 42): the perimeter wall
           const r = edgeRect(sd, a0, a1, WT); captureRect(r.x, r.y, r.w, r.h, 'wall');
           sc.props.push({ spr: PIX.wall(Math.round(r.w / U), Math.round(r.h / U), WH), x: r.x / U, y: r.y / U, by: r.y + r.h });
@@ -1483,9 +1512,27 @@
     for (let k = 0; k < N; k++) s.moveCars(h, t - dt + (k + 1) * h);
     s.stepDrones(dt);
   }
+  // Prototype 6.1: a ring entry's give-way line can stand just inside a screen. A car nearing that seam reads the line from
+  // next door: it slows to traffic.giveWaySpeed and holds for the ring's traffic as if already on the far screen.
+  // It starts a full stopping distance out (at traffic.comfortBraking) plus traffic.giveWayLookahead, at least traffic.giveWayWindow.
+  function seamGiveWay(Wd) {
+    for (const s of Wd.sims) for (const c of s.cars) {
+      c.seamGW = null;
+      if (c.ghost) continue;
+      const r = recOf(s, c); if (!r || !r.next.length) continue;
+      const reach = Math.max(s.P['traffic.giveWayWindow'], c.v * c.v / (2 * s.P['traffic.comfortBraking']) + s.P['traffic.giveWayLookahead']), toEnd = r.ends.out.s - c.s; if (toEnd < 0 || toEnd > reach) continue;
+      const b = routeOf(r, c), g = b.path.giveWay; if (!g) continue;
+      const sb = b.ends.in.s - toEnd, toLine = g.s - (sb + c.L / 2);
+      if (toLine < -4 || toLine > reach) continue;
+      const pr = Object.create(c), p = X.pathAt(b.path, sb);
+      Object.assign(pr, { path: b.path, s: sb, lane: b.i, layer: b.simLayer, orbit: null, x: p.x + p.nx * c.d, y: p.y + p.ny * c.d });
+      c.seamGW = { toLine, hold: !!b.s.giveWayHold(pr) };
+    }
+  }
   function stepWorld(Wd, body, act) {
     const dt = 1 / P['simulation.tickRate'];
     Wd.t += dt;
+    seamGiveWay(Wd);
     for (const sc of Wd.scs) { // the dummy as each screen's drivers see it: itself here, across a shared edge next door, else away
       let pb = AWAY;
       if (body && body.alive && act) {
@@ -1581,6 +1628,43 @@
     for (const s of Wd.sims) for (const c of s.cars) if (!(c.elev || 0) && c.deck !== true) c.shift = true;
   }
   // The district: nine screens, linked, warmed for traffic.warmSeconds so no screen waits for cars.
+  // Prototype 6.1 (Edit 69): ground the dummy cannot reach from the start (an alley closed by buildings, a strip between hedges)
+  // is planted solid: a low planter with a clipped hedge. Reach: open ground (the body clear of solids, stairs, the hill, water,
+  // ground booms), joined across screen edges, by flights to their floors, and between floors that meet at a level.
+  function fillPockets(Wd) {
+    const ST = 8, nx = W / ST, ny = H / ST, key = (sc, k) => sc.name + ':' + k, adj = new Map(), comps = new Map();
+    const link = (a, b) => { if (a == null || b == null || a === b) return; (adj.get(a) || adj.set(a, new Set()).get(a)).add(b); (adj.get(b) || adj.set(b, new Set()).get(b)).add(a); };
+    const stand = (sc, x, y) => { const g = sc.game; return x >= R0 && y >= R0 && x <= W - R0 && y <= H - R0 && !g.statics.some((q) => inR(q, x, y, R0 - 2)) && !g.stairs.some((q) => inR(q, x, y, R0 - 2)) && g.polys0.every((p) => !PIX.inPoly(p, x, y)) && g.water.every((p) => !PIX.inPoly(p, x, y)) && !(g.checkpoints || []).some((cp) => !cp.deck && !cp.z && inR(cpZone(cp), x, y, R0 - 1)); };
+    for (const sc of Wd.scs) {
+      const id = new Int32Array(nx * ny).fill(-1); let n = 0;
+      for (let k = 0; k < nx * ny; k++) { const i = k % nx, j = (k - i) / nx; if (id[k] !== -1 || !stand(sc, (i + 0.5) * ST, (j + 0.5) * ST)) continue; const q = [k]; id[k] = n;
+        while (q.length) { const v = q.pop(), a = v % nx, b = (v - a) / nx; for (const [da, db] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const aa = a + da, bb = b + db; if (aa < 0 || bb < 0 || aa >= nx || bb >= ny) continue; const w = bb * nx + aa; if (id[w] === -1 && stand(sc, (aa + 0.5) * ST, (bb + 0.5) * ST)) { id[w] = n; q.push(w); } } } n++; }
+      comps.set(sc, { id, n });
+    }
+    const gAt = (sc, x, y) => { const c = comps.get(sc), i0 = Math.floor(x / ST), j0 = Math.floor(y / ST); for (let r = 0; r <= 2; r++) for (let j = j0 - r; j <= j0 + r; j++) for (let i = i0 - r; i <= i0 + r; i++) if (i >= 0 && j >= 0 && i < nx && j < ny && c.id[j * nx + i] >= 0) return key(sc, 'g' + c.id[j * nx + i]); return null; };
+    const fAt = (sc, z, x, y) => { const i = sc.game.floors.findIndex((f) => f.z === z && f.has(x, y)); return i >= 0 ? key(sc, 'f' + i) : null; };
+    for (const sc of Wd.scs) {
+      const g = sc.game;
+      for (const sd of ['N', 'E', 'S', 'W']) { const nb = Wd.at(sc.col + SIDE[sd][0], sc.row + SIDE[sd][1]); if (!nb) continue;
+        for (let v = 8; v < (horizE(sd) ? W : H) - 8; v += 2) { const [x, y] = edgePt(sd, v, R0 + 6), [qx, qy] = edgePt(OPPS[sd], v, R0 + 6); if (stand(sc, x, y) && stand(nb, qx, qy)) link(gAt(sc, x, y), gAt(nb, qx, qy));
+          const [ax, ay] = edgePt(sd, v, R0 + 1), [bx, by] = edgePt(OPPS[sd], v, R0 + 1); if (groundFree(sc, ax, ay) && arrives(nb, bx, by, OPPS[sd])) link(gAt(sc, ax, ay), gAt(nb, bx, by)); // as the dummy crosses: the push-out slides it in
+          for (const z of [1, 2]) { const [ex, ey] = edgePt(sd, v, 3), [fx, fy] = edgePt(OPPS[sd], v, 3); link(fAt(sc, z, ex, ey), fAt(nb, z, fx, fy)); } } }
+      for (const st of g.stairs) { const dir = Math.sign(st.high - st.low), lat = st.axis === 'y' ? st.x + st.w / 2 : st.y + st.h / 2, a = st.low - dir * (R0 + 8); link(st.axis === 'y' ? gAt(sc, lat, a) : gAt(sc, a, lat), key(sc, 'f' + st.head)); }
+      for (let y = 2; y < H; y += 4) for (let x = 2; x < W; x += 4) g.floors.forEach((f, i) => { if (!f.z || !f.has(x, y)) return; g.floors.forEach((h, j) => { if (j > i && h.z === f.z && [[0, 0], [4, 0], [-4, 0], [0, 4], [0, -4]].some(([a, b]) => h.has(x + a, y + b))) link(key(sc, 'f' + i), key(sc, 'f' + j)); }); });
+    }
+    const s0 = Wd.at(1, 1), sp = s0.game.spawns[0], start = sp.level ? fAt(s0, sp.level, sp.x, sp.y) : gAt(s0, sp.x, sp.y), seen = new Set([start]), q = [start];
+    while (q.length) { const a = q.pop(); for (const b of adj.get(a) || []) if (!seen.has(b)) { seen.add(b); q.push(b); } }
+    for (const sc of Wd.scs) {
+      const c = comps.get(sc), lost = new Set(); for (let i = 0; i < c.n; i++) if (!seen.has(key(sc, 'g' + i))) lost.add(i);
+      if (!lost.size) continue;
+      const M = new Uint8Array(AW * AH), e = ST / 2 + R0 - 3; let x0 = AW, y0 = AH, x1 = 0, y1 = 0;
+      for (let k = 0; k < nx * ny; k++) { if (!lost.has(c.id[k])) continue; const i = k % nx, j = (k - i) / nx, cx = (i + 0.5) * ST, cy = (j + 0.5) * ST;
+        for (let yy = Math.max(0, Math.floor((cy - e) / U)); yy <= Math.min(AH - 1, Math.floor((cy + e) / U)); yy++) for (let xx = Math.max(0, Math.floor((cx - e) / U)); xx <= Math.min(AW - 1, Math.floor((cx + e) / U)); xx++) { M[yy * AW + xx] = 1; x0 = Math.min(x0, xx); y0 = Math.min(y0, yy); x1 = Math.max(x1, xx); y1 = Math.max(y1, yy); } }
+      const fp = (x, y, ins) => { ins = Math.round(ins || 0); for (let j = -ins; j <= ins; j++) for (let i = -ins; i <= ins; i++) { const xx = x + i, yy = y + j; if (xx < 0 || yy < 0 || xx >= AW || yy >= AH || !M[yy * AW + xx]) return false; } return true; };
+      CAP = sc.solids; mass(sc.B, fp, x0, y0, x1, y1, 0, 2, 'conc', LEDS[1], true); mass(sc.B, (x, y, i) => fp(x, y, (i || 0) + 1), x0, y0, x1, y1, 2, 3, 'hedge', null, false, 'hedge'); CAP = null;
+      sc.pockets = lost.size; sc.game = gameData(sc);
+    }
+  }
   function buildWorld(id, opts) {
     PAVN = 0; PAVB = 0;
     opts = opts || {};
@@ -1589,6 +1673,7 @@
     const scs = [];
     for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) scs.push(buildScreen(D, c, r));
     edgePass({ scs, at: (c, r) => (c >= 0 && c < 3 && r >= 0 && r < 3 ? scs[r * 3 + c] : null) }); // P6.1: barriers and booms where an edge cannot be crossed
+    fillPockets({ scs, at: (c, r) => (c >= 0 && c < 3 && r >= 0 && r < 3 ? scs[r * 3 + c] : null) }); // Prototype 6.1: no ground the dummy cannot reach
     const Wd = { id, D, scs, at: (c, r) => (c >= 0 && c < 3 && r >= 0 && r < 3 ? scs[r * 3 + c] : null), t: 0, live: false, budget: opts.budget != null ? opts.budget : P['run.appearances.road'], admitted: 0, exited: 0, crossings: 0, events: [], tick: 0, spawnSeq: 0, culled: 0 }; // admitted (P6.1): shift cars that have appeared on the screen in view
     linkWorld(Wd);
     for (const sc of scs) { // cones live on their screen; ground drivers and the dummy share them
@@ -1995,6 +2080,6 @@
     if (m === t) return { nx: 0, ny: -1, pen: t + r };
     return { nx: 0, ny: 1, pen: b + r };
   }
-  const api = { DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY, groundFree, edgePt, inR, cpZone };
+  const api = { DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY, groundFree, arrives, edgePt, inR, cpZone };
   if (NODE) module.exports = api; else root.WORLD6 = api;
 })(typeof window !== 'undefined' ? window : globalThis);

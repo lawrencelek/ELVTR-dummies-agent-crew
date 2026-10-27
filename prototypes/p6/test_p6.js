@@ -42,7 +42,7 @@ function edgeAudit(w) { // every edge point the dummy can reach is crossable, or
       const [x, y] = W6.edgePt(sd, v, R + 1);
       if (W6.groundFree(sc, x, y) && !g.water.some((p) => PIX.inPoly(p, x, y)) && !g.checkpoints.some((cp) => !cp.deck && !cp.z && W6.inR(W6.cpZone(cp), x, y, R))) {
         n++; const [qx, qy] = W6.edgePt(OPP[sd], v, R + 1), tunnel = sc.hillLayer && sc.hillLayer.inBand(x, y);
-        if ((nb && W6.groundFree(nb, qx, qy, 0)) || tunnel) open++; else bad.push(sc.name + sd + Math.round(v));
+        if ((nb && W6.arrives(nb, qx, qy, OPP[sd])) || tunnel) open++; else bad.push(sc.name + sd + Math.round(v));
       }
       const [ex, ey] = W6.edgePt(sd, v, 1);
       for (const f of g.floors) if (f.z && f.has(x, y) && f.has(ex, ey)) { // a floor that ends short of the edge drops or holds in view
@@ -139,6 +139,19 @@ for (const id of W6.LEVEL_LIST) {
   for (const id of W6.LEVEL_LIST) {
     const r = A.auditDistrict(id), bad = r.filter((q) => !q.ok), n = (k) => r.filter((q) => q.kind === k).length;
     ok(!bad.length, `${id}: playtest audit: ${n('stair')} flights on screen as drawn, clear of buildings, walked up and down from a clear apron; ${n('plan')} building plans solid; ${n('walk')} walkway ends clean${bad.length ? ' (not: ' + bad.slice(0, 3).map((q) => q.tag + ': ' + q.fails[0]).join('; ') + ')' : ''}`);
+  }
+}
+{ // Prototype 6.1 (Edit 69): walking and traffic across each district
+  const WK = require('./tools/p6_walk.js'), TR = require('./tools/p6_traffic.js'), SECS = +(process.env.SOAK || 40); // 40 s per screen: six minutes a district
+  for (const id of W6.LEVEL_LIST) {
+    const r = WK.reach(W6.buildWorld(id, { warm: 0 })), t = WK.tour(id), b = WK.bump(id);
+    ok(!r.lost.length, `${id}: every patch of open ground and every floor is reached from the B2 spawn (${r.reached}/${r.total})${r.lost.length ? ' — not: ' + r.lost.slice(0, 3).join('; ') : ''}`);
+    ok(!t.crossFail.length && !t.apronFail.length && t.screens.size >= 9, `${id}: the dummy tours ${t.screens.size} screens by path-finding and physics: ${t.crossings} edge crossings, ${t.aprons} flights climbed${t.crossFail.length + t.apronFail.length ? ' — failed: ' + t.crossFail.concat(t.apronFail).slice(0, 3).join('; ') : ''}`);
+    ok(!b.fail.length, `${id}: ${b.n} building faces hold the dummy${b.fail.length ? ' — not: ' + b.fail.slice(0, 3).join('; ') : ''}`);
+    const wd = WK.wander(id, 300, 1);
+    ok(!wd.traps.length, `${id}: 5 min wandering at random (${wd.screens.size} screen-levels): no spot the dummy cannot leave${wd.traps.length ? ' — ' + wd.traps.join('; ') : ''}`);
+    const q = TR.soak(id, SECS), worst = Math.max(...q.per.filter((z) => z.road).map((z) => z.empty));
+    ok(!q.popIns.length && !q.overlaps.length && q.maxStop < TR.LIMITS.longestStop && worst < TR.LIMITS.emptyShare, `${id}: traffic soak, ${q.minutes} min touring all nine screens: ${q.popIns.length} pop-ins, ${q.overlaps.length} overlaps, longest stop ${q.maxStop.toFixed(1)} s, street tiles empty ≤ ${Math.round(worst * 100)}%${q.overlaps.length ? ' — ' + q.overlaps[0] : ''}${q.popIns.length ? ' — ' + q.popIns[0] : ''}`);
   }
 }
 { // P6.3: the playtest routes

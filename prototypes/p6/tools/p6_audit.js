@@ -28,19 +28,19 @@ function place(s, sc, x, y, lv, fl) {
 const empty = (s) => { for (const sm of s.W6.sims) { sm.cars.length = 0; sm.slot = sm.schedule.length; sm.deckNext = { 0: 1e9, 1: 1e9, 2: 1e9, 3: 1e9 }; } s.W6.budget = 0; s.buildView(); };
 
 // where the dummy can stand at Z0 (its centre): clear of solids, the hill, water, stairs and ground booms by the body's radius
-function standable(sc, x, y, own) {
-  const g = sc.game;
+function standable(sc, x, y, own, m) { // m: clearance from solids (default R − 1; the walk test's reach uses R − 2, as the game's groundFree)
+  const g = sc.game; m = m == null ? R - 1 : m;
   if (x < R || y < R || x > W - R || y > H - R) return false;
-  if (g.statics.some((q) => inR(q, x, y, R - 1))) return false;
-  if (g.stairs.some((q) => q !== own && inR(q, x, y, R - 1))) return false;
+  if (g.statics.some((q) => inR(q, x, y, m))) return false;
+  if (g.stairs.some((q) => q !== own && inR(q, x, y, m))) return false;
   if (g.polys0.some((p) => PIX.inPoly(p, x, y))) return false;
   if (g.water.some((p) => PIX.inPoly(p, x, y))) return false;
   if ((g.checkpoints || []).some((cp) => !cp.deck && !cp.z && inR(W6.cpZone(cp), x, y, R - 1))) return false;
   return true;
 }
-function components(sc, step) {
+function components(sc, step, m) {
   const nx = Math.floor(W / step), ny = Math.floor(H / step), id = new Int32Array(nx * ny).fill(-1), ok = new Uint8Array(nx * ny), size = [];
-  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) ok[j * nx + i] = standable(sc, (i + 0.5) * step, (j + 0.5) * step) ? 1 : 0;
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) ok[j * nx + i] = standable(sc, (i + 0.5) * step, (j + 0.5) * step, null, m) ? 1 : 0;
   let n = 0;
   for (let k = 0; k < ok.length; k++) {
     if (!ok[k] || id[k] >= 0) continue;
@@ -54,7 +54,8 @@ function components(sc, step) {
   }
   const main = size.reduce((a, s, i) => (a < 0 || s.c > size[a].c ? i : a), -1);
   const at = (x, y) => { let best = -1, bd = 1e9; for (let j = Math.max(0, Math.floor(y / step) - 2); j <= Math.min(ny - 1, Math.floor(y / step) + 2); j++) for (let i = Math.max(0, Math.floor(x / step) - 2); i <= Math.min(nx - 1, Math.floor(x / step) + 2); i++) { const k = j * nx + i; if (id[k] < 0) continue; const d = Math.hypot((i + 0.5) * step - x, (j + 0.5) * step - y); if (d < bd) { bd = d; best = id[k]; } } return bd <= step * 1.5 ? best : -1; };
-  return { size, main, at, total: size.reduce((a, s) => a + s.c, 0) };
+  const box = (n) => { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (let k = 0; k < id.length; k++) if (id[k] === n) { const i = k % nx, j = (k - i) / nx; x0 = Math.min(x0, i); y0 = Math.min(y0, j); x1 = Math.max(x1, i); y1 = Math.max(y1, j); } return [x0 * step, y0 * step, (x1 + 1) * step, (y1 + 1) * step]; };
+  return { size, main, at, box, total: size.reduce((a, s) => a + s.c, 0) };
 }
 function stairGeom(st) {
   const dir = Math.sign(st.high - st.low), ay = st.axis === 'y', lat = ay ? st.x + st.w / 2 : st.y + st.h / 2;

@@ -58,6 +58,7 @@
     // Edit 42 (P3.1): three levels, bounded districts
     'world.parapetWidth': 8, 'world.deckLampSpacing': 88, // P5.2: lamps in pairs, about nine per screen width
      'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7, 'world.stairApron': 40, 'world.stairEdgeMargin': 16, // P6.3 (Edit 65): a clear apron beyond every foot; flights drawn inside the screen
+     'world.edgeArrivalDepth': 8, 'traffic.giveWayWindow': 200, 'traffic.giveWayLookahead': 40, // Prototype 6.1 (Edit 69): standing room on arrival across an edge; the give-way approach window and its margin past a stopping distance
     'world.dropSeconds': 0.35, 'damage.dropSpeed': 120, 'world.wallThickness': 16, 'world.boomRange': 140, 'world.boomSeconds': 0.5,
     'world.towerHeightMin': 288, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 160, 'damage.plateMultiplier': 1.5,
     // Edit 43 (P3.2): perpendicular crossings, turn styles, storeys and frontage, car lights
@@ -1941,7 +1942,7 @@
       const g = c.path.giveWay, gap = this.P['traffic.giveWayGap'];
       if (!g || !(gap > 0) || lay(c) !== 0) return null;
       const toLine = g.s - (c.s + c.L / 2);
-      if (toLine < -4 || toLine > 200) return null; // over the line: committed
+      if (toLine < -4 || toLine > this.P['traffic.giveWayWindow']) return null; // over the line: committed
       const om = this.P['traffic.ringOrbitMax'];
       if (om > 0 && c.path.ring && this.ringExitBlocked(c)) { // Edit 56: a car whose exit is blocked waits at the line once traffic.ringOrbitMax cars already orbit (orbiters fill a ring and lock it)
         let n = 0; for (const o of this.cars) if (o !== c && o.orbit && o.path.ring && o.path.ring.cx === g.cx && o.path.ring.cy === g.cy) n++;
@@ -2301,7 +2302,7 @@
         }
         if (cRing && Math.abs(c.d) > 1) continue; // in or moving to the inner lane: only ring traffic matters (its offset would line up with the oncoming arm lane)
         let gap = null, v = 0, oncoming = false;
-        if (o.lane === c.lane) {
+        if (o.lane === c.lane && (o.path === c.path || !(o.path.ring && c.path.ring))) { // Prototype 6.1: two laps of one ring route measure s apart by a lap; they follow by projection
           if (o.s > c.s && Math.abs(o.d - c.d) < (c.W + o.W) / 2 + 6) { gap = o.s - c.s - (c.L + o.L) / 2; v = o.v; }
         } else if (road) { // P4 (Edit 49): another lane's car counts only where it stands on this car's own route ahead, as the road bends
           if (hyp(o.x - c.x, o.y - c.y) > 460 || this.mergingPast(c, o) || this.junctionPast(c, o)) continue;
@@ -2698,10 +2699,13 @@
             c.untangle = back && (back.car === c || back.car.real === c) && (rc < ro || (rc === ro && c.id < o.id)) ? o : null;
           } else c.untangle = null; }
         // P4 (Edit 49.1): approach a give-way line slowly enough to stop at it (traffic.giveWaySpeed at the line); stop for circulating traffic
-        const gw = this.giveWayHold(c) || this.junctionHold(c), jl = c.path.junction && c.path.junction.line != null ? { s: c.path.junction.line } : null;
+        const sg = !c.path.giveWay && c.seamGW ? c.seamGW : null; // Prototype 6.1: the give-way line just past a seam, read by the world (seamGiveWay)
+        const gw = this.giveWayHold(c) || this.junctionHold(c) || (sg && sg.hold ? { line: c.s + sg.toLine } : null), jl = c.path.junction && c.path.junction.line != null ? { s: c.path.junction.line } : null;
         const gl = c.path.giveWay || jl, toLine = gl ? gl.s - (c.s + c.L / 2) : null;
         c.yielding = !!gw;
-        if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && toLine > -4 && toLine < 200) vT = Math.min(vT, Math.max(P['traffic.giveWaySpeed'], Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, toLine))));
+        const reach = Math.max(P['traffic.giveWayWindow'], c.v * c.v / (2 * P['traffic.comfortBraking']) + P['traffic.giveWayLookahead']); // Prototype 6.1: a car off a highway starts slowing a full stopping distance out
+        if (gl && P['traffic.giveWayGap'] > 0 && lay(c) === 0 && toLine > -4 && toLine < reach) vT = Math.min(vT, Math.max(P['traffic.giveWaySpeed'], Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, toLine))));
+        if (sg && P['traffic.giveWayGap'] > 0) vT = Math.min(vT, Math.max(P['traffic.giveWaySpeed'], Math.sqrt(2 * P['traffic.comfortBraking'] * Math.max(0, sg.toLine))));
         if (c.path.junction) vT = Math.min(vT, this.junctionLetIn(c)); // P4 (Edit 49.3): let in a car that has crossed its line
         if (gw) { const rem = gw.line - c.s; vT = Math.min(vT, rem < 1 ? 0 : Math.sqrt(2 * P['traffic.comfortBraking'] * rem)); }
         const rg = c.path.giveWay;
