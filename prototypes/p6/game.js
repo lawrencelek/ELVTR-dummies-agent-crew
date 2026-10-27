@@ -69,7 +69,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = W6 ? 'P6.7' : 'P5.3'; // Prototype 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = W6 ? 'P6.8' : 'P5.3'; // Prototype 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -150,7 +150,7 @@
   // Keys: Space or K dash (A) · L or Shift jump (B) · J or E grab (X) · I or Q throw (Y): IJKL sits like the pad's diamond.
   // Gamepads: pads.js (every pad; hat d-pads; buttons set up by the player). Touch: an analog stick and the diamond (below).
   const FOUR = !!(W6 && W6.P6SIM && W6.P6SIM['proto.input.fourButtons']);
-  const ABIL = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities']); // Edit 77 (P6.7): the shop sells four ability tracks by level
+  const ABIL = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities']); // Edit 77 (P6.7): the shop sells four ability tracks by level. Edit 78 (P6.8): four levels
   const held = new Set();
   const q = { a: 0, b: 0, bUp: 0, x: 0, y: 0 };
   const menuQ = [];
@@ -712,7 +712,7 @@
           break;
         }
         case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODE(e.node).name })); break;
-        case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); break;
+        case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); if (ABIL && s.coneCapacity() > 1) toast('Cones ' + (e.n || 1) + ' / ' + s.coneCapacity()); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
         case 'stair': Snd.tone(260, 300, 0.05, 'triangle', 0.03); break;
         case 'level': { // Edit 42, 44: first time up says what the level does
@@ -746,9 +746,10 @@
   // ---------- menus
   const PAUSE_ITEMS = ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title'];
   const END_ITEMS = ['Play again from district 1', 'Choose a district', 'Show trace'];
-  const SHOP_GRID = ABIL ? Object.keys(TRACKS).map((t) => [1, 2, 3].map((L) => t + L)) // Edit 77: Battery (A), Legs (B), Arms (X), Throw (Y); levels 1–3
+  const SHOP_GRID = ABIL ? Object.keys(TRACKS).map((t) => [t]) // Edit 78: one card per track (Battery A, Legs B, Arms X, Throw Y); A buys its next level
     : FOUR ? [['spine'], ['jump', 'ricochet'], ['carry', 'throw'], ['bigBattery']] : [['hips', 'spine'], ['carry', 'throw'], ['bigBattery']]; // Edit 75: Legs (Jump, Ricochet); Hips leaves (DIRECT, D48)
-  const SHOP_ROWS = ABIL ? 3 : 2; // the deploy row sits below the last card row
+  const SHOP_ROWS = ABIL ? 1 : 2; // the deploy row sits below the last card row
+  const nextLevel = (s, t) => { const L = s.tier(t) + 1; return L <= s.P['abilities.maxLevel'] ? t + L : null; }; // Edit 78: the node a track's card sells
   const NODE = (n) => (ABIL && NODES7[n]) || NODES[n];
   const nodeDesc = (n) => (ABIL && NODES7[n] && NODES7[n].desc) || (FOUR && NODES4 && NODES4[n] && NODES4[n].desc) || NODES[n].desc;
   function handleMenus() {
@@ -797,7 +798,8 @@
         else if (m === 'back') { s.leaveShop(); clearEdges(); return; }
         else if (m === 'ok') {
           if (app.shopRow === SHOP_ROWS) { s.leaveShop(); clearEdges(); return; }
-          s.buy(SHOP_GRID[app.shopCol][app.shopRow]);
+          if (ABIL) { const t = SHOP_GRID[app.shopCol][0], n = nextLevel(s, t); if (n) s.buy(n); else s.emit('purchase-denied', { node: t, why: 'max' }); }
+          else s.buy(SHOP_GRID[app.shopCol][app.shopRow]);
         }
       } else if (s.phase === 'ending') {
         const items = endItems(s);
@@ -1470,7 +1472,7 @@
     dynShadows(s);
     if (onGroundDraw(s)) drawBodyGround(s);
     drawSprites(s, la, false, lvl > 0 ? cues : null);
-    if (b.alive && b.held) { const p = s.releasePoint(); PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4); }
+    if (b.alive && b.held) { const p = s.releasePoint(), n = s.carriedCones().length; for (let i = 0; i < n; i++) PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4 - 3 * i); } // Edit 78: a stack
     for (const c of mine) drawCarMarks(s, c);
     drawNose(s);
     drawEffects(s); drawRingsStreaks(); drawParts(s);
@@ -1559,7 +1561,7 @@
     });
     for (const c of cars) { ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); relight(c); } // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
     if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
-    if (b.alive && b.held) { const p = s.releasePoint(); PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4 - bodyLift(s)); }
+    if (b.alive && b.held) { const p = s.releasePoint(), n = s.carriedCones().length; for (let i = 0; i < n; i++) PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4 - 3 * i - bodyLift(s)); } // Edit 78: a stack
     for (const c of mine) drawCarMarks(s, c);
     if (b.mode !== 'rescue') drawNose(s);
     drawEffects(s); drawRingsStreaks(); drawParts(s);
@@ -1712,7 +1714,7 @@
     if (!FOUR) { const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']]; if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']); return keys; }
     const pd = app.device === 'pad', keys = [[pd ? 'STICK' : 'WASD', 'MOVE'], [pd ? 'A' : 'SPACE', 'DASH']]; // Edit 75: A, B, X, Y as installed
     if (s.has('jump')) keys.push([pd ? 'B' : 'L', 'JUMP']);
-    if (s.has('carry')) keys.push([pd ? 'X' : 'J', s.body.held ? 'PLACE' : 'GRAB']);
+    if (s.has('carry')) keys.push([pd ? 'X' : 'J', s.body.held && s.carriedCones().length >= s.coneCapacity() ? 'PLACE' : s.body.held ? 'GRAB/PLACE' : 'GRAB']);
     if (s.has('throw')) keys.push([pd ? 'Y' : 'I', 'THROW']);
     return keys;
   }
@@ -1859,12 +1861,12 @@
     return out;
   }
   // Owned nodes; in the shop the selected node is tried on (blinking); the tuning preview shows all 15.
-  const DOLL_MODS = { battery: ['fastCharge', 'kineticCharge', 'bigBattery'], legs: ['jump', 'springStart', 'grip'], arms: ['carry', 'holdOn', 'neck'], throw: ['throw', 'spine', 'hips'] }; // Edit 77: a piece per level
+  const DOLL_MODS = { battery: ['fastCharge', 'kineticCharge', 'bigBattery', 'spine'], legs: ['jump', 'springStart', 'grip', 'hips'], arms: ['carry', 'holdOn', 'neck', 'ears'], throw: ['throw', 'widerView', 'memory'] }; // Edit 77–78: a piece per level
   function dollMods(s) {
     if (app.previewMods) return PIX.MODULES;
     if (ABIL) {
       const out = []; for (const t of Object.keys(TRACKS)) out.push(...DOLL_MODS[t].slice(0, s.tier(t)));
-      const sel = s.phase === 'shop' && app.shopRow < SHOP_ROWS ? NODES7[SHOP_GRID[app.shopCol][app.shopRow]] : null;
+      const sel = s.phase === 'shop' && app.shopRow < SHOP_ROWS ? NODES7[nextLevel(s, SHOP_GRID[app.shopCol][0])] : null;
       if (sel && s.tier(sel.track) < sel.level && Math.floor(app.realT * 3) % 2 === 0) out.push(...DOLL_MODS[sel.track].slice(s.tier(sel.track), sel.level));
       return out;
     }
@@ -2010,53 +2012,66 @@
   // Edit 77 (P6.7): the ability shop. Four tracks, one per button (A Battery, B Legs, X Arms, Y Throw); levels 1–3 down each.
   // A card: its level, its price or state, and what it does in a few words. The selected card's full text sits below.
   const BADGE = { A: C.dummy, B: FT.accent, X: FT.accent, Y: FT.accent };
-  function abilityLine(s, n) { // a few words per card: the ability (level 1) and the wear shield
-    const nd = NODES7[n], P = s.P, cut = Math.round(P['abilities.wearCut'] * nd.level * 100) + '%';
-    if (nd.track === 'battery') return (P['battery.secondsPerCharge'] * Math.pow(P['abilities.battery.rechargeStep'], nd.level)).toFixed(2) + ' s · −' + cut;
-    return (nd.level === 1 ? TRACKS[nd.track].verb + ' · ' : 'WEAR ') + '−' + cut;
+  // Edit 78: what a track does at level L (0–4): its step, and the share of wear its level stops
+  function abilityStats(s, t, L) {
+    const P = s.P, cut = Math.round(P['abilities.wearCut'] * L * 100), wear = L ? 'WEAR −' + cut + '%' : 'FULL WEAR';
+    if (t === 'battery') return ['CHARGE ' + Math.max(0.05, P['battery.secondsPerCharge'] - P['abilities.battery.rechargeCut'] * L).toFixed(2) + ' s', wear];
+    if (!L) return [{ legs: 'NO JUMP', arms: 'NO GRAB', throw: 'NO THROW' }[t], ''];
+    if (t === 'legs') return ['AIR ' + (P['abilities.legs.airtimeBase'] + P['abilities.legs.airtimeStep'] * (L - 1)).toFixed(1) + ' s', wear];
+    if (t === 'arms') return [P['abilities.arms.conesPerLevel'] * L + ' CONE' + (P['abilities.arms.conesPerLevel'] * L === 1 ? '' : 'S'), wear];
+    return ['RANGE ' + Math.round(P['upgrades.throwDistance'] + P['abilities.throw.distanceStep'] * (L - 1)), wear];
   }
   function drawAbilityShop(s) {
     veil();
-    const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36, P = s.P;
+    const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36, P = s.P, max = P['abilities.maxLevel'];
     panel(x, y, w, h);
     txt(copy('shop.eyebrow', 'MODIFICATION SERVICES').toUpperCase(), x + 28, y + 46, fLab, FT.accent);
     const ct = s.run.credits + ' CREDIT' + (s.run.credits === 1 ? '' : 'S');
     ctx.font = fLab; const cw = ctx.measureText(ct).width + 36;
     rr(x + w - 28 - cw, y + 16, cw, 44, 12); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.5; ctx.stroke();
     txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center');
-    const nc = SHOP_GRID.length, gap = 16, colW = (w - 56 - gap * (nc - 1)) / nc, cardH = 78, step = 86, top = y + 104;
+    const nc = SHOP_GRID.length, gap = 16, colW = (w - 56 - gap * (nc - 1)) / nc, top = y + 76, cardH = 262;
     SHOP_GRID.forEach((col, ci) => {
-      const cx = x + 28 + ci * (colW + gap), t = NODES7[col[0]].track, tr = TRACKS[t], lv = s.tier(t);
-      txt(tr.name.toUpperCase(), cx + 2, y + 92, '900 23px ' + F_BRAND, FT.text);
-      const br = 15, bx = cx + colW - br - 2, by = y + 84; // the button this track serves, as on the pad
+      const t = col[0], tr = TRACKS[t], lv = s.tier(t), n = nextLevel(s, t), chk = n ? s.canBuy(n) : { ok: false, why: 'max' }, on = app.shopCol === ci && app.shopRow === 0, cx = x + 28 + ci * (colW + gap);
+      rr(cx, top, colW, cardH, 12);
+      ctx.fillStyle = on ? FT.keyTop : lv ? 'rgba(79,195,232,0.16)' : FT.item; ctx.fill();
+      ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
+      txt(tr.name.toUpperCase(), cx + 14, top + 34, '900 20px ' + F_BRAND, FT.text);
+      const br = 13, bx = cx + colW - br - 10, by = top + 27; // the button this track serves, as on the pad
       ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = FT.keyTop; ctx.fill(); ctx.strokeStyle = BADGE[tr.button]; ctx.lineWidth = 2; ctx.stroke();
-      txt(tr.button, bx, by + 7, '700 18px ' + F_MONO, FT.text, 'center');
-      col.forEach((n, ri) => {
-        const nd = NODES7[n], own = lv >= nd.level, chk = s.canBuy(n), on = app.shopCol === ci && app.shopRow === ri, yy = top + ri * step;
-        rr(cx, yy, colW, cardH, 12);
-        ctx.fillStyle = own ? 'rgba(79,195,232,0.28)' : on ? FT.keyTop : FT.item; ctx.fill();
-        ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
-        txt('LEVEL ' + nd.level, cx + 14, yy + 27, fLab, own ? FT.text : chk.ok ? FT.text : FT.dim);
-        const price = P[nd.price], st = own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase();
-        txt(st, cx + 14, yy + 50, '700 17px ' + F_UI, own ? FT.accent : chk.ok ? FT.text : FT.off);
-        txt(abilityLine(s, n), cx + 14, yy + 70, '400 17px ' + F_UI, FT.dim);
-        if (ri < col.length - 1) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 26, yy + cardH); ctx.lineTo(cx + 26, yy + step); ctx.stroke(); }
-      });
+      txt(tr.button, bx, by + 6, '700 16px ' + F_MONO, FT.text, 'center');
+      const pw = (colW - 28 - 6 * (max - 1)) / max; // level pips: owned filled; the next one blinks while selected
+      for (let L = 1; L <= max; L++) {
+        const px = cx + 14 + (L - 1) * (pw + 6), own = L <= lv, nxt = L === lv + 1 && on && Math.floor(app.realT * 3) % 2 === 0;
+        rr(px, top + 50, pw, 14, 4); ctx.fillStyle = own ? FT.accent : nxt ? 'rgba(79,195,232,0.45)' : 'rgba(159,176,186,0.18)'; ctx.fill();
+      }
+      txt(lv ? 'LEVEL ' + lv : 'LOCKED', cx + 14, top + 96, fLab, lv ? FT.text : FT.dim);
+      const st = abilityStats(s, t, lv);
+      txt(st[0], cx + 14, top + 126, '400 18px ' + F_UI, FT.text); if (st[1]) txt(st[1], cx + 14, top + 152, '400 18px ' + F_UI, FT.dim);
+      ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx + 14, top + 172); ctx.lineTo(cx + colW - 14, top + 172); ctx.stroke();
+      if (n) {
+        const nst = abilityStats(s, t, lv + 1), price = P[NODES7[n].price];
+        txt('NEXT · ' + (chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase()), cx + 14, top + 200, '700 16px ' + F_UI, chk.ok ? FT.accent : FT.off);
+        txt(nst[0], cx + 14, top + 226, '400 17px ' + F_UI, FT.dim); if (nst[1]) txt(nst[1], cx + 14, top + 250, '400 17px ' + F_UI, FT.dim);
+      } else txt('MAXED', cx + 14, top + 200, '700 16px ' + F_UI, FT.accent);
     });
-    if (app.shopRow < SHOP_ROWS && SHOP_GRID[app.shopCol][app.shopRow]) {
-      const n = SHOP_GRID[app.shopCol][app.shopRow], nd = NODES7[n], chk = s.canBuy(n), cut = Math.round(P['abilities.wearCut'] * nd.level * 100);
-      const what = nd.desc + ' ' + PART_WORD[nd.track] + ' wear −' + cut + '%.';
-      let tail = '';
-      if (s.tier(nd.track) >= nd.level) tail = ' Installed.';
-      else if (!chk.ok) tail = ' ' + chk.why[0].toUpperCase() + chk.why.slice(1) + '.';
-      else { const left = s.run.credits - chk.price; tail = ' Leaves ' + left + ' credit' + (left === 1 ? '' : 's') + '.'; }
-      wrapText(nd.name + ': ' + what + tail, x + 28, top + 3 * step + 22, w - 56, 26, fLab, FT.text, 2);
+    if (app.shopRow === 0) {
+      const t = SHOP_GRID[app.shopCol][0], n = nextLevel(s, t);
+      let msg;
+      if (!n) msg = TRACKS[t].name + ' is at level ' + s.tier(t) + ', the top.';
+      else {
+        const nd = NODES7[n], chk = s.canBuy(n), st = abilityStats(s, t, nd.level);
+        msg = nd.name + ': ' + nd.desc + ' ' + st.filter(Boolean).map((q) => q[0] + q.slice(1).toLowerCase()).join('. ') + '.';
+        if (!chk.ok) msg += ' ' + chk.why[0].toUpperCase() + chk.why.slice(1) + '.';
+        else { const left = s.run.credits - chk.price; msg += ' Leaves ' + left + ' credit' + (left === 1 ? '' : 's') + '.'; }
+      }
+      wrapText(msg, x + 28, top + cardH + 34, w - 56, 26, fLab, FT.text, 2);
     }
     const on = app.shopRow === SHOP_ROWS;
     rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
     ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
     txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
-    txt(TOUCH.on || app.device === 'pad' ? 'STICK SELECT · A BUY · B DEPLOY' : 'ARROWS SELECT · SPACE BUY · SHIFT DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
+    txt(TOUCH.on || app.device === 'pad' ? 'STICK SELECT · A BUY NEXT LEVEL · B DEPLOY' : 'ARROWS SELECT · SPACE BUY NEXT LEVEL · SHIFT DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
   }
   const PART_WORD = { battery: 'Torso', legs: 'Leg', arms: 'Grip', throw: 'Throw' };
   // Cue key: the field's own pixel marks, shown at field scale, with what each means.
@@ -2179,7 +2194,10 @@
     ['proto.turnModel', 1, 2, 1], ['movement.directTurnRate', 180, 1440, 30], ['upgrades.jumpAirtime', 0.2, 1, 0.05], ['upgrades.jumpMaxSpeed', 100, 600, 4], ['upgrades.jumpAirAccel', 0, 1200, 12], ['upgrades.jumpHeight', 10, 80, 1],
     ['battery.jumpCost', 0, 2, 0.5], ['upgrades.ricochetScale', 1, 4, 0.25],
     // Edit 77 (P6.7): ability tracks; run to clear
-    ['abilities.wearCut', 0, 0.34, 0.01], ['abilities.battery.rechargeStep', 0.5, 1, 0.01], ['proto.parts.torsoRechargeLoss', 0, 3, 0.1], ['proto.jump.runToClear', 0, 1, 1],
+    ['abilities.wearCut', 0, 0.25, 0.01], ['abilities.battery.rechargeCut', 0, 0.19, 0.01], ['abilities.legs.airtimeBase', 0.1, 1, 0.05], ['abilities.legs.airtimeStep', 0, 0.3, 0.05],
+    ['abilities.arms.conesPerLevel', 1, 3, 1], ['abilities.throw.distanceStep', 0, 120, 5], ['economy.price.ability.level4', 0, 8, 1],
+    // Edit 78 (P6.8): the bounce off a car, Newtonian. Restitution, the dummy's mass, contact friction, the slide
+    ['proto.bounce.newton', 0, 1, 1], ['physics.slideFriction', 0.1, 3, 0.05], ['proto.parts.torsoRechargeLoss', 0, 3, 0.1], ['proto.jump.runToClear', 0, 1, 1],
     ['economy.price.ability.level1', 0, 5, 1], ['economy.price.ability.level2', 0, 5, 1], ['economy.price.ability.level3', 0, 6, 1], ['scoring.comboWindow', 0.2, 4, 0.1], ['scoring.comboStep', 0, 2, 0.1], ['scoring.comboMax', 1, 6, 0.5],
   ];
   for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
@@ -2212,13 +2230,13 @@
     }
     if (FOUR) { // Edit 75: install modules for a test run (marks the run as tuned); outline what a jump clears; set up a gamepad
       const head = document.createElement('p'); head.className = 'note'; head.style.gridColumn = '1 / -1'; head.textContent = ABIL ? 'Test run: install ability levels now (the run is marked tuned). A Battery, B Legs (jump), X Arms (grab), Y Throw. Each level cuts wear by abilities.wearCut.' : 'Test run: install modules now (the run is marked tuned). Start = DASH (A). Then JUMP (B), GRAB (X), THROW (Y).'; grid.append(head);
-      for (const n of [].concat(...SHOP_GRID)) {
+      for (const n of ABIL ? Object.keys(NODES7) : [].concat(...SHOP_GRID)) {
         const row = document.createElement('label'); row.className = 'tcheck';
         const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-own-' + n; inp.dataset.node = n;
         inp.addEventListener('change', () => {
           const sm = app.sim; if (!sm) { inp.checked = false; toast('Start a district first'); return; }
           const nd = ABIL && NODES7[n];
-          if (nd) { for (let L = 1; L <= 3; L++) { const k = nd.track + L; if (inp.checked ? L <= nd.level : L >= nd.level) { if (inp.checked) sm.run.owned[k] = true; else delete sm.run.owned[k]; } const el = document.getElementById('t-own-' + k); if (el) el.checked = !!sm.run.owned[k]; } } // Edit 77: a level brings the levels below it
+          if (nd) { for (let L = 1; L <= 4; L++) { const k = nd.track + L; if (inp.checked ? L <= nd.level : L >= nd.level) { if (inp.checked) sm.run.owned[k] = true; else delete sm.run.owned[k]; } const el = document.getElementById('t-own-' + k); if (el) el.checked = !!sm.run.owned[k]; } } // Edit 77: a level brings the levels below it
           else if (inp.checked) sm.run.owned[n] = true; else delete sm.run.owned[n];
           app.tuned = true; sm.emit('debug-module', { node: n, on: inp.checked });
         });

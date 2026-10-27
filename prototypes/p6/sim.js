@@ -102,8 +102,10 @@
     'battery.jumpCost': 1, 'world.jumpableHeight': 20, 'world.jumpableDepth': 48, 'proto.art.jumpableTop': 5, 'upgrades.ricochetScale': 2, 'scoring.comboWindow': 1.5, 'scoring.comboStep': 0.5, 'scoring.comboMax': 3,
     'economy.price.legs.jump': 1, 'economy.price.legs.ricochet': 2,
     // Edit 77 (P6.7): four ability tracks by level; each level shields its ability from wear. Run to clear.
-    'abilities.maxLevel': 3, 'abilities.wearCut': 0.25, 'abilities.battery.rechargeStep': 0.8,
-    'economy.price.ability.level1': 1, 'economy.price.ability.level2': 2, 'economy.price.ability.level3': 3,
+    'abilities.maxLevel': 4, 'abilities.wearCut': 0.2, 'abilities.battery.rechargeCut': 0.1, // Edit 78: four levels; linear steps per level
+    'abilities.legs.airtimeBase': 0.3, 'abilities.legs.airtimeStep': 0.1, 'abilities.arms.conesPerLevel': 1, 'abilities.throw.distanceStep': 40,
+    'economy.price.ability.level1': 1, 'economy.price.ability.level2': 2, 'economy.price.ability.level3': 3, 'economy.price.ability.level4': 4,
+    'physics.slideFriction': 1, 'physics.gravity': 9.81, // Edit 78: a knocked dummy slides to a stop at slideFriction × gravity (m/s², × proto.scale.unitsPerMetre)
     'proto.parts.torsoRechargeLoss': 1.5, 'proto.parts.torsoRechargeFloor': 0.5,
     // Edits 74–75: input (gamepad stick, touch stick, pad setup) and touch sizes in CSS px
     'proto.input.deadzone': 0.2, 'proto.input.stickOuter': 0.9, 'proto.input.padSetupHoldSeconds': 1, 'proto.input.touchDeadzone': 0.12, 'proto.input.touchOuter': 0.85,
@@ -141,6 +143,7 @@
     'proto.parts.headConeLoss': 1.5, 'proto.parts.headConeFloor': 0.5, 'proto.parts.armThrowLoss': 1, 'proto.parts.armThrowFloor': 0.5,
     'proto.turnModel': 1, 'proto.input.fourButtons': 0, 'proto.combo': 0, // Edit 75: 1 LAG (P2–6.4), 2 DIRECT; A/B/X/Y; combo scoring. P6.5 sets 2, 1, 1
     'proto.abilities': 0, 'proto.jump.runToClear': 0, // Edit 77: ability tracks by level; only running and dash jumps clear. P6.7 sets 1, 1
+    'proto.bounce.newton': 0, // Edit 78: 1: the bounce off a car is its full post-impact velocity, sliding to a stop on the ground. P6.8 sets 1
   };
 
   // P1.2 prototype overrides of registry values (logged in DUMMIES_Prototype_Log.md).
@@ -174,23 +177,24 @@
   // P6.5 (four buttons): X grabs, Y throws; Spine stands alone (Hips has no job under DIRECT turning, D48)
   const NODES4 = { carry: { desc: 'X picks up a cone. X again places it. Lay traps in a car’s path.' }, throw: { desc: 'Y throws a held cone.' }, spine: { pre: null, desc: 'Steer a dash as it goes, within a limited angle.' } };
 
-  // Edit 77 (P6.7, proto.abilities): four ability tracks, one per button, bought by level. Level 1 grants the ability (Battery:
-  // a faster recharge). Every level cuts the wear its body part does to it by abilities.wearCut.
-  //   Battery (A): recharge × abilities.battery.rechargeStep per level; shields the torso (recharge, turn).
-  //   Legs (B): level 1 jumps; shields the legs (run, dash, jump). Arms (X): level 1 grabs; shields the grip.
-  //   Throw (Y): level 1 throws, needs Arms 1; shields the throw.
+  // Edit 77 (P6.7, proto.abilities): four ability tracks, one per button, bought by level. Edit 78 (P6.8): four levels, each a
+  // linear step, and every level cuts the wear its body part does to the ability by abilities.wearCut.
+  //   Battery (A): a charge every battery.secondsPerCharge − abilities.battery.rechargeCut × level; shields the torso.
+  //   Legs (B): jumps; airtime abilities.legs.airtimeBase + abilities.legs.airtimeStep × (level − 1); shields the legs.
+  //   Arms (X): grabs; carries abilities.arms.conesPerLevel × level cones; shields the grip.
+  //   Throw (Y): throws, needs Arms 1; upgrades.throwDistance + abilities.throw.distanceStep × (level − 1); shields the throw.
   const TRACKS = {
     battery: { name: 'Battery', button: 'A', verb: 'DASH', part: 'torso',
-      desc: ['Dash recharges faster. Torso damage slows it less.', 'Faster again. Torso damage slows it less.', 'Fastest recharge. Torso damage slows it least.'] },
+      desc: ['Dash recharges faster. Torso damage slows it less.', 'Faster again. Torso damage slows it less.', 'Faster again. Torso damage slows it less.', 'Fastest recharge. Torso damage slows it least.'] },
     legs: { name: 'Legs', button: 'B', verb: 'JUMP', part: 'legs',
-      desc: ['B jumps. Run and jump to clear a car, a rail or a planter.', 'Leg damage slows the run, dash and jump less.', 'Leg damage barely slows the run, dash and jump.'] },
+      desc: ['B jumps. Run and jump to clear a rail; a dash jump clears a sedan.', 'Longer in the air. Leg damage slows you less.', 'Longer again: a running jump clears a sedan.', 'Longest in the air. Leg damage slows you least.'] },
     arms: { name: 'Arms', button: 'X', verb: 'GRAB', part: 'arms',
-      desc: ['X picks up a cone. X again places it.', 'Arm damage loosens the grip less.', 'Arm damage barely loosens the grip.'] },
+      desc: ['X picks up a cone. X again places it.', 'Carry two cones. Arm damage loosens the grip less.', 'Carry three cones.', 'Carry four cones. The grip barely loosens.'] },
     throw: { name: 'Throw', button: 'Y', verb: 'THROW', part: 'arms', needs: 'arms1',
-      desc: ['Y throws a held cone. Needs Arms.', 'Arm damage shortens the throw less.', 'Arm damage barely shortens the throw.'] },
+      desc: ['Y throws a held cone. Needs Arms.', 'Throws further. Arm damage shortens it less.', 'Further again.', 'Furthest throw. Arm damage barely shortens it.'] },
   };
   const NODES7 = {};
-  for (const [t, tr] of Object.entries(TRACKS)) for (let L = 1; L <= 3; L++) NODES7[t + L] = { name: tr.name + ' ' + L, branch: tr.name, track: t, level: L, price: 'economy.price.ability.level' + L, pre: L > 1 ? t + (L - 1) : tr.needs || null, desc: tr.desc[L - 1] };
+  for (const [t, tr] of Object.entries(TRACKS)) for (let L = 1; L <= 4; L++) NODES7[t + L] = { name: tr.name + ' ' + L, branch: tr.name, track: t, level: L, price: 'economy.price.ability.level' + L, pre: L > 1 ? t + (L - 1) : tr.needs || null, desc: tr.desc[L - 1] };
   const ABIL_HAS = { jump: 'legs', carry: 'arms', throw: 'throw', bigBattery: null, ricochet: null, spine: null, hips: null, grip: null }; // the old names, read from the tracks
 
   // ---------- math
@@ -1535,12 +1539,19 @@
     }
 
     has(n) { if (this.P['proto.abilities'] && n in ABIL_HAS) { const t = ABIL_HAS[n]; return t ? this.tier(t) >= 1 : false; } return !!this.run.owned[n]; }
-    tier(t) { let n = 0; while (n < 3 && this.run.owned[t + (n + 1)]) n++; return n; } // Edit 77: an ability track's level, 0–3 (this.level is the screen)
+    tier(t) { let n = 0; while (n < 4 && n < this.P['abilities.maxLevel'] && this.run.owned[t + (n + 1)]) n++; return n; } // Edit 77: an ability track's level, 0–4 (this.level is the screen)
     shield(t) { return this.P['proto.abilities'] ? Math.max(0, 1 - this.P['abilities.wearCut'] * this.tier(t)) : 1; } // the share of wear that gets through
     secondsPerCharge() { // Edit 77: Battery levels speed the recharge; torso damage slows it
       const P = this.P; if (!P['proto.abilities']) return P['battery.secondsPerCharge'];
-      return P['battery.secondsPerCharge'] * Math.pow(P['abilities.battery.rechargeStep'], this.tier('battery')) / this.partEffect('recharge');
+      return Math.max(0.05, P['battery.secondsPerCharge'] - P['abilities.battery.rechargeCut'] * this.tier('battery')) / this.partEffect('recharge'); // Edit 78: linear
     }
+    // Edit 78 (P6.8): the level steps. Without ability tracks, the P6.5–6.6 values.
+    jumpAirtime() { const P = this.P; return P['proto.abilities'] ? P['abilities.legs.airtimeBase'] + P['abilities.legs.airtimeStep'] * Math.max(0, this.tier('legs') - 1) : P['upgrades.jumpAirtime']; }
+    coneCapacity() { return this.P['proto.abilities'] ? Math.max(1, this.P['abilities.arms.conesPerLevel'] * this.tier('arms')) : 1; }
+    throwReach() { const P = this.P; return P['upgrades.throwDistance'] + (P['proto.abilities'] ? P['abilities.throw.distanceStep'] * Math.max(0, this.tier('throw') - 1) : 0); }
+    carriedCones() { const b = this.body; return b.carried && b.carried.length ? b.carried : b.held ? [b.held] : []; }
+    takeCone(cn) { const b = this.body; cn.state = 'held'; if (!b.carried) b.carried = []; b.carried.push(cn); b.held = cn; this.emit('pickup', { cone: cn.id, n: b.carried.length }); this.mile('use:carry'); }
+    popCone() { const b = this.body; let cn = null; if (b.carried && b.carried.length) { cn = b.carried.pop(); b.held = b.carried[b.carried.length - 1] || null; } else { cn = b.held; b.held = null; } return cn; }
     capacity() { return this.has('bigBattery') ? this.P['upgrades.bigCapacity'] : this.P['battery.capacity']; } // D26: Big battery 3, base 2
     // Each screen keeps its own cones: where you leave one is where you find it.
     conesFor(lv) {
@@ -1588,7 +1599,7 @@
         x: sp.x, y: sp.y, vx: 0, vy: 0, facing: sp.f * DEG, health: P['damage.bodyHealth'],
         charge: this.capacity(), refillDelay: 0, rampT: 0, mode: 'idle', parts: { head: 0, torso: 0, armL: 0, armR: 0, legL: 0, legR: 0 },
         coastVx: 0, coastVy: 0, coastT: 0, counterVx: 0, counterVy: 0, counterT: 0, counterDur: 0,
-        lunge: null, recoverT: 0, held: null, gesture: null, alive: true, chassis: this.run.chassis,
+        lunge: null, recoverT: 0, held: null, carried: [], gesture: null, alive: true, chassis: this.run.chassis, // Edit 78: carried, every cone held (held: the top)
         level: 0, floor: null, stair: null, drop: null, // Edit 44: level 0 ground, 1 low highway, 2 high (highway, roofs, skybridges)
         hits: [], denied: 0, points0: this.run.points, z: 0, jump: null, combo: null, landT: 0, // Edit 75: jump height; the combo in progress. Edit 76: landing time left
       };
@@ -1665,6 +1676,12 @@
       }
       if (b.mode === 'knock') {
         b.knockT += dt;
+        if (P['proto.bounce.newton']) { // Edit 78: the dummy slides on the ground, slowed by friction; control returns below walking pace
+          const sp = hyp(b.vx, b.vy), dec = P['physics.slideFriction'] * P['physics.gravity'] * P['proto.scale.unitsPerMetre'] * dt, ns = Math.max(0, sp - dec);
+          if (sp > 1e-9) { b.vx *= ns / sp; b.vy *= ns / sp; }
+          if (ns <= 1 || (ns <= P['movement.walkSpeed'] && b.knockT >= P['proto.recoilSeconds'])) { b.mode = ns > 1 ? 'move' : 'idle'; b.rampT = 0; if (ns <= 1) { b.vx = 0; b.vy = 0; } } // a short bounce slides out; a long throw gives control back after proto.recoilSeconds, under walking pace
+          return;
+        }
         const k = Math.max(0, 1 - b.knockT / P['proto.recoilSeconds']);
         b.vx = b.knockVx * k; b.vy = b.knockVy * k;
         if (k === 0) { b.mode = 'idle'; b.rampT = 0; }
@@ -1711,7 +1728,7 @@
         if (!b.held) {
           if (this.has('carry')) {
             const cn = busy || this.armsBroken() || !this.onGround() ? null : this.nearestCone();
-            if (cn) { cn.state = 'held'; b.held = cn; this.emit('pickup', { cone: cn.id }); this.mile('use:carry'); }
+            if (cn) this.takeCone(cn);
             else this.deny('pickup');
           }
         } else if (!this.has('throw')) this.dropHeld();
@@ -1726,12 +1743,12 @@
     // Edit 75 (P6.5): X picks up or places a cone (Carry); Y throws the held cone (Throw).
     handleXY(cmd) {
       const b = this.body, busy = b.mode === 'lunge' || b.mode === 'recover';
-      if (cmd.xPress) {
+      if (cmd.xPress) { // Edit 78: X grabs while there is room (Arms level) and a cone in reach; else it places the top cone
         if (!this.has('carry')) this.deny('pickup', 'locked');
-        else if (b.held) this.dropHeld();
         else {
-          const cn = busy || this.armsBroken() || !this.onGround() ? null : this.nearestCone();
-          if (cn) { cn.state = 'held'; b.held = cn; this.emit('pickup', { cone: cn.id }); this.mile('use:carry'); }
+          const room = this.carriedCones().length < this.coneCapacity(), cn = !room || busy || this.armsBroken() || !this.onGround() ? null : this.nearestCone();
+          if (cn) this.takeCone(cn);
+          else if (b.held) this.dropHeld();
           else this.deny('pickup');
         }
       }
@@ -1747,7 +1764,7 @@
       let vx = b.vx, vy = b.vy; const dash = b.mode === 'lunge' && !!b.lunge;
       if (dash) { const L = b.lunge, sp = L.t < L.tf - 1e-9 ? L.R * L.df / L.tf : L.R * (1 - L.df) / (L.T - L.tf); vx = Math.cos(L.dir) * sp; vy = Math.sin(L.dir) * sp; }
       b.charge -= P['battery.jumpCost']; b.refillDelay = P['battery.refillDelaySeconds'];
-      const J = JUMP.takeoff(P, vx, vy, dash);
+      const J = JUMP.takeoff(P, vx, vy, dash, this.jumpAirtime()); // Edit 78: Legs levels lengthen the airtime
       Object.assign(J, { x0: b.x, y0: b.y, level: b.level, rampT: b.rampT });
       b.mode = 'jump'; b.lunge = null; b.z = 0; b.jump = J;
       if (J.v0 > 1) b.facing = Math.atan2(J.vy, J.vx);
@@ -1789,26 +1806,28 @@
     dropHeld() {
       const b = this.body, cn = b.held, p = this.releasePoint();
       if (!this.onGround() || !this.coneSpotValid(p.x, p.y, cn)) return this.deny('drop'); // cones stay on the ground (Edit 42)
-      Object.assign(cn, { x: p.x, y: p.y, vx: 0, vy: 0, state: 'free' }); b.held = null;
+      this.popCone(); Object.assign(cn, { x: p.x, y: p.y, vx: 0, vy: 0, state: 'free' });
       this.emit('drop', { cone: cn.id, x: +p.x.toFixed(2), y: +p.y.toFixed(2) });
     }
     throwHeld() {
       const P = this.P, b = this.body, cn = b.held, p = this.releasePoint();
       if (!this.onGround() || !this.coneSpotValid(p.x, p.y, cn)) return this.deny('throw');
-      const T = P['props.cone.throwSeconds'], X = P['upgrades.throwDistance'] * this.partEffect('throw');
+      const T = P['props.cone.throwSeconds'], X = this.throwReach() * this.partEffect('throw'); // Edit 78: Throw levels add distance
       const vx = b.vx + Math.cos(b.facing) * X / T, vy = b.vy + Math.sin(b.facing) * X / T;
       Object.assign(cn, { x: p.x, y: p.y, vx, vy, state: 'flight', flightT: T, flightDur: T, kind: 'throw', fx: p.x, fy: p.y });
-      b.held = null;
+      this.popCone();
       this.emit('throw', { cone: cn.id, vx: +vx.toFixed(2), vy: +vy.toFixed(2) });
       this.mile('use:throw');
     }
-    releaseHeldAtDeath() {
-      const b = this.body, cn = b.held;
-      if (!cn) return;
-      b.held = null; b.gesture = null;
-      if (this.coneSpotValid(b.x, b.y, cn)) Object.assign(cn, { x: b.x, y: b.y, vx: 0, vy: 0, state: 'free' });
-      else { cn.state = 'pending'; cn.px = b.x; cn.py = b.y; }
-      this.emit('cone-release', { cone: cn.id, state: cn.state });
+    releaseHeldAtDeath() { // Edit 78: every cone carried
+      const b = this.body, all = this.carriedCones().slice();
+      if (!all.length) return;
+      b.held = null; b.carried = []; b.gesture = null;
+      for (const cn of all) {
+        if (this.coneSpotValid(b.x, b.y, cn)) Object.assign(cn, { x: b.x, y: b.y, vx: 0, vy: 0, state: 'free' });
+        else { cn.state = 'pending'; cn.px = b.x; cn.py = b.y; }
+        this.emit('cone-release', { cone: cn.id, state: cn.state });
+      }
     }
     retryPending() {
       for (const cn of this.cones) {
@@ -3149,16 +3168,16 @@
         if (cn.state === 'flight') Object.assign(cn, { state: 'free', vx: 0, vy: 0 });
         if (cn.state === 'drone') Object.assign(cn, { state: 'free', x: cn.hx, y: cn.hy });
       }
-      const held = b.held, net = this.netOn();
+      const held = this.carriedCones().slice(), net = this.netOn(); // Edit 78: every cone carried travels
       if (net) this.saveCell(this.cellOf(from)); // P5.3: the screen left keeps running
-      if (held) { const old = D.cells[from[1]][from[0]]; old.cones = old.cones.filter((c) => c !== held); }
+      if (held.length) { const old = D.cells[from[1]][from[0]]; old.cones = old.cones.filter((c) => !held.includes(c)); }
       if (net) this.effects = [];
       else { this.cars = []; this.drones = []; this.effects = []; this.booms = {}; } // only the active screen runs: its traffic, drones and effects end here
       const dk0 = this.bodyDeck() != null ? this.level.decks[this.bodyDeck()] : null;
       D.cur = to; D.visited.add(to[1] * D.cols + to[0]);
       if (net) this.loadCell(this.cellOf(to)); else this.level = cellLevel(D, to, P);
       this.cones = this.conesFor(this.level);
-      if (held) this.cones.push(held);
+      for (const h of held) this.cones.push(h);
       b.x -= SIDE[sd][0] * P['world.width']; b.y -= SIDE[sd][1] * P['world.height'];
       if (dk0) { const k = this.level.decks.findIndex((q) => q.hz === dk0.hz && q.off === dk0.off && (q.z || 1) === (dk0.z || 1)); b.floor = k >= 0 ? (this.level.floors || []).findIndex((f) => f.kind === 'deck' && f.deck === k) : -1; if (b.floor < 0) { b.level = 0; b.floor = null; } } // the level carries over
       if (net) this.netView(); // the traffic is already here

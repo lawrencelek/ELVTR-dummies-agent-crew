@@ -63,6 +63,14 @@ const win = J.above(P, SED.h), wT = win[1] - win[0];
 const mvRun0 = mvT(sp.run, 0), mvRunInto = mvT(sp.run, -45), mvRunWith = mvT(sp.run, 45);
 console.log(`  a moving sedan (${SED.v} u/s), crossed running: square ${mvRun0.t.toFixed(2)} s over it · 45° into it ${mvRunInto.t.toFixed(2)} s · 45° with it ${mvRunWith.t.toFixed(2)} s; above its roof ${wT.toFixed(2)} s`);
 ok(mvRun0.ok && mvRunInto.ok && !mvRunWith.ok && mvRunInto.t < mvRun0.t, 'moving sedan: a running jump clears it square on, and faster diagonally into its path; diagonally with the traffic it is struck');
+// Edit 78: Legs levels set the airtime, 0.3 to 0.6 s; the height stays. What each level clears, by sum
+const LT = (L) => P['abilities.legs.airtimeBase'] + P['abilities.legs.airtimeStep'] * (L - 1), LV = [1, 2, 3, 4];
+const LTAB = THINGS.filter((t) => t[3]).map(([name, h, d]) => { const row = { name }; for (const L of LV) for (const k of ['run', 'dash']) row[k + L] = J.clears(P, sp[k], h, d, R, LT(L)); return row; });
+console.log('  by Legs level (airtime ' + LV.map((L) => LT(L).toFixed(1)).join(', ') + ' s): run / dash');
+for (const r of LTAB) console.log(`    ${r.name.padEnd(17)} ${LV.map((L) => 'L' + L + ' ' + (r['run' + L] ? '✓' : '✗') + (r['dash' + L] ? '✓' : '✗')).join(' · ')}`);
+const LB = Object.fromEntries(LTAB.map((r) => [r.name, r]));
+ok(LB.handrail.run1 && !LB.jersey.run1 && LB['sedan broadside'].dash1 && !LB['sedan broadside'].run2 && LB['van broadside'].dash2 && !LB['van broadside'].dash1 && LB['sedan broadside'].run3 && LB['planter 48'].dash2 && !LB['van broadside'].run4 && !LB['bus broadside'].dash4,
+  `Legs levels: L1 a running jump clears a handrail, a dash jump a sedan; L2 a dash jump a van and a 48 planter; L3 a running jump a sedan; L4 a running jump still not a van (${(J.over(P, sp.run, P['vehicles.van.height'] * VS, LT(4)) - (P['vehicles.van.width'] * VS + 2 * R)).toFixed(1)}); never a bus`);
 
 // ---------- 2. the page
 (async () => {
@@ -102,6 +110,11 @@ ok(mvRun0.ok && mvRunInto.ok && !mvRunWith.ok && mvRunInto.t < mvRun0.t, 'moving
   console.log(`  ruler, stepped: stand ${dist.stand.toFixed(1)} · walk ${dist.walk.kind} ${dist.walk.v0.toFixed(0)} → ${dist.walk.d.toFixed(1)} · run ${dist.run.kind} ${dist.run.v0.toFixed(0)} → ${dist.run.d.toFixed(1)} · dash ${dist.dash.kind} ${dist.dash.v0.toFixed(0)} → ${dist.dash.d.toFixed(1)}; tops ${dist.run.top.toFixed(1)}`);
   ok(dist.stand < 0.5 && dist.walk.kind === 'walk' && Math.abs(dist.walk.d - reach.walk) < 3 && dist.run.kind === 'run' && Math.abs(dist.run.d - reach.run) < 3 && dist.dash.kind === 'dash' && Math.abs(dist.dash.d - reach.dash) < 3 && Math.abs(dist.run.top - P['upgrades.jumpHeight']) < 0.5,
     `ruler: the yard matches the rule within 3: stand ${dist.stand.toFixed(0)}, walk ${dist.walk.d.toFixed(0)}, run ${dist.run.d.toFixed(0)}, dash jump ${dist.dash.d.toFixed(0)}; ${dist.run.top.toFixed(0)} high`);
+  // Edit 78: the Legs level, set with ] and [: a running jump on the ruler at each level
+  const perL = [];
+  for (const L of LV) { await pg.evaluate((L) => window.JUMP_LEGS(L), L); await S.place(60, Y.RULER_Y, 0, true); await S.step(1, 'D'); await S.step(1, 'D', 'b'); await S.step(90, 'D'); perL.push((await S.last()).d); }
+  await pg.evaluate(() => window.JUMP_LEGS(3));
+  ok(perL.every((d, i) => Math.abs(d - sp.run * LT(i + 1)) < 3), `Legs 1–4 in the yard: a running jump covers ${perL.map((d) => d.toFixed(0)).join(', ')} (rule ${LV.map((L) => (sp.run * LT(L)).toFixed(0)).join(', ')})`);
   // air steering: a run jump east, W held in the air → drifts north; a dash jump with W held → holds its line
   await S.place(60, Y.RULER_Y, 0); await S.step(132, 'D'); await S.step(1, 'D', 'b'); let y0 = (await S.b()).y; await S.step(59, 'W'); const runDrift = y0 - (await S.b()).y;
   await S.place(60, Y.RULER_Y, 0); await S.step(132, 'D'); await S.step(1, 'D', 'a'); await S.step(1, 'D', 'b'); y0 = (await S.b()).y; await S.step(59, 'W'); const dashDrift = y0 - (await S.b()).y;

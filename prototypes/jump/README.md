@@ -1,6 +1,6 @@
 # DUMMIES — Jump test (Phaser)
 
-**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 76–77 (proposed). A small yard for the jump, separate from the game. The title shows the build ("JUMP TEST · EDIT77"). The same rules run in Prototype 6.7.
+**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 76–78 (proposed). A small yard for the jump, separate from the game. The title shows the build ("JUMP TEST · EDIT78"). The same rules run in Prototype 6.8.
 
 The jump after Link's Awakening: it keeps the speed it takes off with. Moving traffic, parked cars broadside and end-on, barriers from a handrail to a wall, a ruler. A side view charts each jump against the heights it must clear.
 
@@ -14,7 +14,7 @@ The jump after Link's Awakening: it keeps the speed it takes off with. Moving tr
 
 ## The jump
 
-- **Height and time:** always `upgrades.jumpHeight` (44) at the top, `upgrades.jumpAirtime` (0.5 s) in the air.
+- **Height and time:** always `upgrades.jumpHeight` (44) at the top. Time in the air by Legs level (Edit 78): `abilities.legs.airtimeBase` (0.3 s) + `abilities.legs.airtimeStep` (0.1 s) per level: 0.3, 0.4, 0.5, 0.6 s. The yard opens at Legs 3 (0.5 s); [ and ] change it, or tap the panel.
 - **Distance = take-off speed × airtime.** Speed sets the distance; the arc's shape never changes.
 
 | Take-off | Speed (u/s) | Ground covered | From |
@@ -32,7 +32,24 @@ The jump after Link's Awakening: it keeps the speed it takes off with. Moving tr
   - The whole body (`body.radius` 13, so 26 wide) must cross while above it.
   - Ground needed above the top = depth + 26.
 
-## What clears what (best take-off point)
+## By Legs level (run / dash jump, square on)
+
+| Thing | Legs 1 (0.3 s) | Legs 2 (0.4 s) | Legs 3 (0.5 s) | Legs 4 (0.6 s) |
+|---|---|---|---|---|
+| Handrail | ✓ / ✓ | ✓ / ✓ | ✓ / ✓ | ✓ / ✓ |
+| Jersey | ✗ / ✓ | ✓ / ✓ | ✓ / ✓ | ✓ / ✓ |
+| Planter 32 | ✗ / ✓ | ✗ / ✓ | ✓ / ✓ | ✓ / ✓ |
+| Planter 48 | ✗ / ✗ | ✗ / ✓ | ✗ / ✓ | ✗ (−2) / ✓ |
+| Sedan broadside | ✗ / ✓ | ✗ / ✓ | ✓ / ✓ | ✓ / ✓ |
+| Van broadside | ✗ / ✗ | ✗ / ✓ | ✗ / ✓ | ✗ (−1) / ✓ |
+| Sedan end-on | ✗ / ✗ | ✗ / ✓ | ✗ / ✓ | ✗ / ✓ |
+| Van end-on | ✗ / ✗ | ✗ / ✗ | ✗ / ✓ | ✗ / ✓ |
+| Bus | ✗ / ✗ | ✗ / ✗ | ✗ / ✗ | ✗ / ✗ |
+
+- A running jump covers 49, 65, 81, 97; a dash jump 97, 130, 162, 194.
+- Legs 1's running jump over a handrail has 2 to spare: about one frame at a run.
+
+## What clears what at Legs 3 (best take-off point)
 
 | Thing | High | Deep | Walk (hop) | Run | Dash jump |
 |---|---|---|---|---|---|
@@ -90,6 +107,7 @@ The jump after Link's Awakening: it keeps the speed it takes off with. Moving tr
 | Clear the record | R | — | — |
 | Help | H | START (short press) | — |
 | Diagonal | two keys (45°) | stick, any angle | stick, any angle |
+| Legs level | [ and ] | — | tap the panel |
 | Pad setup | G | hold START 1 s | — |
 
 - **Touch shows only on touch devices:** `(hover: none) and (pointer: coarse)`, or `#touch` in the address.
@@ -99,7 +117,8 @@ The jump after Link's Awakening: it keeps the speed it takes off with. Moving tr
 
 ## Evidence
 
-- `node test_jump.js docs` → 26/26.
+- `node test_jump.js docs` → 28/28.
+  - Edit 78: the table by Legs level, by sum; a running jump on the ruler covers 49, 65, 81, 97 at Legs 1–4.
   - Headless: the rule; the cap; the arc; the table above.
   - Yard, stepped at 120 Hz: the ruler gives 0, 41, 81, 162 and a 44 top. A running jump bends 28 toward the stick; a dash jump holds its line. Landing keeps 162; a jump at once is refused.
   - Yard, every thing above × walk, run, dash: 34 of 34 firm cases match the sums. The two edge cases cleared.

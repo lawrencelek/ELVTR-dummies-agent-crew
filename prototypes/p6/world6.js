@@ -18,7 +18,8 @@
   // Edit 75 (Prototype 6.5): DIRECT turning; A dash, B jump, X grab, Y throw; combo scoring.
   const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'vehicles.scale': X.OVERRIDES['vehicles.scale'] != null ? X.OVERRIDES['vehicles.scale'] : 0.9,
     'proto.turnModel': 2, 'proto.input.fourButtons': 1, 'proto.combo': 1,
-    'proto.abilities': 1, 'proto.jump.runToClear': 1 }; // Edit 77 (Prototype 6.7): ability tracks by level; run to clear
+    'proto.abilities': 1, 'proto.jump.runToClear': 1, // Edit 77 (Prototype 6.7): ability tracks by level; run to clear
+    'proto.bounce.newton': 1, 'proto.recoilScale': 1 }; // Edit 78 (Prototype 6.8): the bounce off a car is Newtonian: full post-impact velocity, then a slide
   for (const k of Object.keys(P)) if (/^vehicles\.[a-z]+\.(length|width|height)$/.test(k)) P6SIM[k] = Math.round(P[k] * P6SIM['vehicles.scale'] * 10) / 10;
   Object.assign(P, P6SIM);
   const W = P['world.width'], H = P['world.height'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'], HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'];
@@ -2051,7 +2052,7 @@
       for (const sp of this.landPoints()) { const d = hyp(sp.x - b.x, sp.y - b.y); if (!best || d < best.d) best = Object.assign({ d }, sp); }
       if (!best) best = Object.assign({ d: 0 }, G.spawns[0] || { x: W / 2, y: H / 2, level: 0, floor: null });
       const edges = [[b.x, -40], [b.x, H + 40], [-40, b.y], [W + 40, b.y]].sort((p, q) => hyp(p[0] - b.x, p[1] - b.y) - hyp(q[0] - b.x, q[1] - b.y)), ex = edges[0];
-      if (b.held) { const cn = b.held; b.held = null; b.gesture = null; Object.assign(cn, { state: 'pending', px: b.x, py: b.y }); } // the cone goes home (retryPending)
+      for (const cn of this.carriedCones()) Object.assign(cn, { state: 'pending', px: b.x, py: b.y }); b.held = null; b.carried = []; b.gesture = null; // the cones go home (retryPending)
       b.mode = 'rescue'; b.lunge = null; b.stair = null; b.jump = null; b.z = 0; b.vx = b.vy = 0; b.level = 0; b.floor = null; b._spr = null;
       this.rescue = { t: 0, phase: 'sink', k: 0, x0: b.x, y0: b.y, to: best, under: 0, up: 0, sink: P['proto.rescueSinkSeconds'], lift: P['proto.droneLiftSeconds'], v: P['proto.droneSpeed'],
         drone: { x: ex[0], y: ex[1], alt: 1, state: 'wait', rescue: true, hx: ex[0], hy: ex[1] } };
@@ -2181,8 +2182,7 @@
     flip(sd, to, fl) {
       const D = this.district, b = this.body, P = this.P, from = D.cur.slice(), old = this.sc, nb = this.W6.at(to[0], to[1]);
       for (const cn of this.cones) if (cn.state === 'flight') Object.assign(cn, { state: 'free', vx: 0, vy: 0 });
-      const held = b.held;
-      if (held) { const i = old.cones.indexOf(held); if (i >= 0) old.cones.splice(i, 1); nb.cones.push(held); }
+      for (const held of this.carriedCones()) { const i = old.cones.indexOf(held); if (i >= 0) old.cones.splice(i, 1); nb.cones.push(held); } // Edit 78: every cone carried
       this.effects = [];
       D.visited.add(to[1] * 3 + to[0]);
       this.enter(nb);

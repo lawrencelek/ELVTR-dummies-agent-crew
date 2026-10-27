@@ -13,7 +13,7 @@ const IDS = [
   'movement.stopSeconds', 'movement.counterPressAngle', 'movement.counterPressStop', 'movement.lungeDistance', 'movement.lungeDuration',
   'movement.lungeRecovery', 'movement.lungeFastTimeFraction', 'movement.lungeFastDistanceFraction', 'movement.directTurnRate', 'movement.pivotAngle',
   'movement.pivotRate', 'upgrades.carrySpeed', 'body.radius', 'world.laneWidth', 'world.jumpableHeight', 'world.jumpableDepth',
-  'upgrades.jumpAirtime', 'proto.jump.runToClear', 'upgrades.jumpHeight', 'upgrades.jumpRecovery', 'upgrades.jumpMaxSpeed', 'upgrades.jumpAirAccel',
+  'upgrades.jumpAirtime', 'proto.jump.runToClear', 'upgrades.jumpHeight', 'abilities.legs.airtimeBase', 'abilities.legs.airtimeStep', 'abilities.maxLevel', 'upgrades.jumpRecovery', 'upgrades.jumpMaxSpeed', 'upgrades.jumpAirAccel',
   'vehicles.scale', 'vehicles.sedan.length', 'vehicles.sedan.width', 'vehicles.sedan.height', 'vehicles.sedan.cruiseSpeed',
   'vehicles.van.length', 'vehicles.van.width', 'vehicles.van.height', 'vehicles.van.cruiseSpeed',
   'vehicles.bus.length', 'vehicles.bus.width', 'vehicles.bus.height', 'vehicles.bus.cruiseSpeed',
