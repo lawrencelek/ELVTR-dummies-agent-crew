@@ -69,7 +69,8 @@
     'world.deckTopClear': 128, 'world.deckBottomClear': 128, 'world.edgeOverlap': 32, // Edit 48: drawn deck clear of the top edge, a building row below it; buildings straddle shared edges
     // P4 test (Edit 49): no road bends tighter than world.turnRadiusTight; roundabout entries on fillets; 45° roads in the palette;
     // cars judge other cars along their own lane; no new cars while traffic is jammed
-    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5, 'traffic.giveWaySpeed': 40, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'proto.art.signalLength': 4, 'proto.droneConeSeconds': 0, // Edit 71 (P6 sets proto.droneConeSeconds 2; 0 keeps the P2 rule: a drone only for a car blocked and honking)
+    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5, 'traffic.giveWaySpeed': 40, 'traffic.signalCancel': 30, 'vehicles.scale': 1, // Edit 72: traffic.ringEntryGap (2.0) and traffic.signalDistance (140) are P6's (world6.js); the shared sim keeps 6.2's rings: the junction gap, no turn signals
+    'traffic.signalDistance': 0, 'proto.art.signalLength': 4, 'proto.droneConeSeconds': 0, // Edit 71 (P6 sets proto.droneConeSeconds 2; 0 keeps the P2 rule: a drone only for a car blocked and honking)
     'world.junctionTurnRadius': 96, 'world.junctionApproach': 192, 'world.roundaboutArmGap': 10, // P4 (Edit 49.3)
     'world.junctionStagger': 256, // Edit 55 (example only): two T junctions this far apart replace a 45° crossroads
     'world.junctionZone': 0.75, // Edit 55.2: every junction sits in this central share of its tile, each way
@@ -1971,11 +1972,15 @@
     // (s, the nose stops there), the circulating lane it joins (centre, radius, direction of travel in angle) and the join angle.
     // Wait while a circulating car would reach the join within traffic.giveWayGap seconds, or is passing it.
     giveWayHold(c) {
-      c._gwSkip = false; // Edit 71: _gwSkip: a leaving car's signal was read; _gwWhy: why the car holds (for tools/p6_rings.js and diagnostics)
-      const g = c.path.giveWay, gap = this.P['traffic.giveWayGap'] > 0 ? (this.P['traffic.ringEntryGap'] != null ? this.P['traffic.ringEntryGap'] : this.P['traffic.giveWayGap']) : 0; // Edit 71: the ring's own entry gap
-      if (!g || !(gap > 0) || lay(c) !== 0) return null;
+      c._gwSkip = false; c._gwWhy = null; // Edit 71: _gwSkip: a leaving car's signal was read; _gwWhy: why the car holds (for tools/p6_rings.js and diagnostics)
+      const g = c.path.giveWay, gap0 = this.P['traffic.giveWayGap'] > 0 ? (this.P['traffic.ringEntryGap'] != null ? this.P['traffic.ringEntryGap'] : this.P['traffic.giveWayGap']) : 0; // Edit 71: the ring's own entry gap
+      if (!g || !(gap0 > 0) || lay(c) !== 0) return null;
       const toLine = g.s - (c.s + c.L / 2);
-      if (toLine < -4 || toLine > this.P['traffic.giveWayWindow']) return null; // over the line: committed
+      if (toLine > this.P['traffic.giveWayWindow']) return null;
+      // Over the line: committed (6.1). Edit 72: a car held as it rolls up (under half traffic.giveWaySpeed) overshoots by its
+      // braking distance at traffic.comfortBraking; it still holds until it is past the line by more than 4 plus that.
+      if (toLine < -4 && (c.v >= this.P['traffic.giveWaySpeed'] / 2 || toLine < -4 - c.v * c.v / (2 * this.P['traffic.comfortBraking']))) return null;
+      const gap = gap0, line = g.s - c.L / 2;
       const om = this.P['traffic.ringOrbitMax'];
       if (om > 0 && c.path.ring && this.ringExitBlocked(c)) { // Edit 56: a car whose exit is blocked waits at the line once traffic.ringOrbitMax cars already orbit (orbiters fill a ring and lock it)
         let n = 0; for (const o of this.cars) if (o !== c && o.orbit && o.path.ring && o.path.ring.cx === g.cx && o.path.ring.cy === g.cy) n++;
@@ -1993,8 +1998,8 @@
         const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), arc = d * g.R;
         const og = o.path.giveWay, org = o.path.ring;
         if (og && org && og.cx === g.cx && og.cy === g.cy && !o.orbit && o.s < org.exitS && this.turnSignal(o) === pathSignal(o.path).exitSide && org.exitS - o.s + o.L < arc - c.L / 2 && !this.ringExitBlocked(o)) { c._gwSkip = true; continue; } // (in the outer lane, its exit clear: it will leave) // Edit 71: it signals to leave before this entry, as a real driver reads it: go
-        if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) { c._gwWhy = ['gap', o.id, Math.round(arc), Math.round(o.v)]; return { line: g.s - c.L / 2 }; }
-        if (o.v < 15 && 2 * Math.PI * g.R - arc < c.L + o.L / 2 + this.P['traffic.minimumGap'] + this.P['traffic.ringLaneChange']) { c._gwWhy = ['stopped', o.id, Math.round(2 * Math.PI * g.R - arc), Math.round(o.v)]; return { line: g.s - c.L / 2 }; } // Edit 53.1: never join onto a stopped ring (the ring would fill and lock)
+        if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) { c._gwWhy = ['gap', o.id, Math.round(arc), Math.round(o.v)]; return { line }; }
+        if (o.v < 15 && 2 * Math.PI * g.R - arc < c.L + o.L / 2 + this.P['traffic.minimumGap'] + this.P['traffic.ringLaneChange']) { c._gwWhy = ['stopped', o.id, Math.round(2 * Math.PI * g.R - arc), Math.round(o.v)]; return { line }; } // Edit 53.1: never join onto a stopped ring (the ring would fill and lock)
       }
       return null;
     }
@@ -2838,20 +2843,40 @@
       if (m && m.type === 'shift' && !(c.man === m && c.s >= m.s0 + m.len)) return Math.sign(m.d1 - (m.d0 != null ? m.d0 : c.d));
       return this.turnSignal(c);
     }
-    // Edit 71: turn signals, from traffic.signalDistance before the turn. A roundabout's entry: right for a right turn (the
-    // first exit), left for a left turn or a U-turn, none straight on. On the ring: toward its exit, once within the distance
-    // of it. A junction's route: toward its turn, until the turn is done.
+    // Edit 71: turn signals, from traffic.signalDistance before the turn. A junction's route: toward its turn, until the turn
+    // is done. Edit 72: a roundabout signals as drivers do (the Highway Code's rule 186, mirrored for right-hand traffic), and
+    // holds each signal steady:
+    //   - approach, from traffic.signalDistance before the line: right for the first exit; left past 12 o'clock or for a
+    //     U-turn; none straight on. Held onto the ring.
+    //   - once past the exit before its own, or moving out of the inner lane: toward the exit, held until
+    //     traffic.signalCancel past the exit point. The first exit has no exit before it: right all the way.
+    //   - circulating on the inner lane: left for a left turn or U-turn, else none, until it moves out.
     turnSignal(c) {
       const p = c.path, D = this.P['traffic.signalDistance'];
       if (!(D > 0) || c.deck || !p || c.ghost) return 0;
       const nose = c.s + c.L / 2;
       if (p.ring && p.giveWay) {
-        const sg = pathSignal(p), g = p.giveWay;
-        if (nose < g.sj) return g.s - nose <= D ? sg.side : 0;
-        return c.s < p.ring.exitS && p.ring.exitS - c.s <= D ? sg.exitSide : 0;
+        const sg = pathSignal(p), g = p.giveWay, rg = p.ring;
+        if (c.s > rg.exitS + (this.P['traffic.signalCancel'] || 0)) return 0;
+        if (c.orbit && c.orbit.lane === 'in') { c._sigExit = null; return sg.side < 0 ? -1 : 0; } // circulating on the inner lane: no exit signal until it moves out
+        if (nose >= g.s && (rg.exitS - c.s <= this.ringPrevArc(p) || (c.orbit && c.orbit.lane === 'out') || c._sigExit === rg.exitS)) { c._sigExit = rg.exitS; return sg.exitSide; }
+        return g.s - nose <= D ? sg.side : 0;
       }
       if (p.junction) { const sg = pathSignal(p); return sg.side && sg.s0 != null && nose >= sg.s0 - D && c.s <= sg.s1 ? sg.side : 0; }
       return 0;
+    }
+    ringPrevArc(p) { // Edit 72: the arc from the exit before this route's own to its own (from the join for the first exit)
+      const rg = p.ring;
+      if (rg._dPrev != null) return rg._dPrev;
+      const base = (rg.variants && rg.variants[0]) || p, br = base.ring, g = base.giveWay, n = br.exitNo || 0, p0 = base.pts[0];
+      let prev = null;
+      if (n > 1) for (const l of this.level.lanes) {
+        const lr = l.ring; if (!lr || !l.giveWay || lr.exitNo !== n - 1 || (lr.k || 0) !== 0 || hyp(l.pts[0][0] - p0[0], l.pts[0][1] - p0[1]) > 1) continue;
+        prev = l; break;
+      }
+      const d = n === 1 ? br.exitS - g.sj : prev ? br.exitS - prev.ring.exitS : this.P['traffic.signalDistance'];
+      if (rg.variants) for (const v of rg.variants) v.ring._dPrev = d; else rg._dPrev = d;
+      return d;
     }
     exitCars() {
       this.cars = this.cars.filter((c) => {

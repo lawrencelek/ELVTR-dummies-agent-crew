@@ -207,6 +207,23 @@ for (const id of W6.LEVEL_LIST) {
   ok(ev.includes('drone-dispatch') && ev.includes('drone-pickup') && !inLane && Math.hypot(cn.x - x0, cn.y - y0) > 20, `Parkland B3: a cone left in a lane fetches a drone (${[...new Set(ev)].join(', ')}); it sets the cone off the lanes`);
   ok(PIX.CONE.h * PIX.U === P['proto.art.coneHeight'] && PIX.CONE.h === 8, `the cone sprite stands ${PIX.CONE.h} art px tall, proto.art.coneHeight ${P['proto.art.coneHeight']} (was 7 and 14: 14% taller, the nearest whole pixel to 15%)`);
 }
+{ // Edit 72: steady roundabout signals (rule 186, mirrored): first exit R all the way; straight on none, then R past the first exit; left L, then R past the second
+  const seqs = {};
+  for (const n of [1, 2, 3]) {
+    const w = W6.buildWorld('waterfront', { warm: 0 }), s = w.at(1, 1).lab, ln = s.level.lanes.find((l) => l.ring && l.ring.exitNo === n && Math.round(l.pts[0][0]) === -200);
+    s.cars.length = 0; s.slot = s.schedule.length; const c = s.newCar('t' + n, 'sedan', s.level.lanes.indexOf(ln), ln, 30, 0); s.cars.push(c);
+    const seq = [0];
+    for (let k = 0; k < 60 * 20 && s.cars.includes(c); k++) {
+      s.t = (k + 1) / 60; s.carAI(1 / 60); for (let j = 0; j < 4; j++) s.moveCars(1 / 240, k / 60 + (j + 1) / 240);
+      const g = c.path.giveWay; if (g.s - (c.s + c.L / 2) > 140 || c.s > c.path.ring.exitS + 60) continue;
+      const v = s.signalSide(c); if (v !== seq[seq.length - 1]) seq.push(v);
+    }
+    seqs[n] = seq.map((v) => (v > 0 ? 'R' : v < 0 ? 'L' : '·')).join(' ');
+  }
+  ok(seqs[1] === '· R ·' && seqs[2] === '· R ·' && seqs[3] === '· L R ·', `Waterfront B2, from the west: signals hold steady. First exit ${seqs[1]}; straight on ${seqs[2]}; third exit ${seqs[3]}`);
+  const st = require('./tools/p6_ringstall.js'), r = st.stall(W6, 'waterfront', 15);
+  ok(r.sig.cars > 40 && r.sig.extra / r.sig.cars < 0.05, `Waterfront, 2 min 15 s: ${r.sig.cars} cars through the circus; ${r.sig.extra} changed signal more than the rule asks (6.3: 28%)`);
+}
 { // P6.3: the playtest routes
   const s = new W6.Sim6('monument', {}, null, { warm: 2 }); empty(s);
   place(s, 'B1', 472, 244); walk(s, 472, 120, 5, (q) => q.body.level === 1 && !q.body.stair && kind(q) === 'roof'); const roof = kind(s) === 'roof';

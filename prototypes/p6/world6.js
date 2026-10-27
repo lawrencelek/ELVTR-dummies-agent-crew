@@ -12,6 +12,12 @@
   const L = root.TURNLAB || require('./lab.js');
   const V = root.CIRCUS_VALLEY || require('./circus_valley.js'); // the Waterfront plan (Edits 58–61): one source of truth for its layout
   const P = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES), U = PIX.U, K = PIX.K, AW = PIX.AW, AH = PIX.AH;
+  // P6's registry values over the shared sim's (which keeps P2–6.2's). Edit 71: the cone drone; the ring lane change; the ring
+  // entry gap; turn signals.
+  // Edit 72: every vehicle vehicles.scale (0.9) of its class's size in all three dimensions.
+  const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'vehicles.scale': X.OVERRIDES['vehicles.scale'] != null ? X.OVERRIDES['vehicles.scale'] : 0.9 };
+  for (const k of Object.keys(P)) if (/^vehicles\.[a-z]+\.(length|width|height)$/.test(k)) P6SIM[k] = Math.round(P[k] * P6SIM['vehicles.scale'] * 10) / 10;
+  Object.assign(P, P6SIM);
   const W = P['world.width'], H = P['world.height'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'], HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'];
   const EXT = (h) => Math.round(h * P['proto.art.extrusion'] / U), C = P['world.deckColumn'], c32 = PIX.c32, mixK = PIX.mixK, LEDS = PIX.KX('bldgLed') || [K.lane], hyp = (a, b) => Math.sqrt(a * a + b * b); // P6: Math.hypot is slow
   const N = { grass: c32('#0E1712'), grass2: c32('#13211A'), grass3: c32('#1C3024'), water: c32('#08101E'), water2: c32('#13234A'), pave: c32('#2C3243'), pave2: c32('#384056'),
@@ -1498,7 +1504,6 @@
   const SIDE = X.SIDE, OPPS = { N: 'S', S: 'N', E: 'W', W: 'E' }, GL = X.seamSight(P);
   const hashId = (id) => { let h = 2166136261; for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619); return h >>> 0; };
   const NOOP = () => {};
-  const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150 }; // Edit 71: P6's registry values (the shared sim keeps the P2 rule, 0, and P5's 72-unit ring lane change)
   function quiet(s) { // a traffic sim: drivers and cars only; the dummy it sees is the world's (or its proxy next door)
     Object.assign(s, { checkTerminal: NOOP, checkFlip: NOOP });
     s.meets = (c) => { const b = s.body; return !!b && b.alive && !b.stair && b.mode !== 'drop' && b.mode !== 'rescue' && b.level === s.elev0 + (c.layer || 0); };

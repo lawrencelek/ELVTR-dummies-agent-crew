@@ -1,10 +1,11 @@
-# DUMMIES — Prototype 6.3: three districts, managed traffic, driving that reads
+# DUMMIES — Prototype 6.4: three districts, managed traffic, ring diagnosis, steady signals
 
-**Prototype 6.3 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–71 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**Prototype 6.4 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–72 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
-Prototype 6.3 follows 6.2 (Edit 70) with the driving playtest of 27 October (Edit 71): smooth turns, turn signals, ring entry, the cone drone, taller cones.
+Prototype 6.4 follows 6.3 (Edit 71) with Edit 72: why cars stall at rings, vehicles at 0.9 size, steady roundabout signals. 6.3 (Edit 71) brought smooth turns, turn signals, ring entry, the cone drone, taller cones.
 
-- **`dummies_p6_3.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_4.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_3.html`:** Prototype 6.3 (Edit 71). Frozen.
 - **`dummies_p6_2.html`:** Prototype 6.2 (Edit 70). Frozen.
 - **`dummies_p6_1.html`:** Prototype 6.1 (Edit 69). Frozen.
 - **`dummies_p6.html`:** P6 as released (Edit 62). Frozen.
@@ -13,6 +14,7 @@ Prototype 6.3 follows 6.2 (Edit 70) with the driving playtest of 27 October (Edi
 - **`test_p6.js`:** headless checks, the release tests included. `node test_p6.js [minutes]`.
 - **`tools/p6_traffic.js`:** the traffic soak. `node tools/p6_traffic.js [seconds per screen] [district]`. `P6OV=key=value,…` overrides registry values.
 - **`tools/p6_rings.js`:** roundabout entries: waits at the line, signals. `node tools/p6_rings.js [seconds per screen] [district|all] [key=value …]`.
+- **`tools/p6_ringstall.js`:** why cars stall at rings: stopped time by phase and cause, queue heads, ring jams, signal changes. `node tools/p6_ringstall.js [seconds per screen] [district|all] [watch=B2] [block=x,y] [seed=n] [key=value …]`.
 - **`tools/p6_walk.js`:** the walking test. `node tools/p6_walk.js [district]`.
 - **`tools/p6_nav.js`:** the navigation checks: dead space, garden paths, flight forecourts, one ground. `node tools/p6_nav.js [district]`.
 - **`tools/p6_audit.js`:** the playtest audit on all 27 screens. `node tools/p6_audit.js [district]`.
@@ -83,11 +85,15 @@ Prototype 6.3 follows 6.2 (Edit 70) with the driving playtest of 27 October (Edi
 
 - **Heading:** continuous under the hood. Within `proto.headingBlend` (12) of a path vertex the tangent blends to the next segment's. Capped at `proto.carYawRate`.
 - **Sprite:** the nearest of 32 headings (11.25°), separately.
+- **Vehicles (6.4):** every class at `vehicles.scale` (0.9) of its registered length, width and height.
 - **Turn signals:** from `traffic.signalDistance` (140) before a turn.
-  - Ring approach: right for the first exit; left past 12 o'clock or a U-turn; none straight on. On the ring: toward the exit.
+  - Ring (6.4, the Highway Code's rule 186 mirrored): approach right for the first exit, left past 12 o'clock or a U-turn, none straight on; held onto the ring.
+  - Toward the exit once past the exit before its own, or moving out of the inner lane; until `traffic.signalCancel` (30) past it. Inner lane: left or none.
   - Junction: toward the turn. Lane shifts first. Honking: both sides. Deck traffic: none.
   - Amber, front and rear, 2 × `proto.art.signalLength` (4) art px, 1.5 Hz.
 - **Ring entry:** wait while a circulating car would reach the join within `traffic.ringEntryGap` (2.0). Junctions keep `traffic.giveWayGap` (2.5).
+  - 6.4: past its line, a car commits at half `traffic.giveWaySpeed`, or 4 plus its braking distance (`traffic.comfortBraking`) over. A car held as it rolls up still holds.
+  - The ring gap and turn signals are P6's; the lab pieces keep 6.2's rings.
   - A circulating car signalling to leave before the join is passed over: outer lane, not changing lanes, its exit clear.
 - **Ring lane change:** over `traffic.ringLaneChange` (150): a 30° arc.
 - **Cones:** 8 art px (`proto.art.coneHeight` 16). A free cone in a lane `proto.droneConeSeconds` (5) fetches a drone; it sets the cone at a home.
@@ -107,6 +113,14 @@ Prototype 6.3 follows 6.2 (Edit 70) with the driving playtest of 27 October (Edi
 | Tour: screen-levels; crossings; flights | 9; 16; 13 | 15; 27; 16 | 9; 16; 18 |
 | Building faces hold | 30/30 | 10/10 | 140/140 |
 | Wander, 22 × 5 min: traps | 0 | 0 | 0 |
+
+| Rings, 3 × 6 min a district (6.3 → 6.4) | Parkland | Waterfront |
+|---|---|---|
+| Wait at the line, mean | 1.07 → 0.96 s | 2.35 → 2.44 s |
+| Wait, 90th percentile | 2.93 → 2.56 s | 5.56 → 5.56 s |
+| Stopped car-seconds a minute | 23.2 → 19.0 | 39.4 → 38.7 |
+| Stalls ≥5 s | 5 → 2 | 19 → 26 |
+| Cars changing signal more than the rule | 60% → 1% | 32% → 1% |
 
 | Roundabout entries, 18 min (6.2 rules → 6.3) | Parkland | Waterfront |
 |---|---|---|
@@ -137,11 +151,14 @@ Prototype 6.3 follows 6.2 (Edit 70) with the driving playtest of 27 October (Edi
 
 ## Evidence
 
-- `node test_p6.js 3` → 71/71. The audit, walking, navigation, soak and driving checks run in it.
+- `node test_p6.js 3` → 72/73. The audit, walking, navigation, soak and driving checks run in it. Parkland A2 reads empty 20% of 3 min with the player in B2 (limit under 20%; 6.3: 19%).
+- `node tools/p6_ringstall.js 40 <district> seed=n` → the rings table above.
 - `node tools/p6_rings.js 120 all` → the roundabout table above.
 - `node tools/p6_audit.js` → 198/198: 47 flights, 128 building plans, 23 walkway ends.
 - `node test_sim.js` → 104/104 (this copy and P5).
 - Browser: no page errors over scripted play in all three districts.
+
+![6.4: steady signals at the circus; vehicles at 0.9](docs/p72_signals_scale.png)
 
 ![6.3: heading change a frame round the Waterfront circus](docs/p71_heading.png)
 
@@ -176,7 +193,9 @@ Prototype 6.3 follows 6.2 (Edit 70) with the driving playtest of 27 October (Edi
 - Five Parkland flights keep their place beside the boulevard or a street (B2, C2, B3).
 - Copy for the new toasts is literal in `game.js`. Not yet in the content pipeline.
 - Left turns at a two-lane ring join the outer lane, then change lanes (D43).
+- Waterfront's circus runs at capacity: cars still wait at its lines (D44).
+- Parkland A2's street-emptiness check sits at its limit (20% of 3 min with the player in B2).
 
 ## Build
 
-`python3 build.py` → `dummies_p6_3.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
+`python3 build.py` → `dummies_p6_4.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
