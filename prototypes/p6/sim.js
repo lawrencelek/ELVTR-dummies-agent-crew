@@ -105,6 +105,12 @@
     'abilities.maxLevel': 4, 'abilities.wearCut': 0.2, 'abilities.battery.rechargeCut': 0.1, // Edit 78: four levels; linear steps per level
     'abilities.legs.airtimeBase': 0.3, 'abilities.legs.airtimeStep': 0.1, 'abilities.arms.conesPerLevel': 1, 'abilities.throw.distanceStep': 40,
     'economy.price.ability.level1': 1, 'economy.price.ability.level2': 2, 'economy.price.ability.level3': 3, 'economy.price.ability.level4': 4,
+    // Edit 79 (P6.9): three tracks, three levels. Battery's seconds a charge per level; X held throws; Arms 3 hitches a car
+    'abilities.battery.level1Seconds': 0.8, 'abilities.battery.level2Seconds': 0.7, 'abilities.battery.level3Seconds': 0.6, 'input.throwHoldSeconds': 0.3,
+    'abilities.arms.hitchReach': 12, 'abilities.arms.hitchSeconds': 1.5, 'abilities.arms.hitchMinSpeed': 30, 'abilities.arms.hitchEdge': 40,
+    'abilities.arms.slingScale': 1, 'abilities.arms.slingDash': 120,
+    // Edit 79: combos. Variety pays; the clock stops in the air; a thrown cone that hits a car links the chain
+    'scoring.comboVariety': 0, 'scoring.comboAirPause': 0, 'scoring.coneLink': 0, 'scoring.coneHitPoints': 20,
     'physics.slideFriction': 1, 'physics.gravity': 9.81, // Edit 78: a knocked dummy slides to a stop at slideFriction × gravity (m/s², × proto.scale.unitsPerMetre)
     'proto.parts.torsoRechargeLoss': 1.5, 'proto.parts.torsoRechargeFloor': 0.5,
     // Edits 74–75: input (gamepad stick, touch stick, pad setup) and touch sizes in CSS px
@@ -195,6 +201,18 @@
   };
   const NODES7 = {};
   for (const [t, tr] of Object.entries(TRACKS)) for (let L = 1; L <= 4; L++) NODES7[t + L] = { name: tr.name + ' ' + L, branch: tr.name, track: t, level: L, price: 'economy.price.ability.level' + L, pre: L > 1 ? t + (L - 1) : tr.needs || null, desc: tr.desc[L - 1] };
+  // Edit 79 (P6.9, proto.abilities 2): three tracks, three levels. Throw joins Arms; Arms 3 hitches a passing car
+  const TRACKS9 = {
+    battery: { name: 'Battery', button: 'A', verb: 'DASH', part: 'torso',
+      desc: ['Dash charges faster. Torso damage slows them less.', 'Faster again. Torso damage slows them less.', 'Fastest charge. Torso damage slows them least.'] },
+    legs: { name: 'Legs', button: 'B', verb: 'JUMP', part: 'legs',
+      desc: ['B jumps. Run and jump to clear a rail; a dash jump clears a sedan.', 'Longer in the air: a dash jump clears a van.', 'Longest in the air: a running jump clears a sedan.'] },
+    arms: { name: 'Arms', button: 'X', verb: 'GRAB', part: 'arms',
+      desc: ['X picks up a cone. X again puts it down.', 'Hold X to throw the cone. A cone that hits a car links a combo.', 'Hitch: X beside a moving car grabs it. X lets go; A slings you off it with a dash.'] },
+  };
+  const NODES9 = {};
+  for (const [t, tr] of Object.entries(TRACKS9)) for (let L = 1; L <= 3; L++) NODES9[t + L] = { name: tr.name + ' ' + L, branch: tr.name, track: t, level: L, price: 'economy.price.ability.level' + L, pre: L > 1 ? t + (L - 1) : null, desc: tr.desc[L - 1] };
+  const ABIL9_HAS = { jump: ['legs', 1], carry: ['arms', 1], throw: ['arms', 2], hitch: ['arms', 3], bigBattery: null, ricochet: null, spine: null, hips: null, grip: null };
   const ABIL_HAS = { jump: 'legs', carry: 'arms', throw: 'throw', bigBattery: null, ricochet: null, spine: null, hips: null, grip: null }; // the old names, read from the tracks
 
   // ---------- math
@@ -1538,17 +1556,21 @@
       if (!this.net) this.fillDeckCars();
     }
 
-    has(n) { if (this.P['proto.abilities'] && n in ABIL_HAS) { const t = ABIL_HAS[n]; return t ? this.tier(t) >= 1 : false; } return !!this.run.owned[n]; }
+    tracks() { return this.P['proto.abilities'] === 2 ? TRACKS9 : TRACKS; } // Edit 79
+    nodes() { return this.P['proto.abilities'] === 2 ? NODES9 : NODES7; }
+    has(n) { if (this.P['proto.abilities'] === 2 && n in ABIL9_HAS) { const q = ABIL9_HAS[n]; return q ? this.tier(q[0]) >= q[1] : false; } if (this.P['proto.abilities'] && n in ABIL_HAS) { const t = ABIL_HAS[n]; return t ? this.tier(t) >= 1 : false; } return !!this.run.owned[n]; }
     tier(t) { let n = 0; while (n < 4 && n < this.P['abilities.maxLevel'] && this.run.owned[t + (n + 1)]) n++; return n; } // Edit 77: an ability track's level, 0–4 (this.level is the screen)
     shield(t) { return this.P['proto.abilities'] ? Math.max(0, 1 - this.P['abilities.wearCut'] * this.tier(t)) : 1; } // the share of wear that gets through
     secondsPerCharge() { // Edit 77: Battery levels speed the recharge; torso damage slows it
       const P = this.P; if (!P['proto.abilities']) return P['battery.secondsPerCharge'];
-      return Math.max(0.05, P['battery.secondsPerCharge'] - P['abilities.battery.rechargeCut'] * this.tier('battery')) / this.partEffect('recharge'); // Edit 78: linear
+      const L = this.tier('battery');
+      if (P['proto.abilities'] === 2) return (L ? P['abilities.battery.level' + L + 'Seconds'] : P['battery.secondsPerCharge']) / this.partEffect('recharge'); // Edit 79: a value per level
+      return Math.max(0.05, P['battery.secondsPerCharge'] - P['abilities.battery.rechargeCut'] * L) / this.partEffect('recharge'); // Edit 78: linear
     }
     // Edit 78 (P6.8): the level steps. Without ability tracks, the P6.5–6.6 values.
     jumpAirtime() { const P = this.P; return P['proto.abilities'] ? P['abilities.legs.airtimeBase'] + P['abilities.legs.airtimeStep'] * Math.max(0, this.tier('legs') - 1) : P['upgrades.jumpAirtime']; }
-    coneCapacity() { return this.P['proto.abilities'] ? Math.max(1, this.P['abilities.arms.conesPerLevel'] * this.tier('arms')) : 1; }
-    throwReach() { const P = this.P; return P['upgrades.throwDistance'] + (P['proto.abilities'] ? P['abilities.throw.distanceStep'] * Math.max(0, this.tier('throw') - 1) : 0); }
+    coneCapacity() { return this.P['proto.abilities'] === 1 ? Math.max(1, this.P['abilities.arms.conesPerLevel'] * this.tier('arms')) : 1; }
+    throwReach() { const P = this.P; return P['upgrades.throwDistance'] + (P['proto.abilities'] === 1 ? P['abilities.throw.distanceStep'] * Math.max(0, this.tier('throw') - 1) : 0); }
     carriedCones() { const b = this.body; return b.carried && b.carried.length ? b.carried : b.held ? [b.held] : []; }
     takeCone(cn) { const b = this.body; cn.state = 'held'; if (!b.carried) b.carried = []; b.carried.push(cn); b.held = cn; this.emit('pickup', { cone: cn.id, n: b.carried.length }); this.mile('use:carry'); }
     popCone() { const b = this.body; let cn = null; if (b.carried && b.carried.length) { cn = b.carried.pop(); b.held = b.carried[b.carried.length - 1] || null; } else { cn = b.held; b.held = null; } return cn; }
@@ -1575,7 +1597,7 @@
     onGround() { const b = this.body; return b.level === 0 && !b.stair && b.mode !== 'drop'; }
     underfoot(field) { const b = this.body; return this.onGround() ? this.terrain(b.x, b.y, field) : 1; }
     // The level the dummy can be met on: none while on a stair or in the air. Cars meet it only on their own level.
-    bodyLayer() { const b = this.body; return b && b.alive && !b.stair && b.mode !== 'drop' ? b.level : null; }
+    bodyLayer() { const b = this.body; return b && b.alive && !b.stair && b.mode !== 'drop' && b.mode !== 'hitch' ? b.level : null; } // Edit 79: a hitched body rides out of traffic's way
     meets(c) { return this.bodyLayer() === lay(c) && (lay(c) === 0 || this.bodyDeck() === c.deckIdx); } // deck traffic meets the dummy on its own deck
     emit(type, data) { const e = Object.assign({ t: +this.t.toFixed(4), type }, data || {}); if (this.awayCell) e.away = this.awayCell; this.events.push(e); } // P5.3: an event on another screen carries its name
     mile(key, data) { if (!this.milestones[key]) { this.milestones[key] = Object.assign({ t: +(this.tOffset + this.t).toFixed(3), road: this.roadIndex + 1 }, data || {}); this.emit('milestone', { key }); } }
@@ -1630,6 +1652,9 @@
       if (b.refillDelay > 0) { b.refillDelay -= dt; if (b.refillDelay < 1e-9) b.refillDelay = 0; }
       else b.charge = Math.min(this.capacity(), b.charge + dt / this.secondsPerCharge());
       b.denied = Math.max(0, b.denied - dt);
+      this.comboClock(dt); // Edit 79
+      if (b.mode === 'hitch') return this.stepHitch(cmd, dt); // Edit 79: riding a car
+      if (b.mode !== 'knock') b.sling = false; // a sling ends with its flight
       if (b.mode === 'drop') return; // in the air: no control until the landing
       if (b.landT > 0) { b.landT -= dt; if (b.landT < 1e-9) b.landT = 0; }
       const facing0 = b.facing, direct = P['proto.turnModel'] === 2; // Edit 75: DIRECT (P6.5)
@@ -1679,12 +1704,12 @@
         if (P['proto.bounce.newton']) { // Edit 78: the dummy slides on the ground, slowed by friction; control returns below walking pace
           const sp = hyp(b.vx, b.vy), dec = P['physics.slideFriction'] * P['physics.gravity'] * P['proto.scale.unitsPerMetre'] * dt, ns = Math.max(0, sp - dec);
           if (sp > 1e-9) { b.vx *= ns / sp; b.vy *= ns / sp; }
-          if (ns <= 1 || (ns <= P['movement.walkSpeed'] && b.knockT >= P['proto.recoilSeconds'])) { b.mode = ns > 1 ? 'move' : 'idle'; b.rampT = 0; if (ns <= 1) { b.vx = 0; b.vy = 0; } } // a short bounce slides out; a long throw gives control back after proto.recoilSeconds, under walking pace
+          if (ns <= 1 || (ns <= P['movement.walkSpeed'] && b.knockT >= P['proto.recoilSeconds'])) { b.mode = ns > 1 ? 'move' : 'idle'; b.rampT = 0; b.sling = false; if (ns <= 1) { b.vx = 0; b.vy = 0; } } // a short bounce slides out; a long throw gives control back after proto.recoilSeconds, under walking pace
           return;
         }
         const k = Math.max(0, 1 - b.knockT / P['proto.recoilSeconds']);
         b.vx = b.knockVx * k; b.vy = b.knockVy * k;
-        if (k === 0) { b.mode = 'idle'; b.rampT = 0; }
+        if (k === 0) { b.mode = 'idle'; b.rampT = 0; b.sling = false; }
         return;
       }
       if (b.mode === 'counter') {
@@ -1742,6 +1767,7 @@
     }
     // Edit 75 (P6.5): X picks up or places a cone (Carry); Y throws the held cone (Throw).
     handleXY(cmd) {
+      if (this.P['proto.abilities'] === 2) return this.handleArms(cmd);
       const b = this.body, busy = b.mode === 'lunge' || b.mode === 'recover';
       if (cmd.xPress) { // Edit 78: X grabs while there is room (Arms level) and a cone in reach; else it places the top cone
         if (!this.has('carry')) this.deny('pickup', 'locked');
@@ -1753,6 +1779,84 @@
         }
       }
       if (cmd.yPress) { if (!this.has('throw')) this.deny('throw', 'locked'); else if (!b.held) this.deny('throw', 'empty'); else if (!this.armsBroken()) this.throwHeld(); else this.deny('throw'); }
+    }
+    // Edit 79 (P6.9): Arms. X picks up a cone (Arms 1); with a cone, a tap puts it down and a hold throws it (Arms 2, after
+    // input.throwHoldSeconds); beside a moving car with no cone, X hitches (Arms 3). Y has no job. cmd.xHeld: X still down.
+    handleArms(cmd) {
+      const P = this.P, b = this.body, busy = b.mode === 'lunge' || b.mode === 'recover', dt = this.dtLast || 1 / 60;
+      if (cmd.xPress) {
+        if (!this.has('carry')) this.deny('pickup', 'locked');
+        else if (b.held) b.xHold = { t: 0, done: false };
+        else {
+          const car = this.has('hitch') && b.mode !== 'knock' ? this.hitchTarget() : null;
+          if (car) return this.startHitch(car);
+          const cn = busy || this.armsBroken() || !this.onGround() ? null : this.nearestCone();
+          if (cn) this.takeCone(cn); else this.deny('pickup');
+        }
+      }
+      if (b.xHold) {
+        if (cmd.xHeld) {
+          b.xHold.t += dt;
+          if (!b.xHold.done && b.held && this.has('throw') && b.xHold.t >= P['input.throwHoldSeconds'] - 1e-9) { b.xHold.done = true; if (!this.armsBroken()) this.throwHeld(); else this.deny('throw'); }
+        } else { if (!b.xHold.done && b.held) this.dropHeld(); b.xHold = null; }
+      }
+    }
+    carById(id) { return this.cars.find((q) => q.id === id || (q.real && q.real.id === id)) || null; }
+    hitchTarget() { // a moving car on the dummy's level, its side within abilities.arms.hitchReach of the body
+      const P = this.P, b = this.body, r = P['body.radius'] + P['abilities.arms.hitchReach'];
+      let best = null, bp = -1;
+      for (const c of this.cars) {
+        if (!this.meets(c) || !(c.v >= P['abilities.arms.hitchMinSpeed'])) continue;
+        const res = circleCar(b.x, b.y, r, c); if (res && res.pen > bp) { best = c; bp = res.pen; }
+      }
+      return best;
+    }
+    startHitch(c) { // ride on the car's side, where the body is, just clear of the bodywork
+      const P = this.P, b = this.body, r = P['body.radius'], ca = Math.cos(c.h), sa = Math.sin(c.h), dx = b.x - c.x, dy = b.y - c.y;
+      let lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca;
+      if (Math.abs(lx) <= c.L / 2 + r) { lx = clamp(lx, -c.L / 2, c.L / 2); ly = (ly >= 0 ? 1 : -1) * (c.W / 2 + r + 1); }
+      else lx = (lx >= 0 ? 1 : -1) * (c.L / 2 + r + 1);
+      Object.assign(b, { mode: 'hitch', hitch: { id: c.id, lx, ly, t: 0 }, lunge: null, jump: null, z: 0, vx: c.vx, vy: c.vy, facing: c.h, sling: false });
+      this.emit('hitch', { car: c.id, speed: +c.v.toFixed(1) }); this.mile('use:hitch');
+    }
+    stepHitch(cmd, dt) {
+      const P = this.P, b = this.body, H = b.hitch, c = this.carById(H.id), e = P['abilities.arms.hitchEdge'];
+      H.t += dt;
+      const off = b.x < e || b.y < e || b.x > P['world.width'] - e || b.y > P['world.height'] - e;
+      if (!c || c.v < 1 || (c.elev || 0) !== b.level || H.t >= P['abilities.arms.hitchSeconds'] - 1e-9 || off || cmd.xPress) return this.releaseHitch(c, false, cmd);
+      if (cmd.aPress) return this.releaseHitch(c, true, cmd);
+    }
+    // Let go: flung at the car's velocity × abilities.arms.slingScale; with A, a dash's push (abilities.arms.slingDash) along the
+    // stick, for a charge. The flight is a knock: it slides, and strikes the next car as a dash does.
+    releaseHitch(c, dash, cmd) {
+      const P = this.P, b = this.body, k = P['abilities.arms.slingScale'];
+      let vx = c ? c.vx * k : b.vx, vy = c ? c.vy * k : b.vy, dashed = false;
+      if (dash && b.charge >= P['battery.lungeCost'] - 1e-9) {
+        const m = hyp(cmd.mx || 0, cmd.my || 0), a = m > 0.05 ? Math.atan2(cmd.my, cmd.mx) : Math.atan2(vy, vx);
+        vx += Math.cos(a) * P['abilities.arms.slingDash']; vy += Math.sin(a) * P['abilities.arms.slingDash'];
+        b.charge -= P['battery.lungeCost']; b.refillDelay = P['battery.refillDelaySeconds']; dashed = true;
+      }
+      Object.assign(b, { hitch: null, mode: 'knock', knockT: 0, knockVx: vx, knockVy: vy, vx, vy, sling: true });
+      if (hyp(vx, vy) > 1) b.facing = Math.atan2(vy, vx);
+      this.emit('sling', { car: c ? c.id : null, speed: +hyp(vx, vy).toFixed(1), dash: dashed });
+    }
+    // Edit 79: the combo clock. With scoring.comboAirPause it runs only on the ground: a jump, a knock (a bounce or a sling),
+    // a drop or a hitch hold it. A combo ends when it passes scoring.comboWindow.
+    comboClock(dt) {
+      const P = this.P, b = this.body, cb = b.combo; this.dtLast = dt;
+      if (!cb || cb.ended) return;
+      const air = b.mode === 'jump' || b.mode === 'knock' || b.mode === 'hitch' || b.mode === 'drop';
+      if (!(P['scoring.comboAirPause'] && air)) cb.clock = (cb.clock || 0) + dt;
+      if (cb.clock > P['scoring.comboWindow'] + 1e-9) { cb.ended = true; if (cb.n > 1) this.emit('combo-end', { n: cb.n, mult: cb.mult, kinds: cb.kinds.slice(), points: Math.round(cb.pts || 0) }); }
+    }
+    comboLink(kind, base) { // a link: a hit, or a cone into a car. Returns the chain and its multiplier; banks base × it
+      const P = this.P, b = this.body, cb = b.combo;
+      if (!P['proto.combo']) return { n: 1, mult: 1, kinds: [kind] };
+      const live = cb && !cb.ended && (cb.clock || 0) <= P['scoring.comboWindow'] + 1e-9;
+      const n = live ? cb.n + 1 : 1, kinds = live ? (cb.kinds.includes(kind) ? cb.kinds.slice() : cb.kinds.concat([kind])) : [kind];
+      const mult = Math.min(P['scoring.comboMax'], 1 + P['scoring.comboStep'] * (n - 1) + (P['scoring.comboVariety'] || 0) * (kinds.length - 1));
+      b.combo = { n, t: this.t, mult, clock: 0, kinds, pts: (live ? cb.pts || 0 : 0) + base * mult, ended: false };
+      return b.combo;
     }
     // B jumps (Legs: Jump), Edit 76 (Link's Awakening): straight up from standing; at walking or running speed it carries that
     // speed; during a dash it carries the dash's (a long jump). Capped at upgrades.jumpMaxSpeed. upgrades.jumpHeight at the top,
@@ -1844,6 +1948,11 @@
       const b = this.body;
       if (!b.alive) return;
       if (b.mode === 'drop') { b.x += b.drop.vx * h; b.y += b.drop.vy * h; b.drop.t += h; return; }
+      if (b.mode === 'hitch') { // Edit 79: on the car's side, as it moves and turns
+        const H = b.hitch, c = this.carById(H.id); if (!c) return;
+        const ca = Math.cos(c.h), sa = Math.sin(c.h); b.x = c.x + H.lx * ca - H.ly * sa; b.y = c.y + H.lx * sa + H.ly * ca; b.vx = c.vx; b.vy = c.vy; b.facing = c.h;
+        return;
+      }
       if (b.mode === 'jump') { // Edit 75: a parabola, upgrades.jumpHeight at the top
         const J = b.jump;
         b.vx = J.vx; b.vy = J.vy; // Edit 76: the take-off velocity, as steered in the air; a wall slides it (world6.js)
@@ -2055,9 +2164,16 @@
         if (cn.state === 'flight') {
           const ox = cn.x, oy = cn.y;
           cn.x += cn.vx * h; cn.y += cn.vy * h; cn.flightT -= h;
+          const carHit = this.cars.find((c) => lay(c) === 0 && circleCar(cn.x, cn.y, r, c));
           const hit = cn.x < r || cn.y < r || cn.x > P['world.width'] - r || cn.y > P['world.height'] - r ||
-            this.level.statics.some((s) => circleRect(cn.x, cn.y, r, s)) || this.cars.some((c) => lay(c) === 0 && circleCar(cn.x, cn.y, r, c));
-          if (hit) { cn.x = ox; cn.y = oy; cn.state = 'free'; cn.vx = cn.vy = 0; this.emit('cone-stop', { cone: cn.id }); }
+            this.level.statics.some((s) => circleRect(cn.x, cn.y, r, s)) || !!carHit;
+          if (hit) {
+            cn.x = ox; cn.y = oy; cn.state = 'free'; cn.vx = cn.vy = 0; this.emit('cone-stop', { cone: cn.id });
+            if (carHit && cn.kind === 'throw' && P['scoring.coneLink'] && carHit.v > 5 && !carHit.coned && this.body && this.body.alive) { // Edit 79: a thrown cone into a moving car links the combo, once a car
+              carHit.coned = true; const cl = this.comboLink('cone', P['scoring.coneHitPoints']); this.run.points += P['scoring.coneHitPoints'] * cl.mult;
+              this.emit('cone-hit', { cone: cn.id, car: carHit.id, n: cl.n, mult: cl.mult, kinds: cl.kinds.slice(), points: Math.round(P['scoring.coneHitPoints'] * cl.mult) });
+            }
+          }
           else if (cn.flightT <= 1e-9) { cn.state = 'free'; cn.vx = cn.vy = 0; this.emit('cone-rest', { cone: cn.id, x: +cn.x.toFixed(2), y: +cn.y.toFixed(2) }); }
           continue;
         }
@@ -2314,7 +2430,7 @@
       if (kind === 'dash') return Math.max(P['movement.wearFloor'], 1 - P['proto.parts.legDashLoss'] * legs * this.shield('legs'));
       if (kind === 'recharge') return P['proto.abilities'] ? Math.max(P['proto.parts.torsoRechargeFloor'], 1 - P['proto.parts.torsoRechargeLoss'] * this.partShare('torso') * this.shield('battery')) : 1;
       const t = { speed: ['legSpeed', legs * this.shield('legs')], turn: ['torsoTurn', this.partShare('torso') * this.shield('battery')],
-        view: ['headCone', this.partShare('head')], throw: ['armThrow', arms * this.shield('throw')] }[kind];
+        view: ['headCone', this.partShare('head')], throw: ['armThrow', arms * this.shield(P['proto.abilities'] === 2 ? 'arms' : 'throw')] }[kind];
       return Math.max(P['proto.parts.' + t[0] + 'Floor'], 1 - P['proto.parts.' + t[0] + 'Loss'] * t[1]);
     }
     armsBroken() { const P = this.P, k = this.shield('arms'); return !!P['proto.parts.effects'] && this.partShare('armL') * k >= P['proto.parts.brokenShare'] && this.partShare('armR') * k >= P['proto.parts.brokenShare']; } // Edit 77: Arms levels hold the grip
@@ -3030,14 +3146,12 @@
         c.spent = true;
         const plate = b.level === 0 && this.surfaceAt(b.x, b.y) === 'plate' ? P['damage.plateMultiplier'] : 1; // a calibrated plate scores more (7.3)
         const hw = c.deck ? P['damage.deckMultiplier'] : 1; // P5 (Edit 50): a highway hit scores more
-        let combo = 1, mult = 1; // Edit 75: a hit within scoring.comboWindow of the last chains a combo; each link adds scoring.comboStep, to scoring.comboMax
-        if (P['proto.combo']) {
-          combo = b.combo && this.t - b.combo.t <= P['scoring.comboWindow'] + 1e-9 ? b.combo.n + 1 : 1;
-          mult = Math.min(P['scoring.comboMax'], 1 + P['scoring.comboStep'] * (combo - 1));
-          b.combo = { n: combo, t: this.t, mult };
-        }
+        // Edit 75: a hit within scoring.comboWindow of the last chains a combo; each link adds scoring.comboStep, to scoring.comboMax.
+        // Edit 79: each new kind of move in the chain adds scoring.comboVariety; the clock stops in the air (comboClock)
+        const kind = ct.drop ? 'drop' : ct.kind || (ct.jump ? 'jump' : ct.lunging ? 'dash' : 'struck');
+        const cl = this.comboLink(kind, assessed * plate * hw), combo = cl.n, mult = cl.mult;
         this.run.points += assessed * plate * hw * mult;
-        if (combo > 1) { this.emit('combo', { n: combo, mult, bonus: Math.round(assessed * plate * hw * (mult - 1)), car: c.id }); this.mile('firstCombo', { n: combo }); }
+        if (combo > 1) { this.emit('combo', { n: combo, mult, kinds: cl.kinds.slice(), bonus: Math.round(assessed * plate * hw * (mult - 1)), car: c.id }); this.mile('firstCombo', { n: combo }); }
         const bait = ct.carState === 'committed' || ct.carState === 'expiring' || ct.carState === 'interrupted';
         let learned = null;
         if (P['proto.learningEnabled'] && lost > 0) {
@@ -3055,7 +3169,7 @@
           angle: +ct.ph.angle.toFixed(1), dv: +ct.ph.dvd.toFixed(2), strike: +ct.ph.un.toFixed(2),
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
           carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, highway: hw > 1, drop: !!ct.drop, deck: !!c.deck, dropZ: ct.drop ? ct.dropZ : 0, dropFrom: ct.drop ? ct.dropFrom : null,
-          combo, mult, jump: !!ct.jump, ricochet: !!ct.ricochet };
+          combo, mult, kind, jump: !!ct.jump, ricochet: !!ct.ricochet };
         this.emit('impact', ev); b.hits.push(ev);
         this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed * plate * hw * mult, mult: hw, combo, cmult: mult, t: this.t, zone: ct.zone, angle: ct.ph.angle, layer: lay(c) });
         this.mile('firstHit');
@@ -3410,11 +3524,11 @@
     // ----- menus
     continueReport() { if (this.phase === 'report') { this.phase = 'shop'; this.emit('shop-open', { credits: this.run.credits }); } }
     canBuy(n) {
-      if (this.P['proto.abilities']) { // Edit 77: ability tracks by level
-        const nd = NODES7[n], r = this.run;
+      if (this.P['proto.abilities']) { // Edit 77: ability tracks by level (Edit 79: three tracks)
+        const N = this.nodes(), nd = N[n], r = this.run;
         if (!nd || nd.level > this.P['abilities.maxLevel']) return { ok: false, why: 'not sold' };
         if (r.owned[n]) return { ok: false, why: 'owned' };
-        if (nd.pre && !r.owned[nd.pre]) return { ok: false, why: 'needs ' + NODES7[nd.pre].name };
+        if (nd.pre && !r.owned[nd.pre]) return { ok: false, why: 'needs ' + N[nd.pre].name };
         const price = this.P[nd.price];
         return r.credits < price ? { ok: false, why: 'short by ' + (price - r.credits) } : { ok: true, price };
       }
@@ -3452,7 +3566,7 @@
     }
   }
 
-  const api = { Sim, JUMP, REG, PROTO, OVERRIDES, NODES, NODES4, NODES7, TRACKS, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
+  const api = { Sim, JUMP, REG, PROTO, OVERRIDES, NODES, NODES4, NODES7, TRACKS, NODES9, TRACKS9, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
     planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, laneEnds, seamSight, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, checkZone, buildableArea, zHeight, stairRun, LEVELS3,
     lanesOf, makePath, offsetPts, fillet, filletAny, arcPts, roundaboutCenter, skeletons, routeCenter, edgePoint, deckLanesOf, fleetClass, minBend }; // P4: the Turn Lab builds its tracks with these
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

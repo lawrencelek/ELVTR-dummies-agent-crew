@@ -3,7 +3,7 @@
    Screen: 640 × 360 art pixels, integer-scaled. Field: 400 × 300 art pixels at (120, 30). HUD and screens: 1280 × 720 reference units. */
 (function () {
   'use strict';
-  const { Sim, NODES, NODES4, NODES7, TRACKS, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
+  const { Sim, NODES, NODES4, NODES7: NODES7_4, TRACKS: TRACKS_4, NODES9, TRACKS9, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
   const W6 = window.WORLD6 || null; // P6 (Edit 62): Parkland, Waterfront, Monument, built by world6.js
   const LEVEL_LIST = W6 ? W6.LEVEL_LIST : window.DUMMIES.LEVEL_LIST;
   const INFO = (id) => (W6 && W6.INFO(id)) || window.DUMMIES.INFO(id);
@@ -69,7 +69,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = W6 ? 'P6.8' : 'P5.3'; // Prototype 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = W6 ? 'P6.9' : 'P5.3'; // Prototype 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -150,7 +150,9 @@
   // Keys: Space or K dash (A) · L or Shift jump (B) · J or E grab (X) · I or Q throw (Y): IJKL sits like the pad's diamond.
   // Gamepads: pads.js (every pad; hat d-pads; buttons set up by the player). Touch: an analog stick and the diamond (below).
   const FOUR = !!(W6 && W6.P6SIM && W6.P6SIM['proto.input.fourButtons']);
-  const ABIL = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities']); // Edit 77 (P6.7): the shop sells four ability tracks by level. Edit 78 (P6.8): four levels
+  const ABIL = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities']);
+  const ABIL3 = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities'] === 2); // Edit 79 (P6.9): Battery, Legs, Arms; three levels; Y has no job
+  const TRACKS = ABIL3 ? TRACKS9 : TRACKS_4, NODES7 = ABIL3 ? NODES9 : NODES7_4; // Edit 77 (P6.7): the shop sells four ability tracks by level. Edit 78 (P6.8): four levels
   const held = new Set();
   const q = { a: 0, b: 0, bUp: 0, x: 0, y: 0 };
   const menuQ = [];
@@ -193,14 +195,14 @@
   // Gamepads (Edit 75: pads.js, shared with the controls prototype). Every connected pad is read; the last one used drives.
   // Standard mapping: stick or d-pad moves; A (or RT) dash, B jump, X grab, Y throw; START pauses; hold START (or G) to set up.
   const radial = (x, y, dz, outer) => { const m = Math.hypot(x, y); if (m < dz) return { x: 0, y: 0, m: 0 }; const k = clamp((m - dz) / Math.max(1e-6, outer - dz), 0, 1); return { x: x / m * k, y: y / m * k, m: k }; };
-  const PADCFG = FOUR
+  const PADCFG = ABIL3 ? { actions: ['a', 'b', 'x'], std: { a: [0, 7], b: [1], x: [2] }, other: { a: [0], b: [1], x: [2] }, store: 'p69' } : FOUR
     ? { actions: ['a', 'b', 'x', 'y'], std: { a: [0, 7], b: [1], x: [2], y: [3] }, other: { a: [0], b: [1], x: [2], y: [3] }, store: 'p6' }
     : { actions: ['a', 'b'], std: { a: [0], b: [1] }, other: { a: [0], b: [1] }, store: 'p6' };
   Object.assign(PADCFG, { dead: pv('proto.input.deadzone'), outer: pv('proto.input.stickOuter'), aimDead: 2, holdSetup: pv('proto.input.padSetupHoldSeconds'), stick: radial });
-  const pad = { st: window.PADS ? window.PADS.create() : null, mx: 0, my: 0, bHeld: false, prevB: false, info: null, dirs: {}, blocked: false };
-  const PAD_NAME = { a: 'DASH (A)', b: 'JUMP (B)', x: 'GRAB (X)', y: 'THROW (Y)' };
+  const pad = { st: window.PADS ? window.PADS.create() : null, mx: 0, my: 0, bHeld: false, xHeld: false, prevB: false, info: null, dirs: {}, blocked: false };
+  const PAD_NAME = { a: 'DASH (A)', b: 'JUMP (B)', x: ABIL3 ? 'GRAB / THROW (X)' : 'GRAB (X)', y: 'THROW (Y)' };
   function pollPad(dt) {
-    pad.mx = pad.my = 0; pad.bHeld = false;
+    pad.mx = pad.my = 0; pad.bHeld = false; pad.xHeld = false;
     if (!pad.st) return;
     let list = null;
     try { list = navigator.getGamepads ? navigator.getGamepads() : null; pad.blocked = false; }
@@ -213,7 +215,7 @@
     if (was && !o.setup) toast('Pad buttons saved for this browser');
     if (!o.id || o.setup) { pad.dirs = {}; pad.prevB = false; return; }
     if (o.move) { pad.mx = o.move.x; pad.my = o.move.y; app.device = 'pad'; }
-    pad.bHeld = !!o.held.b;
+    pad.bHeld = !!o.held.b; pad.xHeld = !!o.held.x;
     if (o.a) { q.a++; menuQ.push('ok'); Snd.init(); app.device = 'pad'; }
     if (o.b) { q.b++; menuQ.push('back'); app.device = 'pad'; }
     if (!pad.bHeld && pad.prevB) q.bUp++;
@@ -234,7 +236,7 @@
   }
   function buildCmd() {
     const v = moveVec();
-    const cmd = { mx: v.mx, my: v.my, aPress: q.a > 0, bPress: q.b > 0, bRelease: q.bUp > 0, bHeld: held.has('b') || pad.bHeld, xPress: q.x > 0, yPress: q.y > 0 };
+    const cmd = { mx: v.mx, my: v.my, aPress: q.a > 0, bPress: q.b > 0, bRelease: q.bUp > 0, bHeld: held.has('b') || pad.bHeld, xPress: q.x > 0, yPress: q.y > 0, xHeld: held.has('x') || pad.xHeld || !!TOUCH.down.x }; // Edit 79: X held throws
     q.a = q.b = q.bUp = q.x = q.y = 0;
     return cmd;
   }
@@ -243,7 +245,7 @@
   // On where the main pointer is a finger and nothing hovers: (hover: none) and (pointer: coarse); #touch in the address forces it.
   // Landscape only. The analog stick under the district map; Y, X, B, A under the chassis, as on a gamepad. Both may reach into the
   // screen's side margins. Layout in reference units from the canvas corner (the game's units), so the margins count.
-  const FACE = [['y', 0, -1, 'Y', 'THROW'], ['x', -1, 0, 'X', 'GRAB'], ['b', 1, 0, 'B', 'JUMP'], ['a', 0, 1, 'A', 'DASH']];
+  const FACE = [['y', 0, -1, 'Y', 'THROW'], ['x', -1, 0, 'X', ABIL3 ? 'GRAB' : 'GRAB'], ['b', 1, 0, 'B', 'JUMP'], ['a', 0, 1, 'A', 'DASH']].filter((f) => !(ABIL3 && f[0] === 'y')); // Edit 79: no Y in 6.9
   const FACE_NODE = { a: null, b: 'jump', x: 'carry', y: 'throw' };
   function touchDevice() {
     try { return /(^#|[#&])touch\b/.test(location.hash) || /[?&]touch\b/.test(location.search) || window.matchMedia('(hover: none) and (pointer: coarse)').matches; }
@@ -703,7 +705,11 @@
         case 'jump': { if (e.clear === false && !fx.hopTold) { fx.hopTold = true; toast('A hop clears nothing. Run, then jump.'); } /* Edit 77 */ Snd.tone(330, e.kind === 'dash' ? 880 : 660, e.kind === 'dash' ? 0.18 : 0.12, 'triangle', 0.08); const b = s.body; puff(b.x, b.y + 6, e.kind === 'dash' ? 10 : 6, { type: 'dust', speed: 55, life: 0.35, size: 3 }); if (e.kind === 'dash' && !fx.longJumpSeen) { fx.longJumpSeen = true; toast('Long jump: B during a dash carries its speed'); } break; } // Edit 75–76
         case 'jump-land': { Snd.tone(160, 90, 0.08, 'square', 0.05); const b = s.body; puff(b.x, b.y + 6, 5, { type: 'dust', speed: 45, life: 0.3, size: 3 }); break; }
         case 'rail-jump': Snd.tone(520, 880, 0.1, 'triangle', 0.06); toast('Over the rail'); break;
-        case 'combo': [660, 880, 1100].slice(0, Math.min(3, e.n)).forEach((f, j) => Snd.tone(f, f * 1.2, 0.08, 'triangle', 0.08, j * 0.06)); kick(2 + e.n, 0.18); toast('COMBO ×' + e.n + ' · points ×' + e.mult + ' · +' + num(e.bonus)); break;
+        case 'combo': [660, 880, 1100].slice(0, Math.min(3, e.n)).forEach((f, j) => Snd.tone(f, f * 1.2, 0.08, 'triangle', 0.08, j * 0.06)); kick(2 + e.n, 0.18); toast('COMBO ' + e.n + (e.kinds && e.kinds.length > 1 ? ' · ' + e.kinds.map((k) => MOVE_NAME[k] || k).join(' › ') : '') + ' · ×' + e.mult + ' · +' + num(e.bonus)); break;
+        case 'combo-end': Snd.tone(523, 784, 0.12, 'triangle', 0.06); toast('COMBO BANKED · ' + e.n + ' hits · ×' + e.mult + ' · ' + num(e.points)); break; // Edit 79
+        case 'hitch': Snd.tone(300, 420, 0.08, 'square', 0.05); if (!fx.hitchTold) { fx.hitchTold = true; toast('Hitched. X lets go; A slings you off with a dash.'); } break;
+        case 'sling': Snd.tone(420, 900, 0.14, 'triangle', 0.08); kick(3, 0.15); break;
+        case 'cone-hit': Snd.tone(900, 600, 0.08, 'square', 0.06); toast('CONE HIT' + (e.n > 1 ? ' · COMBO ' + e.n + ' · ×' + e.mult : '') + ' · +' + num(e.points)); break;
         case 'slip': { fx.slipT = e.t; const b = s.body; puff(b.x, b.y + 8, 8, { type: 'spark', role: 'puddleHi', speed: 90, life: 0.3, size: 2 }); toast(copy('toast.slip', 'No dash on water. Step off the puddle.')); break; } // D18
         case 'skid': { const c = carsOf(s).find((q) => q.id === e.car); if (c) puff(c.x, c.y, 10, { type: 'spark', role: 'puddleHi', dir: c.h + Math.PI, spread: 2.2, speed: 120, life: 0.35, size: 2 }); Snd.tone(1800, 900, 0.18, 'sawtooth', 0.02); break; }
         case 'screen': { // D24: first visit names the screen
@@ -1714,6 +1720,12 @@
     if (!FOUR) { const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']]; if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']); return keys; }
     const pd = app.device === 'pad', keys = [[pd ? 'STICK' : 'WASD', 'MOVE'], [pd ? 'A' : 'SPACE', 'DASH']]; // Edit 75: A, B, X, Y as installed
     if (s.has('jump')) keys.push([pd ? 'B' : 'L', 'JUMP']);
+    if (ABIL3) { // Edit 79: X does it all; a hitched body lets go with X, slings with A
+      const b = s.body;
+      if (b.mode === 'hitch') { keys[1] = [pd ? 'A' : 'SPACE', 'SLING']; keys.push([pd ? 'X' : 'J', 'LET GO']); }
+      else if (s.has('carry')) keys.push([pd ? 'X' : 'J', b.held ? (s.has('throw') ? 'DROP · HOLD THROW' : 'DROP') : s.has('hitch') ? 'GRAB · HITCH' : 'GRAB']);
+      return keys;
+    }
     if (s.has('carry')) keys.push([pd ? 'X' : 'J', s.body.held && s.carriedCones().length >= s.coneCapacity() ? 'PLACE' : s.body.held ? 'GRAB/PLACE' : 'GRAB']);
     if (s.has('throw')) keys.push([pd ? 'Y' : 'I', 'THROW']);
     return keys;
@@ -1861,7 +1873,8 @@
     return out;
   }
   // Owned nodes; in the shop the selected node is tried on (blinking); the tuning preview shows all 15.
-  const DOLL_MODS = { battery: ['fastCharge', 'kineticCharge', 'bigBattery', 'spine'], legs: ['jump', 'springStart', 'grip', 'hips'], arms: ['carry', 'holdOn', 'neck', 'ears'], throw: ['throw', 'widerView', 'memory'] }; // Edit 77–78: a piece per level
+  const DOLL_MODS = ABIL3 ? { battery: ['fastCharge', 'kineticCharge', 'bigBattery'], legs: ['jump', 'springStart', 'grip'], arms: ['carry', 'throw', 'holdOn'] } // Edit 79
+    : { battery: ['fastCharge', 'kineticCharge', 'bigBattery', 'spine'], legs: ['jump', 'springStart', 'grip', 'hips'], arms: ['carry', 'holdOn', 'neck', 'ears'], throw: ['throw', 'widerView', 'memory'] }; // Edit 77–78: a piece per level
   function dollMods(s) {
     if (app.previewMods) return PIX.MODULES;
     if (ABIL) {
@@ -2015,6 +2028,10 @@
   // Edit 78: what a track does at level L (0–4): its step, and the share of wear its level stops
   function abilityStats(s, t, L) {
     const P = s.P, cut = Math.round(P['abilities.wearCut'] * L * 100), wear = L ? 'WEAR −' + cut + '%' : 'FULL WEAR';
+    if (ABIL3) { // Edit 79
+      if (t === 'battery') return ['CHARGE ' + (L ? P['abilities.battery.level' + L + 'Seconds'] : P['battery.secondsPerCharge']).toFixed(1) + ' s', wear];
+      if (t === 'arms') return [['NO GRAB', 'CARRY A CONE', 'HOLD X: THROW', 'HITCH A CAR'][L], L ? wear : ''];
+    }
     if (t === 'battery') return ['CHARGE ' + Math.max(0.05, P['battery.secondsPerCharge'] - P['abilities.battery.rechargeCut'] * L).toFixed(2) + ' s', wear];
     if (!L) return [{ legs: 'NO JUMP', arms: 'NO GRAB', throw: 'NO THROW' }[t], ''];
     if (t === 'legs') return ['AIR ' + (P['abilities.legs.airtimeBase'] + P['abilities.legs.airtimeStep'] * (L - 1)).toFixed(1) + ' s', wear];
@@ -2153,11 +2170,26 @@
     const s = app.sim;
     drawField(s);
     drawHUD(s);
+    drawComboMeter(s);
     if (app.paused) drawPause(s);
     else if (s.phase === 'report') drawReport(s);
     else if (s.phase === 'shop') drawShop(s);
     else if (s.phase === 'ending') drawEnding(s);
     drawPadSetup();
+  }
+  // Edit 79: the combo meter, top of the field while a chain is live: hits, multiplier, the moves so far; the bar is the clock
+  // (scoring.comboWindow), held while the dummy is in the air, flying or hitched
+  const MOVE_NAME = { dash: 'DASH', jump: 'JUMP', bounce: 'BOUNCE', sling: 'SLING', drop: 'DROP', cone: 'CONE', struck: 'STRUCK' };
+  function drawComboMeter(s) {
+    const b = s.body, cb = b && b.combo, P = s.P;
+    if (!cb || cb.ended || !P['proto.combo'] || s.phase !== 'play') return;
+    const w = 460, h = 58, x = FX + FW / 2 - w / 2, y = FY + FH - h - 14, left = Math.max(0, 1 - (cb.clock || 0) / P['scoring.comboWindow']);
+    const air = b.mode === 'jump' || b.mode === 'knock' || b.mode === 'hitch' || b.mode === 'drop';
+    rr(x, y, w, h, 12); ctx.fillStyle = 'rgba(11,16,22,0.78)'; ctx.fill(); ctx.strokeStyle = cb.n > 1 ? C.dummy : FT.accent; ctx.lineWidth = 2; ctx.stroke();
+    txt((cb.n > 1 ? 'COMBO ' + cb.n : 'HIT') + '  ×' + (+cb.mult.toFixed(2)), x + 14, y + 26, fLab, cb.n > 1 ? C.dummy : FT.text);
+    txt(cb.kinds.map((k) => MOVE_NAME[k] || k).join(' › '), x + w - 14, y + 26, '700 15px ' + F_UI, FT.dim, 'right');
+    rr(x + 14, y + 38, w - 28, 10, 5); ctx.fillStyle = 'rgba(159,176,186,0.22)'; ctx.fill();
+    if (left > 0) { rr(x + 14, y + 38, Math.max(10, (w - 28) * left), 10, 5); ctx.fillStyle = air && P['scoring.comboAirPause'] ? FT.accent : C.dummy; ctx.fill(); }
   }
   function drawPadSetup() { // Edit 75: pad setup, over everything
     const st = pad.st && pad.st.setup; if (!st) return;
@@ -2165,7 +2197,7 @@
     panel(x, y, w, h);
     txt('GAMEPAD SETUP', x + w / 2, y + 44, fLab, FT.accent, 'center');
     txt('Press the button for ' + PAD_NAME[st], x + w / 2, y + 92, '700 30px ' + F_UI, FT.text, 'center');
-    txt('DASH, JUMP, GRAB, THROW in turn · ESC or G cancels', x + w / 2, y + 128, fTxt, FT.dim, 'center');
+    txt((ABIL3 ? 'DASH, JUMP, GRAB in turn' : 'DASH, JUMP, GRAB, THROW in turn') + ' · ESC or G cancels', x + w / 2, y + 128, fTxt, FT.dim, 'center');
   }
 
   // ---------- tuning panel
@@ -2196,6 +2228,11 @@
     // Edit 77 (P6.7): ability tracks; run to clear
     ['abilities.wearCut', 0, 0.25, 0.01], ['abilities.battery.rechargeCut', 0, 0.19, 0.01], ['abilities.legs.airtimeBase', 0.1, 1, 0.05], ['abilities.legs.airtimeStep', 0, 0.3, 0.05],
     ['abilities.arms.conesPerLevel', 1, 3, 1], ['abilities.throw.distanceStep', 0, 120, 5], ['economy.price.ability.level4', 0, 8, 1],
+    // Edit 79 (P6.9): Battery's seconds a charge per level; the throw hold; the hitch and sling; combos
+    ['abilities.battery.level1Seconds', 0.2, 2, 0.05], ['abilities.battery.level2Seconds', 0.2, 2, 0.05], ['abilities.battery.level3Seconds', 0.2, 2, 0.05],
+    ['input.throwHoldSeconds', 0.1, 1, 0.05], ['abilities.arms.hitchReach', 0, 40, 1], ['abilities.arms.hitchSeconds', 0.3, 4, 0.1], ['abilities.arms.hitchMinSpeed', 0, 120, 5],
+    ['abilities.arms.slingScale', 0.5, 2, 0.05], ['abilities.arms.slingDash', 0, 300, 10], ['abilities.arms.hitchEdge', 0, 120, 5],
+    ['scoring.comboVariety', 0, 2, 0.1], ['scoring.comboAirPause', 0, 1, 1], ['scoring.coneLink', 0, 1, 1], ['scoring.coneHitPoints', 0, 100, 5],
     // Edit 78 (P6.8): the bounce off a car, Newtonian. Restitution, the dummy's mass, contact friction, the slide
     ['proto.bounce.newton', 0, 1, 1], ['physics.slideFriction', 0.1, 3, 0.05], ['proto.parts.torsoRechargeLoss', 0, 3, 0.1], ['proto.jump.runToClear', 0, 1, 1],
     ['economy.price.ability.level1', 0, 5, 1], ['economy.price.ability.level2', 0, 5, 1], ['economy.price.ability.level3', 0, 6, 1], ['scoring.comboWindow', 0.2, 4, 0.1], ['scoring.comboStep', 0, 2, 0.1], ['scoring.comboMax', 1, 6, 0.5],

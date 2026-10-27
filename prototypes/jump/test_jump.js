@@ -64,13 +64,13 @@ const mvRun0 = mvT(sp.run, 0), mvRunInto = mvT(sp.run, -45), mvRunWith = mvT(sp.
 console.log(`  a moving sedan (${SED.v} u/s), crossed running: square ${mvRun0.t.toFixed(2)} s over it · 45° into it ${mvRunInto.t.toFixed(2)} s · 45° with it ${mvRunWith.t.toFixed(2)} s; above its roof ${wT.toFixed(2)} s`);
 ok(mvRun0.ok && mvRunInto.ok && !mvRunWith.ok && mvRunInto.t < mvRun0.t, 'moving sedan: a running jump clears it square on, and faster diagonally into its path; diagonally with the traffic it is struck');
 // Edit 78: Legs levels set the airtime, 0.3 to 0.6 s; the height stays. What each level clears, by sum
-const LT = (L) => P['abilities.legs.airtimeBase'] + P['abilities.legs.airtimeStep'] * (L - 1), LV = [1, 2, 3, 4];
+const LT = (L) => P['abilities.legs.airtimeBase'] + P['abilities.legs.airtimeStep'] * (L - 1), LV = Array.from({ length: P['abilities.maxLevel'] }, (_, i) => i + 1); // Edit 79: three levels
 const LTAB = THINGS.filter((t) => t[3]).map(([name, h, d]) => { const row = { name }; for (const L of LV) for (const k of ['run', 'dash']) row[k + L] = J.clears(P, sp[k], h, d, R, LT(L)); return row; });
 console.log('  by Legs level (airtime ' + LV.map((L) => LT(L).toFixed(1)).join(', ') + ' s): run / dash');
 for (const r of LTAB) console.log(`    ${r.name.padEnd(17)} ${LV.map((L) => 'L' + L + ' ' + (r['run' + L] ? '✓' : '✗') + (r['dash' + L] ? '✓' : '✗')).join(' · ')}`);
 const LB = Object.fromEntries(LTAB.map((r) => [r.name, r]));
-ok(LB.handrail.run1 && !LB.jersey.run1 && LB['sedan broadside'].dash1 && !LB['sedan broadside'].run2 && LB['van broadside'].dash2 && !LB['van broadside'].dash1 && LB['sedan broadside'].run3 && LB['planter 48'].dash2 && !LB['van broadside'].run4 && !LB['bus broadside'].dash4,
-  `Legs levels: L1 a running jump clears a handrail, a dash jump a sedan; L2 a dash jump a van and a 48 planter; L3 a running jump a sedan; L4 a running jump still not a van (${(J.over(P, sp.run, P['vehicles.van.height'] * VS, LT(4)) - (P['vehicles.van.width'] * VS + 2 * R)).toFixed(1)}); never a bus`);
+ok(LV.length === 3 && LB.handrail.run1 && !LB.jersey.run1 && LB['sedan broadside'].dash1 && !LB['sedan broadside'].run2 && LB['van broadside'].dash2 && !LB['van broadside'].dash1 && LB['sedan broadside'].run3 && LB['planter 48'].dash2 && !LB['van broadside'].run3 && !LB['bus broadside'].dash3,
+  `Legs 1–3 (${LV.map((L) => LT(L).toFixed(1)).join(', ')} s): L1 a running jump clears a handrail, a dash jump a sedan; L2 a dash jump a van and a 48 planter; L3 a running jump a sedan; never a bus`);
 
 // ---------- 2. the page
 (async () => {
@@ -285,7 +285,7 @@ ok(LB.handrail.run1 && !LB.jersey.run1 && LB['sedan broadside'].dash1 && !LB['se
   if (OUT) await pg.screenshot({ path: path.join(OUT, 'p76_jump_portrait.png') });
   await ctx.close();
   ok(!logs.length, 'browser: no page errors' + (logs.length ? ' — ' + logs.slice(0, 3).join('; ') : ''));
-  if (OUT) fs.writeFileSync(path.join(OUT, 'p77_jump_table.json'), JSON.stringify({ reach, table: TABLE, diagonals: DIAG, yard: tested, yard45: DG, ruler: { stand: dist.stand, walk: dist.walk.d, run: dist.run.d, dash: dist.dash.d }, traffic: mv, traffic45: { into, with: withT } }, null, 1));
+  if (OUT) fs.writeFileSync(path.join(OUT, 'p79_jump_table.json'), JSON.stringify({ reach, table: TABLE, diagonals: DIAG, yard: tested, yard45: DG, ruler: { stand: dist.stand, walk: dist.walk.d, run: dist.run.d, dash: dist.dash.d }, traffic: mv, traffic45: { into, with: withT } }, null, 1));
   await br.close();
   done();
 })();

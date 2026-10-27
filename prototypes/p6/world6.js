@@ -19,7 +19,9 @@
   const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'vehicles.scale': X.OVERRIDES['vehicles.scale'] != null ? X.OVERRIDES['vehicles.scale'] : 0.9,
     'proto.turnModel': 2, 'proto.input.fourButtons': 1, 'proto.combo': 1,
     'proto.abilities': 1, 'proto.jump.runToClear': 1, // Edit 77 (Prototype 6.7): ability tracks by level; run to clear
-    'proto.bounce.newton': 1, 'proto.recoilScale': 1 }; // Edit 78 (Prototype 6.8): the bounce off a car is Newtonian: full post-impact velocity, then a slide
+    'proto.bounce.newton': 1, 'proto.recoilScale': 1, // Edit 78 (Prototype 6.8): the bounce off a car is Newtonian: full post-impact velocity, then a slide
+    'proto.abilities': 2, 'abilities.maxLevel': 3, 'abilities.wearCut': 0.25, 'battery.secondsPerCharge': 1, // Edit 79 (Prototype 6.9): Battery, Legs, Arms; three levels
+    'scoring.comboVariety': 0.5, 'scoring.comboAirPause': 1, 'scoring.coneLink': 1, 'scoring.comboMax': 5 }; // Edit 79: combos
   for (const k of Object.keys(P)) if (/^vehicles\.[a-z]+\.(length|width|height)$/.test(k)) P6SIM[k] = Math.round(P[k] * P6SIM['vehicles.scale'] * 10) / 10;
   Object.assign(P, P6SIM);
   const W = P['world.width'], H = P['world.height'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'], HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'];
@@ -1911,7 +1913,7 @@
     buildView() { this.cars = viewCars(this.W6, this.sc); this.view = this.cars; }
     carsLeft() { return Math.max(0, this.W6.budget - this.W6.admitted); } // P6.1: shift cars still to appear
     allCars() { const out = []; for (const s of this.W6.sims) for (const c of s.cars) if (c.shift && !c.ghost) out.push(c); return out; } // the shift's cars still in the district
-    bodyLayer() { const b = this.body; return b && b.alive && !b.stair && b.mode !== 'drop' && b.mode !== 'rescue' ? b.level : null; }
+    bodyLayer() { const b = this.body; return b && b.alive && !b.stair && b.mode !== 'drop' && b.mode !== 'rescue' && b.mode !== 'hitch' ? b.level : null; } // Edit 79: hitched, out of traffic's way
     meets(c) { return this.bodyLayer() === (c.elev || 0); } // P6: by elevation (no two traffic surfaces share a level and a footprint)
     bodyDeck() { return null; }
     floorOf() { const b = this.body; return b.floor != null && b.floor >= 0 ? this.level.floors[b.floor] || null : null; }
@@ -1968,7 +1970,7 @@
     // ----- floors (P6): a floor is a test on the centre at its level
     floorStep(contacts, k) {
       const b = this.body;
-      if (!b.alive || b.mode === 'rescue') return;
+      if (!b.alive || b.mode === 'rescue' || b.mode === 'hitch') return; // Edit 79: the floor is checked when the hitch lets go
       if (b.mode === 'drop') { if (b.drop.t >= b.drop.T - 1e-9) this.land(contacts, k); return; }
       if (b.stair) return this.stairStep();
       if (b.level > 0) return this.floorMove();
@@ -2095,7 +2097,7 @@
     // ----- solids: rects and the hill at Z0; rects above at their level. Screen edges open onto open ground next door.
     collideBody(contacts, k) {
       const P = this.P, b = this.body, r = P['body.radius'], G = this.level;
-      if (!b.alive || b.stair || b.mode === 'drop' || b.mode === 'rescue') return;
+      if (!b.alive || b.stair || b.mode === 'drop' || b.mode === 'rescue' || b.mode === 'hitch') return; // Edit 79: riding a car
       const air = b.mode === 'jump' && b.jump && b.jump.clear !== false ? b.z : 0; // Edit 75: how high the dummy is in a jump. Edit 77: a hop clears nothing
       const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; };
       const push = (nx, ny, pen) => { b.x += nx * pen; b.y += ny * pen; const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= vn * nx; b.vy -= vn * ny; } if (b.mode === 'jump') X.JUMP.slide(b.jump, nx, ny); block(); }; // Edit 76: in a jump, slide along it
@@ -2129,11 +2131,12 @@
           const rico = b.mode === 'knock' && this.has('ricochet');
           const ph = X.impulseImpact(P, b.vx, b.vy, c.vx, c.vy, nx, ny, c.cls, b.mode === 'lunge' || b.mode === 'knock' || b.mode === 'jump'); // Edit 75: a jump strikes as a dash does
           contacts.push({ k, car: c, closing: Math.max(0, rel), ph, px: res.cx, py: res.cy, zone: X.zoneOf(res.qx, res.qy, c),
-            carState: this.carCue(c), cause: c.cause, lunging: b.mode === 'lunge', bodySpeed: hyp(b.vx, b.vy), carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), jump: b.mode === 'jump', ricochet: rico });
+            carState: this.carCue(c), cause: c.cause, lunging: b.mode === 'lunge', bodySpeed: hyp(b.vx, b.vy), carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), jump: b.mode === 'jump', ricochet: rico,
+            kind: b.mode === 'knock' ? (b.sling ? 'sling' : 'bounce') : b.mode === 'jump' ? 'jump' : b.mode === 'lunge' ? 'dash' : 'struck' }); // Edit 79: the move, for combo variety
           if (P['proto.damageModel'] && ph.un > 1e-6) knock = this.bounce(ph.knock); // Ricochet: twice the bounce
         }
         b.x += res.nx * res.pen; b.y += res.ny * res.pen;
-        if (knock) { b.mode = 'knock'; b.lunge = null; b.jump = null; b.z = 0; b.knockT = 0; b.knockVx = knock.x; b.knockVy = knock.y; b.vx = knock.x; b.vy = knock.y; this.emit('knock', { car: c.id, speed: +hyp(knock.x, knock.y).toFixed(2), ricochet: this.has('ricochet') }); }
+        if (knock) { b.mode = 'knock'; b.sling = false; b.lunge = null; b.jump = null; b.z = 0; b.knockT = 0; b.knockVx = knock.x; b.knockVy = knock.y; b.vx = knock.x; b.vy = knock.y; this.emit('knock', { car: c.id, speed: +hyp(knock.x, knock.y).toFixed(2), ricochet: this.has('ricochet') }); }
         else if (rel > 0) { b.vx -= rel * nx; b.vy -= rel * ny; }
         block();
       }
