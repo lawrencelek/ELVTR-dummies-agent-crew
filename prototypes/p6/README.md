@@ -5,7 +5,8 @@
 Prototype 6.5 follows 6.4 (Edit 72) with Edit 75: DIRECT turning; A dash, B jump, X grab, Y throw, each unlocked in the shop; the jumpable tag; combo scoring; Ricochet; gamepads of any kind; landscape touch. 6.4 (Edit 72) brought the ring diagnosis, vehicles at 0.9 size and steady roundabout signals.
 
 - **`dummies_p6_5.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
-- **`p6_5_page.html`:** the same page for hosting (the host adds the document head). Published as a page for phones and gamepads.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game) and `/controls/` (control test), from [ELVTR-Multiagent-Submission-5](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-5). Gamepads, touch and keys. Claude's hosted preview blocks gamepads.
+- **`p6_5_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
 - **`dummies_p6_4.html`:** Prototype 6.4 (Edit 72). Frozen.
 - **`dummies_p6_3.html`:** Prototype 6.3 (Edit 71). Frozen.
 - **`dummies_p6_2.html`:** Prototype 6.2 (Edit 70). Frozen.
