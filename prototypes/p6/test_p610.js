@@ -1,12 +1,14 @@
-// Prototype 6.9 (GDD Edits 75–79) checks. Run from prototypes/p6: node test_p69.js [screenshot folder]
+// Prototype 6.10 (GDD Edits 75–80) checks. Run from prototypes/p6: node test_p610.js [screenshot folder]
+// Edit 80: Hands (X: a tap picks up, a hold puts down; two levels, two cones); Arms (Y: push off a car, a ricochet; stronger and
+// once more per level); Battery and Legs as in 6.9.
 // Edit 79: three tracks of three levels (Battery, Legs, Arms); hold X to throw; the hitch and sling; combo variety, the clock held
 // in the air, a thrown cone into a car linking the chain.
 // Edit 77: the ability tracks (Battery, Legs, Arms, Throw by level), their wear shields, the battery's recharge; run to clear.
 // Edit 78: four levels with linear steps (airtime, cones, throw range, recharge); the Newtonian bounce off a car.
 // 1. Headless (sim.js + world6.js + ../jump/jump.js): DIRECT turning; the Link's Awakening jump (distance from take-off speed,
 //    the dash jump, steering, landing momentum) over cars, handrails and jumpable pieces; X grab, Y throw; combos; Ricochet;
-//    the stair-head freeze fixed; 6.4–6.8 frozen.
-// 2. Browser (Playwright, dummies_p6_9.html): the ability shop; fit to screen; keys; an emulated USB joypad (phantom in slot 0, hat d-pad,
+//    the stair-head freeze fixed; 6.4–6.9 frozen.
+// 2. Browser (Playwright, dummies_p6_10.html): the ability shop; fit to screen; keys; an emulated USB joypad (phantom in slot 0, hat d-pad,
 //    setup); touch on a phone held sideways (analog stick, the A/B/X/Y diamond, in the game canvas); no touch controls on a
 //    desktop; the upright-phone prompt; no page errors.
 'use strict';
@@ -41,7 +43,7 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
 // ---------- 1. headless
 { // DIRECT
   const s = setup(); const P = s.P;
-  ok(P['proto.turnModel'] === 2 && P['proto.input.fourButtons'] === 1 && P['proto.combo'] === 1 && P['proto.abilities'] === 2 && P['proto.jump.runToClear'] === 1 && P['proto.bounce.newton'] === 1, 'P6.9 runs DIRECT turning, four buttons, combos, ability tracks, run-to-clear and the Newtonian bounce (2, 1, 1, 2, 1, 1); the shared sim keeps 6.4\'s rules (' + ['proto.turnModel', 'proto.input.fourButtons', 'proto.combo', 'proto.abilities', 'proto.jump.runToClear', 'proto.bounce.newton'].map((k) => X.PROTO[k]).join(', ') + ')');
+  ok(P['proto.turnModel'] === 2 && P['proto.input.fourButtons'] === 1 && P['proto.combo'] === 1 && P['proto.abilities'] === 3 && P['proto.jump.runToClear'] === 1 && P['proto.bounce.newton'] === 1, 'P6.10 runs DIRECT turning, four buttons, combos, ability tracks (Battery, Legs, Hands, Arms), run-to-clear and the Newtonian bounce (2, 1, 1, 3, 1, 1); the shared sim keeps 6.4\'s rules (' + ['proto.turnModel', 'proto.input.fourButtons', 'proto.combo', 'proto.abilities', 'proto.jump.runToClear', 'proto.bounce.newton'].map((k) => X.PROTO[k]).join(', ') + ')');
   place(s, RX, RY); s.body.facing = 0; s.step({ mx: 0, my: -1, aPress: true });
   const L = s.body.lunge;
   ok(L && Math.abs(L.dir * DEG + 90) < 0.5, `DIRECT: facing east, push north and dash: the dash goes north (${L ? (L.dir * DEG).toFixed(0) : '—'}°)`);
@@ -146,21 +148,19 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   const f = sc.game.floors.find((q) => q.kind === 'deck' || q.kind === 'ring');
   ok(sc.game.floors.filter((q) => q.rail).every((q) => q.kind === 'walk' || q.kind === 'deck' || q.kind === 'ring') && (!f || f.rail), 'railed floors (jumpable): walkways, highway decks and lifted rings');
 }
-{ // Edit 79: X does Arms. Tap: pick up, put down (Arms 1). Hold: throw (Arms 2, after input.throwHoldSeconds). Y has no job
-  const s = setup(), P = s.P, cn = s.cones[0], hold = P['input.throwHoldSeconds'];
-  place(s, cn.x - 22, cn.y); s.step({ xPress: true });
+{ // Edit 80: Hands on X. A tap picks up a cone; holding X input.dropHoldSeconds puts it down; a tap with a cone and nothing to pick up does nothing
+  const s = setup(), P = s.P, hold = P['input.dropHoldSeconds'], cones = [0, 1, 2].map((i) => ({ id: 'test-cone-' + i, x: RX + 40 + i * 50, y: RY, hx: RX + 40 + i * 50, hy: RY, vx: 0, vy: 0, state: 'free', flightT: 0, flightDur: 1 }));
+  s.cones.push(...cones); const [c0, c1, c2] = cones;
+  place(s, c0.x - 22, c0.y); s.step({ xPress: true, xHeld: true }); s.step({});
   const locked = ev(s, 'denied')[0];
-  lvl(s, 'arms', 1); place(s, cn.x - 22, cn.y); s.step({ xPress: true, xHeld: true }); s.step({}); const got = s.body.held === cn;
-  s.step({ xPress: true, xHeld: true }); s.step({ xHeld: false }); const placed = !s.body.held && cn.state === 'free';
-  place(s, cn.x - 22, cn.y); s.step({ xPress: true, xHeld: true }); s.step({});
-  for (let i = 0; i < 40; i++) s.step(i === 0 ? { xPress: true, xHeld: true } : { xHeld: true }); s.step({ xHeld: false });
-  const arms1Hold = ev(s, 'throw').length === 0 && !s.body.held; // Arms 1: a long hold still just puts it down
-  lvl(s, 'arms', 2); place(s, cn.x - 22, cn.y); s.step({ xPress: true, xHeld: true }); s.step({}); s.step({ mx: 1, my: 0 });
-  let tThrow = null; for (let i = 0; i < 60 && tThrow == null; i++) { s.step(i === 0 ? { xPress: true, xHeld: true } : { xHeld: true }); if (ev(s, 'throw').length) tThrow = (i + 1) / 60; }
-  s.step({ xHeld: false });
-  const sy = setup(); lvl(sy, 'arms', 2); const cy = sy.cones[0]; place(sy, cy.x - 22, cy.y); sy.step({ xPress: true }); sy.step({}); sy.step({ yPress: true }); sy.step({});
-  ok(locked && locked.why === 'locked' && got && placed && arms1Hold && tThrow != null && Math.abs(tThrow - hold) < 0.04 && !ev(sy, 'throw').length && sy.body.held === cy,
-    `X: a tap picks up a cone (Arms 1) and puts it down; at Arms 1 a hold still puts it down; at Arms 2 holding X throws after ${tThrow != null ? tThrow.toFixed(2) : '—'} s (input.throwHoldSeconds ${hold}). Y does nothing`);
+  lvl(s, 'hands', 1); place(s, c0.x - 22, c0.y); s.step({ xPress: true, xHeld: true }); s.step({}); const got = s.body.held === c0;
+  place(s, RX, RY + 100); s.body.held = c0; s.body.carried = [c0]; s.step({ xPress: true, xHeld: true }); s.step({}); const tapKeeps = s.body.held === c0 && ev(s, 'denied').some((e) => e.action === 'drop' && e.why === 'hold');
+  let tDrop = null; for (let i = 0; i < 60 && tDrop == null; i++) { s.step(i === 0 ? { xPress: true, xHeld: true } : { xHeld: true }); if (!s.body.held) tDrop = (i + 1) / 60; } s.step({});
+  const n1 = (() => { for (const c of cones) c.state = 'free'; s.body.held = null; s.body.carried = []; let n = 0; for (const c of [c0, c1]) { place(s, c.x - 22, c.y); s.step({ xPress: true, xHeld: true }); s.step({}); n = s.carriedCones().length; } return n; })();
+  lvl(s, 'hands', 2);
+  const n2 = (() => { for (const c of cones) c.state = 'free'; s.body.held = null; s.body.carried = []; let n = 0; for (const c of cones) { place(s, c.x - 22, c.y); s.step({ xPress: true, xHeld: true }); s.step({}); n = s.carriedCones().length; } return n; })();
+  ok(locked && locked.why === 'locked' && got && tapKeeps && tDrop != null && Math.abs(tDrop - hold) < 0.04 && n1 === 1 && n2 === 2 && s.canBuy('hands3').why === 'not sold',
+    `Hands (X): a tap picks up a cone; a tap with nothing to pick up keeps it ("hold X to put it down"); holding X puts it down after ${tDrop != null ? tDrop.toFixed(2) : '—'} s (input.dropHoldSeconds ${hold}). Hands 1 carries ${n1}, Hands 2 carries ${n2}; no Hands 3 (two hands)`);
 }
 { // combo
   const out = {};
@@ -190,12 +190,12 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
 }
 { // Edit 77: the shop sells four ability tracks by level, one per button
   const s = setup(), P = s.P, T = X.TRACKS, N = X.NODES7;
-  ok(Object.keys(s.tracks()).join() === 'battery,legs,arms' && Object.values(s.tracks()).map((t) => t.button).join('') === 'ABX' && Object.keys(s.nodes()).length === 9 && P['abilities.maxLevel'] === 3,
-    'three tracks, one per button: Battery (A), Legs (B), Arms (X); three levels each (abilities.maxLevel). Throw is Arms 2');
+  ok(Object.keys(s.tracks()).join() === 'battery,legs,hands,arms' && Object.values(s.tracks()).map((t) => t.button).join('') === 'ABXY' && Object.keys(s.nodes()).length === 11 && s.trackMax('hands') === 2 && s.trackMax('arms') === 3 && P['abilities.maxLevel'] === 3,
+    'four tracks, one per button: Battery (A), Legs (B), Hands (X), Arms (Y). Three levels each; Hands two (abilities.hands.maxLevel)');
   s.phase = 'shop'; s.run.credits = 10;
   const c1 = s.canBuy('legs2'), c2 = s.canBuy('arms2'), b1 = s.buy('legs1'), b2 = s.buy('legs2'), c3 = s.canBuy('legs3');
   ok(c1.why === 'needs Legs 1' && c2.why === 'needs Arms 1' && s.canBuy('throw1').why === 'not sold' && b1.price === P['economy.price.ability.level1'] && b2.price === P['economy.price.ability.level2'] && c3.ok && c3.price === P['economy.price.ability.level3'] && s.tier('legs') === 2 && s.has('jump') && s.run.credits === 7,
-    `levels in order: Legs 2 needs Legs 1; Arms 2 (the throw) needs Arms 1. Prices ${P['economy.price.ability.level1']}, ${P['economy.price.ability.level2']}, ${P['economy.price.ability.level3']} (economy.price.ability.level1–3). Legs 1 is the jump`);
+    `levels in order: Legs 2 needs Legs 1; Arms 2 needs Arms 1. Prices ${P['economy.price.ability.level1']}, ${P['economy.price.ability.level2']}, ${P['economy.price.ability.level3']} (economy.price.ability.level1–3). Legs 1 is the jump`);
   const b3 = s.buy('legs3'), more = s.canBuy('legs4');
   ok(b3.ok && s.tier('legs') === 3 && more.why === 'not sold' && s.run.credits === 4, `Legs 3 (${P['economy.price.ability.level3']} credits) tops the track; there is no level 4. A track costs ${[1, 2, 3].reduce((a, L) => a + P['economy.price.ability.level' + L], 0)}`);
 }
@@ -215,10 +215,10 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   const refill = (L, torso) => { const t = setup(); for (let k = 1; k <= L; k++) t.run.owned['battery' + k] = true; place(t, RX, RY); t.body.parts.torso = torso * H; t.body.charge = 0; let n = 0; while (t.body.charge < 1 - 1e-9 && n < 600) { t.step({}); n++; } return n / 60; };
   const r0 = refill(0, 0), r4 = refill(3, 0), rd = refill(0, 0.3), rd4 = refill(3, 0.3);
   ok(r4 < r0 * 0.65 && rd > r0 * 1.5 && rd4 < rd, `in play, one charge refills in ${r0.toFixed(2)} s; Battery 3 ${r4.toFixed(2)} s; with 30% torso damage ${rd.toFixed(2)} s, Battery 3 ${rd4.toFixed(2)} s`);
-  const grip = [1, 2, 3].map((L) => at('arms', L, () => { s.body.parts.armL = s.body.parts.armR = 0.45 * H; return s.armsBroken(); }));
-  const thr = [2, 3].map((L) => at('arms', L, () => { s.body.parts.armL = s.body.parts.armR = 0.3 * H; return s.partEffect('throw'); }));
-  ok(at('arms', 0, () => { s.body.parts.armL = s.body.parts.armR = 0.45 * H; return s.armsBroken(); }) && !grip[0] && !grip[2] && thr[1] > thr[0],
-    `Arms hold the grip: arms 45% damaged lose it unshielded, keep it from Arms 1. Arms shields the throw too: 60% arm damage leaves ${Math.round(thr[0] * 100)}% at Arms 2, ${Math.round(thr[1] * 100)}% at Arms 3`);
+  const grip = [1, 2].map((L) => at('hands', L, () => { s.body.parts.armL = s.body.parts.armR = 0.45 * H; return s.armsBroken(); }));
+  const psh = [1, 3].map((L) => at('arms', L, () => { s.body.parts.armL = s.body.parts.armR = 0.3 * H; return s.partEffect('push'); }));
+  ok(at('hands', 0, () => { s.body.parts.armL = s.body.parts.armR = 0.45 * H; return s.armsBroken(); }) && !grip[0] && !grip[1] && psh[1] > psh[0],
+    `Hands hold the grip: arms 45% damaged lose it unshielded, keep it from Hands 1. Arms shield the push: 60% arm damage leaves ${Math.round(psh[0] * 100)}% at Arms 1, ${Math.round(psh[1] * 100)}% at Arms 3 (proto.parts.armPushLoss)`);
 }
 { // Edit 78: Legs lengthen the airtime, 0.3 to 0.6 s; the height stays. A running jump covers more, and clears more
   const s = setup(), P = s.P, J = X.JUMP, runV = P['movement.runSpeed'], walk = P['movement.walkSpeed'];
@@ -231,46 +231,37 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   ok(rail(1, runV) && !sed(1, runV) && !sed(2, runV) && sed(3, runV) && sed(1, cap) && !van(1, cap) && van(2, cap),
     `what a level buys: Legs 1 — a running jump clears a handrail; a dash jump a sedan. Legs 2 — a dash jump a van. Legs 3 — a running jump a sedan. A bus: never (${P['vehicles.bus.height']} under the ${P['upgrades.jumpHeight']} top)`);
 }
-{ // Edit 79: Arms 3 hitches a passing car. X beside it grabs; the body rides its side; X lets go at its speed; A slings off with a dash
-  const s = setup(), P = s.P; lvl(s, 'arms', 3);
-  const B = car(s, 'sedan', 40, RY, 0, 120); s.fakes.push(B); place(s, 40, RY + B.W / 2 + P['body.radius'] + 6);
-  const drive = (n, cmd) => { for (let i = 0; i < n; i++) { B.x += B.vx / 60; s.step(typeof cmd === 'function' ? cmd(i) : i === 0 ? cmd || {} : {}); while (s.phase === 'hitstop') s.step({}); } };
-  drive(1, { xPress: true, xHeld: true }); const hitched = s.body.mode === 'hitch', y0 = s.body.y, dx0 = s.body.x - B.x;
-  drive(30); const rode = s.body.mode === 'hitch' && Math.abs(s.body.x - B.x - dx0) < 0.5 && Math.abs(s.body.y - y0) < 0.5 && s.bodyLayer() === null;
-  drive(1, { xPress: true }); const letGo = s.body.mode === 'knock' && Math.abs(Math.hypot(s.body.vx, s.body.vy) - 120 * P['abilities.arms.slingScale']) < 3;
-  const s2 = setup(); lvl(s2, 'arms', 3); const B2 = car(s2, 'sedan', 40, RY, 0, 120); s2.fakes.push(B2); place(s2, 40, RY + B2.W / 2 + P['body.radius'] + 6);
-  for (let i = 0; i < 40; i++) { B2.x += B2.vx / 60; s2.step(i === 0 ? { xPress: true, xHeld: true } : i === 30 ? { aPress: true, mx: 0, my: 1 } : {}); }
-  const sl = ev(s2, 'sling')[0];
-  const s3 = setup(); lvl(s3, 'arms', 3); const B3 = car(s3, 'sedan', 40, RY, 0, 120); s3.fakes.push(B3); place(s3, 40, RY + B3.W / 2 + P['body.radius'] + 6);
-  let t = 0; for (let i = 0; i < 200 && (i === 0 || s3.body.mode === 'hitch'); i++) { B3.x += B3.vx / 60; s3.step(i === 0 ? { xPress: true, xHeld: true } : {}); if (i) t += 1 / 60; }
-  const s4 = setup(); lvl(s4, 'arms', 2); const B4 = car(s4, 'sedan', 40, RY, 0, 120); s4.fakes.push(B4); place(s4, 40, RY + B4.W / 2 + P['body.radius'] + 6); s4.step({ xPress: true, xHeld: true });
-  ok(hitched && rode && letGo && sl && sl.dash && Math.abs(sl.speed - Math.hypot(120, P['abilities.arms.slingDash'])) < 3 && Math.abs(t - P['abilities.arms.hitchSeconds']) < 0.05 && s4.body.mode !== 'hitch',
-    `Arms 3 hitch: X beside a moving sedan grabs it and rides its side (traffic ignores a hitched body); X lets go at ${(120 * P['abilities.arms.slingScale']).toFixed(0)} u/s; A slings off at ${sl ? sl.speed.toFixed(0) : '—'} u/s (car + abilities.arms.slingDash ${P['abilities.arms.slingDash']}); the ride ends after ${t.toFixed(2)} s (abilities.arms.hitchSeconds). Arms 2 cannot hitch`);
-}
-{ // Edit 79: combos. A dash hit, a hitch ride, a sling into a parked car: two links, two kinds. The ride holds the clock
-  const chain = (ov) => {
-    const s = setup('monument', ov); lvl(s, 'arms', 3);
-    const A = car(s, 'sedan', 100, RY - 60, 0, 0), B = car(s, 'sedan', 40, RY, 0, 120), C = car(s, 'sedan', 300, 169, Math.PI / 2, 0); s.fakes.push(A, B, C);
-    place(s, 100, RY + 29);
-    for (let i = 0; i < 320; i++) { B.x += B.vx / 60; s.step(i === 1 ? { aPress: true, mx: 0, my: -1 } : i === 30 ? { xPress: true, xHeld: true } : {}); while (s.phase === 'hitstop') s.step({}); }
-    return { im: ev(s, 'impact'), cb: ev(s, 'combo'), end: ev(s, 'combo-end') };
+{ // Edit 80: Arms on Y. Push off a car you just hit (abilities.arms.pushWindow) or touch (pushReach): pushSpeed + pushStep a level; pushesPerLevel × level pushes, refilled on the ground
+  const trial = (L, opts) => {
+    const s = setup(); lvl(s, 'arms', L); const A = car(s, 'sedan', 190, RY, Math.PI / 2, 0), B = car(s, 'sedan', 60, RY, Math.PI / 2, 0); s.fakes.push(A, B); place(s, 130, RY);
+    let pushes = 0;
+    for (let i = 0; i < 200; i++) {
+      let cmd = i === 1 ? { aPress: true, mx: 1, my: 0 } : {};
+      const k = ev(s, 'knock').length;
+      if (k >= 1 && pushes < (opts.tries || 1) && s.body.mode === 'knock' && (opts.wait == null || i > opts.wait)) { cmd = { yPress: true, mx: -1, my: 0 }; pushes++; }
+      s.step(cmd); while (s.phase === 'hitstop') s.step({});
+    }
+    return { push: ev(s, 'push'), den: ev(s, 'denied').filter((e) => e.action === 'push'), im: ev(s, 'impact'), cb: ev(s, 'combo'), s };
   };
-  const on = chain({}), off = chain({ 'scoring.comboAirPause': 0 });
-  const P = setup().P, want = 1 + P['scoring.comboStep'] + P['scoring.comboVariety'];
-  ok(on.im.length === 2 && on.im[0].kind === 'dash' && on.im[1].kind === 'sling' && on.cb.length === 1 && Math.abs(on.cb[0].mult - want) < 1e-9 && on.cb[0].kinds.join() === 'dash,sling' && on.end.length === 1 && off.im.length === 2 && off.im[1].combo === 1,
-    `combo: dash into a car, hitch a passing one for ${P['abilities.arms.hitchSeconds']} s, sling into a third: COMBO 2, DASH › SLING, ×${on.cb[0] ? on.cb[0].mult : '—'} (scoring.comboStep + scoring.comboVariety); it banks (combo-end). With the clock running in the air (scoring.comboAirPause 0), the ride breaks the chain`);
+  const t0 = trial(0, {}), t1 = trial(1, {}), t2 = trial(2, {}), t3 = trial(3, {}), P = setup().P;
+  const add = [t1, t2, t3].map((t) => t.push[0] && t.push[0].add);
+  ok(t0.den[0] && t0.den[0].why === 'locked' && add.every((a, i) => Math.abs(a - (P['abilities.arms.pushSpeed'] + P['abilities.arms.pushStep'] * i)) < 1e-6),
+    `Arms (Y): locked at Arms 0; a push adds ${add.join(', ')} u/s at Arms 1–3 (abilities.arms.pushSpeed + pushStep a level), away from the car or along the stick`);
+  ok(t1.im.length === 2 && t1.im[0].kind === 'dash' && t1.im[1].kind === 'push' && t1.cb.length === 1 && t1.cb[0].kinds.join() === 'dash,push' && Math.abs(t1.cb[0].mult - (1 + P['scoring.comboStep'] + P['scoring.comboVariety'])) < 1e-9,
+    `a ricochet: dash into a parked car, Y pushes off it into a second: COMBO 2, DASH › PUSH, ×${t1.cb[0] ? t1.cb[0].mult : '—'}`);
+  // how many pushes before landing: Arms L gives L. Off a wall of pushes: each Y while touching the car spends one
+  const count = (L) => { const s = setup(); lvl(s, 'arms', L); const A = car(s, 'bus', 200, RY, Math.PI / 2, 0); s.fakes.push(A); place(s, 200 - A.W / 2 - P['body.radius'] - 4, RY);
+    s.step({}); let n = 0; for (let i = 0; i < 6; i++) { Object.assign(s.body, { x: 200 - A.W / 2 - P['body.radius'] - 4, y: RY }); s.body.lastHit = { id: A.id, t: s.t, nx: -1, ny: 0 }; if (s.body.mode !== 'knock' && i) break; s.step({ yPress: true }); if (ev(s, 'push').length > n) n = ev(s, 'push').length; }
+    const spent = ev(s, 'denied').some((e) => e.action === 'push' && e.why === 'spent'); for (let i = 0; i < 400 && s.body.mode === 'knock'; i++) run(s, 1, {}); run(s, 2, {}); const refilled = s.body.pushes; return { n, spent, refilled }; };
+  const C = [1, 2, 3].map(count);
+  const far = (() => { const s = setup(); lvl(s, 'arms', 1); place(s, RX, RY); s.step({ yPress: true }); return ev(s, 'denied').find((e) => e.action === 'push'); })();
+  const twice = (() => { const s = setup(); lvl(s, 'arms', 3); const A = car(s, 'bus', 200, RY, Math.PI / 2, 0); s.fakes.push(A); place(s, 200 - A.W / 2 - P['body.radius'] - 4, RY); s.step({});
+    s.body.lastHit = { id: A.id, t: s.t, nx: -1, ny: 0 }; s.step({ yPress: true }); s.step({}); s.step({ yPress: true }); return { n: ev(s, 'push').length, why: (ev(s, 'denied').find((e) => e.action === 'push') || {}).why, left: s.body.pushes }; })();
+  ok(C.map((c) => c.n).join() === '1,2,3' && C.every((c) => c.spent) && C.every((c, i) => c.refilled === i + 1) && far && far.why === 'nothing' && twice.n === 1 && twice.why === 'nothing' && twice.left === 2,
+    `pushes before landing: ${C.map((c) => c.n).join(', ')} at Arms 1–3 (abilities.arms.pushesPerLevel × level), then "no pushes left"; they refill on the ground. One push a contact: a second Y off the same car is refused (${twice.why}); with no car near: "nothing to push off"`);
   const s = setup(); const k = (kind) => s.comboLink(kind, 10).mult;
-  const same = [k('dash'), k('dash'), k('dash')], s2 = setup(); const k2 = (kind) => s2.comboLink(kind, 10).mult; const mixed = [k2('dash'), k2('bounce'), k2('jump'), k2('sling'), k2('drop')];
-  ok(same.join() === '1,1.5,2' && mixed.join() === '1,2,3,4,5', `variety pays: three dashes ×${same.join(', ×')}; dash › bounce › jump › sling › drop ×${mixed.join(', ×')} (to scoring.comboMax ${P['scoring.comboMax']})`);
-}
-{ // Edit 79: a thrown cone into a moving car links the combo (scoring.coneLink), once a car, for scoring.coneHitPoints × the multiplier
-  const s = setup(), P = s.P; lvl(s, 'arms', 2); const cn = s.cones[0];
-  const B = car(s, 'sedan', RX + 150, RY, Math.PI / 2, 60); s.fakes.push(B);
-  place(s, RX, RY); cn.state = 'held'; s.body.carried = [cn]; s.body.held = cn; s.body.facing = 0;
-  for (let i = 0; i < 30; i++) s.step(i < 20 ? { xPress: i === 0, xHeld: true } : {});
-  const hit = ev(s, 'cone-hit')[0];
-  ok(hit && hit.n === 1 && hit.points === P['scoring.coneHitPoints'] && s.body.combo && s.body.combo.kinds.join() === 'cone' && B.coned,
-    `cone link: a thrown cone hits a moving sedan: +${hit ? hit.points : '—'} (scoring.coneHitPoints) and a link (CONE) the next hit chains from`);
+  const same = [k('dash'), k('dash'), k('dash')], s2 = setup(); const k2 = (kind) => s2.comboLink(kind, 10).mult; const mixed = [k2('dash'), k2('bounce'), k2('jump'), k2('push'), k2('drop')];
+  ok(same.join() === '1,1.5,2' && mixed.join() === '1,2,3,4,5', `variety pays: three dashes ×${same.join(', ×')}; dash › bounce › jump › push › drop ×${mixed.join(', ×')} (to scoring.comboMax ${P['scoring.comboMax']})`);
 }
 { // Edit 78: the bounce off a car is Newtonian (proto.bounce.newton): the full post-impact velocity, then a slide on the ground
   const trial = (ov, mk) => { const s = setup('monument', ov), c = mk(s); s.fakes.push(c); let dist = 0, prev = null, kt = 0;
@@ -285,16 +276,16 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   const hiE = head({ 'proto.restitution': 0.6 }), slick = head({ 'physics.slideFriction': 0.5 }), grip = head({ 'physics.slideFriction': 2 });
   ok(hiE.v > h1.v && slick.d > h1.d * 1.4 && grip.d < h1.d * 0.7, `tuned in the settings: restitution 0.6 throws at ${hiE.v.toFixed(0)} u/s; slide friction 0.5 slides ${slick.d.toFixed(0)}, 2 slides ${grip.d.toFixed(0)} (1: ${h1.d.toFixed(0)})`);
 }
-{ // 6.4–6.8 stay frozen
+{ // 6.4–6.9 stay frozen
   const md5 = (b) => crypto.createHash('md5').update(b).digest('hex'), same = (f) => { let head = null; try { head = execSync('git show HEAD:prototypes/p6/' + f, { maxBuffer: 1 << 26 }); } catch (e) { head = null; } return !head || md5(head) === md5(fs.readFileSync(path.join(__dirname, f))); };
-  ok(['dummies_p6_4.html', 'dummies_p6_5.html', 'dummies_p6_6.html', 'dummies_p6_7.html', 'dummies_p6_8.html'].every(same), 'dummies_p6_4.html to dummies_p6_8.html are byte-identical to their commits');
+  ok(['dummies_p6_4.html', 'dummies_p6_5.html', 'dummies_p6_6.html', 'dummies_p6_7.html', 'dummies_p6_8.html', 'dummies_p6_9.html'].every(same), 'dummies_p6_4.html to dummies_p6_9.html are byte-identical to their commits');
 }
 
 // ---------- 2. the page
 (async () => {
   let chromium;
   try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP browser checks: playwright not found'); return done(); }
-  const url = 'file://' + path.join(__dirname, 'dummies_p6_9.html');
+  const url = 'file://' + path.join(__dirname, 'dummies_p6_10.html');
   const br = await chromium.launch(), logs = [];
   const watch = (pg) => pg.on('pageerror', (e) => logs.push(e.message));
   const boot = async (pg) => {
@@ -316,20 +307,20 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   await pg.evaluate(() => { window.__dummies.sim.run.owned.legs1 = true; });
   await put(pg, RX, RY); await pg.keyboard.down('KeyD'); await pg.keyboard.press('KeyL'); await pg.waitForTimeout(140); q = await st(pg);
   const air = q.mode === 'jump' && q.z > 10;
-  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p79_jump.png') });
+  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p710_jump.png') });
   await pg.waitForTimeout(500); await pg.keyboard.up('KeyD'); q = await st(pg);
   ok(lockedKey && air && q.ev.includes('jump-land'), `keys: L (B) is locked until Jump is installed; then L jumps (in the air ${air ? 'yes' : 'no'}), lands`);
   await put(pg, RX, RY); await pg.keyboard.down('KeyW'); await pg.keyboard.press('Space'); await pg.waitForTimeout(60); await pg.keyboard.up('KeyW'); q = await st(pg);
   ok(q.ev.includes('lunge') && Math.abs(q.facing * DEG + 90) < 1, `keys: W and SPACE (A) dash north at once (${(q.facing * DEG).toFixed(0)}°)`);
-  await pg.evaluate(() => { const s = window.__dummies.sim; s.run.owned.arms1 = true; s.run.owned.arms2 = true; s.run.owned.battery1 = true; s.body.combo = { n: 3, t: s.t, mult: 3, clock: 0.4, kinds: ['dash', 'bounce', 'sling'], pts: 420, ended: false }; });
+  await pg.evaluate(() => { const s = window.__dummies.sim; s.run.owned.hands1 = true; s.run.owned.arms1 = true; s.run.owned.arms2 = true; s.run.owned.battery1 = true; s.body.pushes = 1; s.body.combo = { n: 3, t: s.t, mult: 3, clock: 0.4, kinds: ['dash', 'bounce', 'push'], pts: 420, ended: false }; });
   await pg.waitForTimeout(300);
-  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p79_desktop.png') });
+  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p710_desktop.png') });
   const fitD = await pg.evaluate(() => { const k = window.__dummiesScale(), st = document.getElementById('stage'); return { k, sw: st.clientWidth * devicePixelRatio, sh: st.clientHeight * devicePixelRatio, touch: window.__dummiesInput.TOUCH.on }; });
   ok(!fitD.touch && Math.abs(Math.max(1280 * fitD.k.scale + 2 * fitD.k.ox - fitD.sw, 720 * fitD.k.scale + 2 * fitD.k.oy - fitD.sh)) < 2 && (Math.abs(1280 * fitD.k.scale - fitD.sw) < 2 || Math.abs(720 * fitD.k.scale - fitD.sh) < 2),
     `desktop (1300 × 900): the screen fills the stage at ×${(fitD.k.scale * 2).toFixed(2)} (not a whole number); no touch controls`);
   await pg.evaluate(() => { const s = window.__dummies.sim; s.phase = 'shop'; window.__dummies.shopCol = 1; window.__dummies.shopRow = 0; s.run.credits = 3; s.run.owned.arms2 = true; s.body.combo = null; });
   await pg.waitForTimeout(250);
-  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p79_shop.png') });
+  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p710_shop.png') });
   await pg.keyboard.press('Space'); await pg.waitForTimeout(120);
   const shop1 = await pg.evaluate(() => ({ lv: window.__dummies.sim.tier('legs'), cr: window.__dummies.sim.run.credits }));
   await pg.keyboard.press('ArrowDown'); await pg.waitForTimeout(60);
@@ -356,13 +347,13 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   const tap = async (i) => { await pg.evaluate((i) => window.__jb(i, true), i); await pg.waitForTimeout(70); await pg.evaluate((i) => window.__jb(i, false), i); await pg.waitForTimeout(70); };
   await pg.keyboard.press('KeyG'); await pg.waitForTimeout(80);
   const s0 = (await st(pg)).setup;
-  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p79_padsetup.png') });
+  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p710_padsetup.png') });
   await tap(3); await tap(2); await tap(1); await tap(0);
   const s1 = (await st(pg)).setup;
   await pg.evaluate(() => { window.__dummies.sim.run.owned.legs1 = true; });
   await put(pg, RX, RY); await tap(3); q = await st(pg); const dashed = q.ev.includes('lunge');
   await pg.waitForTimeout(700); await put(pg, RX, RY); await tap(2); q = await st(pg);
-  ok(s0 === 'a' && s1 === null && dashed && q.ev.includes('jump'), 'joypad: G opens setup; buttons 3, 2, 1 become DASH, JUMP, GRAB; 3 dashes, 2 jumps');
+  ok(s0 === 'a' && s1 === null && dashed && q.ev.includes('jump'), 'joypad: G opens setup; buttons 3, 2, 1, 0 become DASH, JUMP, GRAB, PUSH; 3 dashes, 2 jumps');
   await pg.close();
 
   // touch, a phone held sideways
@@ -378,13 +369,13 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   await pg.waitForTimeout(400);
   const L = await pg.evaluate(() => { const T = window.__dummiesInput, L = T.touchLayoutCss(), R = document.getElementById('game').getBoundingClientRect(), k = window.__dummiesScale(); return { L, field: L.field, R: { w: R.width, h: R.height }, screen: { w: 1280 * k.scale / devicePixelRatio, h: 720 * k.scale / devicePixelRatio } }; });
   const F = L.field, clearOf = (c, r) => c.x + r <= F.x0 + 1 || c.x - r >= F.x1 - 1;
-  ok(L0.on && L0.media && /touch/.test(L0.body) && Math.abs(L.screen.h - 390) < 1 && clearOf(L.L.home, L.L.sr) && L.L.face.every((f) => clearOf(f, f.r)) && !L.L.face.find((f) => f.id === 'y') && L.L.face.length === 3 && L.L.face.find((f) => f.id === 'x').x < L.L.face.find((f) => f.id === 'b').x,
+  ok(L0.on && L0.media && /touch/.test(L0.body) && Math.abs(L.screen.h - 390) < 1 && clearOf(L.L.home, L.L.sr) && L.L.face.every((f) => clearOf(f, f.r)) && L.L.face.length === 4 && L.L.face.find((f) => f.id === 'y').y < L.L.face.find((f) => f.id === 'a').y && L.L.face.find((f) => f.id === 'x').x < L.L.face.find((f) => f.id === 'b').x,
     `touch (844 × 390): on, as a phone ((hover: none) and (pointer: coarse)); the screen fills the height, ${L.screen.w.toFixed(0)} × ${L.screen.h.toFixed(0)}; stick (r ${L.L.sr.toFixed(0)}) left of the field, below the district map; Y X B A (r ${L.L.face[0].r.toFixed(0)}) right of it, below the chassis; none over the field`);
   await put(pg, RX, RY + 100);
   const home = [L.L.home.x, L.L.home.y], at = (deg, k) => [home[0] + Math.cos(deg / DEG) * L.L.sr * k, home[1] + Math.sin(deg / DEG) * L.L.sr * k];
   await touch('touchStart', [home]); await touch('touchMove', [at(-25, 1)]); await pg.waitForTimeout(150);
   const t0 = await st(pg); await pg.waitForTimeout(400); const t1 = await st(pg);
-  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p79_phone.png') });
+  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p710_phone.png') });
   const ang = Math.atan2(t1.y - t0.y, t1.x - t0.x) * DEG;
   const lunges0 = t1.ev.filter((e) => e === 'lunge').length;
   const aBtn = L.L.face.find((f) => f.id === 'a');
@@ -399,7 +390,7 @@ const RX = 40, RY = 196; // Monument B2: a clear run 260 long at this row
   await pg.setViewportSize({ width: 390, height: 844 }); await pg.waitForTimeout(400);
   const p0 = await st(pg); await touch('touchStart', [[60, 700]]); await touch('touchMove', [[120, 700]]); await pg.waitForTimeout(300); await touch('touchEnd', []); const p1 = await st(pg);
   const rot = await pg.evaluate(() => { const r = document.getElementById('rotate'); return r && !r.hidden; });
-  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p79_portrait.png') });
+  if (OUT) await pg.screenshot({ path: path.join(OUT, 'p710_portrait.png') });
   ok(rot && Math.hypot(p1.x - p0.x, p1.y - p0.y) < 0.5, 'touch, upright: "turn your phone sideways" covers the screen; the dummy does not move');
   await ctx.close();
   ok(!logs.length, 'browser: no page errors' + (logs.length ? ' — ' + logs.slice(0, 3).join('; ') : ''));

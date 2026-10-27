@@ -1,12 +1,13 @@
-# DUMMIES — Prototype 6.9: three abilities, the hitch, combos built to chain
+# DUMMIES — Prototype 6.10: Hands and Arms. Pick up with X, push off cars with Y
 
-**Prototype 6.9 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–79 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**Prototype 6.10 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–80 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
-Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three levels (Battery, Legs, Arms); X holds to throw; Arms 3 hitches a passing car and slings off it; combos pay for variety and keep their clock in the air; a thrown cone into a car links a chain; a combo meter. 6.8 (Edit 78) brought: four levels per ability, each a linear step (airtime 0.3–0.6 s, 1–4 cones, throw range +40, recharge −0.1 s); the bounce off a car is Newtonian and tunable. 6.7 (Edit 77) brought: the shop sells four ability tracks, one per button, by level; each level shields its ability from damage; only a running or dash jump clears. 6.6 (Edit 76) brought: the screen fills the window at any scale; touch controls only on phones and tablets, in the game's glass panels; a jump that keeps its take-off speed (Link's Awakening); the stair-head freeze fixed. A jump test yard sits beside it (`../jump/`). 6.5 (Edit 75) brought DIRECT turning; A dash, B jump, X grab, Y throw, each unlocked in the shop; the jumpable tag; combo scoring; Ricochet; gamepads of any kind; landscape touch. 6.4 (Edit 72) brought the ring diagnosis, vehicles at 0.9 size and steady roundabout signals.
+Prototype 6.10 follows 6.9 (Edit 79) with Edit 80: four tracks again. Hands (X, two levels): a tap picks up a cone, a hold of 0.3 s puts it down; Hands 1 carries one, Hands 2 two. Arms (Y, three levels): push off a car you hit or touch, a ricochet you time; stronger and once more per level. The throw, the hitch and the cone link retire. 6.9 (Edit 79) brought: three abilities of three levels (Battery, Legs, Arms); X holds to throw; Arms 3 hitches a passing car and slings off it; combos pay for variety and keep their clock in the air; a thrown cone into a car links a chain; a combo meter. 6.8 (Edit 78) brought: four levels per ability, each a linear step (airtime 0.3–0.6 s, 1–4 cones, throw range +40, recharge −0.1 s); the bounce off a car is Newtonian and tunable. 6.7 (Edit 77) brought: the shop sells four ability tracks, one per button, by level; each level shields its ability from damage; only a running or dash jump clears. 6.6 (Edit 76) brought: the screen fills the window at any scale; touch controls only on phones and tablets, in the game's glass panels; a jump that keeps its take-off speed (Link's Awakening); the stair-head freeze fixed. A jump test yard sits beside it (`../jump/`). 6.5 (Edit 75) brought DIRECT turning; A dash, B jump, X grab, Y throw, each unlocked in the shop; the jumpable tag; combo scoring; Ricochet; gamepads of any kind; landscape touch. 6.4 (Edit 72) brought the ring diagnosis, vehicles at 0.9 size and steady roundabout signals.
 
-- **`dummies_p6_9.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_10.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
 - **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/` (jump test) and `/controls/` (control test), from [ELVTR-Multiagent-Submission-5](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-5). Gamepads, touch and keys. Claude's hosted preview blocks gamepads.
-- **`p6_9_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`p6_10_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p6_9.html`:** Prototype 6.9 (Edit 79). Frozen.
 - **`dummies_p6_8.html`:** Prototype 6.8 (Edit 78). Frozen.
 - **`dummies_p6_7.html`:** Prototype 6.7 (Edit 77). Frozen.
 - **`dummies_p6_6.html`:** Prototype 6.6 (Edit 76). Frozen.
@@ -19,7 +20,7 @@ Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three level
 - **`world6.js`:** the world. Art, edges, traffic, play data and the player sim (`Sim6`) per district.
 - **`circus_valley.js`:** the Waterfront plan (Edits 58–61). One source for its layout.
 - **`test_p6.js`:** headless checks, the release tests included. `node test_p6.js [minutes]`.
-- **`test_p69.js`:** Prototype 6.9's checks (Edit 79: three tracks, X tap and hold, the hitch and sling, combo variety, the held clock, the cone link; then Edit 78's): DIRECT, the jump by take-off speed and Legs level, run to clear, stair heads, jumpable tag, X/Y and cone stacks, throw range, combo; the ability tracks, prices and wear shields; the Newtonian bounce; keys, the shop, fit to screen, an emulated USB joypad, touch. `node test_p69.js [screenshot folder]`.
+- **`test_p610.js`:** Prototype 6.10's checks (Edit 80: four tracks, Hands tap and hold, Hands 1–2 cones, the push by Arms level, pushes before landing, one push a contact, the ricochet combo; then 6.9's and 6.8's): DIRECT, the jump by take-off speed and Legs level, run to clear, stair heads, jumpable tag, combo variety; prices and wear shields; the Newtonian bounce; keys, the shop, fit to screen, an emulated USB joypad, touch. `node test_p610.js [screenshot folder]`.
 - **`../jump/jump.js`:** the jump's rules, shared with the jump test. Bundled by `build.py`.
 - **`tools/p65_shots.js`:** the jump, combo and phone shots. `node tools/p65_shots.js [folder]`.
 - **`../controls/pads.js`:** gamepads, shared with the controls prototype. Bundled by `build.py`.
@@ -30,18 +31,16 @@ Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three level
 - **`tools/p6_nav.js`:** the navigation checks: dead space, garden paths, flight forecourts, one ground. `node tools/p6_nav.js [district]`.
 - **`tools/p6_audit.js`:** the playtest audit on all 27 screens. `node tools/p6_audit.js [district]`.
 
-## Controls (6.9)
+## Controls (6.10)
 
 | | Keys | Gamepad | Touch (phones and tablets, landscape) | Unlocked by |
 |---|---|---|---|---|
 | Move | WASD / arrows (8 directions) | left stick or d-pad | analog stick, left column | — |
 | Dash | SPACE or K | A (or RT) | A, the diamond's foot | start; Battery speeds it |
 | Jump | L or SHIFT | B | B, right | Legs 1 |
-| Grab / put down | J or E, tap | X, tap | X, left, tap | Arms 1 |
-| Throw | J or E, hold `input.throwHoldSeconds` (0.3 s) | X, hold | X, hold | Arms 2 |
-| Hitch / let go | J or E beside a moving car | X | X | Arms 3 |
-| Sling (hitched) | SPACE or K | A | A | Arms 3 |
-| (no job) | I or Q | Y | — (hidden) | — |
+| Pick up a cone | J or E, tap | X, tap | X, left, tap | Hands 1 (one cone); Hands 2 (two) |
+| Put a cone down | J or E, hold `input.dropHoldSeconds` (0.3 s) | X, hold | X, hold | Hands 1 |
+| Push off a car | I or Q, after a hit or beside a car | Y | Y, the diamond's top | Arms 1 |
 | Pause | ESC or P | START | ❚❚ PAUSE chip | — |
 | Pad setup | G | hold START `proto.input.padSetupHoldSeconds` (1 s) | — | — |
 
@@ -56,28 +55,30 @@ Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three level
   - Clears a piece tagged jumpable above `world.jumpableHeight` (20): planters drawn ≤ `proto.art.jumpableTop` (5 art px), ≤ `world.jumpableDepth` (48) deep.
   - Over a walkway's handrail, a highway parapet or a ring's, on a run: drops to the level below, onto traffic.
   - The whole table: `../jump/README.md`.
-- **Combo (6.9):** a hit within `scoring.comboWindow` (1.5 s) of the last links a chain. Each link adds `scoring.comboStep` (0.5); each new kind of move adds `scoring.comboVariety` (0.5); to `scoring.comboMax` (×5).
-  - Kinds: DASH, JUMP (a jump into a car), BOUNCE (thrown from a hit), SLING (flung from a hitch), DROP (onto a car from above), CONE (a thrown cone into a car), STRUCK (a car into you).
-  - Three dashes: ×1, ×1.5, ×2. Dash › bounce › jump › sling › drop: ×1, ×2, ×3, ×4, ×5.
-  - **The clock holds in the air** (`scoring.comboAirPause`): it stops in a jump, a bounce, a sling, a drop and a hitch. Airborne play keeps a chain alive.
-  - **Cone link** (`scoring.coneLink`): a thrown cone into a moving car links, once a car, for `scoring.coneHitPoints` (20) × the multiplier.
+- **Combo (6.9; kinds 6.10):** a hit within `scoring.comboWindow` (1.5 s) of the last links a chain. Each link adds `scoring.comboStep` (0.5); each new kind of move adds `scoring.comboVariety` (0.5); to `scoring.comboMax` (×5).
+  - Kinds (6.10): DASH, JUMP (a jump into a car), BOUNCE (thrown from a hit), PUSH (pushed off a car into the next), DROP (onto a car from above), STRUCK (a car into you).
+  - Three dashes: ×1, ×1.5, ×2. Dash › bounce › jump › push › drop: ×1, ×2, ×3, ×4, ×5.
+  - **The clock holds in the air** (`scoring.comboAirPause`): it stops in a jump, a bounce, a push and a drop. Airborne play keeps a chain alive.
   - **Meter:** foot of the field while a chain lives: hits, multiplier, the moves so far, a bar for the clock (cyan while held). It banks when the clock runs out.
-- **Abilities (6.9, `proto.abilities` 2):** three tracks, one per button; three levels (`abilities.maxLevel`). Each level cuts its part's wear by `abilities.wearCut` (0.25; level 3: −75%).
+- **Abilities (6.10, `proto.abilities` 3):** four tracks, one per button. Three levels (`abilities.maxLevel`); Hands two (`abilities.hands.maxLevel`). Each level cuts its part's wear by `abilities.wearCut` (0.25; level 3: −75%).
 
 | Track | Button | Level 1 | Level 2 | Level 3 | Shields |
 |---|---|---|---|---|---|
 | Battery | A | a charge every `abilities.battery.level1Seconds` 0.8 s | 0.7 s | 0.6 s | the torso: recharge |
 | Legs | B | the jump, 0.3 s in the air | 0.4 s | 0.5 s | the legs: run, dash, jump |
-| Arms | X | carry a cone (tap to pick up, tap to put down) | hold X to throw it | hitch a passing car | the grip and the throw |
+| Hands | X | carry one cone: tap to pick up, hold to put down | carry two | — (two hands) | the grip |
+| Arms | Y | push off a car: +160 u/s, one push before landing | +200, two | +240, three | the push |
 
   - **Base:** a dash charge every `battery.secondsPerCharge` 1 s. Every jump, hop or not, costs `battery.jumpCost` 1.
   - **Legs:** airtime `abilities.legs.airtimeBase` 0.3 + `abilities.legs.airtimeStep` 0.1 a level; height 44. A running jump covers 49, 65, 81. Legs 1: a running jump clears a handrail, a dash jump a sedan. Legs 2: a dash jump a van. Legs 3: a running jump a sedan.
-  - **Hitch (Arms 3):** X with no cone, beside a moving car (`abilities.arms.hitchReach` 12; at least `abilities.arms.hitchMinSpeed` 30): the dummy rides its side. Traffic ignores a hitched body.
-    - X lets go at the car's velocity × `abilities.arms.slingScale` (1). A lets go with a dash: + `abilities.arms.slingDash` (120) along the stick, for a charge.
-    - The grip gives after `abilities.arms.hitchSeconds` (1.5 s), when the car stops or changes level, or `abilities.arms.hitchEdge` (40) from the screen's edge.
-    - The flight is a knock: it slides and strikes the next car as a dash. Combo kind: SLING.
-  - **Prices:** `economy.price.ability.level1`–`level3`: 1, 2, 3. A track costs 6.
-  - **Shop:** one card per track; A buys the next level. Y has no job; touch hides it.
+  - **Hands:** `abilities.hands.conesPerLevel` (1) a level. A tap picks up when there is room and a cone in reach. A hold of `input.dropHoldSeconds` (0.3 s) puts the top cone down. A short tap with nothing to pick up: "Hold X to put the cone down". No throw.
+  - **Push (Arms):** Y pushes off the car hit or touched in the last `abilities.arms.pushWindow` (0.3 s), or one within `abilities.arms.pushReach` (10) of the body.
+    - Adds `abilities.arms.pushSpeed` (160) + `abilities.arms.pushStep` (40) a level, × arm wear (`proto.parts.armPushLoss` 1, floor `armPushFloor` 0.5). Away from the car, or along the stick when it points away. Motion into the car is dropped.
+    - `abilities.arms.pushesPerLevel` (1) × level before landing; they refill on the ground. One push a contact: the same car needs a fresh hit.
+    - The flight is a knock: it slides and strikes the next car as a dash. Combo kind: PUSH.
+    - No Arms: the bounce off a car is the plain Newtonian one below, the default ricochet.
+  - **Prices:** `economy.price.ability.level1`–`level3`: 1, 2, 3. A track costs 6; Hands 3.
+  - **Shop:** one card per track; A buys the next level.
 - **Bounce (6.8, `proto.bounce.newton`):** the dummy leaves a hit at its full post-impact velocity: momentum (`proto.dummyMass` 0.056 of a sedan), `proto.restitution` (0.3), `proto.contactFriction` (0.3); `proto.recoilScale` 1. It slides at `physics.slideFriction` (1) × `physics.gravity` × `proto.scale.unitsPerMetre`, about 120 u/s². Control returns under walking pace after `proto.recoilSeconds` (0.35).
 
 | Hit | 6.7 | 6.8 |
@@ -89,7 +90,7 @@ Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three level
 
   - Damage is unchanged. A throw into another car strikes it and chains a combo. Ricochet is this physics now.
   - All of these sit in Tuning (T): restitution, mass, contact friction, slide friction, strike speed cap, recoil scale and time.
-- **Tuning (T), 6.9:** Battery seconds per level; the throw hold; hitch reach, time, speed, edge; sling scale and dash; combo window, step, variety, max, the held clock, the cone link and its points; the bounce physics; ability levels to install.
+- **Tuning (T), 6.10:** Battery seconds per level; the put-down hold; cones per Hands level; push speed, step, pushes per level, reach, window and arm wear; combo window, step, variety, max, the held clock; the bounce physics; ability levels to install. Sliders 6.10 does not use (the throw, the hitch, the cone link, the old tree) are gone.
 - **Gamepads:** every pad read, the last used drives; hat d-pads; setup saved per pad. The status line and the pause screen show what the pad sends.
 - **Screen (6.6):** fills the window at the largest scale that fits, `min(width / 1280, height / 720)`; any fraction, not ×2 or ×3 (art pixels ×2.03 at 1300 × 900). The margins take the frame's gradient.
 - **Touch (6.6):** only on touch devices: `(hover: none) and (pointer: coarse)`, or `#touch` in the address. Never on a computer with a mouse.
@@ -100,9 +101,13 @@ Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three level
   - The stick floats to the thumb. Upright: a "turn your phone sideways" screen.
 - **Tuning (T):** install ability levels for a test run; the bounce physics; outline what a jump clears; set up a gamepad.
 
-![6.9: the ability shop: Battery, Legs, Arms; three levels](docs/p79_shop.png)
+![6.10: the ability shop: Battery, Legs, Hands, Arms](docs/p710_shop.png)
 
-![6.9: the combo meter: COMBO 3 · DASH › BOUNCE › SLING · ×3](docs/p79_desktop.png)
+![6.10: the combo meter: COMBO 3 · DASH › BOUNCE › PUSH · ×3; the keys: GRAB, PUSH ×2](docs/p710_desktop.png)
+
+![6.10: phone, sideways: Y X B A](docs/p710_phone.png)
+
+![6.9: the ability shop: Battery, Legs, Arms; three levels](docs/p79_shop.png)
 
 ![6.6: phone, sideways (S25 Ultra size), fit to the height](docs/p76_phone.png)
 
@@ -245,7 +250,9 @@ Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three level
 
 ## Evidence
 
-- `node test_p69.js docs` → 47/47.
+- `node test_p610.js docs` → 47/47.
+  - Edit 80: four tracks; Hands 2 tops its track; a tap picks up, a hold puts down at 0.30 s, a short tap with nothing near says "hold X"; Hands 1 carries 1, Hands 2 carries 2. Arms 0 is locked; a push adds 160, 200, 240 at Arms 1–3; 1, 2, 3 pushes before landing, refilled on the ground; a second Y off the same car refused; nothing near: "nothing to push off". Dash into a parked car › Y into a second: COMBO 2, DASH › PUSH, ×2. 6.4–6.9 byte-identical.
+- `node test_p69.js docs` (6.9, now `test_p610.js`) → 47/47.
   - Edit 79: three tracks; Battery 1.0 → 0.8 → 0.7 → 0.6 s; X tap and hold (throw at 0.30 s); Y idle; the hitch rides, lets go at 120 u/s, slings at 170 with A, ends at 1.5 s; dash › sling chains ×2 and banks, and breaks with the clock running in the air; three dashes ×1/×1.5/×2 against five kinds ×1–×5; a cone link. 6.4–6.8 byte-identical.
 - `node test_p68.js docs` (6.8, now `test_p69.js`) → 46/46.
   - Edit 78: Legs 1–4 airtime and distances; what a level clears; Arms 1, 2, 4 carry 1, 2, 4 cones; Throw 1–4 lands 140, 180, 220, 260 away; Battery 0.8 → 0.4 s; the Newtonian bounce against 6.7's; tuned restitution and slide friction. 6.4–6.7 byte-identical.
@@ -300,9 +307,10 @@ Prototype 6.9 follows 6.8 (Edit 78) with Edit 79: three abilities of three level
 - Parkland A2's street-emptiness check sits at its limit (20% of 3 min, 21% of 5 min with the player in B2). Same on 6.4's code.
 - Few Z0 pieces are low enough to jump: P6's planters mostly carry taller hedges. Handrails and parapets carry the jump (D50).
 - Ability prices set the pace: a track costs 6; a run of 9 write-offs buys all three tracks to level 2 (D52).
-- Hitch-hopping: car to car, the combo clock never runs (D60).
-- The adversarial review of the upgrades lists the open risks: `DUMMIES_Upgrades_Adversarial_Review.md` (D53–D57; 6.9 settles D53–D55).
+- The push is free: a parked car is a launch pad, 109–253 units without a charge (review A19, D62).
+- "Default ricochet is 'X'": built as the plain bounce with no Arms. If X meant the button, the push moves to X (D61).
+- The adversarial review of the upgrades lists the open risks: `DUMMIES_Upgrades_Adversarial_Review.md` (D53–D57; 6.9 settles D53–D55; 6.10 adds A19–A22).
 
 ## Build
 
-`python3 build.py` → `dummies_p6_9.html` and `p6_9_page.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
+`python3 build.py` → `dummies_p6_10.html` and `p6_10_page.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.

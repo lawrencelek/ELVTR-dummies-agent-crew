@@ -21,7 +21,8 @@
     'proto.abilities': 1, 'proto.jump.runToClear': 1, // Edit 77 (Prototype 6.7): ability tracks by level; run to clear
     'proto.bounce.newton': 1, 'proto.recoilScale': 1, // Edit 78 (Prototype 6.8): the bounce off a car is Newtonian: full post-impact velocity, then a slide
     'proto.abilities': 2, 'abilities.maxLevel': 3, 'abilities.wearCut': 0.25, 'battery.secondsPerCharge': 1, // Edit 79 (Prototype 6.9): Battery, Legs, Arms; three levels
-    'scoring.comboVariety': 0.5, 'scoring.comboAirPause': 1, 'scoring.coneLink': 1, 'scoring.comboMax': 5 }; // Edit 79: combos
+    'scoring.comboVariety': 0.5, 'scoring.comboAirPause': 1, 'scoring.coneLink': 1, 'scoring.comboMax': 5, // Edit 79: combos
+    'proto.abilities': 3, 'input.dropHoldSeconds': 0.3 }; // Edit 80 (Prototype 6.10): Battery, Legs, Hands (two levels), Arms (the push); hold X to put a cone down
   for (const k of Object.keys(P)) if (/^vehicles\.[a-z]+\.(length|width|height)$/.test(k)) P6SIM[k] = Math.round(P[k] * P6SIM['vehicles.scale'] * 10) / 10;
   Object.assign(P, P6SIM);
   const W = P['world.width'], H = P['world.height'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'], HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'];
@@ -2132,11 +2133,12 @@
           const ph = X.impulseImpact(P, b.vx, b.vy, c.vx, c.vy, nx, ny, c.cls, b.mode === 'lunge' || b.mode === 'knock' || b.mode === 'jump'); // Edit 75: a jump strikes as a dash does
           contacts.push({ k, car: c, closing: Math.max(0, rel), ph, px: res.cx, py: res.cy, zone: X.zoneOf(res.qx, res.qy, c),
             carState: this.carCue(c), cause: c.cause, lunging: b.mode === 'lunge', bodySpeed: hyp(b.vx, b.vy), carSpeed: c.v, stopped: c.v < 5 || !!(c.man && c.man.standoff), jump: b.mode === 'jump', ricochet: rico,
-            kind: b.mode === 'knock' ? (b.sling ? 'sling' : 'bounce') : b.mode === 'jump' ? 'jump' : b.mode === 'lunge' ? 'dash' : 'struck' }); // Edit 79: the move, for combo variety
+            kind: b.mode === 'knock' ? (b.pushed ? 'push' : b.sling ? 'sling' : 'bounce') : b.mode === 'jump' ? 'jump' : b.mode === 'lunge' ? 'dash' : 'struck' }); // Edit 79: the move, for combo variety (Edit 80: PUSH)
           if (P['proto.damageModel'] && ph.un > 1e-6) knock = this.bounce(ph.knock); // Ricochet: twice the bounce
         }
         b.x += res.nx * res.pen; b.y += res.ny * res.pen;
-        if (knock) { b.mode = 'knock'; b.sling = false; b.lunge = null; b.jump = null; b.z = 0; b.knockT = 0; b.knockVx = knock.x; b.knockVy = knock.y; b.vx = knock.x; b.vy = knock.y; this.emit('knock', { car: c.id, speed: +hyp(knock.x, knock.y).toFixed(2), ricochet: this.has('ricochet') }); }
+        b.lastHit = { id: c.id, t: this.t, nx: res.nx, ny: res.ny }; // Edit 80: the car to push off, and which way is away
+        if (knock) { b.mode = 'knock'; b.sling = false; b.pushed = false; b.lunge = null; b.jump = null; b.z = 0; b.knockT = 0; b.knockVx = knock.x; b.knockVy = knock.y; b.vx = knock.x; b.vy = knock.y; this.emit('knock', { car: c.id, speed: +hyp(knock.x, knock.y).toFixed(2), ricochet: this.has('ricochet') }); }
         else if (rel > 0) { b.vx -= rel * nx; b.vy -= rel * ny; }
         block();
       }
