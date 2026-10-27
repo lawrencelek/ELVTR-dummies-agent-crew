@@ -60,6 +60,10 @@ One dummy, three ways to play it, three ways for it to turn. Traffic to lunge at
 
 ![Gamepad](docs/p73_gamepad.png)
 
+![Phone, upright: the view follows the dummy](docs/p73_portrait.png)
+
+![Help: every device's controls](docs/p73_help.png)
+
 ## Known gaps
 
 - Gamepads need the downloaded file in a desktop browser. A hosted page may block the gamepad feature.
