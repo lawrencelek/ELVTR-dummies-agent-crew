@@ -134,6 +134,30 @@ for (const id of W6.LEVEL_LIST) {
   const T = s.t - T0, spec = P['proto.rescueSinkSeconds'] + 2 * P['proto.droneLiftSeconds'] + d0 / P['proto.droneSpeed'], lane = !s.sc.roadOk(s.body.x, s.body.y, P['world.laneWidth']);
   ok(s.body.mode !== 'rescue' && !s.level.water.some((p) => PIX.inPoly(p, s.body.x, s.body.y)) && !lane && T > spec, `Waterfront A3: into the river; sinks ${P['proto.rescueSinkSeconds']} s, the drone flies in from the edge, lifts and sets the dummy on land, off the lanes: ${T.toFixed(2)} s (sink, lifts and carry alone ${spec.toFixed(2)} s; ${d0.toFixed(0)} units)`);
 }
+{ // P6.3 (Edit 65): the playtest audit on all 27 screens
+  const A = require('./tools/p6_audit.js');
+  for (const id of W6.LEVEL_LIST) {
+    const r = A.auditDistrict(id), bad = r.filter((q) => !q.ok), n = (k) => r.filter((q) => q.kind === k).length;
+    ok(!bad.length, `${id}: playtest audit: ${n('stair')} flights on screen as drawn, clear of buildings, walked up and down from a clear apron; ${n('plan')} building plans solid; ${n('walk')} walkway ends clean${bad.length ? ' (not: ' + bad.slice(0, 3).map((q) => q.tag + ': ' + q.fails[0]).join('; ') + ')' : ''}`);
+  }
+}
+{ // P6.3: the playtest routes
+  const s = new W6.Sim6('monument', {}, null, { warm: 2 }); empty(s);
+  place(s, 'B1', 472, 244); walk(s, 472, 120, 5, (q) => q.body.level === 1 && !q.body.stair && kind(q) === 'roof'); const roof = kind(s) === 'roof';
+  walk(s, 400, 132, 3); walk(s, 400, 700, 10, (q) => q.screenName() === 'B2');
+  ok(roof && s.screenName() === 'B2' && s.body.level === 1 && kind(s) === 'walk', 'Monument B1: up the escalator to the podium roof; south along the skybridge into B2 at Z1');
+  place(s, 'B3', 428, 184); walk(s, 560, 184, 5, (q) => q.body.level === 1 && !q.body.stair); const up = kind(s) === 'roof';
+  walk(s, 560, 236, 2); walk(s, 270, 530, 8); walk(s, 230, 520, 2);
+  ok(up && s.body.level === 1 && kind(s) === 'roof' && s.body.x < 280, `Monument B3: up the escalator to the north-east podium roof; across the skybridge at 45° to the south-west podium roof (${Math.round(s.body.x)},${Math.round(s.body.y)})`);
+  const w = new W6.Sim6('waterfront', {}, null, { warm: 2 }); empty(w);
+  const tr = w.W6.at(2, 1).game.floors.find((f) => f.kind === 'terrace');
+  place(w, 'C2', tr.x + 70, tr.y + tr.h + 22); walk(w, tr.x + 70, tr.y + 20, 2);
+  ok(w.body.level === 0 && w.body.y > tr.y + tr.h + R - 2, `Waterfront C2: the terrace is solid at ground level; the dummy stops at its south face (y ${w.body.y.toFixed(0)}, face ${tr.y + tr.h})`);
+  const pk = new W6.Sim6('parkland', {}, null, { warm: 2 }); empty(pk);
+  place(pk, 'A3', 640, 300); walk(pk, 640, 150, 5, (q) => q.body.level === 1 && !q.body.stair); const top = pk.body.level === 1 && kind(pk) === 'roof';
+  walk(pk, 800, 150, 3);
+  ok(top && pk.body.level === 1 && pk.body.x < 706, `Parkland A3: up the belvedere's stair onto its lawn at Z1; its edge holds (x ${Math.round(pk.body.x)})`);
+}
 { // a dash into a car scores
   const s = new W6.Sim6('monument', {}, null, { warm: 8 });
   let hit = false;

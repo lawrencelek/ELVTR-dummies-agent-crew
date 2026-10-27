@@ -57,7 +57,7 @@
      'world.deckPillarSpacing': 160, 'world.deckInterval': 2.4,
     // Edit 42 (P3.1): three levels, bounded districts
     'world.parapetWidth': 8, 'world.deckLampSpacing': 88, // P5.2: lamps in pairs, about nine per screen width
-     'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7,
+     'world.stairLength': 64, 'world.stairWidth': 32, 'world.stairSpeed': 0.7, 'world.stairApron': 40, 'world.stairEdgeMargin': 16, // P6.3 (Edit 65): a clear apron beyond every foot; flights drawn inside the screen
     'world.dropSeconds': 0.35, 'damage.dropSpeed': 120, 'world.wallThickness': 16, 'world.boomRange': 140, 'world.boomSeconds': 0.5,
     'world.towerHeightMin': 288, 'world.towerHeightMax': 380, 'world.roundaboutRadius': 160, 'damage.plateMultiplier': 1.5,
     // Edit 43 (P3.2): perpendicular crossings, turn styles, storeys and frontage, car lights

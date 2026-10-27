@@ -1,6 +1,6 @@
 # DUMMIES — P6 prototype: three districts, managed traffic across levels
 
-**P6.2 · 26 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–64 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**P6.3 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–65 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
 P6 is the game on the three districts of the mock-ups. District 2, Waterfront, replaces Circus.
 
@@ -8,6 +8,7 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 - **`world6.js`:** the world. Art, edges, traffic, play data and the player sim (`Sim6`) per district.
 - **`circus_valley.js`:** the Waterfront plan (Edits 58–61). One source for its layout.
 - **`test_p6.js`:** headless checks. `node test_p6.js [minutes]`.
+- **`tools/p6_audit.js`:** the playtest audit on all 27 screens. `node tools/p6_audit.js [district]`.
 
 ## Districts
 
@@ -26,12 +27,20 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
   - Walkway: holds, except one opening per road below (P6.2).
     - One `world.tileSize` module, centred on the road's centre line. One side: south on an east–west walkway, east on a north–south one.
     - A straight drop lands on the centre line. Steer a little to land in a lane.
-  - Hill, terrace, roof: every edge drops.
+  - Hill, terrace, roof: every edge drops. The Parkland A3 belvedere's lawn holds.
 - **Edges:** another floor at the level, then a stair, then the next screen, then a drop. Else the parapet holds.
 - **Screen edges:** no invisible walls. Where an edge holds, a barrier shows on this side.
   - Between screens: a low planter (`world.wallThickness`). Never in a lane.
   - The district's edge: the perimeter wall; a booth and boom on a road; a boom on a highway or hill street; a parapet on the hill.
   - A walkway running into the next screen: chevrons.
+- **Flights (P6.3):**
+  - A clear apron beyond every foot: `world.stairApron` (40), the flight's width plus 8 each side.
+  - A flight as drawn, and its apron, stay `world.stairEdgeMargin` (16) inside the screen.
+  - No building stands in an apron or draws over a flight.
+  - A vertical highway's flight takes the other side where its side is short (Monument C column).
+  - Every drawn flight walks: Monument B1 and B3 podiums, the Parkland A3 belvedere.
+- **Buildings (P6.3):** every plan is solid at its level, to 4 units. Terraces and landings too.
+- **Walkway joints (P6.3):** the slab stops at the floor it joins. Square at 90°; mitred at 45°.
 - **Tunnel (Waterfront B1):** the dummy walks in. It stops at the top edge of B1, not the mouth.
 - **River:** sink `proto.rescueSinkSeconds` (2 s). A drone flies in from the nearest edge at `proto.droneSpeed`.
   - It lifts the dummy out (`proto.droneLiftSeconds`), carries it to the nearest land and sets it down.
@@ -64,7 +73,8 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 
 ## Evidence
 
-- `node test_p6.js 3` → 35/35: starts, edge audit, managed traffic, climbs, walkway openings, drops, tunnel, rescue, hits, the shift.
+- `node test_p6.js 3` → 42/42: starts, edge audit, managed traffic, climbs, walkway openings, drops, tunnel, rescue, hits, the shift.
+- Playtest audit (in `test_p6.js`): 47 flights walked up and down; 122 building plans solid; 23 walkway ends clean.
 - `node test_sim.js` → 104/104 (this copy and P5).
 - Browser: no page errors over scripted play in all three districts.
 
@@ -76,10 +86,11 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 
 ![Waterfront A2: four lane gaps (P6.1) → one opening (P6.2)](docs/p64_walkway_opening.png)
 
+![P6.3 playtest routes](docs/p65_playtest_routes.png)
+
 ## Known gaps
 
 - Cues still crowd at a busy junction on the dummy's level (D40).
-- Parkland A3's belvedere stair and Monument B3's skybridge are scenery. No way up.
 - Copy for the new toasts is literal in `game.js`. Not yet in the content pipeline.
 
 ## Build
