@@ -11,7 +11,7 @@ html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); o
 <div id="game" aria-label="DUMMIES jump test. Keyboard, gamepad, or touch on phones and tablets (landscape)."></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
 <script>
-window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampSeconds":1,"movement.turnRate":180,"movement.turningSpeedFraction":0.6,"movement.alignThreshold":30,"movement.stopSeconds":0.25,"movement.counterPressAngle":135,"movement.counterPressStop":0.4,"movement.lungeDistance":164,"movement.lungeDuration":0.3,"movement.lungeRecovery":0.35,"movement.lungeFastTimeFraction":0.3333,"movement.lungeFastDistanceFraction":0.7,"movement.directTurnRate":1080,"movement.pivotAngle":90,"movement.pivotRate":720,"upgrades.carrySpeed":0.85,"body.radius":13,"world.laneWidth":56,"world.jumpableHeight":20,"world.jumpableDepth":48,"upgrades.jumpAirtime":0.5,"upgrades.jumpHeight":44,"upgrades.jumpRecovery":0.1,"upgrades.jumpMaxSpeed":324,"upgrades.jumpAirAccel":324,"vehicles.scale":0.9,"vehicles.sedan.length":56,"vehicles.sedan.width":28,"vehicles.sedan.height":22,"vehicles.sedan.cruiseSpeed":138,"vehicles.van.length":68,"vehicles.van.width":32,"vehicles.van.height":34,"vehicles.van.cruiseSpeed":120,"vehicles.bus.length":96,"vehicles.bus.width":34,"vehicles.bus.height":48,"vehicles.bus.cruiseSpeed":108,"proto.input.deadzone":0.2,"proto.input.stickOuter":0.9,"proto.input.touchDeadzone":0.12,"proto.input.touchOuter":0.85,"proto.input.padSetupHoldSeconds":1,"ui.touch.stickRadius":60,"ui.touch.faceRadius":30,"ui.touch.margin":16}; window.JUMP_BUILD = "edit76"; // registry edit76-2026-10-27
+window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampSeconds":1,"movement.turnRate":180,"movement.turningSpeedFraction":0.6,"movement.alignThreshold":30,"movement.stopSeconds":0.25,"movement.counterPressAngle":135,"movement.counterPressStop":0.4,"movement.lungeDistance":164,"movement.lungeDuration":0.3,"movement.lungeRecovery":0.35,"movement.lungeFastTimeFraction":0.3333,"movement.lungeFastDistanceFraction":0.7,"movement.directTurnRate":1080,"movement.pivotAngle":90,"movement.pivotRate":720,"upgrades.carrySpeed":0.85,"body.radius":13,"world.laneWidth":56,"world.jumpableHeight":20,"world.jumpableDepth":48,"upgrades.jumpAirtime":0.5,"proto.jump.runToClear":1,"upgrades.jumpHeight":44,"upgrades.jumpRecovery":0.1,"upgrades.jumpMaxSpeed":324,"upgrades.jumpAirAccel":324,"vehicles.scale":0.9,"vehicles.sedan.length":56,"vehicles.sedan.width":28,"vehicles.sedan.height":22,"vehicles.sedan.cruiseSpeed":138,"vehicles.van.length":68,"vehicles.van.width":32,"vehicles.van.height":34,"vehicles.van.cruiseSpeed":120,"vehicles.bus.length":96,"vehicles.bus.width":34,"vehicles.bus.height":48,"vehicles.bus.cruiseSpeed":108,"proto.input.deadzone":0.2,"proto.input.stickOuter":0.9,"proto.input.touchDeadzone":0.12,"proto.input.touchOuter":0.85,"proto.input.padSetupHoldSeconds":1,"ui.touch.stickRadius":60,"ui.touch.faceRadius":30,"ui.touch.margin":16}; window.JUMP_BUILD = "edit77"; // registry edit77-2026-10-27
 // DUMMIES jump (GDD Edit 76), after Link's Awakening's Roc's Feather: the jump keeps the speed you jump with.
 // Shared by Prototype 6.6 (sim.js) and the jump test yard (prototypes/jump). No DOM; the tests run it headless.
 // - Height and time in the air are fixed: upgrades.jumpHeight at the top, upgrades.jumpAirtime from take-off to landing.
@@ -19,6 +19,9 @@ window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampS
 //   speed, a long jump. Every take-off speed is capped at upgrades.jumpMaxSpeed.
 // - A normal jump steers in the air: its velocity turns toward the input, at the take-off speed (at least walking pace), by at
 //   most upgrades.jumpAirAccel per second. No input: the momentum holds. A dash jump is committed: no steering.
+// - Edit 77 (proto.jump.runToClear): only a running jump or a dash jump clears anything. Standing and walking jumps hop:
+//   the body rises, but it meets what it meets as if on the ground.
+// - Diagonals: a thing crossed at an angle is longer to cross. inside() gives the path through it.
 (function (root) {
   'use strict';
   const hyp = Math.hypot;
@@ -26,7 +29,8 @@ window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampS
     let sp = hyp(vx, vy); const cap = P['upgrades.jumpMaxSpeed'];
     if (sp > cap) { vx *= cap / sp; vy *= cap / sp; sp = cap; }
     const walk = P['movement.walkSpeed'], kind = dash ? 'dash' : sp < 1 ? 'stand' : sp <= walk * 1.05 ? 'walk' : 'run';
-    return { t: 0, T: P['upgrades.jumpAirtime'], H: P['upgrades.jumpHeight'], vx, vy, v0: sp, steer: !dash, kind };
+    const clear = !P['proto.jump.runToClear'] || kind === 'run' || kind === 'dash';
+    return { t: 0, T: P['upgrades.jumpAirtime'], H: P['upgrades.jumpHeight'], vx, vy, v0: sp, steer: !dash, kind, clear };
   }
   function z(J, t) { const T = J.T; t = t == null ? J.t : t; return t <= 0 || t >= T ? 0 : 4 * J.H * t * (T - t) / (T * T); }
   function air(P, J, mx, my, dt) { // steer a normal jump toward the input
@@ -43,10 +47,21 @@ window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampS
   function reach(P, v) { return v * P['upgrades.jumpAirtime']; }
   function over(P, v, h) { const w = above(P, h); return w ? v * (w[1] - w[0]) : 0; }
   function clears(P, v, h, d, r) { return over(P, v, h) >= d + 2 * r; }
+  // A box `depth` along the approach and `width` across it, crossed through its middle `deg` off square: the path the body
+  // (radius r) travels while over it. Square on: depth + 2r. At 45° across a long rail: (depth + 2r) × 1.41.
+  function inside(depth, width, r, deg) {
+    const a = Math.abs(deg || 0) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+    return Math.min(c > 1e-9 ? (depth + 2 * r) / c : Infinity, s > 1e-9 ? (width + 2 * r) / s : Infinity);
+  }
+  function clearsAt(P, v, h, depth, width, r, deg) { return over(P, v, h) >= inside(depth, width, r, deg); }
+  // A car moving along +x at cv, crossed by a jump with velocity (vx, vy): the time the body is over its footprint
+  // (length L along the lane, width W across), crossing through its middle. It clears if that fits the time above its roof.
+  function carTime(vx, vy, cv, L, W, r) { const ux = Math.abs(vx - cv), uy = Math.abs(vy); return Math.min(uy > 1e-9 ? (W + 2 * r) / uy : Infinity, ux > 1e-9 ? (L + 2 * r) / ux : Infinity); }
+  function carClears(P, vx, vy, cv, L, W, h, r) { const w = above(P, h); return !!w && carTime(vx, vy, cv, L, W, r) <= w[1] - w[0]; }
   function speeds(P) { // the four take-offs: standing, walking, running, a dash jump at the cap
     return { stand: 0, walk: P['movement.walkSpeed'], run: P['movement.runSpeed'], dash: P['upgrades.jumpMaxSpeed'] };
   }
-  const api = { takeoff, z, air, slide, above, reach, over, clears, speeds };
+  const api = { takeoff, z, air, slide, above, reach, over, clears, inside, clearsAt, carTime, carClears, speeds };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.JUMP = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -399,14 +414,14 @@ window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampS
       const Jt = J.takeoff(P, vx, vy, !!dash);
       Object.assign(Jt, { x0: b.x, y0: b.y, samples: [[0, 0]], passed: new Map() });
       b.jump = Jt; b.mode = 'jump'; b.lunge = null; b.z = 0; if (Jt.v0 > 1) b.facing = Math.atan2(Jt.vy, Jt.vx);
-      S.jumps++; this.pop(b.x, b.y - 26, (Jt.kind === 'dash' ? 'LONG JUMP ' : Jt.kind.toUpperCase() + ' JUMP ') + Jt.v0.toFixed(0), '#7fe3ff');
+      S.jumps++; this.pop(b.x, b.y - 26, (Jt.kind === 'dash' ? 'LONG JUMP ' : Jt.kind.toUpperCase() + (Jt.clear ? ' JUMP ' : ' HOP ')) + Jt.v0.toFixed(0), Jt.clear ? '#7fe3ff' : '#8796a3');
     }
     land(hit) {
       const b = this.body, Jt = b.jump, sp = Math.hypot(Jt.vx, Jt.vy), walk = P['movement.walkSpeed'], run = P['movement.runSpeed'];
       const d = Math.hypot(b.x - Jt.x0, b.y - Jt.y0), top = Math.max(...Jt.samples.map((q) => q[1]));
       for (const q of OBS) if (rectHit(b.x, b.y, R, q)) { const k = 'o' + OBS.indexOf(q), p = Jt.passed.get(k); if (p) p.ok = false; else Jt.passed.set(k, { name: q.name, ok: false }); } // landed on it: short
       const over = [...Jt.passed.values()];
-      S.last = { kind: Jt.kind, v0: Jt.v0, d, top, T: Jt.T, over, hit: !!hit, x0: Jt.x0, y0: Jt.y0, x1: b.x, y1: b.y, samples: Jt.samples };
+      S.last = { kind: Jt.kind, clear: Jt.clear, v0: Jt.v0, d, top, T: Jt.T, over, hit: !!hit, x0: Jt.x0, y0: Jt.y0, x1: b.x, y1: b.y, samples: Jt.samples };
       S.flights.push(S.last); if (S.flights.length > 6) S.flights.shift();
       b.jump = null; b.z = 0; b.landT = P['upgrades.jumpRecovery']; b.vx = Jt.vx; b.vy = Jt.vy;
       if (sp > 1) { b.mode = 'move'; b.rampT = P['movement.rampSeconds'] * C.clamp((sp - walk) / Math.max(1, run - walk), 0, 1); } else { b.mode = 'idle'; b.vx = b.vy = 0; }
@@ -435,17 +450,17 @@ window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampS
       this.cars = this.cars.filter((c) => c.x > -140 && c.x < W + 140);
     }
     collide() { // solid unless the dummy is above a jumpable thing's top. In a jump the flight slides along what it meets
-      const b = this.body, z = b.z || 0, Jt = b.jump;
+      const b = this.body, z = b.z || 0, Jt = b.jump, zc = Jt && Jt.clear ? z : 0; // Edit 77: a hop (stand, walk) clears nothing
       const push = (res) => { b.x += res.nx * res.pen; b.y += res.ny * res.pen; const vn = b.vx * res.nx + b.vy * res.ny; if (vn < 0) { b.vx -= vn * res.nx; b.vy -= vn * res.ny; } if (Jt) J.slide(Jt, res.nx, res.ny); };
       const note = (key, name, over) => { if (!Jt) return; const p = Jt.passed.get(key); if (!p) Jt.passed.set(key, { name, ok: over }); else if (!over) p.ok = false; };
       for (const q of OBS) {
         const res = rectHit(b.x, b.y, R, q); if (!res) continue;
-        const over = q.jumpable && z >= q.z; note('o' + OBS.indexOf(q), q.name, over);
+        const over = q.jumpable && zc >= q.z; note('o' + OBS.indexOf(q), q.name, over);
         if (!over) push(res);
       }
       for (const c of this.cars) {
         const q = { x: c.x - c.L / 2, y: c.y - c.Wd / 2, w: c.L, h: c.Wd }, res = rectHit(b.x, b.y, R, q); if (!res) continue;
-        const over = z >= c.h; note('c' + c.cls + c.y, 'moving ' + c.cls, over);
+        const over = zc >= c.h; note('c' + c.cls + c.y, 'moving ' + c.cls, over);
         if (over) continue;
         if ((b.mode === 'lunge' || b.mode === 'jump') && c.hitT === 0) { S.hits++; c.hitT = 0.6; this.pop(b.x, b.y - 22, c.cls.toUpperCase() + ' HIT', '#ff4fd8'); this.cameras.main.shake(80, 0.004); }
         if (b.mode === 'jump') this.land(true); // struck below the roof: the flight ends here
@@ -537,7 +552,7 @@ window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampS
       const dev = { keyboard: 'KEYS: WASD move · SPACE/K dash (A) · L/SHIFT jump (B)', pad: 'GAMEPAD' + (pd && pd.id ? ' · ' + pd.id.slice(0, 22) : '') + ': stick · A dash · B jump', touch: 'TOUCH: stick · A dash · B jump' }[S.device];
       const over = L ? L.over.map((o) => o.name + (o.ok ? ' ✓' : ' ✗')).join(' · ') || '—' : '—';
       this.info.setText([dev, S.touchOn ? null : '1 parked · 2 barriers · 3 ruler · 4 traffic · H help · R clear', '',
-        L ? (L.kind === 'dash' ? 'LONG (DASH) JUMP' : L.kind.toUpperCase() + ' JUMP') + ' · ' + L.v0.toFixed(0) + ' u/s' : 'LAST JUMP —',
+        L ? (L.kind === 'dash' ? 'LONG (DASH) JUMP' : L.kind.toUpperCase() + (L.clear ? ' JUMP' : ' HOP · CLEARS NOTHING')) + ' · ' + L.v0.toFixed(0) + ' u/s' : 'LAST JUMP —',
         L ? 'ground covered ' + L.d.toFixed(0) + ' · top ' + L.top.toFixed(0) + ' · ' + L.T + ' s' : '',
         'over: ' + over, '',
         'take-off → distance (× ' + P['upgrades.jumpAirtime'] + ' s):',
@@ -569,7 +584,7 @@ window.JUMP_P = {"movement.walkSpeed":81,"movement.runSpeed":162,"movement.rampS
       this.rotate.setVisible(!!S.portrait);
       if (S.portrait) g.fillStyle(0x0b1016, 1).fillRect(0, 0, w, h);
       this.prompt.setVisible(!!(pd && pd.setup)); if (pd && pd.setup) this.prompt.setText('GAMEPAD SETUP\nPress the button for ' + (pd.setup === 'a' ? 'DASH (A)' : 'JUMP (B)') + '\nG or ESC cancels');
-      this.helpBox.setVisible(S.help).setText(['THE JUMP, AFTER LINK\'S AWAKENING', '', 'The jump keeps the speed you jump with:', '  standing: straight up · walking ' + sp.walk + ' · running ' + sp.run, '  during a dash (B in a dash): a long jump at ' + sp.dash + ' (the cap)', 'Always ' + P['upgrades.jumpHeight'] + ' high at the top, ' + P['upgrades.jumpAirtime'] + ' s in the air.', 'A normal jump steers in the air; a dash jump holds its line.', 'Landing keeps the speed. Clear a car or a barrier only above its top.', '', 'Keys: WASD · SPACE/K dash · L/SHIFT jump · G pad setup · 1–4 places · R clear · H help'].join('\n'));
+      this.helpBox.setVisible(S.help).setText(['THE JUMP, AFTER LINK\'S AWAKENING', '', 'The jump keeps the speed you jump with:', '  standing: straight up · walking ' + sp.walk + ' · running ' + sp.run, '  during a dash (B in a dash): a long jump at ' + sp.dash + ' (the cap)', 'Always ' + P['upgrades.jumpHeight'] + ' high at the top, ' + P['upgrades.jumpAirtime'] + ' s in the air.', 'A normal jump steers in the air; a dash jump holds its line.', 'Landing keeps the speed. Clear a car or a barrier only above its top.', 'Run to clear: a standing or walking jump is a hop and clears nothing.', 'Diagonal: the way across is longer. A rail at 45° takes 1.41 × its depth + body.', 'Into oncoming traffic, a car passes under faster; with the traffic, slower.', '', 'Keys: WASD · SPACE/K dash · L/SHIFT jump · G pad setup · 1–4 places · R clear · H help'].join('\n'));
     }
   }
 

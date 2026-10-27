@@ -5,6 +5,9 @@
 //   speed, a long jump. Every take-off speed is capped at upgrades.jumpMaxSpeed.
 // - A normal jump steers in the air: its velocity turns toward the input, at the take-off speed (at least walking pace), by at
 //   most upgrades.jumpAirAccel per second. No input: the momentum holds. A dash jump is committed: no steering.
+// - Edit 77 (proto.jump.runToClear): only a running jump or a dash jump clears anything. Standing and walking jumps hop:
+//   the body rises, but it meets what it meets as if on the ground.
+// - Diagonals: a thing crossed at an angle is longer to cross. inside() gives the path through it.
 (function (root) {
   'use strict';
   const hyp = Math.hypot;
@@ -12,7 +15,8 @@
     let sp = hyp(vx, vy); const cap = P['upgrades.jumpMaxSpeed'];
     if (sp > cap) { vx *= cap / sp; vy *= cap / sp; sp = cap; }
     const walk = P['movement.walkSpeed'], kind = dash ? 'dash' : sp < 1 ? 'stand' : sp <= walk * 1.05 ? 'walk' : 'run';
-    return { t: 0, T: P['upgrades.jumpAirtime'], H: P['upgrades.jumpHeight'], vx, vy, v0: sp, steer: !dash, kind };
+    const clear = !P['proto.jump.runToClear'] || kind === 'run' || kind === 'dash';
+    return { t: 0, T: P['upgrades.jumpAirtime'], H: P['upgrades.jumpHeight'], vx, vy, v0: sp, steer: !dash, kind, clear };
   }
   function z(J, t) { const T = J.T; t = t == null ? J.t : t; return t <= 0 || t >= T ? 0 : 4 * J.H * t * (T - t) / (T * T); }
   function air(P, J, mx, my, dt) { // steer a normal jump toward the input
@@ -29,9 +33,20 @@
   function reach(P, v) { return v * P['upgrades.jumpAirtime']; }
   function over(P, v, h) { const w = above(P, h); return w ? v * (w[1] - w[0]) : 0; }
   function clears(P, v, h, d, r) { return over(P, v, h) >= d + 2 * r; }
+  // A box `depth` along the approach and `width` across it, crossed through its middle `deg` off square: the path the body
+  // (radius r) travels while over it. Square on: depth + 2r. At 45° across a long rail: (depth + 2r) × 1.41.
+  function inside(depth, width, r, deg) {
+    const a = Math.abs(deg || 0) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+    return Math.min(c > 1e-9 ? (depth + 2 * r) / c : Infinity, s > 1e-9 ? (width + 2 * r) / s : Infinity);
+  }
+  function clearsAt(P, v, h, depth, width, r, deg) { return over(P, v, h) >= inside(depth, width, r, deg); }
+  // A car moving along +x at cv, crossed by a jump with velocity (vx, vy): the time the body is over its footprint
+  // (length L along the lane, width W across), crossing through its middle. It clears if that fits the time above its roof.
+  function carTime(vx, vy, cv, L, W, r) { const ux = Math.abs(vx - cv), uy = Math.abs(vy); return Math.min(uy > 1e-9 ? (W + 2 * r) / uy : Infinity, ux > 1e-9 ? (L + 2 * r) / ux : Infinity); }
+  function carClears(P, vx, vy, cv, L, W, h, r) { const w = above(P, h); return !!w && carTime(vx, vy, cv, L, W, r) <= w[1] - w[0]; }
   function speeds(P) { // the four take-offs: standing, walking, running, a dash jump at the cap
     return { stand: 0, walk: P['movement.walkSpeed'], run: P['movement.runSpeed'], dash: P['upgrades.jumpMaxSpeed'] };
   }
-  const api = { takeoff, z, air, slide, above, reach, over, clears, speeds };
+  const api = { takeoff, z, air, slide, above, reach, over, clears, inside, clearsAt, carTime, carClears, speeds };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.JUMP = api;
 })(typeof window !== 'undefined' ? window : globalThis);

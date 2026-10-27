@@ -1,11 +1,12 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 6.6](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_6.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–76.
+> **Current prototype: [Prototype 6.7](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_7.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–77.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 6.6 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_6.html` | Current (Edit 76). Fits any screen; touch only on phones and tablets, in the HUD's glass; the jump keeps its take-off speed (Link's Awakening); stair-head freeze fixed |
-> | Jump | [`prototypes/jump/`](prototypes/jump/README.md) | `dummies_jump.html` | Test (Edit 76). Phaser 3.90 yard: moving traffic, parked cars, barriers 8–64 deep, a ruler, a side view of every flight |
+> | 6.7 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_7.html` | Current (Edit 77). Four ability tracks by level, one per button (Battery A, Legs B, Arms X, Throw Y); each level shields its ability from damage; run to clear |
+> | 6.6 | `prototypes/p6/` | `dummies_p6_6.html` | Frozen (Edit 76). Fits any screen; touch only on phones and tablets, in the HUD's glass; the jump keeps its take-off speed (Link's Awakening); stair-head freeze fixed |
+> | Jump | [`prototypes/jump/`](prototypes/jump/README.md) | `dummies_jump.html` | Test (Edits 76–77). Phaser 3.90 yard: moving traffic, parked cars, barriers 8–64 deep, a ruler, a side view of every flight; run to clear; diagonals |
 > | 6.5 | `prototypes/p6/` | `dummies_p6_5.html` | Frozen (Edit 75). DIRECT turning; A dash, B jump, X grab, Y throw; jumpable tag; combos; Ricochet; any gamepad; landscape touch |
 > | 6.4 | `prototypes/p6/` | `dummies_p6_4.html` | Frozen (Edit 72). Ring stalls diagnosed; vehicles at 0.9; steady roundabout signals |
 > | Controls | [`prototypes/controls/`](prototypes/controls/README.md) | `dummies_controls.html` | Test (Edits 73–74). Phaser 3.90: landscape touch with an analog stick and A/B columns; any gamepad, with button setup; keys and mouse; three turn models |

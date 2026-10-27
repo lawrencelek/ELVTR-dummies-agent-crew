@@ -17,7 +17,8 @@
   // Edit 72: every vehicle vehicles.scale (0.9) of its class's size in all three dimensions.
   // Edit 75 (Prototype 6.5): DIRECT turning; A dash, B jump, X grab, Y throw; combo scoring.
   const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'vehicles.scale': X.OVERRIDES['vehicles.scale'] != null ? X.OVERRIDES['vehicles.scale'] : 0.9,
-    'proto.turnModel': 2, 'proto.input.fourButtons': 1, 'proto.combo': 1 };
+    'proto.turnModel': 2, 'proto.input.fourButtons': 1, 'proto.combo': 1,
+    'proto.abilities': 1, 'proto.jump.runToClear': 1 }; // Edit 77 (Prototype 6.7): ability tracks by level; run to clear
   for (const k of Object.keys(P)) if (/^vehicles\.[a-z]+\.(length|width|height)$/.test(k)) P6SIM[k] = Math.round(P[k] * P6SIM['vehicles.scale'] * 10) / 10;
   Object.assign(P, P6SIM);
   const W = P['world.width'], H = P['world.height'], LW = P['world.laneWidth'], OUTER = LW + P['proto.shoulderWidth'], HALF = P['world.deckWidth'] / 2, PW = P['world.parapetWidth'];
@@ -2002,7 +2003,7 @@
         if (back && lat >= l0 + 2 && lat <= l1 - 2 && t >= 0.5 && t <= 1 + ext + 0.25 && this.enterStair(st, 'head')) return; // (pushing on across a narrow walkway froze it at the far rail, on the stair)
       }
       if (b.x < 0 || b.x > W || b.y < 0 || b.y > H) { if (this.neighbourFloor(b.x, b.y, z)) return; }
-      else if (f.drop || (f.dropAt && f.dropAt(b.x, b.y)) || (f.rail && b.mode === 'jump' && b.z >= this.P['world.jumpableHeight'])) { // Edit 75: a jump clears a handrail or parapet and drops to the level below
+      else if (f.drop || (f.dropAt && f.dropAt(b.x, b.y)) || (f.rail && b.mode === 'jump' && b.jump && b.jump.clear !== false && b.z >= this.P['world.jumpableHeight'])) { // Edit 75: a jump clears a handrail or parapet and drops to the level below
         let ux = b.x - b.px, uy = b.y - b.py, l = hyp(ux, uy); if (l < 1e-6) { ux = Math.cos(b.facing); uy = Math.sin(b.facing); l = 1; }
         if (f.rail && b.mode === 'jump') this.emit('rail-jump', { kind: f.kind, x: +b.x.toFixed(1), y: +b.y.toFixed(1), level: b.level });
         return this.startDrop6(ux / l, uy / l);
@@ -2094,7 +2095,7 @@
     collideBody(contacts, k) {
       const P = this.P, b = this.body, r = P['body.radius'], G = this.level;
       if (!b.alive || b.stair || b.mode === 'drop' || b.mode === 'rescue') return;
-      const air = b.mode === 'jump' ? b.z : 0; // Edit 75: how high the dummy is in a jump
+      const air = b.mode === 'jump' && b.jump && b.jump.clear !== false ? b.z : 0; // Edit 75: how high the dummy is in a jump. Edit 77: a hop clears nothing
       const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; };
       const push = (nx, ny, pen) => { b.x += nx * pen; b.y += ny * pen; const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= vn * nx; b.vy -= vn * ny; } if (b.mode === 'jump') X.JUMP.slide(b.jump, nx, ny); block(); }; // Edit 76: in a jump, slide along it
       const rect = (s) => { const res = circleRect(b.x, b.y, r, s); if (res) push(res.nx, res.ny, res.pen); };

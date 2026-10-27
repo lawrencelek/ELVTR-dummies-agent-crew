@@ -106,14 +106,14 @@
       const Jt = J.takeoff(P, vx, vy, !!dash);
       Object.assign(Jt, { x0: b.x, y0: b.y, samples: [[0, 0]], passed: new Map() });
       b.jump = Jt; b.mode = 'jump'; b.lunge = null; b.z = 0; if (Jt.v0 > 1) b.facing = Math.atan2(Jt.vy, Jt.vx);
-      S.jumps++; this.pop(b.x, b.y - 26, (Jt.kind === 'dash' ? 'LONG JUMP ' : Jt.kind.toUpperCase() + ' JUMP ') + Jt.v0.toFixed(0), '#7fe3ff');
+      S.jumps++; this.pop(b.x, b.y - 26, (Jt.kind === 'dash' ? 'LONG JUMP ' : Jt.kind.toUpperCase() + (Jt.clear ? ' JUMP ' : ' HOP ')) + Jt.v0.toFixed(0), Jt.clear ? '#7fe3ff' : '#8796a3');
     }
     land(hit) {
       const b = this.body, Jt = b.jump, sp = Math.hypot(Jt.vx, Jt.vy), walk = P['movement.walkSpeed'], run = P['movement.runSpeed'];
       const d = Math.hypot(b.x - Jt.x0, b.y - Jt.y0), top = Math.max(...Jt.samples.map((q) => q[1]));
       for (const q of OBS) if (rectHit(b.x, b.y, R, q)) { const k = 'o' + OBS.indexOf(q), p = Jt.passed.get(k); if (p) p.ok = false; else Jt.passed.set(k, { name: q.name, ok: false }); } // landed on it: short
       const over = [...Jt.passed.values()];
-      S.last = { kind: Jt.kind, v0: Jt.v0, d, top, T: Jt.T, over, hit: !!hit, x0: Jt.x0, y0: Jt.y0, x1: b.x, y1: b.y, samples: Jt.samples };
+      S.last = { kind: Jt.kind, clear: Jt.clear, v0: Jt.v0, d, top, T: Jt.T, over, hit: !!hit, x0: Jt.x0, y0: Jt.y0, x1: b.x, y1: b.y, samples: Jt.samples };
       S.flights.push(S.last); if (S.flights.length > 6) S.flights.shift();
       b.jump = null; b.z = 0; b.landT = P['upgrades.jumpRecovery']; b.vx = Jt.vx; b.vy = Jt.vy;
       if (sp > 1) { b.mode = 'move'; b.rampT = P['movement.rampSeconds'] * C.clamp((sp - walk) / Math.max(1, run - walk), 0, 1); } else { b.mode = 'idle'; b.vx = b.vy = 0; }
@@ -142,17 +142,17 @@
       this.cars = this.cars.filter((c) => c.x > -140 && c.x < W + 140);
     }
     collide() { // solid unless the dummy is above a jumpable thing's top. In a jump the flight slides along what it meets
-      const b = this.body, z = b.z || 0, Jt = b.jump;
+      const b = this.body, z = b.z || 0, Jt = b.jump, zc = Jt && Jt.clear ? z : 0; // Edit 77: a hop (stand, walk) clears nothing
       const push = (res) => { b.x += res.nx * res.pen; b.y += res.ny * res.pen; const vn = b.vx * res.nx + b.vy * res.ny; if (vn < 0) { b.vx -= vn * res.nx; b.vy -= vn * res.ny; } if (Jt) J.slide(Jt, res.nx, res.ny); };
       const note = (key, name, over) => { if (!Jt) return; const p = Jt.passed.get(key); if (!p) Jt.passed.set(key, { name, ok: over }); else if (!over) p.ok = false; };
       for (const q of OBS) {
         const res = rectHit(b.x, b.y, R, q); if (!res) continue;
-        const over = q.jumpable && z >= q.z; note('o' + OBS.indexOf(q), q.name, over);
+        const over = q.jumpable && zc >= q.z; note('o' + OBS.indexOf(q), q.name, over);
         if (!over) push(res);
       }
       for (const c of this.cars) {
         const q = { x: c.x - c.L / 2, y: c.y - c.Wd / 2, w: c.L, h: c.Wd }, res = rectHit(b.x, b.y, R, q); if (!res) continue;
-        const over = z >= c.h; note('c' + c.cls + c.y, 'moving ' + c.cls, over);
+        const over = zc >= c.h; note('c' + c.cls + c.y, 'moving ' + c.cls, over);
         if (over) continue;
         if ((b.mode === 'lunge' || b.mode === 'jump') && c.hitT === 0) { S.hits++; c.hitT = 0.6; this.pop(b.x, b.y - 22, c.cls.toUpperCase() + ' HIT', '#ff4fd8'); this.cameras.main.shake(80, 0.004); }
         if (b.mode === 'jump') this.land(true); // struck below the roof: the flight ends here
@@ -244,7 +244,7 @@
       const dev = { keyboard: 'KEYS: WASD move · SPACE/K dash (A) · L/SHIFT jump (B)', pad: 'GAMEPAD' + (pd && pd.id ? ' · ' + pd.id.slice(0, 22) : '') + ': stick · A dash · B jump', touch: 'TOUCH: stick · A dash · B jump' }[S.device];
       const over = L ? L.over.map((o) => o.name + (o.ok ? ' ✓' : ' ✗')).join(' · ') || '—' : '—';
       this.info.setText([dev, S.touchOn ? null : '1 parked · 2 barriers · 3 ruler · 4 traffic · H help · R clear', '',
-        L ? (L.kind === 'dash' ? 'LONG (DASH) JUMP' : L.kind.toUpperCase() + ' JUMP') + ' · ' + L.v0.toFixed(0) + ' u/s' : 'LAST JUMP —',
+        L ? (L.kind === 'dash' ? 'LONG (DASH) JUMP' : L.kind.toUpperCase() + (L.clear ? ' JUMP' : ' HOP · CLEARS NOTHING')) + ' · ' + L.v0.toFixed(0) + ' u/s' : 'LAST JUMP —',
         L ? 'ground covered ' + L.d.toFixed(0) + ' · top ' + L.top.toFixed(0) + ' · ' + L.T + ' s' : '',
         'over: ' + over, '',
         'take-off → distance (× ' + P['upgrades.jumpAirtime'] + ' s):',
@@ -276,7 +276,7 @@
       this.rotate.setVisible(!!S.portrait);
       if (S.portrait) g.fillStyle(0x0b1016, 1).fillRect(0, 0, w, h);
       this.prompt.setVisible(!!(pd && pd.setup)); if (pd && pd.setup) this.prompt.setText('GAMEPAD SETUP\nPress the button for ' + (pd.setup === 'a' ? 'DASH (A)' : 'JUMP (B)') + '\nG or ESC cancels');
-      this.helpBox.setVisible(S.help).setText(['THE JUMP, AFTER LINK\'S AWAKENING', '', 'The jump keeps the speed you jump with:', '  standing: straight up · walking ' + sp.walk + ' · running ' + sp.run, '  during a dash (B in a dash): a long jump at ' + sp.dash + ' (the cap)', 'Always ' + P['upgrades.jumpHeight'] + ' high at the top, ' + P['upgrades.jumpAirtime'] + ' s in the air.', 'A normal jump steers in the air; a dash jump holds its line.', 'Landing keeps the speed. Clear a car or a barrier only above its top.', '', 'Keys: WASD · SPACE/K dash · L/SHIFT jump · G pad setup · 1–4 places · R clear · H help'].join('\n'));
+      this.helpBox.setVisible(S.help).setText(['THE JUMP, AFTER LINK\'S AWAKENING', '', 'The jump keeps the speed you jump with:', '  standing: straight up · walking ' + sp.walk + ' · running ' + sp.run, '  during a dash (B in a dash): a long jump at ' + sp.dash + ' (the cap)', 'Always ' + P['upgrades.jumpHeight'] + ' high at the top, ' + P['upgrades.jumpAirtime'] + ' s in the air.', 'A normal jump steers in the air; a dash jump holds its line.', 'Landing keeps the speed. Clear a car or a barrier only above its top.', 'Run to clear: a standing or walking jump is a hop and clears nothing.', 'Diagonal: the way across is longer. A rail at 45° takes 1.41 × its depth + body.', 'Into oncoming traffic, a car passes under faster; with the traffic, slower.', '', 'Keys: WASD · SPACE/K dash · L/SHIFT jump · G pad setup · 1–4 places · R clear · H help'].join('\n'));
     }
   }
 

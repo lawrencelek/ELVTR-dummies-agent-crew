@@ -42,6 +42,27 @@ ok(T['sedan broadside'].run && !T['sedan broadside'].walk && !T['van broadside']
   'cars: a sedan broadside takes a running jump; a van broadside or a sedan end-on a dash jump; a bus never');
 const standUnder = J.above(P, P['vehicles.sedan.height'] * VS), passUnder = P['vehicles.sedan.cruiseSpeed'] * (standUnder[1] - standUnder[0]);
 ok(passUnder < P['vehicles.sedan.length'] * VS + 2 * R, `standing jump: a sedan at cruise passes ${passUnder.toFixed(0)} under the dummy while it is above the roof; it needs ${(P['vehicles.sedan.length'] * VS + 2 * R).toFixed(0)}. Jump across a car, not over one in place`);
+// Edit 77: run to clear. Standing and walking jumps hop; a running or dash jump clears.
+const hop = J.takeoff(P, sp.walk, 0, false), runJ = J.takeoff(P, sp.run, 0, false), P0 = Object.assign({}, P, { 'proto.jump.runToClear': 0 });
+ok(P['proto.jump.runToClear'] === 1 && !hop.clear && !J.takeoff(P, 0, 0, false).clear && runJ.clear && J.takeoff(P, 900, 0, true).clear && J.takeoff(P0, sp.walk, 0, false).clear,
+  'run to clear (proto.jump.runToClear 1): standing and walking jumps hop and clear nothing; running and dash jumps clear. At 0, a walking jump clears what its arc clears');
+// diagonals: a thing crossed off square is longer to cross. Barriers and parked cars, through their middle
+const ANG = [0, 30, 45];
+const along = (name) => { const q = { handrail: 96, jersey: 96, 'planter 32': 96, 'planter 48': 96 }[name]; if (q) return q; const m = /^(sedan|van|bus) (broadside|end-on)/.exec(name); return m ? P['vehicles.' + m[1] + (m[2] === 'broadside' ? '.length' : '.width')] * VS : 96; };
+const DIAG = TABLE.filter((r) => r.jumpable).map((r) => { const row = { name: r.name }; for (const k of ['run', 'dash']) for (const a of ANG) { const need = J.inside(r.d, along(r.name), R, a), have = J.over(P, sp[k], r.h); row[k + a] = have >= need; row[k + a + 'Slack'] = have - need; } return row; });
+console.log('  diagonals: what a running and a dash jump clear at 0°, 30°, 45° off square (through the middle):');
+for (const r of DIAG) console.log(`    ${r.name.padEnd(17)} run ${ANG.map((a) => a + '° ' + (r['run' + a] ? '✓' : '✗')).join(' ')} · dash ${ANG.map((a) => a + '° ' + (r['dash' + a] ? '✓' : '✗')).join(' ')}`);
+const D = Object.fromEntries(DIAG.map((r) => [r.name, r]));
+const railMax = Math.acos((8 + 2 * R) / J.over(P, sp.run, JH)) * 180 / Math.PI, sedanMax = Math.acos((P['vehicles.sedan.width'] * VS + 2 * R) / J.over(P, sp.run, P['vehicles.sedan.height'] * VS)) * 180 / Math.PI;
+ok(D.handrail.run45 && D['sedan broadside'].run30 && !D['sedan broadside'].run45 && !D['planter 32'].run30 && D['van broadside'].dash45 && D['planter 48'].dash45,
+  `diagonals: a running jump clears a handrail to ${railMax.toFixed(0)}° off square, a sedan broadside to ${sedanMax.toFixed(0)}° (at 45° it needs 72 above the roof; a run gives 60), a 32 planter only square on. A dash jump clears a van and a 48 planter at 45°`);
+// moving traffic, crossed at an angle (the car runs along the lane at cruise): into the oncoming car it passes under faster
+const SED = { L: P['vehicles.sedan.length'] * VS, W: P['vehicles.sedan.width'] * VS, h: P['vehicles.sedan.height'] * VS, v: P['vehicles.sedan.cruiseSpeed'] };
+const mvT = (v, deg) => { const a = deg * Math.PI / 180; return { t: J.carTime(v * Math.sin(a), v * Math.cos(a), SED.v, SED.L, SED.W, R), ok: J.carClears(P, v * Math.sin(a), v * Math.cos(a), SED.v, SED.L, SED.W, SED.h, R) }; };
+const win = J.above(P, SED.h), wT = win[1] - win[0];
+const mvRun0 = mvT(sp.run, 0), mvRunInto = mvT(sp.run, -45), mvRunWith = mvT(sp.run, 45);
+console.log(`  a moving sedan (${SED.v} u/s), crossed running: square ${mvRun0.t.toFixed(2)} s over it · 45° into it ${mvRunInto.t.toFixed(2)} s · 45° with it ${mvRunWith.t.toFixed(2)} s; above its roof ${wT.toFixed(2)} s`);
+ok(mvRun0.ok && mvRunInto.ok && !mvRunWith.ok && mvRunInto.t < mvRun0.t, 'moving sedan: a running jump clears it square on, and faster diagonally into its path; diagonally with the traffic it is struck');
 
 // ---------- 2. the page
 (async () => {
@@ -53,7 +74,7 @@ ok(passUnder < P['vehicles.sedan.length'] * VS + 2 * R, `standing jump: a sedan 
   const boot = async (pg) => { await pg.goto(url); await pg.waitForFunction(() => window.JUMP_GAME && window.JUMP_GAME.scene.getScene('yard') && window.JUMP_GAME.scene.getScene('yard').body && window.JUMP_GAME.scene.getScene('hud').L, null, { timeout: 15000 }); await pg.waitForTimeout(300); };
   let pg = await br.newPage({ viewport: { width: 1280, height: 720 } }); watch(pg); await boot(pg);
   const desk = await pg.evaluate(() => ({ touch: window.JUMP_STATE.touchOn, shown: window.JUMP_GAME.scene.getScene('hud').btn.a.visible, title: window.JUMP_GAME.scene.getScene('hud').title.text, view: window.JUMP_STATE.view }));
-  ok(!desk.touch && !desk.shown && /EDIT76/.test(desk.title), `computer (1280 × 720): no touch controls; title "${desk.title}"; the yard ${desk.view.w} × ${desk.view.h}, the panel right`);
+  ok(!desk.touch && !desk.shown && new RegExp(reg.registryVersion.split('-')[0].toUpperCase()).test(desk.title), `computer (1280 × 720): no touch controls; title "${desk.title}"; the yard ${desk.view.w} × ${desk.view.h}, the panel right`);
   // live keyboard: 3 (ruler), hold D, L
   await pg.keyboard.press('Digit3'); await pg.keyboard.down('KeyD'); await pg.waitForTimeout(1300); await pg.keyboard.press('KeyL'); await pg.waitForTimeout(700); await pg.keyboard.up('KeyD'); await pg.waitForTimeout(300);
   let L = await pg.evaluate(() => window.JUMP_STATE.last);
@@ -144,6 +165,53 @@ ok(passUnder < P['vehicles.sedan.length'] * VS + 2 * R, `standing jump: a sedan 
   console.log('    moving traffic, crossed: ' + Object.entries(mv).map(([k, r]) => k + ' ' + (r.cleared ? '✓' : '✗ hit')).join(' · '));
   ok(mv['sedan run'].cleared && mv['sedan walk'].hit && mv['van dash'].cleared && !mv['van run'].cleared && mv['bus dash'].hit,
     'moving traffic: a running jump crosses a passing sedan; a walking jump strikes it. A dash jump crosses a van; a running jump does not. A bus is struck');
+  // run to clear, in the yard: a test rail 1 deep, 20 high. A walking jump's arc would clear it; the rule says hop
+  await pg.evaluate(() => window.JUMP_YARD.OBS.push({ x: 400, y: 330, w: 96, h: 1, z: 20, name: 'test rail', kind: 'rail', jumpable: true, across: 1 }));
+  const rail = { x: 400, y: 330, w: 96, h: 1, z: 20, name: 'test rail' };
+  const hopRule = await attempt(rail, 'walk');
+  await pg.evaluate(() => { window.JUMP_P['proto.jump.runToClear'] = 0; });
+  const hopOff = await attempt(rail, 'walk');
+  await pg.evaluate(() => { window.JUMP_P['proto.jump.runToClear'] = 1; window.JUMP_YARD.OBS.pop(); });
+  ok(!hopRule.cleared && hopOff.cleared, `run to clear: a walking jump at a rail 1 deep hops and is held (${hopRule.cleared ? '✓' : '✗'}); with the rule off its arc clears it (${hopOff.cleared ? '✓' : '✗'})`);
+  // diagonals in the yard: run at each thing 45° off square (south-east), through its middle; take off so the middle is at the top
+  const diag = async (q, kind, deg) => {
+    const v = sp[kind], a = deg * Math.PI / 180, dx = Math.sin(a), dy = Math.cos(a), w = J.above(P, q.z), tm = w ? (w[0] + w[1]) / 2 : P['upgrades.jumpAirtime'] / 2;
+    const cx = q.x + q.w / 2, cy = q.y + q.h / 2, xT = cx - dx * v * tm, yT = cy - dy * v * tm, back = kind === 'walk' ? 1 : 24, keys = deg ? 'SD' : 'S';
+    await S.place(xT - dx * back, yT - dy * back, Math.atan2(dy, dx), kind !== 'walk');
+    let lunged = false;
+    for (let i = 0; i < 200; i++) {
+      const b = await S.b(), togo = (xT - b.x) * dx + (yT - b.y) * dy;
+      if (kind === 'dash') { if (!lunged && togo <= 1148 / 120 + 0.5) { await S.step(1, keys, 'a'); lunged = true; continue; } if (lunged) { await S.step(1, keys, 'b'); break; } }
+      else if (togo <= 0) { await S.step(1, keys, 'b'); break; }
+      await S.step(1, keys);
+    }
+    for (let i = 0; i < 80; i++) { await S.step(1, keys); if (!(await S.b()).jump) break; }
+    const Ls = await S.last(), mine = Ls && Ls.over.find((o) => o.name === q.name), b = await S.b();
+    return { cleared: !!(mine && mine.ok) && b.y > q.y + q.h, kind: Ls && Ls.kind };
+  };
+  const DG = [];
+  for (const [name, kind] of [['handrail', 'run'], ['jersey', 'dash'], ['planter 32', 'dash'], ['planter 48', 'dash'], ['sedan broadside', 'run'], ['sedan broadside', 'dash'], ['van broadside', 'dash']]) {
+    const q = Y.OBS.find((o) => o.name === name), r = await diag(q, kind, 45), rule = D[name][kind + 45], slack = D[name][kind + 45 + 'Slack'];
+    DG.push({ name, kind, cleared: r.cleared, rule, slack });
+  }
+  const dFirm = DG.filter((t) => Math.abs(t.slack) >= 4);
+  console.log('    yard at 45°: ' + DG.map((t) => t.name + ' ' + t.kind + ' ' + (t.cleared ? '✓' : '✗') + (Math.abs(t.slack) < 4 ? '?' : '')).join(' · '));
+  ok(dFirm.every((t) => t.cleared === t.rule), `yard at 45°: ${dFirm.filter((t) => t.cleared === t.rule).length}/${dFirm.length} firm cases match the sums`);
+  // moving traffic at 45°: running into the oncoming sedan clears; running with it is struck
+  const mvDiag = async (deg) => { // deg < 0: into the car's path (the car comes from the west, so run west of north)
+    const v = sp.run, a = deg * Math.PI / 180, dx = Math.sin(a), dy = -Math.cos(a), lane = Y.LANES[1], w = J.above(P, SED.h), tm = (w[0] + w[1]) / 2, x = 480;
+    const xT = x - dx * v * tm, yT = lane - dy * v * tm, keys = deg < 0 ? 'WA' : 'WD';
+    await S.place(xT - dx * 24, yT - dy * 24, Math.atan2(dy, dx), true);
+    for (let i = 0; i < 200; i++) { const b = await S.b(), togo = (xT - b.x) * dx + (yT - b.y) * dy; if (togo <= 0) break; await S.step(1, keys); }
+    const b0 = await S.b(), xc = b0.x + dx * v * tm;
+    await pg.evaluate(([xc, tm]) => { const y = window.JUMP_GAME.scene.getScene('yard'), Q = window.JUMP_YARD, c = Q.SEDAN; y.cars = [Object.assign({}, c, { x: xc - c.v * tm, y: Q.LANES[1], dir: 1, hitT: 0 })]; }, [xc, tm]);
+    const h0 = await pg.evaluate(() => window.JUMP_STATE.hits);
+    await S.step(1, keys, 'b'); for (let k = 0; k < 90; k++) await S.step(1, keys);
+    const Ls = await S.last(), h1 = await pg.evaluate(() => window.JUMP_STATE.hits);
+    return { cleared: !Ls.hit && h1 === h0, hit: Ls.hit || h1 > h0 };
+  };
+  const into = await mvDiag(-45), withT = await mvDiag(45);
+  ok(into.cleared && withT.hit, `moving sedan at 45°: a running jump into its path clears (${into.cleared ? '✓' : '✗'}); with the traffic it is struck (${withT.hit ? 'hit' : 'clear'})`);
   // a standing jump as a sedan comes: struck
   await S.place(480, Y.LANES[1], -Math.PI / 2);
   await pg.evaluate(() => { const y = window.JUMP_GAME.scene.getScene('yard'), Q = window.JUMP_YARD, c = Q.SEDAN; y.cars = [Object.assign({}, c, { x: 480 - c.L / 2 - 13 - c.v * 0.06, y: Q.LANES[1], dir: 1, hitT: 0 })]; });
@@ -204,7 +272,7 @@ ok(passUnder < P['vehicles.sedan.length'] * VS + 2 * R, `standing jump: a sedan 
   if (OUT) await pg.screenshot({ path: path.join(OUT, 'p76_jump_portrait.png') });
   await ctx.close();
   ok(!logs.length, 'browser: no page errors' + (logs.length ? ' — ' + logs.slice(0, 3).join('; ') : ''));
-  if (OUT) fs.writeFileSync(path.join(OUT, 'p76_jump_table.json'), JSON.stringify({ reach, table: TABLE, yard: tested, ruler: { stand: dist.stand, walk: dist.walk.d, run: dist.run.d, dash: dist.dash.d }, traffic: mv }, null, 1));
+  if (OUT) fs.writeFileSync(path.join(OUT, 'p77_jump_table.json'), JSON.stringify({ reach, table: TABLE, diagonals: DIAG, yard: tested, yard45: DG, ruler: { stand: dist.stand, walk: dist.walk.d, run: dist.run.d, dash: dist.dash.d }, traffic: mv, traffic45: { into, with: withT } }, null, 1));
   await br.close();
   done();
 })();

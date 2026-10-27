@@ -3,7 +3,7 @@
    Screen: 640 × 360 art pixels, integer-scaled. Field: 400 × 300 art pixels at (120, 30). HUD and screens: 1280 × 720 reference units. */
 (function () {
   'use strict';
-  const { Sim, NODES, NODES4, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
+  const { Sim, NODES, NODES4, NODES7, TRACKS, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
   const W6 = window.WORLD6 || null; // P6 (Edit 62): Parkland, Waterfront, Monument, built by world6.js
   const LEVEL_LIST = W6 ? W6.LEVEL_LIST : window.DUMMIES.LEVEL_LIST;
   const INFO = (id) => (W6 && W6.INFO(id)) || window.DUMMIES.INFO(id);
@@ -69,7 +69,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = W6 ? 'P6.6' : 'P5.3'; // Prototype 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = W6 ? 'P6.7' : 'P5.3'; // Prototype 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -150,6 +150,7 @@
   // Keys: Space or K dash (A) · L or Shift jump (B) · J or E grab (X) · I or Q throw (Y): IJKL sits like the pad's diamond.
   // Gamepads: pads.js (every pad; hat d-pads; buttons set up by the player). Touch: an analog stick and the diamond (below).
   const FOUR = !!(W6 && W6.P6SIM && W6.P6SIM['proto.input.fourButtons']);
+  const ABIL = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities']); // Edit 77 (P6.7): the shop sells four ability tracks by level
   const held = new Set();
   const q = { a: 0, b: 0, bUp: 0, x: 0, y: 0 };
   const menuQ = [];
@@ -699,7 +700,7 @@
           break;
         }
         case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(e.why ? DENY_TEXT[e.action + '.' + e.why] || 'Denied' : copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
-        case 'jump': { Snd.tone(330, e.kind === 'dash' ? 880 : 660, e.kind === 'dash' ? 0.18 : 0.12, 'triangle', 0.08); const b = s.body; puff(b.x, b.y + 6, e.kind === 'dash' ? 10 : 6, { type: 'dust', speed: 55, life: 0.35, size: 3 }); if (e.kind === 'dash' && !fx.longJumpSeen) { fx.longJumpSeen = true; toast('Long jump: B during a dash carries its speed'); } break; } // Edit 75–76
+        case 'jump': { if (e.clear === false && !fx.hopTold) { fx.hopTold = true; toast('A hop clears nothing. Run, then jump.'); } /* Edit 77 */ Snd.tone(330, e.kind === 'dash' ? 880 : 660, e.kind === 'dash' ? 0.18 : 0.12, 'triangle', 0.08); const b = s.body; puff(b.x, b.y + 6, e.kind === 'dash' ? 10 : 6, { type: 'dust', speed: 55, life: 0.35, size: 3 }); if (e.kind === 'dash' && !fx.longJumpSeen) { fx.longJumpSeen = true; toast('Long jump: B during a dash carries its speed'); } break; } // Edit 75–76
         case 'jump-land': { Snd.tone(160, 90, 0.08, 'square', 0.05); const b = s.body; puff(b.x, b.y + 6, 5, { type: 'dust', speed: 45, life: 0.3, size: 3 }); break; }
         case 'rail-jump': Snd.tone(520, 880, 0.1, 'triangle', 0.06); toast('Over the rail'); break;
         case 'combo': [660, 880, 1100].slice(0, Math.min(3, e.n)).forEach((f, j) => Snd.tone(f, f * 1.2, 0.08, 'triangle', 0.08, j * 0.06)); kick(2 + e.n, 0.18); toast('COMBO ×' + e.n + ' · points ×' + e.mult + ' · +' + num(e.bonus)); break;
@@ -710,7 +711,7 @@
           if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (THEME_NAME[e.focal || e.theme] || e.landmark || '') + (e.turns === 'diagonal' ? ' · 45° road' : '')); } // P4: generated screen names were checked against P3's layouts, so P4 shows the screen's theme
           break;
         }
-        case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODES[e.node].name })); break;
+        case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODE(e.node).name })); break;
         case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
         case 'stair': Snd.tone(260, 300, 0.05, 'triangle', 0.03); break;
@@ -745,8 +746,11 @@
   // ---------- menus
   const PAUSE_ITEMS = ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title'];
   const END_ITEMS = ['Play again from district 1', 'Choose a district', 'Show trace'];
-  const SHOP_GRID = FOUR ? [['spine'], ['jump', 'ricochet'], ['carry', 'throw'], ['bigBattery']] : [['hips', 'spine'], ['carry', 'throw'], ['bigBattery']]; // Edit 75: Legs (Jump, Ricochet); Hips leaves (DIRECT, D48)
-  const nodeDesc = (n) => (FOUR && NODES4 && NODES4[n] && NODES4[n].desc) || NODES[n].desc;
+  const SHOP_GRID = ABIL ? Object.keys(TRACKS).map((t) => [1, 2, 3].map((L) => t + L)) // Edit 77: Battery (A), Legs (B), Arms (X), Throw (Y); levels 1–3
+    : FOUR ? [['spine'], ['jump', 'ricochet'], ['carry', 'throw'], ['bigBattery']] : [['hips', 'spine'], ['carry', 'throw'], ['bigBattery']]; // Edit 75: Legs (Jump, Ricochet); Hips leaves (DIRECT, D48)
+  const SHOP_ROWS = ABIL ? 3 : 2; // the deploy row sits below the last card row
+  const NODE = (n) => (ABIL && NODES7[n]) || NODES[n];
+  const nodeDesc = (n) => (ABIL && NODES7[n] && NODES7[n].desc) || (FOUR && NODES4 && NODES4[n] && NODES4[n].desc) || NODES[n].desc;
   function handleMenus() {
     const s = app.sim;
     const live = app.screen === 'game' && !app.paused && s && (s.phase === 'play' || s.phase === 'hitstop' || s.phase === 'writeoff' || s.phase === 'scroll');
@@ -787,12 +791,12 @@
       if (s.phase === 'report' && m === 'ok') s.continueReport();
       else if (s.phase === 'shop') {
         const nc = SHOP_GRID.length, colLen = () => SHOP_GRID[app.shopCol].length;
-        if (m === 'left' || m === 'right') { app.shopCol = (app.shopCol + (m === 'right' ? 1 : -1) + nc) % nc; if (app.shopRow < 2 && app.shopRow >= colLen()) app.shopRow = colLen() - 1; }
-        else if (m === 'up') app.shopRow = app.shopRow === 2 ? colLen() - 1 : Math.max(0, app.shopRow - 1);
-        else if (m === 'down') app.shopRow = app.shopRow + 1 >= colLen() ? 2 : app.shopRow + 1;
+        if (m === 'left' || m === 'right') { app.shopCol = (app.shopCol + (m === 'right' ? 1 : -1) + nc) % nc; if (app.shopRow < SHOP_ROWS && app.shopRow >= colLen()) app.shopRow = colLen() - 1; }
+        else if (m === 'up') app.shopRow = app.shopRow === SHOP_ROWS ? colLen() - 1 : Math.max(0, app.shopRow - 1);
+        else if (m === 'down') app.shopRow = app.shopRow + 1 >= colLen() ? SHOP_ROWS : app.shopRow + 1;
         else if (m === 'back') { s.leaveShop(); clearEdges(); return; }
         else if (m === 'ok') {
-          if (app.shopRow === 2) { s.leaveShop(); clearEdges(); return; }
+          if (app.shopRow === SHOP_ROWS) { s.leaveShop(); clearEdges(); return; }
           s.buy(SHOP_GRID[app.shopCol][app.shopRow]);
         }
       } else if (s.phase === 'ending') {
@@ -1855,8 +1859,15 @@
     return out;
   }
   // Owned nodes; in the shop the selected node is tried on (blinking); the tuning preview shows all 15.
+  const DOLL_MODS = { battery: ['fastCharge', 'kineticCharge', 'bigBattery'], legs: ['jump', 'springStart', 'grip'], arms: ['carry', 'holdOn', 'neck'], throw: ['throw', 'spine', 'hips'] }; // Edit 77: a piece per level
   function dollMods(s) {
     if (app.previewMods) return PIX.MODULES;
+    if (ABIL) {
+      const out = []; for (const t of Object.keys(TRACKS)) out.push(...DOLL_MODS[t].slice(0, s.tier(t)));
+      const sel = s.phase === 'shop' && app.shopRow < SHOP_ROWS ? NODES7[SHOP_GRID[app.shopCol][app.shopRow]] : null;
+      if (sel && s.tier(sel.track) < sel.level && Math.floor(app.realT * 3) % 2 === 0) out.push(...DOLL_MODS[sel.track].slice(s.tier(sel.track), sel.level));
+      return out;
+    }
     const sel = s.phase === 'shop' && app.shopRow < 2 ? SHOP_GRID[app.shopCol][app.shopRow] || null : null;
     const tryOn = sel && !s.has(sel) && Math.floor(app.realT * 3) % 2 === 0;
     const own = (m) => s.has(m) || (m === 'springStart' && s.has('ricochet')), tried = (m) => tryOn && (m === sel || (m === 'springStart' && sel === 'ricochet')); // Edit 75: Ricochet wears the spring legs
@@ -1874,10 +1885,11 @@
   function partEffects(s) { // the abilities the damage has cut, as shown on the chassis panel
     const out = [], pc = (v) => Math.round(v * 100) + '%';
     const sp = s.partEffect('speed'), tu = s.partEffect('turn'), vw = s.partEffect('view'), th = s.partEffect('throw');
-    const da = s.partEffect('dash');
+    const da = s.partEffect('dash'), rc = ABIL ? s.partEffect('recharge') : 1;
     if (sp < 0.995) out.push(['SPEED', pc(sp)]);
     if (da < 0.995) out.push(['DASH', pc(da)]);
-    if (tu < 0.995) out.push(['TURN', pc(tu)]);
+    if (rc < 0.995) out.push(['RECHARGE', pc(rc)]); // Edit 77: torso damage slows the battery
+    if (tu < 0.995 && !ABIL) out.push(['TURN', pc(tu)]);
     if (vw < 0.995) out.push(['VIEW', Math.round(s.coneWidth()) + '°']);
     if (s.armsBroken() && (s.has('carry') || s.has('throw'))) out.push(['CONE', 'NO GRIP']);
     else if (th < 0.995 && s.has('throw')) out.push(['THROW', pc(th)]);
@@ -1957,6 +1969,7 @@
     txt(TOUCH.on || app.device === 'pad' ? 'A  CONTINUE' : 'SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, FT.accent, 'right');
   }
   function drawShop(s) {
+    if (ABIL) return drawAbilityShop(s);
     veil();
     const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36;
     panel(x, y, w, h);
@@ -1980,7 +1993,7 @@
         if (ri === 0 && col.length > 1) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 34, yy + 140); ctx.lineTo(cx + 34, yy + 150); ctx.stroke(); }
       });
     });
-    if (app.shopRow < 2 && SHOP_GRID[app.shopCol][app.shopRow]) {
+    if (app.shopRow < SHOP_ROWS && SHOP_GRID[app.shopCol][app.shopRow]) {
       const n = SHOP_GRID[app.shopCol][app.shopRow], chk = s.canBuy(n);
       let msg = '';
       if (s.has(n)) msg = NODES[n].name + ' is installed.';
@@ -1988,12 +2001,64 @@
       else { const left = s.run.credits - chk.price; msg = 'Buying ' + NODES[n].name + ' leaves ' + left + ' credit' + (left === 1 ? '' : 's') + '.'; }
       wrapText(msg, x + 28, y + 400, w - 56, 28, fLab, FT.text, 2);
     }
-    const on = app.shopRow === 2;
+    const on = app.shopRow === SHOP_ROWS;
     rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
     ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
     txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
     txt(FOUR ? (TOUCH.on ? 'STICK SELECT · A BUY · B DEPLOY' : app.device === 'pad' ? 'STICK SELECT · A BUY · B DEPLOY' : 'ARROWS SELECT · SPACE BUY · SHIFT DEPLOY') : 'ARROWS SELECT · SPACE BUY · K DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
   }
+  // Edit 77 (P6.7): the ability shop. Four tracks, one per button (A Battery, B Legs, X Arms, Y Throw); levels 1–3 down each.
+  // A card: its level, its price or state, and what it does in a few words. The selected card's full text sits below.
+  const BADGE = { A: C.dummy, B: FT.accent, X: FT.accent, Y: FT.accent };
+  function abilityLine(s, n) { // a few words per card: the ability (level 1) and the wear shield
+    const nd = NODES7[n], P = s.P, cut = Math.round(P['abilities.wearCut'] * nd.level * 100) + '%';
+    if (nd.track === 'battery') return (P['battery.secondsPerCharge'] * Math.pow(P['abilities.battery.rechargeStep'], nd.level)).toFixed(2) + ' s · −' + cut;
+    return (nd.level === 1 ? TRACKS[nd.track].verb + ' · ' : 'WEAR ') + '−' + cut;
+  }
+  function drawAbilityShop(s) {
+    veil();
+    const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36, P = s.P;
+    panel(x, y, w, h);
+    txt(copy('shop.eyebrow', 'MODIFICATION SERVICES').toUpperCase(), x + 28, y + 46, fLab, FT.accent);
+    const ct = s.run.credits + ' CREDIT' + (s.run.credits === 1 ? '' : 'S');
+    ctx.font = fLab; const cw = ctx.measureText(ct).width + 36;
+    rr(x + w - 28 - cw, y + 16, cw, 44, 12); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.5; ctx.stroke();
+    txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center');
+    const nc = SHOP_GRID.length, gap = 16, colW = (w - 56 - gap * (nc - 1)) / nc, cardH = 78, step = 86, top = y + 104;
+    SHOP_GRID.forEach((col, ci) => {
+      const cx = x + 28 + ci * (colW + gap), t = NODES7[col[0]].track, tr = TRACKS[t], lv = s.tier(t);
+      txt(tr.name.toUpperCase(), cx + 2, y + 92, '900 23px ' + F_BRAND, FT.text);
+      const br = 15, bx = cx + colW - br - 2, by = y + 84; // the button this track serves, as on the pad
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = FT.keyTop; ctx.fill(); ctx.strokeStyle = BADGE[tr.button]; ctx.lineWidth = 2; ctx.stroke();
+      txt(tr.button, bx, by + 7, '700 18px ' + F_MONO, FT.text, 'center');
+      col.forEach((n, ri) => {
+        const nd = NODES7[n], own = lv >= nd.level, chk = s.canBuy(n), on = app.shopCol === ci && app.shopRow === ri, yy = top + ri * step;
+        rr(cx, yy, colW, cardH, 12);
+        ctx.fillStyle = own ? 'rgba(79,195,232,0.28)' : on ? FT.keyTop : FT.item; ctx.fill();
+        ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
+        txt('LEVEL ' + nd.level, cx + 14, yy + 27, fLab, own ? FT.text : chk.ok ? FT.text : FT.dim);
+        const price = P[nd.price], st = own ? 'OWNED' : chk.ok ? price + ' CREDIT' + (price === 1 ? '' : 'S') : chk.why.toUpperCase();
+        txt(st, cx + 14, yy + 50, '700 17px ' + F_UI, own ? FT.accent : chk.ok ? FT.text : FT.off);
+        txt(abilityLine(s, n), cx + 14, yy + 70, '400 17px ' + F_UI, FT.dim);
+        if (ri < col.length - 1) { ctx.strokeStyle = '#9FB0BA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx + 26, yy + cardH); ctx.lineTo(cx + 26, yy + step); ctx.stroke(); }
+      });
+    });
+    if (app.shopRow < SHOP_ROWS && SHOP_GRID[app.shopCol][app.shopRow]) {
+      const n = SHOP_GRID[app.shopCol][app.shopRow], nd = NODES7[n], chk = s.canBuy(n), cut = Math.round(P['abilities.wearCut'] * nd.level * 100);
+      const what = nd.desc + ' ' + PART_WORD[nd.track] + ' wear −' + cut + '%.';
+      let tail = '';
+      if (s.tier(nd.track) >= nd.level) tail = ' Installed.';
+      else if (!chk.ok) tail = ' ' + chk.why[0].toUpperCase() + chk.why.slice(1) + '.';
+      else { const left = s.run.credits - chk.price; tail = ' Leaves ' + left + ' credit' + (left === 1 ? '' : 's') + '.'; }
+      wrapText(nd.name + ': ' + what + tail, x + 28, top + 3 * step + 22, w - 56, 26, fLab, FT.text, 2);
+    }
+    const on = app.shopRow === SHOP_ROWS;
+    rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
+    ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+    txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
+    txt(TOUCH.on || app.device === 'pad' ? 'STICK SELECT · A BUY · B DEPLOY' : 'ARROWS SELECT · SPACE BUY · SHIFT DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
+  }
+  const PART_WORD = { battery: 'Torso', legs: 'Leg', arms: 'Grip', throw: 'Throw' };
   // Cue key: the field's own pixel marks, shown at field scale, with what each means.
   const CUE_KEY = [
     ['intention', 'Has noticed you'], ['committed', 'Route fixed'], ['expiring', 'Commitment ending'], ['interrupted', 'Braking for safety'],
@@ -2112,7 +2177,10 @@
     ['proto.restitution', 0, 1, 0.05], ['proto.contactFriction', 0, 1, 0.05], ['proto.recoilScale', 0, 2, 0.05], ['proto.recoilSeconds', 0, 1, 0.05],
     // Edit 75 (P6.5): DIRECT turning, the jump, Ricochet, combos
     ['proto.turnModel', 1, 2, 1], ['movement.directTurnRate', 180, 1440, 30], ['upgrades.jumpAirtime', 0.2, 1, 0.05], ['upgrades.jumpMaxSpeed', 100, 600, 4], ['upgrades.jumpAirAccel', 0, 1200, 12], ['upgrades.jumpHeight', 10, 80, 1],
-    ['battery.jumpCost', 0, 2, 0.5], ['upgrades.ricochetScale', 1, 4, 0.25], ['scoring.comboWindow', 0.2, 4, 0.1], ['scoring.comboStep', 0, 2, 0.1], ['scoring.comboMax', 1, 6, 0.5],
+    ['battery.jumpCost', 0, 2, 0.5], ['upgrades.ricochetScale', 1, 4, 0.25],
+    // Edit 77 (P6.7): ability tracks; run to clear
+    ['abilities.wearCut', 0, 0.34, 0.01], ['abilities.battery.rechargeStep', 0.5, 1, 0.01], ['proto.parts.torsoRechargeLoss', 0, 3, 0.1], ['proto.jump.runToClear', 0, 1, 1],
+    ['economy.price.ability.level1', 0, 5, 1], ['economy.price.ability.level2', 0, 5, 1], ['economy.price.ability.level3', 0, 6, 1], ['scoring.comboWindow', 0.2, 4, 0.1], ['scoring.comboStep', 0, 2, 0.1], ['scoring.comboMax', 1, 6, 0.5],
   ];
   for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
   const tuneEl = document.getElementById('tune'), grid = document.getElementById('tune-grid');
@@ -2143,12 +2211,18 @@
       row.append(inp, sp); grid.append(row);
     }
     if (FOUR) { // Edit 75: install modules for a test run (marks the run as tuned); outline what a jump clears; set up a gamepad
-      const head = document.createElement('p'); head.className = 'note'; head.style.gridColumn = '1 / -1'; head.textContent = 'Test run: install modules now (the run is marked tuned). Start = DASH (A). Then JUMP (B), GRAB (X), THROW (Y).'; grid.append(head);
+      const head = document.createElement('p'); head.className = 'note'; head.style.gridColumn = '1 / -1'; head.textContent = ABIL ? 'Test run: install ability levels now (the run is marked tuned). A Battery, B Legs (jump), X Arms (grab), Y Throw. Each level cuts wear by abilities.wearCut.' : 'Test run: install modules now (the run is marked tuned). Start = DASH (A). Then JUMP (B), GRAB (X), THROW (Y).'; grid.append(head);
       for (const n of [].concat(...SHOP_GRID)) {
         const row = document.createElement('label'); row.className = 'tcheck';
         const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 't-own-' + n; inp.dataset.node = n;
-        inp.addEventListener('change', () => { const sm = app.sim; if (!sm) { inp.checked = false; toast('Start a district first'); return; } if (inp.checked) sm.run.owned[n] = true; else delete sm.run.owned[n]; app.tuned = true; sm.emit('debug-module', { node: n, on: inp.checked }); });
-        const sp = document.createElement('span'); sp.innerHTML = 'Install <b>' + NODES[n].name + '</b> <code>' + n + '</code>';
+        inp.addEventListener('change', () => {
+          const sm = app.sim; if (!sm) { inp.checked = false; toast('Start a district first'); return; }
+          const nd = ABIL && NODES7[n];
+          if (nd) { for (let L = 1; L <= 3; L++) { const k = nd.track + L; if (inp.checked ? L <= nd.level : L >= nd.level) { if (inp.checked) sm.run.owned[k] = true; else delete sm.run.owned[k]; } const el = document.getElementById('t-own-' + k); if (el) el.checked = !!sm.run.owned[k]; } } // Edit 77: a level brings the levels below it
+          else if (inp.checked) sm.run.owned[n] = true; else delete sm.run.owned[n];
+          app.tuned = true; sm.emit('debug-module', { node: n, on: inp.checked });
+        });
+        const sp = document.createElement('span'); sp.innerHTML = 'Install <b>' + NODE(n).name + '</b> <code>' + n + '</code>';
         row.append(inp, sp); grid.append(row);
       }
       const row = document.createElement('label'); row.className = 'tcheck';

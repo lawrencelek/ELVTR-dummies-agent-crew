@@ -101,6 +101,10 @@
     'upgrades.jumpMaxSpeed': 324, 'upgrades.jumpAirAccel': 324, // Edit 76: the jump keeps its take-off speed (Link's Awakening); upgrades.jumpDistance retires
     'battery.jumpCost': 1, 'world.jumpableHeight': 20, 'world.jumpableDepth': 48, 'proto.art.jumpableTop': 5, 'upgrades.ricochetScale': 2, 'scoring.comboWindow': 1.5, 'scoring.comboStep': 0.5, 'scoring.comboMax': 3,
     'economy.price.legs.jump': 1, 'economy.price.legs.ricochet': 2,
+    // Edit 77 (P6.7): four ability tracks by level; each level shields its ability from wear. Run to clear.
+    'abilities.maxLevel': 3, 'abilities.wearCut': 0.25, 'abilities.battery.rechargeStep': 0.8,
+    'economy.price.ability.level1': 1, 'economy.price.ability.level2': 2, 'economy.price.ability.level3': 3,
+    'proto.parts.torsoRechargeLoss': 1.5, 'proto.parts.torsoRechargeFloor': 0.5,
     // Edits 74–75: input (gamepad stick, touch stick, pad setup) and touch sizes in CSS px
     'proto.input.deadzone': 0.2, 'proto.input.stickOuter': 0.9, 'proto.input.padSetupHoldSeconds': 1, 'proto.input.touchDeadzone': 0.12, 'proto.input.touchOuter': 0.85,
     'proto.input.touchFloat': 1, 'ui.touch.stickRadius': 60, 'ui.touch.margin': 16, 'ui.touch.faceRadius': 30,
@@ -136,6 +140,7 @@
     'proto.parts.legSpeedLoss': 1, 'proto.parts.legSpeedFloor': 0.5, 'proto.parts.legDashLoss': 1.5, 'proto.parts.torsoTurnLoss': 1.5, 'proto.parts.torsoTurnFloor': 0.5,
     'proto.parts.headConeLoss': 1.5, 'proto.parts.headConeFloor': 0.5, 'proto.parts.armThrowLoss': 1, 'proto.parts.armThrowFloor': 0.5,
     'proto.turnModel': 1, 'proto.input.fourButtons': 0, 'proto.combo': 0, // Edit 75: 1 LAG (P2–6.4), 2 DIRECT; A/B/X/Y; combo scoring. P6.5 sets 2, 1, 1
+    'proto.abilities': 0, 'proto.jump.runToClear': 0, // Edit 77: ability tracks by level; only running and dash jumps clear. P6.7 sets 1, 1
   };
 
   // P1.2 prototype overrides of registry values (logged in DUMMIES_Prototype_Log.md).
@@ -168,6 +173,25 @@
   };
   // P6.5 (four buttons): X grabs, Y throws; Spine stands alone (Hips has no job under DIRECT turning, D48)
   const NODES4 = { carry: { desc: 'X picks up a cone. X again places it. Lay traps in a car’s path.' }, throw: { desc: 'Y throws a held cone.' }, spine: { pre: null, desc: 'Steer a dash as it goes, within a limited angle.' } };
+
+  // Edit 77 (P6.7, proto.abilities): four ability tracks, one per button, bought by level. Level 1 grants the ability (Battery:
+  // a faster recharge). Every level cuts the wear its body part does to it by abilities.wearCut.
+  //   Battery (A): recharge × abilities.battery.rechargeStep per level; shields the torso (recharge, turn).
+  //   Legs (B): level 1 jumps; shields the legs (run, dash, jump). Arms (X): level 1 grabs; shields the grip.
+  //   Throw (Y): level 1 throws, needs Arms 1; shields the throw.
+  const TRACKS = {
+    battery: { name: 'Battery', button: 'A', verb: 'DASH', part: 'torso',
+      desc: ['Dash recharges faster. Torso damage slows it less.', 'Faster again. Torso damage slows it less.', 'Fastest recharge. Torso damage slows it least.'] },
+    legs: { name: 'Legs', button: 'B', verb: 'JUMP', part: 'legs',
+      desc: ['B jumps. Run and jump to clear a car, a rail or a planter.', 'Leg damage slows the run, dash and jump less.', 'Leg damage barely slows the run, dash and jump.'] },
+    arms: { name: 'Arms', button: 'X', verb: 'GRAB', part: 'arms',
+      desc: ['X picks up a cone. X again places it.', 'Arm damage loosens the grip less.', 'Arm damage barely loosens the grip.'] },
+    throw: { name: 'Throw', button: 'Y', verb: 'THROW', part: 'arms', needs: 'arms1',
+      desc: ['Y throws a held cone. Needs Arms.', 'Arm damage shortens the throw less.', 'Arm damage barely shortens the throw.'] },
+  };
+  const NODES7 = {};
+  for (const [t, tr] of Object.entries(TRACKS)) for (let L = 1; L <= 3; L++) NODES7[t + L] = { name: tr.name + ' ' + L, branch: tr.name, track: t, level: L, price: 'economy.price.ability.level' + L, pre: L > 1 ? t + (L - 1) : tr.needs || null, desc: tr.desc[L - 1] };
+  const ABIL_HAS = { jump: 'legs', carry: 'arms', throw: 'throw', bigBattery: null, ricochet: null, spine: null, hips: null, grip: null }; // the old names, read from the tracks
 
   // ---------- math
   const TAU = Math.PI * 2, DEG = Math.PI / 180;
@@ -1510,7 +1534,13 @@
       if (!this.net) this.fillDeckCars();
     }
 
-    has(n) { return !!this.run.owned[n]; }
+    has(n) { if (this.P['proto.abilities'] && n in ABIL_HAS) { const t = ABIL_HAS[n]; return t ? this.tier(t) >= 1 : false; } return !!this.run.owned[n]; }
+    tier(t) { let n = 0; while (n < 3 && this.run.owned[t + (n + 1)]) n++; return n; } // Edit 77: an ability track's level, 0–3 (this.level is the screen)
+    shield(t) { return this.P['proto.abilities'] ? Math.max(0, 1 - this.P['abilities.wearCut'] * this.tier(t)) : 1; } // the share of wear that gets through
+    secondsPerCharge() { // Edit 77: Battery levels speed the recharge; torso damage slows it
+      const P = this.P; if (!P['proto.abilities']) return P['battery.secondsPerCharge'];
+      return P['battery.secondsPerCharge'] * Math.pow(P['abilities.battery.rechargeStep'], this.tier('battery')) / this.partEffect('recharge');
+    }
     capacity() { return this.has('bigBattery') ? this.P['upgrades.bigCapacity'] : this.P['battery.capacity']; } // D26: Big battery 3, base 2
     // Each screen keeps its own cones: where you leave one is where you find it.
     conesFor(lv) {
@@ -1587,7 +1617,7 @@
       const P = this.P, b = this.body;
       if (!b.alive) return;
       if (b.refillDelay > 0) { b.refillDelay -= dt; if (b.refillDelay < 1e-9) b.refillDelay = 0; }
-      else b.charge = Math.min(this.capacity(), b.charge + dt / P['battery.secondsPerCharge']);
+      else b.charge = Math.min(this.capacity(), b.charge + dt / this.secondsPerCharge());
       b.denied = Math.max(0, b.denied - dt);
       if (b.mode === 'drop') return; // in the air: no control until the landing
       if (b.landT > 0) { b.landT -= dt; if (b.landT < 1e-9) b.landT = 0; }
@@ -1721,7 +1751,7 @@
       Object.assign(J, { x0: b.x, y0: b.y, level: b.level, rampT: b.rampT });
       b.mode = 'jump'; b.lunge = null; b.z = 0; b.jump = J;
       if (J.v0 > 1) b.facing = Math.atan2(J.vy, J.vx);
-      this.emit('jump', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), kind: J.kind, speed: +J.v0.toFixed(1), level: b.level });
+      this.emit('jump', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), kind: J.kind, speed: +J.v0.toFixed(1), level: b.level, clear: J.clear !== false }); // Edit 77: clear false: a hop
       this.mile('use:jump');
       if (dash) this.mile('use:dashJump');
     }
@@ -2261,12 +2291,14 @@
     partEffect(kind) {
       const P = this.P;
       if (!P['proto.parts.effects']) return 1;
-      if (kind === 'dash') return Math.max(P['movement.wearFloor'], 1 - P['proto.parts.legDashLoss'] * (this.partShare('legL') + this.partShare('legR')));
-      const t = { speed: ['legSpeed', this.partShare('legL') + this.partShare('legR')], turn: ['torsoTurn', this.partShare('torso')],
-        view: ['headCone', this.partShare('head')], throw: ['armThrow', this.partShare('armL') + this.partShare('armR')] }[kind];
+      const legs = this.partShare('legL') + this.partShare('legR'), arms = this.partShare('armL') + this.partShare('armR'); // Edit 77: × the track's shield
+      if (kind === 'dash') return Math.max(P['movement.wearFloor'], 1 - P['proto.parts.legDashLoss'] * legs * this.shield('legs'));
+      if (kind === 'recharge') return P['proto.abilities'] ? Math.max(P['proto.parts.torsoRechargeFloor'], 1 - P['proto.parts.torsoRechargeLoss'] * this.partShare('torso') * this.shield('battery')) : 1;
+      const t = { speed: ['legSpeed', legs * this.shield('legs')], turn: ['torsoTurn', this.partShare('torso') * this.shield('battery')],
+        view: ['headCone', this.partShare('head')], throw: ['armThrow', arms * this.shield('throw')] }[kind];
       return Math.max(P['proto.parts.' + t[0] + 'Floor'], 1 - P['proto.parts.' + t[0] + 'Loss'] * t[1]);
     }
-    armsBroken() { const P = this.P; return !!P['proto.parts.effects'] && this.partShare('armL') >= P['proto.parts.brokenShare'] && this.partShare('armR') >= P['proto.parts.brokenShare']; }
+    armsBroken() { const P = this.P, k = this.shield('arms'); return !!P['proto.parts.effects'] && this.partShare('armL') * k >= P['proto.parts.brokenShare'] && this.partShare('armR') * k >= P['proto.parts.brokenShare']; } // Edit 77: Arms levels hold the grip
     coneWidth() { return this.P['sensing.coneWidth'] * this.partEffect('view'); }
     partOf(px, py, assessed, legs) {
       const P = this.P, b = this.body, a = Math.atan2(py - b.y, px - b.x) - b.facing, side = Math.sin(a) >= 0 ? 'R' : 'L';
@@ -3359,6 +3391,14 @@
     // ----- menus
     continueReport() { if (this.phase === 'report') { this.phase = 'shop'; this.emit('shop-open', { credits: this.run.credits }); } }
     canBuy(n) {
+      if (this.P['proto.abilities']) { // Edit 77: ability tracks by level
+        const nd = NODES7[n], r = this.run;
+        if (!nd || nd.level > this.P['abilities.maxLevel']) return { ok: false, why: 'not sold' };
+        if (r.owned[n]) return { ok: false, why: 'owned' };
+        if (nd.pre && !r.owned[nd.pre]) return { ok: false, why: 'needs ' + NODES7[nd.pre].name };
+        const price = this.P[nd.price];
+        return r.credits < price ? { ok: false, why: 'short by ' + (price - r.credits) } : { ok: true, price };
+      }
       const node = NODES[n], r = this.run, n4 = this.P['proto.input.fourButtons'] && NODES4[n], pre = n4 && 'pre' in n4 ? n4.pre : node && node.pre;
       if (!node || r.owned[n]) return { ok: false, why: 'owned' };
       if (pre && !r.owned[pre]) return { ok: false, why: 'needs ' + NODES[pre].name };
@@ -3393,7 +3433,7 @@
     }
   }
 
-  const api = { Sim, JUMP, REG, PROTO, OVERRIDES, NODES, NODES4, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
+  const api = { Sim, JUMP, REG, PROTO, OVERRIDES, NODES, NODES4, NODES7, TRACKS, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
     planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, laneEnds, seamSight, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, checkZone, buildableArea, zHeight, stairRun, LEVELS3,
     lanesOf, makePath, offsetPts, fillet, filletAny, arcPts, roundaboutCenter, skeletons, routeCenter, edgePoint, deckLanesOf, fleetClass, minBend }; // P4: the Turn Lab builds its tracks with these
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
