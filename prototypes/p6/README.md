@@ -1,6 +1,6 @@
 # DUMMIES — P6 prototype: three districts, managed traffic across levels
 
-**P6.5 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–67 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**P6.6 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–68 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
 P6 is the game on the three districts of the mock-ups. District 2, Waterfront, replaces Circus.
 
@@ -46,8 +46,11 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
   - At a level, a north–south crossing happens at the edge as drawn. The dummy never leaves the view.
 - **Wayfinding (P6.4):** every apron a lit mat, chevrons into its flight. Monument B2: guide strips to the ring escalators.
 - **Parkland (P6.5): an Expo site.** Paved; every open garden cell takes a programme in a fixed rotation.
-  - Pavilions (dome, LED box, canopy; solid to plan), parterres (framed lit lawns), fountains, sculpture courts.
-  - Cells part-free beside roads, decks and flights: a small round fountain.
+  - Pavilions (P6.6): dome, shell hall, LED box, canopy, observation tower. Sizes S, M, L (two cells and their path). Solid to plan, on a framed lawn.
+  - Parterres (framed lit lawns), fountains (on a framed lawn), sculpture courts.
+  - Cells part-free beside roads, decks and flights: a small round fountain or a grass square, alternately.
+  - Grass verges frame every path (P6.6). Every screen at least 8% green.
+  - A1 reservoir: stepped up to the back, each tier spilling into the one below (P6.6).
   - Great lawns: a paved cross-walk, a reflecting rill with jets on the long axis.
   - B2: the two pools back; the ring planted on its shoulders; its island a fountain at Z1 with a ring of jets.
 - **Monument B2 (P6.4):** square paving, as the district's ground. No 45° lattice.
@@ -101,6 +104,8 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 ![P6.4: Parkland B2 and Monument B2, before and after](docs/p66_before_after.png)
 
 ![P6.5: Parkland as an Expo site](docs/p67_parkland_expo.png)
+
+![P6.6: the pavilions; the A1 reservoir](docs/p68_pavilions.png)
 
 ## Known gaps
 
