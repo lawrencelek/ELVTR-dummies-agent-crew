@@ -5,6 +5,7 @@
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
 > | 6.4 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_4.html` | Current. Ring stalls diagnosed; vehicles at 0.9; steady roundabout signals |
+> | Controls | [`prototypes/controls/`](prototypes/controls/README.md) | `dummies_controls.html` | Test (Edit 73). Phaser 3.90: touch d-pad and buttons, gamepad, keys and mouse; three turn models |
 > | 6.3 | `prototypes/p6/` | `dummies_p6_3.html` | Frozen (Edit 71). Smooth turns, turn signals, ring entry, the cone drone |
 > | 6.2 | `prototypes/p6/` | `dummies_p6_2.html` | Frozen (Edit 70). The open ring, one garden grid, navigation checks, the HUD |
 > | 6.1 | `prototypes/p6/` | `dummies_p6_1.html` | Frozen (Edit 69). Release tests: traffic soak, walking |
