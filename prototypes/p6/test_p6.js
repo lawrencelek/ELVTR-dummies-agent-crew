@@ -158,6 +158,20 @@ for (const id of W6.LEVEL_LIST) {
   walk(pk, 800, 150, 3);
   ok(top && pk.body.level === 1 && pk.body.x < 706, `Parkland A3: up the belvedere's stair onto its lawn at Z1; its edge holds (x ${Math.round(pk.body.x)})`);
 }
+{ // P6.4 (Edit 66): a raised walkway reaches the screen's edge as drawn; the dummy crosses there, never off screen
+  const s = new W6.Sim6('monument', {}, null, { warm: 2 }); empty(s);
+  const Z1w = P['world.deckHeight'] * P['proto.art.extrusion'], sky = s.W6.at(1, 0).walk, L = sky.L, AW = PIX.AW, AH = PIX.AH, xs = Math.round(400 / (W / AW));
+  const tail = L.h > AH && L.d[(L.h - 1) * AW + xs] !== 0;
+  place(s, 'B1', 472, 244); walk(s, 472, 120, 5, (q) => q.body.level === 1 && !q.body.stair); walk(s, 400, 132, 3);
+  let lastB1 = null, firstB2 = null;
+  for (let k = 0; k < 60 * 12 && !firstB2; k++) { const before = s.screenName(); s.step({ mx: 0, my: 1 }); while (s.phase === 'scroll' || s.phase === 'hitstop') s.step({}); if (s.screenName() === 'B1') lastB1 = s.body.y - Z1w; else if (before === 'B1' && s.screenName() === 'B2') firstB2 = s.body.y - Z1w; }
+  let lastB2 = null, firstB1 = null;
+  for (let k = 0; k < 60 * 12 && firstB1 == null; k++) { s.step({ mx: 0, my: -1 }); while (s.phase === 'scroll' || s.phase === 'hitstop') s.step({}); if (s.screenName() === 'B2') lastB2 = s.body.y - Z1w; else firstB1 = s.body.y - Z1w; }
+  ok(tail && lastB1 > H - 8 && firstB2 > -8 && lastB2 < 8 && firstB1 < H + 8, `Monument B1–B2: the skybridge drawn to B1's bottom edge; at Z1 the dummy crosses at the edge as drawn (south: B1 y ${lastB1 && lastB1.toFixed(0)} → B2 y ${firstB2 && firstB2.toFixed(0)}; north: B2 y ${lastB2 && lastB2.toFixed(0)} → B1 y ${firstB1 && firstB1.toFixed(0)})`);
+  let worst = 1e9, n = 0;
+  for (const id of W6.LEVEL_LIST) { const w = new W6.Sim6(id, {}, null, { warm: 0 }); for (const sc of w.W6.scs) { if (!sc.walk || !sc.roadC) continue; for (const sp of sc.walk.spines) for (const g of sp.gaps) { const q0 = X.pathAt(sp.path, g[0] + 1), q1 = X.pathAt(sp.path, g[1] - 1); if (Math.abs(q1.x - q0.x) > 4) continue; n++; for (const q of [q0, q1]) { const d = sc.roadC(q.x, q.y - Z1w); worst = Math.min(worst, Math.abs(d), Math.abs(d - P['world.laneWidth'])); } } } }
+  ok(n >= 5 && worst >= 6, `Walkway openings on north–south walkways: ${n}, their ends as drawn ${worst.toFixed(0)}+ clear of the road's centre and edge lines`);
+}
 { // a dash into a car scores
   const s = new W6.Sim6('monument', {}, null, { warm: 8 });
   let hit = false;
