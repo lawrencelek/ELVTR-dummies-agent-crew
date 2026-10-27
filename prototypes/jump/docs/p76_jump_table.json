@@ -1,0 +1,494 @@
+{
+ "reach": {
+  "stand": 0,
+  "walk": 40.5,
+  "run": 81,
+  "dash": 162
+ },
+ "table": [
+  {
+   "name": "handrail",
+   "h": 20,
+   "d": 8,
+   "jumpable": true,
+   "need": 34,
+   "walk": false,
+   "walkSlack": -4.088767692022145,
+   "run": true,
+   "runSlack": 25.82246461595571,
+   "dash": true,
+   "dashSlack": 85.64492923191142
+  },
+  {
+   "name": "jersey",
+   "h": 20,
+   "d": 16,
+   "jumpable": true,
+   "need": 42,
+   "walk": false,
+   "walkSlack": -12.088767692022145,
+   "run": true,
+   "runSlack": 17.82246461595571,
+   "dash": true,
+   "dashSlack": 77.64492923191142
+  },
+  {
+   "name": "planter 32",
+   "h": 20,
+   "d": 32,
+   "jumpable": true,
+   "need": 58,
+   "walk": false,
+   "walkSlack": -28.088767692022145,
+   "run": true,
+   "runSlack": 1.8224646159557096,
+   "dash": true,
+   "dashSlack": 61.64492923191142
+  },
+  {
+   "name": "planter 48",
+   "h": 20,
+   "d": 48,
+   "jumpable": true,
+   "need": 74,
+   "walk": false,
+   "walkSlack": -44.088767692022145,
+   "run": false,
+   "runSlack": -14.17753538404429,
+   "dash": true,
+   "dashSlack": 45.64492923191142
+  },
+  {
+   "name": "planter 64",
+   "h": 20,
+   "d": 64,
+   "jumpable": false,
+   "need": 90,
+   "walk": false,
+   "walkSlack": null,
+   "run": false,
+   "runSlack": null,
+   "dash": false,
+   "dashSlack": null
+  },
+  {
+   "name": "wall",
+   "h": 40,
+   "d": 16,
+   "jumpable": false,
+   "need": 42,
+   "walk": false,
+   "walkSlack": null,
+   "run": false,
+   "runSlack": null,
+   "dash": false,
+   "dashSlack": null
+  },
+  {
+   "name": "sedan broadside",
+   "h": 19.8,
+   "d": 25.2,
+   "jumpable": true,
+   "need": 51.2,
+   "walk": false,
+   "walkSlack": -21.16439612726257,
+   "run": true,
+   "runSlack": 8.871207745474862,
+   "dash": true,
+   "dashSlack": 68.94241549094973
+  },
+  {
+   "name": "van broadside",
+   "h": 30.6,
+   "d": 28.8,
+   "jumpable": true,
+   "need": 54.8,
+   "walk": false,
+   "walkSlack": -32.44981696231143,
+   "run": false,
+   "runSlack": -10.099633924622857,
+   "dash": true,
+   "dashSlack": 34.60073215075428
+  },
+  {
+   "name": "bus broadside",
+   "h": 43.2,
+   "d": 30.6,
+   "jumpable": true,
+   "need": 56.6,
+   "walk": false,
+   "walkSlack": -51.13898111404775,
+   "run": false,
+   "runSlack": -45.67796222809551,
+   "dash": false,
+   "dashSlack": -34.75592445619101
+  },
+  {
+   "name": "sedan end-on",
+   "h": 19.8,
+   "d": 50.4,
+   "jumpable": true,
+   "need": 76.4,
+   "walk": false,
+   "walkSlack": -46.36439612726257,
+   "run": false,
+   "runSlack": -16.32879225452514,
+   "dash": true,
+   "dashSlack": 43.742415490949725
+  },
+  {
+   "name": "van end-on",
+   "h": 30.6,
+   "d": 61.2,
+   "jumpable": true,
+   "need": 87.2,
+   "walk": false,
+   "walkSlack": -64.84981696231144,
+   "run": false,
+   "runSlack": -42.49963392462286,
+   "dash": true,
+   "dashSlack": 2.200732150754277
+  },
+  {
+   "name": "bus end-on",
+   "h": 43.2,
+   "d": 86.4,
+   "jumpable": true,
+   "need": 112.4,
+   "walk": false,
+   "walkSlack": -106.93898111404776,
+   "run": false,
+   "runSlack": -101.4779622280955,
+   "dash": false,
+   "dashSlack": -90.55592445619102
+  }
+ ],
+ "yard": [
+  {
+   "name": "sedan broadside",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -21.16439612726257,
+   "took": "walk"
+  },
+  {
+   "name": "sedan broadside",
+   "kind": "run",
+   "cleared": true,
+   "rule": true,
+   "slack": 8.871207745474862,
+   "took": "run"
+  },
+  {
+   "name": "sedan broadside",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 68.94241549094973,
+   "took": "dash"
+  },
+  {
+   "name": "van broadside",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -32.44981696231143,
+   "took": "walk"
+  },
+  {
+   "name": "van broadside",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -10.099633924622857,
+   "took": "run"
+  },
+  {
+   "name": "van broadside",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 34.60073215075428,
+   "took": "dash"
+  },
+  {
+   "name": "bus broadside",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -51.13898111404775,
+   "took": "walk"
+  },
+  {
+   "name": "bus broadside",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -45.67796222809551,
+   "took": "run"
+  },
+  {
+   "name": "bus broadside",
+   "kind": "dash",
+   "cleared": false,
+   "rule": false,
+   "slack": -34.75592445619101,
+   "took": "dash"
+  },
+  {
+   "name": "sedan end-on",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -46.36439612726257,
+   "took": "walk"
+  },
+  {
+   "name": "sedan end-on",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -16.32879225452514,
+   "took": "run"
+  },
+  {
+   "name": "sedan end-on",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 43.742415490949725,
+   "took": "dash"
+  },
+  {
+   "name": "van end-on",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -64.84981696231144,
+   "took": "walk"
+  },
+  {
+   "name": "van end-on",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -42.49963392462286,
+   "took": "run"
+  },
+  {
+   "name": "van end-on",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 2.200732150754277,
+   "took": "dash"
+  },
+  {
+   "name": "bus end-on",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -106.93898111404776,
+   "took": "walk"
+  },
+  {
+   "name": "bus end-on",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -101.4779622280955,
+   "took": "run"
+  },
+  {
+   "name": "bus end-on",
+   "kind": "dash",
+   "cleared": false,
+   "rule": false,
+   "slack": -90.55592445619102,
+   "took": "dash"
+  },
+  {
+   "name": "handrail",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -4.088767692022145,
+   "took": "walk"
+  },
+  {
+   "name": "handrail",
+   "kind": "run",
+   "cleared": true,
+   "rule": true,
+   "slack": 25.82246461595571,
+   "took": "run"
+  },
+  {
+   "name": "handrail",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 85.64492923191142,
+   "took": "dash"
+  },
+  {
+   "name": "jersey",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -12.088767692022145,
+   "took": "walk"
+  },
+  {
+   "name": "jersey",
+   "kind": "run",
+   "cleared": true,
+   "rule": true,
+   "slack": 17.82246461595571,
+   "took": "run"
+  },
+  {
+   "name": "jersey",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 77.64492923191142,
+   "took": "dash"
+  },
+  {
+   "name": "planter 32",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -28.088767692022145,
+   "took": "walk"
+  },
+  {
+   "name": "planter 32",
+   "kind": "run",
+   "cleared": true,
+   "rule": true,
+   "slack": 1.8224646159557096,
+   "took": "run"
+  },
+  {
+   "name": "planter 32",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 61.64492923191142,
+   "took": "dash"
+  },
+  {
+   "name": "planter 48",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -44.088767692022145,
+   "took": "walk"
+  },
+  {
+   "name": "planter 48",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -14.17753538404429,
+   "took": "run"
+  },
+  {
+   "name": "planter 48",
+   "kind": "dash",
+   "cleared": true,
+   "rule": true,
+   "slack": 45.64492923191142,
+   "took": "dash"
+  },
+  {
+   "name": "planter 64",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -60.088767692022145,
+   "took": "walk"
+  },
+  {
+   "name": "planter 64",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -30.17753538404429,
+   "took": "run"
+  },
+  {
+   "name": "planter 64",
+   "kind": "dash",
+   "cleared": false,
+   "rule": false,
+   "slack": 29.64492923191142,
+   "took": "dash"
+  },
+  {
+   "name": "wall",
+   "kind": "walk",
+   "cleared": false,
+   "rule": false,
+   "slack": -29.788790544600566,
+   "took": "walk"
+  },
+  {
+   "name": "wall",
+   "kind": "run",
+   "cleared": false,
+   "rule": false,
+   "slack": -17.577581089201136,
+   "took": "run"
+  },
+  {
+   "name": "wall",
+   "kind": "dash",
+   "cleared": false,
+   "rule": false,
+   "slack": 6.844837821597729,
+   "took": "dash"
+  }
+ ],
+ "ruler": {
+  "stand": 0,
+  "walk": 40.83750000000034,
+  "run": 81.00000000000014,
+  "dash": 161.99999999999932
+ },
+ "traffic": {
+  "sedan walk": {
+   "cleared": false,
+   "hit": true,
+   "slack": -21.16439612726257,
+   "kind": "walk"
+  },
+  "sedan run": {
+   "cleared": true,
+   "hit": false,
+   "slack": 8.871207745474862,
+   "kind": "run"
+  },
+  "van run": {
+   "cleared": false,
+   "hit": true,
+   "slack": -10.099633924622857,
+   "kind": "run"
+  },
+  "van dash": {
+   "cleared": true,
+   "hit": false,
+   "slack": 34.60073215075428,
+   "kind": "dash"
+  },
+  "bus dash": {
+   "cleared": false,
+   "hit": true,
+   "slack": -34.75592445619101,
+   "kind": "dash"
+  }
+ }
+}

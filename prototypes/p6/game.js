@@ -26,15 +26,18 @@
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
-  // Integer scaling: the canvas is always a whole multiple of the 640 × 360 art screen (ui.artScale = 2 reference units per art pixel).
+  // Edit 76: the canvas fills the stage; the 640 × 360 screen scales to fit it, by any factor (no longer whole numbers), centred.
+  // The margins beside or above it take the frame's ground; on a phone the touch controls may reach into them.
   const SW = 640, SH = 360;
-  let scale = 1, kpx = 2;
+  let scale = 1, kpx = 2, ox = 0, oy = 0;
+  const TOUCH = { on: false, move: { x: 0, y: 0, m: 0 }, ptr: new Map(), base: null, knob: null, L: null, down: {}, portrait: false, dirs: {} }; // touch state (below)
   function resize() {
-    const st = cv.parentElement, dpr = window.devicePixelRatio || 1;
-    kpx = Math.max(1, Math.floor(Math.min(st.clientWidth * dpr / SW, st.clientHeight * dpr / SH)));
-    if (cv.width !== SW * kpx) { cv.width = SW * kpx; cv.height = SH * kpx; }
-    cv.style.width = cv.width / dpr + 'px'; cv.style.height = cv.height / dpr + 'px';
-    scale = kpx * SW / VW;
+    const st = cv.parentElement, dpr = window.devicePixelRatio || 1, w = Math.max(1, Math.round(st.clientWidth * dpr)), h = Math.max(1, Math.round(st.clientHeight * dpr));
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    cv.style.width = st.clientWidth + 'px'; cv.style.height = st.clientHeight + 'px';
+    scale = Math.min(w / VW, h / VH); ox = Math.round((w - VW * scale) / 2); oy = Math.round((h - VH * scale) / 2);
+    kpx = scale * VW / SW; // device px per art px
+    TOUCH.L = null;
   }
   window.addEventListener('resize', resize);
   if (window.ResizeObserver) new ResizeObserver(resize).observe(cv.parentElement);
@@ -66,7 +69,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = W6 ? 'P6.5' : 'P5.3'; // Prototype 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = W6 ? 'P6.6' : 'P5.3'; // Prototype 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -235,63 +238,70 @@
     return cmd;
   }
 
-  // ---------- touch (Edit 75): landscape only. An analog stick under the district map (left column); the diamond Y, X, B, A
-  // under the chassis (right column), as on a gamepad. Drawn on an overlay over the stage; the canvas keeps its integer scale.
-  // The stick floats to the thumb (proto.input.touchFloat); dead zone proto.input.touchDeadzone, full at proto.input.touchOuter.
-  const TOUCH = { on: false, el: null, g: null, move: { x: 0, y: 0, m: 0 }, ptr: new Map(), base: null, knob: null, sid: null, L: null, down: {}, portrait: false, dpr: 1 };
-  const FACE = [['y', 0, -1, 'Y', 'THROW', '#4FC3E8'], ['x', -1, 0, 'X', 'GRAB', '#3D7BFF'], ['b', 1, 0, 'B', 'JUMP', '#FF4FD8'], ['a', 0, 1, 'A', 'DASH', '#F5C542']];
+  // ---------- touch (Edit 75; Edit 76: drawn in the game's own canvas, in the FARSIGHT glass, on phones and tablets only).
+  // On where the main pointer is a finger and nothing hovers: (hover: none) and (pointer: coarse); #touch in the address forces it.
+  // Landscape only. The analog stick under the district map; Y, X, B, A under the chassis, as on a gamepad. Both may reach into the
+  // screen's side margins. Layout in reference units from the canvas corner (the game's units), so the margins count.
+  const FACE = [['y', 0, -1, 'Y', 'THROW'], ['x', -1, 0, 'X', 'GRAB'], ['b', 1, 0, 'B', 'JUMP'], ['a', 0, 1, 'A', 'DASH']];
   const FACE_NODE = { a: null, b: 'jump', x: 'carry', y: 'throw' };
+  function touchDevice() {
+    try { return /(^#|[#&])touch\b/.test(location.hash) || /[?&]touch\b/.test(location.search) || window.matchMedia('(hover: none) and (pointer: coarse)').matches; }
+    catch (e) { return false; }
+  }
   function touchOn() {
     if (TOUCH.on) return;
     TOUCH.on = true; document.body.classList.add('touch');
-    const el = document.createElement('canvas'); el.id = 'touchpad'; el.setAttribute('aria-hidden', 'true');
-    el.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:5;touch-action:none;';
-    document.body.appendChild(el); TOUCH.el = el; TOUCH.g = el.getContext('2d');
-    const rot = document.createElement('div'); rot.id = 'rotate'; rot.innerHTML = '<div><b>Turn your phone sideways</b><br>DUMMIES plays in landscape.<br><small>Tap for full screen, where the phone allows.</small></div>';
-    document.body.appendChild(rot); TOUCH.rot = rot;
-    rot.addEventListener('pointerdown', fullscreen);
-    for (const t of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel']) el.addEventListener(t, touchEvent, { passive: false });
+    const rot = document.createElement('div'); rot.id = 'rotate'; rot.hidden = true;
+    rot.innerHTML = '<div><b>Turn your phone sideways</b><br>DUMMIES plays in landscape.<br><small>Tap for full screen, where the phone allows.</small></div>';
+    document.body.appendChild(rot); TOUCH.rot = rot; rot.addEventListener('pointerdown', fullscreen);
+    for (const t of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel']) cv.addEventListener(t, touchEvent, { passive: false });
     resize();
   }
   function fullscreen() {
     const lock = () => { try { const o = screen.orientation; if (o && o.lock) o.lock('landscape').catch(() => {}); } catch (e) { /* not offered */ } };
-    try { const st = document.documentElement; if (document.fullscreenElement) return; if (st.requestFullscreen) st.requestFullscreen({ navigationUI: 'hide' }).then(lock, () => {}); else lock(); } catch (e) { /* not offered */ }
+    try { const el = document.documentElement; if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); return; } if (el.requestFullscreen) el.requestFullscreen({ navigationUI: 'hide' }).then(lock, () => {}); else lock(); } catch (e) { /* not offered */ }
   }
-  function touchLayout() { // CSS px. Zones: left of the field, below the district map; right of the field, below the chassis
-    const R = cv.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight, k = R.width / VW, m = pv('ui.touch.margin');
-    const colW = R.left + FX * k, top0 = R.top + (app.layoutY ? app.layoutY.left : 530) * k, top1 = R.top + (app.layoutY ? app.layoutY.right : 450) * k;
-    const zl = { x0: 0, x1: colW, y0: top0, y1: vh }, zr = { x0: R.left + (FX + FW) * k, x1: vw, y0: top1, y1: vh };
-    const sr = Math.max(28, Math.min(pv('ui.touch.stickRadius'), (zl.x1 - zl.x0) / 2 - m / 2, (zl.y1 - zl.y0) / 2 - m / 2));
-    const home = { x: Math.min(zl.x1 - sr - 4, Math.max(zl.x0 + m + sr, R.left + FX * k / 2)), y: zl.y1 - m - sr }; // clear of the field
-    const fr = Math.max(16, Math.min(pv('ui.touch.faceRadius'), (zr.x1 - zr.x0 - m) / 4.6, (zr.y1 - zr.y0 - m) / 4.6)), sp = fr * 1.3;
-    const c = { x: Math.max(zr.x0 + sp + fr + 4, Math.min(zr.x1 - m - sp - fr, R.left + (FX + FW + (VW - FX - FW) / 2) * k)), y: zr.y1 - m - sp - fr }; // clear of the field
-    const face = FACE.map(([id, dx, dy, l, w, col]) => ({ id, x: c.x + dx * sp, y: c.y + dy * sp, r: fr, l, w, col }));
-    const side = R.left >= 74, chip = side ? { pause: { x: R.left - 70, y: Math.max(4, R.top + 4), w: 66, h: 28 }, full: { x: R.left - 70, y: Math.max(4, R.top + 4) + 34, w: 66, h: 28 } } // in the margin beside the screen
-      : { pause: { x: R.left + 4, y: Math.max(2, R.top + 2), w: 66, h: 24 }, full: null }; // no margin: over the brand; full screen from the upright prompt
-    return { zl, zr, sr, home, face, chip, R };
+  function touchLayout() {
+    const dpr = window.devicePixelRatio || 1, css = dpr / scale, Wc = cv.width / scale, Hc = cv.height / scale, gx = ox / scale, gy = oy / scale, m = pv('ui.touch.margin') * css;
+    const ly = app.layoutY || { left: 530, right: 450 };
+    const zl = { x0: 0, x1: gx + FX, y0: gy + ly.left + 10, y1: Hc }, zr = { x0: gx + FX + FW, x1: Wc, y0: gy + ly.right + 10, y1: Hc };
+    const sr = Math.max(36, Math.min(pv('ui.touch.stickRadius') * css * 1.15, (zl.x1 - zl.x0) / 2 - m / 2, (zl.y1 - zl.y0) / 2 - m / 2));
+    const home = { x: clamp(gx + FX / 2, zl.x0 + m + sr, zl.x1 - sr - 6), y: zl.y1 - m - sr };
+    const gap = 6, fr = Math.max(22, Math.min(pv('ui.touch.faceRadius') * css * 1.15, (zr.x1 - zr.x0 - m - 2 * gap) / 4.83, (zr.y1 - zr.y0 - m - 2 * gap) / 4.83)), sp = (2 * fr + gap) / Math.SQRT2; // round glass keys on a diamond: neighbours never touch
+    const c = { x: clamp(gx + FX + FW + (VW - FX - FW) / 2, zr.x0 + sp + fr + 6, zr.x1 - m - sp - fr), y: zr.y1 - m - sp - fr };
+    const face = FACE.map(([id, dx, dy, l, w]) => ({ id, x: c.x + dx * sp, y: c.y + dy * sp, r: fr, l, w }));
+    const side = gx >= 136, chip = side ? { pause: { x: gx - 128, y: gy + 10, w: 120, h: 46 }, full: { x: gx - 128, y: gy + 66, w: 120, h: 46 } }
+      : { pause: { x: gx + 12, y: gy + 2, w: 132, h: 40 }, full: null }; // no margin: over the brand; full screen from the upright prompt
+    return { zl, zr, sr, home, face, chip, css };
   }
-  function inChip(c, x, y) { return x >= c.x && x <= c.x + c.w && y >= c.y && y <= c.y + c.h; }
+  function touchLayoutCss() { // for the tests: the layout in CSS pixels of the page
+    const L = touchLayout(), r = cv.getBoundingClientRect(), k = scale / (window.devicePixelRatio || 1), p = (q) => ({ x: r.left + q.x * k, y: r.top + q.y * k });
+    return { sr: L.sr * k, home: p(L.home), face: L.face.map((f) => Object.assign(p(f), { id: f.id, r: f.r * k })), field: { x0: r.left + (ox / scale + FX) * k, x1: r.left + (ox / scale + FX + FW) * k }, chip: L.chip };
+  }
+  const inChip = (c, x, y) => c && x >= c.x && x <= c.x + c.w && y >= c.y && y <= c.y + c.h;
   function touchEvent(e) {
-    if (e.pointerType === 'mouse') return; // the overlay is for fingers; a mouse plays through keys
+    if (!TOUCH.on || e.pointerType === 'mouse') return;
     e.preventDefault(); Snd.init(); app.device = 'touch';
-    const L = TOUCH.L || (TOUCH.L = touchLayout()), x = e.clientX, y = e.clientY, id = e.pointerId;
+    const r = cv.getBoundingClientRect(), k = (window.devicePixelRatio || 1) / scale, x = (e.clientX - r.left) * k, y = (e.clientY - r.top) * k, id = e.pointerId;
+    const L = TOUCH.L || (TOUCH.L = touchLayout());
     if (e.type === 'pointerdown') {
       if (TOUCH.portrait) return;
+      try { cv.setPointerCapture(id); } catch (err) { /* not offered */ }
       if (inChip(L.chip.pause, x, y)) { menuQ.push('pause'); return; }
-      if (L.chip.full && inChip(L.chip.full, x, y)) { fullscreen(); return; }
-      const f = L.face.find((q2) => Math.hypot(x - q2.x, y - q2.y) <= q2.r * 1.25);
+      if (inChip(L.chip.full, x, y)) { fullscreen(); return; }
+      const f = L.face.slice().sort((p1, p2) => Math.hypot(x - p1.x, y - p1.y) - Math.hypot(x - p2.x, y - p2.y)).find((q2) => Math.hypot(x - q2.x, y - q2.y) <= q2.r * 1.35); // the nearest key within reach
       if (f) { TOUCH.ptr.set(id, f.id); TOUCH.down[f.id] = true; if (f.id === 'a') { q.a++; menuQ.push('ok'); } else if (f.id === 'b') { q.b++; menuQ.push('back'); } else q[f.id]++; return; }
-      if (x < L.zl.x1 + L.sr * 0.5 && y > L.zl.y0 - L.sr * 0.5) { // the left zone takes the thumb
-        TOUCH.ptr.set(id, 'stick'); TOUCH.sid = id;
-        TOUCH.base = pv('proto.input.touchFloat') ? { x: clamp(x, L.sr * 0.6, L.zl.x1), y: clamp(y, L.zl.y0, window.innerHeight - L.sr * 0.6) } : { x: L.home.x, y: L.home.y };
+      if (x < L.zl.x1 + L.sr * 0.5 && y > L.zl.y0 - L.sr * 0.5) { // the left zone takes the thumb; the stick floats to it
+        TOUCH.ptr.set(id, 'stick');
+        TOUCH.base = pv('proto.input.touchFloat') ? { x: clamp(x, L.sr * 0.7, L.zl.x1), y: clamp(y, L.zl.y0, L.zl.y1 - L.sr * 0.7) } : { x: L.home.x, y: L.home.y };
         stickAt(x, y);
       }
       return;
     }
     const kind = TOUCH.ptr.get(id);
     if (e.type === 'pointermove') { if (kind === 'stick') stickAt(x, y); return; }
-    TOUCH.ptr.delete(id); // up or cancel
-    if (kind === 'stick') { TOUCH.sid = null; TOUCH.base = null; TOUCH.knob = null; TOUCH.move = { x: 0, y: 0, m: 0 }; touchDirs(); }
+    TOUCH.ptr.delete(id);
+    if (kind === 'stick') { TOUCH.base = null; TOUCH.knob = null; TOUCH.move = { x: 0, y: 0, m: 0 }; touchDirs(); }
     else if (kind) { TOUCH.down[kind] = false; if (kind === 'b') q.bUp++; }
   }
   function stickAt(x, y) { // analog: any angle; speed by deflection. The base follows a thumb that runs past the rim
@@ -303,47 +313,48 @@
     touchDirs();
   }
   function touchDirs() { // menus: the stick's direction, as edges
-    const mv = TOUCH.move, now = { up: mv.y < -0.6, down: mv.y > 0.6, left: mv.x < -0.6, right: mv.x > 0.6 }, pr = TOUCH.dirs || {};
-    for (const d of ['up', 'down', 'left', 'right']) if (now[d] && !pr[d]) menuQ.push(d);
+    const mv = TOUCH.move, now = { up: mv.y < -0.6, down: mv.y > 0.6, left: mv.x < -0.6, right: mv.x > 0.6 };
+    for (const d of ['up', 'down', 'left', 'right']) if (now[d] && !TOUCH.dirs[d]) menuQ.push(d);
     TOUCH.dirs = now;
   }
-  function drawTouch() {
-    const el = TOUCH.el; if (!el) return;
-    const dpr = window.devicePixelRatio || 1, w = Math.round(window.innerWidth * dpr), h = Math.round(window.innerHeight * dpr);
-    if (el.width !== w || el.height !== h) { el.width = w; el.height = h; }
-    const g = TOUCH.g; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  function drawTouch() { // in canvas reference units (ctx scaled, origin at the canvas corner); the frame theme's glass
     TOUCH.portrait = window.innerHeight > window.innerWidth;
     if (TOUCH.rot) TOUCH.rot.hidden = !TOUCH.portrait;
     if (TOUCH.portrait) { TOUCH.ptr.clear(); TOUCH.move = { x: 0, y: 0, m: 0 }; TOUCH.base = null; return; }
-    const L = TOUCH.L = touchLayout(), s = app.sim;
-    // the stick
-    const b = TOUCH.base || L.home, R = L.sr, mv = TOUCH.move;
-    g.fillStyle = 'rgba(10,16,32,0.55)'; g.beginPath(); g.arc(b.x, b.y, R, 0, TAU); g.fill();
-    g.lineWidth = 2; g.strokeStyle = 'rgba(63,208,255,0.75)'; g.stroke();
-    g.lineWidth = 1; g.strokeStyle = 'rgba(63,208,255,0.35)'; for (const f of [pv('proto.input.touchDeadzone'), pv('proto.input.touchOuter')]) { g.beginPath(); g.arc(b.x, b.y, R * f, 0, TAU); g.stroke(); }
-    if (mv.m > 0) { const a = Math.atan2(mv.y, mv.x); g.lineWidth = 4; g.strokeStyle = '#3FD0FF'; g.beginPath(); g.arc(b.x, b.y, R + 5, a - 0.35, a + 0.35); g.stroke(); }
-    const kn = TOUCH.knob || b; let kx = kn.x - b.x, ky = kn.y - b.y; const kl = Math.hypot(kx, ky); if (kl > R) { kx *= R / kl; ky *= R / kl; }
-    g.fillStyle = mv.m > 0 ? 'rgba(63,208,255,0.95)' : 'rgba(223,231,236,0.4)'; g.beginPath(); g.arc(b.x + kx, b.y + ky, R * 0.42, 0, TAU); g.fill();
-    // the diamond: a button not yet installed is dimmed
+    const L = TOUCH.L = touchLayout(), s = app.sim, R = L.sr, b = TOUCH.base || L.home, mv = TOUCH.move;
+    const glow = (fn) => { if (FT.neon) { ctx.save(); ctx.shadowColor = FT.edge; ctx.shadowBlur = 12; fn(); ctx.restore(); } else fn(); };
+    const disc = (x, y, r) => { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); };
+    // the stick: a glass dial with ticks; the knob a key cap
+    ctx.save(); ctx.globalAlpha = 0.94;
+    disc(b.x, b.y, R); const gb = ctx.createLinearGradient(0, b.y - R, 0, b.y + R); gb.addColorStop(0, FT.panelTop); gb.addColorStop(1, FT.panelBot); ctx.fillStyle = gb; ctx.fill();
+    glow(() => { disc(b.x, b.y, R - 1); ctx.strokeStyle = FT.edge; ctx.lineWidth = 2; ctx.stroke(); });
+    ctx.strokeStyle = FT.dim; ctx.lineCap = 'round';
+    for (let i = 0; i < 16; i++) { const a = i * TAU / 16, l0 = R * (i % 2 ? 0.88 : 0.8); ctx.lineWidth = i % 2 ? 1.5 : 2.5; ctx.beginPath(); ctx.moveTo(b.x + Math.cos(a) * l0, b.y + Math.sin(a) * l0); ctx.lineTo(b.x + Math.cos(a) * R * 0.94, b.y + Math.sin(a) * R * 0.94); ctx.stroke(); }
+    ctx.setLineDash([4, 5]); ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1.5; disc(b.x, b.y, R * pv('proto.input.touchDeadzone') + 4); ctx.stroke(); ctx.setLineDash([]);
+    if (mv.m > 0) { const a = Math.atan2(mv.y, mv.x); glow(() => { ctx.strokeStyle = FT.accent; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(b.x, b.y, R + 7, a - 0.32 - 0.25 * mv.m, a + 0.32 + 0.25 * mv.m); ctx.stroke(); }); }
+    const kn = TOUCH.knob || b; let kx = kn.x - b.x, ky = kn.y - b.y; const kl = Math.hypot(kx, ky); if (kl > R * 0.62) { kx *= R * 0.62 / kl; ky *= R * 0.62 / kl; }
+    const kr = R * 0.4, gk = ctx.createLinearGradient(0, b.y + ky - kr, 0, b.y + ky + kr); gk.addColorStop(0, mv.m > 0 ? FT.sel : FT.keyTop); gk.addColorStop(1, mv.m > 0 ? FT.sel : FT.keyBot);
+    disc(b.x + kx, b.y + ky, kr); ctx.fillStyle = gk; ctx.fill(); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
+    txt('MOVE', b.x + kx, b.y + ky + 6, '700 ' + Math.round(kr * 0.42) + 'px ' + F_UI, mv.m > 0 ? FT.selText : FT.dim, 'center');
+    // the diamond: round glass keys, as the dial; the letter in the key-cap face. A wears the dummy's yellow; an uninstalled button reads LOCKED
     for (const f of L.face) {
-      const node = FACE_NODE[f.id], live = !node || (s && s.has(node)), dn = TOUCH.down[f.id];
-      g.globalAlpha = live ? (dn ? 1 : 0.88) : 0.32;
-      g.fillStyle = f.col; g.beginPath(); g.arc(f.x, f.y, f.r * (dn ? 0.93 : 1), 0, TAU); g.fill();
-      g.lineWidth = 2; g.strokeStyle = 'rgba(11,16,22,0.55)'; g.beginPath(); g.arc(f.x, f.y, f.r * 0.84, 0, TAU); g.stroke();
-      g.fillStyle = '#0B1016'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.font = '700 ' + Math.round(f.r * 0.7) + 'px ' + F_UI; g.fillText(f.l, f.x, f.y - f.r * 0.14);
-      g.font = '700 ' + Math.max(8, Math.round(f.r * 0.27)) + 'px ' + F_UI; g.fillText(live ? f.w : 'LOCKED', f.x, f.y + f.r * 0.48);
-      g.globalAlpha = 1;
+      const node = FACE_NODE[f.id], live = !node || (s && s.has(node)), dn = !!TOUCH.down[f.id], k = f.r * (dn ? 0.94 : 1);
+      ctx.globalAlpha = live ? 0.96 : 0.5;
+      disc(f.x, f.y, k); const g = ctx.createLinearGradient(0, f.y - k, 0, f.y + k); g.addColorStop(0, dn ? FT.sel : FT.keyTop); g.addColorStop(1, dn ? FT.sel : FT.keyBot); ctx.fillStyle = g; ctx.fill();
+      glow(() => { disc(f.x, f.y, k - 1); ctx.strokeStyle = f.id === 'a' && live ? C.dummy : FT.edge; ctx.lineWidth = f.id === 'a' ? 3.5 : 1.75; ctx.stroke(); });
+      ctx.save(); disc(f.x, f.y, k - 3); ctx.clip(); const hg = ctx.createLinearGradient(0, f.y - k, 0, f.y - k * 0.2); hg.addColorStop(0, FT.gloss); hg.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = hg; ctx.fillRect(f.x - k, f.y - k, 2 * k, k); ctx.restore();
+      txt(f.l, f.x, f.y + k * 0.14, '700 ' + Math.round(k * 0.78) + 'px ' + F_MONO, dn ? FT.selText : live ? FT.text : FT.off, 'center');
+      txt(live ? f.w : 'LOCKED', f.x, f.y + k * 0.6, '700 ' + Math.max(9, Math.round(k * 0.26)) + 'px ' + F_UI, dn ? FT.selText : live ? (f.id === 'a' ? C.dummy : FT.dim) : FT.off, 'center');
     }
-    // pause and full screen
-    for (const [k, label] of [['pause', '❚❚ PAUSE'], ['full', '⤢ FULL']]) {
-      const c = L.chip[k]; if (!c) continue; g.fillStyle = 'rgba(10,16,32,0.8)'; g.strokeStyle = 'rgba(63,208,255,0.85)'; g.lineWidth = 1.5;
-      g.beginPath(); g.roundRect ? g.roundRect(c.x, c.y, c.w, c.h, 8) : g.rect(c.x, c.y, c.w, c.h); g.fill(); g.stroke();
-      g.fillStyle = '#F4F8FA'; g.font = '700 11px ' + F_UI; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(label, c.x + c.w / 2, c.y + c.h / 2 + 1);
+    ctx.globalAlpha = 1;
+    // pause and full screen: glass keys
+    for (const [kk, label] of [['pause', '❚❚ PAUSE'], ['full', '⤢ FULL']]) {
+      const c = L.chip[kk]; if (!c) continue;
+      glassKey(c.x, c.y, c.w, c.h); txt(label, c.x + c.w / 2, c.y + c.h / 2 + 6, '700 17px ' + F_UI, FT.text, 'center');
     }
+    ctx.restore();
   }
-  try { if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) touchOn(); } catch (e) { /* no media queries */ }
-  window.addEventListener('touchstart', () => touchOn(), { passive: true, once: true });
+  if (touchDevice()) touchOn();
 
   // ---------- audio
   const Snd = {
@@ -688,7 +699,7 @@
           break;
         }
         case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(e.why ? DENY_TEXT[e.action + '.' + e.why] || 'Denied' : copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
-        case 'jump': { Snd.tone(330, 660, 0.12, 'triangle', 0.08); const b = s.body; puff(b.x, b.y + 6, 6, { type: 'dust', speed: 55, life: 0.35, size: 3 }); break; } // Edit 75
+        case 'jump': { Snd.tone(330, e.kind === 'dash' ? 880 : 660, e.kind === 'dash' ? 0.18 : 0.12, 'triangle', 0.08); const b = s.body; puff(b.x, b.y + 6, e.kind === 'dash' ? 10 : 6, { type: 'dust', speed: 55, life: 0.35, size: 3 }); if (e.kind === 'dash' && !fx.longJumpSeen) { fx.longJumpSeen = true; toast('Long jump: B during a dash carries its speed'); } break; } // Edit 75–76
         case 'jump-land': { Snd.tone(160, 90, 0.08, 'square', 0.05); const b = s.body; puff(b.x, b.y + 6, 5, { type: 'dust', speed: 45, life: 0.3, size: 3 }); break; }
         case 'rail-jump': Snd.tone(520, 880, 0.1, 'triangle', 0.06); toast('Over the rail'); break;
         case 'combo': [660, 880, 1100].slice(0, Math.min(3, e.n)).forEach((f, j) => Snd.tone(f, f * 1.2, 0.08, 'triangle', 0.08, j * 0.06)); kick(2 + e.n, 0.18); toast('COMBO ×' + e.n + ' · points ×' + e.mult + ' · +' + num(e.bonus)); break;
@@ -2049,8 +2060,13 @@
   }
 
   function render() {
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.setTransform(scale, 0, 0, scale, ox, oy);
     ctx.imageSmoothingEnabled = false;
+    { const g = ctx.createLinearGradient(0, 0, 0, VH); g.addColorStop(0, FT.bg[0]); g.addColorStop(0.5, FT.bg[1]); g.addColorStop(1, FT.bg[2]); ctx.fillStyle = g; ctx.fillRect(-ox / scale - 1, -oy / scale - 1, cv.width / scale + 2, cv.height / scale + 2); } // Edit 76: the margins
+    renderScreen();
+    if (TOUCH.on) { ctx.setTransform(scale, 0, 0, scale, 0, 0); drawTouch(); }
+  }
+  function renderScreen() {
     drawFrame();
     if (app.screen === 'title') { drawTitle(); return; }
     if (app.screen === 'loading') { drawLoading(); return; }
@@ -2095,7 +2111,7 @@
     ['proto.damageExponent', 1, 3, 0.1], ['proto.dummyStrikeSpeed', 0, 400, 5], ['proto.dummyMass', 0.01, 1, 0.005],
     ['proto.restitution', 0, 1, 0.05], ['proto.contactFriction', 0, 1, 0.05], ['proto.recoilScale', 0, 2, 0.05], ['proto.recoilSeconds', 0, 1, 0.05],
     // Edit 75 (P6.5): DIRECT turning, the jump, Ricochet, combos
-    ['proto.turnModel', 1, 2, 1], ['movement.directTurnRate', 180, 1440, 30], ['upgrades.jumpAirtime', 0.2, 1, 0.05], ['upgrades.jumpDistance', 40, 240, 4], ['upgrades.jumpHeight', 10, 80, 1],
+    ['proto.turnModel', 1, 2, 1], ['movement.directTurnRate', 180, 1440, 30], ['upgrades.jumpAirtime', 0.2, 1, 0.05], ['upgrades.jumpMaxSpeed', 100, 600, 4], ['upgrades.jumpAirAccel', 0, 1200, 12], ['upgrades.jumpHeight', 10, 80, 1],
     ['battery.jumpCost', 0, 2, 0.5], ['upgrades.ricochetScale', 1, 4, 0.25], ['scoring.comboWindow', 0.2, 4, 0.1], ['scoring.comboStep', 0, 2, 0.1], ['scoring.comboMax', 1, 6, 0.5],
   ];
   for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
@@ -2200,9 +2216,8 @@
     } else acc = 0;
     processEvents();
     render();
-    if (TOUCH.on) drawTouch();
     const pi = pad.info, padTxt = pad.blocked ? 'gamepads blocked on this page: open the downloaded file' : pi && pi.id ? 'pad: ' + pi.id.slice(0, 40) + (pi.mapping === 'standard' ? '' : ' (no standard mapping: hold START or G to set up)') : 'pad: none seen — press any button on it';
-    const st = BUILD + ' · ' + SW + ' × ' + SH + ' ×' + kpx + ' · ' + (app.tuned ? 'TUNED RUN · UNRANKED' : 'registry values') + ' · ' + padTxt;
+    const st = BUILD + ' · ' + SW + ' × ' + SH + ' ×' + kpx.toFixed(2) + ' · ' + (app.tuned ? 'TUNED RUN · UNRANKED' : 'registry values') + ' · ' + padTxt;
     if (statusEl && statusEl.textContent !== st) statusEl.textContent = st;
     const mon = document.getElementById('padmon'), mt = pi && pi.monitor ? pi.monitor : '';
     if (mon && mon.textContent !== mt) mon.textContent = mt;
@@ -2211,6 +2226,6 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {});
   requestAnimationFrame(frame);
   window.__dummies = app;
-  window.__dummiesScale = () => ({ kpx, width: cv.width, height: cv.height });
-  window.__dummiesInput = { TOUCH, pad, touchLayout, FOUR }; // Edit 75: for the tests
+  window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
+  window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR }; // Edit 75–76: for the tests
 })();

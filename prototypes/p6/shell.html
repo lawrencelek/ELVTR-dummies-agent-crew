@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="screen-orientation" content="landscape"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>DUMMIES P6.5</title>
+<title>DUMMIES P6.6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&family=B612+Mono:wght@400;700&family=Nunito:wght@700;800;900&display=swap">
 <style>
-/* One cabinet: an integer-scaled 640 × 360 screen on a sky stage; developer controls below the fold. */
+/* One cabinet: a 640 × 360 screen scaled to fit the stage (Edit 76: any factor); developer controls below the fold. */
 :root {
   --ground: #DCEEF5; --ink: #101417; --ink-2: #4A5A66; --line: #B8C4CB; --aqua: #4FC3E8; --aqua-deep: #1E8FB8; --panel: #F7FBFD;
   --font-ui: "B612", "Segoe UI", system-ui, sans-serif; --font-mono: "B612 Mono", ui-monospace, Menlo, monospace; --font-brand: "Nunito", "Segoe UI", system-ui, sans-serif;
@@ -56,14 +56,16 @@ details#tune summary small { font: 400 12px var(--font-ui); color: var(--ink-2);
 /* Edit 75: touch. The stage fills the screen (landscape only); the controls draw on an overlay. Upright phones see a prompt. */
 body.touch { overflow: hidden; overscroll-behavior: none; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 body.touch .wrap { display: none; }
-body.touch .stage { height: 100vh; height: 100dvh; }
-#rotate { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: #05070D; color: #3FD0FF; font: 700 18px var(--font-ui); text-align: center; line-height: 1.6; padding: 24px; }
+body.touch .stage { height: 100vh; height: 100dvh; min-height: 0; }
+body.touch #game { touch-action: none; }
+#rotate { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: linear-gradient(#05070D, #121B33); color: #3FD0FF; font: 700 18px var(--font-ui); text-align: center; line-height: 1.6; padding: 24px; }
+#rotate > div { border: 1.5px solid rgba(63,208,255,0.85); border-radius: 12px; padding: 20px 24px; background: linear-gradient(rgba(20,30,56,0.94), rgba(8,12,24,0.94)); box-shadow: 0 0 12px rgba(63,208,255,0.35); }
 #rotate small { font-weight: 400; font-size: 13px; color: #9FB8C8; }
 </style>
 </head>
 <body>
 <div class="stage" id="stage">
-  <canvas id="game" tabindex="0" aria-label="DUMMIES P6.5 game. Keyboard, gamepad or touch (landscape)."></canvas>
+  <canvas id="game" tabindex="0" aria-label="DUMMIES P6.6 game. Keyboard, gamepad or touch (landscape)."></canvas>
 </div>
 <div class="wrap">
   <div class="bar">

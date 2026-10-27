@@ -1998,7 +1998,8 @@
       for (const st of b.mode === 'jump' ? [] : this.level.stairs) {
         if (st.head !== b.floor) continue;
         const [l0, l1] = this.stairSpan(st), lat = st.axis === 'y' ? b.x : b.y, t = this.stairT(st, b.x, b.y), ext = (this.P['world.parapetWidth'] + this.P['body.radius']) / Math.abs(st.high - st.low);
-        if (lat >= l0 + 2 && lat <= l1 - 2 && t >= 0.5 && t <= 1 + ext + 0.25 && this.enterStair(st, 'head')) return;
+        const back = ((st.axis === 'y' ? b.y - b.py : b.x - b.px) * Math.sign(st.high - st.low)) < 0; // Edit 76: only a body heading back down the flight steps onto it
+        if (back && lat >= l0 + 2 && lat <= l1 - 2 && t >= 0.5 && t <= 1 + ext + 0.25 && this.enterStair(st, 'head')) return; // (pushing on across a narrow walkway froze it at the far rail, on the stair)
       }
       if (b.x < 0 || b.x > W || b.y < 0 || b.y > H) { if (this.neighbourFloor(b.x, b.y, z)) return; }
       else if (f.drop || (f.dropAt && f.dropAt(b.x, b.y)) || (f.rail && b.mode === 'jump' && b.z >= this.P['world.jumpableHeight'])) { // Edit 75: a jump clears a handrail or parapet and drops to the level below
@@ -2094,8 +2095,8 @@
       const P = this.P, b = this.body, r = P['body.radius'], G = this.level;
       if (!b.alive || b.stair || b.mode === 'drop' || b.mode === 'rescue') return;
       const air = b.mode === 'jump' ? b.z : 0; // Edit 75: how high the dummy is in a jump
-      const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; if (b.mode === 'jump') b.jump.blocked = true; };
-      const push = (nx, ny, pen) => { b.x += nx * pen; b.y += ny * pen; const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= vn * nx; b.vy -= vn * ny; } block(); };
+      const block = () => { if (b.mode === 'lunge') b.lunge.blocked = true; };
+      const push = (nx, ny, pen) => { b.x += nx * pen; b.y += ny * pen; const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= vn * nx; b.vy -= vn * ny; } if (b.mode === 'jump') X.JUMP.slide(b.jump, nx, ny); block(); }; // Edit 76: in a jump, slide along it
       const rect = (s) => { const res = circleRect(b.x, b.y, r, s); if (res) push(res.nx, res.ny, res.pen); };
       const ground = b.level === 0;
       if (ground) {

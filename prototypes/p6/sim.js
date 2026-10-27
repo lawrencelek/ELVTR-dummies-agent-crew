@@ -1,6 +1,7 @@
 /* DUMMIES P1 — Finding the Fun. Deterministic simulation core. No DOM, no randomness. */
 (function (root) {
   'use strict';
+  const JUMP = root.JUMP || (typeof require !== 'undefined' ? require('../jump/jump.js') : null); // Edit 76: the jump's rules, shared with the jump test
 
   // Registry values (Engineering §13.5). Trial.
   const REG = {
@@ -96,7 +97,8 @@
     'proto.art.beamLength': 200, 'proto.art.beamAlpha': 0.22, 'proto.art.brakeLength': 48, 'proto.art.brakeAlpha': 0.35,
     // Edit 75 (Prototype 6.5): DIRECT turning (decision, 27 October); B jumps (Legs); X grabs; Y throws; chained hits pay a combo;
     // Ricochet doubles the bounce. Switched on by P6.5 (world6.js P6SIM); P1–P6.4 keep their rules (proto.* switches below).
-    'movement.directTurnRate': 1080, 'upgrades.jumpAirtime': 0.5, 'upgrades.jumpDistance': 112, 'upgrades.jumpHeight': 44, 'upgrades.jumpRecovery': 0.1,
+    'movement.directTurnRate': 1080, 'upgrades.jumpAirtime': 0.5, 'upgrades.jumpHeight': 44, 'upgrades.jumpRecovery': 0.1,
+    'upgrades.jumpMaxSpeed': 324, 'upgrades.jumpAirAccel': 324, // Edit 76: the jump keeps its take-off speed (Link's Awakening); upgrades.jumpDistance retires
     'battery.jumpCost': 1, 'world.jumpableHeight': 20, 'world.jumpableDepth': 48, 'proto.art.jumpableTop': 5, 'upgrades.ricochetScale': 2, 'scoring.comboWindow': 1.5, 'scoring.comboStep': 0.5, 'scoring.comboMax': 3,
     'economy.price.legs.jump': 1, 'economy.price.legs.ricochet': 2,
     // Edits 74–75: input (gamepad stick, touch stick, pad setup) and touch sizes in CSS px
@@ -1558,7 +1560,7 @@
         coastVx: 0, coastVy: 0, coastT: 0, counterVx: 0, counterVy: 0, counterT: 0, counterDur: 0,
         lunge: null, recoverT: 0, held: null, gesture: null, alive: true, chassis: this.run.chassis,
         level: 0, floor: null, stair: null, drop: null, // Edit 44: level 0 ground, 1 low highway, 2 high (highway, roofs, skybridges)
-        hits: [], denied: 0, points0: this.run.points, z: 0, jump: null, combo: null, // Edit 75: jump height; the combo in progress
+        hits: [], denied: 0, points0: this.run.points, z: 0, jump: null, combo: null, landT: 0, // Edit 75: jump height; the combo in progress. Edit 76: landing time left
       };
       this.emit('chassis', { chassis: this.run.chassis, x: sp.x, y: sp.y });
     }
@@ -1587,9 +1589,15 @@
       if (b.refillDelay > 0) { b.refillDelay -= dt; if (b.refillDelay < 1e-9) b.refillDelay = 0; }
       else b.charge = Math.min(this.capacity(), b.charge + dt / P['battery.secondsPerCharge']);
       b.denied = Math.max(0, b.denied - dt);
-      if (b.mode === 'drop' || b.mode === 'jump') return; // in the air: no control until the landing
+      if (b.mode === 'drop') return; // in the air: no control until the landing
+      if (b.landT > 0) { b.landT -= dt; if (b.landT < 1e-9) b.landT = 0; }
       const facing0 = b.facing, direct = P['proto.turnModel'] === 2; // Edit 75: DIRECT (P6.5)
       const mx = cmd.mx || 0, my = cmd.my || 0, m = hyp(mx, my), has = m > (direct ? 0.05 : 0.3), mk = direct ? Math.min(1, m) : 1; // DIRECT: speed scales with tilt (the input arrives dead-zoned)
+      if (b.mode === 'jump') { // Edit 76: a normal jump steers toward the input; a dash jump holds its line. Facing follows the flight
+        JUMP.air(P, b.jump, has ? mx : 0, has ? my : 0, dt);
+        if (hyp(b.jump.vx, b.jump.vy) > 1) b.facing = Math.atan2(b.jump.vy, b.jump.vx);
+        return;
+      }
       const ix = has ? mx / m : 0, iy = has ? my / m : 0, inAng = has ? Math.atan2(iy, ix) : 0;
       const rate = (direct ? P['movement.directTurnRate'] : this.has('hips') ? P['upgrades.hipsTurnRate'] : P['movement.turnRate']) * DEG * this.partEffect('turn');
       // leg damage slows every ground speed; so does the surface underfoot (world.terrain.<id>.dummySpeed)
@@ -1597,11 +1605,11 @@
 
       if (cmd.aPress) {
         const lk = this.underfoot('lunge');
-        if (b.mode !== 'lunge' && b.mode !== 'recover' && !b.stair && b.charge >= P['battery.lungeCost'] - 1e-9 && lk > 0) this.startLunge(direct && has ? inAng : facing0, lk); // DIRECT: the dash goes where the player points
+        if (b.mode !== 'lunge' && b.mode !== 'recover' && !b.stair && !(b.landT > 0) && b.charge >= P['battery.lungeCost'] - 1e-9 && lk > 0) this.startLunge(direct && has ? inAng : facing0, lk); // DIRECT: the dash goes where the player points
         else { if (lk <= 0 && b.mode !== 'lunge' && b.mode !== 'recover') this.emit('slip', { surface: this.surfaceAt(b.x, b.y), x: +b.x.toFixed(1), y: +b.y.toFixed(1) }); this.deny('lunge'); }
         if (cmd.bRelease) b.gesture = null; // suppressed gesture cannot fire later
       } else if (P['proto.input.fourButtons']) { // Edit 75: B jump, X grab or place, Y throw
-        if (cmd.bPress) this.tryJump(has ? inAng : b.facing);
+        if (cmd.bPress) this.tryJump();
         if (b.mode !== 'jump') this.handleXY(cmd);
         if (b.mode === 'jump') return;
       } else this.handleB(cmd, dt);
@@ -1699,24 +1707,30 @@
       }
       if (cmd.yPress) { if (!this.has('throw')) this.deny('throw', 'locked'); else if (!b.held) this.deny('throw', 'empty'); else if (!this.armsBroken()) this.throwHeld(); else this.deny('throw'); }
     }
-    // B jumps (Legs: Jump). Along the input, else the facing: upgrades.jumpDistance in upgrades.jumpAirtime, up to
-    // upgrades.jumpHeight at the top. Costs battery.jumpCost. Leg damage shortens it as it shortens the dash.
-    tryJump(dir) {
+    // B jumps (Legs: Jump), Edit 76 (Link's Awakening): straight up from standing; at walking or running speed it carries that
+    // speed; during a dash it carries the dash's (a long jump). Capped at upgrades.jumpMaxSpeed. upgrades.jumpHeight at the top,
+    // upgrades.jumpAirtime in the air; costs battery.jumpCost. The ground speeds already carry leg damage. Rules: jump.js.
+    tryJump() {
       const P = this.P, b = this.body;
       if (!this.has('jump')) return this.deny('jump', 'locked');
-      if (b.mode === 'lunge' || b.mode === 'knock' || b.mode === 'jump' || b.mode === 'drop' || b.mode === 'rescue' || b.stair || b.charge < P['battery.jumpCost'] - 1e-9) return this.deny('jump');
-      const T = P['upgrades.jumpAirtime'], D = P['upgrades.jumpDistance'] * this.partEffect('dash');
+      if (b.mode === 'knock' || b.mode === 'jump' || b.mode === 'drop' || b.mode === 'rescue' || b.stair || b.landT > 0 || b.charge < P['battery.jumpCost'] - 1e-9) return this.deny('jump');
+      let vx = b.vx, vy = b.vy; const dash = b.mode === 'lunge' && !!b.lunge;
+      if (dash) { const L = b.lunge, sp = L.t < L.tf - 1e-9 ? L.R * L.df / L.tf : L.R * (1 - L.df) / (L.T - L.tf); vx = Math.cos(L.dir) * sp; vy = Math.sin(L.dir) * sp; }
       b.charge -= P['battery.jumpCost']; b.refillDelay = P['battery.refillDelaySeconds'];
-      b.mode = 'jump'; b.facing = dir; b.lunge = null; b.rampT = 0; b.z = 0;
-      b.jump = { t: 0, T, H: P['upgrades.jumpHeight'], dir, spd: D / T, x0: b.x, y0: b.y, blocked: false, level: b.level };
-      this.emit('jump', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), dir: +(dir / DEG).toFixed(1), level: b.level });
+      const J = JUMP.takeoff(P, vx, vy, dash);
+      Object.assign(J, { x0: b.x, y0: b.y, level: b.level, rampT: b.rampT });
+      b.mode = 'jump'; b.lunge = null; b.z = 0; b.jump = J;
+      if (J.v0 > 1) b.facing = Math.atan2(J.vy, J.vx);
+      this.emit('jump', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), kind: J.kind, speed: +J.v0.toFixed(1), level: b.level });
       this.mile('use:jump');
+      if (dash) this.mile('use:dashJump');
     }
-    landJump() {
-      const P = this.P, b = this.body, J = b.jump;
-      b.jump = null; b.z = 0; b.mode = 'recover'; b.vx = 0; b.vy = 0;
-      b.recoverT = Math.max(0, P['movement.lungeRecovery'] - P['upgrades.jumpRecovery']); // upgrades.jumpRecovery left to run
-      this.emit('jump-land', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), d: +hyp(b.x - J.x0, b.y - J.y0).toFixed(1), level: b.level });
+    landJump() { // the momentum carries on: moving, at the speed it landed with; no dash or jump for upgrades.jumpRecovery
+      const P = this.P, b = this.body, J = b.jump, sp = hyp(J.vx, J.vy), walk = P['movement.walkSpeed'], run = P['movement.runSpeed'];
+      b.jump = null; b.z = 0; b.landT = P['upgrades.jumpRecovery'];
+      b.vx = J.vx; b.vy = J.vy;
+      if (sp > 1) { b.mode = 'move'; b.rampT = P['movement.rampSeconds'] * clamp((sp - walk) / Math.max(1, run - walk), 0, 1); } else { b.mode = 'idle'; b.vx = b.vy = 0; }
+      this.emit('jump-land', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), d: +hyp(b.x - J.x0, b.y - J.y0).toFixed(1), kind: J.kind, speed: +J.v0.toFixed(1), level: b.level });
     }
     // Ricochet (Legs): the bounce off a hit goes upgrades.ricochetScale as far
     bounce(knock) { const k = this.has('ricochet') ? this.P['upgrades.ricochetScale'] : 1; return k === 1 ? knock : { x: knock.x * k, y: knock.y * k }; }
@@ -1783,9 +1797,9 @@
       if (b.mode === 'drop') { b.x += b.drop.vx * h; b.y += b.drop.vy * h; b.drop.t += h; return; }
       if (b.mode === 'jump') { // Edit 75: a parabola, upgrades.jumpHeight at the top
         const J = b.jump;
-        if (J.blocked) { b.vx = 0; b.vy = 0; } else { b.vx = Math.cos(J.dir) * J.spd; b.vy = Math.sin(J.dir) * J.spd; }
+        b.vx = J.vx; b.vy = J.vy; // Edit 76: the take-off velocity, as steered in the air; a wall slides it (world6.js)
         b.x += b.vx * h; b.y += b.vy * h; J.t = Math.min(J.T, J.t + h);
-        b.z = 4 * J.H * J.t * (J.T - J.t) / (J.T * J.T);
+        b.z = JUMP.z(J);
         if (J.t >= J.T - 1e-9) this.landJump();
         return;
       }
@@ -3379,7 +3393,7 @@
     }
   }
 
-  const api = { Sim, REG, PROTO, OVERRIDES, NODES, NODES4, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
+  const api = { Sim, JUMP, REG, PROTO, OVERRIDES, NODES, NODES4, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
     planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, laneEnds, seamSight, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, checkZone, buildableArea, zHeight, stairRun, LEVELS3,
     lanesOf, makePath, offsetPts, fillet, filletAny, arcPts, roundaboutCenter, skeletons, routeCenter, edgePoint, deckLanesOf, fleetClass, minBend }; // P4: the Turn Lab builds its tracks with these
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
