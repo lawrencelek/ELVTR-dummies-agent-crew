@@ -9,7 +9,8 @@ const P = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES), W = P['world.width'], 
 const LIMITS = { popIn: 0, overlap: 0, longestStop: 30, emptyShare: 0.2 };
 
 function soak(id, secs) {
-  const w = W6.buildWorld(id), away = { alive: true, x: -9999, y: -9999, vx: 0, vy: 0, level: 9, floor: null, stair: null, mode: 'idle', parts: null, facing: 0 };
+  const w = W6.buildWorld(id), ov = process.env.P6OV ? Object.fromEntries(process.env.P6OV.split(',').map((kv) => { const [k, v] = kv.split('='); return [k, +v]; })) : null, away = { alive: true, x: -9999, y: -9999, vx: 0, vy: 0, level: 9, floor: null, stair: null, mode: 'idle', parts: null, facing: 0 };
+  if (ov) for (const s of w.sims) s.P = Object.assign({}, s.P, ov); // P6OV=key=value,… : a variant for comparison
   const per = [], pass = new Map(), last = new Map(); let maxStop = 0, who = '', stopped = 0, overlaps = [], popIns = [];
   for (const sc of w.scs) {
     const act = sc, seen = new Map(); let n = 0, empty = 0, fewest = 1e9, sum = 0;

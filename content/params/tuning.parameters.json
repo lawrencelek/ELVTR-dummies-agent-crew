@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit70-2026-10-27",
+ "registryVersion": "edit71-2026-10-27",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -5806,21 +5806,21 @@
    "group": "Traffic",
    "owner": "Traffic",
    "label": "Ring lane change length",
-   "description": "Distance a car travels while moving between the outer and inner ring lanes.",
+   "description": "Distance a car travels while moving between the outer and inner ring lanes (one lane width, world.laneWidth). Its heading swings at most atan(π/2 × world.laneWidth ÷ this): 30° at 150. P4–P5 builds keep 72 (51°).",
    "unit": "world units",
    "type": "number",
-   "default": 72,
+   "default": 150,
    "status": "proposed",
-   "source": "Edit 52 (24 October), P5 sim and district mock-up",
+   "source": "Edit 52 (24 October), P5 sim and district mock-up; Edit 71 (27 October): 72 → 150 in P6",
    "editable": true,
    "protectedReason": null,
    "applyAt": "immediate",
    "validation": {
     "min": 40
    },
-   "integrationStatus": "prototype-p5",
+   "integrationStatus": "game-p6",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "About one and a half car lengths; fits between two arms on a Rc 132 ring"
+   "purpose": "Cars change ring lanes in a gentle arc, not a swerve"
   },
   {
    "id": "traffic.ringExitCheck",
@@ -6828,6 +6828,132 @@
     "min": 32
    },
    "purpose": "Every flight opens onto open ground, never into a pinch",
+   "status": "proposed",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented"
+  },
+  {
+   "id": "proto.headingBlend",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Heading blend",
+   "description": "A car's heading blends from one path segment's tangent to the next within this distance of a vertex (at most half of either segment). The heading turns continuously; the sprite shows the nearest of its 32 headings. 0 restores the stepped heading.",
+   "unit": "world units",
+   "type": "number",
+   "default": 12,
+   "source": "Edit 71 (27 October): Prototype 6.3 driving",
+   "validation": {
+    "min": 0
+   },
+   "purpose": "Cars turn smoothly round rings and fillets",
+   "status": "proposed",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented"
+  },
+  {
+   "id": "traffic.ringEntryGap",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Roundabout entry gap",
+   "description": "A car at a roundabout's give-way line waits while a circulating car would reach its join within this many seconds. Half a second under traffic.giveWayGap (junctions keep that).",
+   "unit": "s",
+   "type": "number",
+   "default": 2.0,
+   "source": "Edit 71 (27 October): Prototype 6.3 driving",
+   "validation": {
+    "min": 0.5
+   },
+   "purpose": "Entering cars take the gaps a real driver takes",
+   "status": "proposed",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented"
+  },
+  {
+   "id": "traffic.signalDistance",
+   "group": "Traffic",
+   "owner": "Traffic",
+   "label": "Turn signal distance",
+   "description": "A car signals a turn from this far before it: at a roundabout's entry (right for a right turn, left for a left turn or U-turn), on the ring toward its exit, at a junction toward its turn.",
+   "unit": "world units",
+   "type": "number",
+   "default": 140,
+   "source": "Edit 71 (27 October): Prototype 6.3 driving",
+   "validation": {
+    "min": 0
+   },
+   "purpose": "Players and drivers read a car's turn",
+   "status": "proposed",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented"
+  },
+  {
+   "id": "proto.droneConeSeconds",
+   "group": "Props",
+   "owner": "Props",
+   "label": "Cone drone delay",
+   "description": "A cone left in a lane this long fetches a FARSIGHT drone, whether cars stop or steer round it. 0: only a car blocked and honking calls one (P2–P5).",
+   "unit": "s",
+   "type": "number",
+   "default": 5,
+   "source": "Edit 71 (27 October): Prototype 6.3 driving",
+   "validation": {
+    "min": 0
+   },
+   "purpose": "No cone stays in the road for long",
+   "status": "proposed",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented"
+  },
+  {
+   "id": "proto.art.signalLength",
+   "group": "Art",
+   "owner": "Art",
+   "label": "Turn signal length",
+   "description": "Each turn signal light: 2 art px wide, this many art px along the car from each corner on the signalling side. Front and rear blink together at 1.5 Hz in amber (K.amber). Was 2.",
+   "unit": "art px",
+   "type": "number",
+   "default": 4,
+   "source": "Edit 71 (27 October): Prototype 6.3 driving",
+   "validation": {
+    "min": 2
+   },
+   "purpose": "A turn signal reads at play scale",
+   "status": "proposed",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "checkpoint",
+   "integrationStatus": "game-p6",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented"
+  },
+  {
+   "id": "proto.art.coneHeight",
+   "group": "Art",
+   "owner": "Art",
+   "label": "Cone height",
+   "description": "A cone's drawn height: its sprite stands this ÷ U (2) art px; its shadow falls from this height. P1–6.2: 14 (7 art px). Edit 71: 16 (8 art px; 14% taller, the nearest whole pixel to 15%).",
+   "unit": "world units",
+   "type": "number",
+   "default": 16,
+   "source": "P1 (Prototype Log, Art: extrusion heights); registered Edit 71 (27 October): 14 → 16",
+   "validation": {
+    "min": 14
+   },
+   "purpose": "Cones read at a glance",
    "status": "proposed",
    "editable": true,
    "protectedReason": null,

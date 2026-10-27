@@ -1498,6 +1498,7 @@
   const SIDE = X.SIDE, OPPS = { N: 'S', S: 'N', E: 'W', W: 'E' }, GL = X.seamSight(P);
   const hashId = (id) => { let h = 2166136261; for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619); return h >>> 0; };
   const NOOP = () => {};
+  const P6SIM = { 'proto.droneConeSeconds': 5, 'traffic.ringLaneChange': 150 }; // Edit 71: P6's registry values (the shared sim keeps the P2 rule, 0, and P5's 72-unit ring lane change)
   function quiet(s) { // a traffic sim: drivers and cars only; the dummy it sees is the world's (or its proxy next door)
     Object.assign(s, { checkTerminal: NOOP, checkFlip: NOOP });
     s.meets = (c) => { const b = s.body; return !!b && b.alive && !b.stair && b.mode !== 'drop' && b.mode !== 'rescue' && b.level === s.elev0 + (c.layer || 0); };
@@ -1532,6 +1533,7 @@
       for (const s of sc.sims) {
         Object.assign(s, { admit: NOOP, admitDeck: NOOP });
         if (dki) s.P = Object.assign({}, s.P, { 'world.deckInterval': dki / s.P['traffic.deckGapScale'] });
+        s.P = Object.assign({}, s.P, P6SIM); // Edit 71
         for (const r of recs.filter((q) => q.s === s && q.ends.in)) { // one group per physical inlet: a junction's routes share their approach
           const cls = r.deck != null ? 'deck' + r.elev : s.elev0 && s.lab && s === sc.ringSim ? 'ring' : 'street' + r.elev, key = cls + ':' + r.ends.in.side + Math.round(r.ends.in.off);
           if (!sc.flow.has(cls)) sc.flow.set(cls, { cls, S: cls.startsWith('street') ? SG : SD, groups: new Map(), target: 0, n: 0, rr: 0 });
@@ -1654,14 +1656,15 @@
     return x > -m && x < W + m && y > -m && y < H + m;
   }
   function groupCars(g) { const out = []; const ss = new Set(g.recs.map((r) => r.s)); for (const s of ss) for (const c of s.cars) { const r = recOf(s, c); if (r && r.group === g) out.push(c); } return out; }
+  const sameRec = (a, b) => a === b || (!!a && !!b && a.s === b.s && a.i === b.i); // a ring's lap variant is its route's rec
   function roomAt(Wd, g, r, s0, ahead, behind) { // clear ahead along the inlet's lanes, and no car coming up behind across the seam
     for (const c of groupCars(g)) if (c.s + c.L / 2 > s0 - 40 && c.s - c.L / 2 < s0 + ahead) return false;
-    for (const q0 of g.recs) for (const q of q0.prev) for (const c of q.s.cars) { if (recOf(q.s, c) !== q) continue; if (q.ends.out.s - c.s < behind + c.L) return false; }
+    for (const q0 of g.recs) for (const q of q0.prev) for (const c of q.s.cars) { if (!sameRec(recOf(q.s, c), q)) continue; if (q.ends.out.s - c.s < behind + c.L) return false; } // Edit 71: a lap variant counts as its route
     return true;
   }
   function queued(g) { // a queue on the inlet's lanes, or on the lanes they feed next door: add nothing (no car into a jam)
     for (const c of groupCars(g)) if ((c.stopT || 0) > 0.5) return true;
-    for (const r of g.recs) for (const q of r.next) for (const c of q.s.cars) if (recOf(q.s, c) === q && (c.stopT || 0) > 0.5) return true;
+    for (const r of g.recs) for (const q of r.next) for (const c of q.s.cars) if (sameRec(recOf(q.s, c), q) && (c.stopT || 0) > 0.5) return true;
     return false;
   }
   function spawn(Wd, r, s0) {

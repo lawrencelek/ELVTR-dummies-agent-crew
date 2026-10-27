@@ -1,16 +1,18 @@
-# DUMMIES — Prototype 6.2: three districts, managed traffic, navigation on one grid
+# DUMMIES — Prototype 6.3: three districts, managed traffic, driving that reads
 
-**Prototype 6.2 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–70 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**Prototype 6.3 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–71 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
-Prototype 6.2 follows the 6.1 release (Edit 69) with the playtest of 27 October (Edit 70): the open ring, one garden grid, navigation checks, the HUD.
+Prototype 6.3 follows 6.2 (Edit 70) with the driving playtest of 27 October (Edit 71): smooth turns, turn signals, ring entry, the cone drone, taller cones.
 
-- **`dummies_p6_2.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_3.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
+- **`dummies_p6_2.html`:** Prototype 6.2 (Edit 70). Frozen.
 - **`dummies_p6_1.html`:** Prototype 6.1 (Edit 69). Frozen.
 - **`dummies_p6.html`:** P6 as released (Edit 62). Frozen.
 - **`world6.js`:** the world. Art, edges, traffic, play data and the player sim (`Sim6`) per district.
 - **`circus_valley.js`:** the Waterfront plan (Edits 58–61). One source for its layout.
 - **`test_p6.js`:** headless checks, the release tests included. `node test_p6.js [minutes]`.
-- **`tools/p6_traffic.js`:** the traffic soak. `node tools/p6_traffic.js [seconds per screen] [district]`.
+- **`tools/p6_traffic.js`:** the traffic soak. `node tools/p6_traffic.js [seconds per screen] [district]`. `P6OV=key=value,…` overrides registry values.
+- **`tools/p6_rings.js`:** roundabout entries: waits at the line, signals. `node tools/p6_rings.js [seconds per screen] [district|all] [key=value …]`.
 - **`tools/p6_walk.js`:** the walking test. `node tools/p6_walk.js [district]`.
 - **`tools/p6_nav.js`:** the navigation checks: dead space, garden paths, flight forecourts, one ground. `node tools/p6_nav.js [district]`.
 - **`tools/p6_audit.js`:** the playtest audit on all 27 screens. `node tools/p6_audit.js [district]`.
@@ -77,13 +79,26 @@ Prototype 6.2 follows the 6.1 release (Edit 69) with the playtest of 27 October 
   - Cars on different laps of one route follow each other.
 - **The shift:** `run.appearances.road` (100) Z0 cars, counted as each first appears in view.
 
-## Release tests (Edit 69; rerun on 6.2)
+## Driving (6.3)
+
+- **Heading:** continuous under the hood. Within `proto.headingBlend` (12) of a path vertex the tangent blends to the next segment's. Capped at `proto.carYawRate`.
+- **Sprite:** the nearest of 32 headings (11.25°), separately.
+- **Turn signals:** from `traffic.signalDistance` (140) before a turn.
+  - Ring approach: right for the first exit; left past 12 o'clock or a U-turn; none straight on. On the ring: toward the exit.
+  - Junction: toward the turn. Lane shifts first. Honking: both sides. Deck traffic: none.
+  - Amber, front and rear, 2 × `proto.art.signalLength` (4) art px, 1.5 Hz.
+- **Ring entry:** wait while a circulating car would reach the join within `traffic.ringEntryGap` (2.0). Junctions keep `traffic.giveWayGap` (2.5).
+  - A circulating car signalling to leave before the join is passed over: outer lane, not changing lanes, its exit clear.
+- **Ring lane change:** over `traffic.ringLaneChange` (150): a 30° arc.
+- **Cones:** 8 art px (`proto.art.coneHeight` 16). A free cone in a lane `proto.droneConeSeconds` (5) fetches a drone; it sets the cone at a home.
+
+## Release tests (Edit 69; rerun on 6.3)
 
 | 13.5 min per district, view touring all nine screens | Parkland | Waterfront | Monument |
 |---|---|---|---|
 | Pop-ins in view | 0 | 0 | 0 |
 | Overlaps (P6.6 build → 6.1) | 4 → 0 | 8 → 0 | 0 → 0 |
-| Longest stop | 14.2 s | 12.4 s | 0 s |
+| Longest stop (6.2 → 6.3) | 14.2 → 12.6 s | 12.4 → 11.9 s | 0 s |
 | Emptiest street tile | 12% | 3% | 0% |
 
 | Walking | Parkland | Waterfront | Monument |
@@ -92,6 +107,13 @@ Prototype 6.2 follows the 6.1 release (Edit 69) with the playtest of 27 October 
 | Tour: screen-levels; crossings; flights | 9; 16; 13 | 15; 27; 16 | 9; 16; 18 |
 | Building faces hold | 30/30 | 10/10 | 140/140 |
 | Wander, 22 × 5 min: traps | 0 | 0 | 0 |
+
+| Roundabout entries, 18 min (6.2 rules → 6.3) | Parkland | Waterfront |
+|---|---|---|
+| Entries | 941 → 954 | 569 → 594 |
+| Wait at the line, mean | 2.29 → 1.09 s | 4.51 → 2.75 s |
+| Wait, 90th percentile | 4.88 → 2.87 s | 9.32 → 6.03 s |
+| Went on a leaving car's signal | 420 | 283 |
 
 | Navigation (6.2) | Parkland | Waterfront | Monument |
 |---|---|---|---|
@@ -115,10 +137,15 @@ Prototype 6.2 follows the 6.1 release (Edit 69) with the playtest of 27 October 
 
 ## Evidence
 
-- `node test_p6.js 3` → 64/64. The audit, walking, navigation and soak run in it.
+- `node test_p6.js 3` → 71/71. The audit, walking, navigation, soak and driving checks run in it.
+- `node tools/p6_rings.js 120 all` → the roundabout table above.
 - `node tools/p6_audit.js` → 198/198: 47 flights, 128 building plans, 23 walkway ends.
 - `node test_sim.js` → 104/104 (this copy and P5).
 - Browser: no page errors over scripted play in all three districts.
+
+![6.3: heading change a frame round the Waterfront circus](docs/p71_heading.png)
+
+![6.3: turn signals at the circus; the cone, 6.2 and 6.3](docs/p71_signals_cone.png)
 
 ![Parkland](docs/p62_parkland_3x3.png)
 
@@ -148,7 +175,8 @@ Prototype 6.2 follows the 6.1 release (Edit 69) with the playtest of 27 October 
 - Tile names: column-row in the game, row-column in playtest notes (D41).
 - Five Parkland flights keep their place beside the boulevard or a street (B2, C2, B3).
 - Copy for the new toasts is literal in `game.js`. Not yet in the content pipeline.
+- Left turns at a two-lane ring join the outer lane, then change lanes (D43).
 
 ## Build
 
-`python3 build.py` → `dummies_p6_2.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
+`python3 build.py` → `dummies_p6_3.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.

@@ -69,7 +69,7 @@
     'world.deckTopClear': 128, 'world.deckBottomClear': 128, 'world.edgeOverlap': 32, // Edit 48: drawn deck clear of the top edge, a building row below it; buildings straddle shared edges
     // P4 test (Edit 49): no road bends tighter than world.turnRadiusTight; roundabout entries on fillets; 45° roads in the palette;
     // cars judge other cars along their own lane; no new cars while traffic is jammed
-    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5, 'traffic.giveWaySpeed': 40,
+    'world.roundaboutEntryRadius': 96, 'world.diagonalShare': 0.25, 'traffic.followRoad': 1, 'traffic.gridlockSeconds': 6, 'traffic.jamReverse': 1, 'traffic.giveWayGap': 2.5, 'traffic.giveWaySpeed': 40, 'traffic.ringEntryGap': 2.0, 'traffic.signalDistance': 140, 'proto.art.signalLength': 4, 'proto.droneConeSeconds': 0, // Edit 71 (P6 sets proto.droneConeSeconds 2; 0 keeps the P2 rule: a drone only for a car blocked and honking)
     'world.junctionTurnRadius': 96, 'world.junctionApproach': 192, 'world.roundaboutArmGap': 10, // P4 (Edit 49.3)
     'world.junctionStagger': 256, // Edit 55 (example only): two T junctions this far apart replace a 45° crossroads
     'world.junctionZone': 0.75, // Edit 55.2: every junction sits in this central share of its tile, each way
@@ -99,7 +99,7 @@
     'proto.swerveLength': 120, 'proto.swerveOuter': 34, 'proto.shoulderWidth': 24,
     'proto.substeps': 4,
     'proto.learningEnabled': 0, 'proto.zonesEverywhere': 0, 'proto.pathsEverywhere': 1, 'proto.stopCue': 1,
-    'proto.returnSignalSeconds': 0.5, 'proto.returnClearance': 30, 'proto.carYawRate': 240,
+    'proto.returnSignalSeconds': 0.5, 'proto.returnClearance': 30, 'proto.carYawRate': 240, 'proto.headingBlend': 12, // Edit 71: a car's heading blends across a path vertex within this (world units)
     'proto.difficulty': 1, 'proto.health.fragile': 600, 'proto.health.standard': 800, 'proto.health.reinforced': 1000, // Edit 40.1: base 800; easy 600; difficult 1000
     'proto.quota.straight': 1, 'proto.quota.barrier': 2, 'proto.quota.corner': 3,
     'proto.traffic.straight.interval': 3, 'proto.traffic.barrier.interval': 3, 'proto.traffic.corner.interval': 3.5,
@@ -111,7 +111,7 @@
     'proto.driver.cautionSpeed': 82, 'proto.driver.passClearance': 24, 'proto.driver.passSpeed': 55,
     'proto.driver.patienceSeconds': 8, 'proto.droneSpeed': 240, 'proto.droneLiftSeconds': 0.5,
     'proto.art.shadowScale': 0.3, 'proto.art.crateHeight': 30, 'proto.art.barrierHeight': 14,
-    'proto.art.coneHeight': 14, 'proto.art.dummyHeight': 18, 'proto.art.droneHeight': 70,
+    'proto.art.coneHeight': 16, 'proto.art.dummyHeight': 18, 'proto.art.droneHeight': 70,
     'proto.art.extrusion': 0.3, // P3: share of an object's height drawn as screen-up offset (three-quarter view)
     'proto.city': 1, // P3: city blocks and jersey barriers are level statics (Fix A). 0 restores the P2.2 roads.
     'proto.art.wallHeight': 40, // P3.1: perimeter walls and checkpoint booths, drawn height
@@ -163,14 +163,46 @@
     for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + hyp(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
     return { pts, cum, length: cum[cum.length - 1] };
   }
-  function pathAt(path, s) {
+  // Prototype 6.3 (Edit 71): the heading under the hood is smooth. A path is a polyline, so its tangent steps at every
+  // vertex; within proto.headingBlend of a vertex (at most half of either segment) the tangent blends from one segment's to
+  // the next, so a car's heading turns continuously round a ring or a fillet. Position stays on the polyline. The sprite
+  // shows the nearest of its 32 headings, separately.
+  function pathTangents(path) {
+    const { pts, cum } = path, n = pts.length, tan = [], blend = [];
+    for (let i = 0; i + 1 < n; i++) { const l = cum[i + 1] - cum[i] || 1; tan.push([(pts[i + 1][0] - pts[i][0]) / l, (pts[i + 1][1] - pts[i][1]) / l]); }
+    for (let i = 0; i < n; i++) blend.push(i === 0 || i === n - 1 ? 0 : Math.min(HEADING_BLEND, (cum[i] - cum[i - 1]) / 2, (cum[i + 1] - cum[i]) / 2));
+    path.tan = tan; path.blend = blend;
+  }
+  let HEADING_BLEND = 12;
+  function pathAt(path, s, smooth) { // smooth: a car's pose (the blended tangent); geometry reads the segment's own
     const { pts, cum } = path;
     s = clamp(s, 0, path.length);
     let lo = 0, hi = cum.length - 1;
     while (hi - lo > 1) { const m = (lo + hi) >> 1; if (cum[m] <= s) lo = m; else hi = m; }
     const seg = cum[hi] - cum[lo] || 1, f = (s - cum[lo]) / seg;
-    const tx = (pts[hi][0] - pts[lo][0]) / seg, ty = (pts[hi][1] - pts[lo][1]) / seg;
-    return { x: pts[lo][0] + tx * seg * f, y: pts[lo][1] + ty * seg * f, tx, ty, nx: -ty, ny: tx };
+    let tx = (pts[hi][0] - pts[lo][0]) / seg, ty = (pts[hi][1] - pts[lo][1]) / seg;
+    const x = pts[lo][0] + tx * seg * f, y = pts[lo][1] + ty * seg * f;
+    if (smooth && HEADING_BLEND > 0 && pts.length > 2) {
+      if (!path.tan) pathTangents(path);
+      const a = s - cum[lo], b = cum[hi] - s, bl = path.blend[lo], bh = path.blend[hi];
+      let u = null, w = 0;
+      if (bl > 0 && a < bl) { u = path.tan[lo - 1]; w = 0.5 * (1 - a / bl); } // just past a vertex: still part the last segment's way
+      else if (bh > 0 && b < bh) { u = path.tan[hi]; w = 0.5 * (1 - b / bh); } // nearing a vertex: part the next segment's way
+      if (u) { const qx = tx * (1 - w) + u[0] * w, qy = ty * (1 - w) + u[1] * w, l = hyp(qx, qy) || 1; tx = qx / l; ty = qy / l; }
+    }
+    return { x, y, tx, ty, nx: -ty, ny: tx };
+  }
+  // Edit 71: a route's turn, for its signals. side: +1 right, −1 left (a U-turn is left), 0 straight on; s0..s1: where the
+  // heading turns (junction routes); exitSide: the way a ring route turns off the ring.
+  function pathSignal(p) {
+    if (p.sig) return p.sig;
+    const L = p.length, h = (s) => { const q = pathAt(p, clamp(s, 0, L)); return Math.atan2(q.ty, q.tx); }, h0 = h(5), h1 = h(L - 5), tot = wrap(h1 - h0);
+    const side = Math.abs(Math.abs(tot) - Math.PI) < 0.35 ? -1 : Math.abs(tot) > 0.6 ? Math.sign(tot) : 0;
+    let s0 = null, s1 = null;
+    for (let s = 0; s <= L; s += 4) { if (s0 == null && Math.abs(wrap(h(s) - h0)) > 0.17) s0 = s; if (Math.abs(wrap(h(s) - h1)) > 0.17) s1 = s; }
+    let exitSide = 0;
+    if (p.ring) { const e = p.ring.exitS; exitSide = Math.sign(wrap(h(e + 60) - h(e - 10))) || 1; }
+    return (p.sig = { side, s0, s1, exitSide });
   }
   function offsetPts(pts, off) {
     return pts.map((p, i) => {
@@ -1939,27 +1971,30 @@
     // (s, the nose stops there), the circulating lane it joins (centre, radius, direction of travel in angle) and the join angle.
     // Wait while a circulating car would reach the join within traffic.giveWayGap seconds, or is passing it.
     giveWayHold(c) {
-      const g = c.path.giveWay, gap = this.P['traffic.giveWayGap'];
+      c._gwSkip = false; // Edit 71: _gwSkip: a leaving car's signal was read; _gwWhy: why the car holds (for tools/p6_rings.js and diagnostics)
+      const g = c.path.giveWay, gap = this.P['traffic.giveWayGap'] > 0 ? (this.P['traffic.ringEntryGap'] != null ? this.P['traffic.ringEntryGap'] : this.P['traffic.giveWayGap']) : 0; // Edit 71: the ring's own entry gap
       if (!g || !(gap > 0) || lay(c) !== 0) return null;
       const toLine = g.s - (c.s + c.L / 2);
       if (toLine < -4 || toLine > this.P['traffic.giveWayWindow']) return null; // over the line: committed
       const om = this.P['traffic.ringOrbitMax'];
       if (om > 0 && c.path.ring && this.ringExitBlocked(c)) { // Edit 56: a car whose exit is blocked waits at the line once traffic.ringOrbitMax cars already orbit (orbiters fill a ring and lock it)
         let n = 0; for (const o of this.cars) if (o !== c && o.orbit && o.path.ring && o.path.ring.cx === g.cx && o.path.ring.cy === g.cy) n++;
-        if (n >= om) return { line: g.s - c.L / 2 };
+        if (n >= om) { c._gwWhy = 'orbiters'; return { line: g.s - c.L / 2 }; }
       }
       const fill = this.P['traffic.ringFill'];
       if (fill > 0) { // Edit 53.1: the ring takes a car only while its cars fill less than traffic.ringFill of the outer lane (a full ring locks)
         let used = c.L + this.P['traffic.minimumGap'];
         for (const o of this.cars) if (o !== c && lay(o) === 0 && o.path.giveWay && o.path.giveWay.cx === g.cx && o.path.giveWay.cy === g.cy && o.s + o.L / 2 > o.path.giveWay.s && o.path.ring && o.s < o.path.ring.exitS) used += o.L + this.P['traffic.minimumGap'];
-        if (used > fill * 2 * Math.PI * g.R) return { line: g.s - c.L / 2 };
+        if (used > fill * 2 * Math.PI * g.R) { c._gwWhy = 'fill'; return { line: g.s - c.L / 2 }; }
       }
       for (const o of this.cars) {
         if (o === c || lay(o) !== 0 || (Math.abs(hyp(o.x - g.cx, o.y - g.cy) - g.R) > 22 && !(o.orbit && o.orbit.lane === 'out' && hyp(o.x - g.cx, o.y - g.cy) < g.R))) continue; // P5 (Edit 52): a car moving out of the inner lane counts as circulating
         if (o.path.giveWay && o.path === c.path) continue;
         const ao = Math.atan2(o.y - g.cy, o.x - g.cx), d = ((((g.aj - ao) * g.dir) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), arc = d * g.R;
-        if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) return { line: g.s - c.L / 2 };
-        if (o.v < 15 && 2 * Math.PI * g.R - arc < c.L + o.L / 2 + this.P['traffic.minimumGap'] + this.P['traffic.ringLaneChange']) return { line: g.s - c.L / 2 }; // Edit 53.1: never join onto a stopped ring (the ring would fill and lock)
+        const og = o.path.giveWay, org = o.path.ring;
+        if (og && org && og.cx === g.cx && og.cy === g.cy && !o.orbit && o.s < org.exitS && this.turnSignal(o) === pathSignal(o.path).exitSide && org.exitS - o.s + o.L < arc - c.L / 2 && !this.ringExitBlocked(o)) { c._gwSkip = true; continue; } // (in the outer lane, its exit clear: it will leave) // Edit 71: it signals to leave before this entry, as a real driver reads it: go
+        if (arc < Math.max(o.v, 20) * gap + o.L || arc > 2 * Math.PI * g.R - o.L) { c._gwWhy = ['gap', o.id, Math.round(arc), Math.round(o.v)]; return { line: g.s - c.L / 2 }; }
+        if (o.v < 15 && 2 * Math.PI * g.R - arc < c.L + o.L / 2 + this.P['traffic.minimumGap'] + this.P['traffic.ringLaneChange']) { c._gwWhy = ['stopped', o.id, Math.round(2 * Math.PI * g.R - arc), Math.round(o.v)]; return { line: g.s - c.L / 2 }; } // Edit 53.1: never join onto a stopped ring (the ring would fill and lock)
       }
       return null;
     }
@@ -2130,7 +2165,8 @@
       });
     }
     pose(c, h) {
-      const p = pathAt(c.path, c.s);
+      HEADING_BLEND = this.P['proto.headingBlend'] || 0; // Edit 71: smooth heading under the hood (0: the stepped heading of P3–P5)
+      const p = pathAt(c.path, c.s, true);
       c.x = p.x + p.nx * c.d; c.y = p.y + p.ny * c.d;
       c.vx = (p.tx + p.nx * c.slope) * c.v; c.vy = (p.ty + p.ny * c.slope) * c.v;
       const target = Math.atan2(p.ty + p.ny * c.slope, p.tx + p.nx * c.slope);
@@ -2512,6 +2548,8 @@
     }
     // ----- maintenance drones
     dispatchDrone(cn) {
+      if (cn.droneT != null && this.t - cn.droneT < 20) return; // a screen's sims share its cones: one drone a cone
+      cn.droneT = this.t;
       const P = this.P, hx = P['world.width'] + 80, hy = -80;
       this.drones.push({ id: 'drone' + (++this.droneSeq), cone: cn.id, x: hx, y: hy, hx, hy, alt: 1, state: 'inbound', t: 0, target: null });
       this.emit('drone-dispatch', { cone: cn.id });
@@ -2522,7 +2560,16 @@
       return homes.find((h) => this.coneSpotValid(h.x, h.y, cn)) || null;
     }
     stepDrones(dt) {
-      const P = this.P, spd = P['proto.droneSpeed'], lift = P['proto.droneLiftSeconds'];
+      const P = this.P, spd = P['proto.droneSpeed'], lift = P['proto.droneLiftSeconds'], CS = P['proto.droneConeSeconds'];
+      if (CS > 0 && this.cones.length && this.t - (this._coneChk || -9) >= 0.25) { // Edit 71: a cone left in a lane fetches a drone, whether cars stop or steer round it
+        this._coneChk = this.t; const half = P['world.laneWidth'] / 2 + P['props.cone.radius'];
+        for (const cn of this.cones) {
+          if (cn.state !== 'free' || this.drones.some((d) => d.cone === cn.id)) { cn.roadAt = null; continue; }
+          const inLane = (this.level.lanes || []).some((ln) => { const pr = pathProject(ln, cn.x, cn.y); return pr && Math.abs(pr.lat) < half && pr.s > 0 && pr.s < ln.length; });
+          if (!inLane) { cn.roadAt = null; continue; }
+          if (cn.roadAt == null) cn.roadAt = this.t; else if (this.t - cn.roadAt >= CS) { this.dispatchDrone(cn); cn.roadAt = null; }
+        }
+      }
       const fly = (d, x, y) => { const dx = x - d.x, dy = y - d.y, l = hyp(dx, dy), st = spd * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
       for (const d of this.drones) {
         const cn = this.cones.find((c) => c.id === d.cone);
@@ -2786,11 +2833,25 @@
       }
       return c.state;
     }
-    signalSide(c) {
+    signalSide(c) { // +1 right, −1 left: a lane change first, else a turn (Edit 71)
       const m = c.state === 'intention' ? c.intent : c.man;
-      if (!m || m.type !== 'shift') return 0;
-      if (c.man === m && c.s >= m.s0 + m.len) return 0;
-      return Math.sign(m.d1 - (m.d0 != null ? m.d0 : c.d));
+      if (m && m.type === 'shift' && !(c.man === m && c.s >= m.s0 + m.len)) return Math.sign(m.d1 - (m.d0 != null ? m.d0 : c.d));
+      return this.turnSignal(c);
+    }
+    // Edit 71: turn signals, from traffic.signalDistance before the turn. A roundabout's entry: right for a right turn (the
+    // first exit), left for a left turn or a U-turn, none straight on. On the ring: toward its exit, once within the distance
+    // of it. A junction's route: toward its turn, until the turn is done.
+    turnSignal(c) {
+      const p = c.path, D = this.P['traffic.signalDistance'];
+      if (!(D > 0) || c.deck || !p || c.ghost) return 0;
+      const nose = c.s + c.L / 2;
+      if (p.ring && p.giveWay) {
+        const sg = pathSignal(p), g = p.giveWay;
+        if (nose < g.sj) return g.s - nose <= D ? sg.side : 0;
+        return c.s < p.ring.exitS && p.ring.exitS - c.s <= D ? sg.exitSide : 0;
+      }
+      if (p.junction) { const sg = pathSignal(p); return sg.side && sg.s0 != null && nose >= sg.s0 - D && c.s <= sg.s1 ? sg.side : 0; }
+      return 0;
     }
     exitCars() {
       this.cars = this.cars.filter((c) => {

@@ -65,7 +65,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = W6 ? 'P6.2' : 'P5.3'; // Prototype 6.2 (GDD Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = W6 ? 'P6.3' : 'P5.3'; // Prototype 6.3 (GDD Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -1044,7 +1044,9 @@
     const hgt = EXT(s.P['vehicles.' + c.cls + '.height']), ca = Math.cos(c.h), sa = Math.sin(c.h);
     const roof = (u, v) => [Math.round(cx + (u * ca - v * sa) / U), Math.round(cy - hgt + (u * sa + v * ca) / U)];
     const sig = s.signalSide(c), blink = c.honking ? Math.floor(app.realT * 5) % 2 === 0 : sig && Math.floor(app.realT * 3) % 2 === 0;
-    if (blink) for (const sd of c.honking ? [-1, 1] : [sig]) for (const u of [c.L / 2 - 3, -c.L / 2 + 3]) { const [x, y] = roof(u, sd * (c.W / 2 - 2)); FB.rect(x - 1, y - 1, x, y, K.amber); }
+    const SL = s.P['proto.art.signalLength'] || 2; // Edit 71: each light runs proto.art.signalLength art px along the car from its corner (was 2)
+    c._lights = null;
+    if (blink) { c._lights = []; c._lightsT = app.realT; for (const sd of c.honking ? [-1, 1] : [sig]) for (const e of [1, -1]) for (let j = 0; j < SL; j += 2) { const [x, y] = roof(e * (c.L / 2 - 3 - j * U), sd * (c.W / 2 - 2)); FB.rect(x - 1, y - 1, x, y, K.amber); c._lights.push([x, y]); } }
     if (c.v < -1) for (const sd of [-1, 1]) { const [x, y] = roof(-c.L / 2 + 1, sd * (c.W / 2 - 5)); FB.put(x, y, K.white); }
   }
   // Roof marks (4.2.2): state pip and spent slash, drawn after every sprite so nothing occludes them.
@@ -1193,9 +1195,15 @@
     list.sort((a, b2) => a[0] - b2[0]);
     for (const it of list) it[1]();
     if (!still) { // x-ray pass: a checker of each actor's own pixels, so an occluded car or dummy still reads (4.2.4 tier 1)
-      for (const c of carsOf(s)) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0));
+      for (const c of carsOf(s)) {
+        ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0));
+        relight(c);
+      }
       if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
     }
+  }
+  function relight(c) { // Edit 71: after the x-ray checker, the checker's own cells of a lit turn signal again, so a car's signal stays whole (and an occluded car's reads as a checker)
+    if (c._lights && c._lightsT === app.realT) for (const [x, y0] of c._lights) { const y = y0 - Math.round(c._lift || 0); for (let j = y - 1; j <= y; j++) for (let i = x - 1; i <= x; i++) if (((i + j) & 1) === 0) FB.put(i, j, K.amber); }
   }
   function ghost(S, ax, ay) {
     const x0 = Math.round(ax) - S.ox, y0 = Math.round(ay) - S.oy;
@@ -1391,7 +1399,7 @@
         (s.level.checkpoints || []).forEach((cp, i) => { if ((cp.deck && l.dk && l.dk.off === cp.off && l.z === cp.z) || (cp.hill && l.hill)) drawBoom(s, cp, i); }); // a highway or hill street leaving the district
         if (l === cueLayer) drawLights(s, lcars.filter((c) => elevOf(c) === lvl)); shadows6(s, lcars, me ? true : 'no'); if (l === cueLayer) cues(); }),
     });
-    for (const c of cars) ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
+    for (const c of cars) { ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); relight(c); } // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
     if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
     if (b.alive && b.held) { const p = s.releasePoint(); PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4 - bodyLift(s)); }
     for (const c of mine) drawCarMarks(s, c);

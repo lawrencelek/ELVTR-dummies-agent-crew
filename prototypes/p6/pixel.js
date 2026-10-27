@@ -651,7 +651,7 @@
     return S;
   }
   function pair(xs, y0, y1) { return [xs[0], y0, xs[1], y1]; }
-  const CONE = edgeRim(fromRows(['...o...', '..oWo..', '..oOo..', '.oOOOo.', '.oWWWo.', 'oOOOOOo', 'ooooooo'], { o: K.coneO, O: K.cone, W: K.coneW }, 3, 5), K.coneO, K.coneRim, K.coneRimD);
+  const CONE = edgeRim(fromRows(['...o...', '..oWo..', '..oOo..', '..oOo..', '.oOOOo.', '.oWWWo.', 'oOOOOOo', 'ooooooo'], { o: K.coneO, O: K.cone, W: K.coneW }, 3, 6), K.coneO, K.coneRim, K.coneRimD); // Edit 71: eight rows, not seven (14% taller; proto.art.coneHeight 16)
   const DRONE = (() => {
     const S = spr(21, 15, 10, 7);
     const P = (x, y, c) => sput(S, x + 10, y + 7, c);

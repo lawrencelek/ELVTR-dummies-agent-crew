@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 6.2](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_2.html` in a browser. Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–70.
+> **Current prototype: [Prototype 6.3](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_3.html` in a browser. Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–71.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 6.2 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_2.html` | Current. The open ring, one garden grid, navigation checks, the HUD |
+> | 6.3 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_3.html` | Current. Smooth turns, turn signals, ring entry, the cone drone |
+> | 6.2 | `prototypes/p6/` | `dummies_p6_2.html` | Frozen (Edit 70). The open ring, one garden grid, navigation checks, the HUD |
 > | 6.1 | `prototypes/p6/` | `dummies_p6_1.html` | Frozen (Edit 69). Release tests: traffic soak, walking |
 > | 6 | `prototypes/p6/` | `dummies_p6.html` | Frozen (Edit 62) |
 > | 5 | [`prototypes/p5/`](prototypes/p5/README.md) | `dummies_p5.html` | Frozen at P5.3 |

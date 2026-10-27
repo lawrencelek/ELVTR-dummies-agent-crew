@@ -173,6 +173,40 @@ for (const id of W6.LEVEL_LIST) {
   WK.place(s, sc, rg.cx, rg.cy + rIn + 28, 1, sc.game.floors.findIndex((f) => f.kind === 'ring')); for (let k = 0; k < 90; k++) { WK.calm(s); s.step({ mx: 0, my: -1 }); while (s.phase === 'scroll' || s.phase === 'hitstop') s.step({}); } const held = s.body.level === 1;
   ok(rg.inner.length === 2 && ends.every(Boolean) && held, `Parkland B2: the ring's hole is open over the boulevard; off each of its ${rg.inner.length} openings the dummy drops onto the road below; elsewhere the inner parapet holds`);
 }
+{ // Edit 71: driving. Smooth heading under the hood; turn signals; a ring's entry reads a leaving car's signal; a cone left in a lane fetches a drone
+  const w = W6.buildWorld('waterfront', { warm: 0 }), sc = w.at(1, 1), s = sc.lab, ln = s.level.lanes.find((l) => l.ring && l.ring.exitNo === 1) || s.level.lanes[0];
+  s.cars.length = 0; s.slot = s.schedule.length; const c = s.newCar('t1', 'sedan', s.level.lanes.indexOf(ln), ln, 30, 0); s.cars.push(c);
+  let worst = 0, hp = c.h, sig = { entry: 0, exit: 0 };
+  for (let k = 0; k < 60 * 14 && s.cars.includes(c); k++) {
+    s.t = (k + 1) / 60; s.carAI(1 / 60); for (let j = 0; j < 4; j++) s.moveCars(1 / 240, k / 60 + (j + 1) / 240);
+    let dh = c.h - hp; while (dh > Math.PI) dh -= 2 * Math.PI; while (dh < -Math.PI) dh += 2 * Math.PI; hp = c.h;
+    if (!c.man) worst = Math.max(worst, Math.abs(dh) * 180 / Math.PI);
+    const t = s.turnSignal(c), g = ln.giveWay; if (t && c.s + c.L / 2 < g.sj) sig.entry = t; if (t && c.s > g.sj) sig.exit = t;
+  }
+  ok(worst < 1.5, `Waterfront B2: round the circus a car's heading turns smoothly, at most ${worst.toFixed(2)}° a frame (no step at a path vertex)`);
+  ok(sig.entry === 1 && sig.exit === 1, `Waterfront B2: a car taking the first exit signals right on its approach (${sig.entry}) and right to leave the ring (${sig.exit})`);
+  { // the third exit: in to the inner lane and out again, all frames counted
+    const w3 = W6.buildWorld('waterfront', { warm: 0 }), s3 = w3.at(1, 1).lab, l3 = s3.level.lanes.find((l) => l.ring && l.ring.exitNo === 3);
+    s3.cars.length = 0; s3.slot = s3.schedule.length; const c3 = s3.newCar('t3', 'sedan', s3.level.lanes.indexOf(l3), l3, 30, 0); s3.cars.push(c3);
+    let w3st = 0, h3 = c3.h, inner = false, out = false, sg3 = 0;
+    for (let k = 0; k < 60 * 14 && s3.cars.includes(c3); k++) {
+      s3.t = (k + 1) / 60; s3.carAI(1 / 60); for (let j = 0; j < 4; j++) s3.moveCars(1 / 240, k / 60 + (j + 1) / 240);
+      let dh = c3.h - h3; while (dh > Math.PI) dh -= 2 * Math.PI; while (dh < -Math.PI) dh += 2 * Math.PI; h3 = c3.h;
+      w3st = Math.max(w3st, Math.abs(dh) * 180 / Math.PI); if (c3.orbit) inner = true; if (inner && !c3.orbit && c3.s > l3.ring.exitS) out = true;
+      if (c3.s + c3.L / 2 < l3.giveWay.sj && s3.turnSignal(c3)) sg3 = s3.turnSignal(c3);
+    }
+    ok(inner && out && w3st < 2 && s3.P['traffic.ringLaneChange'] === 150, `Waterfront B2: a car to the third exit moves in to the inner lane and back out (${inner}, ${out}), each over traffic.ringLaneChange (${s3.P['traffic.ringLaneChange']}); its heading turns at most ${w3st.toFixed(2)}° a frame, under half the 4° yaw cap (6.2: at the cap)`);
+    ok(sg3 === -1, `Waterfront B2: a car to the third exit (a left turn) signals left on its approach (${sg3})`);
+  }
+  const r = require('./tools/p6_rings.js').rings('waterfront', 20);
+  ok(r.exitGo > 0 && r.entries > 50, `Waterfront: ${r.entries} roundabout entries in 3 min; ${r.exitGo} cars went on a leaving car's signal; wait at the line mean ${r.mean.toFixed(2)} s`);
+  const w2 = W6.buildWorld('parkland', { warm: 2 }), sc2 = w2.at(1, 2), s2 = sc2.sims.find((q) => q.elev0 === 0 && q.level.lanes.length), l2 = s2.level.lanes[0], p2 = X.pathAt(l2, l2.length * 0.45), cn = sc2.cones[0];
+  Object.assign(cn, { x: p2.x, y: p2.y, vx: 0, vy: 0, state: 'free' }); const x0 = cn.x, y0 = cn.y, ev = [];
+  for (let k = 0; k < 60 * 15; k++) { W6.stepWorld(w2, null, sc2); for (const e of w2.events.splice(0)) if (/drone/.test(e.type)) ev.push(e.type); }
+  const inLane = s2.level.lanes.some((q) => { const pr = X.pathProject(q, cn.x, cn.y); return Math.abs(pr.lat) < P['world.laneWidth'] / 2; });
+  ok(ev.includes('drone-dispatch') && ev.includes('drone-pickup') && !inLane && Math.hypot(cn.x - x0, cn.y - y0) > 20, `Parkland B3: a cone left in a lane fetches a drone (${[...new Set(ev)].join(', ')}); it sets the cone off the lanes`);
+  ok(PIX.CONE.h * PIX.U === P['proto.art.coneHeight'] && PIX.CONE.h === 8, `the cone sprite stands ${PIX.CONE.h} art px tall, proto.art.coneHeight ${P['proto.art.coneHeight']} (was 7 and 14: 14% taller, the nearest whole pixel to 15%)`);
+}
 { // P6.3: the playtest routes
   const s = new W6.Sim6('monument', {}, null, { warm: 2 }); empty(s);
   place(s, 'B1', 472, 244); walk(s, 472, 120, 5, (q) => q.body.level === 1 && !q.body.stair && kind(q) === 'roof'); const roof = kind(s) === 'roof';
