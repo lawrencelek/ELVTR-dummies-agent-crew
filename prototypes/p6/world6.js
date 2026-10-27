@@ -153,6 +153,58 @@
     const a = GPL / U / 2, b = a * 0.7, x = wx / U, y = wy / U, fp = chamf(Math.round(x - a), Math.round(y - b), Math.round(x + a), Math.round(y + b), 3);
     mass(B, fp, x - a, y - b, x + a, y + b, 0, 3, 'conc', LEDS[1], true); mass(B, (px, py, i) => fp(px, py, (i || 0) + 2), x - a, y - b, x + a, y + b, 3, 4, 'hedge', null, false, 'hedge');
   }
+  // ---------- P6.5 (Edit 67): an Expo site. Every open garden cell takes a programme in a fixed rotation: a parterre (a framed lawn
+  // with a lit edge and a light at its centre), a plaza (planters, lit bollards), a fountain (a basin with jets) or a pavilion (a
+  // drum, an LED box or a canopy on pilotis; solid to its plan). The great lawn takes a reflecting rill with jets on its long axis.
+  const PROG = ['pavilion', 'parterre', 'fountain', 'plaza', 'parterre', 'pavilion', 'fountain', 'parterre']; // two pavilions, three parterres, two fountains, a court in eight
+  function jet(B, x, y, h) { // art px: a ripple ring at its foot, a fine column, a soft plume (a cloud of spray, never an arrow)
+    for (let i = -3; i <= 3; i++) for (const j of [-1, 1]) if (Math.abs(i) + Math.abs(j) * 2 <= 4) B.mix(x + i, y + j, N.cyan, 0.45);
+    for (let t = 1; t < h; t++) B.mix(x, y - t, K.white, 0.55 + 0.35 * t / h);
+    for (let j = -2; j <= 1; j++) for (let i = -2; i <= 2; i++) { const d = i * i / 4 + j * j / 2.2; if (d <= 1) B.mix(x + i, y - h + j, d < 0.45 ? K.white : mixK(K.white, N.cyan, 0.5), d < 0.45 ? 0.95 : 0.6); }
+  }
+  function domeSprite(rx, ry, wallH, led) { // art px: an Expo dome: a white drum with a glazed band, a ribbed dome, a lit oculus
+    const dh = Math.round(ry * 1.4), top = wallH + dh + 2, S = { w: 2 * rx + 3, h: 2 * ry + top + 3, ox: rx + 1, oy: ry + top + 1 }; S.d = new Uint32Array(S.w * S.h);
+    const put = (x, y, c) => { const X0 = x + S.ox, Y0 = y + S.oy; if (X0 >= 0 && Y0 >= 0 && X0 < S.w && Y0 < S.h) S.d[Y0 * S.w + X0] = c; };
+    for (let x = -rx; x <= rx; x++) { const yb = Math.round(ry * Math.sqrt(Math.max(0, 1 - (x * x) / (rx * rx)))), u = x / rx; for (let z = 0; z < wallH; z++) put(x, yb - z, z === 0 ? CON.d : z >= wallH - 3 && z < wallH - 1 ? (x % 3 ? N.cyan : K.white) : u < -0.5 ? N.stoneD : u > 0.4 ? N.stoneL : N.stone); }
+    for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) { const e = (x * x) / (rx * rx) + (y * y) / (ry * ry); if (e > 1) continue; const lift = Math.round(dh * Math.sqrt(Math.max(0, 1 - e))), rib = Math.abs(Math.atan2(y * rx / ry, x) * 8 / Math.PI % 1) < 0.12; put(x, y - wallH - lift, e < 0.05 ? led : e > 0.85 ? N.stoneD : rib ? N.stoneD : x < 0 ? N.stoneL : N.stone); }
+    return S;
+  }
+  function parterre(B, r, led) {
+    const [x0, y0, x1, y1] = r, f = chamf(x0 + 8, y0 + 8, x1 - 8, y1 - 8, 16);
+    each((x, y, wx, wy) => { if (!f(wx, wy)) return; B.put(x, y, !f(wx, wy, 4) ? CON.l : !f(wx, wy, 8) ? ((x + y) % 4 < 2 ? led : CON.m) : (x % 16 === 8 && y % 16 === 8) ? mixK(TURF[1], led, 0.7) : TURF[Math.floor(y / 6) % 2]); });
+    monolith(B, (x0 + x1) / 2 / U, (y0 + y1) / 2 / U + 2, 0, 14, led);
+  }
+  function fountainCell(B, r) {
+    const [x0, y0, x1, y1] = r, f = chamf(x0 + 18, y0 + 14, x1 - 18, y1 - 14, 18), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    poolFP(B, f); for (const dx of [-28, 0, 28]) jet(B, Math.round((cx + dx) / U), Math.round(cy / U) + 2, dx ? 6 : 10);
+  }
+  function plazaCell(B, r, led, i) { // a sculpture court, as B3 and C3: a lit kerb, paving, a sculpture on the axis, planters, a bollard at each corner
+    const [x0, y0, x1, y1] = r, f = chamf(x0 + 6, y0 + 6, x1 - 6, y1 - 6, 12), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    each((x, y, wx, wy) => { if (!f(wx, wy)) return; B.put(x, y, !f(wx, wy, 2) ? CON.l : !f(wx, wy, 4) ? ((x + y) % 4 < 2 ? led : CON.m) : (x % 8 === 0 || y % 8 === 0) ? N.tile2 : (x % 16 === 4 && y % 16 === 4) ? mixK(N.tile, led, 0.5) : N.tile); });
+    sculpture(B, cx / U, cy / U + 2, SCULPT[i % SCULPT.length], led);
+    for (const sx of [-1, 1]) smallPlanter(B, cx + sx * (x1 - x0) * 0.32, cy);
+    for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) bollard(B, (cx + sx * ((x1 - x0) / 2 - 16)) / U, (cy + sy * ((y1 - y0) / 2 - 14)) / U, led);
+  }
+  function fountainSmall(B, cx, cy, r) { // a round basin with one jet, for a cell the paths and flights leave part free
+    capture((wx, wy) => ((wx - cx) / r) ** 2 + ((wy - cy) / (r * 0.6)) ** 2 <= 1, cx - r, cy - r, cx + r, cy + r, true);
+    each((x, y, wx, wy) => { const e = ((wx - cx) / r) ** 2 + ((wy - cy) / (r * 0.6)) ** 2; if (e > 1) return; B.put(x, y, e > 0.72 ? CON.l : e > 0.55 ? CON.d : (x * 3 + y * 7) % 41 === 0 ? N.cyan : y % 4 === 0 && (x * 5 + y) % 11 < 4 ? N.water2 : N.water); });
+    jet(B, Math.round(cx / U), Math.round(cy / U), 9);
+  }
+  function pavilion(sc, B, r, i, led) {
+    const [x0, y0, x1, y1] = r, px = x0 + 20, py = y0 + 24, pw = x1 - x0 - 40, ph = y1 - y0 - 36, kind = ['dome', 'box', 'canopy'][i % 3], u = (v) => v / U;
+    if (kind === 'dome') {
+      const cx = px + pw / 2, cy = py + ph / 2, rx = Math.min(pw / 2, 44), ry = Math.min(ph / 2, 22);
+      capture((wx, wy) => ((wx - cx) / rx) ** 2 + ((wy - cy) / ry) ** 2 <= 1, cx - rx, cy - ry, cx + rx, cy + ry, true);
+      sc.props.push({ spr: domeSprite(Math.round(rx / U), Math.round(ry / U), STY, led), x: u(cx), y: u(cy), by: cy + ry + 2, bldg: 'pavilion', plan: [cx - rx * 0.7, cy - ry * 0.7, rx * 1.4, ry * 1.4] });
+    } else if (kind === 'box') {
+      captureRect(px, py, pw, ph);
+      sc.props.push({ spr: ledPanel(PIX.building(Math.round(u(pw)), Math.round(u(ph)), 2 * STY, PIX.rng(301 + i), led, 2), 2 * STY, [N.magenta, N.cyan]), x: u(px), y: u(py), by: py + ph, bldg: 'pavilion', plan: [px, py, pw, ph] });
+    } else {
+      captureRect(px, py, pw, ph);
+      sc.props.push({ spr: terraceSprite(Math.round(u(pw)), Math.round(u(ph)), true, led), x: u(px), y: u(py), by: py + ph, bldg: 'pavilion', plan: [px, py, pw, ph] });
+    }
+    brutalShadow(B, u(px), u(py), u(pw), u(ph), kind === 'canopy' ? Z1 : 2 * STY, null);
+  }
   function gardenPlan(B, o) { // o: { bedOk(wx, wy), rng, leds, pools, anchor: [x, y, w, h] or null }
     const nc = Math.ceil(W / GW), nr = Math.ceil(H / GH), rect = (gx, gy, nx, ny) => [gx * GW + GP / 2, gy * GH + GP / 2, Math.min(W - 8, (gx + nx) * GW - GP / 2), Math.min(H - 8, (gy + ny) * GH - GP / 2)];
     const okR = ([x0, y0, x1, y1]) => { for (let x = x0; x <= x1; x += 16) for (let y = y0; y <= y1; y += 16) if (!o.bedOk(x, y)) return false; return o.bedOk(x1, y1) && o.bedOk(x1, y0) && o.bedOk(x0, y1); };
@@ -171,6 +223,11 @@
       { const cw = chamf(x0, y0, x1, y1, 24), fpA = (x, y, ins) => cw((x + 0.5) * U, (y + 0.5) * U, (ins || 0) * U), ax0 = Math.floor(x0 / U), ay0 = Math.floor(y0 / U), ax1 = Math.ceil(x1 / U), ay1 = Math.ceil(y1 / U);
         for (let y = ay0; y <= ay1; y++) for (let x = ax0; x <= ax1; x++) if (fpA(x, y)) B.put(x, y, !fpA(x, y, 1) ? CON.l : greatC(x, y)); // the great lawn, mown in broad stripes
         mass(B, (x, y) => fpA(x, y, 1) && !fpA(x, y, 4), ax0, ay0, ax1, ay1, 0, 3, 'hedge', o.leds[0], true, 'hedge'); } // a clipped hedge frames it
+      { // P6.5 (Edit 67): the great lawn in four panels: a paved cross-walk on its short axis, a reflecting rill with jets either side on its long axis
+        const wide = x1 - x0 >= y1 - y0, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, L = (wide ? x1 - x0 : y1 - y0) * 0.36, inL = chamf(x0, y0, x1, y1, 24);
+        each((x, y, wx, wy) => { if (!inL(wx, wy, 6)) return; const d = Math.abs(wide ? wx - cx : wy - cy); if (d > 14) return; B.put(x, y, d > 12 ? CON.l : d > 10 ? ((x + y) % 4 < 2 ? N.cyan : CON.m) : slabC(x, y, wide ? 1 : 0)); });
+        for (const sg of [-1, 1]) { const a0 = sg < 0 ? -L : 22, a1 = sg < 0 ? -22 : L, f = wide ? chamf(cx + a0, cy - 12, cx + a1, cy + 12, 8) : chamf(cx - 12, cy + a0, cx + 12, cy + a1, 8);
+          poolFP(B, f); for (let t = a0 + 16; t <= a1 - 12; t += 36) jet(B, Math.round((wide ? cx + t : cx) / U), Math.round((wide ? cy : cy + t) / U) + 1, 6); } }
     }
     const pair = MED[Math.floor(o.rng() * MED.length)].slice(0, Math.max(1, GBT)), m = GP + 8;
     const touch = (r, A) => !!A && r[0] <= A[0] + A[2] + m && r[2] >= A[0] - m && r[1] <= A[1] + A[3] + m && r[3] >= A[1] - m;
@@ -178,11 +235,20 @@
     for (let gy = 0; gy < nr; gy++) for (let gx = 0; gx < nc; gx++) {
       if (used[gy][gx] !== 0) continue;
       const r = rect(gx, gy, 1, 1), [x0, y0, x1, y1] = r, type = touch(r, lawn) ? pair[0] : touch(r, o.anchor) ? pair[pair.length - 1] : null;
-      if (!type) { used[gy][gx] = 3; open.push(r); continue; } // an open square
+      if (!type) { used[gy][gx] = 3; open.push({ r, gx, gy }); continue; } // an open square: a programme (P6.5)
       const cw = chamf(x0, y0, x1, y1, 16), fpA = (x, y, ins) => cw((x + 0.5) * U, (y + 0.5) * U, (ins || 0) * U);
       drawBed(B, type, fpA, cw, Math.floor(x0 / U), Math.floor(y0 / U), Math.ceil(x1 / U), Math.ceil(y1 / U), r, o.leds[(gx + gy * 2) % o.leds.length]); used[gy][gx] = 1;
     }
-    for (const [x0, y0, x1, y1] of open) for (const f of [1 / 3, 2 / 3]) smallPlanter(B, x0 + (x1 - x0) * f, (y0 + y1) / 2); // small: two to each open square, on its axis
+    const seed = o.seed || 0, prog = open.map((c) => PROG[(c.gx * 3 + c.gy * 5 + seed) % PROG.length]);
+    if (open.length && !prog.includes('pavilion')) { const k = open.reduce((a, c, i) => (hyp((c.r[0] + c.r[2]) / 2 - W / 2, (c.r[1] + c.r[3]) / 2 - H / 2) < hyp((open[a].r[0] + open[a].r[2]) / 2 - W / 2, (open[a].r[1] + open[a].r[3]) / 2 - H / 2) ? i : a), 0); prog[k] = 'pavilion'; } // at least one pavilion a screen
+    open.forEach((c, i) => { const t = prog[i], led = o.leds[(c.gx + c.gy * 2) % o.leds.length]; if (t === 'parterre') parterre(B, c.r, led); else if (t === 'fountain') fountainCell(B, c.r); else if (t === 'pavilion' && o.sc) pavilion(o.sc, B, c.r, c.gx + c.gy + seed, led); else plazaCell(B, c.r, led, c.gx + c.gy + seed); });
+    for (let gy = 0; gy < nr; gy++) for (let gx = 0; gx < nc; gx++) { // P6.5: a cell the roads, decks or flights leave part free takes a small fountain at its centre
+      if (used[gy][gx] !== -1 || (gx + gy + seed) % 2) continue;
+      const r = rect(gx, gy, 1, 1), cx = (r[0] + r[2]) / 2, cy = (r[1] + r[3]) / 2;
+      if (r[2] - r[0] < 96 || r[3] - r[1] < 72) continue;
+      let ok = true; for (let a = 0; a < 16 && ok; a++) { const t = a * Math.PI / 8; for (const rr of [0, 20, 40]) if (!o.bedOk(cx + Math.cos(t) * rr, cy + Math.sin(t) * rr * 0.75)) { ok = false; break; } }
+      if (ok) { fountainSmall(B, cx, cy, 26); used[gy][gx] = 4; }
+    }
     if (best) for (const [x, y] of [[best.r[0] - GP / 2, best.r[1] - GP / 2], [best.r[2] + GP / 2, best.r[1] - GP / 2], [best.r[0] - GP / 2, best.r[3] + GP / 2], [best.r[2] + GP / 2, best.r[3] + GP / 2]]) if (o.bedOk(x, y)) smallPlanter(B, x, y); // and one at each corner of the lawn
     const crossings = []; // the crossings left for sculptures: away from the lawn's corners
     for (let j = 1; j < nr; j++) for (let i = 1; i < nc; i++) { const x = i * GW, y = j * GH; if (o.bedOk(x, y) && !(best && touch([x - 1, y - 1, x + 1, y + 1], lawn))) crossings.push([x, y]); }
@@ -895,9 +961,10 @@
       const ringDeck = ringLayer(rr, 1, cx, cy, Rc, (x, y) => !roadOk(x, y, OUTER + C + 4) || sc.stairs.some((st) => x > st.x - C && x < st.x + st.w + C && Math.abs(y - st.y - st.h / 2) < st.h / 2 + HALF), sc.stairs.map((st) => [st.x + 2, st.x + st.w - 2, st.side]), D.id === 'parkland' ? turfC : null); // P6.4: Parkland's ring planted on its shoulders
       ringDeck.front = 1e5; ringDeck.extend = true; ringDeck.cars = () => ringSim.cars.concat((sc.seam || []).filter((g) => g.deck)); // P5.3: and highway cars arriving from next door
       sc.layers.push(ringDeck); sc.ringDeck = ringDeck;
-      if (D.id === 'parkland') { // P6.4 (Edit 66): the ring's island is a garden at Z1: cyber turf, a lit rim, a sculpture of light
+      if (D.id === 'parkland') { // P6.4 (Edit 66): the ring's island at Z1; P6.5 (Edit 67): a fountain basin, a ring of jets, a sculpture of light
         const RI = Rc - HALF - 1, Lr = ringDeck.L, isl = (wx, wy) => hyp(wx - cx, wy - cy) < RI;
-        each((x, y, wx, wy) => { const d = hyp(wx - cx, wy - cy); if (d >= RI) return; Lr.put(x, y, d > RI - 2 ? CON.l : d > RI - 5 ? ((x + y) % 4 < 2 ? N.cyan : CON.m) : Math.abs(d - RI * 0.6) < 1 ? mixK(TURF[1], N.magenta, 0.6) : turfC(x, y)); });
+        each((x, y, wx, wy) => { const d = hyp(wx - cx, wy - cy); if (d >= RI) return; Lr.put(x, y, d > RI - 3 ? CON.l : d > RI - 6 ? ((x + y) % 4 < 2 ? N.cyan : CON.m) : d > RI - 8 ? CON.d : (x * 3 + y * 7) % 53 === 0 ? N.cyan : y % 4 === 0 && (x * 5 + y) % 11 < 4 ? N.water2 : N.water); });
+        for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, jx = Math.round(cx / U + Math.cos(a) * (RI / U - 14)), jy = Math.round(cy / U + Math.sin(a) * (RI / U - 14) * 0.9); jet(Lr, jx, jy, 5 + (i % 2) * 2); }
         const cap = CAP; CAP = null; sculpture(Lr, cx / U, cy / U + 6, 'ring', N.cyan, 1.6); CAP = cap;
         const ib = ringDeck.inBand, so = ringDeck.shadeOn, k = P['proto.art.shadowScale'], sx = PIX.SUN.x * P['world.deckHeight'] * k / U, sy = PIX.SUN.y * P['world.deckHeight'] * k / U;
         ringDeck.inBand = (wx, wy) => ib(wx, wy) || isl(wx, wy);
@@ -960,16 +1027,12 @@
   // ---------- Parkland: gardens, water, the Z1 ring
   function parkTile(sc, B, name, roadOk, free, rng, runs) {
     const okP = (wx, wy) => roadOk(wx, wy, OUTER);
-    gardenPave(B, okP, null, true);
+    gardenPave(B, okP, null); // P6.5 (Edit 67): paved, as an Expo site; lawns are parterres
     const R = sc.reserve, led = (i) => LEDS[i % LEDS.length];
     if (name === 'B2') { // pools under the ring, cut at 45° along the boulevard (x − y = 80 in B2)
       const side = (wx, wy, s0, m) => s0 * (wx - wy - 80) / Math.SQRT2 > OUTER + 16 + (m || 0);
       const ne = (wx, wy, ins) => chamf(440, 56, 760, 300, 40)(wx, wy, ins) && side(wx, wy, 1, ins), sw = (wx, wy, ins) => chamf(40, 340, 360, 584, 40)(wx, wy, ins) && side(wx, wy, -1, ins);
-      // P6.4 (Edit 66): the pools become lawns with a lit edge, each with a large sculpture of light
-      const lawnIn = (f, s0) => (wx, wy) => f(wx, wy, 0) && side(wx, wy, s0, 60);
-      for (const [f, s0] of [[ne, 1], [sw, -1]]) { const L = lawnIn(f, s0); each((x, y, wx, wy) => { if (!L(wx, wy)) return; B.put(x, y, !L(wx - U, wy) || !L(wx + U, wy) || !L(wx, wy - U) || !L(wx, wy + U) ? ((x + y) % 4 < 2 ? N.cyan : CON.l) : turfC(x, y)); }); }
-      sculpture(B, 660 / U, 120 / U, 'arch', N.cyan, 1.6); sculpture(B, 140 / U, 520 / U, 'ring', N.magenta, 1.6);
-      R.push([430, 46, 340, 264], [30, 330, 340, 264]);
+      poolFP(B, ne); poolFP(B, sw); R.push([430, 46, 340, 264], [30, 330, 340, 264]); // P6.5: the two pools back
     }
     if (name === 'A1') R.push([24, 300, 300, 280], [700, 224, 140, 120]);
     if (name === 'B1') R.push([104, 24, 112, 560], [0, 280, 800, 80]);
@@ -980,7 +1043,7 @@
     if (name === 'B3') R.push([90, 130, 200, 200]);
     if (name === 'C3') R.push([510, 150, 260, 240]);
     const ANCHOR = { A1: [24, 300, 300, 280], B1: [104, 24, 112, 560], B2: [200, 100, 400, 440], C2: [440, 40, 340, 190], A3: [496, 20, 288, 212], C3: [520, 160, 240, 220] }; // Edit 55: the tile's set piece is its large unit
-    const left = gardenPlan(B, { bedOk: (wx, wy) => free(wx, wy, 8), rng, leds: LEDS, pools: name !== 'B2', anchor: ANCHOR[name] || null });
+    const left = gardenPlan(B, { bedOk: (wx, wy) => free(wx, wy, 8), rng, leds: LEDS, pools: name !== 'B2', anchor: ANCHOR[name] || null, sc, seed: sc.col * 3 + sc.row * 7 });
     gardenSculptures(B, (wx, wy) => free(wx, wy, 16), null, rng, 4, left); // P6.4: four lit sculptures a screen
     const u = (v) => v / U;
     if (name === 'A1') { for (let i = 0; i < 3; i++) waterBlock(B, u(40 + i * 40), u(320 + i * 50), u(300 - i * 20), u(560), 8, 6 - i * 3, 3); sc.terraces = true; } // reservoir terraces, stepping down to the south

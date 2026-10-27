@@ -1,6 +1,6 @@
 # DUMMIES — P6 prototype: three districts, managed traffic across levels
 
-**P6.4 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–66 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+**P6.5 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–67 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
 
 P6 is the game on the three districts of the mock-ups. District 2, Waterfront, replaces Circus.
 
@@ -45,8 +45,11 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 - **Raised layers at the screen's edge (P6.4):** drawn to the edge, past the lift. A screen's edge never ends a walkway.
   - At a level, a north–south crossing happens at the edge as drawn. The dummy never leaves the view.
 - **Wayfinding (P6.4):** every apron a lit mat, chevrons into its flight. Monument B2: guide strips to the ring escalators.
-- **Parkland (P6.4):** cyber turf in every garden cell, LED studs, four lit sculptures a screen.
-  - B2: the ring planted on its shoulders; its island a garden at Z1; lawns and large sculptures under the ring.
+- **Parkland (P6.5): an Expo site.** Paved; every open garden cell takes a programme in a fixed rotation.
+  - Pavilions (dome, LED box, canopy; solid to plan), parterres (framed lit lawns), fountains, sculpture courts.
+  - Cells part-free beside roads, decks and flights: a small round fountain.
+  - Great lawns: a paved cross-walk, a reflecting rill with jets on the long axis.
+  - B2: the two pools back; the ring planted on its shoulders; its island a fountain at Z1 with a ring of jets.
 - **Monument B2 (P6.4):** square paving, as the district's ground. No 45° lattice.
 - **Tunnel (Waterfront B1):** the dummy walks in. It stops at the top edge of B1, not the mouth.
 - **River:** sink `proto.rescueSinkSeconds` (2 s). A drone flies in from the nearest edge at `proto.droneSpeed`.
@@ -80,7 +83,7 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 
 ## Evidence
 
-- `node test_p6.js 3` → 44/44: starts, edge audit, managed traffic, climbs, walkway openings, drops, tunnel, rescue, hits, the shift.
+- `node test_p6.js 3` → 44/44 (P6.5): starts, edge audit, managed traffic, climbs, walkway openings, drops, tunnel, rescue, hits, the shift.
 - Playtest audit (in `test_p6.js`): 47 flights walked up and down; 122 building plans solid; 23 walkway ends clean.
 - `node test_sim.js` → 104/104 (this copy and P5).
 - Browser: no page errors over scripted play in all three districts.
@@ -96,6 +99,8 @@ P6 is the game on the three districts of the mock-ups. District 2, Waterfront, r
 ![P6.3 playtest routes](docs/p65_playtest_routes.png)
 
 ![P6.4: Parkland B2 and Monument B2, before and after](docs/p66_before_after.png)
+
+![P6.5: Parkland as an Expo site](docs/p67_parkland_expo.png)
 
 ## Known gaps
 
