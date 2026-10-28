@@ -76,7 +76,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.4' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.5' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -790,8 +790,8 @@
   function toast(msg) { app.toast = { msg: dashify(msg), t: app.realT }; }
 
   // ---------- menus
-  const PAUSE_ITEMS = ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title'];
-  const PAUSE_STORY = ['Resume', 'Story map', 'Show trace', 'Quit to title']; // Edit 81: no restart or refusal in the story
+  const PAUSE_ITEMS = STORY ? ['Resume', 'Restart level', 'Refuse testing', 'Options', 'Controls', 'Show trace', 'Quit to title'] : ['Resume', 'Restart level', 'Refuse testing', 'Show trace', 'Quit to title']; // Edit 86: options and controls live here, not under the screen
+  const PAUSE_STORY = ['Resume', 'Story map', 'Options', 'Controls', 'Show trace', 'Quit to title']; // Edit 81: no restart or refusal in the story
   const pauseItems = () => (app.mode === 'story' ? PAUSE_STORY : PAUSE_ITEMS);
   const END_ITEMS = ['Play again from district 1', 'Choose a district', 'Show trace'];
   const SHOP_GRID = ABIL ? Object.keys(TRACKS).map((t) => [t]) // Edit 78: one card per track (Battery A, Legs B, Arms X, Throw Y); A buys its next level
@@ -804,7 +804,7 @@
     const s = app.sim;
     const live = app.screen === 'game' && !app.paused && s && (s.phase === 'play' || s.phase === 'hitstop' || s.phase === 'writeoff' || s.phase === 'scroll');
     if (live) {
-      for (const m of menuQ) if (m === 'pause' && s.phase === 'play') { app.paused = true; app.pauseSel = 0; app.confirmRefuse = false; }
+      for (const m of menuQ) if (m === 'pause' && s.phase === 'play') { app.paused = true; app.pauseSel = 0; app.confirmRefuse = false; app.pausePage = null; }
       menuQ.length = 0;
       return;
     }
@@ -841,6 +841,15 @@
         else if (m === 'ok') { startLevel(app.level); return; }
         continue;
       }
+      if (app.paused && app.pausePage) { // Edit 86: a page of the pause menu (Options, Controls); B or ESC returns
+        if (m === 'pause' || m === 'back') { app.pausePage = null; continue; }
+        if (app.pausePage === 'controls') { if (m === 'ok') app.pausePage = null; continue; }
+        const OI = optionItems();
+        if (m === 'up') app.optSel = (app.optSel + OI.length - 1) % OI.length;
+        else if (m === 'down') app.optSel = (app.optSel + 1) % OI.length;
+        else if (m === 'ok') optionDo(OI[app.optSel]);
+        continue;
+      }
       if (app.paused) {
         const PI = pauseItems();
         if (m === 'up') { app.pauseSel = (app.pauseSel + PI.length - 1) % PI.length; app.confirmRefuse = false; }
@@ -856,6 +865,8 @@
             else if (!app.confirmRefuse) app.confirmRefuse = true;
             else { s.withdraw(); app.paused = false; }
           } else if (item === 'Show trace') showTrace();
+          else if (item === 'Options') { app.pausePage = 'options'; app.optSel = 0; }
+          else if (item === 'Controls') app.pausePage = 'controls';
           else if (item === 'Quit to title') { if (app.mode === 'story') saveStory(); app.screen = 'title'; app.sim = null; app.paused = false; }
         }
         continue;
@@ -1867,9 +1878,10 @@
       const o = ctx.createRadialGradient(gx, gy, 10, gx, gy, gr); o.addColorStop(0, gc); o.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
     }
-    if (FT.neon) { ctx.save(); ctx.shadowColor = FT.brand; ctx.shadowBlur = 14; }
-    txt('FARSIGHT', 24, TOPY + 1, '900 30px ' + F_BRAND, FT.brand);
-    if (FT.neon) ctx.restore();
+    const brand = !STORY || app.screen !== 'game'; // Edit 86 (P7.5): in play the corner stays clear (the touch pause chip sits there); menus keep the brand
+    if (brand && FT.neon) { ctx.save(); ctx.shadowColor = FT.brand; ctx.shadowBlur = 14; }
+    if (brand) txt('FARSIGHT', 24, TOPY + 1, '900 30px ' + F_BRAND, FT.brand);
+    if (brand && FT.neon) ctx.restore();
     const s = app.sim;
     if (app.screen === 'title' || !s) txt(app.screen === 'loading' ? 'BUILDING DISTRICT' : app.screen === 'storymap' ? 'STORY · THE TEST CITY' : app.screen === 'arcade' ? 'ARCADE · SELECT A DISTRICT' : STORY ? 'SELECT A MODE' : 'SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
     else drawTopBar(s);
@@ -1933,25 +1945,28 @@
   function drawHUD(s) {
     const b = s.body, P = s.P, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
     const X = 16, W = FX - 32, TX = 30, BW = W - 28; // left column: as wide as the space beside the field
-    panel(X, 62, W, 150);
-    txt('BODY', TX, 92, fLab, FT.dim); txt(num(hp), TX, 146, '700 48px ' + F_MONO, frac < 0.3 && b.alive ? C.warning : FT.text);
-    rr(TX, 164, BW, 26, 6); ctx.fillStyle = FT.track; ctx.fill();
+    const BY = STORY ? 62 : 62, BH = STORY ? 86 : 150, DY = BY + BH + 10; // Edit 86 (P7.5): BODY as tall as DASH: the number on the label's row, the bar beneath
+    panel(X, BY, W, BH);
+    if (STORY) { txt('BODY', TX, BY + 36, fLab, FT.dim); txt(num(hp), X + W - 14, BY + 40, '700 36px ' + F_MONO, frac < 0.3 && b.alive ? C.warning : FT.text, 'right'); }
+    else { txt('BODY', TX, 92, fLab, FT.dim); txt(num(hp), TX, 146, '700 48px ' + F_MONO, frac < 0.3 && b.alive ? C.warning : FT.text); }
+    const barY = STORY ? BY + 52 : 164, barH = STORY ? 22 : 26;
+    rr(TX, barY, BW, barH, 6); ctx.fillStyle = FT.track; ctx.fill();
     if (frac > 0) {
       const low = frac < 0.3 && Math.floor(app.realT * 4) % 2 === 0;
-      rr(TX, 164, Math.max(12, BW * frac), 26, 6); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
+      rr(TX, barY, Math.max(12, BW * frac), barH, 6); ctx.fillStyle = low ? C.warning : C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke();
     }
-    panel(X, 222, W, 86);
-    txt('DASH', TX, 252, fLab, FT.dim);
+    panel(X, DY, W, 86);
+    txt('DASH', TX, DY + 30, fLab, FT.dim);
     const cap = s.capacity(), pw = (BW - (cap - 1) * 10) / cap; // Big battery: 3 (D26)
     for (let i = 0; i < cap; i++) {
       const x = TX + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
-      rr(x, 266, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
-      if (f > 0) { rr(x, 266, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
+      rr(x, DY + 44, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
+      if (f > 0) { rr(x, DY + 44, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
     drawDistrict(s);
     const cb = drawBodyPanel(s);
     drawKeysPanel(s, cb);
-    app.layoutY = { left: s.district ? (() => { const G = mapGeom(s.district); return G.Y + 66 + G.mh + (s.storyMode ? STORY_FOOT : 0); })() : 318, right: cb }; // Edit 75: the touch zones start below these
+    app.layoutY = { left: s.district ? (() => { const G = mapGeom(s.district); return G.Y + 66 + G.mh + (s.storyMode ? STORY_FOOT : 0); })() : MAPY, right: cb }; // Edit 75: the touch zones start below these
     drawMessages(s);
   }
   // Left, below the dash: the district map (D24). Visited screens lit; the dummy's dot.
@@ -1960,9 +1975,10 @@
   // both directions of a road are one line; a stretch already drawn at its level is not drawn again, so dashes stay clean
   // where junction and ring routes repeat it. Drawn once a district, at the canvas's scale.
   const MAP_Z = [null, '#3D7BFF', '#FF4FD8'], MAP_LW = 3, MAP_DASH = [6, 4];
+  const MAPY = STORY ? 254 : 318; // Edit 86 (P7.5): the map rises with the compact BODY panel
   const mapCache = { key: null, cv: null };
   function mapGeom(D) {
-    const X = 16, Y = 318, W = FX - 32, g = 6, cw = Math.min(56, Math.floor((W - 16 - (D.cols - 1) * g) / D.cols)), ch = Math.round(cw * 0.75), gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
+    const X = 16, Y = MAPY, W = FX - 32, g = 6, cw = Math.min(56, Math.floor((W - 16 - (D.cols - 1) * g) / D.cols)), ch = Math.round(cw * 0.75), gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
     return { X, Y, W, g, cw, ch, gx, gy, mw: D.cols * cw + (D.cols - 1) * g, mh: D.rows * ch + (D.rows - 1) * g };
   }
   function mapRoads(s, G) { // per screen and level: road centre lines as runs of map points (unique within the screen and level)
@@ -2090,8 +2106,8 @@
   // The chassis doll is drawn at ui.artScale like the field: one doll pixel = one art pixel, on the art grid.
   function drawBodyPanel(s) {
     const X = FX + FW + 16, W = VW - X - 16, Y = 62, b = s.body, U = RA, eff = b.alive ? partEffects(s) : []; // U here: reference units per art px
-    const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + 36;
-    const ph = yHit - Y + 66 + (eff.length ? 16 + eff.length * 32 : 0);
+    const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + (STORY ? 28 : 36), dV = STORY ? 30 : 38; // Edit 86: a tighter foot
+    const ph = yHit - Y + (STORY ? 50 : 66) + (eff.length ? 16 + eff.length * 32 : 0);
     panel(X, Y, W, ph);
     txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);
     const lp = fx.lastPart, flash = lp && app.realT - lp.t < 0.3 && Math.floor(app.realT * 16) % 2 === 0 ? lp.part : '';
@@ -2099,9 +2115,9 @@
     ctx.imageSmoothingEnabled = false; ctx.globalAlpha = b.alive ? 1 : 0.35;
     ctx.drawImage(dollCanvas(partLevels(s), flash, dollMods(s)), dx, dy, DW, DH);
     ctx.globalAlpha = 1;
-    txt('LAST HIT', X + 14, yHit, fTxt, FT.dim);
-    txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, yHit + 38, fLab, lp ? FT.text : FT.dim);
-    eff.forEach(([k2, v], i) => { const y = yHit + 86 + i * 32; txt(k2, X + 14, y, fTxt, FT.dim); txt(v, X + W - 14, y, fLab, C.warning, 'right'); });
+    txt('LAST HIT', X + 14, yHit, STORY ? '700 15px ' + F_UI : fTxt, FT.dim);
+    txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, yHit + dV, fLab, lp ? FT.text : FT.dim);
+    eff.forEach(([k2, v], i) => { const y = yHit + dV + 48 + i * 32; txt(k2, X + 14, y, fTxt, FT.dim); txt(v, X + W - 14, y, fLab, C.warning, 'right'); });
     return Y + ph;
   }
 
@@ -2564,17 +2580,72 @@
       txt(meaning, x + 116, yy + 28, fLab, FT.text);
     });
   }
+  // Edit 86 (P7.5): the screen stays clean. Options (sound, palette, full screen, tuning, pad setup) and the controls for the
+  // device in hand live in the pause menu (ESC, START, the ❚❚ chip), not in a row under the screen
+  const PAL_NAME = window.PIX_PALETTE_NAME || 'cyber', PAL_NEXT = { cyber: 'day', day: 'night', night: 'cyber' };
+  const deviceOf = () => (TOUCH.on ? 'touch' : app.device === 'pad' ? 'pad' : 'keys');
+  function optionItems() {
+    const out = ['Sound: ' + (app.sound ? 'on' : 'off'), 'Palette: ' + PAL_NAME + ' → ' + PAL_NEXT[PAL_NAME], 'Full screen: ' + (document.fullscreenElement ? 'on' : 'off')];
+    if (!TOUCH.on) out.push('Tuning panel', 'Gamepad setup');
+    out.push('Back');
+    return out;
+  }
+  function optionDo(it) {
+    if (it.startsWith('Sound')) { app.sound = !app.sound; Snd.init(); const b = document.getElementById('btn-sound'); if (b) { b.textContent = app.sound ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', String(app.sound)); } }
+    else if (it.startsWith('Palette')) { if (app.mode === 'story') saveStory(); const b = document.getElementById('btn-pal'); if (b) b.click(); }
+    else if (it.startsWith('Full screen')) { if (TOUCH.on) fullscreen(); else { const b = document.getElementById('btn-full'); if (b) b.click(); } }
+    else if (it === 'Tuning panel') toggleTune();
+    else if (it === 'Gamepad setup') { app.padCmd = 'setup'; app.paused = false; app.pausePage = null; }
+    else if (it === 'Back') app.pausePage = null;
+  }
+  function controlRows(s) { // the device in hand: keys, a gamepad, or touch; a locked verb names what unlocks it
+    const d = deviceOf(), lock = (n, label) => (s.has(n) ? '' : 'Locked: ' + label + ', by drone'), K3 = { keys: 0, pad: 1, touch: 2 }[d];
+    const rows = [
+      ['MOVE', ['WASD / arrows', 'Stick / d-pad', 'Stick, left'][K3], ''],
+      ['DASH', ['Space / K', 'A', 'A'][K3], ''],
+      ['JUMP', ['L / Shift', 'B', 'B'][K3], lock('jump', 'Legs 1')],
+      ['GRAB', ['J / E', 'X', 'X'][K3], lock('carry', 'Hands 1'), 'Hold to put a cone down'],
+      ['PUSH OFF A CAR', ['I / Q', 'Y', 'Y'][K3], lock('push', 'Arms 1')],
+      ['PAUSE', ['Esc / P', 'Start', '❚❚'][K3], ''],
+    ];
+    if (d === 'keys') rows.push(['TUNING', 'T', ''], ['GAMEPAD SETUP', 'G', '']);
+    if (d === 'pad') rows.push(['GAMEPAD SETUP', 'Hold Start', '']);
+    if (d === 'touch') rows.push(['FULL SCREEN', '⤢', '']);
+    return { d, rows };
+  }
+  function drawControls(s, x, y, w, h) {
+    panel(x, y, w, h);
+    const { d, rows } = controlRows(s);
+    txt('CONTROLS · ' + { keys: 'KEYBOARD', pad: 'GAMEPAD', touch: 'TOUCH' }[d], x + 20, y + 40, fLab, FT.accent);
+    ctx.font = fKey; const kw = Math.min(196, Math.max(...rows.map((r) => ctx.measureText(r[1]).width + 24))), tw = w - 40 - kw - 14;
+    rows.forEach(([what, key, why, how], i) => { // the verb; beneath it how it works, or what unlocks it
+      const yy = y + 60 + i * 50, off = !!why, sub = why || how || '';
+      ctx.globalAlpha = off ? 0.5 : 1;
+      glassKey(x + 20, yy, kw, 34); txt(key, x + 20 + kw / 2, yy + 25, fKey, FT.text, 'center');
+      txt(what, x + 20 + kw + 14, yy + (sub ? 16 : 25), '700 19px ' + F_UI, off ? FT.dim : FT.text);
+      if (sub) wrapText(sub, x + 20 + kw + 14, yy + 38, tw, 18, '400 15px ' + F_UI, FT.dim, 1);
+      ctx.globalAlpha = 1;
+    });
+    wrapText(d === 'touch' ? 'A gamepad or keyboard shows its own controls here once used.' : d === 'pad' ? 'Any pad works. Press G or hold Start to map its buttons.' : 'A gamepad shows its own buttons here once pressed.', x + 20, y + h - 44, w - 40, 22, '400 17px ' + F_UI, FT.dim, 2);
+  }
   function drawPause(s) {
     veil();
-    const x = FX + 18, y = FY + 18, w = 300, h = FH - 36;
+    const x = FX + 18, y = FY + 18, w = 300, h = FH - 36, page = STORY ? app.pausePage : null;
     panel(x, y, w, h);
-    txt('PAUSED', x + 22, y + 40, fLab, FT.accent);
-    const items = pauseItems().slice(), story = app.mode === 'story';
-    if (app.confirmRefuse && !story) items[2] = 'Confirm refusal';
-    menuList(items, app.pauseSel, x + 18, y + 62, w - 36, (i) => !story && i === 2 && s.run.writeOffs < 1);
-    wrapText(story ? 'The story map saves this tile\'s count. The body in play is lost.' : s.run.writeOffs < 1 ? 'Refusal opens after one completed body.' : 'Refusal is a deliberate ending.', x + 22, y + 362, w - 44, 28, fTxt, FT.dim, 4);
+    txt(page === 'options' ? 'OPTIONS' : page === 'controls' ? 'CONTROLS' : 'PAUSED', x + 22, y + 40, fLab, FT.accent);
+    if (page === 'options') menuList(optionItems(), app.optSel, x + 18, y + 62, w - 36);
+    else if (page === 'controls') menuList(['Back'], 0, x + 18, y + 62, w - 36);
+    else {
+      const items = pauseItems().slice(), story = app.mode === 'story';
+      if (app.confirmRefuse && !story) items[2] = 'Confirm refusal';
+      menuList(items, app.pauseSel, x + 18, y + 62, w - 36, (i) => !story && i === 2 && s.run.writeOffs < 1);
+      const ny = STORY ? y + 62 + items.length * 54 + 16 : y + 362;
+      wrapText(story ? 'The story map saves this tile\'s count. The body in play is lost.' : s.run.writeOffs < 1 ? 'Refusal opens after one completed body.' : 'Refusal is a deliberate ending.', x + 22, ny, w - 44, 26, STORY ? '400 17px ' + F_UI : fTxt, FT.dim, 3);
+    }
     if (pad.info && pad.info.monitor) wrapText('GAMEPAD ' + pad.info.monitor + ' · hold START to set up', x + 22, y + h - 92, w - 44, 22, fTxt, FT.dim, 4); // Edit 75: what the pad sends
-    drawCueKey(x + w + 16, y, FW - 36 - w - 16, h);
+    if (STORY) wrapText(appStatus(), x + 22, y + h - 18, w - 44, 18, '400 13px ' + F_MONO, FT.dim, 1); // Edit 86: the build line, off the page
+    if (page === 'controls') drawControls(s, x + w + 16, y, FW - 36 - w - 16, h);
+    else drawCueKey(x + w + 16, y, FW - 36 - w - 16, h);
   }
   function drawEnding(s) {
     veil();
@@ -2782,6 +2853,7 @@
   });
 
   const statusEl = document.getElementById('status');
+  function appStatus() { return BUILD + ' · ' + (app.tuned ? 'TUNED RUN' : 'registry values'); } // Edit 86: the build line in the pause menu
   // ---------- loop
   let last = performance.now(), acc = 0;
   function frame(now) {
@@ -2800,7 +2872,7 @@
     processEvents();
     render();
     const pi = pad.info, padTxt = pad.blocked ? 'gamepads blocked on this page: open the downloaded file' : pi && pi.id ? 'pad: ' + pi.id.slice(0, 40) + (pi.mapping === 'standard' ? '' : ' (no standard mapping: hold START or G to set up)') : 'pad: none seen — press any button on it';
-    const st = BUILD + ' · ' + SW + ' × ' + SH + ' ×' + kpx.toFixed(2) + ' · ' + (app.tuned ? 'TUNED RUN · UNRANKED' : 'registry values') + ' · ' + padTxt;
+    const st = BUILD + ' · ' + SW + ' × ' + SH + ' ×' + kpx.toFixed(2) + ' · ' + (app.tuned ? 'TUNED RUN · UNRANKED' : 'registry values') + ' · ' + padTxt; app.statusLine = st;
     if (statusEl && statusEl.textContent !== st) statusEl.textContent = st;
     const mon = document.getElementById('padmon'), mt = pi && pi.monitor ? pi.monitor : '';
     if (mon && mon.textContent !== mt) mon.textContent = mt;
@@ -2811,5 +2883,5 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR }; // Edit 75–76: for the tests
-  window.__dummiesUI = { objective, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
+  window.__dummiesUI = { objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();

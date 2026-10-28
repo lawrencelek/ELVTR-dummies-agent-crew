@@ -1,6 +1,14 @@
-# DUMMIES — Prototype 7.4: Arcade and Story
+# DUMMIES — Prototype 7.5: Arcade and Story
 
-**Prototype 7.4 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–85 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.3 stay frozen as `dummies_p7.html` to `dummies_p7_3.html`; 6.4–6.10 in `../p6/`.
+**Prototype 7.5 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–86 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.4 stay frozen as `dummies_p7.html` to `dummies_p7_4.html`; 6.4–6.10 in `../p6/`.
+
+Prototype 7.5 (Edit 86): a clean screen.
+- **No row under the screen.** The stage fills the window. Options and controls live in the pause menu (ESC, START, ❚❚).
+- **Pause:** Resume · Story map (or Restart, Refuse) · Options · Controls · Show trace · Quit to title.
+  - Options: Sound · Palette · Full screen · Tuning panel · Gamepad setup. Touch leaves out the last two.
+  - Controls: the device in hand: keyboard, gamepad or touch. Locked verbs dimmed, with the module that unlocks them.
+- **BODY as tall as DASH:** the district map rises; the touch stick gets the room. No FARSIGHT wordmark in play.
+- **CARS LEFT:** Arcade only, its clock. Story has no clock.
 
 Prototype 7.4 (Edit 85):
 - **Story traffic per tile:** `story.traffic.<district>.<tile>` scales the density of the tile in test and its neighbours. Arcade keeps one per district.
@@ -41,9 +49,10 @@ The title has two modes.
 
 ## Files
 
-- **`dummies_p7_4.html`:** the game. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
-- **`p7_4_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_5.html`:** the game. Open in a browser; no server.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
+- **`p7_5_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_4.html`:** Prototype 7.4 (Edit 85). Frozen.
 - **`dummies_p7_3.html`:** Prototype 7.3 (Edit 84). Frozen.
 - **`dummies_p7_2.html`:** Prototype 7.2 (Edit 83). Frozen.
 - **`dummies_p7_1.html`:** Prototype 7.1 (Edit 82). Frozen.
@@ -52,7 +61,7 @@ The title has two modes.
 - **`../../content/story/story.json`:** the story's content: the order of tiles, 27 tales, Farsight's briefs and gifts. Numbers are registry IDs.
 - **`../p6/game.js`, `../p6/world6.js`, `../p6/sim.js`:** the shared game code: the title, the story map, the tile card, fences, the gift screen, the story's HUD.
 - **`build.py`:** `python3 build.py` → both pages. `../p6/build.py` refuses: 6.10 is frozen.
-- **`test_p74.js`:** `node test_p74.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`test_p75.js`:** `node test_p75.js [screenshot folder]` → the checks; screenshots into the folder.
 
 ## Title
 
@@ -162,14 +171,27 @@ The title has two modes.
 
 ## HUD (story)
 
-- **Top bar:** district · tile · level (DRONE in a ferry); TILE n / its count; POINTS; CREDITS.
+- **Top bar:** district · tile · level (DRONE in a ferry); TILE n / its count; POINTS; CREDITS. No CARS LEFT: the story has no clock.
+- **Left column** (Edit 86): BODY (as tall as DASH: the number on its label's row, the bar beneath), DASH, the district map. No FARSIGHT wordmark in play.
 - **District map:** uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength.
 - **Bottom line:** the objective, e.g. "OBJECTIVE · B1 · Write off a body. Last hit: drop onto a car (0 of 1)." A toast takes it while it lives. With a drone: "Bringing Legs 1, then on to C1." Arcade: the quota and the next verb.
 - **Speech bubbles:** car barks sit on the cars again, legible in the frame layer. Speech solid, shout doubled, mutter dashed, thought dotted.
 - **Tile card** on arrival: the tile's number of 27, its title, its tale, the brief and its count, the verb it brought. A begins.
 - **Report:** counted or not, and why; the body's credit; the cheapest next level and its price.
-- **Pause:** Resume · Story map · Show trace · Quit to title. The tile's count is kept; the body in play is lost.
+- **Pause** (ESC, START, ❚❚): Resume · Story map · Options · Controls · Show trace · Quit to title. The tile's count is kept; the body in play is lost.
+  - Options: Sound · Palette (reloads; the story saves first) · Full screen · Tuning panel · Gamepad setup · Back.
+  - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢.
 - **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.price.ability.level1`–`level3`, `arcade.giftEvery`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
+
+![P7.5: a clean screen: BODY as tall as DASH, no row under the stage](docs/p75_a1_gap.png)
+
+![P7.5: Pause › Options](docs/p75_options.png)
+
+![P7.5: Pause › Controls, keyboard](docs/p75_controls_keys.png)
+
+![P7.5: Pause › Controls, gamepad](docs/p75_controls_pad.png)
+
+![P7.5: phone, Pause › Controls](docs/p75_phone_controls.png)
 
 ![P7.4: Monument A1: the highway's parapet open over the road, lit](docs/p74_a1_gap.png)
 
@@ -205,10 +227,10 @@ The title has two modes.
 
 ## Evidence
 
-- `node test_p74.js docs` → 63/63.
+- `node test_p75.js docs` → 67/67.
   - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit85), 27 tile counts (35 bodies), 27 tile traffic scales, 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs at Monument C1, A2, C3; every brief possible where set.
-  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps, walked off: 17 land on a road, 4 in the river; Parkland B1 the exception (D70). 49 cone homes, none on a road, none hidden. 6.x worlds unchanged. Tile density: B1 and its non-ring neighbours at its scale; Arcade per district; Parkland C1 19 → 29 street cars a minute. 6.4–6.10 and 7–7.3 byte-identical.
-  - Browser: the title (P7.4); Arcade and its first verb; Waterfront A2's bridge flight; the map; the tile card; Monument A1's gap and its density in the page; the fence; the objective; a report; the shop; the ferry; the gift screen; a reload; a phone; no page errors.
+  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps, walked off: 17 land on a road, 4 in the river; Parkland B1 the exception (D70). 49 cone homes, none on a road, none hidden. 6.x worlds unchanged. Tile density: B1 and its non-ring neighbours at its scale; Arcade per district; Parkland C1 19 → 29 street cars a minute. 6.4–6.10 and 7–7.4 byte-identical.
+  - Browser: the title (P7.5); no row under the screen, the stage fills the window, the touch zone from 458; Pause › Options (sound toggles); Pause › Controls for keyboard and gamepad; a phone's touch controls page; Arcade and its first verb; Waterfront A2's bridge flight; the map; the tile card; Monument A1's gap and its density in the page; the fence; the objective; a report; the shop; the ferry; the gift screen; a reload; a phone; no page errors.
 - `../p6/test_p610.js` → 47/47 (6.10's rules on the shared code). `../p6/test_sim.js` → 104/104. `../p6/test_p6.js` → 72/73 (Parkland's street-emptiness limit, as on 6.4).
 - `../jump/test_jump.js` → 28/28. `../controls/test_controls.js` → 34/34.
 
@@ -225,4 +247,4 @@ The title has two modes.
 
 ## Build
 
-`python3 build.py` → `dummies_p7_4.html` and `p7_4_page.html`.
+`python3 build.py` → `dummies_p7_5.html` and `p7_5_page.html`.

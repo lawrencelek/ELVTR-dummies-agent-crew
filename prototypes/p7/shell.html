@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="screen-orientation" content="landscape"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>DUMMIES P7.4</title>
+<title>DUMMIES P7.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&family=B612+Mono:wght@400;700&family=Nunito:wght@700;800;900&display=swap">
@@ -18,7 +18,7 @@
 html, body { margin: 0; min-height: 100%; }
 [hidden] { display: none !important; }
 body { background: linear-gradient(#EAF6FB, #C3E1EC) fixed; color: var(--ink); font-family: var(--font-ui); }
-.stage { height: calc(100vh - 56px); min-height: 360px; display: grid; place-items: center; overflow: hidden; }
+.stage { height: 100vh; height: 100dvh; min-height: 360px; display: grid; place-items: center; overflow: hidden; } /* Edit 86 (P7.5): the screen alone; options in the pause menu */
 .stage:fullscreen { height: 100vh; background: #C3E1EC; }
 [data-palette="night"] body, [data-palette="cyber"] body { background: linear-gradient(#05070D, #121B33) fixed; color: #F4F8FA; }
 [data-palette="night"] .keys, [data-palette="night"] #status, [data-palette="cyber"] .keys, [data-palette="cyber"] #status { color: #9FB8C8; }
@@ -65,19 +65,19 @@ body.touch #game { touch-action: none; }
 </head>
 <body>
 <div class="stage" id="stage">
-  <canvas id="game" tabindex="0" aria-label="DUMMIES P7.4 game: Arcade and Story. Keyboard, gamepad or touch (landscape)."></canvas>
+  <canvas id="game" tabindex="0" aria-label="DUMMIES P7.5 game: Arcade and Story. Keyboard, gamepad or touch (landscape)."></canvas>
 </div>
 <div class="wrap">
-  <div class="bar">
+  <div class="bar" hidden> <!-- Edit 86: kept for its handlers and the build line; the pause menu carries options and controls -->
     <p class="keys"><kbd>WASD</kbd> move · <kbd>Space</kbd>/<kbd>K</kbd> dash (A) · <kbd>L</kbd>/<kbd>Shift</kbd> jump (B) · <kbd>J</kbd>/<kbd>E</kbd> grab, hold to put down (X) · <kbd>I</kbd>/<kbd>Q</kbd> push off a car (Y) · <kbd>Esc</kbd> pause · <kbd>T</kbd> tuning · <kbd>G</kbd> pad setup · <span id="status"></span></p>
     <button id="btn-pal" type="button">Night palette</button>
     <button id="btn-full" type="button">Full screen</button>
     <button id="btn-tune" type="button">Tuning</button>
     <button id="btn-sound" type="button" aria-pressed="true">Sound on</button>
   </div>
-  <p id="padmon" aria-live="off"></p>
+  <p id="padmon" aria-live="off" hidden></p>
   <details id="tune">
-    <summary>Tuning <small>Registry and prototype IDs. Changes apply live and mark the run as tuned.</small></summary>
+    <summary>Tuning <small>Registry and prototype IDs. Changes apply live and mark the run as tuned. Open with T, or Pause › Options.</small></summary>
     <div id="tune-grid"></div>
     <div class="tune-actions">
       <button id="t-credit" type="button">Grant 1 credit</button>
