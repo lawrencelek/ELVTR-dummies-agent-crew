@@ -1,17 +1,18 @@
 {
  "meta": {
   "name": "DUMMIES story: the Test City, tile by tile",
-  "version": "edit84-2026-10-28",
+  "version": "edit85-2026-10-28",
   "status": "Proposed (tales, briefs and gifts); the order of tiles is user-decided",
-  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.3"],
-  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–84"],
+  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.4"],
+  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–85"],
   "rules": [
    "Numbers live in the registry: tasks and gifts name parameter IDs, never values.",
    "A task tests the hit that writes the chassis off (the fatal hit).",
    "Tile names are column-row, as in the game: A1 is the top-left tile.",
    "Each tile's write-offs are story.writeOffs.<district>.<tile> in the registry (Edit 82).",
    "Gifts are only the verbs a brief needs: Legs 1, Hands 1, Arms 1 (Edit 83), one every three tiles: Monument C1, A2, C3 (Edit 84).",
-   "A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade issues the same verbs in the same order, one per arcade.giftEvery write-offs."
+   "A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade issues the same verbs in the same order, one per arcade.giftEvery write-offs.",
+   "Each tile's traffic is story.traffic.<district>.<tile> in the registry, on the tile and its neighbours (Edit 85)."
   ]
  },
  "tasks": {

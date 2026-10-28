@@ -37,6 +37,7 @@
   const apronOf = (st) => { const dir = Math.sign(st.high - st.low); return st.axis === 'y' ? { x: st.x - 8, y: dir < 0 ? st.low : st.low - APRON, w: st.w + 16, h: APRON } : { x: dir < 0 ? st.low : st.low - APRON, y: st.y - 8, w: APRON, h: st.h + 16 }; }; // clear ground beyond a flight's foot
   // P6: solids captured while a screen is built. Every mass, pool and sculpture drawn into the ground records its footprint
   // (16-unit cells, merged into row runs) as a level-0 solid of the screen being built.
+  let ACCESS = null; // Edit 85 (P7.4): { dropGaps, flightsMin, coneVisible } for a P7 world (world.deckDropGaps, world.deckFlightsMin, props.cone.minVisible); null: 6.x
   let CAP = null, CAPH = null; // CAPH: the drawn top (art px) of the mass being captured (Edit 75: the jumpable tag)
   function capture(fp, x0, y0, x1, y1, world) { // fp in art px (or world units when world), the box in the same units
     if (!CAP) return;
@@ -499,15 +500,37 @@
       each((x, y) => { for (const t of [0, 0.5, 1]) { const sx = Math.round(x - ox * t), sy = Math.round(y - oy * t); if (sx >= 0 && sy >= 0 && sx < AW && sy < AH && f.D[sy * AW + sx] <= HALF) { B.shade(x, y, 0.72); break; } } });
     } };
   }
-  function straightDeck(off, z, roadOk, stairs) { // the game's own highway sprite, lamps and round columns, with escalator heads open
-    const dk = { hz: true, off, z, height: z === 2 ? P['world.highHeight'] : P['world.deckHeight'], gaps: [], openings: stairs.map((st) => [st.x, st.x + st.w, st.side]) }, { S, ext } = PIX.deck(dk, P), cols = [];
+  function straightDeck(off, z, roadOk, stairs, gaps) { // the game's own highway sprite, lamps and round columns, with escalator heads open; Edit 85: drop gaps
+    gaps = gaps || [];
+    const dk = { hz: true, off, z, height: z === 2 ? P['world.highHeight'] : P['world.deckHeight'], gaps: gaps.map((g) => [g.a0, g.a1, g.side]), gapLit: !!ACCESS, openings: stairs.map((st) => [st.x, st.x + st.w, st.side]) }, { S, ext } = PIX.deck(dk, P), cols = [];
     const ein = PARKGRID ? 20 : 4; // 6.2 (Edit 70): in Parkland the columns stand in under the deck, between the garden's paths
     for (let p = P['world.deckPillarSpacing'] / 2; p < W; p += P['world.deckPillarSpacing']) for (const e of [off - HALF + ein, off + HALF - ein - C]) {
       if (!roadOk(p, e + C / 2, OUTER + C + 4) || onPath(p, e + C / 2, C / 2 + 2) || (PARKGRID && stairs.some((st) => p > st.x - C - 24 && p < st.x + st.w + C + 24 && Math.abs(e + C / 2 - (st.y + st.h / 2)) < st.h / 2 + C + 24))) continue; // 6.2: and never in a flight's lee (no gap narrower than the body)
       cols.push({ cx: p, cy: e + C / 2, key: e + C, x: p - C / 2, y: e, spr: PIX.column(Math.round(C / U), Math.round(C / U), ext) });
     }
     const Lr = new PIX.Buf(AW, AH); PIX.blit(Lr, S, 0, Math.round((off - HALF) / U));
-    return { dk, L: Lr, lift: ext, z, cols, front: off + HALF, openings: stairs.map((st) => ({ a0: st.x, a1: st.x + st.w, side: st.side })), inBand: (wx, wy) => Math.abs(wy - off) < HALF + 12 };
+    return { dk, L: Lr, lift: ext, z, cols, front: off + HALF, openings: stairs.map((st) => ({ a0: st.x, a1: st.x + st.w, side: st.side })), gapSpans: gaps.map((g) => ({ a0: g.a0, a1: g.a1, side: g.side })), inBand: (wx, wy) => Math.abs(wy - off) < HALF + 12 };
+  }
+  // Edit 85 (P7.4): a highway with no planned drop breaks its parapet once over each Z0 road it crosses: one world.tileSize
+  // module, centred where the road's centre line meets the parapet; south on an east–west deck, east on a north–south one (as
+  // walkways, Edit 64); the other parapet where a flight's head or a link stands there. roadC: distance to a Z0 road centre line.
+  function deckDropGaps(off, hz, opens, roadC) {
+    const T = P['world.tileSize'], L = hz ? W : H, out = [];
+    const opened = (sd, a0, a1) => opens.some((q) => q.side === sd && a1 > q.a0 - 12 && a0 < q.a1 + 12) || out.some((q) => q.side === sd && a1 > q.a0 - 12 && a0 < q.a1 + 12);
+    const crossings = (sd) => { const res = []; let a0 = -1; for (let a = 0; a <= L + 2; a += 2) { const on = a <= L && roadC(hz ? a : off + sd * HALF, hz ? off + sd * HALF : a) < 8; if (on && a0 < 0) a0 = a; if (!on && a0 >= 0) { if (a - a0 <= 120) res.push((a0 + a - 2) / 2); a0 = -1; } } return res; }; // across a road, not along it
+    const other = crossings(-1);
+    for (const c of crossings(1)) {
+      let sd = 1, cc = c;
+      if (opened(1, c - T / 2, c + T / 2)) { const alt = other.reduce((b, q) => (Math.abs(q - c) < Math.abs(b - c) ? q : b), Infinity); if (Math.abs(alt - c) > 120 || opened(-1, alt - T / 2, alt + T / 2)) continue; sd = -1; cc = alt; }
+      if (cc - T / 2 < SEM || cc + T / 2 > L - SEM) continue;
+      out.push({ a0: cc - T / 2, a1: cc + T / 2, side: sd });
+    }
+    return out;
+  }
+  // Edit 85 (P7.4): one flight to a highway that has none (Waterfront's bridges over the valley): the side and where along the deck
+  function deckFlight(off, z, side, a) {
+    const run = X.stairRun(P, 0, z);
+    return side > 0 ? { x: off + HALF, y: a, w: run, h: SWD, axis: 'x', low: off + HALF + run, high: off + HALF, side: 1, z } : { x: off - HALF - run, y: a, w: run, h: SWD, axis: 'x', low: off - HALF - run, high: off - HALF, side: -1, z };
   }
   // P6.4 (Edit 66): a flight's apron drawn as a mat: lit corner brackets, two chevrons pointing into the flight
   function apronMat(B, st) {
@@ -688,7 +711,7 @@
     roads: VP.roads.filter((r) => r.z === 0).map((r) => ({ id: r.id, pts: r.pts })), // Valley Avenue, North Tunnel, Beach Road, Coastal Drive
     junctions: [{ tile: 'B3', at: [400, 320], major: 'Coastal Drive' }],
     roundabouts: [{ tile: 'B2', at: [400, 320], arms: ['W', 'N', 'E', 'S'] }],
-    decks: ['West Bridge', 'East Bridge'].map((id) => ({ hz: false, at: WROAD(id).pts[0][0], z: 1, rows: [1, 2], from: 760, noEsc: true, gaps: BRIDGE_GAPS })),
+    decks: ['West Bridge', 'East Bridge'].map((id) => ({ hz: false, at: WROAD(id).pts[0][0], z: 1, rows: [1, 2], from: 760, noEsc: true, gaps: BRIDGE_GAPS, esc1: id === 'West Bridge' ? { A2: [-1, 552] } : { C2: [1, 552] } })), // Edit 85: a flight up from the beach
     hill: { roads: [{ id: RIDGE.id, pts: RIDGE.pts }].concat(['West Bridge', 'East Bridge'].map((id) => ({ id, pts: [WROAD(id).pts[0], [WROAD(id).pts[0][0], 900]] }))),
       junctions: [{ tile: 'A1', at: [400, 240], major: RIDGE.id }, { tile: 'C1', at: [400, 240], major: RIDGE.id }], sims: ['A1', 'B1', 'C1'] },
     tiles: Object.fromEntries(Object.entries(VP.tiles).map(([k, v]) => [k, [v[0], v[1], 'both']])) };
@@ -895,7 +918,7 @@
   function vDeck(off, z, roadOk, stairs, links) { // links (Edit 54): parapet openings onto a roof at the deck's level; P6: gaps are broken parapets (drops)
     stairs = stairs.concat((links || []).filter((q) => !q.gap));
     const gapL = (links || []).filter((q) => q.gap), hgt = z === 2 ? P['world.highHeight'] : P['world.deckHeight'];
-    const dk = { hz: false, off, z, height: hgt, gaps: gapL.map((q) => [q.y, q.y + q.h, q.side]), openings: stairs.map((st) => [st.y, st.y + st.h, st.side]) }, { S, ext } = PIX.deck(dk, P);
+    const dk = { hz: false, off, z, height: hgt, gaps: gapL.map((q) => [q.y, q.y + q.h, q.side]), gapLit: !!ACCESS, openings: stairs.map((st) => [st.y, st.y + st.h, st.side]) }, { S, ext } = PIX.deck(dk, P);
     const Lr = new PIX.Buf(AW, AH), x0 = Math.round((off - HALF) / U), wpx = Math.round(2 * HALF / U), glow = mixK(K.deck2, K.white, 0.38);
     PIX.blit(Lr, S, x0, 0);
     for (let wy = P['world.deckLampSpacing'] / 2; wy < H; wy += P['world.deckLampSpacing']) for (const sd of [-1, 1]) { // paired lamps, poles rising screen-up from the parapet
@@ -1021,7 +1044,7 @@
     }
     const runs = [];
     for (const r of D.roads) { const run = clipRun(shift(r.pts, -ox, -oy), -200, -200, W + 200, H + 200); if (run) runs.push({ id: r.id, pts: run }); }
-    const decks = D.decks.filter((d) => !d.rows || d.rows.includes(row)).map((d) => ({ hz: d.hz, z: d.z, off: d.hz ? d.at - oy : d.at - ox, from: d.from != null ? d.from - (d.hz ? ox : oy) : null, noEsc: d.noEsc, escY: d.escY && d.escY[name], gaps: (d.gaps || []).map(([a, b]) => [a - (d.hz ? ox : oy), b - (d.hz ? ox : oy)]) })).filter((d) => d.off > -HALF && d.off < (d.hz ? H : W) + HALF);
+    const decks = D.decks.filter((d) => !d.rows || d.rows.includes(row)).map((d) => ({ hz: d.hz, z: d.z, off: d.hz ? d.at - oy : d.at - ox, from: d.from != null ? d.from - (d.hz ? ox : oy) : null, noEsc: d.noEsc, escY: d.escY && d.escY[name], esc1: d.esc1 && d.esc1[name], gaps: (d.gaps || []).map(([a, b]) => [a - (d.hz ? ox : oy), b - (d.hz ? ox : oy)]) })).filter((d) => d.off > -HALF && d.off < (d.hz ? H : W) + HALF);
     const hDecks = decks.filter((d) => d.hz), vDecks = decks.filter((d) => !d.hz);
     const groundDecks = D.ring && D.ring.tile === name ? [] : hDecks;
     const lvl = (c, extra) => Object.assign({ center: c, ring: null, statics: [], spawns: [], coneHomes: [], patches: [], decks: groundDecks.map((d) => ({ hz: true, off: d.off, z: d.z, height: d.z === 2 ? P['world.highHeight'] : P['world.deckHeight'] })), floors: [], canal: false, solid: [] }, extra || {});
@@ -1081,12 +1104,17 @@
       sc.layers.push(ringDeck); sc.ringDeck = ringDeck;
       // 6.2 (Edit 70): no island. The ring's hole stands open over the boulevard; the dummy steps off its inner edge onto the traffic below
     } else {
-      for (const d of hDecks) { const st = escalators(d.off, d.z, HALF); if (D.id === 'parkland') alignFlights(sc, st, roadOk); sc.stairs.push(...st); sc.layers.push(straightDeck(d.off, d.z, roadOk, st)); }
+      for (const d of hDecks) {
+        const st = escalators(d.off, d.z, HALF); if (D.id === 'parkland') alignFlights(sc, st, roadOk); sc.stairs.push(...st);
+        const gp = ACCESS && ACCESS.dropGaps && !(d.gaps && d.gaps.length) ? deckDropGaps(d.off, true, st.map((q) => ({ a0: q.x, a1: q.x + q.w, side: q.side })), rd) : []; // Edit 85
+        sc.layers.push(straightDeck(d.off, d.z, roadOk, st, gp));
+      }
       const cq = D.chongqing && D.chongqing.tile === name ? D.chongqing : null; // Edit 54: the west escalator lands on the roof plaza instead
       const links = ((D.deckLinks || {})[name] || []).concat(cq ? [{ y: cq.link[0], h: cq.link[1] - cq.link[0], side: -1 }] : []); // Edit 55.2: walkway and roof links
       for (const d of vDecks) {
-        const st = d.noEsc ? [] : vEscalators(d.off, d.z, d.escY).filter((q, i) => !cq || i === 1); if (D.id === 'parkland') alignFlights(sc, st, roadOk); sc.stairs.push(...st); // Chongqing: the north flight lands on the roof plaza instead
-        const gaps = d.gaps.filter(([a, b]) => b > 0 && a < H).map(([a, b]) => [-1, 1].map((side) => ({ y: a, h: b - a, side, gap: true }))).flat(); // P6: broken parapets (drops)
+        const st = d.noEsc ? (ACCESS && ACCESS.flightsMin && d.esc1 ? [deckFlight(d.off, d.z, d.esc1[0], d.esc1[1])] : []) : vEscalators(d.off, d.z, d.escY).filter((q, i) => !cq || i === 1); if (D.id === 'parkland') alignFlights(sc, st, roadOk); sc.stairs.push(...st); // Chongqing: the north flight lands on the roof plaza instead; Edit 85: a bridge's one flight
+        let gaps = d.gaps.filter(([a, b]) => b > 0 && a < H).map(([a, b]) => [-1, 1].map((side) => ({ y: a, h: b - a, side, gap: true }))).flat(); // P6: broken parapets (drops)
+        if (!gaps.length && ACCESS && ACCESS.dropGaps) gaps = deckDropGaps(d.off, false, st.concat(links).map((q) => ({ a0: q.y, a1: q.y + q.h, side: q.side })), rd).map((g) => ({ y: g.a0, h: g.a1 - g.a0, side: g.side, gap: true })); // Edit 85
         const wl = D.id === 'waterfront' ? WSTAIRS.filter((q) => q.axis === 'x' && Math.abs(Math.abs(q.high - ox - d.off) - HALF) < 2).map((q) => ({ y: q.y - oy, h: q.h, side: q.high - ox < d.off ? -1 : 1 }))
           .concat(VP.walkways.filter((w) => w.pts[0][1] === w.pts[1][1]).flatMap((w) => w.pts.filter((q) => Math.abs(Math.abs(q[0] - ox - d.off) - HALF) < 2).map((q) => ({ y: q[1] - oy - P['world.walkwayWidth'] / 2, h: P['world.walkwayWidth'], side: q[0] - ox < d.off ? -1 : 1 })))) : []; // P6: the bridge escalators open the parapet; P6.3: so does a walkway's join
         const l = vDeck(d.off, d.z, roadOk, st, links.concat(gaps, wl)); l.from = d.from; sc.layers.push(l);
@@ -1360,6 +1388,18 @@
       dropAt: (x, y) => inner.length > 0 && hyp(x - cx, y - cy) < rIn + 2 && inArc(x, y), // 6.2 (Edit 70): off the hole's open edge, onto the road below
       has: (x, y) => { if (x < 0 || y < 0 || x >= W || y >= H) return false; const d = D[Math.floor(y / U) * AW + Math.floor(x / U)]; if (d <= hold) return true; if (inner.length) { const r = hyp(x - cx, y - cy); if (r >= rIn + 1 && r < rIn + PW + R0 + 2 && inArc(x, y)) return true; } if (d > HALF + 2) return false; return ops.some(([a, b, sd]) => x > a && x < b && (sd > 0 ? y > cy : y < cy)); } };
   }
+  // Edit 85 (P7.4): the share of a cone's pixels the player sees at (x, y): not under a raised layer drawn over it (its pixels
+  // at their lift), not behind a prop drawn after it (a building's face, a podium, a flight)
+  function coneShows(sc, x, y) {
+    const S = PIX.CONE, key = y + 6, x0 = Math.round(x / U) - S.ox, y0 = Math.round(y / U) - S.oy; let tot = 0, hid = 0;
+    for (let j = 0; j < S.h; j++) for (let i = 0; i < S.w; i++) {
+      if (!S.d[j * S.w + i]) continue; tot++;
+      const px = x0 + i, py = y0 + j;
+      if (sc.layers.some((l) => { if (!(l.front > key)) return false; const ly = py + (l.lift || 0), Lh = l.L.h || AH; return px >= 0 && px < AW && ly >= 0 && ly < Lh && !!l.L.d[ly * AW + px]; })) { hid++; continue; }
+      if (sc.props.some((p) => { const k = p.podium ? 1e6 - 1 : p.key != null ? p.key : p.over ? 1e6 + 1 : p.by; if (!(k > key) || !p.spr) return false; const s2 = p.spr, qx = px - (Math.round(p.x) - s2.ox), qy = py - (Math.round(p.y) - s2.oy); return qx >= 0 && qy >= 0 && qx < s2.w && qy < s2.h && !!s2.d[qy * s2.w + qx]; })) hid++;
+    }
+    return tot ? 1 - hid / tot : 1;
+  }
   function gameData(sc) {
     const floors = [];
     for (const l of sc.layers) {
@@ -1407,7 +1447,8 @@
       spawns = pick(spawns, score, 3, 120);
     }
     // cone homes: on the pavement beside a ground road
-    const homes = sc.sims.some((s) => s.elev0 === 0 && s.level.lanes.length) ? pick(cands.filter((c) => !sc.roadOk(c.x, c.y, OUTER + 40)), (c) => hyp(c.x - W / 2, c.y - H / 2), 2, 240) : [];
+    const shows = ACCESS && ACCESS.coneVisible ? (c) => coneShows(sc, c.x, c.y) >= ACCESS.coneVisible : () => true; // Edit 85: never under a highway, a walkway or behind a building
+    const homes = sc.sims.some((s) => s.elev0 === 0 && s.level.lanes.length) ? pick(cands.filter((c) => !sc.roadOk(c.x, c.y, OUTER + 40) && shows(c)), (c) => hyp(c.x - W / 2, c.y - H / 2), 2, 240) : [];
     const runs = (sc.runs || []).concat(sc.hillRuns || []), longest = runs.reduce((a, r) => (!a || X.makePath(r.pts).length > X.makePath(a.pts).length ? r : a), null);
     return { id: sc.D.id, name: sc.name, cell: [sc.col, sc.row], statics, floors, stairs, solidsZ: sc.solidsZ.slice(), polys0: sc.polys0, water: sc.waterPolys, spawns, coneHomes: homes.map((c) => [c.x, c.y]),
       patches: [], checkpoints: sc.checkpoints || [], decks: [], deckLanes: [], lanes: [], center: longest ? longest.pts : [], ring: sc.ringDeck ? sc.ringDeck.ring.geoms[0].pts : null,
@@ -1704,16 +1745,17 @@
     for (const sc of Wd.scs) for (const F of sc.flow.values()) {
       let n = 0; for (const s of sc.sims) for (const c of s.cars) { const r = recOf(s, c); if (r && r.cls === F.cls) n++; }
       F.n = n;
-      if (n >= F.target + 1 || (exhausted && F.cls === 'street0')) continue; // a cap; the shift's streets stop filling once it is spent
+      const kd = Wd.densityOf ? Wd.densityOf(sc) : 1, S = F.S / kd, target = F.target * kd; // Edit 85: Story scales a tile's density (1: the district's)
+      if (n >= target + 1 || (exhausted && F.cls === 'street0')) continue; // a cap; the shift's streets stop filling once it is spent
       const cands = F.list.filter((g) => sc !== act || g.boundary);
-      const hw = F.S / (cruise * (F.cls.startsWith('street') ? 1 : P['traffic.deckSpeedScale'])); // the target headway at an inlet
+      const hw = S / (cruise * (F.cls.startsWith('street') ? 1 : P['traffic.deckSpeedScale'])); // the target headway at an inlet
       for (let k = 0; k < cands.length; k++) { // an inlet from beyond the district meters at the headway; any other fills only a missing car (1.5 headways)
         const g = cands[(F.rr + k) % cands.length], r = g.recs[(Wd.spawnSeq + k) % g.recs.length], jit = 0.85 + 0.3 * ((Wd.spawnSeq * 0.6180339887) % 1);
         if (Wd.t - (g.lastIn != null ? g.lastIn : -1e9) < hw * (g.boundary ? jit : 1.5)) continue;
-        const s0 = g.boundary ? Lb / 2 + 2 : r.ends.in.s + 2, ahead = Math.max(Lb * (1 + P['traffic.entryRoomLengths']) + P['traffic.minimumGap'], F.S * 0.5);
+        const s0 = g.boundary ? Lb / 2 + 2 : r.ends.in.s + 2, ahead = Math.max(Lb * (1 + P['traffic.entryRoomLengths']) + P['traffic.minimumGap'], S * 0.5);
         if (sc === act && seen(act, sc, X.pathAt(r.path, s0), 40)) continue; // the screen in view: only from beyond the district edge, out of sight
-        if (!roomAt(Wd, g, r, s0, ahead, F.S * 0.5) || queued(g)) continue;
-        spawn(Wd, r, s0); g.lastIn = Wd.t; if (++n >= F.target + 1) break;
+        if (!roomAt(Wd, g, r, s0, ahead, S * 0.5) || queued(g)) continue;
+        spawn(Wd, r, s0); g.lastIn = Wd.t; if (++n >= target + 1) break;
       }
       F.rr = (F.rr + 1) % Math.max(1, cands.length);
     }
@@ -1801,6 +1843,7 @@
   function buildWorld(id, opts) {
     PAVN = 0; PAVB = 0;
     opts = opts || {};
+    ACCESS = opts.access || null; // Edit 85
     const D = DISTRICTS.find((d) => d.id === id);
     if (!D) throw new Error('no P6 district ' + id);
     const scs = [];
@@ -1810,6 +1853,7 @@
     fillDead({ scs }); // 6.2 (Edit 70): no gap that looks walkable and is not
     const Wd = { id, D, scs, at: (c, r) => (c >= 0 && c < 3 && r >= 0 && r < 3 ? scs[r * 3 + c] : null), t: 0, live: false, budget: opts.budget != null ? opts.budget : P['run.appearances.road'], admitted: 0, exited: 0, crossings: 0, events: [], tick: 0, spawnSeq: 0, culled: 0 }; // admitted (P6.1): shift cars that have appeared on the screen in view
     linkWorld(Wd);
+    if (opts.density) Wd.densityOf = opts.density; // Edit 85 (P7.4): Story's traffic, tile by tile (story.traffic.<district>.<tile>)
     for (const sc of scs) { // cones live on their screen; ground drivers and the dummy share them
       sc.cones.length = 0;
       sc.game.coneHomes.forEach(([x, y], i) => sc.cones.push({ id: 'cone' + sc.name + '-' + (i + 1), x, y, hx: x, hy: y, vx: 0, vy: 0, state: 'free', flightT: 0, flightDur: 1 }));
@@ -1887,7 +1931,8 @@
       this.p6 = true; this.levelId = id; this.list = LEVEL_LIST; this.roadIndex = LEVEL_LIST.indexOf(id); this.isFinal = !!opts.single || this.roadIndex === LEVEL_LIST.length - 1; this.isCity = true;
       const bud = overrides && overrides['run.appearances.road'] != null ? overrides['run.appearances.road'] : P['run.appearances.road'];
       this.P['run.appearances.road'] = bud;
-      this.W6 = opts.world || buildWorld(id, { budget: bud, warm: opts.warm });
+      const acc = this.P['world.deckDropGaps'] || this.P['world.deckFlightsMin'] || this.P['props.cone.minVisible'] ? { dropGaps: this.P['world.deckDropGaps'], flightsMin: this.P['world.deckFlightsMin'], coneVisible: this.P['props.cone.minVisible'] } : null; // Edit 85 (P7.4)
+      this.W6 = opts.world || buildWorld(id, { budget: bud, warm: opts.warm, access: acc, density: opts.density });
       this.reset();
     }
     reset() {
@@ -2226,6 +2271,6 @@
     if (m === t) return { nx: 0, ny: -1, pen: t + r };
     return { nx: 0, ny: 1, pen: b + r };
   }
-  const api = { P6SIM, DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY, groundFree, arrives, edgePt, inR, cpZone };
+  const api = { P6SIM, DISTRICTS, LEVEL_LIST, INFO, TILE, buildScreen, buildWorld, coneShows, linkWorld, stepWorld, viewCars, compose, layerOf, carKey, Sim6, gameData, polyDist, AWAY, groundFree, arrives, edgePt, inR, cpZone };
   if (NODE) module.exports = api; else root.WORLD6 = api;
 })(typeof window !== 'undefined' ? window : globalThis);

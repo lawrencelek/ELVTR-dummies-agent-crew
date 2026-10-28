@@ -868,7 +868,7 @@
       let c;
       const sd = b < mid ? -1 : 1, pb = sd < 0 ? b : wpx - 1 - b; // depth into the parapet from the outer edge
       if (b >= wpx) c = b === wpx + face - 1 ? K.bldgOutline : b === wpx ? K.jerseyTop : (a % 8 < 2 ? K.columnD : K.column); // girder face: lit lip, ribs
-      else if (pb < pw + 1 && inGap(a, sd)) c = pb === 0 ? ((a % 3) ? K.deckJoint : K.bldgDark) : K.deck2; // broken parapet: the deck edge shows
+      else if (pb < pw + 1 && inGap(a, sd)) c = pb === 0 ? ((a % 3) ? (dk.gapLit ? K.podCrown : K.deckJoint) : K.bldgDark) : K.deck2; // broken parapet: the deck edge shows (Edit 85: lit cyan, a drop to read)
       else if (pb < pw + 1 && inOpen(a, sd)) c = pb === 0 ? K.deckJoint : K.deck; // opening: the deck runs onto the stair
       else if (high && pb === pw + 1) c = (a % 6 < 3) ? led : K.deck2; // high highway: a second LED line inside the parapet
       else if (pb === 0) c = K.jerseyO;
@@ -879,7 +879,7 @@
       else if (a % 32 === 0) c = K.deckJoint; // expansion joints across the deck
       else c = Math.abs(b - mid) > lane ? K.deck2 : K.deck; // pale concrete: the highway is never the asphalt below
       put(a, b, c);
-      if (pb < pw + 1 && pb > 0 && !inGap(a, sd) && (inGap(a - 1, sd) || inGap(a + 1, sd))) put(a, b, K.white); // snapped ends (never warning red: canon)
+      if (pb < pw + 1 && pb > 0 && !inGap(a, sd) && (inGap(a - 1, sd) || inGap(a + 1, sd) || (dk.gapLit && (inGap(a - 2, sd) || inGap(a + 2, sd))))) put(a, b, K.white); // snapped ends (never warning red: canon); Edit 85: two px
     }
     const sp = Math.round(P['world.deckLampSpacing'] / U);
     // P5.2 (Edit 50.2): lamps in pairs, one on each parapet every world.deckLampSpacing; a pale pole, a bright head, a light pool

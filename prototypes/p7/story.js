@@ -28,7 +28,8 @@
   const nameOf = (c, r) => 'ABC'[c] + (r + 1);
   const cellOf = (t) => ['ABC'.indexOf(t[0]), +t[1] - 1];
   const DIST = DATA.districts, TOTAL = DIST.reduce((a, d) => a + d.order.length, 0);
-  const P7SIM = { 'proto.recoilScale': 0.7, 'proto.bounce.maxThrow': 40 }; // Edit 83: the ricochet the dummy survives; Arcade and Story
+  const P7SIM = { 'proto.recoilScale': 0.7, 'proto.bounce.maxThrow': 40, // Edit 83: the ricochet the dummy survives; Arcade and Story
+    'world.deckDropGaps': 1, 'world.deckFlightsMin': 1, 'props.cone.minVisible': 0.9 }; // Edit 85: every highway a flight and a drop gap; cones in view
   const BASE = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM, P7SIM);
 
   // ---------- progress: one plain object, JSON-safe
@@ -50,6 +51,15 @@
   }
   const tileOf = (id, t) => { const d = districtOf(id); return d ? d.tiles[t] : null; };
   const needOf = (id, t, P) => (P || BASE)['story.writeOffs.' + id + '.' + t]; // Edit 82: write-offs that clear this tile
+  // Edit 85: Story's traffic, tile by tile. The tile in test and its four neighbours (its cars come from them) run at
+  // story.traffic.<district>.<tile> times the district's density; the rest of the district at 1. A neighbour with a roundabout
+  // (a street ring, Parkland's deck ring) stays at 1: a ring at capacity out of sight would only fill and be culled. Cars still
+  // enter the view only across its edges, from out of sight
+  const trafficOf = (id, t, P) => (P || BASE)['story.traffic.' + id + '.' + t] || 1;
+  const hasRing = (sc) => !!(sc.islands || sc.ringSim);
+  function storyDensity(pr, id, P) {
+    return (sc) => { const t = !pr.complete && pr.district === id ? activeTile(pr, id) : null; if (!t) return 1; const [c, r] = cellOf(t), dd = Math.abs(sc.col - c) + Math.abs(sc.row - r); return dd === 0 || (dd === 1 && !hasRing(sc)) ? trafficOf(id, t, P) : 1; };
+  }
 
   // ---------- the brief: text and test
   function taskText(task, P) {
@@ -113,7 +123,7 @@
       ov['run.appearances.road'] = P0['story.shiftCars']; // the story has no shift clock: a district's traffic runs for story.shiftCars cars
       for (const L of [1, 2, 3]) ov['economy.price.ability.level' + L] = P0['story.price.ability.level' + L]; // Edit 82: the story's prices, 3, 4, 5
       const carry = { owned: Object.assign({}, pr.owned), credits: pr.credits, points: pr.points, chassis: pr.chassis, writeOffs: pr.writeOffs, t: pr.t, purchases: [], milestones: pr.milestones || {} };
-      super(id, ov, carry, Object.assign({}, opts || {}, { startTile: activeTile(pr, id) || districtOf(id).order[0], story: pr }));
+      super(id, ov, carry, Object.assign({}, opts || {}, { startTile: activeTile(pr, id) || districtOf(id).order[0], story: pr, density: storyDensity(pr, id, P0) }));
     }
     reset() {
       super.reset();
@@ -323,6 +333,6 @@
     nextVerb() { return VERBS.find((v) => !this.run.owned[v]) || null; }
   }
 
-  const api = { P7SIM, VERBS, VERB_AT, ArcadeSim, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
+  const api = { P7SIM, VERBS, VERB_AT, ArcadeSim, trafficOf, storyDensity, hasRing, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
   if (NODE) module.exports = api; else root.STORY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

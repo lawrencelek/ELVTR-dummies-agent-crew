@@ -1,6 +1,6 @@
 # DUMMIES — Jump test (Phaser)
 
-**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 76–84 (proposed). A small yard for the jump, separate from the game. The title shows the build ("JUMP TEST · EDIT84"). The same rules run in Prototype 7.3.
+**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 76–85 (proposed). A small yard for the jump, separate from the game. The title shows the build ("JUMP TEST · EDIT85"). The same rules run in Prototype 7.4.
 
 The jump after Link's Awakening: it keeps the speed it takes off with. Moving traffic, parked cars broadside and end-on, barriers from a handrail to a wall, a ruler. A side view charts each jump against the heights it must clear.
 

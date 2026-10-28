@@ -1,6 +1,13 @@
-# DUMMIES — Prototype 7.3: Arcade and Story
+# DUMMIES — Prototype 7.4: Arcade and Story
 
-**Prototype 7.3 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–84 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7, 7.1 and 7.2 stay frozen as `dummies_p7.html`, `dummies_p7_1.html` and `dummies_p7_2.html`; 6.4–6.10 in `../p6/`.
+**Prototype 7.4 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–85 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.3 stay frozen as `dummies_p7.html` to `dummies_p7_3.html`; 6.4–6.10 in `../p6/`.
+
+Prototype 7.4 (Edit 85):
+- **Story traffic per tile:** `story.traffic.<district>.<tile>` scales the density of the tile in test and its neighbours. Arcade keeps one per district.
+  - Busier openings: Monument A1 and B1 have about 40–70% more cars in view. Parkland's thin tiles run 1.5–2×.
+  - A neighbour with a roundabout stays at the district rate, so no ring fills out of sight.
+- **Every highway a flight and a drop gap:** a lit break in the parapet over each road beneath. Waterfront's bridges gain a flight from the beach.
+- **Cones in view:** never on a road, never under a highway, never behind a building.
 
 Prototype 7.3 (Edit 84), option B: verbs are issued, levels are bought.
 - **Verbs:** Legs 1, Hands 1, Arms 1. Never sold. Monument issues one every three tiles: C1, A2, C3.
@@ -34,9 +41,10 @@ The title has two modes.
 
 ## Files
 
-- **`dummies_p7_3.html`:** the game. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
-- **`p7_3_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_4.html`:** the game. Open in a browser; no server.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
+- **`p7_4_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_3.html`:** Prototype 7.3 (Edit 84). Frozen.
 - **`dummies_p7_2.html`:** Prototype 7.2 (Edit 83). Frozen.
 - **`dummies_p7_1.html`:** Prototype 7.1 (Edit 82). Frozen.
 - **`dummies_p7.html`:** Prototype 7 (Edit 81). Frozen.
@@ -44,7 +52,7 @@ The title has two modes.
 - **`../../content/story/story.json`:** the story's content: the order of tiles, 27 tales, Farsight's briefs and gifts. Numbers are registry IDs.
 - **`../p6/game.js`, `../p6/world6.js`, `../p6/sim.js`:** the shared game code: the title, the story map, the tile card, fences, the gift screen, the story's HUD.
 - **`build.py`:** `python3 build.py` → both pages. `../p6/build.py` refuses: 6.10 is frozen.
-- **`test_p73.js`:** `node test_p73.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`test_p74.js`:** `node test_p74.js [screenshot folder]` → the checks; screenshots into the folder.
 
 ## Title
 
@@ -83,6 +91,10 @@ The title has two modes.
   - The rest costs 34. At one credit a body, bought as soon as affordable, the last level lands on Waterfront B2's first body. Monument buys 2 levels; Parkland 3 more.
   - Nothing affordable: the report goes straight to the next chassis.
 - **No clock:** a district's traffic runs `story.shiftCars` (5,000) cars. No Failed test.
+- **Traffic per tile** (Edit 85): `story.traffic.<district>.<tile>` × the district's density, on the tile in test and its four neighbours; the rest of the district at 1.
+  - A neighbour with a roundabout stays at 1 (Parkland B2, C3; Waterfront B2).
+  - Cars still enter the view only across its edges. Out of view, a car stopped `traffic.offscreenCullSeconds` (12 s) is removed.
+  - Scales above 1: Monument A1 1.5, B1 1.75; Parkland C1 1.75, C2 1.75, B3 1.25, A3 2, A2 1.5, B1 2, B2 1.25; Waterfront B1 1.5, C2 1.5, A2 1.5.
 - **The map:** uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength. The cursor reads any revealed tile's tale.
 - **Saved** in this browser after every count, clear, gift and purchase. A reload resumes the tile in test.
 - **The end:** clearing Waterfront B2 certifies the Test City.
@@ -122,9 +134,16 @@ The title has two modes.
 - **Every brief is possible where it is set.** Checked from 90 s of traffic per district: the class runs there; raised traffic for "on a raised road"; a raised floor over traffic for a drop; cones for a cone brief.
 - **Every brief's verb arrives with its tile:** Legs 1 at Monument C1, Hands 1 at A2, Arms 1 at C3 (Edit 84: a verb every three tiles).
 
+## Highways and cones (Edit 85, both modes)
+
+- **Every highway has a flight** (`world.deckFlightsMin` 1). Waterfront's bridges: one each, from the beach (A2 west, C2 east).
+- **Every highway breaks its parapet over each Z0 road beneath** (`world.deckDropGaps`): one `world.tileSize` module on the road's centre line, south or east (the other side where a flight stands). Drawn lit: white snapped ends, a cyan edge. Walk off it and drop onto the road.
+  - Parkland B1's highway crosses no road: no gap (D70).
+- **Cones:** on the pavement beside a road, never on it; never under a highway, ring or walkway, never behind a building (`props.cone.minVisible` 0.9).
+
 ## Arcade
 
-- **One district a run.** Its quota of write-offs: Licensed.
+- **One district a run.** Its quota of write-offs: Licensed. Traffic: one density per district (`world.district.<id>.interval`).
 - **Verbs** (Edit 84): the story's, in its order. One per `arcade.giftEvery` (1) write-offs.
   - It comes after the shop, by drone, to the next chassis; the same gift screen. Never sold: "DRONE GIFT".
   - Monument (4 write-offs) sees all three; Waterfront (3) Legs 1 and Hands 1; Parkland (2) Legs 1 (D69).
@@ -150,7 +169,11 @@ The title has two modes.
 - **Tile card** on arrival: the tile's number of 27, its title, its tale, the brief and its count, the verb it brought. A begins.
 - **Report:** counted or not, and why; the body's credit; the cheapest next level and its price.
 - **Pause:** Resume · Story map · Show trace · Quit to title. The tile's count is kept; the body in play is lost.
-- **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.price.ability.level1`–`level3`, `arcade.giftEvery`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`. From the next deploy.
+- **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.price.ability.level1`–`level3`, `arcade.giftEvery`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
+
+![P7.4: Monument A1: the highway's parapet open over the road, lit](docs/p74_a1_gap.png)
+
+![P7.4: Waterfront A2: a flight up from the beach to the bridge](docs/p74_bridge_flight.png)
 
 ![P7.3: the ferry drone comes for the chassis in B1 with Legs 1 under it](docs/p73_drone_item.png)
 
@@ -182,10 +205,10 @@ The title has two modes.
 
 ## Evidence
 
-- `node test_p73.js docs` → 55/55.
-  - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit84), 27 tile counts (35 bodies), 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs only Legs 1, Hands 1, Arms 1, at Monument C1 (#3), A2 (#6), C3 (#9); Monument's briefs reordered; every brief possible where set.
-  - Headless: defaults in both modes; the ricochet; A1's fences; a real dash write-off clears A1; the ferry to B1; B1's fences; a missed write-off pays; back into cleared A1; Battery 1 at 3; the shop refuses Legs 1 ("gift at C1"); B1 cleared, the ferry drone brings Legs 1 (inbound › give › lift), the gift phase holds the world 2 s, A continues to C1; resume on C3 with Arms 1 owed (delivery, gift screen, the drone leaves, C3's card); Monument → Parkland C1; Waterfront B2 certifies. Arcade: Legs 1, Hands 1, Arms 1 after write-offs 1–3, none sold; `arcade.giftEvery` 2 waits; one district a run; prices 1, 2, 3. 6.4–6.10, 7, 7.1 and 7.2 byte-identical.
-  - Browser: the title (P7.3); Arcade's pick, its objective line, its first verb by drone with the gift screen; the map; the tile card; the fence; the objective line; a report; the shop at 3; the ferry to B1 and its card; B1 cleared, the drone with Legs 1, the cable, the gift screen at four moments, A ignored before the hold, then C1's card; a reload resumes; a phone sideways; no page errors.
+- `node test_p74.js docs` → 63/63.
+  - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit85), 27 tile counts (35 bodies), 27 tile traffic scales, 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs at Monument C1, A2, C3; every brief possible where set.
+  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps, walked off: 17 land on a road, 4 in the river; Parkland B1 the exception (D70). 49 cone homes, none on a road, none hidden. 6.x worlds unchanged. Tile density: B1 and its non-ring neighbours at its scale; Arcade per district; Parkland C1 19 → 29 street cars a minute. 6.4–6.10 and 7–7.3 byte-identical.
+  - Browser: the title (P7.4); Arcade and its first verb; Waterfront A2's bridge flight; the map; the tile card; Monument A1's gap and its density in the page; the fence; the objective; a report; the shop; the ferry; the gift screen; a reload; a phone; no page errors.
 - `../p6/test_p610.js` → 47/47 (6.10's rules on the shared code). `../p6/test_sim.js` → 104/104. `../p6/test_p6.js` → 72/73 (Parkland's street-emptiness limit, as on 6.4).
 - `../jump/test_jump.js` → 28/28. `../controls/test_controls.js` → 34/34.
 
@@ -196,8 +219,10 @@ The title has two modes.
 - One save slot, in this browser only. A P7 save loads into 7.1 with its credits.
 - Barks still name the district, not the tile.
 - Short Arcade districts end before every verb arrives: Parkland Legs 1 only; Waterfront Legs 1 and Hands 1 (D69).
+- Parkland B1: no road under its highway, a street empty 67% of the time, a cone brief (D70).
+- Tile scales raise culls out of view: 27 in 54 min of soak (9 at 1). The player never sees them.
 - The fanfare is synthesised in the page (Web Audio): placeholder sound until a composed sting.
 
 ## Build
 
-`python3 build.py` → `dummies_p7_3.html` and `p7_3_page.html`.
+`python3 build.py` → `dummies_p7_4.html` and `p7_4_page.html`.
