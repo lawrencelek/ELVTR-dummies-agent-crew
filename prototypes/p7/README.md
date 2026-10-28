@@ -1,6 +1,13 @@
-# DUMMIES — Prototype 7.8: Arcade and Story
+# DUMMIES — Prototype 7.9: Arcade and Story
 
-**Prototype 7.8 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–89 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.7 stay frozen as `dummies_p7.html` to `dummies_p7_7.html`; 6.4–6.10 in `../p6/`.
+**Prototype 7.9 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–90 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.8 stay frozen as `dummies_p7.html` to `dummies_p7_8.html`; 6.4–6.10 in `../p6/`.
+
+Prototype 7.9 (Edit 90): fixes from play.
+- **Dash, then jump:** the jump out of a dash is free (`battery.dashJumpCost` 0). It used to need a second charge, so it failed on one charge.
+- **Cones:** X picks a cone up; X with no cone in reach puts one down (`abilities.hands.tapDrop` 1). The hold still works.
+- **Button labels:** in menus A reads OK and B BACK, X and Y blank. In play a button names its verb only once fitted; X reads GRAB or DROP.
+  - Pause › Controls shows ??? for a part not yet issued. A locked button pressed says "Not fitted yet".
+- **Progression:** unchanged from 7.8. The proposal (Zelda-like: every part by drone on a fixed tile, DASH after A1) is charted in the Test City Playthrough page.
 
 Prototype 7.8 (Edit 89): touch everywhere; levels, not credits; the workshop.
 - **Touch on every menu:** tap a mode, a district, ◀ ▶, START, a save slot and its action, a key, a tile, DEPLOY, the card, the report, the gift screen, a pause row, a workshop part, FIT, DONE.
@@ -88,9 +95,10 @@ The title has two modes.
 
 ## Files
 
-- **`dummies_p7_8.html`:** the game. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
-- **`p7_8_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_9.html`:** the game. Open in a browser; no server.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-8/` (Prototype 7.8), `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
+- **`p7_9_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_8.html`:** Prototype 7.8 (Edit 89). Frozen.
 - **`dummies_p7_7.html`:** Prototype 7.7 (Edit 88). Frozen.
 - **`dummies_p7_6.html`:** Prototype 7.6 (Edit 87). Frozen.
 - **`dummies_p7_5.html`:** Prototype 7.5 (Edit 86). Frozen.
@@ -103,7 +111,7 @@ The title has two modes.
 - **`../../content/story/story.json`:** the story's content: the order of tiles, 27 tales, Farsight's briefs and gifts. Numbers are registry IDs.
 - **`../p6/game.js`, `../p6/world6.js`, `../p6/sim.js`:** the shared game code: the title, the story map, the tile card, fences, the gift screen, the story's HUD.
 - **`build.py`:** `python3 build.py` → both pages. `../p6/build.py` refuses: 6.10 is frozen.
-- **`test_p78.js`:** `node test_p78.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`test_p79.js`:** `node test_p79.js [screenshot folder]` → the checks; screenshots into the folder.
 
 ## Title
 
@@ -246,7 +254,8 @@ The title has two modes.
 - **Workshop** (Edit 89): the next chassis, large; Battery, Legs, Hands, Arms around it, wired to their seats. Pips, now, next, cost. Parts not yet issued: "???". FIT, DONE.
 - **Pause** (ESC, START, ❚❚): Resume · Story map · Options · Controls · Show trace · Quit to title. The tile's count is kept; the body in play is lost.
   - Options: Sound · Palette (reloads; the story saves first) · Full screen · Tuning panel · Gamepad setup · Back.
-  - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢; Adjust layout · Reset layout · Back.
+  - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢; Adjust layout · Reset layout · Back. A verb not yet fitted reads ??? (Edit 90).
+- **Touch buttons** (Edit 90): menus: A OK, B BACK. Play: the verb once fitted (A DASH, B JUMP, X GRAB or DROP, Y PUSH); unfitted: the letter alone, dimmed.
 - **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.level.firstPoints`, `story.level.stepPoints`, `story.level.max`, `story.level.upgrades`, `arcade.giftEvery`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
 
 ![P7.8: LEVEL UP across the field; the stats box reads POINTS and LEVEL](docs/p78_levelup.png)
@@ -325,13 +334,14 @@ The title has two modes.
 
 ## Evidence
 
-- `node test_p78.js docs` → 86/86.
+- `node test_p79.js docs` → 89/89.
+  - Edit 90: one charge left, dash then B: a dash jump in Story and Arcade, denied under 6.10's rules; Hands 1: a tap picks up, a tap away from cones puts down (6.10 keeps the hold); in play at A1 the buttons read A DASH, B X Y blank; paused, A OK, B BACK; Controls: MOVE, DASH, ???, ???, ???.
   - Levels (Edit 89): levels 2–9 at 6,500 to 108,000; the fill at 3,500 a body lands at Waterfront A3, with no combos all 8, at 5,000 by Parkland B2. Headless: no credits in Story; the report reads the level; level 1, no workshop; three bodies, level 2 and its event; the workshop fits Battery 1 only (Legs shut); "level up first"; a million points, level 9, 7 upgrades, Legs 2 and Battery 2 open. In the page: LEVEL UP in play; the workshop opens on Battery; A fits; locked parts dark.
   - Touch (Edit 89): a stylus phone turns touch on at the first touch; then by taps alone: ARCADE, a district, ▶, B, STORY, NEW GAME, OK, a tile, DEPLOY, the card, ❚❚, Options, Back, Resume, the report, FIT, DONE.
   - Save games (Edit 88): STORY opens the save screen, three empty slots; NEW GAME names slot 1 (TEST DUMMY 1 offered; typed CRASH-TESTER, 12 of 12); the slot saves points and credits after a write-off; a reload offers the latest slot first, its time stamp and lines; CONTINUE resumes. 7.6's story moves into slot 1. The grid types a name; all three in use: OVERWRITE asks twice; RENAME keeps the time stamp; ERASE asks twice; ESC cancels. Each slot keeps its own story. Touch: tap NEW GAME, keys, the name (the phone's keyboard), OK; tap RENAME.
-  - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit89), 27 tile counts (35 bodies), 27 tile traffic scales, 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs at Monument C1, A2, C3; every brief possible where set.
-  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps; 49 cone homes, none on a road, none hidden. Tile density. 6.4–6.10 and 7–7.7 byte-identical.
-  - Browser: the title (P7.8); one top edge at y 34 (BODY 208 × 86, the field, POINTS · LEVEL 208 × 86; the chassis at 130); the objective on the top strip; the map titled MONUMENT · A1; Arcade's box POINTS · CARS LEFT; the touch zone from 430; Pause › Options and Controls; Arcade and its first verb; the story through B1's gift into C1; a reload.
+  - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit90), 27 tile counts (35 bodies), 27 tile traffic scales, 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs at Monument C1, A2, C3; every brief possible where set.
+  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps; 49 cone homes, none on a road, none hidden. Tile density. 6.4–6.10 and 7–7.8 byte-identical.
+  - Browser: the title (P7.9); one top edge at y 34 (BODY 208 × 86, the field, POINTS · LEVEL 208 × 86; the chassis at 130); the objective on the top strip; the map titled MONUMENT · A1; Arcade's box POINTS · CARS LEFT; the touch zone from 430; Pause › Options and Controls; Arcade and its first verb; the story through B1's gift into C1; a reload.
   - Phones: 16:9 (640 × 360): the stick under the map, the diamond under the chassis, chips 76 × 26 above BODY. S25 Ultra (892 × 412): 139 units of margin a side, everything inside the 16:9 frame; the ❚❚ chip pauses; Controls offers Adjust layout · Reset layout · Back; the stick dragged into the left margin, the diamond into the right; + SIZE twice ×1.20; size held to 0.6–1.6; DONE saves; the moved stick walks the dummy; a reload keeps the layout; Reset restores it. No page errors.
 - `../p6/test_p610.js` → 47/47 (6.10's rules on the shared code). `../p6/test_sim.js` → 104/104. `../p6/test_p6.js` → 72/73 (Parkland's street-emptiness limit, as on 6.4).
 - `../jump/test_jump.js` → 28/28. `../controls/test_controls.js` → 34/34.
@@ -353,4 +363,4 @@ The title has two modes.
 
 ## Build
 
-`python3 build.py` → `dummies_p7_8.html` and `p7_8_page.html`.
+`python3 build.py` → `dummies_p7_9.html` and `p7_9_page.html`.

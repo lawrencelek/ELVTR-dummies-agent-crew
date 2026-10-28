@@ -99,7 +99,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.8' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.8 (GDD Edit 89: touch on every menu; Story levels from points and upgrades, not credits; the workshop, around the chassis); 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.9' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.9 (GDD Edit 90: the dash's jump paid by the dash; X taps a cone down; buttons named only when fitted, OK and BACK in menus); 7.8 (GDD Edit 89: touch on every menu; Story levels from points and upgrades, not credits; the workshop, around the chassis); 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -489,6 +489,17 @@
     for (const d of ['up', 'down', 'left', 'right']) if (now[d] && !TOUCH.dirs[d]) menuQ.push(d);
     TOUCH.dirs = now;
   }
+  // Edit 90 (P7.9): in a menu A reads OK and B BACK, X and Y nothing; in play a button names its verb only once fitted (X: GRAB, or DROP
+  // when a cone is held and none is in reach). A button not yet fitted shows its letter alone, dimmed
+  function faceWord(f, s) {
+    const inPlay = app.screen === 'game' && s && !app.paused && !app.touchEdit && ['play', 'hitstop', 'writeoff', 'scroll'].includes(s.phase);
+    const node = FACE_NODE[f.id], unlocked = !node || !!(s && s.has(node));
+    if (!STORY) return { word: unlocked ? f.w : 'LOCKED', live: unlocked };
+    if (!inPlay) return { word: { a: 'OK', b: 'BACK' }[f.id] || '', live: f.id === 'a' || f.id === 'b' };
+    if (!unlocked) return { word: '', live: false };
+    if (f.id === 'x') { const b = s.body, room = s.carriedCones().length < s.coneCapacity(), near = b && room && s.nearestCone ? s.nearestCone() : null; return { word: b && b.held && !near ? 'DROP' : 'GRAB', live: true }; }
+    return { word: f.w, live: true };
+  }
   function drawTouch() { // in canvas reference units (ctx scaled, origin at the canvas corner); the frame theme's glass
     TOUCH.portrait = window.innerHeight > window.innerWidth;
     if (TOUCH.rot) TOUCH.rot.hidden = !TOUCH.portrait;
@@ -511,13 +522,13 @@
     txt('MOVE', b.x + kx, b.y + ky + 6, '700 ' + Math.round(kr * 0.42) + 'px ' + F_UI, mv.m > 0 ? FT.selText : FT.dim, 'center');
     // the diamond: round glass keys, as the dial; the letter in the key-cap face. A wears the dummy's yellow; an uninstalled button reads LOCKED
     for (const f of L.face) {
-      const node = FACE_NODE[f.id], live = !node || (s && s.has(node)), dn = !!TOUCH.down[f.id], k = f.r * (dn ? 0.94 : 1);
-      ctx.globalAlpha = live ? 0.96 : 0.5;
+      const fw = faceWord(f, s), live = fw.live, dn = !!TOUCH.down[f.id], k = f.r * (dn ? 0.94 : 1), word = fw.word;
+      ctx.globalAlpha = live ? 0.96 : STORY ? 0.38 : 0.5;
       disc(f.x, f.y, k); const g = ctx.createLinearGradient(0, f.y - k, 0, f.y + k); g.addColorStop(0, dn ? FT.sel : FT.keyTop); g.addColorStop(1, dn ? FT.sel : FT.keyBot); ctx.fillStyle = g; ctx.fill();
       glow(() => { disc(f.x, f.y, k - 1); ctx.strokeStyle = f.id === 'a' && live ? C.dummy : FT.edge; ctx.lineWidth = f.id === 'a' ? 3.5 : 1.75; ctx.stroke(); });
       ctx.save(); disc(f.x, f.y, k - 3); ctx.clip(); const hg = ctx.createLinearGradient(0, f.y - k, 0, f.y - k * 0.2); hg.addColorStop(0, FT.gloss); hg.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = hg; ctx.fillRect(f.x - k, f.y - k, 2 * k, k); ctx.restore();
       txt(f.l, f.x, f.y + k * 0.14, '700 ' + Math.round(k * 0.78) + 'px ' + F_MONO, dn ? FT.selText : live ? FT.text : FT.off, 'center');
-      txt(live ? f.w : 'LOCKED', f.x, f.y + k * 0.6, '700 ' + Math.max(9, Math.round(k * 0.26)) + 'px ' + F_UI, dn ? FT.selText : live ? (f.id === 'a' ? C.dummy : FT.dim) : FT.off, 'center');
+      if (word) txt(word, f.x, f.y + k * 0.6, '700 ' + Math.max(9, Math.round(k * 0.26)) + 'px ' + F_UI, dn ? FT.selText : live ? (f.id === 'a' ? C.dummy : FT.dim) : FT.off, 'center');
     }
     ctx.globalAlpha = 1;
     // pause and full screen: glass keys
@@ -559,7 +570,7 @@
     terrace: 'Terrace: step off the edge to drop to the beach.', ring: 'Ring deck: highway traffic gives way at the entries. Escalators lead down.' }; // P6 (Edit 62)
   const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone',
     'push.locked': 'Push needs Arms', 'push.spent': 'No pushes left: land to get them back', 'push.nothing': 'Nothing to push off: hit or touch a car', 'drop.hold': 'Hold X to put the cone down', // Edit 80
-    jump: 'No jump — charge empty, or mid-action', 'jump.locked': 'Jump needs the Jump module (Legs)', 'pickup.locked': 'Grab needs the Carry module (Arms)', 'throw.locked': 'Throw needs the Throw module (Arms)', 'throw.empty': 'Grab a cone first (X), then throw (Y)' }; // Edit 75
+    jump: 'No jump — charge empty, or mid-action', 'jump.charge': 'No jump: the battery is empty', 'jump.locked': 'Jump needs the Jump module (Legs)', 'pickup.locked': 'Grab needs the Carry module (Arms)', 'throw.locked': 'Throw needs the Throw module (Arms)', 'throw.empty': 'Grab a cone first (X), then throw (Y)' }; // Edit 75
   // Generated juice (content/juice.json): one entry per sim event, every value a parameter ID. Returns false if absent.
   function juice(e, s) {
     const spec = CJ && CJ.events ? CJ.events.find((x) => x.event === e.type) : null;
@@ -874,7 +885,7 @@
           }
           break;
         }
-        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(e.why ? DENY_TEXT[e.action + '.' + e.why] || 'Denied' : copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break;
+        case 'denied': Snd.tone(120, 110, 0.05, 'square', 0.05); Snd.tone(120, 110, 0.05, 'square', 0.05, 0.08); if (!(e.action === 'lunge' && fx.slipT === e.t)) toast(STORY && e.why === 'locked' ? 'Not fitted yet' : e.why ? DENY_TEXT[e.action + '.' + e.why] || 'Denied' : copy('denied.' + e.action, DENY_TEXT[e.action] || 'Denied')); break; // Edit 90: a locked verb is not named
         case 'jump': { if (e.clear === false && !fx.hopTold) { fx.hopTold = true; toast('A hop clears nothing. Run, then jump.'); } /* Edit 77 */ Snd.tone(330, e.kind === 'dash' ? 880 : 660, e.kind === 'dash' ? 0.18 : 0.12, 'triangle', 0.08); const b = s.body; puff(b.x, b.y + 6, e.kind === 'dash' ? 10 : 6, { type: 'dust', speed: 55, life: 0.35, size: 3 }); if (e.kind === 'dash' && !fx.longJumpSeen) { fx.longJumpSeen = true; toast('Long jump: B during a dash carries its speed'); } break; } // Edit 75–76
         case 'jump-land': { Snd.tone(160, 90, 0.08, 'square', 0.05); const b = s.body; puff(b.x, b.y + 6, 5, { type: 'dust', speed: 45, life: 0.3, size: 3 }); break; }
         case 'rail-jump': Snd.tone(520, 880, 0.1, 'triangle', 0.06); toast('Over the rail'); break;
@@ -2988,13 +2999,14 @@
   }
   const controlItems = () => (TOUCH.on ? ['Adjust layout', 'Reset layout', 'Back'] : ['Back']); // Edit 87
   function controlRows(s) { // the device in hand: keys, a gamepad, or touch; a locked verb names what unlocks it
-    const d = deviceOf(), lock = (n, label) => (s.has(n) ? '' : 'Locked: ' + label + ', by drone'), K3 = { keys: 0, pad: 1, touch: 2 }[d];
+    const d = deviceOf(), lock = (n, label) => (s.has(n) ? '' : STORY ? 'A Farsight drone brings it' : 'Locked: ' + label + ', by drone'), K3 = { keys: 0, pad: 1, touch: 2 }[d];
+    const nm = (n, w) => (STORY && !s.has(n) ? '???' : w); // Edit 90: a verb not yet fitted is not named
     const rows = [
       ['MOVE', ['WASD / arrows', 'Stick / d-pad', 'Stick, left'][K3], ''],
-      ['DASH', ['Space / K', 'A', 'A'][K3], ''],
-      ['JUMP', ['L / Shift', 'B', 'B'][K3], lock('jump', 'Legs 1')],
-      ['GRAB', ['J / E', 'X', 'X'][K3], lock('carry', 'Hands 1'), 'Hold to put a cone down'],
-      ['PUSH OFF A CAR', ['I / Q', 'Y', 'Y'][K3], lock('push', 'Arms 1')],
+      ['DASH', ['Space / K', 'A', 'A'][K3], '', STORY ? 'Out of a dash, the jump is free' : ''],
+      [nm('jump', 'JUMP'), ['L / Shift', 'B', 'B'][K3], lock('jump', 'Legs 1')],
+      [nm('carry', 'GRAB'), ['J / E', 'X', 'X'][K3], lock('carry', 'Hands 1'), s.P['abilities.hands.tapDrop'] ? 'Tap: pick up a cone. Tap with none in reach: put one down' : 'Hold to put a cone down'],
+      [nm('push', 'PUSH OFF A CAR'), ['I / Q', 'Y', 'Y'][K3], lock('push', 'Arms 1')],
       ['PAUSE', ['Esc / P', 'Start', '❚❚'][K3], ''],
     ];
     if (d === 'keys') rows.push(['TUNING', 'T', ''], ['GAMEPAD SETUP', 'G', '']);
@@ -3275,7 +3287,7 @@
   requestAnimationFrame(frame);
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
-  window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
+  window.__dummiesInput = { faceWords: () => Object.fromEntries(FACE.map((f) => [f[0], faceWord({ id: f[0], w: f[4] }, app.sim).word])), TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
   window.__dummiesUI = { saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88
     controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();

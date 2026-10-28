@@ -99,7 +99,7 @@
     // Ricochet doubles the bounce. Switched on by P6.5 (world6.js P6SIM); P1–P6.4 keep their rules (proto.* switches below).
     'movement.directTurnRate': 1080, 'upgrades.jumpAirtime': 0.5, 'upgrades.jumpHeight': 44, 'upgrades.jumpRecovery': 0.1,
     'upgrades.jumpMaxSpeed': 324, 'upgrades.jumpAirAccel': 324, // Edit 76: the jump keeps its take-off speed (Link's Awakening); upgrades.jumpDistance retires
-    'battery.jumpCost': 1, 'world.jumpableHeight': 20, 'world.jumpableDepth': 48, 'proto.art.jumpableTop': 5, 'upgrades.ricochetScale': 2, 'scoring.comboWindow': 1.5, 'scoring.comboStep': 0.5, 'scoring.comboMax': 3,
+    'battery.jumpCost': 1, 'battery.dashJumpCost': 1, 'abilities.hands.tapDrop': 0, 'world.jumpableHeight': 20, 'world.jumpableDepth': 48, 'proto.art.jumpableTop': 5, 'upgrades.ricochetScale': 2, 'scoring.comboWindow': 1.5, 'scoring.comboStep': 0.5, 'scoring.comboMax': 3,
     'economy.price.legs.jump': 1, 'economy.price.legs.ricochet': 2,
     // Edit 77 (P6.7): four ability tracks by level; each level shields its ability from wear. Run to clear.
     'abilities.maxLevel': 4, 'abilities.wearCut': 0.2, 'abilities.battery.rechargeCut': 0.1, // Edit 78: four levels; linear steps per level
@@ -1842,6 +1842,7 @@
         const room = this.carriedCones().length < this.coneCapacity();
         const cn = room && !busy && !this.armsBroken() && this.onGround() ? this.nearestCone() : null;
         if (cn) { this.takeCone(cn); b.xHold.done = true; } // a tap that picks up never also puts down
+        else if (b.held && P['abilities.hands.tapDrop'] && !busy) { this.dropHeld(); b.xHold = null; } // Edit 90 (P7.9): nothing to pick up: the tap puts a cone down
         else if (!b.held) { this.deny('pickup'); b.xHold = null; }
       }
       if (!b.xHold) return;
@@ -1937,10 +1938,11 @@
     tryJump() {
       const P = this.P, b = this.body;
       if (!this.has('jump')) return this.deny('jump', 'locked');
-      if (b.mode === 'knock' || b.mode === 'jump' || b.mode === 'drop' || b.mode === 'rescue' || b.stair || b.landT > 0 || b.charge < P['battery.jumpCost'] - 1e-9) return this.deny('jump');
-      let vx = b.vx, vy = b.vy; const dash = b.mode === 'lunge' && !!b.lunge;
+      const dash = b.mode === 'lunge' && !!b.lunge, cost = dash && P['battery.dashJumpCost'] != null ? P['battery.dashJumpCost'] : P['battery.jumpCost']; // Edit 90 (P7.9): a jump out of a dash is paid by the dash
+      if (b.mode === 'knock' || b.mode === 'jump' || b.mode === 'drop' || b.mode === 'rescue' || b.stair || b.landT > 0 || b.charge < cost - 1e-9) return this.deny('jump', b.charge < cost - 1e-9 ? 'charge' : undefined);
+      let vx = b.vx, vy = b.vy;
       if (dash) { const L = b.lunge, sp = L.t < L.tf - 1e-9 ? L.R * L.df / L.tf : L.R * (1 - L.df) / (L.T - L.tf); vx = Math.cos(L.dir) * sp; vy = Math.sin(L.dir) * sp; }
-      b.charge -= P['battery.jumpCost']; b.refillDelay = P['battery.refillDelaySeconds'];
+      b.charge -= cost; if (cost > 0) b.refillDelay = P['battery.refillDelaySeconds'];
       const J = JUMP.takeoff(P, vx, vy, dash, this.jumpAirtime()); // Edit 78: Legs levels lengthen the airtime
       Object.assign(J, { x0: b.x, y0: b.y, level: b.level, rampT: b.rampT });
       b.mode = 'jump'; b.lunge = null; b.z = 0; b.jump = J;

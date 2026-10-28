@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 7.8](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_8.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–89.
+> **Current prototype: [Prototype 7.9](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_9.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–90.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 7.8 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_8.html` | Current (Edit 89). Every menu tappable; touch on at the first touch (S Pen phones); Story levels from points, an upgrade a level, no credits; the workshop, the chassis as its interface; LEVEL UP in play |
+> | 7.9 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_9.html` | Current (Edit 90). The dash's jump is free; X taps a cone down; buttons named only once fitted, OK and BACK in menus |
+> | 7.8 | `prototypes/p7/` | `dummies_p7_8.html` | Frozen (Edit 89). Every menu tappable; touch on at the first touch (S Pen phones); Story levels from points, an upgrade a level, no credits; the workshop, the chassis as its interface; LEVEL UP in play |
 > | 7.7 | `prototypes/p7/` | `dummies_p7_7.html` | Frozen (Edit 88). Save games: NEW GAME and three named slots, each with a time stamp and its own story (tile, points, credits, levels); CONTINUE, RENAME, ERASE |
 > | 7.6 | `prototypes/p7/` | `dummies_p7_6.html` | Frozen (Edit 87). One top edge: BODY, the field, a POINTS · CREDITS box; the objective on top; touch controls the player moves and sizes |
 > | 7.5 | `prototypes/p7/` | `dummies_p7_5.html` | Frozen (Edit 86). A clean screen: no row under the stage; options and per-device controls in the pause menu; BODY as tall as DASH; no wordmark in play |

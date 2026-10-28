@@ -33,7 +33,8 @@
   const cellOf = (t) => ['ABC'.indexOf(t[0]), +t[1] - 1];
   const DIST = DATA.districts, TOTAL = DIST.reduce((a, d) => a + d.order.length, 0);
   const P7SIM = { 'proto.recoilScale': 0.7, 'proto.bounce.maxThrow': 40, // Edit 83: the ricochet the dummy survives; Arcade and Story
-    'world.deckDropGaps': 1, 'world.deckFlightsMin': 1, 'props.cone.minVisible': 0.9 }; // Edit 85: every highway a flight and a drop gap; cones in view
+    'world.deckDropGaps': 1, 'world.deckFlightsMin': 1, 'props.cone.minVisible': 0.9, // Edit 85: every highway a flight and a drop gap; cones in view
+    'battery.dashJumpCost': 0, 'abilities.hands.tapDrop': 1 }; // Edit 90: a dash's jump is free; X taps a cone down when none is in reach
   const BASE = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM, P7SIM);
 
   // ---------- progress: one plain object, JSON-safe
