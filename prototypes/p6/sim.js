@@ -120,7 +120,8 @@
     'story.traffic.monument.A1': 1.5, 'story.traffic.monument.B1': 1.75, 'story.traffic.monument.C1': 1, 'story.traffic.monument.C2': 1, 'story.traffic.monument.B2': 1, 'story.traffic.monument.A2': 1, 'story.traffic.monument.A3': 1, 'story.traffic.monument.B3': 1, 'story.traffic.monument.C3': 1,
     'story.traffic.parkland.C1': 1.75, 'story.traffic.parkland.C2': 1.75, 'story.traffic.parkland.C3': 1, 'story.traffic.parkland.B3': 1.25, 'story.traffic.parkland.A3': 2, 'story.traffic.parkland.A2': 1.5, 'story.traffic.parkland.A1': 1, 'story.traffic.parkland.B1': 2, 'story.traffic.parkland.B2': 1.25,
     'story.traffic.waterfront.A1': 1, 'story.traffic.waterfront.B1': 1.5, 'story.traffic.waterfront.C1': 1, 'story.traffic.waterfront.C2': 1.5, 'story.traffic.waterfront.C3': 1, 'story.traffic.waterfront.B3': 1, 'story.traffic.waterfront.A3': 1, 'story.traffic.waterfront.A2': 1.5, 'story.traffic.waterfront.B2': 1,
-    'proto.bounce.maxThrow': 0, 'story.ferryDepth': 160, 'story.saveSlots': 3, 'story.saveNameMax': 12, 'story.level.firstPoints': 6500, 'story.level.stepPoints': 2000, 'story.level.max': 9, 'story.level.upgrades': 1, // Edit 89 (P7.8): the dummy's level from points; an upgrade a level. Edit 88 (P7.7): save slots; a slot name's longest. Edit 83 (P7.2): the knock's longest slide (0: no cap; P7.2 sets it); how far in from the entry edge the drone sets the dummy down
+    'proto.bounce.maxThrow': 0, 'story.ferryDepth': 160, 'story.saveSlots': 3, 'story.saveNameMax': 12, 'story.level.firstPoints': 6500, 'story.level.stepPoints': 2000, 'story.level.max': 9, 'story.level.upgrades': 1,
+    'proto.batteryModel': 0, 'abilities.battery.dashCharges': 1, 'damage.bodyHealthOnFoot': 500, 'story.missFloor': 1, 'world.dummyMonument': 0, // Edit 91 (P7.10): Battery 1 the dash, 2 a second charge, 3 a faster recharge; the chassis on foot; a miss holds at 1 // Edit 89 (P7.8): the dummy's level from points; an upgrade a level. Edit 88 (P7.7): save slots; a slot name's longest. Edit 83 (P7.2): the knock's longest slide (0: no cap; P7.2 sets it); how far in from the entry edge the drone sets the dummy down
     'economy.creditsPerWriteOff': 1, 'story.price.ability.level1': 3, 'story.price.ability.level2': 4, 'story.price.ability.level3': 5, 'story.giftCredits': 3,
     'story.writeOffs.monument.A1': 1, 'story.writeOffs.monument.B1': 1, 'story.writeOffs.monument.C1': 1, 'story.writeOffs.monument.C2': 1, 'story.writeOffs.monument.B2': 1, 'story.writeOffs.monument.A2': 1, 'story.writeOffs.monument.A3': 1, 'story.writeOffs.monument.B3': 1, 'story.writeOffs.monument.C3': 2,
     'story.writeOffs.parkland.C1': 1, 'story.writeOffs.parkland.C2': 2, 'story.writeOffs.parkland.C3': 1, 'story.writeOffs.parkland.B3': 1, 'story.writeOffs.parkland.A3': 1, 'story.writeOffs.parkland.A2': 2, 'story.writeOffs.parkland.A1': 1, 'story.writeOffs.parkland.B1': 1, 'story.writeOffs.parkland.B2': 2,
@@ -239,6 +240,10 @@
   };
   const NODES10 = {};
   for (const [t, tr] of Object.entries(TRACKS10)) for (let L = 1; L <= (tr.max || 3); L++) NODES10[t + L] = { name: tr.name + ' ' + L, branch: tr.name, track: t, level: L, price: 'economy.price.ability.level' + L, pre: L > 1 ? t + (L - 1) : null, desc: tr.desc[L - 1] };
+  // Edit 91 (P7.10, proto.batteryModel 1): Battery 1 is the dash; 2 a second charge; 3 a faster recharge
+  const TRACKS10D = Object.assign({}, TRACKS10, { battery: Object.assign({}, TRACKS10.battery, {
+    desc: ['A dashes. One charge; a jump out of a dash is free.', 'A second charge: two dashes before a recharge.', 'A faster recharge.'] }) });
+  const NODES10D = Object.assign({}, NODES10); for (let L = 1; L <= 3; L++) NODES10D['battery' + L] = Object.assign({}, NODES10['battery' + L], { desc: TRACKS10D.battery.desc[L - 1] });
   const ABIL10_HAS = { jump: ['legs', 1], carry: ['hands', 1], push: ['arms', 1], throw: null, hitch: null, bigBattery: null, ricochet: null, spine: null, hips: null, grip: null };
   const ABIL9_HAS = { jump: ['legs', 1], carry: ['arms', 1], throw: ['arms', 2], hitch: ['arms', 3], bigBattery: null, ricochet: null, spine: null, hips: null, grip: null };
   const ABIL_HAS = { jump: 'legs', carry: 'arms', throw: 'throw', bigBattery: null, ricochet: null, spine: null, hips: null, grip: null }; // the old names, read from the tracks
@@ -1584,8 +1589,8 @@
       if (!this.net) this.fillDeckCars();
     }
 
-    tracks() { const m = this.P['proto.abilities']; return m === 3 ? TRACKS10 : m === 2 ? TRACKS9 : TRACKS; } // Edit 79–80
-    nodes() { const m = this.P['proto.abilities']; return m === 3 ? NODES10 : m === 2 ? NODES9 : NODES7; }
+    tracks() { const m = this.P['proto.abilities']; return m === 3 ? (this.P['proto.batteryModel'] === 1 ? TRACKS10D : TRACKS10) : m === 2 ? TRACKS9 : TRACKS; } // Edit 79–80; Edit 91
+    nodes() { const m = this.P['proto.abilities']; return m === 3 ? (this.P['proto.batteryModel'] === 1 ? NODES10D : NODES10) : m === 2 ? NODES9 : NODES7; }
     trackMax(t) { const tr = this.tracks()[t]; return Math.min(tr && tr.max ? this.P['abilities.' + t + '.maxLevel'] || tr.max : 4, this.P['abilities.maxLevel']); } // Edit 80: Hands stop at two
     has(n) { if (this.P['proto.abilities'] === 3 && n in ABIL10_HAS) { const q = ABIL10_HAS[n]; return q ? this.tier(q[0]) >= q[1] : false; } if (this.P['proto.abilities'] === 2 && n in ABIL9_HAS) { const q = ABIL9_HAS[n]; return q ? this.tier(q[0]) >= q[1] : false; } if (this.P['proto.abilities'] && n in ABIL_HAS) { const t = ABIL_HAS[n]; return t ? this.tier(t) >= 1 : false; } return !!this.run.owned[n]; }
     tier(t) { const mx = this.P['proto.abilities'] === 3 ? this.trackMax(t) : this.P['abilities.maxLevel']; let n = 0; while (n < 4 && n < mx && this.run.owned[t + (n + 1)]) n++; return n; } // Edit 77: an ability track's level, 0–4 (this.level is the screen)
@@ -1593,6 +1598,7 @@
     secondsPerCharge() { // Edit 77: Battery levels speed the recharge; torso damage slows it
       const P = this.P; if (!P['proto.abilities']) return P['battery.secondsPerCharge'];
       const L = this.tier('battery');
+      if (P['proto.batteryModel'] === 1) return (L >= 3 ? P['abilities.battery.level3Seconds'] : P['battery.secondsPerCharge']) / this.partEffect('recharge'); // Edit 91: Battery 3 the faster recharge
       if (P['proto.abilities'] >= 2) return (L ? P['abilities.battery.level' + L + 'Seconds'] : P['battery.secondsPerCharge']) / this.partEffect('recharge'); // Edit 79: a value per level
       return Math.max(0.05, P['battery.secondsPerCharge'] - P['abilities.battery.rechargeCut'] * L) / this.partEffect('recharge'); // Edit 78: linear
     }
@@ -1603,7 +1609,9 @@
     carriedCones() { const b = this.body; return b.carried && b.carried.length ? b.carried : b.held ? [b.held] : []; }
     takeCone(cn) { const b = this.body; cn.state = 'held'; if (!b.carried) b.carried = []; b.carried.push(cn); b.held = cn; this.emit('pickup', { cone: cn.id, n: b.carried.length }); this.mile('use:carry'); }
     popCone() { const b = this.body; let cn = null; if (b.carried && b.carried.length) { cn = b.carried.pop(); b.held = b.carried[b.carried.length - 1] || null; } else { cn = b.held; b.held = null; } return cn; }
-    capacity() { return this.has('bigBattery') ? this.P['upgrades.bigCapacity'] : this.P['battery.capacity']; } // D26: Big battery 3, base 2
+    capacity() { if (this.P['proto.batteryModel'] === 1) return this.tier('battery') >= 2 ? this.P['battery.capacity'] : this.P['abilities.battery.dashCharges']; return this.has('bigBattery') ? this.P['upgrades.bigCapacity'] : this.P['battery.capacity']; } // D26: Big battery 3, base 2. Edit 91: Battery 2 the second charge
+    dashFitted() { return this.P['proto.batteryModel'] !== 1 || this.tier('battery') >= 1; } // Edit 91: Battery 1 is the dash
+    maxHealth() { return this.dashFitted() ? this.P['damage.bodyHealth'] : this.P['damage.bodyHealthOnFoot']; } // Edit 91: on foot, a lighter chassis
     // Each screen keeps its own cones: where you leave one is where you find it.
     conesFor(lv) {
       const cell = this.district && lv.cell ? this.district.cells[lv.cell[1]][lv.cell[0]] : null;
@@ -1647,7 +1655,7 @@
       const P = this.P, sp = this.pickSpawn();
       this.run.chassis++;
       this.body = {
-        x: sp.x, y: sp.y, vx: 0, vy: 0, facing: sp.f * DEG, health: P['damage.bodyHealth'],
+        x: sp.x, y: sp.y, vx: 0, vy: 0, facing: sp.f * DEG, health: this.maxHealth(),
         charge: this.capacity(), refillDelay: 0, rampT: 0, mode: 'idle', parts: { head: 0, torso: 0, armL: 0, armR: 0, legL: 0, legR: 0 },
         coastVx: 0, coastVy: 0, coastT: 0, counterVx: 0, counterVy: 0, counterT: 0, counterDur: 0,
         lunge: null, recoverT: 0, held: null, carried: [], gesture: null, alive: true, chassis: this.run.chassis, // Edit 78: carried, every cone held (held: the top)
@@ -1661,7 +1669,7 @@
     reach() {
       const P = this.P, b = this.body;
       return P['movement.lungeDistance'] * (P['proto.parts.effects'] ? this.partEffect('dash')
-        : Math.max(P['movement.wearFloor'], Math.min(1, b.health / P['damage.bodyHealth'])));
+        : Math.max(P['movement.wearFloor'], Math.min(1, b.health / this.maxHealth())));
     }
     deny(action, why) { this.body.denied = 0.25; this.emit('denied', why ? { action, why } : { action }); } // Edit 75: why (locked: not installed)
 
@@ -1699,7 +1707,8 @@
       // leg damage slows every ground speed; so does the surface underfoot (world.terrain.<id>.dummySpeed)
       const carryF = (b.held ? P['upgrades.carrySpeed'] : 1) * this.partEffect('speed') * this.underfoot('dummySpeed') * (b.stair ? P['world.stairSpeed'] : 1);
 
-      if (cmd.aPress) {
+      if (cmd.aPress && !this.dashFitted()) { this.deny('lunge', 'locked'); if (cmd.bRelease) b.gesture = null; } // Edit 91: no dash before Battery 1
+      else if (cmd.aPress) {
         const lk = this.underfoot('lunge');
         if (b.mode !== 'lunge' && b.mode !== 'recover' && !b.stair && !(b.landT > 0) && b.charge >= P['battery.lungeCost'] - 1e-9 && lk > 0) this.startLunge(direct && has ? inAng : facing0, lk); // DIRECT: the dash goes where the player points
         else { if (lk <= 0 && b.mode !== 'lunge' && b.mode !== 'recover') this.emit('slip', { surface: this.surfaceAt(b.x, b.y), x: +b.x.toFixed(1), y: +b.y.toFixed(1) }); this.deny('lunge'); }
@@ -2501,7 +2510,7 @@
     }
     // P3: which body part took the hit. Side from the contact point against the dummy's facing;
     // height from the hit's size: bumper height hits the legs, harder hits reach the torso and arms, the hardest the head.
-    partShare(k) { const b = this.body; return b && b.parts ? b.parts[k] / this.P['damage.bodyHealth'] : 0; }
+    partShare(k) { const b = this.body; return b && b.parts ? b.parts[k] / this.maxHealth() : 0; }
     // Ability multiplier from part damage, in [floor, 1]. 1 when proto.parts.effects is off.
     partEffect(kind) {
       const P = this.P;
@@ -3222,8 +3231,6 @@
         if (c.spent) { this.emit('touch-spent', { car: c.id }); this.effects.push({ type: 'touch', x: ct.px, y: ct.py, t: this.t }); continue; }
         const { raw, assessed } = P['proto.damageModel'] ? ct.ph : assess(P, ct.closing, ct.zone, c.cls);
         if (raw <= 1e-9) { this.emit('touch', { car: c.id, closing: 0 }); continue; }
-        const lost = Math.min(b.health, assessed);
-        b.health = Math.max(0, b.health - lost);
         c.spent = true;
         const plate = b.level === 0 && this.surfaceAt(b.x, b.y) === 'plate' ? P['damage.plateMultiplier'] : 1; // a calibrated plate scores more (7.3)
         const hw = c.deck ? P['damage.deckMultiplier'] : 1; // P5 (Edit 50): a highway hit scores more
@@ -3231,6 +3238,11 @@
         // Edit 79: each new kind of move in the chain adds scoring.comboVariety; the clock stops in the air (comboClock)
         const kind = ct.drop ? 'drop' : ct.kind || (ct.jump ? 'jump' : ct.lunging ? 'dash' : 'struck');
         const cl = this.comboLink(kind, assessed * plate * hw), combo = cl.n, mult = cl.mult;
+        let lost = Math.min(b.health, assessed); // Edit 91: a hit that would write the chassis off can be held at a floor (Story: a miss of the brief)
+        const floor = lost >= b.health - 1e-9 && this.hitFloor ? this.hitFloor({ kind, cause: ct.cause, cls: c.cls, combo, level: b.level }) : 0;
+        const held = floor > 0 && b.health - lost < floor;
+        if (held) lost = Math.max(0, b.health - floor);
+        b.health = Math.max(0, b.health - lost);
         this.run.points += assessed * plate * hw * mult;
         if (combo > 1) { this.emit('combo', { n: combo, mult, kinds: cl.kinds.slice(), bonus: Math.round(assessed * plate * hw * (mult - 1)), car: c.id }); this.mile('firstCombo', { n: combo }); }
         const bait = ct.carState === 'committed' || ct.carState === 'expiring' || ct.carState === 'interrupted';
@@ -3250,8 +3262,9 @@
           angle: +ct.ph.angle.toFixed(1), dv: +ct.ph.dvd.toFixed(2), strike: +ct.ph.un.toFixed(2),
           raw: +raw.toFixed(3), assessed: +assessed.toFixed(3), lost: +lost.toFixed(3), health: +b.health.toFixed(3),
           carState: ct.carState, cause: ct.cause, bait, lunging: ct.lunging, learned, stopped: ct.stopped, learnedStandoff, plate: plate > 1, highway: hw > 1, drop: !!ct.drop, deck: !!c.deck, dropZ: ct.drop ? ct.dropZ : 0, dropFrom: ct.drop ? ct.dropFrom : null,
-          combo, mult, kind, jump: !!ct.jump, ricochet: !!ct.ricochet };
+          combo, mult, kind, jump: !!ct.jump, ricochet: !!ct.ricochet, held };
         this.emit('impact', ev); b.hits.push(ev);
+        if (held) this.emit('held', { health: b.health, kind, car: c.id });
         this.effects.push({ type: 'burst', x: ct.px, y: ct.py, v: assessed * plate * hw * mult, mult: hw, combo, cmult: mult, t: this.t, zone: ct.zone, angle: ct.ph.angle, layer: lay(c) });
         this.mile('firstHit');
         if (bait) this.mile('firstBaitHit');
@@ -3647,7 +3660,7 @@
     }
   }
 
-  const api = { Sim, JUMP, REG, PROTO, OVERRIDES, NODES, NODES4, NODES7, TRACKS, NODES9, TRACKS9, NODES10, TRACKS10, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
+  const api = { Sim, JUMP, REG, PROTO, OVERRIDES, NODES, NODES4, NODES7, TRACKS, NODES9, TRACKS9, NODES10, TRACKS10, NODES10D, TRACKS10D, LEVELS, LEVEL_LIST: DISTRICT_LIST, ROADS, DISTRICT_LIST, DISTRICTS, INFO, planCity, cityDistrict, bakeCity, DIFFICULTIES, assess, impulseImpact, zoneOf, circleCar, pathAt, pathProject, DEG,
     planDistrict, cellLevel, cellName, edgeSpans, edgeCrossings, laneEnds, seamSight, deckCrossOK, roadCenter, makePatches, roadDist, SIDE, dropImpact, checkZone, buildableArea, zHeight, stairRun, LEVELS3,
     lanesOf, makePath, offsetPts, fillet, filletAny, arcPts, roundaboutCenter, skeletons, routeCenter, edgePoint, deckLanesOf, fleetClass, minBend }; // P4: the Turn Lab builds its tracks with these
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

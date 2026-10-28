@@ -1,17 +1,17 @@
 {
  "meta": {
   "name": "DUMMIES story: the Test City, tile by tile",
-  "version": "edit85-2026-10-28",
+  "version": "edit91-2026-10-28",
   "status": "Proposed (tales, briefs and gifts); the order of tiles is user-decided",
-  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.4"],
-  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–85"],
+  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.10"],
+  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–85", "GDD Edit 91"],
   "rules": [
    "Numbers live in the registry: tasks and gifts name parameter IDs, never values.",
    "A task tests the hit that writes the chassis off (the fatal hit).",
    "Tile names are column-row, as in the game: A1 is the top-left tile.",
    "Each tile's write-offs are story.writeOffs.<district>.<tile> in the registry (Edit 82).",
-   "Gifts are only the verbs a brief needs: Legs 1, Hands 1, Arms 1 (Edit 83), one every three tiles: Monument C1, A2, C3 (Edit 84).",
-   "A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade issues the same verbs in the same order, one per arcade.giftEvery write-offs.",
+   "Edit 91: every part comes by drone on a fixed tile, eleven in all. Monument: Battery 1 (the dash) B1, Legs 1 C1, Hands 1 A2, Arms 1 C3. Parkland: Battery 2 C1, Legs 2 A3, Arms 2 A1, Hands 2 B1. Waterfront: Battery 3 A1, Legs 3 B1, Arms 3 B3.",
+   "A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade sells every part for credits; its chassis ships with Battery 1 (Edit 91).",
    "Each tile's traffic is story.traffic.<district>.<tile> in the registry, on the tile and its neighbours (Edit 85)."
   ]
  },
@@ -36,7 +36,7 @@
    "tiles": {
     "A1": { "title": "The LED wall", "task": { "kind": "any" }, "gift": null,
      "tale": "The first building in the Test City was a screen. Farsight needed someone to greet the investors, so it built a tower that greets everyone. It still shows the face of whoever walks in. Today that is you." },
-    "B1": { "title": "The podium bridge", "task": { "kind": "drop" }, "gift": null,
+    "B1": { "title": "The podium bridge", "task": { "kind": "drop" }, "gift": { "node": "battery1" },
      "tale": "The podium was poured for a mall that was never approved. Farsight kept the roof and ran a skybridge from it to nowhere, then built the nowhere. Pedestrians are rare here. Data is not." },
     "C1": { "title": "The LED drum", "task": { "kind": "jump" }, "gift": { "node": "legs1" },
      "tale": "The drum tower went up overnight to hide the bend under the high road. Engineers call it a lighthouse for cars. The cars call it the clock: every turn it lights is a turn they must not miss." },
@@ -59,7 +59,7 @@
    "intro": "Farsight's Expo site: a garden grid, pavilions and pools, built to prove the city could be calm.",
    "order": ["C1", "C2", "C3", "B3", "A3", "A2", "A1", "B1", "B2"],
    "tiles": {
-    "C1": { "title": "The lantern pavilion", "task": { "kind": "drop" }, "gift": null,
+    "C1": { "title": "The lantern pavilion", "task": { "kind": "drop" }, "gift": { "node": "battery2" },
      "tale": "The lantern was the Expo's first exhibit: a paper lamp the size of a house. Visitors crossed the footbridge to see it lit. When the Expo closed, the bridge stayed and the cars moved in underneath." },
     "C2": { "title": "The amphitheatre", "task": { "kind": "cls", "cls": "van" }, "gift": null,
      "tale": "The terraces were cut for an audience that never came. They face a stage where the avenue now turns. The seats still face the road, so every crossing is a performance." },
@@ -67,13 +67,13 @@
      "tale": "The arch was the Expo's gate. Planners put a roundabout in front of it so visitors would circle once before entering. Now the cars circle all day, and nobody enters." },
     "B3": { "title": "The obelisk court", "task": { "kind": "cls", "cls": "police" }, "gift": null,
      "tale": "The obelisk stands where the surveyors drove their first stake. Farsight lit a row of bollards beside it so the first stake would never be lost. The highway passes overhead, measuring nothing." },
-    "A3": { "title": "The belvedere", "task": { "kind": "jump" }, "gift": null,
+    "A3": { "title": "The belvedere", "task": { "kind": "jump" }, "gift": { "node": "legs2" },
      "tale": "The belvedere was heaped from the earth dug out for the pools: four tiers of borrowed ground. On top grows an orchard of black monoliths in rows. They bear no fruit. They record everything." },
     "A2": { "title": "The canal", "task": { "kind": "level" }, "gift": null,
      "tale": "The canal was dug to cool the highway's foundations. Ducks arrived without permits. Farsight registered them as volunteers." },
-    "A1": { "title": "The reservoir terraces", "task": { "kind": "push" }, "gift": null,
+    "A1": { "title": "The reservoir terraces", "task": { "kind": "push" }, "gift": { "node": "arms2" },
      "tale": "Three stepped pools hold the Expo's water. Each step is a different depth, so the sensors can calibrate their reflections. The boulevard was laid along the top to give the reflections something to show." },
-    "B1": { "title": "The cascade", "task": { "kind": "cone" }, "gift": null,
+    "B1": { "title": "The cascade", "task": { "kind": "cone" }, "gift": { "node": "hands2" },
      "tale": "The cascade carries the reservoir's water down beside the highway, one pool per garden cell. It was designed to drown out the traffic. The traffic got louder to compensate." },
     "B2": { "title": "The ring over the pools", "task": { "kind": "combo", "param": "story.task.comboHard" }, "gift": null,
      "tale": "Two highways were meant to cross here. Instead of a junction, Farsight raised a ring and laid pools beneath it, so the cars could watch themselves go round. The boulevard passes through the hole in the middle, unimpressed." }
@@ -84,9 +84,9 @@
    "intro": "The valley by the river: a hill walled by towers, a circus on the valley floor, two bridges to the far bank.",
    "order": ["A1", "B1", "C1", "C2", "C3", "B3", "A3", "A2", "B2"],
    "tiles": {
-    "A1": { "title": "The west portal", "task": { "kind": "cls", "cls": "bus" }, "gift": null,
+    "A1": { "title": "The west portal", "task": { "kind": "cls", "cls": "bus" }, "gift": { "node": "battery3" },
      "tale": "The upper town was built on the hill first, for the engineers. When the west bridge was approved, it was approved straight through a building. The portal block kept its tenants and lost its view." },
-    "B1": { "title": "The tunnel portal", "task": { "kind": "jump" }, "gift": null,
+    "B1": { "title": "The tunnel portal", "task": { "kind": "jump" }, "gift": { "node": "legs3" },
      "tale": "The tunnel was bored north under the hill to reach the next valley. Nobody has been cleared to see what is there. Cars go in. Some data comes back." },
     "C1": { "title": "The east portal", "task": { "kind": "cls", "cls": "police" }, "gift": null,
      "tale": "The east bridge was built a year after the west one, to correct its mistakes. It made new ones. Its portal block is the same, except that it faces the other way and pretends not to know its twin." },
@@ -94,7 +94,7 @@
      "tale": "The cliff-top walkway was meant to carry tourists to the beach terrace. The tourists were replaced by joggers, then by sensors. The sensors take the stairs." },
     "C3": { "title": "The east pier tower", "task": { "kind": "bounce" }, "gift": null,
      "tale": "The coastal drive runs on the old seawall and swings inland here to step round the bridge's feet. The pier tower watches the river for anything that floats. So far it has logged one dummy." },
-    "B3": { "title": "The stilt houses", "task": { "kind": "push" }, "gift": null,
+    "B3": { "title": "The stilt houses", "task": { "kind": "push" }, "gift": { "node": "arms3" },
      "tale": "The stilt houses are older than the city. Farsight could not demolish them without a hearing, so it joined them to the walkways and called them heritage. The residents moved out. The heritage stayed." },
     "A3": { "title": "The west pier tower", "task": { "kind": "level" }, "gift": null,
      "tale": "The west bridge leaves the hill and crosses the drive and the river in one reach. Its pier tower was a lighthouse, then a radar post, then a tea house. Now it is a sensor mast with a tea house in it." },

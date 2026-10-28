@@ -436,7 +436,7 @@
   const CRACK = { head: [[38, 5], [37, 7], [39, 9], [37, 11], [38, 13]], torso: [[21, 38], [24, 40], [23, 43], [26, 45], [25, 48]],
     armR: [[16, 39], [14, 42], [16, 45], [14, 48]], armL: [[48, 39], [50, 42], [48, 45], [50, 48]],
     legR: [[29, 68], [26, 71], [28, 74], [26, 77]], legL: [[35, 83], [38, 86], [36, 89], [38, 92]] };
-  function doll(levels, flash, mods) {
+  function doll(levels, flash, mods, reds) { // Edit 91: reds (part → 0–1) redden each part's shell by its damage
     levels = levels || {}; const has = (m) => !!mods && (mods.includes ? mods.includes(m) : mods.has(m));
     const W = DOLL_W, H = DOLL_H, N = W * H;
     const role = new Uint8Array(N), sid = new Int32Array(N).fill(-1), part = new Array(N), seamy = new Uint8Array(N), tone = new Uint8Array(N), flat = new Array(N);
@@ -605,7 +605,9 @@
       if (!role[i]) continue;
       let hex = role[i] === FLAT ? flat[i] : ramps[role[i]][tone[i]];
       const l = part[i] === 'mod' ? 0 : lv(part[i]);
-      if (role[i] === BODY && l) hex = mixHex(hex, PAL.worn, [0, 0.18, 0.4, 0.62][l]);
+      const rd = reds && part[i] !== 'mod' ? reds[part[i]] || 0 : 0;
+      if (role[i] === BODY && rd > 0) hex = mixHex(hex, PAL.warn, 0.06 + 0.74 * Math.min(1, rd));
+      else if (role[i] === BODY && l) hex = mixHex(hex, PAL.worn, [0, 0.18, 0.4, 0.62][l]);
       col[i] = hex;
     }
     const onPart = (x, y, pt) => { const yy = y + DOY; return x >= 0 && yy >= 0 && x < W && yy < H && part[yy * W + x] === pt && (role[yy * W + x] === BODY || role[yy * W + x] === CHROME); };

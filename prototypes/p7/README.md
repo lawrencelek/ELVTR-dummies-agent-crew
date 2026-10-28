@@ -1,6 +1,19 @@
-# DUMMIES — Prototype 7.9: Arcade and Story
+# DUMMIES — Prototype 7.10: Arcade and Story
 
-**Prototype 7.9 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–90 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.8 stay frozen as `dummies_p7.html` to `dummies_p7_8.html`; 6.4–6.10 in `../p6/`.
+**Prototype 7.10 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–91 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.9 stay frozen as `dummies_p7.html` to `dummies_p7_9.html`; 6.4–6.10 in `../p6/`.
+
+Prototype 7.10 (Edit 91): parts by task, parts by credits.
+- **Story:** every part comes by drone on a fixed tile, with the gift screen. No levels, no upgrades, no workshop. Points are the score.
+  - Monument: Battery 1 (the dash) B1 · Legs 1 C1 · Hands 1 A2 · Arms 1 C3. Parkland: Battery 2 C1 · Legs 2 A3 · Arms 2 A1 · Hands 2 B1.
+  - Waterfront: Battery 3 A1 · Legs 3 B1 · Arms 3 B3. All 11 by tile 24.
+- **Battery** (`proto.batteryModel` 1): 1 the dash; 2 a second charge; 3 a faster recharge. Story starts on foot.
+- **On foot:** `damage.bodyHealthOnFoot` (500) until Battery 1; the fit adds the difference (800).
+- **A miss holds at 1:** in the tile in test, a fatal hit off the brief leaves `story.missFloor` (1). Play goes on.
+- **Arcade:** every part for credits in the workshop; the chassis ships with Battery 1; no drone gifts.
+- **HUD:** POINTS small, top right (Arcade: and CARS LEFT). The stats box retires; the chassis rises to the top edge.
+  - Damage reddens each part of the chassis; its number beside it. No rows of effects.
+- **The DUMMY MONUMENT** stands on the circus's island, Waterfront B2 (`world.dummyMonument`).
+- **Narratives:** three proposals for the three acts, and a tile audit, in the project (D74, D75).
 
 Prototype 7.9 (Edit 90): fixes from play.
 - **Dash, then jump:** the jump out of a dash is free (`battery.dashJumpCost` 0). It used to need a second charge, so it failed on one charge.
@@ -95,9 +108,10 @@ The title has two modes.
 
 ## Files
 
-- **`dummies_p7_9.html`:** the game. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-8/` (Prototype 7.8), `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
-- **`p7_9_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_10.html`:** the game. Open in a browser; no server.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-9/` (Prototype 7.9), `/p7-8/` (Prototype 7.8), `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
+- **`p7_10_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_9.html`:** Prototype 7.9 (Edit 90). Frozen.
 - **`dummies_p7_8.html`:** Prototype 7.8 (Edit 89). Frozen.
 - **`dummies_p7_7.html`:** Prototype 7.7 (Edit 88). Frozen.
 - **`dummies_p7_6.html`:** Prototype 7.6 (Edit 87). Frozen.
@@ -107,11 +121,11 @@ The title has two modes.
 - **`dummies_p7_2.html`:** Prototype 7.2 (Edit 83). Frozen.
 - **`dummies_p7_1.html`:** Prototype 7.1 (Edit 82). Frozen.
 - **`dummies_p7.html`:** Prototype 7 (Edit 81). Frozen.
-- **`story.js`:** Story mode. `StorySim` extends the P6 player sim (`../p6/world6.js`): start tile, fences, the brief, clears, levels and upgrades (Edit 89), the drone ferry, verb delivery. `ArcadeSim`: one district a run, the verbs by drone. `P7SIM`, the P7.2 physics for both modes. Runs headless in Node.
+- **`story.js`:** Story mode. `StorySim` extends the P6 player sim (`../p6/world6.js`): start tile, fences, the brief and its miss floor, clears, the drone ferry, the eleven parts by drone (Edit 91). `ArcadeSim`: one district a run, Battery 1 fitted, parts for credits. `P7SIM`, the P7.2 physics for both modes. Runs headless in Node.
 - **`../../content/story/story.json`:** the story's content: the order of tiles, 27 tales, Farsight's briefs and gifts. Numbers are registry IDs.
 - **`../p6/game.js`, `../p6/world6.js`, `../p6/sim.js`:** the shared game code: the title, the story map, the tile card, fences, the gift screen, the story's HUD.
 - **`build.py`:** `python3 build.py` → both pages. `../p6/build.py` refuses: 6.10 is frozen.
-- **`test_p79.js`:** `node test_p79.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`test_p710.js`:** `node test_p710.js [screenshot folder]` → the checks; screenshots into the folder.
 
 ## Title
 
@@ -135,7 +149,7 @@ The title has two modes.
 
 - **Rows:** NEW GAME; slots 1–3 (`story.saveSlots`). The cursor starts on the latest save.
 - **A slot card:** number, name, time stamp (DD MON YYYY · HH:MM, local); IN PLAY on the slot in play.
-  - "MONUMENT · C2 · TILE 4 OF 27". "3 / 27 TILES · 2,450 POINTS · LEVEL 1 · CHASSIS 04".
+  - "MONUMENT · C2 · TILE 4 OF 27". "3 / 27 TILES · 2,450 POINTS · 3 / 11 PARTS · CHASSIS 04".
 - **CONTINUE:** the story map of that slot. **RENAME:** the name entry; the time stamp stays. **ERASE:** A twice.
 - **NEW GAME:** the first empty slot, then its name. None empty: choose a slot; OVERWRITE asks twice.
 - **Name entry:** `story.saveNameMax` (12) characters, upper case: A–Z, 0–9, space, - . '. The default (TEST DUMMY n) is selected: typing replaces it.
@@ -158,16 +172,14 @@ The title has two modes.
 - **The ferry:** after a clear, a Farsight drone flies in for the new chassis. It carries it over the edge into the next tile.
   - It sets it down off the road, within `story.ferryDepth` (160) of the edge it crossed, nearest the crossing.
   - Then the next tile's card. A1 to B1: about 5 s. Not between districts.
-- **Verbs** (Edit 84): Legs 1 at Monument C1, Hands 1 at A2, Arms 1 at C3. One every three tiles; nothing else is given.
-  - The ferry drone into a verb's tile carries the module under it. It hovers, lowers it on a cable, and the gift screen opens.
+- **Parts** (Edit 91): all eleven by drone, each on a fixed tile (the table's last column). Nothing is sold; there are no levels.
+  - The ferry drone into a part's tile carries the module under it. It hovers, lowers it on a cable, and the gift screen opens.
   - A continues; the drone lifts the dummy and carries it across. B1 to C1 with Legs 1: 2.5 s to the screen, 3.4 s after A.
-  - A save resumed with a verb owed: a drone delivers it, leaves, then the tile card.
-  - A verb is never fitted with an upgrade. Its workshop card stays dark until the drone.
-- **Levels** (Edit 89): points raise the dummy's level. `story.level.firstPoints` (6,500) to level 2; each next level `story.level.stepPoints` (2,000) more; to `story.level.max` (9).
-  - Levels 2–9 at 6,500, 15,000, 25,500, 38,000, 52,500, 69,000, 87,500, 108,000 points.
-  - A level-up grants `story.level.upgrades` (1) upgrade. An upgrade fits the next level of an open part: Battery from the start; Legs, Hands, Arms once their verb arrives.
-  - No upgrade, or nothing it fits: the report goes straight to the next chassis. Unspent upgrades wait.
-  - No credits in Story. Arcade keeps `economy.creditsPerWriteOff` and `economy.price.ability.level1`–`level3` (1, 2, 3).
+  - A save resumed with a part owed: a drone delivers it, leaves, then the tile card. A 7.9 save gets its cleared tiles' parts.
+  - The report goes straight to the next chassis: PARTS n / 11, and the next part with its tile.
+- **On foot** (Edit 91): A1 is played without the dash (Battery 0), at `damage.bodyHealthOnFoot` (500). Battery 1 arrives with the drone to B1.
+- **A miss holds at 1** (Edit 91): in the tile in test, a hit that would write the chassis off but misses the brief leaves `story.missFloor` (1). The hit scores; play goes on. Only a hit to the brief writes it off.
+- **Points** are the score. No credits in Story. Arcade keeps `economy.creditsPerWriteOff` and `economy.price.ability.level1`–`level3` (1, 2, 3).
 - **No clock:** a district's traffic runs `story.shiftCars` (5,000) cars. No Failed test.
 - **Traffic per tile** (Edit 85): `story.traffic.<district>.<tile>` × the district's density, on the tile in test and its four neighbours; the rest of the district at 1.
   - A neighbour with a roundabout stays at 1 (Parkland B2, C3; Waterfront B2).
@@ -175,14 +187,14 @@ The title has two modes.
   - Scales above 1: Monument A1 1.5, B1 1.75; Parkland C1 1.75, C2 1.75, B3 1.25, A3 2, A2 1.5, B1 2, B2 1.25; Waterfront B1 1.5, C2 1.5, A2 1.5.
 - **The map:** uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength. The cursor reads any revealed tile's tale.
 - **Saved** into the slot in play after every count, clear, gift and purchase. A reload: STORY, CONTINUE resumes the tile in test.
-- **The end:** clearing Waterfront B2 certifies the Test City.
+- **The end:** clearing Waterfront B2, the circus, certifies the Test City. The DUMMY MONUMENT stands on its island (Edit 91).
 
 ### The 27 tiles
 
-| # | District | Tile | Title | Brief: the last hit | Write-offs | Verb by drone |
+| # | District | Tile | Title | Brief: the last hit | Write-offs | Part by drone |
 |---|---|---|---|---|---|---|
 | 1 | Monument | A1 | The LED wall | ANY WRITE-OFF | 1 | — |
-| 2 | Monument | B1 | The podium bridge | DROP ONTO A CAR | 1 | — |
+| 2 | Monument | B1 | The podium bridge | DROP ONTO A CAR | 1 | Battery 1 (the dash) |
 | 3 | Monument | C1 | The LED drum | JUMP INTO A CAR | 1 | Legs 1 (jump) |
 | 4 | Monument | C2 | The portal tower | ON A RAISED ROAD | 1 | — |
 | 5 | Monument | B2 | The monument | STRUCK, NOT DASHING | 1 | — |
@@ -190,27 +202,27 @@ The title has two modes.
 | 7 | Monument | A3 | The stacked cubes | COMBO ×2 | 1 | — |
 | 8 | Monument | B3 | The LED canyon | JUMP INTO A CAR | 1 | — |
 | 9 | Monument | C3 | The LED gateway | PUSH OFF A CAR | 2 | Arms 1 (push) |
-| 10 | Parkland | C1 | The lantern pavilion | DROP ONTO A CAR | 1 | — |
+| 10 | Parkland | C1 | The lantern pavilion | DROP ONTO A CAR | 1 | Battery 2 (a second charge) |
 | 11 | Parkland | C2 | The amphitheatre | A VAN | 2 | — |
 | 12 | Parkland | C3 | The arch and the roundabout | THROWN INTO A CAR | 1 | — |
 | 13 | Parkland | B3 | The obelisk court | A POLICE CAR | 1 | — |
-| 14 | Parkland | A3 | The belvedere | JUMP INTO A CAR | 1 | — |
+| 14 | Parkland | A3 | The belvedere | JUMP INTO A CAR | 1 | Legs 2 |
 | 15 | Parkland | A2 | The canal | ON A RAISED ROAD | 2 | — |
-| 16 | Parkland | A1 | The reservoir terraces | PUSH OFF A CAR | 1 | — |
-| 17 | Parkland | B1 | The cascade | CONE-BAITED CAR | 1 | — |
+| 16 | Parkland | A1 | The reservoir terraces | PUSH OFF A CAR | 1 | Arms 2 |
+| 17 | Parkland | B1 | The cascade | CONE-BAITED CAR | 1 | Hands 2 |
 | 18 | Parkland | B2 | The ring over the pools | COMBO ×3 | 2 | — |
-| 19 | Waterfront | A1 | The west portal | A BUS | 1 | — |
-| 20 | Waterfront | B1 | The tunnel portal | JUMP INTO A CAR | 2 | — |
+| 19 | Waterfront | A1 | The west portal | A BUS | 1 | Battery 3 (a faster recharge) |
+| 20 | Waterfront | B1 | The tunnel portal | JUMP INTO A CAR | 2 | Legs 3 |
 | 21 | Waterfront | C1 | The east portal | A POLICE CAR | 1 | — |
 | 22 | Waterfront | C2 | The east beach terrace | DROP ONTO A CAR | 2 | — |
 | 23 | Waterfront | C3 | The east pier tower | THROWN INTO A CAR | 1 | — |
-| 24 | Waterfront | B3 | The stilt houses | PUSH OFF A CAR | 1 | — |
+| 24 | Waterfront | B3 | The stilt houses | PUSH OFF A CAR | 1 | Arms 3 |
 | 25 | Waterfront | A3 | The west pier tower | ON A RAISED ROAD | 2 | — |
 | 26 | Waterfront | A2 | The west beach terrace | CONE-BAITED CAR | 1 | — |
 | 27 | Waterfront | B2 | The circus | COMBO ×3 | 2 | — |
 - **Write-offs** (Edit 83): tuned so the tracks fill at the end. Monument 10, Parkland 12, Waterfront 13: 35 bodies (7.1: 62).
 - **Every brief is possible where it is set.** Checked from 90 s of traffic per district: the class runs there; raised traffic for "on a raised road"; a raised floor over traffic for a drop; cones for a cone brief.
-- **Every brief's verb arrives with its tile:** Legs 1 at Monument C1, Hands 1 at A2, Arms 1 at C3 (Edit 84: a verb every three tiles).
+- **Every part arrives on a tile that asks for it** (Edit 91): each Legs level on a jump tile, each Arms level on a push tile, each Hands level on a cone tile; Battery 1 straight after A1.
 
 ## Highways and cones (Edit 85, both modes)
 
@@ -222,10 +234,9 @@ The title has two modes.
 ## Arcade
 
 - **One district a run.** Its quota of write-offs: Licensed. Traffic: one density per district (`world.district.<id>.interval`).
-- **Verbs** (Edit 84): the story's, in its order. One per `arcade.giftEvery` (1) write-offs.
-  - It comes after the workshop, by drone, to the next chassis; the same gift screen. Never sold: its card stays dark.
-  - Monument (4 write-offs) sees all three; Waterfront (3) Legs 1 and Hands 1; Parkland (2) Legs 1 (D69).
-- **Bottom line:** the quota and the next verb, e.g. "Write off 3 bodies (0 of 3). Legs 1 comes with the next write-off."
+- **Parts for credits** (Edit 91): a credit a body (`economy.creditsPerWriteOff`); level 1 of any part 1 credit, level 2 2, level 3 3. Nothing comes by drone.
+  - The chassis ships with Battery 1 (the dash). The workshop opens after the report, on the first part the credits buy.
+- **Top strip:** the quota, e.g. "Write off 3 bodies (0 of 3)."
 
 ## The gift screen (Edit 84)
 
@@ -234,29 +245,37 @@ The title has two modes.
   - A drone brings the module down over the head and lets go. It falls onto its part over `ui.gift.fallSeconds` (0.7 s), glowing, trailing.
   - It lands: the chassis lights up; the module flashes white; a ring, sparks and turning rays; a shake; one white flash.
   - Sound (original): a whoosh as it falls, a thud, a rising D-major arpeggio, a held chord over the root, a sparkle.
-  - Then NEW VERB INSTALLED: the name pops in; the button and its verb; what it does; NOW IN THE WORKSHOP: the next level (Story: 1 upgrade; Arcade: its price).
+  - Then NEW PART FITTED: the name pops in; the button and its verb; what it does; NEXT FROM FARSIGHT: the next part, its district and tile (Edit 91).
 - **A** after `ui.gift.holdSeconds` (1.2 s): "A ON TO C1" in a ferry, "A CONTINUE" otherwise. Mashed presses before that do nothing.
 - **Reduced motion:** no fall, shake or turning rays. The module fades in.
 
 ## HUD (story)
 
-- **One top edge** (Edit 87): BODY, the field's bezel and the stats box start level. No top bar in play; no CARS LEFT (no clock).
+- **One top edge** (Edit 87, 91): BODY, the field's bezel and the chassis start level. POINTS small in the top-right corner, on the strip with the objective. No CARS LEFT (no clock).
 - **Left column** (Edit 86–87): BODY (as tall as DASH: the number on its label's row, the bar beneath), DASH, the district map. No FARSIGHT wordmark in play.
-- **Right column** (Edit 87, 89): POINTS · LEVEL (BODY's size; a bar to the next level; +n for unspent upgrades); the chassis and LAST HIT on one row. Desktop: the key panel at the foot.
-- **LEVEL UP** (Edit 89): across the field as the points cross a level. A fanfare; rays; a burst from the stats box. Play goes on.
+- **Right column** (Edit 91): the chassis, each part reddened by its damage, its number beside it (head and torso on the part, arms and legs in the margins); LAST HIT on one row. No rows of effects. Desktop: the key panel at the foot; DASH there once Battery 1 is fitted.
+- **DASH box:** NOT FITTED until Battery 1. **Toast** on a miss of the brief: "Not the brief: chassis held at 1".
 - **District map:** titled [MAP] · [TILE] and the level off the ground. Uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength.
 - **Top strip** (Edit 87): the objective, e.g. "OBJECTIVE · B1 · Write off a body. Last hit: drop onto a car (0 of 1)." A toast takes it while it lives. With a drone: "Bringing Legs 1, then on to C1." Arcade: the quota and the next verb.
 - **Touch** (Edit 87): ❚❚ PAUSE and ⤢ FULL small, top left. The stick under the map; the Y X B A diamond under the chassis.
   - Pause › Controls › Adjust layout: drag either anywhere, the side margins of a wide phone included; − SIZE / + SIZE (0.6–1.6×); RESET; DONE. Saved in this browser.
 - **Speech bubbles:** car barks sit on the cars again, legible in the frame layer. Speech solid, shout doubled, mutter dashed, thought dotted.
 - **Tile card** on arrival: the tile's number of 27, its title, its tale, the brief and its count, the verb it brought. A begins.
-- **Report:** counted or not, and why; the level (LEVEL UP: 1 → 2), points to the next, a bar; the upgrades and whether the workshop is next.
-- **Workshop** (Edit 89): the next chassis, large; Battery, Legs, Hands, Arms around it, wired to their seats. Pips, now, next, cost. Parts not yet issued: "???". FIT, DONE.
+- **Report:** counted or not, and why; PARTS n / 11 and the next part's tile (Edit 91). Then the next chassis.
+- **Workshop** (Edit 89): Arcade only since Edit 91. The next chassis, large; Battery, Legs, Hands, Arms around it, wired to their seats. Pips, now, next, cost. FIT, DONE.
 - **Pause** (ESC, START, ❚❚): Resume · Story map · Options · Controls · Show trace · Quit to title. The tile's count is kept; the body in play is lost.
   - Options: Sound · Palette (reloads; the story saves first) · Full screen · Tuning panel · Gamepad setup · Back.
-  - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢; Adjust layout · Reset layout · Back. A verb not yet fitted reads ??? (Edit 90).
+  - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢; Adjust layout · Reset layout · Back. A verb not yet fitted reads ??? (Edit 90), the dash included (Edit 91).
 - **Touch buttons** (Edit 90): menus: A OK, B BACK. Play: the verb once fitted (A DASH, B JUMP, X GRAB or DROP, Y PUSH); unfitted: the letter alone, dimmed.
-- **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.level.firstPoints`, `story.level.stepPoints`, `story.level.max`, `story.level.upgrades`, `arcade.giftEvery`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
+- **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.missFloor`, `damage.bodyHealthOnFoot`, `abilities.battery.dashCharges`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
+
+![P7.10: Monument A1 on foot: POINTS top right; the chassis reddened by part, its numbers beside it](docs/p710_chassis_red.png)
+
+![P7.10: the drone to B1 brings Battery 1, the dash](docs/p710_gift_battery.png)
+
+![P7.10: the DUMMY MONUMENT on the circus's island](docs/p710_monument.png)
+
+![P7.10: Arcade's workshop: every part for credits; Battery 1 shipped fitted](docs/p710_arcade_workshop.png)
 
 ![P7.8: LEVEL UP across the field; the stats box reads POINTS and LEVEL](docs/p78_levelup.png)
 
@@ -334,33 +353,33 @@ The title has two modes.
 
 ## Evidence
 
-- `node test_p79.js docs` → 89/89.
-  - Edit 90: one charge left, dash then B: a dash jump in Story and Arcade, denied under 6.10's rules; Hands 1: a tap picks up, a tap away from cones puts down (6.10 keeps the hold); in play at A1 the buttons read A DASH, B X Y blank; paused, A OK, B BACK; Controls: MOVE, DASH, ???, ???, ???.
-  - Levels (Edit 89): levels 2–9 at 6,500 to 108,000; the fill at 3,500 a body lands at Waterfront A3, with no combos all 8, at 5,000 by Parkland B2. Headless: no credits in Story; the report reads the level; level 1, no workshop; three bodies, level 2 and its event; the workshop fits Battery 1 only (Legs shut); "level up first"; a million points, level 9, 7 upgrades, Legs 2 and Battery 2 open. In the page: LEVEL UP in play; the workshop opens on Battery; A fits; locked parts dark.
-  - Touch (Edit 89): a stylus phone turns touch on at the first touch; then by taps alone: ARCADE, a district, ▶, B, STORY, NEW GAME, OK, a tile, DEPLOY, the card, ❚❚, Options, Back, Resume, the report, FIT, DONE.
-  - Save games (Edit 88): STORY opens the save screen, three empty slots; NEW GAME names slot 1 (TEST DUMMY 1 offered; typed CRASH-TESTER, 12 of 12); the slot saves points and credits after a write-off; a reload offers the latest slot first, its time stamp and lines; CONTINUE resumes. 7.6's story moves into slot 1. The grid types a name; all three in use: OVERWRITE asks twice; RENAME keeps the time stamp; ERASE asks twice; ESC cancels. Each slot keeps its own story. Touch: tap NEW GAME, keys, the name (the phone's keyboard), OK; tap RENAME.
-  - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit90), 27 tile counts (35 bodies), 27 tile traffic scales, 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs at Monument C1, A2, C3; every brief possible where set.
-  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps; 49 cone homes, none on a road, none hidden. Tile density. 6.4–6.10 and 7–7.8 byte-identical.
-  - Browser: the title (P7.9); one top edge at y 34 (BODY 208 × 86, the field, POINTS · LEVEL 208 × 86; the chassis at 130); the objective on the top strip; the map titled MONUMENT · A1; Arcade's box POINTS · CARS LEFT; the touch zone from 430; Pause › Options and Controls; Arcade and its first verb; the story through B1's gift into C1; a reload.
-  - Phones: 16:9 (640 × 360): the stick under the map, the diamond under the chassis, chips 76 × 26 above BODY. S25 Ultra (892 × 412): 139 units of margin a side, everything inside the 16:9 frame; the ❚❚ chip pauses; Controls offers Adjust layout · Reset layout · Back; the stick dragged into the left margin, the diamond into the right; + SIZE twice ×1.20; size held to 0.6–1.6; DONE saves; the moved stick walks the dummy; a reload keeps the layout; Reset restores it. No page errors.
+- `node test_p710.js docs` → 94/94.
+  - Edit 91, content: all 11 parts by drone, each once, a track in order, on fixed tiles (Battery 1 at Monument B1 … Arms 3 at Waterfront B3); every Legs, Hands and Arms level on a tile that asks for it; registry `edit91` (5 IDs added; `story.level.*`, `arcade.giftEvery` retired).
+  - Edit 91, headless: Story starts on foot (A denied, 1 charge, 500 health); Arcade ships with Battery 1. Battery 2 two charges; Battery 3 0.6 s. Struck on foot clears A1; the report: 0 / 11 parts, next Battery 1 at B1; no shop; the drone brings Battery 1 (500 → 800). A fatal dash in B1 (wants a drop) holds at 1, losing 29 of 30. Nothing for sale in Story; a million points fit nothing. A 7.9 save receives its cleared tiles' parts. Parkland C1 brings Battery 2. Waterfront B2 certifies with all 11 parts; the DUMMY MONUMENT stands there (none in 6.x worlds). Arcade: a credit buys Legs 1, then Hands 1; no drone.
+  - Edit 91, page: POINTS small, top right; BODY, the field and the chassis on one top edge; in A1 on foot: Controls MOVE · ??? · ???; the chassis reddened by part, six numbers, 306 tall; the report straight to the Battery 1 drone; the monument in Waterfront B2, solid; Arcade's workshop opens on Legs (1 credit). On the S25 the buttons read nothing in A1; the touch flow taps the report and the gift.
+  - Edit 90: one charge left, dash then B: a dash jump in Story and Arcade, denied under 6.10's rules; Hands 1: a tap picks up, a tap away from cones puts down (6.10 keeps the hold).
+  - Touch (Edit 89): a stylus phone turns touch on at the first touch; then by taps alone: ARCADE, a district, ▶, B, STORY, NEW GAME, OK, a tile, DEPLOY, the card, ❚❚, Options, Back, Resume, the report, the gift.
+  - Save games (Edit 88): STORY opens the save screen, three empty slots; NEW GAME names slot 1; a reload offers the latest slot first ("2 / 27 TILES · … · 2 / 11 PARTS"); CONTINUE resumes. 7.6's story moves into slot 1. The grid types a name; OVERWRITE, RENAME, ERASE ask twice; ESC cancels. Touch: NEW GAME, keys, the phone's keyboard, OK; RENAME.
+  - Earlier checks kept: orders, neighbours, tales, briefs possible where set; the ricochet; fences; the ferry; the gift phase; resume with a part owed; Monument → Parkland; Edit 85's 15 highways, drop gaps and cone homes; tile density; 6.4–6.10 and 7–7.9 byte-identical.
+  - Phones: 16:9 (640 × 360) and the S25 Ultra (892 × 412): everything inside the 16:9 frame by default; the ❚❚ chip pauses; Adjust layout drags the stick and the diamond into the margins (the diamond, larger now that the chassis panel ends higher, stops at the canvas edge); + SIZE ×1.20; DONE saves; a reload keeps it; Reset restores it. No page errors.
 - `../p6/test_p610.js` → 47/47 (6.10's rules on the shared code). `../p6/test_sim.js` → 104/104. `../p6/test_p6.js` → 72/73 (Parkland's street-emptiness limit, as on 6.4).
 - `../jump/test_jump.js` → 28/28. `../controls/test_controls.js` → 34/34.
 
 ## Known gaps
 
 - Tales and briefs are proposals (status Proposed in `story.json`). The tile counts are proposals too (D65).
-- Points come from every body, so replaying a cleared tile levels sooner. Missed briefs do too.
-- Level pacing assumes about 3,500 points a body; a combo player levels faster and fills the parts by Parkland's end.
-- Three slots, in this browser only: no cloud save, no export. A 7.7 save's credits are ignored; its points give its level.
+- Points are a score only; nothing yet ranks or grades a tile (Edit 90's grade is open).
+- At 1 health after a miss, any hit to the brief ends the chassis; the floor makes a tile in test a long life.
+- Three slots, in this browser only: no cloud save, no export. A 7.7 save's credits are ignored; a 7.8–7.9 save keeps the upgrades it bought.
 - A slot's time stamp is the browser's local time.
 - Barks still name the district, not the tile.
-- Short Arcade districts end before every verb arrives: Parkland Legs 1 only; Waterfront Legs 1 and Hands 1 (D69).
+- Short Arcade districts buy few parts: Parkland's 2 write-offs, 2 credits.
+- The narrative is a proposal (D74); eight tile names the level does not show yet (D75). The monument stands from the start; its unveiling waits for the story.
 - Parkland B1: no road under its highway, a street empty 67% of the time, a cone brief (D70).
 - Tile scales raise culls out of view: 27 in 54 min of soak (9 at 1). The player never sees them.
-- The fanfare is synthesised in the page (Web Audio): placeholder sound until a composed sting.
 - Touch layout: one saved layout a browser, as fractions of the screen; a phone turned between screen shapes keeps the fractions. A placed control can cover a panel (the player's choice).
 - The diamond moves and sizes as one; its four buttons do not separate.
 
 ## Build
 
-`python3 build.py` → `dummies_p7_9.html` and `p7_9_page.html`.
+`python3 build.py` → `dummies_p7_10.html` and `p7_10_page.html`.

@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit90-2026-10-28",
+ "registryVersion": "edit91-2026-10-28",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -9976,7 +9976,7 @@
    "purpose": "A 12-character file name (user request, 28 October)"
   },
   {
-   "status": "proposed",
+   "status": "retired (Edit 91): Story has no levels; every part comes by drone on a fixed tile (content/story/story.json gifts). Points are the score",
    "source": "Edit 89 (28 October): Prototype 7.8",
    "editable": true,
    "protectedReason": null,
@@ -9998,7 +9998,7 @@
    "purpose": "A first level-up within two bodies: the hook (user request, 28 October)"
   },
   {
-   "status": "proposed",
+   "status": "retired (Edit 91): Story has no levels; every part comes by drone on a fixed tile (content/story/story.json gifts). Points are the score",
    "source": "Edit 89 (28 October): Prototype 7.8",
    "editable": true,
    "protectedReason": null,
@@ -10020,7 +10020,7 @@
    "purpose": "Levels slow as the story goes on; the tracks fill near the end"
   },
   {
-   "status": "proposed",
+   "status": "retired (Edit 91): Story has no levels; every part comes by drone on a fixed tile (content/story/story.json gifts). Points are the score",
    "source": "Edit 89 (28 October): Prototype 7.8",
    "editable": true,
    "protectedReason": null,
@@ -10042,7 +10042,7 @@
    "purpose": "One upgrade for every level that is not a verb"
   },
   {
-   "status": "proposed",
+   "status": "retired (Edit 91): Story has no levels; every part comes by drone on a fixed tile (content/story/story.json gifts). Points are the score",
    "source": "Edit 89 (28 October): Prototype 7.8",
    "editable": true,
    "protectedReason": null,
@@ -10072,7 +10072,7 @@
    "unit": "write-offs",
    "type": "number",
    "default": 1,
-   "status": "proposed",
+   "status": "retired (Edit 91): Arcade sells every part for credits; no drone gifts. Its chassis ships with Battery 1",
    "source": "Edit 84 (28 October): Prototype 7.3",
    "editable": true,
    "protectedReason": null,
@@ -10788,6 +10788,116 @@
     "max": 1
    },
    "purpose": "A cone the player cannot see is no bait (user rule, 28 October)"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.10",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 91 (28 October): Prototype 7.10",
+   "status": "proposed",
+   "type": "number",
+   "id": "proto.batteryModel",
+   "group": "Battery",
+   "owner": "Systems design",
+   "label": "Battery model",
+   "description": "0: 6.x (the dash from the start; Battery levels speed the recharge). 1: Edit 91 (Battery 1 is the dash; Battery 2 a second charge, to battery.capacity; Battery 3 the faster recharge, abilities.battery.level3Seconds). P7 runs 1.",
+   "unit": "mode",
+   "default": 0,
+   "applyAt": "next-run",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "purpose": "\"The first powerup should be given after the first screen … Battery 1 = Dash\" (user, 28 October)"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.10",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 91 (28 October): Prototype 7.10",
+   "status": "proposed",
+   "type": "number",
+   "id": "abilities.battery.dashCharges",
+   "group": "Battery",
+   "owner": "Systems design",
+   "label": "Dash charges at Battery 1",
+   "description": "Model 1: charges the battery holds at Battery 0–1. Battery 2 raises it to battery.capacity.",
+   "unit": "charges",
+   "default": 1,
+   "applyAt": "next-action",
+   "validation": {
+    "min": 1,
+    "max": 3
+   },
+   "purpose": "Battery 2 is the second charge"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.10",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 91 (28 October): Prototype 7.10",
+   "status": "proposed",
+   "type": "number",
+   "id": "damage.bodyHealthOnFoot",
+   "group": "Damage",
+   "owner": "Systems design",
+   "label": "Health on foot",
+   "description": "Model 1: the chassis's health while the dash is not fitted (Story, Monument A1). With Battery 1 fitted, damage.bodyHealth; a fit mid-chassis adds the difference.",
+   "unit": "health",
+   "default": 500,
+   "applyAt": "next-chassis",
+   "validation": {
+    "min": 100,
+    "max": 2000
+   },
+   "purpose": "\"In Screen 1, the Dummy's health is only 500 (since they cannot dash)\" (user, 28 October)"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.10",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 91 (28 October): Prototype 7.10",
+   "status": "proposed",
+   "type": "number",
+   "id": "story.missFloor",
+   "group": "Story",
+   "owner": "Systems design",
+   "label": "Miss floor",
+   "description": "Story, the tile in test: a hit that would write the chassis off but misses the brief leaves this much health. The chassis plays on; only a hit to the brief writes it off. 0 turns it off.",
+   "unit": "health",
+   "default": 1,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0,
+    "max": 50
+   },
+   "purpose": "\"If the FINAL hit does NOT kill the player, then they can move around at 1 health\" (user, 28 October)"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.10",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 91 (28 October): Prototype 7.10",
+   "status": "proposed",
+   "type": "number",
+   "id": "world.dummyMonument",
+   "group": "World",
+   "owner": "Level design",
+   "label": "Dummy monument",
+   "description": "1: the DUMMY MONUMENT stands on the circus's island (Waterfront B2): the dummy in white stone, three times life, on a stepped pedestal with a lit plaque. 6.x worlds run 0.",
+   "unit": "flag",
+   "default": 0,
+   "applyAt": "next-run",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "purpose": "\"In the centre of the circus there must be a kind of DUMMY MONUMENT\" (user, 28 October)"
   }
  ],
  "tables": {

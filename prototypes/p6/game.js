@@ -3,7 +3,7 @@
    Screen: 640 × 360 art pixels, integer-scaled. Field: 400 × 300 art pixels at (120, 30). HUD and screens: 1280 × 720 reference units. */
 (function () {
   'use strict';
-  const { Sim, NODES, NODES4, NODES7: NODES7_4, TRACKS: TRACKS_4, NODES9, TRACKS9, NODES10, TRACKS10, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
+  const { Sim, NODES, NODES4, NODES7: NODES7_4, TRACKS: TRACKS_4, NODES9, TRACKS9, NODES10, TRACKS10, NODES10D, TRACKS10D, LEVELS, DIFFICULTIES, REG, PROTO, OVERRIDES, DEG, pathAt, DISTRICTS, zHeight } = window.DUMMIES;
   const W6 = window.WORLD6 || null; // P6 (Edit 62): Parkland, Waterfront, Monument, built by world6.js
   const LEVEL_LIST = W6 ? W6.LEVEL_LIST : window.DUMMIES.LEVEL_LIST;
   const INFO = (id) => (W6 && W6.INFO(id)) || window.DUMMIES.INFO(id);
@@ -99,7 +99,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.9' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.9 (GDD Edit 90: the dash's jump paid by the dash; X taps a cone down; buttons named only when fitted, OK and BACK in menus); 7.8 (GDD Edit 89: touch on every menu; Story levels from points and upgrades, not credits; the workshop, around the chassis); 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.10' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.10 (GDD Edit 91: every Story part by drone on its tile, Arcade parts for credits; Battery 1 the dash; a miss holds the chassis at 1; on foot, a lighter chassis; points small, top right; damage in red on the chassis, its numbers beside each part; the circus's monument); 7.9 (GDD Edit 90: the dash's jump paid by the dash; X taps a cone down; buttons named only when fitted, OK and BACK in menus); 7.8 (GDD Edit 89: touch on every menu; Story levels from points and upgrades, not credits; the workshop, around the chassis); 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -164,7 +164,7 @@
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
-    fx.marks = []; fx.levelUp = null; fx.fit = null; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
+    fx.marks = []; fx.fit = null; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
     fx.rings = []; fx.streaks = []; fx.bubbles.clear(); fx.carBarkT.clear(); fx.cars.clear(); fx.nm.clear(); fx.nmDone.clear();
     fx.lungeWatch = null; fx.lastImpact = null; fx.upgradeWatch = null; if (!carry) fx.pendingNodes = [];
     app.present = [];
@@ -258,7 +258,8 @@
   const ABIL = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities']);
   const ABIL3 = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities'] === 2); // Edit 79 (P6.9): Battery, Legs, Arms; three levels; Y has no job
   const ABIL4 = !!(W6 && W6.P6SIM && W6.P6SIM['proto.abilities'] === 3); // Edit 80 (P6.10): Battery, Legs, Hands (two levels), Arms (the push, Y)
-  const TRACKS = ABIL4 ? TRACKS10 : ABIL3 ? TRACKS9 : TRACKS_4, NODES7 = ABIL4 ? NODES10 : ABIL3 ? NODES9 : NODES7_4; // Edit 77 (P6.7): the shop sells four ability tracks by level. Edit 78 (P6.8): four levels
+  const BM1 = !!(STORY && STORY.P7SIM['proto.batteryModel'] === 1 && TRACKS10D); // Edit 91 (P7.10): Battery 1 the dash, 2 a second charge, 3 a faster recharge
+  const TRACKS = ABIL4 ? (BM1 ? TRACKS10D : TRACKS10) : ABIL3 ? TRACKS9 : TRACKS_4, NODES7 = ABIL4 ? (BM1 ? NODES10D : NODES10) : ABIL3 ? NODES9 : NODES7_4; // Edit 77 (P6.7): the shop sells four ability tracks by level. Edit 78 (P6.8): four levels
   const held = new Set();
   const q = { a: 0, b: 0, bUp: 0, x: 0, y: 0 };
   const menuQ = [];
@@ -493,7 +494,7 @@
   // when a cone is held and none is in reach). A button not yet fitted shows its letter alone, dimmed
   function faceWord(f, s) {
     const inPlay = app.screen === 'game' && s && !app.paused && !app.touchEdit && ['play', 'hitstop', 'writeoff', 'scroll'].includes(s.phase);
-    const node = FACE_NODE[f.id], unlocked = !node || !!(s && s.has(node));
+    const node = FACE_NODE[f.id], unlocked = f.id === 'a' && STORY ? !(s && s.dashFitted) || s.dashFitted() : !node || !!(s && s.has(node)); // Edit 91: A names DASH once Battery 1 is fitted
     if (!STORY) return { word: unlocked ? f.w : 'LOCKED', live: unlocked };
     if (!inPlay) return { word: { a: 'OK', b: 'BACK' }[f.id] || '', live: f.id === 'a' || f.id === 'b' };
     if (!unlocked) return { word: '', live: false };
@@ -568,6 +569,7 @@
     monument: 'Lantern monument', fountain: 'Fountain square', roundabout: 'Roundabout', tower: 'FARSIGHT Tower', plate: 'Test plates' };
   const LEVEL6 = { walk: 'Walkway: no traffic up here. Step off the side to drop onto cars below.', hill: 'Hilltop (Z1): streets with traffic. Step off the cliff edge to drop to the valley.',
     terrace: 'Terrace: step off the edge to drop to the beach.', ring: 'Ring deck: highway traffic gives way at the entries. Escalators lead down.' }; // P6 (Edit 62)
+  const maxHP = (s) => (s && s.maxHealth ? s.maxHealth() : s.P['damage.bodyHealth']); // Edit 91: on foot, a lighter chassis
   const DENY_TEXT = { lunge: 'No lunge — charge empty or recovering', pickup: 'No cone within reach', drop: 'No room to place the cone', throw: 'No room to release the cone',
     'push.locked': 'Push needs Arms', 'push.spent': 'No pushes left: land to get them back', 'push.nothing': 'Nothing to push off: hit or touch a car', 'drop.hold': 'Hold X to put the cone down', // Edit 80
     jump: 'No jump — charge empty, or mid-action', 'jump.charge': 'No jump: the battery is empty', 'jump.locked': 'Jump needs the Jump module (Legs)', 'pickup.locked': 'Grab needs the Carry module (Arms)', 'throw.locked': 'Throw needs the Throw module (Arms)', 'throw.empty': 'Grab a cone first (X), then throw (Y)' }; // Edit 75
@@ -623,7 +625,7 @@
       Object.assign(out, { model: fm ? fm.id : info.model, cls: info.cls, class: fm ? fm.class : info.cls, tier: fm ? fm.tier : null, seniority: info.seniority });
     }
     const sb = app.sim && app.sim.body;
-    if (sb) out.wear = +(1 - sb.health / app.sim.P['damage.bodyHealth']).toFixed(3);
+    if (sb) out.wear = +(1 - sb.health / maxHP(app.sim)).toFixed(3);
     if (e.type === 'honk') out.at = e.at === 'body' ? 'body' : 'cone';
     return out;
   }
@@ -903,8 +905,8 @@
           break;
         }
         case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); Snd.tone(150, 60, 0.18, 'square', 0.06, 0.02); fx.fit = { node: e.node, t0: app.realT }; toast(e.unit === 'upgrade' ? NODE(e.node).name + ' fitted' + (e.upgrades ? ' · ' + e.upgrades + ' upgrade' + (e.upgrades === 1 ? '' : 's') + ' left' : '') : copy('toast.purchase', '{node} installed', { node: NODE(e.node).name })); break; // Edit 89: the fit lands on the workshop's chassis
-        case 'purchase-denied': Snd.tone(180, 140, 0.12, 'square', 0.04); toast(e.why === 'max' ? 'That part is at its top level' : /^gift/.test(e.why) ? 'A Farsight drone brings that part' : e.why === 'level up first' ? 'Level up first: ' + num(Math.max(0, (STORY.levelOf(s.run.points, s.P).next || 0) - s.run.points)) + ' points to go' : e.why[0].toUpperCase() + e.why.slice(1)); break; // Edit 89
-        case 'level-up': fx.levelUp = { level: e.level, upgrades: e.upgrades, t0: app.realT }; levelFanfare(); break; // Edit 89: points level the dummy up
+        case 'purchase-denied': Snd.tone(180, 140, 0.12, 'square', 0.04); toast(e.why === 'max' ? 'That part is at its top level' : /^gift/.test(e.why) ? 'A Farsight drone brings that part' : e.why[0].toUpperCase() + e.why.slice(1)); break; // Edit 89
+        case 'held': Snd.tone(240, 200, 0.16, 'square', 0.05); toast('Not the brief: chassis held at ' + num(e.health)); break; // Edit 91: a miss of the brief does not write the chassis off
         case 'shop-open': if (STORY && ABIL4) { const k = SHOP_GRID.findIndex((g) => { const n = nextLevel(s, g[0]); return n && s.canBuy(n).ok; }); app.shopCol = Math.max(0, k); app.shopRow = k >= 0 ? 0 : SHOP_ROWS; fx.fit = null; } break; // Edit 89: the workshop opens on a part an upgrade fits
         case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); if (ABIL && s.coneCapacity() > 1) toast('Cones ' + (e.n || 1) + ' / ' + s.coneCapacity()); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
@@ -957,10 +959,7 @@
     Snd.tone(293.66, 293.66, 1.4, 'sine', 0.06, c0);
     [2349.3, 2959.96, 3520, 2637].forEach((f, j) => Snd.tone(f, f, 0.07, 'sine', 0.02, c0 + 0.12 + j * 0.13));
   }
-  function levelFanfare() { // Edit 89: LEVEL UP, a bright climb and a held top note (original)
-    [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, j) => { Snd.tone(f, f, 0.12, 'square', 0.03, j * 0.065); Snd.tone(f, f * 1.003, 0.22, 'triangle', 0.06, j * 0.065); });
-    Snd.tone(1046.5, 1046.5, 0.7, 'triangle', 0.05, 0.36); Snd.tone(1568, 1568, 0.5, 'sine', 0.025, 0.42); Snd.noise(3000, 9000, 0.25, 0.02, 0.36);
-  }
+
   function horn() { Snd.tone(440, 430, 0.16, 'square', 0.05); Snd.tone(349, 340, 0.22, 'square', 0.05, 0.18); }
   function dashify(str) { return String(str).replace(/lunge/gi, (m) => (m[0] === 'L' ? (m === 'LUNGE' ? 'DASH' : 'Dash') : 'dash')); } // display name only
   function toast(msg) { app.toast = { msg: dashify(msg), t: app.realT }; }
@@ -1429,7 +1428,7 @@
   }
   function drawBodySprite(s, ghostOnly, liftPx) {
     const b = s.body, P = s.P;
-    const wear = clamp(1 - b.health / P['damage.bodyHealth'], 0, 1), fl = app.realT - fx.flinchT0;
+    const wear = clamp(1 - b.health / maxHP(s), 0, 1), fl = app.realT - fx.flinchT0;
     let jx = 0, jy = 0;
     if (fl < 0.3) { const k = (1 - fl / 0.3) * 2 * MOTION; jx += Math.round(Math.sin(app.realT * 97) * k); jy += Math.round(Math.cos(app.realT * 83) * k); }
     if (wear > 0.6) jx += Math.round(Math.sin(app.realT * 41) * (wear - 0.6) * 2.5 * MOTION);
@@ -1696,7 +1695,7 @@
   function drawParts(s) {
     const b = s.body, P = s.P, now = app.realT;
     if (b.alive && s.phase === 'play') {
-      const wear = 1 - b.health / P['damage.bodyHealth'];
+      const wear = 1 - b.health / maxHP(s);
       if (wear > lowHealth('smokeFrom', 0.45) && now - fx.smokeT > 0.32 - wear * 0.15) { fx.smokeT = now; puff(b.x, b.y - 20, 1, { type: 'smoke', dir: -2.36, spread: 0.6, speed: 18, life: 1.1, size: 4 + 4 * wear }); }
       if (wear > lowHealth('sparkFrom', 0.7) && Math.random() < 0.05) puff(b.x, b.y - 10, 3, { type: 'spark', speed: 110, life: 0.25, size: 1.6 });
     }
@@ -1751,7 +1750,7 @@
     if (fa < fx.flash.dur) { const a = 0.55 * (1 - fa / fx.flash.dur) * (RM ? 0.4 : 1); for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) FB.mix(x, y, K.white, a); }
     drawStamp(s);
     if (b.alive) { // low health: a pulsing warning band on the field edge (colour math, whole pixels)
-      const wear = 1 - b.health / P['damage.bodyHealth'], vf = lowHealth('vignetteFrom', 0.7);
+      const wear = 1 - b.health / maxHP(s), vf = lowHealth('vignetteFrom', 0.7);
       if (wear > vf) {
         const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf), band = 8;
         for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) {
@@ -1859,7 +1858,7 @@
     if (fa < fx.flash.dur) { const a = 0.55 * (1 - fa / fx.flash.dur) * (RM ? 0.4 : 1); for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) FB.mix(x, y, K.white, a); }
     if (app.showJumpable) for (const q of s.level.statics) if (q.jumpable) { const x0 = Math.round(q.x / U), y0 = Math.round(q.y / U), x1 = Math.round((q.x + q.w) / U) - 1, y1 = Math.round((q.y + q.h) / U) - 1; for (let x = x0; x <= x1; x++) { FB.put(x, y0, K.label); FB.put(x, y1, K.label); } for (let y = y0; y <= y1; y++) { FB.put(x0, y, K.label); FB.put(x1, y, K.label); } } // Edit 75 (tuning): what a jump clears
     drawStamp(s);
-    if (b.alive) { const wear = 1 - b.health / P['damage.bodyHealth'], vf = lowHealth('vignetteFrom', 0.7); if (wear > vf) { const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf), band = 8; for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const d = Math.min(x, y, AW - 1 - x, AH - 1 - y); if (d >= band) { x = AW - 1 - band; continue; } if ((x + y) % 2 === 0 || d < 3) FB.mix(x, y, K.warn, (0.12 + 0.3 * pulse) * (1 - d / band)); } } }
+    if (b.alive) { const wear = 1 - b.health / maxHP(s), vf = lowHealth('vignetteFrom', 0.7); if (wear > vf) { const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf), band = 8; for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const d = Math.min(x, y, AW - 1 - x, AH - 1 - y); if (d >= band) { x = AW - 1 - band; continue; } if ((x + y) % 2 === 0 || d < 3) FB.mix(x, y, K.warn, (0.12 + 0.3 * pulse) * (1 - d / band)); } } }
   }
   // Edit 84: the module a drone brings: a small aqua case with a pulsing halo (art pixels)
   const GIFT_ALT = 36;
@@ -1876,7 +1875,7 @@
     const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = !rs.ferry && !rs.gift && rs.given === undefined && (rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift'); // Edit 84: a ferry or a delivery is on land
     if (wet) for (let k = 0; k < 2; k++) { const r = 3 + ((t * 7 + k * 5) % 10); for (const [x, y] of PIX.circle(r)) FB.mix(cx + x, wl + Math.round(y * 0.45), K.white, 0.4 * (1 - r / 13)); } // ripples
     if (rs.under >= 0.999) { if (Math.floor(t * 5) % 2) FB.put(cx + (Math.floor(t * 9) % 3) - 1, wl - 1 - (Math.floor(t * 12) % 4), K.white); return; } // bubbles: under the surface
-    const wear = clamp(1 - b.health / s.P['damage.bodyHealth'], 0, 1), S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
+    const wear = clamp(1 - b.health / maxHP(s), 0, 1), S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
     const ay = Math.round(b.y / U) + Math.round(rs.under * 18) - Math.round(rs.up), x0 = cx - S.ox, y0 = ay - S.oy;
     for (let j = 0; j < S.h; j++) { const yy = y0 + j; if (wet && yy > wl) break; for (let i = 0; i < S.w; i++) { const c = S.d[j * S.w + i]; if (c) FB.put(x0 + i, yy, c); } }
   }
@@ -1991,8 +1990,6 @@
     if (s.isCity && s.quota) {
       const rs = s.rescue; if (rs && (rs.gift || rs.given)) return ['FARSIGHT DRONE', 'Delivering ' + NODE(rs.gift || rs.given).name + '.']; // Edit 84
       let line = 'Write off ' + s.quota + ' bodies (' + s.run.writeOffs + ' of ' + s.quota + ').';
-      const nv = s.nextVerb && s.nextVerb(), every = s.P['arcade.giftEvery'];
-      if (nv && every > 0) { const k = every - (s.run.writeOffs % every); line += ' ' + NODE(nv).name + (k === 1 ? ' comes with the next write-off.' : ' comes in ' + k + ' write-offs.'); }
       return ['OBJECTIVE · ' + INFO(s.levelId).name.toUpperCase(), line];
     }
     return null;
@@ -2074,7 +2071,7 @@
   function playKeys(s) {
     if (!s || app.screen !== 'game' || app.paused || s.phase !== 'play' || TOUCH.on) return null; // touch: the diamond is the legend
     if (!FOUR) { const keys = [['WASD', 'MOVE'], ['SPACE', 'DASH']]; if (s.has('carry') || s.has('throw')) keys.push(['K', 'CONE']); return keys; }
-    const pd = app.device === 'pad', keys = [[pd ? 'STICK' : 'WASD', 'MOVE'], [pd ? 'A' : 'SPACE', 'DASH']]; // Edit 75: A, B, X, Y as installed
+    const pd = app.device === 'pad', keys = [[pd ? 'STICK' : 'WASD', 'MOVE']].concat(s.dashFitted && !s.dashFitted() ? [] : [[pd ? 'A' : 'SPACE', 'DASH']]); // Edit 75: A, B, X, Y as installed. Edit 91: DASH once Battery 1 is fitted
     if (s.has('jump')) keys.push([pd ? 'B' : 'L', 'JUMP']);
     if (ABIL4) { // Edit 80: X grabs, a hold puts down; Y pushes off a car
       const b = s.body, n = s.carriedCones().length, room = n < s.coneCapacity();
@@ -2115,35 +2112,15 @@
   function fitTextR(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color, 'right'); }
   function fitNumR(t, x, y, w, size, color) { let z = size; while (z > 14) { ctx.font = '700 ' + z + 'px ' + F_MONO; if (ctx.measureText(t).width <= w) break; z--; } txt(t, x, y, '700 ' + z + 'px ' + F_MONO, color, 'right'); } // Edit 89: a number that keeps clear of its label
   function fitText(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color); }
-  function drawLevelUp(s) { // Edit 89: LEVEL UP across the field; a burst from the stats box. It does not stop play
-    const lu = fx.levelUp; if (!lu) return; const t = app.realT - lu.t0; if (t > 2.6) { fx.levelUp = null; return; }
-    const a = t < 0.12 ? t / 0.12 : t > 2.1 ? Math.max(0, (2.6 - t) / 0.5) : 1, pop = RM ? 1 : 1 + 0.55 * Math.pow(Math.max(0, 1 - t / 0.25), 2), cx = FX + FW / 2, cy = FY + 132;
-    ctx.save(); ctx.globalAlpha = a;
-    const g = ctx.createLinearGradient(FX, 0, FX + FW, 0); g.addColorStop(0, 'rgba(8,12,24,0)'); g.addColorStop(0.5, 'rgba(8,12,24,0.78)'); g.addColorStop(1, 'rgba(8,12,24,0)'); ctx.fillStyle = g; ctx.fillRect(FX, cy - 62, FW, 128);
-    if (!RM) { ctx.strokeStyle = C.dummy; ctx.lineWidth = 3; ctx.beginPath(); for (let i = 0; i < 14; i++) { const an = i * TAU / 14 + t * 0.8, r0 = 60 + 140 * Math.min(1, t / 0.5), r1 = r0 + 26; ctx.moveTo(cx + Math.cos(an) * r0 * 1.9, cy - 10 + Math.sin(an) * r0 * 0.45); ctx.lineTo(cx + Math.cos(an) * r1 * 1.9, cy - 10 + Math.sin(an) * r1 * 0.45); } ctx.globalAlpha = a * Math.max(0, 1 - t / 0.9); ctx.stroke(); ctx.globalAlpha = a; }
-    ctx.save(); ctx.translate(cx, cy); ctx.scale(pop, pop); if (FT.neon) { ctx.shadowColor = C.dummy; ctx.shadowBlur = 26; } txt('LEVEL UP', 0, 0, '900 66px ' + F_BRAND, C.dummy, 'center'); ctx.restore();
-    txt('LEVEL ' + lu.level + (lu.upgrades > 0 ? '  ·  +1 UPGRADE' : ''), cx, cy + 38, fLab, '#FFFFFF', 'center');
-    if (lu.upgrades > 0) txt('Fit it in the workshop after this body', cx, cy + 60, '400 16px ' + F_UI, FT.dim, 'center');
-    const X = FX + FW + 16, W = VW - X - 16, bx = X + W - 30, by = FY - 6 + 62, u = Math.min(1, t / 0.9); // the stats box bursts
-    if (u < 1 && !RM) for (const [d0, col] of [[0, C.dummy], [0.15, FT.accent]]) { const v = Math.max(0, Math.min(1, (u - d0) / 0.85)); if (v <= 0 || v >= 1) continue; ctx.globalAlpha = 1 - v; ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(bx, by, 8 + 110 * (1 - Math.pow(1 - v, 3)), 0, TAU); ctx.stroke(); }
-    ctx.restore();
-  }
-  function drawStatsBox(s) { // Edit 87: top right, BODY's size: POINTS and CREDITS (Arcade: POINTS and CARS LEFT, its clock)
-    const X = FX + FW + 16, W = VW - X - 16, Y = FY - 6, r = s.run;
-    if (s.storyMode && s.upgradesLeft) { // Edit 89: Story: POINTS and LEVEL; a bar to the next level; unspent upgrades as a badge
-      const lv = STORY.levelOf(r.points, s.P), left = s.upgradesLeft(), lu = fx.levelUp && app.realT - fx.levelUp.t0 < 1.4, blink = lu && Math.floor(app.realT * 8) % 2 === 0;
-      panel(X, Y, W, 86); if (app.hud) app.hud.stats = { x: X, y: Y, w: W, h: 86, rows: 'POINTS LEVEL', level: lv.level, upgrades: left, frac: lv.frac };
-      ctx.font = fLab; const lw = ctx.measureText('POINTS').width; txt('POINTS', X + 14, Y + 32, fLab, FT.dim); fitNumR(num(r.points), X + W - 14, Y + 34, W - 28 - lw - 10, TY.lb, FT.text);
-      txt('LEVEL', X + 14, Y + 62, fLab, blink ? C.dummy : FT.dim); txt(String(lv.level), X + W - 14, Y + 64, fNum, blink ? C.dummy : FT.text, 'right');
-      if (left > 0) { ctx.font = fLab; const lx = X + 14 + ctx.measureText('LEVEL').width + 10, t = '+' + left; ctx.font = '700 15px ' + F_UI; const pw = ctx.measureText(t).width + 14; rr(lx, Y + 46, pw, 22, 11); ctx.fillStyle = C.dummy; ctx.fill(); txt(t, lx + pw / 2, Y + 62, '700 15px ' + F_UI, C.primary, 'center'); }
-      rr(X + 14, Y + 72, W - 28, 6, 3); ctx.fillStyle = FT.track; ctx.fill();
-      if (lv.frac > 0) { rr(X + 14, Y + 72, Math.max(6, (W - 28) * lv.frac), 6, 3); ctx.fillStyle = blink ? '#FFFFFF' : C.dummy; ctx.fill(); }
-      return Y + 86;
-    }
-    const left = s.carsLeft ? s.carsLeft() : 0, rows = s.storyMode ? [['POINTS', num(r.points)], ['CREDITS', String(r.credits)]] : [['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
-    panel(X, Y, W, 86); if (app.hud) app.hud.stats = { x: X, y: Y, w: W, h: 86, rows: rows.map((q) => q[0]).join(' ') };
-    rows.forEach(([k, v], i) => { const y = Y + 34 + i * 34; txt(k, X + 14, y, fLab, FT.dim); ctx.font = fLab; fitNumR(v, X + W - 14, y + 2, W - 28 - ctx.measureText(k).width - 10, TY.lb, FT.text); });
-    return Y + 86;
+  function drawScore(s) { // Edit 91: top right, small, on the strip above the boxes: POINTS (Arcade: and CARS LEFT, its clock)
+    const R = VW - 16, X = FX + FW + 16, W = R - X, r = s.run, rows = s.storyMode ? [['POINTS', num(r.points)]] : [['POINTS', num(r.points)], ['CARS LEFT', String(s.carsLeft ? s.carsLeft() : 0)]];
+    const one = rows.length === 1, fL = '700 ' + (one ? 14 : 12) + 'px ' + F_UI, nz = one ? 20 : 15;
+    rows.forEach(([k, v], i) => {
+      const y = one ? TOPY - 4 : 14 + i * 16; ctx.font = fL; const kw = ctx.measureText(k).width;
+      ctx.font = '700 ' + nz + 'px ' + F_MONO; let z = nz; while (z > 10 && ctx.measureText(v).width > W - kw - 10) { z--; ctx.font = '700 ' + z + 'px ' + F_MONO; }
+      const vw = ctx.measureText(v).width; txt(v, R, y + 1, '700 ' + z + 'px ' + F_MONO, FT.text, 'right'); txt(k, R - vw - 8, y, fL, FT.dim, 'right');
+    });
+    if (app.hud) app.hud.score = { x: X, y: 0, w: W, h: FY - 6, rows: rows.map((q) => q[0]).join(' '), points: Math.round(r.points) };
   }
   function drawTopBar(s) {
     const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
@@ -2160,7 +2137,7 @@
   }
   // Left: the body's numbers. Health first and largest; dash beneath.
   function drawHUD(s) {
-    const b = s.body, P = s.P, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
+    const b = s.body, P = s.P, hp = b.alive ? b.health : 0, frac = clamp(hp / maxHP(s), 0, 1); // Edit 91: on foot, a lighter chassis
     const X = 16, W = FX - 32, TX = 30, BW = W - 28; // left column: as wide as the space beside the field
     const BY = STORY ? FY - 6 : 62, BH = STORY ? 86 : 150, DY = BY + BH + 10; // Edit 87: on the field's top edge // Edit 86 (P7.5): BODY as tall as DASH: the number on the label's row, the bar beneath
     panel(X, BY, W, BH); app.hud = { body: { x: X, y: BY, w: W, h: BH } }; // Edit 87: the boxes as drawn, for the tests
@@ -2174,14 +2151,15 @@
     }
     panel(X, DY, W, 86);
     txt('DASH', TX, DY + 30, fLab, FT.dim);
-    const cap = s.capacity(), pw = (BW - (cap - 1) * 10) / cap; // Big battery: 3 (D26)
+    if (s.dashFitted && !s.dashFitted()) { txt('NOT FITTED', X + W - 14, DY + 30, '700 15px ' + F_UI, FT.dim, 'right'); rr(TX, DY + 44, BW, 28, 6); ctx.fillStyle = FT.track; ctx.globalAlpha = 0.5; ctx.fill(); ctx.globalAlpha = 1; } // Edit 91: Battery 1 is the dash
+    const cap = s.dashFitted && !s.dashFitted() ? 0 : s.capacity(), pw = (BW - (cap - 1) * 10) / cap; // Big battery: 3 (D26)
     for (let i = 0; i < cap; i++) {
       const x = TX + i * (pw + 10), f = clamp(b.charge - i, 0, 1);
       rr(x, DY + 44, pw, 28, 6); ctx.fillStyle = FT.track; ctx.fill();
       if (f > 0) { rr(x, DY + 44, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
     drawDistrict(s);
-    if (STORY) drawStatsBox(s);
+    if (STORY) drawScore(s);
     const cb = drawBodyPanel(s);
     drawKeysPanel(s, cb);
     app.layoutY = { left: s.district ? (() => { const G = mapGeom(s.district); return G.Y + 66 + G.mh + (s.storyMode ? STORY_FOOT : 0); })() : MAPY, right: cb }; // Edit 75: the touch zones start below these
@@ -2279,7 +2257,7 @@
   const PART_NAME = { head: 'HEAD', torso: 'TORSO', armL: 'L ARM', armR: 'R ARM', legL: 'L LEG', legR: 'R LEG' };
   const dollArt = new Map();
   function partLevels(s) {
-    const P = s.P, H = P['damage.bodyHealth'], out = {};
+    const P = s.P, H = maxHP(s), out = {};
     for (const [k, v] of Object.entries(s.body.parts || {})) { const sh = v / H; out[k] = v <= 0 ? 0 : sh >= P['proto.parts.brokenShare'] ? 3 : sh >= P['proto.parts.crackedShare'] ? 2 : 1; }
     return out;
   }
@@ -2291,7 +2269,7 @@
     if (app.previewMods) return PIX.MODULES;
     if (ABIL) {
       const out = []; for (const t of Object.keys(TRACKS)) out.push(...DOLL_MODS[t].slice(0, s.tier(t)));
-      const nn = s.phase === 'shop' && app.shopRow < SHOP_ROWS ? nextLevel(s, SHOP_GRID[app.shopCol][0]) : null, sel = nn && !(STORY && STORY.VERBS.includes(nn) && !s.run.owned[nn]) ? NODES7[nn] : null; // Edit 89: a part not yet issued is not tried on
+      const nn = s.phase === 'shop' && app.shopRow < SHOP_ROWS ? nextLevel(s, SHOP_GRID[app.shopCol][0]) : null, sel = nn && !s.storyMode ? NODES7[nn] : null; // Edit 89: a part not yet issued is not tried on
       if (sel && s.tier(sel.track) < sel.level && Math.floor(app.realT * 3) % 2 === 0) out.push(...DOLL_MODS[sel.track].slice(s.tier(sel.track), sel.level));
       return out;
     }
@@ -2300,11 +2278,11 @@
     const own = (m) => s.has(m) || (m === 'springStart' && s.has('ricochet')), tried = (m) => tryOn && (m === sel || (m === 'springStart' && sel === 'ricochet')); // Edit 75: Ricochet wears the spring legs
     return PIX.MODULES.filter((m) => own(m) || tried(m));
   }
-  function dollCanvas(levels, flash, mods) {
-    const key = JSON.stringify(levels) + flash + mods.join();
+  function dollCanvas(levels, flash, mods, reds) {
+    const key = JSON.stringify(levels) + flash + mods.join() + (reds ? JSON.stringify(reds) : '');
     if (dollArt.has(key)) return dollArt.get(key);
     if (dollArt.size > 64) dollArt.clear();
-    const S = PIX.doll(levels, flash, mods), cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
+    const S = PIX.doll(levels, flash, mods, reds), cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
     const c2 = cv2.getContext('2d'), id = c2.createImageData(S.w, S.h); new Uint32Array(id.data.buffer).set(S.d); c2.putImageData(id, 0, 0);
     dollArt.set(key, cv2);
     return cv2;
@@ -2323,17 +2301,34 @@
     return out;
   }
   // The chassis doll is drawn at ui.artScale like the field: one doll pixel = one art pixel, on the art grid.
+  // Edit 91 (P7.10): Story's chassis: each part reddens with its damage (its share of the chassis, to proto.parts.brokenShare);
+  // its damage beside it. Head and torso on the part; arms and legs in the margins. No rows of effects beneath
+  const PART_TAG = { head: [32, 7, 'on'], torso: [32, 47, 'on'], armR: [9, 60, 'L'], armL: [55, 60, 'R'], legR: [20, 88, 'L'], legL: [44, 88, 'R'] };
+  function partReds(s) { const out = {}, br = s.P['proto.parts.brokenShare'], H = maxHP(s); for (const [k, v] of Object.entries(s.body.parts || {})) if (v > 0) out[k] = Math.round(Math.min(1, v / H / br) * 20) / 20; return out; }
+  function redText(f) { const a = [244, 248, 250], b = [255, 61, 61], m = (i) => Math.round(a[i] + (b[i] - a[i]) * f); return 'rgb(' + m(0) + ',' + m(1) + ',' + m(2) + ')'; }
   function drawBodyPanel(s) {
-    const X = FX + FW + 16, W = VW - X - 16, Y = STORY ? FY - 6 + 96 : 62, b = s.body, U = RA, eff = b.alive ? partEffects(s) : []; // U here: reference units per art px; Edit 87: under the stats box
+    const X = FX + FW + 16, W = VW - X - 16, Y = STORY ? FY - 6 : 62, b = s.body, U = RA, eff = b.alive && !STORY ? partEffects(s) : []; // U here: reference units per art px; Edit 91: on the top edge; no effect rows in P7
     const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + (STORY ? 26 : 36), dV = STORY ? 0 : 38; // Edit 86–87: LAST HIT on one row
     const ph = yHit - Y + (STORY ? 20 : 66) + (eff.length ? 16 + eff.length * 32 : 0);
     panel(X, Y, W, ph); if (app.hud) app.hud.chassis = { x: X, y: Y, w: W, h: ph };
     txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);
     const lp = fx.lastPart, flash = lp && app.realT - lp.t < 0.3 && Math.floor(app.realT * 16) % 2 === 0 ? lp.part : '';
-    const dx = Math.round((X + W / 2 - DW / 2) / U) * U, dy = Math.round(top / U) * U;
+    const dx = Math.round((X + W / 2 - DW / 2) / U) * U, dy = Math.round(top / U) * U, reds = STORY && b.alive ? partReds(s) : null;
     ctx.imageSmoothingEnabled = false; ctx.globalAlpha = b.alive ? 1 : 0.35;
-    ctx.drawImage(dollCanvas(partLevels(s), flash, dollMods(s)), dx, dy, DW, DH);
+    ctx.drawImage(dollCanvas(partLevels(s), flash, dollMods(s), reds), dx, dy, DW, DH);
     ctx.globalAlpha = 1;
+    if (reds) { // the numbers beside the parts
+      const tags = []; ctx.font = '700 14px ' + F_MONO;
+      for (const [k, [px, py, side]] of Object.entries(PART_TAG)) {
+        const v = Math.round(b.parts[k] || 0); if (v <= 0) continue;
+        const t = num(v), tw = ctx.measureText(t).width, ty = dy + (py + 3) * U, col = redText(reds[k] || 0);
+        if (side === 'on') { const bw = tw + 10; rr(dx + px * U - bw / 2, ty - 10, bw, 20, 6); ctx.fillStyle = 'rgba(10,14,22,0.78)'; ctx.fill(); txt(t, dx + px * U, ty + 5, '700 14px ' + F_MONO, col, 'center'); }
+        else if (side === 'L') txt(t, Math.min(dx - 2, dx + px * U - 12), ty + 5, '700 14px ' + F_MONO, col, 'right');
+        else txt(t, Math.max(dx + DW + 2, dx + px * U + 12), ty + 5, '700 14px ' + F_MONO, col);
+        tags.push(k + ' ' + v);
+      }
+      if (app.hud) app.hud.chassis.tags = tags.join(', ');
+    }
     txt('LAST HIT', X + 14, yHit, STORY ? '700 15px ' + F_UI : fTxt, FT.dim);
     if (STORY) fitTextR(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + W - 14, yHit, W - 110, 20, 13, lp ? FT.text : FT.dim);
     else txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, yHit + dV, fLab, lp ? FT.text : FT.dim);
@@ -2429,7 +2424,7 @@
   function slotLines(v) {
     const pr = v.progress, cl = STORY.clearedCount(pr), t = pr.complete ? null : STORY.activeTile(pr, pr.district);
     return [pr.complete ? 'CERTIFIED · ALL ' + STORY.TOTAL + ' TILES' : INFO(pr.district).name.toUpperCase() + ' · ' + t + ' · TILE ' + STORY.tileNumber(pr.district, t) + ' OF ' + STORY.TOTAL + (pr.tileWO ? ' · ' + pr.tileWO + ' OF ' + STORY.needOf(pr.district, t) + ' WRITE-OFFS' : ''),
-      cl + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points || 0) + ' POINTS · LEVEL ' + STORY.levelOf(pr.points || 0).level + ' · CHASSIS ' + String(pr.chassis || 0).padStart(2, '0')]; // Edit 89: the dummy's level, not credits
+      cl + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points || 0) + ' POINTS · ' + STORY.partsOwned(pr.owned) + ' / ' + STORY.VERBS.length + ' PARTS · CHASSIS ' + String(pr.chassis || 0).padStart(2, '0')]; // Edit 91: parts, not levels
   }
   function drawSaves() {
     drawField(preview(Math.max(0, LEVEL_LIST.indexOf('monument'))), true);
@@ -2510,7 +2505,7 @@
     veil();
     const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, needT = (id, t) => pv('story.writeOffs.' + id + '.' + t); // Edit 82: a count per tile
     panel(x, y, w, h);
-    const sv = app.slot && allSlots()[app.slot - 1], stat = STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · LEVEL ' + STORY.levelOf(pr.points || 0).level; // Edit 89
+    const sv = app.slot && allSlots()[app.slot - 1], stat = STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · ' + STORY.partsOwned(pr.owned) + ' / ' + STORY.VERBS.length + ' PARTS'; // Edit 91
     ctx.font = '700 18px ' + F_UI; const sw = ctx.measureText(stat).width;
     txt(stat, x + w - 24, y + 40, '700 18px ' + F_UI, FT.text, 'right');
     fitText(sv ? 'SLOT ' + app.slot + ' · ' + sv.name : 'THE TEST CITY', x + 24, y + 40, w - 48 - sw - 24, TY.sec, 14, FT.accent); // Edit 88: the slot in play
@@ -2652,7 +2647,7 @@
     }
     ctx.restore();
     const tx = dx + DW + 44, tw = x + w - 30 - tx, pd = TOUCH.on || app.device === 'pad', rs = s.rescue;
-    txt(land < 0 ? 'FARSIGHT DRONE · INCOMING' : 'NEW VERB INSTALLED', tx, y + 62, fLab, land < 0 && Math.floor(t * 4) % 2 ? FT.dim : FT.accent);
+    txt(land < 0 ? 'FARSIGHT DRONE · INCOMING' : 'NEW PART FITTED', tx, y + 62, fLab, land < 0 && Math.floor(t * 4) % 2 ? FT.dim : FT.accent);
     if (land >= 0) {
       const a1 = clamp01(land / 0.15), pop = RM ? 1 : 1 + 0.4 * Math.pow(clamp01(1 - land / 0.28), 2);
       ctx.save(); ctx.globalAlpha = a1; ctx.translate(tx, y + 140); ctx.scale(pop, pop); txt(nd.name.toUpperCase(), 0, 0, '900 64px ' + F_BRAND, C.dummy); ctx.restore();
@@ -2661,11 +2656,11 @@
       ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = FT.keyTop; ctx.fill(); ctx.strokeStyle = BADGE[tr.button]; ctx.lineWidth = 3; ctx.stroke();
       txt(tr.button, bx, by + 9, '700 26px ' + F_MONO, FT.text, 'center'); txt(tr.verb, bx + br + 16, by + 12, '900 34px ' + F_BRAND, FT.text);
       let yy = y + 262; yy += 30 * wrapText(nd.desc, tx, yy, tw, 30, '400 22px ' + F_UI, FT.text, 4) + 18;
-      const nx = NODES7[nd.track + (nd.level + 1)];
+      const ng = s.story ? STORY.nextGift(s.story) : null; // Edit 91: the next part on the schedule, and where it arrives
       ctx.globalAlpha = clamp01((land - 0.45) / 0.3);
       ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(tx, yy - 6); ctx.lineTo(tx + tw, yy - 6); ctx.stroke();
-      if (nx) { const pr = P[nx.price]; txt('NOW IN THE WORKSHOP', tx, yy + 26, fLab, FT.accent); wrapText(nx.name + ' · ' + (s.storyMode ? '1 upgrade' : pr + ' credit' + (pr === 1 ? '' : 's')) + '. ' + nx.desc, tx, yy + 58, tw, 26, '400 19px ' + F_UI, FT.dim, 3); } // Edit 89
-      else txt('THE ONLY LEVEL OF ' + tr.name.toUpperCase(), tx, yy + 26, fLab, FT.accent);
+      if (ng) { txt('NEXT FROM FARSIGHT', tx, yy + 26, fLab, FT.accent); wrapText(NODE(ng.node).name + ' · ' + INFO(ng.district).name + ' ' + ng.tile + ' (tile ' + ng.n + ' of ' + STORY.TOTAL + ').', tx, yy + 58, tw, 26, '400 19px ' + F_UI, FT.dim, 2); }
+      else txt(s.story ? 'EVERY PART FITTED' : 'THE ONLY LEVEL OF ' + tr.name.toUpperCase(), tx, yy + 26, fLab, FT.accent);
       ctx.restore();
     }
     hitbox(x, y, w, h, 'gift', () => menuQ.push('ok')); // Edit 89: a tap continues, once the hold is over
@@ -2728,12 +2723,9 @@
       [shortId(hh.model), hh.angle != null ? Math.round(hh.angle) + '°' : '—', num(hh.assessed), num(hh.lost)].forEach((v, i) => txt(String(v), x + 30 + cols[i][1], yy, fNum, FT.text));
     });
     rr(x + 28, y + h - 116, w - 56, 52, 12); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke();
-    if (sr && sr.level) { // Edit 89: the level, the bar to the next, and what the upgrades wait for
-      const lv = sr.level, up = sr.levelBefore && lv.level > sr.levelBefore;
-      let line = (up ? 'LEVEL UP: ' + sr.levelBefore + ' → ' + lv.level : 'LEVEL ' + lv.level) + (lv.next ? ' · ' + num(lv.next - s.run.points) + ' POINTS TO LEVEL ' + (lv.level + 1) : ' · TOP LEVEL');
-      if (sr.upgrades > 0) line += sr.fit && sr.fit.length ? ' · ' + sr.upgrades + ' UPGRADE' + (sr.upgrades === 1 ? '' : 'S') + ': THE WORKSHOP IS NEXT' : ' · UPGRADES WAIT FOR A DRONE';
-      fitText(line, x + 46, y + h - 84, w - 92, TY.sec, 13, up ? C.dummy : FT.text);
-      rr(x + 46, y + h - 76, w - 92, 6, 3); ctx.fillStyle = FT.track; ctx.fill(); if (lv.frac > 0) { rr(x + 46, y + h - 76, Math.max(6, (w - 92) * lv.frac), 6, 3); ctx.fillStyle = C.dummy; ctx.fill(); }
+    if (sr && sr.parts != null) { // Edit 91: the parts fitted, and the next one's tile. No shop in Story
+      const ng = sr.nextGift, line = sr.parts + ' / ' + STORY.VERBS.length + ' PARTS FITTED' + (ng ? ' · NEXT: ' + NODE(ng.node).name.toUpperCase() + ' AT ' + INFO(ng.district).name.toUpperCase() + ' ' + ng.tile : ' · EVERY PART FITTED');
+      fitText(line, x + 46, y + h - 82, w - 92, TY.sec, 13, FT.text);
     } else if (sr) { const c = sr.cheapest;
       txt('+' + plural(sr.gained, 'credit').toLowerCase() + ' for the body. Balance: ' + s.run.credits + '.' + (c ? (s.run.credits >= c.price ? ' ' + NODE(c.node).name + ' is yours for ' + c.price + '.' : ' ' + NODE(c.node).name + ' at ' + c.price + '.') : ' Every track is full.'), x + 46, y + h - 82, fLab, FT.text); }
     else txt(copy('report.credit', 'One body credit granted. Balance: {credits}.', { credits: s.run.credits }), x + 46, y + h - 82, fLab, FT.text);
@@ -2786,6 +2778,7 @@
   function abilityStats(s, t, L) {
     const P = s.P, cut = Math.round(P['abilities.wearCut'] * L * 100), wear = L ? 'WEAR −' + cut + '%' : 'FULL WEAR';
     if (ABIL4) { // Edit 80
+      if (t === 'battery' && BM1) { const n = L >= 2 ? P['battery.capacity'] : P['abilities.battery.dashCharges'], sec = (L >= 3 ? P['abilities.battery.level3Seconds'] : P['battery.secondsPerCharge']).toFixed(1); return [L ? 'DASH · ' + n + ' CHARGE' + (n === 1 ? '' : 'S') + ' · ' + sec + ' s' : 'NO DASH', L ? wear : '']; } // Edit 91
       if (t === 'battery') return ['CHARGE ' + (L ? P['abilities.battery.level' + L + 'Seconds'] : P['battery.secondsPerCharge']).toFixed(1) + ' s', wear];
       if (t === 'hands') return [L ? P['abilities.hands.conesPerLevel'] * L + ' CONE' + (P['abilities.hands.conesPerLevel'] * L === 1 ? '' : 'S') : 'NO GRAB', L ? wear : ''];
       if (t === 'arms') return [L ? 'PUSH +' + (P['abilities.arms.pushSpeed'] + P['abilities.arms.pushStep'] * (L - 1)) + ' ×' + P['abilities.arms.pushesPerLevel'] * L : 'BOUNCE ONLY', L ? wear : ''];
@@ -2864,7 +2857,7 @@
     let n = 0, sx = 0, sy = 0; for (let i = 0; i < A.d.length; i++) if (A.d[i] !== B.d[i] && B.d[i]) { n++; sx += i % A.w; sy += Math.floor(i / A.w); }
     return (seatArt[t] = n ? { x: sx / n + 0.5, y: sy / n + 0.5 } : { x: A.w / 2, y: A.h / 2 });
   }
-  const wsLocked = (s, t) => !!(STORY && STORY.VERBS.includes(t + '1') && !s.run.owned[t + '1']);
+  const wsLocked = () => false; // Edit 91: Arcade sells every part; Story has no workshop (its parts come by drone)
   const wsCost = (s, n) => (s.storyMode ? '1 UPGRADE' : plural(s.P[NODES7[n].price], 'CREDIT'));
   function wsMove(m) { // the four cards around the chassis, DONE beneath
     const t = SHOP_GRID[app.shopCol][0], [c, r] = WS_POS[t] || [0, 0], at = (c2, r2) => SHOP_GRID.findIndex((g) => WS_POS[g[0]] && WS_POS[g[0]][0] === c2 && WS_POS[g[0]][1] === r2);
@@ -2875,12 +2868,11 @@
   }
   function drawWorkshop(s) {
     veil(); veil();
-    const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36, story = s.storyMode, r0 = s.run;
+    const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36, story = false, r0 = s.run; // Edit 91: Arcade only
     panel(x, y, w, h);
     const nextCh = String((s.report ? s.report.chassis : r0.chassis) + 1).padStart(2, '0');
     txt('WORKSHOP · CHASSIS ' + nextCh, x + 28, y + 44, fLab, FT.accent);
-    const left = story ? s.upgradesLeft() : r0.credits, lvN = story ? STORY.levelOf(r0.points, s.P) : null;
-    const pill = story ? 'LEVEL ' + lvN.level + ' · ' + left + ' UPGRADE' + (left === 1 ? '' : 'S') : plural(left, 'CREDIT');
+    const left = r0.credits, lvN = null, pill = plural(left, 'CREDIT');
     ctx.font = fLab; const pw = ctx.measureText(pill).width + 32;
     rr(x + w - 28 - pw, y + 16, pw, 40, 12); ctx.fillStyle = left > 0 ? C.dummy : FT.item; ctx.fill(); ctx.strokeStyle = left > 0 ? C.joints : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
     txt(pill, x + w - 28 - pw / 2, y + 44, fLab, left > 0 ? C.primary : FT.dim, 'center');
@@ -2927,10 +2919,6 @@
     else if (wsLocked(s, selT)) msg = 'A Farsight drone brings this part. Keep testing.';
     else { const n = nextLevel(s, selT); if (!n) msg = TRACKS[selT].name + ' is at its top level.'; else { const nd = NODES7[n], chk = s.canBuy(n); msg = nd.name + ': ' + nd.desc; if (story && !chk.ok && chk.why === 'level up first' && lvN.next) msg += ' Level ' + (lvN.level + 1) + ' at ' + num(lvN.next) + ' points.'; } }
     wrapText(msg, x + 28, y + 424, w - 56, 24, '400 18px ' + F_UI, FT.text, 2);
-    if (story) { // the loop: points raise the level; each level brings an upgrade
-      const ly = y + 486; txt('LEVEL ' + lvN.level, x + 28, ly, fLab, FT.text); txt(lvN.next ? num(lvN.next - r0.points) + ' POINTS TO LEVEL ' + (lvN.level + 1) + ' · +1 UPGRADE' : 'TOP LEVEL', x + w - 28, ly, '700 15px ' + F_UI, FT.dim, 'right');
-      rr(x + 28, ly + 10, w - 56, 8, 4); ctx.fillStyle = FT.track; ctx.fill(); if (lvN.frac > 0) { rr(x + 28, ly + 10, Math.max(8, (w - 56) * lvN.frac), 8, 4); ctx.fillStyle = C.dummy; ctx.fill(); }
-    }
     // FIT and DONE
     const by2 = y + h - 80, bh = 50, bw = (w - 56 - 16) / 2, n0 = selT ? nextLevel(s, selT) : null, c0 = n0 && !wsLocked(s, selT) ? s.canBuy(n0) : null, can = !!(c0 && c0.ok), onD = app.shopRow === SHOP_ROWS;
     rr(x + 28, by2, bw, bh, 12); ctx.fillStyle = can && !onD ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = can ? C.dummy : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
@@ -3003,7 +2991,7 @@
     const nm = (n, w) => (STORY && !s.has(n) ? '???' : w); // Edit 90: a verb not yet fitted is not named
     const rows = [
       ['MOVE', ['WASD / arrows', 'Stick / d-pad', 'Stick, left'][K3], ''],
-      ['DASH', ['Space / K', 'A', 'A'][K3], '', STORY ? 'Out of a dash, the jump is free' : ''],
+      [STORY && s.dashFitted && !s.dashFitted() ? '???' : 'DASH', ['Space / K', 'A', 'A'][K3], STORY && s.dashFitted && !s.dashFitted() ? 'A Farsight drone brings it' : '', STORY ? 'Out of a dash, the jump is free' : ''], // Edit 91: Battery 1 is the dash
       [nm('jump', 'JUMP'), ['L / Shift', 'B', 'B'][K3], lock('jump', 'Legs 1')],
       [nm('carry', 'GRAB'), ['J / E', 'X', 'X'][K3], lock('carry', 'Hands 1'), s.P['abilities.hands.tapDrop'] ? 'Tap: pick up a cone. Tap with none in reach: put one down' : 'Hold to put a cone down'],
       [nm('push', 'PUSH OFF A CAR'), ['I / Q', 'Y', 'Y'][K3], lock('push', 'Arms 1')],
@@ -3084,7 +3072,6 @@
     drawField(s);
     drawHUD(s);
     drawComboMeter(s);
-    if (!app.paused && s.phase !== 'report' && s.phase !== 'shop') drawLevelUp(s); // Edit 89
     if (app.paused) { if (!app.touchEdit) drawPause(s); } // Edit 87: placing the touch controls shows the game, dimmed, not the menu
     else if (s.phase === 'brief') drawBrief(s); // Edit 81: the tile card
     else if (s.phase === 'gift') drawGiftPopup(s); // Edit 84
@@ -3162,7 +3149,7 @@
     for (let i = TUNE.length - 1; i >= 0; i--) if (gone.has(TUNE[i][0])) TUNE.splice(i, 1);
   }
   if (STORY) { // Edit 81–82: the story (from the next deploy): a credit a body, its prices, the gift, the brief's combos, each tile's write-offs
-    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.level.firstPoints', 1000, 30000, 500], ['story.level.stepPoints', 0, 10000, 250], ['story.level.max', 2, 12, 1], ['story.level.upgrades', 1, 3, 1], ['arcade.giftEvery', 1, 5, 1], ['ui.gift.fallSeconds', 0.1, 3, 0.05], ['ui.gift.holdSeconds', 0, 5, 0.1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
+    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.missFloor', 0, 50, 1], ['damage.bodyHealthOnFoot', 100, 2000, 50], ['abilities.battery.dashCharges', 1, 3, 1], ['ui.gift.fallSeconds', 0.1, 3, 0.05], ['ui.gift.holdSeconds', 0, 5, 0.1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.writeOffs.' + d.id + '.' + t, 1, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.traffic.' + d.id + '.' + t, 0.5, 3, 0.25]); // Edit 85: each tile's traffic
   }

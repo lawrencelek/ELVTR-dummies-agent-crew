@@ -12,14 +12,15 @@
    - Edit 84: gifts ride in on the drone. The drone that ferries the dummy into a gift tile carries the module in view, lowers
      it onto the dummy (proto.droneLiftSeconds), and the sim pauses in phase 'gift' for the gift screen (continueGift). Then it
      carries the dummy across. Monument: Legs 1 at C1, Hands 1 at A2, Arms 1 at C3.
-   - Edit 84: ArcadeSim. One district a run; the drone issues the same verbs, in the story's order, to the new chassis after every
-     arcade.giftEvery write-offs.
+   - Edit 84: ArcadeSim. One district a run. Edit 91: every part for credits; the chassis ships with Battery 1 (arcade.giftEvery
+     retired).
    - Edit 83: P7SIM, the P7.2 values for both modes: the knock keeps proto.recoilScale of the Newtonian velocity and slides at
      most proto.bounce.maxThrow.
-   - Edit 89: Story has no credits. Points level the dummy up: story.level.firstPoints to level 2, each next level
-     story.level.stepPoints more, to story.level.max. A level-up grants story.level.upgrades upgrades; one fits the next level of
-     an unlocked track in the workshop (after a write-off). Verbs still come by drone; a track opens with its verb. Battery is
-     open from the start. Arcade keeps credits.
+   - Edit 89: Story has no credits. Edit 91 (P7.10): no levels either. Every part comes by drone on a fixed tile (story.json
+     gifts, eleven in all): Battery 1 (the dash) at Monument B1 ... Arms 3 at Waterfront B3. Points are the score. The dummy starts
+     on foot (proto.batteryModel 1: no dash before Battery 1; damage.bodyHealthOnFoot). In the tile in test, a hit that would
+     write the chassis off but misses the brief holds it at story.missFloor (hitFloor). Arcade: every part for credits; its
+     chassis ships with Battery 1; no drone gifts.
    - The map reveals cleared tiles and the one in test. Progress is one plain object (`progress`), saved by the page.
    Headless in Node: require('./story.js'). In the page: window.STORY. */
 (function (root) {
@@ -34,7 +35,8 @@
   const DIST = DATA.districts, TOTAL = DIST.reduce((a, d) => a + d.order.length, 0);
   const P7SIM = { 'proto.recoilScale': 0.7, 'proto.bounce.maxThrow': 40, // Edit 83: the ricochet the dummy survives; Arcade and Story
     'world.deckDropGaps': 1, 'world.deckFlightsMin': 1, 'props.cone.minVisible': 0.9, // Edit 85: every highway a flight and a drop gap; cones in view
-    'battery.dashJumpCost': 0, 'abilities.hands.tapDrop': 1 }; // Edit 90: a dash's jump is free; X taps a cone down when none is in reach
+    'battery.dashJumpCost': 0, 'abilities.hands.tapDrop': 1, // Edit 90: a dash's jump is free; X taps a cone down when none is in reach
+    'proto.batteryModel': 1, 'world.dummyMonument': 1 }; // Edit 91: Battery 1 the dash, 2 a second charge, 3 a faster recharge; the circus's monument
   const BASE = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM, P7SIM);
 
   // ---------- progress: one plain object, JSON-safe
@@ -66,15 +68,6 @@
     return (sc) => { const t = !pr.complete && pr.district === id ? activeTile(pr, id) : null; if (!t) return 1; const [c, r] = cellOf(t), dd = Math.abs(sc.col - c) + Math.abs(sc.row - r); return dd === 0 || (dd === 1 && !hasRing(sc)) ? trafficOf(id, t, P) : 1; };
   }
 
-  // ---------- Edit 89: the dummy's level, from its points (both modes may read it; Story spends it)
-  function levelOf(points, P) {
-    P = P || BASE;
-    const first = P['story.level.firstPoints'], step = P['story.level.stepPoints'], max = P['story.level.max'];
-    let level = 1, base = 0, need = first;
-    while (level < max && points >= base + need) { base += need; level++; need += step; }
-    return { level, base, need: level < max ? need : 0, next: level < max ? base + need : null, into: points - base, max, frac: level < max ? Math.max(0, Math.min(1, (points - base) / need)) : 1 };
-  }
-
   // ---------- the brief: text and test
   function taskText(task, P) {
     P = P || BASE;
@@ -98,11 +91,13 @@
     }
   }
 
-  // ---------- Edit 84: the verbs Farsight issues, in the story's order (legs1, hands1, arms1), and the drone that brings them
+  // ---------- Edit 84: the parts Farsight issues, in the story's order, and the drone that brings them. Edit 91: all eleven
   const VERBS = (() => { const out = []; for (const d of DIST) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node && !out.includes(g.node)) out.push(g.node); } return out; })();
-  const VERB_AT = {}; for (const d of DIST) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node && !VERB_AT[g.node]) VERB_AT[g.node] = t; }
-  // Option B (Edit 84): verbs are issued, levels are bought. A verb not yet issued is not in the shop
-  const issued = (sim, n) => !VERBS.includes(n) || !!sim.run.owned[n];
+  const VERB_AT = {}; for (const d of DIST) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node && !VERB_AT[g.node]) VERB_AT[g.node] = d.name + ' ' + t; } // Edit 91: 'Monument C1'
+  // Edit 91: the gifts of tiles already cleared (a save from before Edit 91 catches up), and the next gift on the schedule
+  function giftsCleared(pr) { const out = []; for (const d of DIST) for (const t of doneIn(pr, d.id)) { const g = d.tiles[t].gift; if (g && g.node) out.push(g.node); } return out; }
+  function nextGift(pr) { for (const d of DIST) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node && !(pr.owned && pr.owned[g.node])) return { node: g.node, district: d.id, tile: t, n: tileNumber(d.id, t) }; } return null; }
+  const partsOwned = (owned) => VERBS.filter((n) => owned && owned[n]).length;
   // a drone flies in from (hx, hy) to the body; with a gift it lowers the module, installs it and pauses the sim for the gift screen
   function droneTo(sim, hx, hy, opts) {
     const b = sim.body, P = sim.P;
@@ -134,6 +129,7 @@
     // progress: newProgress() or a saved one, its district = this district. opts: Sim6's (world, warm)
     constructor(id, overrides, progress, opts) {
       const pr = progress, ov = Object.assign({}, P7SIM, overrides || {}), P0 = Object.assign({}, BASE, ov);
+      for (const n of giftsCleared(pr)) pr.owned[n] = true; // Edit 91: a cleared tile's part is on the body
       ov['run.appearances.road'] = P0['story.shiftCars']; // the story has no shift clock: a district's traffic runs for story.shiftCars cars
       for (const L of [1, 2, 3]) ov['economy.price.ability.level' + L] = P0['story.price.ability.level' + L]; // Edit 82: the story's prices, 3, 4, 5
       const carry = { owned: Object.assign({}, pr.owned), credits: pr.credits, points: pr.points, chassis: pr.chassis, writeOffs: pr.writeOffs, t: pr.t, purchases: [], milestones: pr.milestones || {} };
@@ -143,7 +139,7 @@
       super.reset();
       if (!this.W6 || !this.opts || !this.opts.story) return; // the base constructor's first reset, before the world exists
       this.story = this.opts.story; this.storyMode = true;
-      this.fenceHit = null; this.storyLast = null; this.lvSeen = levelOf(this.run.points, this.P).level; // Edit 89
+      this.fenceHit = null; this.storyLast = null;
       const t = this.screenName();
       this.entered = t === activeTile(this.story, this.levelId);
       if (this.entered) this.arrive(t);
@@ -160,9 +156,9 @@
       this.syncProgress();
       this.emit('story-enter', { tile: t, n: tileNumber(this.levelId, t), task: tile ? tile.task : null });
     }
-    installGift(node) { // Edit 84: the module is on the body
-      const t = (this.rescue && this.rescue.tile) || this.screenName();
-      this.run.owned[node] = true; this.story.gifts[this.levelId + ':' + t] = true; this.syncProgress();
+    installGift(node) { // Edit 84: the module is on the body. Edit 91: a heavier chassis with the dash keeps its damage
+      const t = (this.rescue && this.rescue.tile) || this.screenName(), m0 = this.maxHealth(), b = this.body;
+      this.run.owned[node] = true; if (b && b.alive) b.health = Math.min(this.maxHealth(), b.health + this.maxHealth() - m0); this.story.gifts[this.levelId + ':' + t] = true; this.syncProgress();
       this.emit('gift', { node, tile: t }); this.emit('story-gift', { tile: t, node });
     }
     continueBrief() { if (this.phase === 'brief') this.phase = 'play'; }
@@ -170,7 +166,6 @@
     step(cmd) {
       if (this.phase === 'brief' || this.phase === 'gift') return;
       super.step(cmd);
-      if (this.storyMode) { const lv = levelOf(this.run.points, this.P).level; while (this.lvSeen < lv) { this.lvSeen++; this.emit('level-up', { level: this.lvSeen, upgrades: this.upgradesLeft(), points: Math.round(this.run.points) }); } } // Edit 89
       if (this.phase === 'play' && this.pendingBrief && !this.rescue) { this.pendingBrief = false; this.phase = 'brief'; } // after a ferry lands
     }
     // ----- Edit 83: the ferry. After a clear, a drone carries the new chassis from the cleared tile into the next one
@@ -268,6 +263,13 @@
       this.fenceHit = hit;
     }
     spawnBody() { super.spawnBody(); if (this.body) this.body.born = this.t; }
+    // Edit 91: in the tile in test, a hit that would write the chassis off but misses the brief leaves story.missFloor
+    hitFloor(h) {
+      if (!this.storyMode || !this.entered || !this.story) return 0;
+      const t = this.screenName(); if (t !== activeTile(this.story, this.levelId)) return 0;
+      const tile = tileOf(this.levelId, t);
+      return !tile || meets(tile.task, h, h.level, this.P) ? 0 : this.P['story.missFloor'] || 0;
+    }
     writeOff() {
       const b = this.body, hit = b.hits[b.hits.length - 1] || null, level = b.level || 0;
       super.writeOff();
@@ -299,42 +301,18 @@
         this.emit('story-clear', { tile: res.tile, next, district: id, districtDone, storyDone, points: pr.tilePoints[id + ':' + res.tile] });
       }
       this.syncProgress();
-      const lv = levelOf(r.points, P), lv0 = levelOf(b.points0 || 0, P); // Edit 89: the level before and after this body
       this.report = { chassis: b.chassis, hits: b.hits.slice(), points: Math.round(r.points - b.points0), credits: r.credits,
         roadCleared: districtDone && !storyDone, nextRoad: districtDone ? pr.district : null,
-        story: Object.assign({}, res, { cleared, next, districtDone, storyDone, level: lv, levelBefore: lv0.level, upgrades: this.upgradesLeft(), fit: this.fitList() }) };
+        story: Object.assign({}, res, { cleared, next, districtDone, storyDone, parts: partsOwned(r.owned), nextGift: nextGift(pr) }) }; // Edit 91: parts, not levels
       if (storyDone) { pr.complete = true; this.syncProgress(); return this.end('Certified'); }
       this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
     }
-    // ----- Edit 89: upgrades, not credits. Earned by level; one fits the next level of an open track (its verb issued; Battery open)
-    levelInfo() { return levelOf(this.run.points, this.P); }
-    upgradesEarned() { return (this.levelInfo().level - 1) * this.P['story.level.upgrades']; }
-    boughtCount() { return Object.keys(this.run.owned).filter((n) => this.run.owned[n] && this.nodes()[n] && !VERBS.includes(n)).length; }
-    upgradesLeft() { return Math.max(0, this.upgradesEarned() - this.boughtCount()); }
-    trackOpen(t) { const n1 = t + 1; return !VERBS.includes(n1) || !!this.run.owned[n1]; } // a verb-led track opens with its verb
-    fitList() { const out = []; for (const t of Object.keys(this.tracks())) { if (!this.trackOpen(t)) continue; const L = this.tier(t) + 1; if (L <= this.trackMax(t) && this.nodes()[t + L]) out.push(t + L); } return out; } // what an upgrade could fit now
-    canBuy(n) {
-      if (!issued(this, n)) return { ok: false, why: 'gift at ' + VERB_AT[n] }; // Edit 84
-      if (!this.storyMode) return super.canBuy(n);
-      const nd = this.nodes()[n], r = this.run;
-      if (!nd || nd.level > this.trackMax(nd.track)) return { ok: false, why: 'not made' };
-      if (r.owned[n]) return { ok: false, why: 'fitted' };
-      if (nd.pre && !r.owned[nd.pre]) return { ok: false, why: 'needs ' + this.nodes()[nd.pre].name };
-      return this.upgradesLeft() < 1 ? { ok: false, why: 'level up first' } : { ok: true, price: 1, unit: 'upgrade' };
-    }
-    continueReport() { // Edit 89: no upgrade to fit, or nothing to fit it to: straight to the next chassis
-      if (this.storyMode && this.phase === 'report' && (this.upgradesLeft() < 1 || !this.fitList().length) && !(this.report && this.report.roadCleared)) { this.phase = 'shop'; this.leaveShop(); this.emit('shop-skip', {}); return; }
+    // ----- Edit 91: Story has no shop. Every part arrives by drone; the report goes straight to the next chassis
+    canBuy(n) { return this.storyMode ? { ok: false, why: VERB_AT[n] ? 'gift at ' + VERB_AT[n] : 'not issued' } : super.canBuy(n); }
+    buy(n) { if (!this.storyMode) return super.buy(n); const chk = this.canBuy(n); this.emit('purchase-denied', { node: n, why: chk.why }); return chk; }
+    continueReport() {
+      if (this.storyMode && this.phase === 'report' && !(this.report && this.report.roadCleared)) { this.phase = 'shop'; this.leaveShop(); this.emit('shop-skip', {}); return; }
       super.continueReport();
-    }
-    buy(n) {
-      if (!this.storyMode) return super.buy(n);
-      if (this.phase !== 'shop') return { ok: false, why: 'workshop closed' };
-      const chk = this.canBuy(n);
-      if (!chk.ok) { this.emit('purchase-denied', { node: n, why: chk.why }); return chk; }
-      this.run.owned[n] = true; this.run.purchases.push(n);
-      this.emit('purchase', { node: n, price: 1, unit: 'upgrade', upgrades: this.upgradesLeft() });
-      this.mile('firstPurchase', { node: n }); this.syncProgress();
-      return chk;
     }
     syncProgress() {
       const pr = this.story, r = this.run;
@@ -345,27 +323,15 @@
     trace() { const tr = super.trace(); tr.story = JSON.parse(JSON.stringify(this.story)); return tr; }
   }
 
-  // ---------- Edit 84: Arcade. One district a run (Sim6 single); P7SIM's ricochet; after every arcade.giftEvery write-offs the next
-  // verb rides in on a drone to the new chassis, with the same gift screen as the story
+  // ---------- Edit 84: Arcade. One district a run (Sim6 single); P7SIM's ricochet. Edit 91: every part for credits, no drone
+  // gifts; the chassis ships with Battery 1 (the dash)
   class ArcadeSim extends W6.Sim6 {
-    constructor(id, overrides, carry, opts) { super(id, Object.assign({}, P7SIM, overrides || {}), carry, Object.assign({ single: true }, opts || {})); }
-    writeOff() {
-      super.writeOff();
-      const n = this.run.writeOffs, every = this.P['arcade.giftEvery'], next = VERBS.find((v) => !this.run.owned[v]);
-      if (next && every > 0 && n % every === 0) this.pendingGift = next;
+    constructor(id, overrides, carry, opts) {
+      const cy = Object.assign({}, carry || {}); cy.owned = Object.assign({ battery1: true }, cy.owned);
+      super(id, Object.assign({}, P7SIM, overrides || {}), cy, Object.assign({ single: true }, opts || {}));
     }
-    canBuy(n) { return issued(this, n) ? super.canBuy(n) : { ok: false, why: 'drone gift' }; }
-    leaveShop() {
-      super.leaveShop();
-      if (this.pendingGift && this.run.owned[this.pendingGift]) this.pendingGift = this.nextVerb();
-      if (this.phase === 'play' && this.pendingGift && !this.run.ending) { const b = this.body; this.rescue = droneTo(this, b.x, -40, { gift: this.pendingGift }); this.emit('arcade-deliver', { node: this.pendingGift }); this.pendingGift = null; }
-    }
-    installGift(node) { this.run.owned[node] = true; this.emit('gift', { node }); }
-    continueGift() { if (this.phase === 'gift') this.phase = 'play'; }
-    stepRescue(dt) { const rs = this.rescue; if (rs && (rs.gift || rs.given !== undefined)) { stepDelivery(this, dt); return; } super.stepRescue(dt); }
-    nextVerb() { return VERBS.find((v) => !this.run.owned[v]) || null; }
   }
 
-  const api = { levelOf, P7SIM, VERBS, VERB_AT, ArcadeSim, trafficOf, storyDensity, hasRing, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
+  const api = { P7SIM, VERBS, giftsCleared, nextGift, partsOwned, VERB_AT, ArcadeSim, trafficOf, storyDensity, hasRing, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
   if (NODE) module.exports = api; else root.STORY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

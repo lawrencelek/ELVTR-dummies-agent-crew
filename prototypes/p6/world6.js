@@ -37,7 +37,7 @@
   const apronOf = (st) => { const dir = Math.sign(st.high - st.low); return st.axis === 'y' ? { x: st.x - 8, y: dir < 0 ? st.low : st.low - APRON, w: st.w + 16, h: APRON } : { x: dir < 0 ? st.low : st.low - APRON, y: st.y - 8, w: APRON, h: st.h + 16 }; }; // clear ground beyond a flight's foot
   // P6: solids captured while a screen is built. Every mass, pool and sculpture drawn into the ground records its footprint
   // (16-unit cells, merged into row runs) as a level-0 solid of the screen being built.
-  let ACCESS = null; // Edit 85 (P7.4): { dropGaps, flightsMin, coneVisible } for a P7 world (world.deckDropGaps, world.deckFlightsMin, props.cone.minVisible); null: 6.x
+  let ACCESS = null; // Edit 85 (P7.4): { dropGaps, flightsMin, coneVisible } for a P7 world (world.deckDropGaps, world.deckFlightsMin, props.cone.minVisible); null: 6.x. Edit 91: monument (world.dummyMonument)
   let CAP = null, CAPH = null; // CAPH: the drawn top (art px) of the mass being captured (Edit 75: the jumpable tag)
   function capture(fp, x0, y0, x1, y1, world) { // fp in art px (or world units when world), the box in the same units
     if (!CAP) return;
@@ -881,6 +881,40 @@
       const wl = walkwayLayer(polys, ends, deckJoins, (x, y) => roadOk(x, y, OUTER + 8) && !inHill(x + ox, y + oy), sc.roadC, (x, y) => inHill(x + ox, y + oy));
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl;
     }
+    if (name === 'B2' && ACCESS && ACCESS.monument) dummyMonument(sc, B, [VP.ring[0] - ox, VP.ring[1] - oy]); // Edit 91
+  }
+  // Edit 91 (P7.10): the DUMMY MONUMENT on the circus's island (Waterfront B2): the dummy, three times life, in white stone with
+  // black joints and its calibration mark; a stepped plinth with a lit plaque; paving and a ring of LEDs round the island
+  function dummyStatue() {
+    const D = PIX.dummy(Math.PI / 2, 0), k = 3, cY = PIX.c32(PIX.PAL.dummy), cy = PIX.c32(PIX.PAL.dummyD), cW = PIX.c32(PIX.PAL.dummyL);
+    const at = (i, j) => (i < 0 || j < 0 || i >= D.w || j >= D.h ? 0 : D.d[j * D.w + i]), edge = (i, j) => !at(i - 1, j) || !at(i + 1, j) || !at(i, j - 1) || !at(i, j + 1);
+    const tone = (c, i, j) => (c === cW ? N.stoneL : c === cY ? N.stone : c === cy ? N.stoneD : edge(i, j) ? N.stoneD : K.joint); // the silhouette in stone; the joints black
+    const W = 52, sh = D.h * k, H = sh + 44, cx = 26, by = H - 2;
+    const S = { w: W, h: H, d: new Uint32Array(W * H), ox: cx, oy: by - 9 };
+    const put = (x, y, c) => { if (x >= 0 && y >= 0 && x < W && y < H) S.d[y * W + x] = c; };
+    const box = (x0, x1, y0, y1, b, h, top, front, led) => { // a footprint x0..x1 × y0..y1, its base b and height h: top face, front face, a lit coping
+      for (let y = y0 - b - h; y <= y1 - b - h; y++) for (let x = x0; x <= x1; x++) put(x, y, x === x0 || x === x1 || y === y0 - b - h ? CON.l : top);
+      for (let y = y1 - b - h + 1; y <= y1 - b; y++) for (let x = x0; x <= x1; x++) put(x, y, y === y1 - b - h + 1 && led ? led : x === x0 || x === x1 ? CON.d : front);
+    };
+    box(cx - 22, cx + 22, by - 17, by, 0, 3, CON.m, CON.d, N.cyan); // the steps
+    box(cx - 16, cx + 16, by - 14, by - 3, 3, 3, CON.l, CON.m, null);
+    box(cx - 8, cx + 8, by - 12, by - 6, 6, 14, N.stone, N.stoneD, null); // the pedestal
+    for (let x = cx - 5; x <= cx + 5; x++) { put(x, by - 15, K.bldgOutline); put(x, by - 14, x % 2 ? N.cyan : K.white); put(x, by - 13, K.bldgOutline); } // the plaque, lit
+    const fx = cx - Math.floor(D.w * k / 2), fy = by - 6 - 14 - 9 - sh + 3; // feet on the pedestal's top face
+    for (let j = 0; j < D.h; j++) for (let i = 0; i < D.w; i++) { const c = D.d[j * D.w + i]; if (!c) continue; const t = tone(c, i, j); for (let b = 0; b < k; b++) for (let a = 0; a < k; a++) put(fx + i * k + a, fy + j * k + b, t); }
+    const mx = fx + 6 * k + 1, my = fy + 10 * k + 1; // the quartered calibration mark on the chest
+    for (let y = -3; y <= 3; y++) for (let x = -3; x <= 3; x++) if (x * x + y * y <= 10) put(mx + x, my + y, (x < 0) === (y < 0) ? K.joint : N.stoneL);
+    const out = new Uint32Array(S.d); // a one-pixel outline round the figure
+    for (let y = fy - 1; y <= fy + sh; y++) for (let x = fx - 1; x <= fx + D.w * k; x++) { const i = y * W + x; if (y < 0 || x < 0 || x >= W || y >= H || S.d[i]) continue; if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => { const xx = x + a, yy = y + b; return xx >= 0 && yy >= 0 && xx < W && yy < H && S.d[yy * W + xx] && xx >= fx && xx < fx + D.w * k && yy >= fy && yy < fy + sh; })) out[i] = K.bldgOutline; }
+    S.d = out;
+    return S;
+  }
+  function dummyMonument(sc, B, at) {
+    const [cx, cy] = at, x0 = cx / U, y0 = cy / U, R = 25;
+    for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) { const d = Math.hypot(x, y); if (d > R) continue; B.put(x0 + x, y0 + y, d > R - 1.5 ? ((Math.round(Math.atan2(y, x) * 12) % 2) ? N.cyan : CON.l) : (x % 6 === 0 || y % 6 === 0) ? CON.m : ISL); } // paving and an LED ring
+    for (let t = 0; t < 40; t++) for (let j = -9; j <= 9; j++) B.shade(x0 - 4 - t * 0.7 + j * 0.7, y0 + t * 0.7 + j * 0.7, 0.7); // the long shadow, down-left
+    captureRect(cx - 44, cy - 18, 88, 36, 'sculpture');
+    sc.props.push({ spr: dummyStatue(), x: x0, y: y0, by: cy + 18, bldg: 'dummy monument' }); sc.dummyMonument = { cx, cy };
   }
   DISTRICTS.splice(1, 0, WATER);
   // ---------- traffic on one screen (the dummy away)
@@ -1931,7 +1965,7 @@
       this.p6 = true; this.levelId = id; this.list = LEVEL_LIST; this.roadIndex = LEVEL_LIST.indexOf(id); this.isFinal = !!opts.single || this.roadIndex === LEVEL_LIST.length - 1; this.isCity = true;
       const bud = overrides && overrides['run.appearances.road'] != null ? overrides['run.appearances.road'] : P['run.appearances.road'];
       this.P['run.appearances.road'] = bud;
-      const acc = this.P['world.deckDropGaps'] || this.P['world.deckFlightsMin'] || this.P['props.cone.minVisible'] ? { dropGaps: this.P['world.deckDropGaps'], flightsMin: this.P['world.deckFlightsMin'], coneVisible: this.P['props.cone.minVisible'] } : null; // Edit 85 (P7.4)
+      const acc = this.P['world.deckDropGaps'] || this.P['world.deckFlightsMin'] || this.P['props.cone.minVisible'] || this.P['world.dummyMonument'] ? { dropGaps: this.P['world.deckDropGaps'], flightsMin: this.P['world.deckFlightsMin'], coneVisible: this.P['props.cone.minVisible'], monument: this.P['world.dummyMonument'] } : null; // Edit 85 (P7.4). Edit 91: the circus's monument
       this.W6 = opts.world || buildWorld(id, { budget: bud, warm: opts.warm, access: acc, density: opts.density });
       this.reset();
     }

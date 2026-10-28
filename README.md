@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 7.9](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_9.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–90.
+> **Current prototype: [Prototype 7.10](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_10.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–91.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 7.9 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_9.html` | Current (Edit 90). The dash's jump is free; X taps a cone down; buttons named only once fitted, OK and BACK in menus |
+> | 7.10 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_10.html` | Current (Edit 91). Story: every part by drone on a fixed tile, no levels; Arcade: parts for credits; Battery 1 the dash; on foot at A1 (500); a miss of the brief holds at 1; POINTS small top right; damage in red on the chassis; the circus's DUMMY MONUMENT |
+> | 7.9 | `prototypes/p7/` | `dummies_p7_9.html` | Frozen (Edit 90). The dash's jump is free; X taps a cone down; buttons named only once fitted, OK and BACK in menus |
 > | 7.8 | `prototypes/p7/` | `dummies_p7_8.html` | Frozen (Edit 89). Every menu tappable; touch on at the first touch (S Pen phones); Story levels from points, an upgrade a level, no credits; the workshop, the chassis as its interface; LEVEL UP in play |
 > | 7.7 | `prototypes/p7/` | `dummies_p7_7.html` | Frozen (Edit 88). Save games: NEW GAME and three named slots, each with a time stamp and its own story (tile, points, credits, levels); CONTINUE, RENAME, ERASE |
 > | 7.6 | `prototypes/p7/` | `dummies_p7_6.html` | Frozen (Edit 87). One top edge: BODY, the field, a POINTS · CREDITS box; the objective on top; touch controls the player moves and sizes |
