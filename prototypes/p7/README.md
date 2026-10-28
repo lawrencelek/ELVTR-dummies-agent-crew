@@ -1,6 +1,13 @@
-# DUMMIES — Prototype 7.10: Arcade and Story
+# DUMMIES — Prototype 7.11: Arcade and Story
 
-**Prototype 7.10 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–91 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.9 stay frozen as `dummies_p7.html` to `dummies_p7_9.html`; 6.4–6.10 in `../p6/`.
+**Prototype 7.11 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–92 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.10 stay frozen as `dummies_p7.html` to `dummies_p7_10.html`; 6.4–6.10 in `../p6/`.
+
+Prototype 7.11 (Edit 92): Narrative A, Certified.
+- **The story:** Act I Monument, INDUCTION; Act II Parkland, OPENING DAY; Act III Waterfront, CUSTOMS. Farsight narrates: you are new staff, the cars are colleagues.
+  - The act line on every tile card; the act numerals on the map; 27 new tales; the ending: "Your model has passed. It will now be manufactured."
+- **Tile names:** The welcome wall (Monument A1), The neon shops (A2), The dome by the canal (Parkland A2), The east and west customs posts (Waterfront C3, A3).
+- **Tile art** (`world.storyArt`), cosmetic only: the LED wall shows your face and WELCOME; neon shop signs; lit cube edges; the gateway's beam reads THANK YOU · DRIVE SAFE; a paper lantern; water falls over the cascade; CUSTOMS on the pier towers; a container ship at Waterfront B3.
+  - Every solid, floor, stair, spawn and cone home is unchanged.
 
 Prototype 7.10 (Edit 91): parts by task, parts by credits.
 - **Story:** every part comes by drone on a fixed tile, with the gift screen. No levels, no upgrades, no workshop. Points are the score.
@@ -108,9 +115,10 @@ The title has two modes.
 
 ## Files
 
-- **`dummies_p7_10.html`:** the game. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-9/` (Prototype 7.9), `/p7-8/` (Prototype 7.8), `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
-- **`p7_10_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_11.html`:** the game. Open in a browser; no server.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-10/` (Prototype 7.10), `/p7-9/` (Prototype 7.9), `/p7-8/` (Prototype 7.8), `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
+- **`p7_11_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_10.html`:** Prototype 7.10 (Edit 91). Frozen.
 - **`dummies_p7_9.html`:** Prototype 7.9 (Edit 90). Frozen.
 - **`dummies_p7_8.html`:** Prototype 7.8 (Edit 89). Frozen.
 - **`dummies_p7_7.html`:** Prototype 7.7 (Edit 88). Frozen.
@@ -122,10 +130,11 @@ The title has two modes.
 - **`dummies_p7_1.html`:** Prototype 7.1 (Edit 82). Frozen.
 - **`dummies_p7.html`:** Prototype 7 (Edit 81). Frozen.
 - **`story.js`:** Story mode. `StorySim` extends the P6 player sim (`../p6/world6.js`): start tile, fences, the brief and its miss floor, clears, the drone ferry, the eleven parts by drone (Edit 91). `ArcadeSim`: one district a run, Battery 1 fitted, parts for credits. `P7SIM`, the P7.2 physics for both modes. Runs headless in Node.
-- **`../../content/story/story.json`:** the story's content: the order of tiles, 27 tales, Farsight's briefs and gifts. Numbers are registry IDs.
+- **`../../content/story/story.json`:** the story's content (Narrative A, Edit 92): the acts, the order of tiles, 27 titles and tales, Farsight's briefs and gifts, the ending. Numbers are registry IDs.
+- **`../../content/story/narratives_proposal.md`:** the three proposals and the tile audit (Edit 91); A chosen.
 - **`../p6/game.js`, `../p6/world6.js`, `../p6/sim.js`:** the shared game code: the title, the story map, the tile card, fences, the gift screen, the story's HUD.
 - **`build.py`:** `python3 build.py` → both pages. `../p6/build.py` refuses: 6.10 is frozen.
-- **`test_p710.js`:** `node test_p710.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`test_p711.js`:** `node test_p711.js [screenshot folder]` → the checks; screenshots into the folder.
 
 ## Title
 
@@ -187,18 +196,19 @@ The title has two modes.
   - Scales above 1: Monument A1 1.5, B1 1.75; Parkland C1 1.75, C2 1.75, B3 1.25, A3 2, A2 1.5, B1 2, B2 1.25; Waterfront B1 1.5, C2 1.5, A2 1.5.
 - **The map:** uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength. The cursor reads any revealed tile's tale.
 - **Saved** into the slot in play after every count, clear, gift and purchase. A reload: STORY, CONTINUE resumes the tile in test.
-- **The end:** clearing Waterfront B2, the circus, certifies the Test City. The DUMMY MONUMENT stands on its island (Edit 91).
+- **The acts** (Edit 92): Monument ACT I · INDUCTION, Parkland ACT II · OPENING DAY, Waterfront ACT III · CUSTOMS. The act line opens each district's first card.
+- **The end:** clearing Waterfront B2, the circus, certifies the Test City. The DUMMY MONUMENT stands on its island (Edit 91). The ending (Edit 92): the model passes, to be manufactured; a drone carries it to a ship for a market far away.
 
 ### The 27 tiles
 
 | # | District | Tile | Title | Brief: the last hit | Write-offs | Part by drone |
 |---|---|---|---|---|---|---|
-| 1 | Monument | A1 | The LED wall | ANY WRITE-OFF | 1 | — |
+| 1 | Monument | A1 | The welcome wall | ANY WRITE-OFF | 1 | — |
 | 2 | Monument | B1 | The podium bridge | DROP ONTO A CAR | 1 | Battery 1 (the dash) |
 | 3 | Monument | C1 | The LED drum | JUMP INTO A CAR | 1 | Legs 1 (jump) |
 | 4 | Monument | C2 | The portal tower | ON A RAISED ROAD | 1 | — |
 | 5 | Monument | B2 | The monument | STRUCK, NOT DASHING | 1 | — |
-| 6 | Monument | A2 | The neon arcade | CONE-BAITED CAR | 1 | Hands 1 (cones) |
+| 6 | Monument | A2 | The neon shops | CONE-BAITED CAR | 1 | Hands 1 (cones) |
 | 7 | Monument | A3 | The stacked cubes | COMBO ×2 | 1 | — |
 | 8 | Monument | B3 | The LED canyon | JUMP INTO A CAR | 1 | — |
 | 9 | Monument | C3 | The LED gateway | PUSH OFF A CAR | 2 | Arms 1 (push) |
@@ -207,7 +217,7 @@ The title has two modes.
 | 12 | Parkland | C3 | The arch and the roundabout | THROWN INTO A CAR | 1 | — |
 | 13 | Parkland | B3 | The obelisk court | A POLICE CAR | 1 | — |
 | 14 | Parkland | A3 | The belvedere | JUMP INTO A CAR | 1 | Legs 2 |
-| 15 | Parkland | A2 | The canal | ON A RAISED ROAD | 2 | — |
+| 15 | Parkland | A2 | The dome by the canal | ON A RAISED ROAD | 2 | — |
 | 16 | Parkland | A1 | The reservoir terraces | PUSH OFF A CAR | 1 | Arms 2 |
 | 17 | Parkland | B1 | The cascade | CONE-BAITED CAR | 1 | Hands 2 |
 | 18 | Parkland | B2 | The ring over the pools | COMBO ×3 | 2 | — |
@@ -215,9 +225,9 @@ The title has two modes.
 | 20 | Waterfront | B1 | The tunnel portal | JUMP INTO A CAR | 2 | Legs 3 |
 | 21 | Waterfront | C1 | The east portal | A POLICE CAR | 1 | — |
 | 22 | Waterfront | C2 | The east beach terrace | DROP ONTO A CAR | 2 | — |
-| 23 | Waterfront | C3 | The east pier tower | THROWN INTO A CAR | 1 | — |
+| 23 | Waterfront | C3 | The east customs post | THROWN INTO A CAR | 1 | — |
 | 24 | Waterfront | B3 | The stilt houses | PUSH OFF A CAR | 1 | Arms 3 |
-| 25 | Waterfront | A3 | The west pier tower | ON A RAISED ROAD | 2 | — |
+| 25 | Waterfront | A3 | The west customs post | ON A RAISED ROAD | 2 | — |
 | 26 | Waterfront | A2 | The west beach terrace | CONE-BAITED CAR | 1 | — |
 | 27 | Waterfront | B2 | The circus | COMBO ×3 | 2 | — |
 - **Write-offs** (Edit 83): tuned so the tracks fill at the end. Monument 10, Parkland 12, Waterfront 13: 35 bodies (7.1: 62).
@@ -268,6 +278,14 @@ The title has two modes.
   - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢; Adjust layout · Reset layout · Back. A verb not yet fitted reads ??? (Edit 90), the dash included (Edit 91).
 - **Touch buttons** (Edit 90): menus: A OK, B BACK. Play: the verb once fitted (A DASH, B JUMP, X GRAB or DROP, Y PUSH); unfitted: the letter alone, dimmed.
 - **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.missFloor`, `damage.bodyHealthOnFoot`, `abilities.battery.dashCharges`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
+
+![P7.11: the welcome wall greets the new chassis](docs/p711_a1_gap.png)
+
+![P7.11: the tile card: ACT I · INDUCTION](docs/p711_brief.png)
+
+![P7.11: Waterfront B3: the ship that takes the certified model to market](docs/p711_ship.png)
+
+![P7.11: Waterfront A3: the west customs post](docs/p711_customs.png)
 
 ![P7.10: Monument A1 on foot: POINTS top right; the chassis reddened by part, its numbers beside it](docs/p710_chassis_red.png)
 
@@ -353,7 +371,9 @@ The title has two modes.
 
 ## Evidence
 
-- `node test_p710.js docs` → 94/94.
+- `node test_p711.js docs` → 96/96.
+  - Edit 92: Narrative A in the content (three acts, 27 titles and tales with no exclamation marks, the longest 217 characters, the ending); the story's tile art changes no solid, floor, stair, spawn or cone home on any tile, and draws on nine: Monument A1, A2, A3, C3; Parkland C1, B1; Waterfront A3, C3, B3. In the page: the title (P7.11); the ship and a customs post in Arcade's Waterfront.
+- Prototype 7.10's checks, carried over:
   - Edit 91, content: all 11 parts by drone, each once, a track in order, on fixed tiles (Battery 1 at Monument B1 … Arms 3 at Waterfront B3); every Legs, Hands and Arms level on a tile that asks for it; registry `edit91` (5 IDs added; `story.level.*`, `arcade.giftEvery` retired).
   - Edit 91, headless: Story starts on foot (A denied, 1 charge, 500 health); Arcade ships with Battery 1. Battery 2 two charges; Battery 3 0.6 s. Struck on foot clears A1; the report: 0 / 11 parts, next Battery 1 at B1; no shop; the drone brings Battery 1 (500 → 800). A fatal dash in B1 (wants a drop) holds at 1, losing 29 of 30. Nothing for sale in Story; a million points fit nothing. A 7.9 save receives its cleared tiles' parts. Parkland C1 brings Battery 2. Waterfront B2 certifies with all 11 parts; the DUMMY MONUMENT stands there (none in 6.x worlds). Arcade: a credit buys Legs 1, then Hands 1; no drone.
   - Edit 91, page: POINTS small, top right; BODY, the field and the chassis on one top edge; in A1 on foot: Controls MOVE · ??? · ???; the chassis reddened by part, six numbers, 306 tall; the report straight to the Battery 1 drone; the monument in Waterfront B2, solid; Arcade's workshop opens on Legs (1 credit). On the S25 the buttons read nothing in A1; the touch flow taps the report and the gift.
@@ -374,7 +394,8 @@ The title has two modes.
 - A slot's time stamp is the browser's local time.
 - Barks still name the district, not the tile.
 - Short Arcade districts buy few parts: Parkland's 2 write-offs, 2 credits.
-- The narrative is a proposal (D74); eight tile names the level does not show yet (D75). The monument stands from the start; its unveiling waits for the story.
+- The finale is words on the ending screen: no unveiling, no flight to the ship yet (D76). The monument stands from the start.
+- Parkland's visitors and Chassis 0 live in the tales, not on screen.
 - Parkland B1: no road under its highway, a street empty 67% of the time, a cone brief (D70).
 - Tile scales raise culls out of view: 27 in 54 min of soak (9 at 1). The player never sees them.
 - Touch layout: one saved layout a browser, as fractions of the screen; a phone turned between screen shapes keeps the fractions. A placed control can cover a panel (the player's choice).
@@ -382,4 +403,4 @@ The title has two modes.
 
 ## Build
 
-`python3 build.py` → `dummies_p7_10.html` and `p7_10_page.html`.
+`python3 build.py` → `dummies_p7_11.html` and `p7_11_page.html`.

@@ -861,6 +861,7 @@
         sc.floorsX.push({ kind: 'roof', z: 1, x: lx + 2, y: ly, w: w - 4, h: h - 20, key: ly + h + 0.6, drop: true });
       } else if (b.type === 'pier') {
         const plinth = Z1 + RIV, Hh = (b.storeys - 2) * STY, S0 = PIX.building(Math.round(w / U), Math.round(h / U), plinth, PIX.rng(491 + i), CON.l, 2); // P6.3: the plinth's roof at Z1
+        if (ART()) customsSign(S0, plinth); // Edit 92: the pier towers are customs posts
         sc.props.push({ spr: S0, x: u(lx), y: u(ly) + RIV, by: ly + h, bldg: 'pier', plan: [lx, ly, w, h] }); // the plinth, its foot in the water
         sc.props.push({ spr: brutal(u(w - 36), u(h - 38), Hh, PIX.rng(497 + i), led, null, 'n', 'slab'), x: u(lx + 18), y: u(ly + 12) - Z1, by: ly + h + 0.2 });
         sc.floorsX.push({ kind: 'roof', z: 1, x: lx, y: ly, w, h, key: ly + h + 0.6, drop: true }); sc.solidsZ.push({ x: lx + 18, y: ly + 12, w: w - 36, h: h - 38, z: 1 }); // the walkway lands on the plinth roof
@@ -882,6 +883,7 @@
       wl.front = 1e6; sc.layers.push(wl); sc.walk = wl;
     }
     if (name === 'B2' && ACCESS && ACCESS.monument) dummyMonument(sc, B, [VP.ring[0] - ox, VP.ring[1] - oy]); // Edit 91
+    if (name === 'B3' && ART()) containerShip(B, 140, 276); // Edit 92: the ship that takes the certified model to market (art px)
   }
   // Edit 91 (P7.10): the DUMMY MONUMENT on the circus's island (Waterfront B2): the dummy, three times life, in white stone with
   // black joints and its calibration mark; a stepped plinth with a lit plaque; paving and a ring of LEDs round the island
@@ -915,6 +917,84 @@
     for (let t = 0; t < 40; t++) for (let j = -9; j <= 9; j++) B.shade(x0 - 4 - t * 0.7 + j * 0.7, y0 + t * 0.7 + j * 0.7, 0.7); // the long shadow, down-left
     captureRect(cx - 44, cy - 18, 88, 36, 'sculpture');
     sc.props.push({ spr: dummyStatue(), x: x0, y: y0, by: cy + 18, bldg: 'dummy monument' }); sc.dummyMonument = { cx, cy };
+  }
+  // ---------- Edit 92 (P7.11): the story's tile art (world.storyArt). Cosmetic only: pixels on sprites already placed, flat marks on the
+  // ground, props never captured. No solid, floor, stair, spawn or cone home changes
+  const ART = () => !!(ACCESS && ACCESS.storyArt);
+  const onSpr = (S) => ({ put: (x, y, c) => { x = Math.round(x); y = Math.round(y); if (x >= 0 && y >= 0 && x < S.w && y < S.h && S.d[y * S.w + x]) S.d[y * S.w + x] = c; } }); // paints only where the sprite is
+  const lumOf = (c) => ((c & 255) * 0.3 + ((c >>> 8) & 255) * 0.59 + ((c >>> 16) & 255) * 0.11) / 255;
+  function welcomeWall(S, H0) { // Monument A1: the LED wall greets the new chassis: its face in the screen's cyan, WELCOME, NEW STAFF
+    const top = S.h - Math.round(H0 * 0.85), bot = S.h - 4, x0 = 3, x1 = S.w - 5, B2 = onSpr(S), DK = [c32('#0B1530'), c32('#0F1D3E')];
+    for (let y = top + 1; y < bot - 1; y++) for (let x = x0 + 1; x < x1; x++) B2.put(x, y, DK[y % 2]);
+    const D = PIX.doll({}, '', []), cx0 = 14, cy0 = 4, cw = 36, ch = Math.min(31, bot - top - 4), fx = x0 + 8, fy = top + Math.max(2, Math.round((bot - top - ch) / 2));
+    for (let j = 0; j < ch; j++) for (let i = 0; i < cw; i++) { const c = D.d[(cy0 + j) * D.w + cx0 + i]; if (!c) continue; const l = lumOf(c);
+      B2.put(fx + i, fy + j, (fy + j) % 2 && l > 0.3 ? mixK(N.cyan, K.white, 0.25) : l > 0.78 ? K.white : l > 0.55 ? mixK(N.cyan, K.white, 0.45) : l > 0.3 ? N.cyan : mixK(N.cyan, DK[0], 0.7)); }
+    const tx = fx + cw + 8, ty = top + Math.round((bot - top) / 2) - 9;
+    PIX.smallText(B2, 'WELCOME', tx, ty, K.white); PIX.smallText(B2, 'NEW STAFF', tx, ty + 9, N.magenta); PIX.smallText(B2, 'FARSIGHT', tx, ty + 18, N.cyan);
+    return S;
+  }
+  function shopSigns(S, H0, k) { // Monument A2: the neon shops: two shopfronts, a lit sign over each, the windows below
+    const top = S.h - Math.round(H0 * 0.85), bot = S.h - 4, x0 = 3, x1 = S.w - 5, B2 = onSpr(S), n = 2, w = (x1 - x0 - 2) / n, words = [['OPEN', 'SALE'], ['24H', 'NEW']][k % 2], cols = [N.magenta, N.cyan, LEDS[2 % LEDS.length]];
+    for (let q = 0; q < n; q++) {
+      const a = Math.round(x0 + 1 + q * w), b = Math.round(x0 + 1 + (q + 1) * w) - 2, col = cols[(q + k) % 3], sh = Math.min(8, bot - top - 4);
+      for (let y = top + 1; y < bot - 1; y++) for (let x = a; x <= b; x++) B2.put(x, y, y < top + 1 + sh ? (y === top + 1 || y === top + sh || x === a || x === b ? col : c32('#0A0F1E')) : (x === a || x === b) ? K.bldgOutline : (y + x) % 5 === 0 ? K.white : mixK(col, c32('#0A0F1E'), 0.55));
+      const t = words[q], tw = PIX.smallWidth(t); PIX.smallText(B2, t, Math.round((a + b) / 2 - tw / 2) + 1, top + 2 + Math.max(0, Math.floor((sh - 6) / 2)), K.white);
+    }
+    return S;
+  }
+  function cubeRim(S, H, col) { // Monument A3: each cube lit on its edges, the roof's front edge brightest
+    const at = (x, y) => (x < 0 || y < 0 || x >= S.w || y >= S.h ? 0 : S.d[y * S.w + x]), out = new Uint32Array(S.d), e = S.h - H;
+    for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) { if (!at(x, y)) continue; if (!at(x - 1, y) || !at(x + 1, y) || !at(x, y - 1) || !at(x, y + 1)) out[y * S.w + x] = y < e ? K.white : col; else if (y === e || y === e - 1) out[y * S.w + x] = y === e ? col : K.white; }
+    S.d = out; return S;
+  }
+  function gatewayLayer(B, ax, top, bot, Hh) { // Monument C3: the LED gateway: two pylons, a deep lit beam over the road reading THANK YOU · DRIVE SAFE, its shadow across the lanes
+    const L = new PIX.Buf(AW, AH), X0 = Math.round(ax / U), yT = Math.round(top / U), yB = Math.round(bot / U), BW = 10, PW = 8;
+    for (let y = yT - 4; y <= yB + 4; y++) for (let x = X0 - BW; x <= X0 + BW; x++) B.shade(x - Math.round(Hh * 0.7), y + Math.round(Hh * 0.7), 0.78); // the beam's shadow
+    for (const py of [yT, yB]) {
+      for (let y = py - 5; y <= py + 5; y++) for (let x = X0 - PW; x <= X0 + PW; x++) B.shade(x - 5, y + 5, 0.72);
+      for (let z = 0; z < Hh; z++) for (let i = -PW; i <= PW; i++) L.put(X0 + i, py + 5 - z, Math.abs(i) === PW ? K.bldgOutline : Math.abs(i) < 2 ? (z % 6 < 3 ? N.cyan : N.magenta) : i < 0 ? CON.d : CON.l);
+      for (let y = py - 5; y <= py + 5; y++) for (let i = -PW; i <= PW; i++) L.put(X0 + i, y - Hh, Math.abs(i) === PW || y === py - 5 ? K.bldgOutline : CON.l);
+    }
+    for (let y = yT - Hh - 5; y <= yB - Hh + 5; y++) for (let i = -BW; i <= BW; i++) {
+      const edge = Math.abs(i) === BW || y === yT - Hh - 5 || y === yB - Hh + 5, rail = Math.abs(i) === BW - 1, chev = ((y - yT) - Math.abs(i) * 1.5 + 64) % 8 < 3;
+      L.put(X0 + i, y, edge ? K.bldgOutline : rail ? (y % 2 ? N.cyan : K.white) : Math.abs(i) <= 4 ? c32('#0A0F1E') : chev ? N.cyan : N.magenta);
+    }
+    const vtext = (t, y0, c) => { let cy = y0; for (const ch of t) { if (ch === ' ') { cy += 4; continue; } const w = PIX.smallWidth(ch); const G = { put: (x, y) => L.put(X0 + 3 - y, cy + x, c) }; PIX.smallText(G, ch, 0, 0, c); cy += w + 1; } return cy; }; // reads top to bottom
+    const t1 = 'THANK YOU', t2 = 'DRIVE SAFE', len = (t) => [...t].reduce((a, ch) => a + (ch === ' ' ? 4 : PIX.smallWidth(ch) + 1), 0), mid = Math.round((yT + yB) / 2) - Hh;
+    vtext(t1, mid - len(t1) - 3, K.white); vtext(t2, mid + 4, N.cyan);
+    return L;
+  }
+  function lanternSprite() { // Parkland C1: the paper lantern, the Expo's first exhibit, lit again on its pavilion
+    const W = 30, H = 46, cx = 15, S = { w: W, h: H, d: new Uint32Array(W * H), ox: cx, oy: H - 1 }, put = (x, y, c) => { if (x >= 0 && y >= 0 && x < W && y < H) S.d[y * W + x] = c; };
+    const cy = 22, rx = 12, ry = 16;
+    for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) { const d = (x / rx) ** 2 + (y / ry) ** 2; if (d > 1) continue; put(cx + x, cy + y, d > 0.86 ? mixK(K.white, N.cyan, 0.45) : Math.abs(y) % 5 === 0 ? mixK(K.white, CON.d, 0.45) : x > 4 ? mixK(K.white, N.cyan, 0.18) : K.white); }
+    for (let x = -6; x <= 6; x++) for (let t = 0; t < 3; t++) { put(cx + x, cy - ry - t, t === 2 ? K.bldgOutline : CON.d); put(cx + x, cy + ry + t, t === 2 ? K.bldgOutline : CON.d); }
+    for (let t = 0; t < 4; t++) put(cx, cy - ry - 3 - t, CON.d); // the hanger
+    for (let t = 0; t < 6; t++) put(cx, cy + ry + 3 + t, t > 3 ? N.magenta : CON.l); // the tassel
+    return S;
+  }
+  function falls(B, x0, x1, yTop, yFoot) { // Parkland B1: water spilling over a pool's front lip, down its face
+    const a = Math.round(x0 + (x1 - x0) * 0.3), b = Math.round(x0 + (x1 - x0) * 0.7);
+    for (let y = Math.round(yTop); y <= Math.round(yFoot); y++) for (let x = a; x <= b; x++) B.put(x, y, (x + y * 2) % 5 === 0 ? K.white : x % 2 ? N.water2 : mixK(N.cyan, K.white, 0.3));
+    for (let x = a - 1; x <= b + 1; x++) B.put(x, Math.round(yFoot) + 1, (x % 2) ? K.white : mixK(N.cyan, K.white, 0.5)); // foam at the foot
+  }
+  function runnel(B, cx, y0, y1) { // a grated channel across the path to the next pool
+    for (let y = Math.round(y0); y <= Math.round(y1); y++) for (let x = Math.round(cx) - 2; x <= Math.round(cx) + 2; x++) B.put(x, y, Math.abs(x - cx) > 1.5 ? CON.l : y % 2 ? N.water2 : CON.d);
+  }
+  function customsSign(S, plinth) { // Waterfront A3, C3: the pier towers are customs posts: CUSTOMS on the plinth, lit
+    const B2 = onSpr(S), t = 'CUSTOMS', tw = PIX.smallWidth(t), y = S.h - plinth + 3, x = Math.round(S.w / 2 - tw / 2);
+    for (let yy = y - 2; yy < y + 8; yy++) for (let xx = x - 3; xx < x + tw + 3; xx++) B2.put(xx, yy, yy === y - 2 || yy === y + 7 ? N.cyan : c32('#0A0F1E'));
+    PIX.smallText(B2, t, x, y, K.white);
+    return S;
+  }
+  function containerShip(B, x0, y0) { // Waterfront B3: the ship that will take the certified model to market, moored on the river
+    const L = 120, Wd = 22, put = (x, y, c) => B.put(x0 + x, y0 + y, c);
+    for (let t = 0; t < 30; t++) for (let x = 6; x < L; x++) B.shade(x0 + x - t * 0.7, y0 + Wd + t * 0.7, 0.9); // its shadow on the water
+    for (let y = 0; y < Wd; y++) for (let x = 0; x < L; x++) { const bow = x > L - 14 ? (x - (L - 14)) * 0.8 : 0; if (Math.abs(y - Wd / 2) > Wd / 2 - bow) continue; put(x, y, Math.abs(y - Wd / 2) > Wd / 2 - bow - 1.5 ? K.white : c32('#2A3346')); }
+    const cols = [N.cyan, N.magenta, c32('#5F6E86'), c32('#C9D3DA'), LEDS[2 % LEDS.length]];
+    for (let r = 0; r < 3; r++) for (let q = 0; q < 8; q++) { const bx = 24 + q * 10, by = 3 + r * 6; for (let y = 0; y < 5; y++) for (let x = 0; x < 9; x++) put(bx + x, by + y - 2, y === 0 || x === 0 ? K.bldgOutline : cols[(q * 3 + r * 2 + q * r) % cols.length]); }
+    for (let y = 2; y < Wd - 2; y++) for (let x = 6; x < 18; x++) put(x, y - 6, y === 2 || x === 6 || x === 17 ? K.bldgOutline : y % 3 === 0 ? N.cyan : K.white); // the bridge
+    for (let x = -10; x < 0; x++) for (const yy of [Wd / 2 - 3, Wd / 2 + 3]) if ((x + 20) % 3) put(x, Math.round(yy + x * 0.2), mixK(N.cyan, K.white, 0.5)); // the wake
   }
   DISTRICTS.splice(1, 0, WATER);
   // ---------- traffic on one screen (the dummy away)
@@ -1029,6 +1109,7 @@
       const S = ledPanel(PIX.building(w, h, H, PIX.rng(seed + i), [N.magenta, N.cyan, LEDS[2 % LEDS.length]][i % 3], Math.max(2, Math.round(H / STY))), H, [[N.magenta, N.cyan], [N.cyan, LEDS[2 % LEDS.length]], [LEDS[2 % LEDS.length], N.magenta]][i % 3]);
       if (i === 0) brutalShadow(B, x, y, w, h, Math.round(cubes.reduce((a, c) => a + c[4], 0) * 0.55), null);
       if (i === 0) captureRect(x * U, y * U, w * U, h * U);
+      if (ART()) cubeRim(S, H, [N.magenta, N.cyan, LEDS[2 % LEDS.length]][i % 3]); // Edit 92: each cube lit on its edges
       sc.props.push({ spr: S, x, y: y - base, by, key: by + i * 0.01, bldg: i === 0 ? 'cubes' : undefined }); base += H;
     });
   }
@@ -1238,7 +1319,10 @@
       for (let i = 0; i < 3; i++) { const x0 = sp[0] + 8 + i * 32, x1 = sp[2] - 8 - i * 32, y0 = sp[1] + 8 + i * 6, y1 = sp[3] - 8 - i * 96, base = i * 4; waterBlock(B, u(x0), u(y0), u(x1), u(y1), 8, base, 3);
         if (i) for (let x = Math.round(u(x0 + (x1 - x0) * 0.3)); x <= Math.round(u(x0 + (x1 - x0) * 0.7)); x++) if (x % 2 === 0) for (let t = 0; t <= base + 3; t++) B.put(x, Math.round(u(y1)) - t, t > base + 1 ? K.white : x % 4 === 0 ? mixK(N.cyan, K.white, 0.5) : N.water2); }
       sc.terraces = true; }
+    const cas = (r, i) => [u(r[0] + 12), u(r[1] + (i ? 16 : 32)), u(r[2] - 12), u(r[3] - 12), 12 - i * 3]; // Edit 92: the cascade's pools, as drawn
+    if (name === 'B1' && ART()) pools.forEach((r, i) => { if (i + 1 >= pools.length) return; const a = cas(r, i), b = cas(pools[i + 1], i + 1); runnel(B, (a[0] + a[2]) / 2, a[3] + 1, b[1]); });
     if (name === 'B1') pools.forEach((r, i) => waterBlock(B, u(r[0] + 12), u(r[1] + (i ? 16 : 32)), u(r[2] - 12), u(r[3] - 12), 6, 12 - i * 3, 3)); // the top pool clear of the north flight by more than a body // cascade, falling south beside the highway
+    if (name === 'B1' && ART()) pools.forEach((r, i) => { if (i + 1 >= pools.length) return; const a = cas(r, i); falls(B, a[0], a[2], a[3] - a[4] - 2, a[3]); }); // Edit 92: water spills over each lip
     if (name === 'C1') { // footbridge over the avenue (x = 160) at Z1; Edit 55.2: it runs on west to the B1 highway. 6.2: its flight down the south side, on the x 480 path; the lantern pavilion in its cell
       const esc = [escC1];
       const wpoly = [[-40, 304], [480 + SWD / 2, 304], [480 + SWD / 2, 336], [-40, 336]]; wpoly.spine = [[-40, 320], [480, 320]]; const wl = walkwayLayer([wpoly], [], esc.map((st) => [st.x, st.y, st.w, st.h]), () => true, sc.roadC);
@@ -1246,6 +1330,7 @@
       wl.cols = [[80, 320], [240, 320]].map(([x, y]) => ({ cx: x, cy: y, key: y + 8, x: x - 8, y: y - 8, spr: PIX.column(4, 4, Z1) }));
       wl.front = 9e5; sc.layers.push(wl); sc.walk = wl; wl.shadeOn(B); wl._shaded = true;
       block(B, u(sp[0] + 4), u(sp[1] + 6), u(sp[2] - 4), u(sp[3] - 6), 4, 0, 10, 'conc', LEDS[0], true); block(B, u(sp[0] + 20), u(sp[1] + 20), u(sp[2] - 20), u(sp[3] - 20), 3, 10, 2, 'grass', LEDS[3 % LEDS.length], false);
+      if (ART()) sc.props.push({ spr: lanternSprite(), x: u((sp[0] + sp[2]) / 2), y: u((sp[1] + sp[3]) / 2) - 12, by: sp[3] - 5, bldg: 'lantern' }); // Edit 92: the paper lantern, lit; never solid
     }
     if (name === 'A2') poolFP(B, chamf(sp[0] + 8, sp[1] + 8, sp[2] - 8, sp[3] - 8, 8)); // canal under the highway's south edge (6.2: in its cells)
     if (name === 'B1' || name === 'A1') { // Edit 55.2: the Z1 walkway from C1 joins the B1 highway at both parapets and lands in A1 by escalator
@@ -1275,7 +1360,7 @@
   function monumentTile(sc, B, name, roadOk, free, rng, runs) {
     const u = (v) => v / U, R = sc.reserve, bld = (x, y, w, h, st, i, panel) => { let S = PIX.building(Math.round(u(w)), Math.round(u(h)), st * EXT(P['world.storeyHeight']), PIX.rng(700 + i * 31 + sc.col * 7 + sc.row * 3), LEDS[(i + sc.col + sc.row) % LEDS.length], st); if (panel) S = ledPanel(S, st * EXT(P['world.storeyHeight']), [N.magenta, N.cyan, LEDS[2 % LEDS.length]]); sc.props.push({ spr: S, x: u(x), y: u(y), by: y + h, bldg: 'block' }); R.push([x, y, w, h]); captureRect(x, y, w, h); };
     if (name === 'B2') return monumentCentre(sc, B, roadOk);
-    if (name === 'A1') bld(40, 24, 240, 180, 12, 1, true); // LED-wall tower facing the entry
+    if (name === 'A1') { bld(40, 24, 240, 180, 12, 1, true); if (ART()) { const p = sc.props[sc.props.length - 1]; welcomeWall(p.spr, 12 * EXT(P['world.storeyHeight'])); } } // LED-wall tower facing the entry; Edit 92: it greets the new chassis
     if (name === 'B1') { // the skybridge from a podium roof south over the road to the walkway ring
       const pod = [300, 16, 200, 140]; captureRect(...pod); sc.roofs.push({ rect: pod, z: 1 }); sc.solidsZ.push({ x: 310, y: 20, w: 120, h: 70, z: 1 });
       sc.props.push({ spr: PIX.building(Math.round(u(pod[2])), Math.round(u(pod[3])), Z1, PIX.rng(77), LEDS[1], 1), x: u(pod[0]), y: u(pod[1]), by: pod[1] + pod[3], podium: true, bldg: 'podium' });
@@ -1287,7 +1372,7 @@
       sc.stairs.push(st); sc.props.push(Object.assign(stairProp(st, Z1), { key: 1e6 })); // after the podium
     }
     if (name === 'C1') { const dx = 450, dy = 540, rx = 56, ry = 28; capture((wx, wy) => ((wx - dx) / rx) ** 2 + ((wy - dy) / ry) ** 2 <= 1, dx - rx, dy - ry, dx + rx, dy + ry, true); const S = drum(rx / U, ry / U, 12 * EXT(P['world.storeyHeight']), N.cyan); sc.props.push({ spr: S, x: u(dx), y: u(dy), by: dy + ry + 2, bldg: 'drum', plan: [dx - 39, dy - 19, 78, 38] }); R.push([dx - rx - 16, dy - ry - 16, 2 * rx + 32, 2 * ry + 32]); } // LED drum in the bend (P6.3: solid to its ellipse)
-    if (name === 'A2') { bld(656, 416, 136, 96, 3, 2, true); bld(336, 430, 128, 80, 3, 5, true); } // neon arcades either side of the highway, south of the road
+    if (name === 'A2') { bld(656, 416, 136, 96, 3, 2, true); bld(336, 430, 128, 80, 3, 5, true); if (ART()) sc.props.slice(-2).forEach((p, k) => { shopSigns(p.spr, 3 * EXT(P['world.storeyHeight']), k); for (let x = Math.round(p.x) + 2; x < p.x + p.spr.w - 3; x++) for (let t = 1; t <= 3; t++) B.mix(x, Math.round(p.by / U) + t, [N.magenta, N.cyan][(Math.floor(x / 8) + k) % 2], 0.4 - t * 0.1); }); } // neon arcades either side of the highway, south of the road; Edit 92: shopfronts and their glow
     if (name === 'C2') chongqing(sc, B, sc.D.chongqing);
     if (name === 'A3') { tiles(B, (wx, wy) => wx > 200 && wx < 472 && wy > 416 && wy < 632 && roadOk(wx, wy, OUTER), true); cubeStack(sc, B, [[144, 262, 64, 40, 28], [166, 252, 62, 38, 26], [134, 258, 56, 34, 24]], 604, 640); R.push([184, 400, 300, 240]); } // on a lit plaza // Edit 54: stacked LED cubes, each cantilevered off the one below
     if (name === 'B3') { // the LED canyon either side of the jog; Edit 54: a Z1 skybridge crosses the jog at 90°. P6.3 (Edit 65): from podium roof
@@ -1307,9 +1392,12 @@
     }
     if (name === 'C3') { // an LED gateway arch over the road: pylons either side, a lit beam above the traffic
       const ax = 560, top = 400 - 24, bot = 560 + 24, Hh = 40;
-      const Lr = new PIX.Buf(AW, AH);
-      for (const py of [top, bot]) for (let z = 0; z < Hh; z++) for (let i = -2; i <= 2; i++) Lr.put(u(ax) + i, u(py) - z, i < 0 ? CON.d : i > 0 ? CON.l : CON.m);
-      for (let y = u(top) - Hh; y <= u(bot) - Hh; y++) for (let i = -3; i <= 3; i++) Lr.put(u(ax) + i, y, Math.abs(i) === 3 ? K.bldgOutline : (y + i) % 4 < 2 ? N.magenta : N.cyan);
+      let Lr = new PIX.Buf(AW, AH);
+      if (ART()) Lr = gatewayLayer(B, ax, top, bot, Hh); // Edit 92: pylons, a deep beam with chevrons, its shadow
+      else {
+        for (const py of [top, bot]) for (let z = 0; z < Hh; z++) for (let i = -2; i <= 2; i++) Lr.put(u(ax) + i, u(py) - z, i < 0 ? CON.d : i > 0 ? CON.l : CON.m);
+        for (let y = u(top) - Hh; y <= u(bot) - Hh; y++) for (let i = -3; i <= 3; i++) Lr.put(u(ax) + i, y, Math.abs(i) === 3 ? K.bldgOutline : (y + i) % 4 < 2 ? N.magenta : N.cyan);
+      }
       sc.layers.push({ L: Lr, lift: 0, z: 0, cols: [], front: 1e6 + 5, inBand: () => false, gate: true });
     }
     // further blocks: commerce with LED façades
@@ -1965,7 +2053,7 @@
       this.p6 = true; this.levelId = id; this.list = LEVEL_LIST; this.roadIndex = LEVEL_LIST.indexOf(id); this.isFinal = !!opts.single || this.roadIndex === LEVEL_LIST.length - 1; this.isCity = true;
       const bud = overrides && overrides['run.appearances.road'] != null ? overrides['run.appearances.road'] : P['run.appearances.road'];
       this.P['run.appearances.road'] = bud;
-      const acc = this.P['world.deckDropGaps'] || this.P['world.deckFlightsMin'] || this.P['props.cone.minVisible'] || this.P['world.dummyMonument'] ? { dropGaps: this.P['world.deckDropGaps'], flightsMin: this.P['world.deckFlightsMin'], coneVisible: this.P['props.cone.minVisible'], monument: this.P['world.dummyMonument'] } : null; // Edit 85 (P7.4). Edit 91: the circus's monument
+      const acc = this.P['world.deckDropGaps'] || this.P['world.deckFlightsMin'] || this.P['props.cone.minVisible'] || this.P['world.dummyMonument'] || this.P['world.storyArt'] ? { dropGaps: this.P['world.deckDropGaps'], flightsMin: this.P['world.deckFlightsMin'], coneVisible: this.P['props.cone.minVisible'], monument: this.P['world.dummyMonument'], storyArt: this.P['world.storyArt'] } : null; // Edit 85 (P7.4). Edit 91: the circus's monument. Edit 92: the story's tile art
       this.W6 = opts.world || buildWorld(id, { budget: bud, warm: opts.warm, access: acc, density: opts.density });
       this.reset();
     }

@@ -1,6 +1,6 @@
 # DUMMIES — Story: three narratives in three acts (proposal, D74)
 
-**28 October 2026 · Lawrence Lek** · Proposes the Story spine for Edit 92. Amends `content/story/story.json` (tales, district intros) once chosen. Builds: none. Audit renders: `tools/p6_shots.js` on the 7.9 world.
+**28 October 2026 · Lawrence Lek** · **Chosen: A, CERTIFIED (user, 28 October; D74 closed). Built in GDD Edit 92 / Prototype 7.11.** Proposed the Story spine for Edit 92. Amends `content/story/story.json` (tales, district intros) once chosen. Builds: none. Audit renders: `tools/p6_shots.js` on the 7.9 world.
 
 - **Request (user, 28 October):**
   - "Let's work out a story that can flow from the Monument to the Parkland to the Waterfront."
