@@ -1883,8 +1883,8 @@
   class Sim6 extends X.Sim {
     constructor(id, overrides, carry, opts) {
       super('straight', Object.assign({}, P6SIM, overrides || {}, { 'run.appearances.road': 0 }), carry); // Edit 75: P6's values in the player sim too
-      opts = opts || {};
-      this.p6 = true; this.levelId = id; this.list = LEVEL_LIST; this.roadIndex = LEVEL_LIST.indexOf(id); this.isFinal = this.roadIndex === LEVEL_LIST.length - 1; this.isCity = true;
+      opts = opts || {}; this.opts = opts; // Edit 81 (P7): opts.startTile (the story starts a district on its first tile); opts.single (Arcade: one district is a whole run)
+      this.p6 = true; this.levelId = id; this.list = LEVEL_LIST; this.roadIndex = LEVEL_LIST.indexOf(id); this.isFinal = !!opts.single || this.roadIndex === LEVEL_LIST.length - 1; this.isCity = true;
       const bud = overrides && overrides['run.appearances.road'] != null ? overrides['run.appearances.road'] : P['run.appearances.road'];
       this.P['run.appearances.road'] = bud;
       this.W6 = opts.world || buildWorld(id, { budget: bud, warm: opts.warm });
@@ -1902,7 +1902,7 @@
       this.quota = P['world.district.' + this.levelId + '.quota'];
       this.events = []; this.effects = []; this.milestones = Object.assign({}, cy.milestones); this.report = null; this.turnHist = [];
       for (const s of Wd.sims) s.models = this.models; // learning is the fleet's: every driver reads the same models
-      const [tile, edge] = D.start, c0 = 'ABC'.indexOf(tile[0]), r0 = +tile[1] - 1;
+      const [tile0, edge] = D.start, tile = (this.opts && this.opts.startTile) || tile0, c0 = 'ABC'.indexOf(tile[0]), r0 = +tile[1] - 1;
       this.district = { cols: 3, rows: 3, cur: [c0, r0], start: [c0, r0], visited: new Set([r0 * 3 + c0]), path: [], lastFlip: null, edge,
         cells: [0, 1, 2].map((r) => [0, 1, 2].map((c) => { const g = Wd.at(c, r).game; return { center: g.center, ring: g.ring, decks: g.deckLines, focal: null, landmark: g.landmark }; })) };
       this.enter(Wd.at(c0, r0));
@@ -2175,15 +2175,17 @@
       const lw = b.level > 0 ? (b.level === 2 ? Z2 : Z1) * U : 0; // P6.4 (Edit 66): at a level, a north–south crossing happens at the edge as drawn
       if (lw && (sd === 'S' || sd === 'N' || !sd) && b.x >= 0 && b.x <= W) {
         if (sd === 'S' && b.y <= H + lw && this.neighbourFloor(b.x, b.y, b.level)) return; // still drawn on this screen
-        if (!sd && b.y < lw && this.W6.at(this.district.cur[0], this.district.cur[1] - 1)) { const nb = this.W6.at(this.district.cur[0], this.district.cur[1] - 1), i = nb.game.floors.findIndex((q) => q.z === b.level && q.has(b.x, b.y + H)); if (i >= 0) return this.flip('N', [this.district.cur[0], this.district.cur[1] - 1], i); }
+        if (!sd && b.y < lw && this.W6.at(this.district.cur[0], this.district.cur[1] - 1) && this.canCross([this.district.cur[0], this.district.cur[1] - 1])) { const nb = this.W6.at(this.district.cur[0], this.district.cur[1] - 1), i = nb.game.floors.findIndex((q) => q.z === b.level && q.has(b.x, b.y + H)); if (i >= 0) return this.flip('N', [this.district.cur[0], this.district.cur[1] - 1], i); }
       }
       if (!sd) return;
       const to = [this.district.cur[0] + SIDE[sd][0], this.district.cur[1] + SIDE[sd][1]], r = this.P['body.radius'];
-      if (!this.W6.at(to[0], to[1])) { b.x = Math.max(r, Math.min(W - r, b.x)); b.y = Math.max(r, Math.min(H - r, b.y)); return; } // the district's outer edge (B1: the top of the screen, inside the tunnel)
+      if (!this.W6.at(to[0], to[1]) || !this.canCross(to)) { b.x = Math.max(r, Math.min(W - r, b.x)); b.y = Math.max(r, Math.min(H - r, b.y)); return; } // the district's outer edge (B1: the top of the screen, inside the tunnel); Edit 81: a story fence
       let fl = null;
       if (b.level > 0) { const q = this.neighbourFloor(b.x, b.y, b.level); if (!q) { b.x = Math.max(0, Math.min(W, b.x)); b.y = Math.max(0, Math.min(H, b.y)); return; } fl = q.i; }
       this.flip(sd, to, fl);
     }
+    canCross() { return true; } // Edit 81: the story fences a tile until it is cleared (p7/story.js)
+    edgeLift() { const b = this.body; return b.level > 0 ? (b.level === 2 ? Z2 : Z1) * U : 0; } // Edit 81: at a level the screen's edge is drawn this far down (P6.4)
     flip(sd, to, fl) {
       const D = this.district, b = this.body, P = this.P, from = D.cur.slice(), old = this.sc, nb = this.W6.at(to[0], to[1]);
       for (const cn of this.cones) if (cn.state === 'flight') Object.assign(cn, { state: 'free', vx: 0, vy: 0 });

@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 6.10](prototypes/p6/README.md)** (27 October 2026). Open `prototypes/p6/dummies_p6_10.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–80.
+> **Current prototype: [Prototype 7](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–81.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 6.10 | [`prototypes/p6/`](prototypes/p6/README.md) | `dummies_p6_10.html` | Current (Edit 80). Battery (A), Legs (B), Hands (X: tap to pick up, hold 0.3 s to put down; one or two cones), Arms (Y: push off a car you hit, a timed ricochet; +160/200/240 u/s, 1/2/3 pushes before landing); the throw and the hitch retire |
+> | 7 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7.html` | Current (Edit 81). Two modes on the title. ARCADE: the 6.10 game, one district a run. STORY: the Test City, 27 tiles from Monument A1 to Waterfront B2; a tale and a Farsight brief per tile; 3 counted write-offs clear a tile; fenced until cleared; power-ups for clears and score; the map revealed as you go; saved in the browser |
+> | 6.10 | `prototypes/p6/` | `dummies_p6_10.html` | Frozen (Edit 80). Battery (A), Legs (B), Hands (X: tap to pick up, hold 0.3 s to put down; one or two cones), Arms (Y: push off a car you hit, a timed ricochet; +160/200/240 u/s, 1/2/3 pushes before landing); the throw and the hitch retire |
 > | 6.9 | `prototypes/p6/` | `dummies_p6_9.html` | Frozen (Edit 79). Battery, Legs, Arms at three levels; hold X to throw; Arms 3 hitches a car and slings off it; combos pay for variety, hold their clock in the air, show a meter |
 > | 6.8 | `prototypes/p6/` | `dummies_p6_8.html` | Frozen (Edit 78). Four levels per ability, linear steps (airtime 0.3–0.6 s, 1–4 cones, throw +40, recharge −0.1 s); the Newtonian bounce off cars, tunable |
 > | 6.7 | `prototypes/p6/` | `dummies_p6_7.html` | Frozen (Edit 77). Four ability tracks by level, one per button (Battery A, Legs B, Arms X, Throw Y); each level shields its ability from damage; run to clear |

@@ -112,6 +112,8 @@
     // Edit 80 (P6.10): Hands carry cones (two levels: two hands); Arms push off cars, a ricochet: stronger, and once more, a level
     'abilities.hands.maxLevel': 2, 'abilities.hands.conesPerLevel': 1,
     'abilities.arms.pushSpeed': 160, 'abilities.arms.pushStep': 40, 'abilities.arms.pushesPerLevel': 1, 'abilities.arms.pushReach': 10, 'abilities.arms.pushWindow': 0.3,
+    // Edit 81 (P7): Story mode. Write-offs a tile; power-ups for a clear, a gift and a score; the brief's combo lengths; the story's shift
+    'story.tileWriteOffs': 3, 'story.clearPowerUps': 1, 'story.pointsPerPowerUp': 15000, 'story.giftPowerUps': 1, 'story.task.comboEasy': 2, 'story.task.comboHard': 3, 'story.shiftCars': 5000,
     'proto.parts.armPushLoss': 1, 'proto.parts.armPushFloor': 0.5,
     // Edit 79: combos. Variety pays; the clock stops in the air; a thrown cone that hits a car links the chain
     'scoring.comboVariety': 0, 'scoring.comboAirPause': 0, 'scoring.coneLink': 0, 'scoring.coneHitPoints': 20,

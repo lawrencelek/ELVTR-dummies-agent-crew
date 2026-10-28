@@ -4,8 +4,8 @@
 
 Prototype 6.10 follows 6.9 (Edit 79) with Edit 80: four tracks again. Hands (X, two levels): a tap picks up a cone, a hold of 0.3 s puts it down; Hands 1 carries one, Hands 2 two. Arms (Y, three levels): push off a car you hit or touch, a ricochet you time; stronger and once more per level. The throw, the hitch and the cone link retire. 6.9 (Edit 79) brought: three abilities of three levels (Battery, Legs, Arms); X holds to throw; Arms 3 hitches a passing car and slings off it; combos pay for variety and keep their clock in the air; a thrown cone into a car links a chain; a combo meter. 6.8 (Edit 78) brought: four levels per ability, each a linear step (airtime 0.3–0.6 s, 1–4 cones, throw range +40, recharge −0.1 s); the bounce off a car is Newtonian and tunable. 6.7 (Edit 77) brought: the shop sells four ability tracks, one per button, by level; each level shields its ability from damage; only a running or dash jump clears. 6.6 (Edit 76) brought: the screen fills the window at any scale; touch controls only on phones and tablets, in the game's glass panels; a jump that keeps its take-off speed (Link's Awakening); the stair-head freeze fixed. A jump test yard sits beside it (`../jump/`). 6.5 (Edit 75) brought DIRECT turning; A dash, B jump, X grab, Y throw, each unlocked in the shop; the jumpable tag; combo scoring; Ricochet; gamepads of any kind; landscape touch. 6.4 (Edit 72) brought the ring diagnosis, vehicles at 0.9 size and steady roundabout signals.
 
-- **`dummies_p6_10.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/` (jump test) and `/controls/` (control test), from [ELVTR-Multiagent-Submission-5](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-5). Gamepads, touch and keys. Claude's hosted preview blocks gamepads.
+- **`dummies_p6_10.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server. Frozen since Prototype 7 (`../p7/`).
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/p6-10/ (6.10); the site's front page is now Prototype 7. Also `/jump/` (jump test) and `/controls/` (control test), from [ELVTR-Multiagent-Submission-5](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-5). Gamepads, touch and keys. Claude's hosted preview blocks gamepads.
 - **`p6_10_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
 - **`dummies_p6_9.html`:** Prototype 6.9 (Edit 79). Frozen.
 - **`dummies_p6_8.html`:** Prototype 6.8 (Edit 78). Frozen.
@@ -313,4 +313,4 @@ Prototype 6.10 follows 6.9 (Edit 79) with Edit 80: four tracks again. Hands (X, 
 
 ## Build
 
-`python3 build.py` → `dummies_p6_10.html` and `p6_10_page.html`. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
+Frozen (28 October): `dummies_p6_10.html` and `p6_10_page.html` stay as built. This folder's code is shared with Prototype 7; `python3 ../p7/build.py` builds it. `build.py` here refuses. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.
