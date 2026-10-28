@@ -115,10 +115,11 @@
     // Edit 81 (P7): Story mode. Write-offs a tile; power-ups for a clear, a gift and a score; the brief's combo lengths; the story's shift
     'story.tileWriteOffs': 3, 'story.clearPowerUps': 1, 'story.pointsPerPowerUp': 15000, 'story.giftPowerUps': 1, 'story.task.comboEasy': 2, 'story.task.comboHard': 3, 'story.shiftCars': 5000,
     // Edit 82 (P7.1): a credit a body (Arcade and Story); story prices 3, 4, 5; a credit gift; write-offs per tile, in the story's order
+    'proto.bounce.maxThrow': 0, 'story.ferryDepth': 160, // Edit 83 (P7.2): the knock's longest slide (0: no cap; P7.2 sets it); how far in from the entry edge the drone sets the dummy down
     'economy.creditsPerWriteOff': 1, 'story.price.ability.level1': 3, 'story.price.ability.level2': 4, 'story.price.ability.level3': 5, 'story.giftCredits': 3,
-    'story.writeOffs.monument.A1': 2, 'story.writeOffs.monument.B1': 2, 'story.writeOffs.monument.C1': 2, 'story.writeOffs.monument.C2': 2, 'story.writeOffs.monument.B2': 1, 'story.writeOffs.monument.A2': 2, 'story.writeOffs.monument.A3': 2, 'story.writeOffs.monument.B3': 2, 'story.writeOffs.monument.C3': 2,
-    'story.writeOffs.parkland.C1': 2, 'story.writeOffs.parkland.C2': 3, 'story.writeOffs.parkland.C3': 2, 'story.writeOffs.parkland.B3': 2, 'story.writeOffs.parkland.A3': 3, 'story.writeOffs.parkland.A2': 3, 'story.writeOffs.parkland.A1': 3, 'story.writeOffs.parkland.B1': 2, 'story.writeOffs.parkland.B2': 2,
-    'story.writeOffs.waterfront.A1': 1, 'story.writeOffs.waterfront.B1': 3, 'story.writeOffs.waterfront.C1': 2, 'story.writeOffs.waterfront.C2': 3, 'story.writeOffs.waterfront.C3': 3, 'story.writeOffs.waterfront.B3': 3, 'story.writeOffs.waterfront.A3': 3, 'story.writeOffs.waterfront.A2': 2, 'story.writeOffs.waterfront.B2': 3,
+    'story.writeOffs.monument.A1': 1, 'story.writeOffs.monument.B1': 1, 'story.writeOffs.monument.C1': 1, 'story.writeOffs.monument.C2': 1, 'story.writeOffs.monument.B2': 1, 'story.writeOffs.monument.A2': 1, 'story.writeOffs.monument.A3': 1, 'story.writeOffs.monument.B3': 1, 'story.writeOffs.monument.C3': 2,
+    'story.writeOffs.parkland.C1': 1, 'story.writeOffs.parkland.C2': 2, 'story.writeOffs.parkland.C3': 1, 'story.writeOffs.parkland.B3': 1, 'story.writeOffs.parkland.A3': 1, 'story.writeOffs.parkland.A2': 2, 'story.writeOffs.parkland.A1': 1, 'story.writeOffs.parkland.B1': 1, 'story.writeOffs.parkland.B2': 2,
+    'story.writeOffs.waterfront.A1': 1, 'story.writeOffs.waterfront.B1': 2, 'story.writeOffs.waterfront.C1': 1, 'story.writeOffs.waterfront.C2': 2, 'story.writeOffs.waterfront.C3': 1, 'story.writeOffs.waterfront.B3': 1, 'story.writeOffs.waterfront.A3': 2, 'story.writeOffs.waterfront.A2': 1, 'story.writeOffs.waterfront.B2': 2,
     'proto.parts.armPushLoss': 1, 'proto.parts.armPushFloor': 0.5,
     // Edit 79: combos. Variety pays; the clock stops in the air; a thrown cone that hits a car links the chain
     'scoring.comboVariety': 0, 'scoring.comboAirPause': 0, 'scoring.coneLink': 0, 'scoring.coneHitPoints': 20,
@@ -1951,7 +1952,12 @@
       this.emit('jump-land', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), d: +hyp(b.x - J.x0, b.y - J.y0).toFixed(1), kind: J.kind, speed: +J.v0.toFixed(1), level: b.level });
     }
     // Ricochet (Legs): the bounce off a hit goes upgrades.ricochetScale as far
-    bounce(knock) { const k = this.has('ricochet') ? this.P['upgrades.ricochetScale'] : 1; return k === 1 ? knock : { x: knock.x * k, y: knock.y * k }; }
+    bounce(knock) {
+      const P = this.P, k = this.has('ricochet') ? P['upgrades.ricochetScale'] : 1, out = k === 1 ? knock : { x: knock.x * k, y: knock.y * k };
+      const mt = P['proto.bounce.maxThrow']; if (!(mt > 0)) return out; // Edit 83 (P7.2): a knock throws the dummy at most proto.bounce.maxThrow on its slide (0: no cap)
+      const vmax = Math.sqrt(2 * P['physics.slideFriction'] * P['physics.gravity'] * P['proto.scale.unitsPerMetre'] * mt), v = hyp(out.x, out.y);
+      return v > vmax ? { x: out.x * vmax / v, y: out.y * vmax / v } : out;
+    }
     nearestCone() {
       const P = this.P, b = this.body, rr = P['body.radius'] + P['props.cone.radius'];
       let best = null, bd = Infinity;

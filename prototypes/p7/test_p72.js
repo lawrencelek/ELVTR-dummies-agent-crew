@@ -1,13 +1,12 @@
-// Prototype 7.1 (GDD Edits 81–82) checks. Run from prototypes/p7: node test_p71.js [screenshot folder]
-// Edit 82: a credit a body (economy.creditsPerWriteOff), counted or not; story prices 3, 4, 5 (story.price.ability.level1–3); write-offs
-// per tile (story.writeOffs.<district>.<tile>); credit gifts (story.giftCredits); the shop skipped when nothing is affordable.
-// 1. Content (content/story/story.json): the three orders as decided; 27 tiles, each step to a neighbour; every tale, task and
-//    gift; every number a registry ID; every task possible where it is set (traffic, levels, cones; the ability gifted by then).
-// 2. Headless (story.js on ../p6): the start tile; fences that hold (walk, dash, jump); the count against the brief; a real dash
-//    write-off counted; a miss; a clear; the next tile open, closed behind; cleared tiles open; gifts; prices; the next district;
-//    the certificate. Arcade: one district a run, its prices. 6.4–6.10 and 7 frozen.
-// 3. Browser (Playwright, dummies_p7_1.html): the title's two modes; Arcade's district pick; the story map; the tile card; a fence;
-//    a report and the shop in credits; progress saved in the browser; a phone held sideways; no page errors.
+// Prototype 7.2 (GDD Edits 81–83) checks. Run from prototypes/p7: node test_p72.js [screenshot folder]
+// Edit 83: defaults (two dashes, standard recharge and recoil, no ability); the story's tracks fill only at Waterfront's end (35 bodies,
+// gifts only Legs 1, Hands 1, Arms 1); the ricochet capped (proto.recoilScale 0.7, proto.bounce.maxThrow 40); the drone ferry to the next
+// tile, off the road near the crossing; fences only toward tiles not yet open; the objective on the bottom line; bubbles on the cars.
+// 1. Content: the orders; neighbours; tales, tasks, gifts; registry IDs; abilities gifted in time; every brief possible where set.
+// 2. Headless: defaults; the ricochet; the fence; a real write-off; clears; the ferry; cleared tiles open; gifts; prices; the fill;
+//    the next district; the certificate. Arcade: one district a run. 6.4–6.10, 7 and 7.1 frozen.
+// 3. Browser (Playwright, dummies_p7_2.html): title; Arcade; the story map; the card; a fence; a report, the shop, the ferry; the
+//    objective line; progress saved; a phone; no page errors.
 'use strict';
 const fs = require('fs'), path = require('path');
 const STORY = require('./story.js');
@@ -16,7 +15,7 @@ const X = require('../p6/sim.js');
 const OUT = process.argv[2] || null;
 let pass = 0, fail = 0;
 const ok = (c, msg) => { if (c) pass++; else fail++; console.log((c ? 'PASS ' : 'FAIL ') + msg); };
-const REG = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM);
+const REG = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM, STORY.P7SIM);
 const ev = (s, t) => s.events.filter((e) => e.type === t);
 const adj = (a, b) => { const [c1, r1] = STORY.cellOf(a), [c2, r2] = STORY.cellOf(b); return Math.abs(c1 - c2) + Math.abs(r1 - r2) === 1; };
 
@@ -31,19 +30,32 @@ const D = STORY.DIST;
   const kinds = new Set(Object.keys(STORY.DATA.tasks)), nodes = X.NODES10;
   const bad = []; for (const d of D) for (const t of d.order) { const q = d.tiles[t]; if (!q || !q.title || !q.tale || q.tale.split(' ').length < 12 || !q.task || !kinds.has(q.task.kind)) bad.push(d.id + ' ' + t); if (q && q.task.param && REG[q.task.param] == null) bad.push(t + ' ' + q.task.param); if (q && q.gift && q.gift.node && !nodes[q.gift.node]) bad.push(t + ' ' + q.gift.node); if (q && q.gift && q.gift.credits && REG[q.gift.credits] == null) bad.push(t + ' ' + q.gift.credits); if (REG['story.writeOffs.' + d.id + '.' + t] == null) bad.push(t + ' writeOffs'); }
   const words = D.reduce((a, d) => a + d.order.reduce((b, t) => b + d.tiles[t].tale.split(' ').length, 0), 0);
-  ok(!bad.length, 'every tile has a title, a tale (' + words + ' words in all), a task Farsight knows and, where set, a gift; every number a registry ID (story.task.comboEasy, story.task.comboHard, story.giftCredits, story.writeOffs.<district>.<tile>)' + (bad.length ? ': ' + bad.join(', ') : ''));
-  const ids = ['economy.creditsPerWriteOff', 'story.price.ability.level1', 'story.price.ability.level2', 'story.price.ability.level3', 'story.giftCredits', 'story.task.comboEasy', 'story.task.comboHard', 'story.shiftCars'];
+  ok(!bad.length, 'every tile has a title, a tale (' + words + ' words in all), a task Farsight knows and, where set, a gift; every number a registry ID (story.task.comboEasy, story.task.comboHard, story.writeOffs.<district>.<tile>)' + (bad.length ? ': ' + bad.join(', ') : ''));
+  const ids = ['economy.creditsPerWriteOff', 'story.price.ability.level1', 'story.price.ability.level2', 'story.price.ability.level3', 'story.task.comboEasy', 'story.task.comboHard', 'story.shiftCars', 'proto.recoilScale', 'proto.bounce.maxThrow', 'story.ferryDepth'];
   const regFile = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'content', 'params', 'tuning.parameters.json'), 'utf8')), inFile = new Set(regFile.entries.map((e) => e.id));
-  const tiles = D.flatMap((d) => d.order.map((t) => 'story.writeOffs.' + d.id + '.' + t)), retired = ['story.tileWriteOffs', 'story.clearPowerUps', 'story.pointsPerPowerUp', 'story.giftPowerUps'];
+  const tiles = D.flatMap((d) => d.order.map((t) => 'story.writeOffs.' + d.id + '.' + t)), retired = ['story.tileWriteOffs', 'story.clearPowerUps', 'story.pointsPerPowerUp', 'story.giftPowerUps', 'story.giftCredits'];
   const byId = new Map(regFile.entries.map((e) => [e.id, e]));
-  ok(ids.concat(tiles).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 82\)/.test(byId.get(k).status)) && regFile.registryVersion.startsWith('edit82'),
+  ok(ids.concat(tiles).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 8[23]\)/.test(byId.get(k).status)) && byId.get('proto.recoilScale').default === REG['proto.recoilScale'] && byId.get('proto.bounce.maxThrow').default === REG['proto.bounce.maxThrow'] && regFile.registryVersion.startsWith('edit83'),
     'the story\'s values are registry IDs (' + ids.map((k) => k + ' ' + REG[k]).join(', ') + '); 27 tile counts; ' + retired.length + ' P7 IDs retired; registry ' + regFile.registryVersion);
   const per = D.map((d) => d.name + ' ' + d.order.map((t) => REG['story.writeOffs.' + d.id + '.' + t]).join('')), sum = tiles.reduce((a, k) => a + REG[k], 0);
-  ok(tiles.every((k) => REG[k] >= 1 && REG[k] <= 3) && sum === 62, 'write-offs tuned per tile (D65): ' + per.join(' · ') + ' (in story order); ' + sum + ' bodies in all (P7: 81)');
+  ok(tiles.every((k) => REG[k] >= 1 && REG[k] <= 2) && sum === 35, 'write-offs per tile, retuned so the tracks fill at the end: ' + per.join(' · ') + ' (in story order); ' + sum + ' bodies (7.1: 62)');
+  // the fill: one credit a body, every body counted, the cheapest level bought as soon as it is affordable
+  const gifted = new Set(); for (const d of D) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node) gifted.add(g.node); }
+  const N = X.NODES10, levels = Object.keys(N).filter((n) => !gifted.has(n)).map((n) => ({ n, track: N[n].track, level: N[n].level, price: REG['story.price.ability.level' + N[n].level] }));
+  const owned = new Set(gifted); let credits = 0, body = 0, fillAt = null, spent = 0; const total = levels.reduce((a, q) => a + q.price, 0);
+  const where = [];
+  for (const d of D) for (const t of d.order) for (let k = 0; k < REG['story.writeOffs.' + d.id + '.' + t]; k++) {
+    body++; credits += REG['economy.creditsPerWriteOff']; const last = d.id === 'waterfront' && t === 'B2' && k === REG['story.writeOffs.waterfront.B2'] - 1;
+    if (last) break; // the last body certifies the city: no shop after it
+    for (;;) { const can = levels.filter((q) => !owned.has(q.n) && (q.level === 1 || owned.has(q.track + (q.level - 1)))).sort((a, b) => a.price - b.price)[0]; if (!can || credits < can.price) break; credits -= can.price; spent += can.price; owned.add(can.n); where.push(d.name + ' ' + t); }
+    if (spent === total && !fillAt) fillAt = d.name + ' ' + t + ' (body ' + body + ' of ' + 35 + ')';
+  }
+  ok(gifted.size === 3 && [...gifted].sort().join() === 'arms1,hands1,legs1' && total === 34 && fillAt === 'Waterfront B2 (body 34 of 35)',
+    'the upgrade tracks fill only at the end: gifts are just the verbs the briefs need (Legs 1, Hands 1, Arms 1); the rest costs ' + total + ' credits at 3, 4, 5; bought as soon as affordable, the last level lands at ' + fillAt + '. Monument ends with ' + where.filter((w) => /^Monument/.test(w)).length + ' levels bought, Parkland with ' + where.filter((w) => /^(Monument|Parkland)/.test(w)).length);
   // abilities a task needs, gifted at or before its tile (never left to the shop)
   const NEED = { jump: 'legs1', push: 'arms1', cone: 'hands1' }, got = new Set(), late = [];
   for (const d of D) for (const t of d.order) { const q = d.tiles[t]; if (q.gift && q.gift.node) got.add(q.gift.node); const n = NEED[q.task.kind]; if (n && !got.has(n)) late.push(d.id + ' ' + t); }
-  ok(!late.length, 'every task\'s ability is gifted by its tile: Legs 1 at Monument C1 (jump), Hands 1 at B2 (cone), Arms 1 at A2 (push), Battery 1 at B3' + (late.length ? ': late at ' + late.join(', ') : ''));
+  ok(!late.length, 'every task\'s ability is gifted by its tile: Legs 1 at Monument C1 (jump), Hands 1 at B2 (cone), Arms 1 at A2 (push); no other gift' + (late.length ? ': late at ' + late.join(', ') : ''));
 }
 // what each tile offers: traffic by class and level over 90 s, floors, cones
 const SURVEY = {};
@@ -102,14 +114,34 @@ const walk = (s, mx, my, n) => { for (let i = 0; i < n; i++) { s.step({ mx, my }
 const kill = (s, hit) => { const b = s.body; b.hits.push(Object.assign({ kind: 'dash', cls: 'sedan', combo: 1, cause: null }, hit || {})); b.health = 0; s.writeOff(); s.checkTerminal(); settle(s); };
 const next = (s) => { s.continueReport(); s.leaveShop(); };
 const W = REG['world.width'], H = REG['world.height'], R = REG['body.radius'];
+{ // defaults: two dashes, standard recharge, standard recoil, no ability (Arcade and Story)
+  const a = new W6.Sim6('parkland', Object.assign({}, STORY.P7SIM), null, { warm: 0, single: true }), pr0 = STORY.newProgress(), st = new STORY.StorySim('monument', {}, pr0, { warm: 0 });
+  const none = (s) => Object.keys(s.tracks()).every((t) => s.tier(t) === 0) && !s.has('jump') && !s.has('carry') && !s.has('push');
+  ok(none(a) && none(st) && a.capacity() === 2 && st.capacity() === 2 && a.secondsPerCharge() === REG['battery.secondsPerCharge'] && st.secondsPerCharge() === REG['battery.secondsPerCharge'] && a.P['proto.recoilScale'] === 0.7 && st.P['proto.recoilScale'] === 0.7,
+    `by default: two dashes (battery.capacity ${a.capacity()}), standard recharge (${a.secondsPerCharge()} s), standard recoil (proto.recoilScale ${a.P['proto.recoilScale']}, throw ≤ ${a.P['proto.bounce.maxThrow']}), no other ability; Arcade and Story alike`);
+}
+{ // the ricochet: the dummy takes damage, so it keeps less of the momentum. A knock slides at most proto.bounce.maxThrow
+  const sim = (ov) => { const s = new W6.Sim6('monument', Object.assign({}, ov), null, { warm: 0 }); for (const sm of s.W6.sims) { sm.cars.length = 0; sm.slot = sm.schedule.length; sm.deckNext = { 0: 1e9, 1: 1e9, 2: 1e9, 3: 1e9 }; } s.fakes = []; const o = s.buildView.bind(s); s.buildView = function () { o(); for (const f of this.fakes) this.cars.push(f); this.view = this.cars; }; return s; };
+  const RY = 196, trial = (ov, mk) => { const s = sim(ov), c = mk(s); s.fakes.push(c); s.buildView(); let dist = 0, prev = null;
+    for (let i = 0; i < 300; i++) { if (ev(s, 'knock').length) { c.vx = c.vy = 0; c.v = 0; } c.x += c.vx / 60; c.y += c.vy / 60; s.step(i === c.press ? { mx: c.dx, my: c.dy, aPress: true } : i > c.press && i < c.press + 3 ? { mx: c.dx, my: c.dy } : {}); while (s.phase === 'hitstop') s.step({});
+      if (s.body.mode === 'knock') { if (prev) dist += Math.hypot(s.body.x - prev[0], s.body.y - prev[1]); prev = [s.body.x, s.body.y]; } }
+    const k = ev(s, 'knock')[0]; return { v: k ? k.speed : 0, d: dist }; };
+  const at = (s, x) => Object.assign(s.body, { x, y: RY, px: x, py: RY, level: 0, floor: null, stair: null, mode: 'idle', vx: 0, vy: 0, lunge: null, jump: null, z: 0, charge: 3, alive: true, facing: 0, combo: null, health: 5000 });
+  const head = (ov) => trial(ov, (s) => { at(s, 330); return Object.assign(car(s, 'sedan', 120, RY, 0, 138), { press: 20, dx: -1, dy: 0 }); });
+  const flank = (ov) => trial(ov, (s) => { at(s, 240); return Object.assign(car(s, 'sedan', 300, 130, Math.PI / 2, 120), { press: 20, dx: 1, dy: 0 }); });
+  const old = head({}), now = head(STORY.P7SIM), fo = flank({}), fn = flank(STORY.P7SIM), vmax = Math.sqrt(2 * REG['physics.slideFriction'] * REG['physics.gravity'] * REG['proto.scale.unitsPerMetre'] * REG['proto.bounce.maxThrow']);
+  ok(now.v <= vmax + 0.5 && now.d <= REG['proto.bounce.maxThrow'] && old.d > 100 && fn.v < fo.v && fn.d < fo.d + 1e-9,
+    `the ricochet tamed: head-on into a sedan throws ${now.v.toFixed(0)} u/s, slides ${now.d.toFixed(0)} (6.10: ${old.v.toFixed(0)} u/s, ${old.d.toFixed(0)}); into a moving flank ${fn.v.toFixed(0)} u/s, ${fn.d.toFixed(0)} (was ${fo.v.toFixed(0)}, ${fo.d.toFixed(0)}). proto.recoilScale ${REG['proto.recoilScale']}; proto.bounce.maxThrow ${REG['proto.bounce.maxThrow']}`);
+}
+const runTo = (s, done, n) => { for (let i = 0; i < (n || 2400) && !done(s); i++) s.step({}); return done(s); };
+const offRoad = (s) => s.sc.roadOk(s.body.x, s.body.y, REG['world.laneWidth'] + REG['proto.shoulderWidth']);
 {
   const pr = STORY.newProgress(), s = story('monument', pr);
   ok(s.screenName() === 'A1' && s.phase === 'brief' && s.entered && ev(s, 'story-enter').length === 1 && s.fenceSides().join() === 'E,S',
-    `the story opens on Monument A1 with its tile card (phase ${s.phase}); fences on A1's sides to B1 and A2 (${s.fenceSides().join(', ')})`);
+    `the story opens on Monument A1 with its tile card (phase ${s.phase}); fences toward B1 and A2, not yet open (${s.fenceSides().join(', ')})`);
   s.continueBrief();
   walk(s, 1, 0, 400); const held = s.screenName() === 'A1' && s.body.x <= W - R + 1e-6, fences = ev(s, 'story-fence').length;
   ok(held && fences === 1, `walking east into the fence holds at x ${s.body.x.toFixed(0)} (screen ${W}, body ${R}); one notice a contact (${fences})`);
-  // a dash and a jump at the fence: both held
   Object.assign(s.body, { x: W - 60, y: s.body.y, vx: 0, vy: 0, mode: 'idle', charge: 3 }); s.run.owned.legs1 = true; s.run.owned.legs2 = true; s.run.owned.legs3 = true;
   for (let i = 0; i < 90; i++) { s.step(i === 0 ? { mx: 1, my: 0, aPress: true } : i === 6 ? { mx: 1, my: 0, bPress: true } : { mx: 1, my: 0 }); settle(s); }
   ok(s.screenName() === 'A1' && s.body.x <= W - R + 1e-6, `a dash jump at the fence is held too: x ${s.body.x.toFixed(0)}; still A1 (fences cannot be jumped)`);
@@ -118,52 +150,47 @@ const W = REG['world.width'], H = REG['world.height'], R = REG['body.radius'];
   const c = car(s, 'sedan', 380, 320, Math.PI / 2, 0); s.fakes.push(c); s.buildView();
   Object.assign(s.body, { x: 300, y: 320, px: 300, py: 320, vx: 0, vy: 0, mode: 'idle', charge: 3, health: 30, facing: 0, level: 0, floor: null });
   for (let i = 0; i < 60 && s.body.alive; i++) { s.step(i === 1 ? { mx: 1, my: 0, aPress: true } : {}); }
-  settle(s); const cnt = ev(s, 'story-count')[0];
-  ok(cnt && cnt.tile === 'A1' && cnt.n === 1 && cnt.need === REG['story.writeOffs.monument.A1'] && cnt.kind === 'dash' && s.phase === 'report' && s.report.story.counted && s.run.credits === REG['economy.creditsPerWriteOff'],
-    `a real dash write-off in A1 counts: ${cnt ? cnt.n + ' of ' + cnt.need + ' (story.writeOffs.monument.A1), ' + cnt.kind + ' into a ' + cnt.cls : 'none'}; +${REG['economy.creditsPerWriteOff']} credit for the body`);
-  s.fakes.length = 0; s.continueReport();
-  ok(s.phase === 'play' && s.body.alive && ev(s, 'shop-skip').length === 1, `with ${s.run.credits} credit and the cheapest level at ${REG['story.price.ability.level1']}, the report goes straight to the next chassis (no empty shop)`);
-  kill(s);
-  const cl = ev(s, 'story-clear')[0];
-  ok(cl && cl.tile === 'A1' && cl.next === 'B1' && pr.done.monument.join() === 'A1' && s.run.credits === 2 && s.report.story.cleared && s.fenceSides().join() === 'S',
-    `${REG['story.writeOffs.monument.A1']} counted write-offs clear A1; a clear pays nothing extra (credits ${s.run.credits}, one a body); B1 opens; the fence to A2 (not yet surveyed) stays (${s.fenceSides().join(', ')})`);
-  next(s);
-  Object.assign(s.body, { x: W - 40, y: 224, vx: 0, vy: 0, mode: 'idle' }); walk(s, 1, 0, 120);
-  ok(s.screenName() === 'B1' && s.phase === 'brief' && s.entered && s.fenceSides().join() === 'E,S,W',
-    `walking into B1: its tile card; the fences close behind (${s.fenceSides().join(', ')}), A1 included, until B1 is cleared`);
+  settle(s); s.fakes.length = 0; const cnt = ev(s, 'story-count')[0], cl = ev(s, 'story-clear')[0];
+  ok(cnt && cnt.n === 1 && cnt.need === REG['story.writeOffs.monument.A1'] && cnt.kind === 'dash' && cl && cl.next === 'B1' && s.report.story.cleared && s.run.credits === 1,
+    `a real dash write-off clears A1 (${cnt ? cnt.n + ' of ' + cnt.need : '—'}, story.writeOffs.monument.A1); +1 credit; B1 next`);
+  s.continueReport(); const skip = ev(s, 'shop-skip').length === 1, fy = ev(s, 'story-ferry')[0], rs = s.rescue;
+  ok(skip && fy && fy.from === 'A1' && fy.to === 'B1' && fy.side === 'E' && rs && rs.ferry && s.body.mode === 'rescue', 'nothing affordable, no shop: a Farsight drone comes for the new chassis, to carry it east from A1 to B1');
+  let t0 = s.t, scr = []; for (let i = 0; i < 2400 && s.phase !== 'brief'; i++) { s.step({}); if (scr[scr.length - 1] !== s.screenName()) scr.push(s.screenName()); }
+  const fd = ev(s, 'story-ferried')[0], dep = s.body.x;
+  ok(s.phase === 'brief' && s.screenName() === 'B1' && scr.join() === 'A1,B1' && fd && dep >= R + 24 && dep <= REG['story.ferryDepth'] && offRoad(s) && s.body.level === 0 && s.body.mode === 'idle',
+    `the drone carries it over the edge into B1 and sets it down off the road, ${dep.toFixed(0)} in from the west edge it crossed (≤ story.ferryDepth ${REG['story.ferryDepth']}), in ${fd ? fd.seconds : '—'} s; then B1's card`);
+  ok(s.fenceSides().join() === 'E,S', `in B1, the fences hold toward C1 and B2 (${s.fenceSides().join(', ')}); the edge back to cleared A1 stays open`);
   s.continueBrief();
   kill(s, { kind: 'dash' }); const miss = ev(s, 'story-miss')[0];
-  ok(miss && miss.why === 'task' && pr.tileWO === 0 && s.report.story.counted === false, 'B1\'s brief wants a drop onto a car: a dash write-off scores but does not count (report: "' + (miss ? miss.why : '') + '")');
-  ok(s.run.credits === 3, 'the missed write-off still pays its credit: one a body, counted or not (' + s.run.credits + ')');
-  s.continueReport(); const shop = s.phase === 'shop', pB = s.canBuy('battery1'), pL = s.canBuy('legs1');
-  s.buy('battery1'); const owned = s.has('fastCharge') || s.tier('battery') === 1; s.leaveShop();
-  ok(shop && pB.ok && pB.price === REG['story.price.ability.level1'] && owned && s.run.credits === 0 && s.nodes().battery2 && s.P['economy.price.ability.level2'] === REG['story.price.ability.level2'] && s.P['economy.price.ability.level3'] === REG['story.price.ability.level3'],
-    `three credits open the shop: a level-1 power-up costs ${REG['story.price.ability.level1']} (Battery 1 bought), level 2 ${REG['story.price.ability.level2']}, level 3 ${REG['story.price.ability.level3']} (story.price.ability.level1–3)`);
-  for (let k = 0; k < REG['story.writeOffs.monument.B1']; k++) { kill(s, { kind: 'drop' }); next(s); }
-  ok(pr.done.monument.join() === 'A1,B1' && s.fenceSides().join() === 'S', `${REG['story.writeOffs.monument.B1']} drops clear B1; back to A1 and on to C1 both open (fenced: ${s.fenceSides().join(', ')})`);
-  Object.assign(s.body, { x: 40, y: 224, vx: 0, vy: 0, mode: 'idle' }); walk(s, -1, 0, 120); const back = s.screenName();
-  kill(s); const old = ev(s, 'story-miss').slice(-1)[0]; next(s);
-  ok(back === 'A1' && old && old.why === 'cleared' && pr.tileWO === 0, `cleared tiles stay open: back in ${back}; a write-off there scores, counts for nothing ("${old ? old.why : ''}")`);
-  Object.assign(s.body, { x: W - 40, y: 224, vx: 0, vy: 0, mode: 'idle' }); walk(s, 1, 0, 120); s.continueBrief();
-  Object.assign(s.body, { x: W - 40, y: 224, vx: 0, vy: 0, mode: 'idle' }); walk(s, 1, 0, 160);
-  ok(s.screenName() === 'C1' && s.has('jump') && ev(s, 'story-gift').some((e) => e.node === 'legs1'), 'C1 carries a gift: Farsight installs Legs 1 on arrival (the jump), ready for its brief, a jump into a car');
-  s.continueBrief(); const c0 = s.run.credits; s.run.points = 1e6; kill(s, { kind: 'jump' });
-  ok(s.run.credits === c0 + 1 && !ev(s, 'story-bonus').length, 'the score buys nothing: a million points, still one credit for the body');
+  ok(miss && miss.why === 'task' && pr.tileWO === 0 && s.run.credits === 2, 'B1 wants a drop onto a car: a dash write-off scores, pays its credit (2), counts for nothing');
   next(s);
-  ok(pr.tileWO === 1 && pr.credits === s.run.credits && pr.owned.legs1 && pr.owned.battery1 && pr.points === s.run.points, 'progress follows the run (count, credits, abilities, points): one plain object the page saves');
+  Object.assign(s.body, { x: 40, y: 224, vx: 0, vy: 0, mode: 'idle' }); walk(s, -1, 0, 120); const back = s.screenName();
+  kill(s); const old = ev(s, 'story-miss').slice(-1)[0];
+  ok(back === 'A1' && old && old.why === 'cleared' && s.run.credits === 3, `cleared tiles stay open: back in ${back} from B1 in test; a write-off there scores and pays (3), counts for nothing`);
+  s.continueReport(); const shop = s.phase === 'shop', pB = s.canBuy('battery1'); s.buy('battery1'); s.leaveShop();
+  ok(shop && pB.ok && pB.price === REG['story.price.ability.level1'] && s.tier('battery') === 1 && s.run.credits === 0 && !s.rescue && s.screenName() === 'A1',
+    `three credits open the shop: a level-1 power-up costs ${REG['story.price.ability.level1']} (Battery 1 bought); level 2 ${REG['story.price.ability.level2']}, level 3 ${REG['story.price.ability.level3']}. No clear, no ferry: the chassis stays in A1`);
+  Object.assign(s.body, { x: W - 40, y: 224, vx: 0, vy: 0, mode: 'idle' }); walk(s, 1, 0, 120);
+  kill(s, { kind: 'drop' });
+  ok(pr.done.monument.join() === 'A1,B1' && s.report.story.cleared, 'walked back into B1, a drop clears it');
+  s.continueReport(); runTo(s, (q) => q.phase === 'brief');
+  ok(s.screenName() === 'C1' && s.has('jump') && ev(s, 'story-gift').some((e) => e.node === 'legs1') && offRoad(s), 'the drone carries the next chassis to C1; Farsight installs Legs 1 there (the jump) for its brief, a jump into a car');
+  s.continueBrief(); const c0 = s.run.credits; s.run.points = 1e6; kill(s, { kind: 'jump' });
+  ok(s.run.credits === c0 + 1, 'the score buys nothing: a million points, still one credit for the body');
+  ok(pr.done.monument.join() === 'A1,B1,C1' && pr.credits === s.run.credits && pr.owned.legs1 && pr.owned.battery1 && pr.points === s.run.points, 'progress follows the run (tiles, credits, abilities, points): one plain object the page saves');
 }
 function num(v) { return Math.round(v).toLocaleString('en-GB'); }
 { // the end of a district, the next one, the certificate
-  const pr = STORY.newProgress(); pr.done.monument = ['A1', 'B1', 'C1', 'C2', 'B2', 'A2', 'A3', 'B3']; pr.tileWO = REG['story.writeOffs.monument.C3'] - 1;
+  const pr = STORY.newProgress(); pr.done.monument = ['A1', 'B1', 'C1', 'C2', 'B2', 'A2', 'A3', 'B3']; pr.tileWO = REG['story.writeOffs.monument.C3'] - 1; pr.credits = 0;
   const s = story('monument', pr);
   ok(s.screenName() === 'C3', 'a saved story resumes on the tile in test: Monument C3 (8 cleared)');
   s.continueBrief(); kill(s, { kind: 'dash', combo: REG['story.task.comboHard'] });
   ok(s.report.roadCleared && s.report.story.districtDone && pr.district === 'parkland', 'clearing C3 clears Monument; the story moves on to Parkland');
   s.continueReport(); s.leaveShop();
-  ok(s.phase === 'next', 'after the shop, the page builds the next district (phase next)');
+  ok(s.phase === 'next' && !s.rescue, 'after the report, the page builds the next district (phase next); no ferry between districts');
   const p2 = story('parkland', pr), cr = p2.run.credits;
-  ok(p2.screenName() === 'C1' && p2.fenceSides().join() === 'S,W' && ev(p2, 'story-gift').some((e) => e.credits === REG['story.giftCredits']) && cr === pr.credits && cr === 1 + REG['story.giftCredits'],
-    `Parkland opens on C1, fenced toward C2 and B1; its gift: +${REG['story.giftCredits']} credits (story.giftCredits), a level-1 power-up's price`);
+  ok(p2.screenName() === 'C1' && p2.fenceSides().join() === 'S,W' && !ev(p2, 'story-gift').length && cr === pr.credits && cr === 1,
+    'Parkland opens on C1, fenced toward C2 and B1; no gift (credits ' + cr + ')');
   const p3 = STORY.newProgress(); p3.district = 'waterfront'; p3.done = { monument: D[0].order.slice(), parkland: D[1].order.slice(), waterfront: ['A1', 'B1', 'C1', 'C2', 'C3', 'B3', 'A3', 'A2'] }; p3.tileWO = REG['story.writeOffs.waterfront.B2'] - 1;
   const s3 = story('waterfront', p3); s3.continueBrief(); kill(s3, { combo: 5 });
   ok(s3.screenName() === 'B2' && s3.run.ending && s3.run.ending.kind === 'Certified' && p3.complete && STORY.clearedCount(p3) === 27, 'the last tile, Waterfront B2 (the circus): the Test City is certified (27 of 27)');
@@ -183,13 +210,14 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   const same = (f) => { let head = null; try { head = execSync('git show HEAD:prototypes/p6/' + f, { maxBuffer: 1 << 26, cwd: __dirname }); } catch (e) { head = null; } return !!head && md5(head) === md5(fs.readFileSync(path.join(__dirname, '..', 'p6', f))); };
   const list = ['dummies_p6_4.html', 'dummies_p6_5.html', 'dummies_p6_6.html', 'dummies_p6_7.html', 'dummies_p6_8.html', 'dummies_p6_9.html', 'dummies_p6_10.html'];
   const p7 = (() => { try { return md5(execSync('git show HEAD:prototypes/p7/dummies_p7.html', { maxBuffer: 1 << 26, cwd: __dirname })) === md5(fs.readFileSync(path.join(__dirname, 'dummies_p7.html'))); } catch (e) { return false; } })();
-  ok(list.every(same) && p7, 'dummies_p6_4.html to dummies_p6_10.html and dummies_p7.html are byte-identical to their commits (the shared code builds P7.1)');
+  const p71 = (() => { try { return md5(execSync('git show HEAD:prototypes/p7/dummies_p7_1.html', { maxBuffer: 1 << 26, cwd: __dirname })) === md5(fs.readFileSync(path.join(__dirname, 'dummies_p7_1.html'))); } catch (e) { return false; } })();
+  ok(list.every(same) && p7 && p71, 'dummies_p6_4.html to dummies_p6_10.html, dummies_p7.html and dummies_p7_1.html are byte-identical to their commits (the shared code builds P7.2)');
 }
 // ---------- 4. the page
 (async () => {
   let chromium;
   try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP browser checks: playwright not found'); return done(); }
-  const url = 'file://' + path.join(__dirname, 'dummies_p7_1.html');
+  const url = 'file://' + path.join(__dirname, 'dummies_p7_2.html');
   const br = await chromium.launch(), logs = [];
   const watch = (pg) => pg.on('pageerror', (e) => logs.push(e.message));
   const shot = async (pg, name) => { if (OUT) await pg.screenshot({ path: path.join(OUT, name) }); };
@@ -197,10 +225,10 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   const ctx = await br.newContext({ viewport: { width: 1300, height: 900 } }), pg = await ctx.newPage(); watch(pg);
   await pg.goto(url); await pg.waitForTimeout(1200);
   const t0 = await pg.evaluate(() => ({ screen: window.__dummies.screen, status: document.getElementById('status').textContent }));
-  await shot(pg, 'p71_title.png');
-  ok(t0.screen === 'title' && /^P7\.1 /.test(t0.status), 'the title offers two modes, ARCADE and STORY (build ' + t0.status.split(' ')[0] + ')');
+  await shot(pg, 'p72_title.png');
+  ok(t0.screen === 'title' && /^P7\.2 /.test(t0.status), 'the title offers two modes, ARCADE and STORY (build ' + t0.status.split(' ')[0] + ')');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(300);
-  const a1 = await pg.evaluate(() => window.__dummies.screen); await shot(pg, 'p71_arcade.png');
+  const a1 = await pg.evaluate(() => window.__dummies.screen); await shot(pg, 'p72_arcade.png');
   await pg.keyboard.press('ArrowDown'); await pg.keyboard.press('Space');
   const a2 = await wait(pg, () => window.__dummies.sim && window.__dummies.sim.phase === 'play', 30000);
   const a3 = await pg.evaluate(() => { const s = window.__dummies.sim; return { id: s.levelId, final: s.isFinal, story: !!s.storyMode }; });
@@ -210,30 +238,40 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   await pg.keyboard.press('Space'); await pg.waitForTimeout(200);
   await pg.keyboard.press('ArrowRight'); await pg.keyboard.press('Space'); await pg.waitForTimeout(400);
   const m = await pg.evaluate(() => ({ screen: window.__dummies.screen, story: window.__dummies.story }));
-  await shot(pg, 'p71_map.png');
+  await shot(pg, 'p72_map.png');
   ok(m.screen === 'storymap' && m.story && m.story.district === 'monument', 'STORY: the map of the Test City; only Monument A1 is revealed');
-  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150); await shot(pg, 'p71_map_hidden.png'); await pg.keyboard.press('ArrowLeft');
+  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150); await shot(pg, 'p72_map_hidden.png'); await pg.keyboard.press('ArrowLeft');
   await pg.keyboard.press('Space');
   const b1 = await wait(pg, () => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(300);
-  await shot(pg, 'p71_brief.png');
+  await shot(pg, 'p72_brief.png');
   ok(b1, 'deploying opens the tile card: the tale of the LED wall and Farsight\'s brief');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(200);
   await pg.keyboard.down('KeyD'); await pg.waitForTimeout(3800); await pg.keyboard.up('KeyD'); await pg.waitForTimeout(150);
   const f = await pg.evaluate(() => { const s = window.__dummies.sim; return { x: s.body.x, scr: s.screenName(), toast: window.__dummies.toast && window.__dummies.toast.msg }; });
-  await shot(pg, 'p71_fence.png');
+  await shot(pg, 'p72_fence.png');
   ok(f.scr === 'A1' && f.x > 700 && /Fence/.test(f.toast || ''), `the fence on A1's east side holds the dummy (x ${Math.round(f.x)}): "${f.toast}"`);
+  const ob = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
+  ok(ob && /^OBJECTIVE · A1/.test(ob[0]) && /Write off a body \(0 of 1\)/.test(ob[1]), 'the bottom line carries the objective: "' + (ob ? ob.join(' · ') : '') + '"');
   await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; s.run.credits = 2; b.hits.push({ kind: 'dash', cls: 'van', combo: 1, assessed: 120, lost: 30, angle: 90, model: 'VAN-02' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
   await wait(pg, () => window.__dummies.sim.phase === 'report', 8000); await pg.waitForTimeout(200);
-  await shot(pg, 'p71_report.png');
+  await shot(pg, 'p72_report.png');
   const saved = await pg.evaluate(() => JSON.parse(localStorage.getItem('dummies.p7.story') || 'null'));
-  ok(saved && saved.tileWO === 1 && saved.credits === 3, 'the report counts the write-off for A1 (1 of 2) and pays its credit (3 in all); progress is saved in this browser');
-  await pg.keyboard.press('Space'); await pg.waitForTimeout(300); await shot(pg, 'p71_shop.png');
+  ok(saved && saved.done.monument && saved.done.monument[0] === 'A1' && saved.credits === 3, 'the write-off clears A1 (1 of 1) and pays its credit (3 in all); progress is saved in this browser');
+  await pg.keyboard.press('Space'); await pg.waitForTimeout(300); await shot(pg, 'p72_shop.png');
   const sh = await pg.evaluate(() => window.__dummies.sim.phase);
   ok(sh === 'shop', 'with 3 credits, the shop follows: a level-1 power-up costs 3');
+  await pg.keyboard.press('ShiftLeft'); await wait(pg, () => { const s = window.__dummies.sim; return s.rescue && s.rescue.phase === 'carry' && s.body.x > 520; }, 15000); await pg.waitForTimeout(100);
+  await shot(pg, 'p72_ferry.png');
+  const fo = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
+  const fb = await wait(pg, () => window.__dummies.sim.phase === 'brief', 20000); await pg.waitForTimeout(200); await shot(pg, 'p72_brief_b1.png');
+  const fp = await pg.evaluate(() => { const s = window.__dummies.sim; return { scr: s.screenName(), x: s.body.x, fences: s.fenceSides().join() }; });
+  ok(fb && fp.scr === 'B1' && fp.x < 200 && fp.fences === 'E,S' && /DRONE/.test(fo ? fo[0] : ''), `deploying, a drone carries the chassis to B1 ("${fo ? fo.join(' · ') : ''}") and sets it down by the west edge (x ${Math.round(fp.x)}); B1's card`);
+  await pg.keyboard.press('Space'); await pg.waitForTimeout(400); await shot(pg, 'p72_b1.png');
   const pg2 = await ctx.newPage(); watch(pg2); await pg2.goto(url); await pg2.waitForTimeout(800);
   await pg2.keyboard.press('ArrowRight'); await pg2.keyboard.press('Space'); await pg2.waitForTimeout(300);
-  const re = await pg2.evaluate(() => ({ screen: window.__dummies.screen, wo: window.__dummies.story && window.__dummies.story.tileWO }));
-  ok(re.screen === 'storymap' && re.wo === 1, 'a reload resumes the story: A1 at 1 of 2');
+  const re = await pg2.evaluate(() => ({ screen: window.__dummies.screen, wo: window.__dummies.story && window.__dummies.story.tileWO, done: window.__dummies.story && (window.__dummies.story.done.monument || []).join() }));
+  await shot(pg2, 'p72_map_progress.png');
+  ok(re.screen === 'storymap' && re.wo === 0 && re.done === 'A1', 'a reload resumes the story: A1 cleared, B1 in test');
   await pg2.close();
   // a phone held sideways: the story's card and its map fit; the touch stick sits below the brief
   const ph = await br.newContext({ viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 }), pp = await ph.newPage(); watch(pp);
@@ -245,8 +283,8 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   await wait(pp, () => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000);
   await pp.evaluate(() => window.__dummies.sim.continueBrief()); await pp.waitForTimeout(400);
   const L = await pp.evaluate(() => { const L = window.__dummiesInput.touchLayoutCss(), a = window.__dummies; return { on: window.__dummiesInput.TOUCH.on, base: L.home, left: a.layoutY && a.layoutY.left }; });
-  await shot(pp, 'p71_phone.png');
-  ok(L.on && L.base, 'phone, sideways: touch on; the stick sits under the district map and its brief');
+  await shot(pp, 'p72_phone.png');
+  ok(L.on && L.base, 'phone, sideways: touch on; the stick sits under the district map');
   await ph.close();
   ok(!logs.length, 'browser: no page errors' + (logs.length ? ': ' + logs.slice(0, 3).join(' | ') : ''));
   await br.close();

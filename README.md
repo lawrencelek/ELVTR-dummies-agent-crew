@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 7.1](prototypes/p7/README.md)** (28 October 2026, the final P7). Open `prototypes/p7/dummies_p7_1.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–82.
+> **Current prototype: [Prototype 7.2](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_2.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–83.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 7.1 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_1.html` | Current, final (Edit 82). One credit a body in both modes; story levels cost 3, 4, 5 (Arcade 1, 2, 3); write-offs tuned per tile (1–3, 62 in all); only the last hit counts; Arcade one district a run |
+> | 7.2 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_2.html` | Current (Edit 83). Defaults: two dashes, no ability; story tracks fill only at Waterfront's end (35 bodies); the ricochet tamed (recoil 0.7, throw ≤ 40); a drone ferries the dummy to the next tile; fences as an edge glow; greyed map, live tile in yellow; speech bubbles on cars; the objective on the bottom line |
+> | 7.1 | `prototypes/p7/` | `dummies_p7_1.html` | Frozen (Edit 82). One credit a body in both modes; story levels cost 3, 4, 5 (Arcade 1, 2, 3); write-offs tuned per tile (1–3, 62 in all); only the last hit counts; Arcade one district a run |
 > | 7 | `prototypes/p7/` | `dummies_p7.html` | Frozen (Edit 81). Two modes on the title. ARCADE: the 6.10 game, one district a run. STORY: the Test City, 27 tiles from Monument A1 to Waterfront B2; a tale and a Farsight brief per tile; 3 counted write-offs clear a tile; fenced until cleared; power-ups for clears and score; the map revealed as you go; saved in the browser |
 > | 6.10 | `prototypes/p6/` | `dummies_p6_10.html` | Frozen (Edit 80). Battery (A), Legs (B), Hands (X: tap to pick up, hold 0.3 s to put down; one or two cones), Arms (Y: push off a car you hit, a timed ricochet; +160/200/240 u/s, 1/2/3 pushes before landing); the throw and the hitch retire |
 > | 6.9 | `prototypes/p6/` | `dummies_p6_9.html` | Frozen (Edit 79). Battery, Legs, Arms at three levels; hold X to throw; Arms 3 hitches a car and slings off it; combos pay for variety, hold their clock in the air, show a meter |

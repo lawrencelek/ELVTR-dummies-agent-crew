@@ -76,7 +76,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.1' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.2' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -135,7 +135,7 @@
     const nL = ((window.DISTRICT_DB || {}).districts || {})[LEVEL_LIST[i]], nLay = nL && nL.length ? nL.length : 1;
     const layout = app.tune['proto.layout'] != null ? app.tune['proto.layout'] : 1 + Math.floor(Math.random() * nLay);
     app.sim = W6 && app.mode === 'story' && STORY ? new STORY.StorySim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, app.tune, FIELD), app.story) // Edit 81: the district's tile in test
-      : W6 ? new W6.Sim6(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, app.tune, FIELD), carry, STORY ? { single: true } : undefined) // Edit 81: Arcade plays one district a run
+      : W6 ? new W6.Sim6(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, STORY ? STORY.P7SIM : {}, app.tune, FIELD), carry, STORY ? { single: true } : undefined) // Edit 81: Arcade plays one district a run
       : new Sim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty, 'proto.layout': layout }, app.tune, FIELD), carry);
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
@@ -758,6 +758,8 @@
         case 'story-miss': Snd.tone(200, 150, 0.12, 'square', 0.05); toast(e.why === 'task' ? 'NOT COUNTED · the brief wants ' + STORY.taskText(STORY.tileOf(s.levelId, e.tile).task, s.P).label.toLowerCase() : e.why === 'cleared' ? 'NOT COUNTED · ' + e.tile + ' is already cleared' : 'NOT COUNTED · ' + e.tile + ' is not in test'); break;
         case 'story-clear': [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.14, 'triangle', 0.07, j * 0.09)); toast('TILE ' + e.tile + ' CLEARED' + (e.next ? ' · ' + e.next + ' OPEN' : '')); break;
         case 'story-gift': toast('FARSIGHT GIFT · ' + (e.node ? NODE(e.node).name.toUpperCase() + ' INSTALLED' : '+' + plural(e.credits, 'CREDIT'))); break;
+        case 'story-ferry': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); toast('FARSIGHT DRONE · CARRYING YOU TO ' + e.to); break; // Edit 83
+        case 'story-ferried': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
         case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + STORY.needOf(s.levelId, e.tile, s.P) + ')'); break;
         case 'ending': if (e.kind === 'Licensed' || e.kind === 'Certified') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
         default: break;
@@ -1625,7 +1627,7 @@
     if (b.mode !== 'rescue') drawNose(s);
     drawEffects(s); drawRingsStreaks(); drawParts(s);
     for (const d of s.drawDrones()) { // P6.1 (D37): the rescue drone flies in from the edge, then carries the dummy below it
-      const rs = s.rescue, held = d.rescue && rs && rs.drone === d && (rs.phase === 'lift' || rs.phase === 'carry' || rs.phase === 'drop');
+      const rs = s.rescue, held = d.rescue && rs && rs.drone === d && (rs.phase === 'lift' || rs.phase === 'carry' || rs.phase === 'in' || rs.phase === 'drop'); // Edit 83: the ferry's 'in'
       if (!held) { drawDrone(s, d); continue; }
       const up = rs.up + 20, x = Math.round(d.x / U), y = Math.round(d.y / U) - up; PIX.line(x, y + 2, x, y + 7, (px, py) => FB.put(px, py, K.label));
       drawDrone(s, Object.assign({}, d, { y: d.y - up * U + d.alt * 4 * U }));
@@ -1683,6 +1685,7 @@
   // Frame-layer messages over the field: road intro and toasts, at ui.typeSecondary.
   function drawFieldHD(s) {
     const P = s.P;
+    drawBubblesHD(s); // Edit 83: barks are speech bubbles on the cars again
     const since = s.t - (s.tStart || 0);
     if (since < 4 && s.phase === 'play' && !s.storyMode) { // Edit 81: the story's tile card replaces the banner
       const iv = { road: s.roadIndex + 1, roads: s.list.length, roadName: INFO(s.levelId).name, quota: s.quota, difficulty: s.difficulty, health: P['damage.bodyHealth'] };
@@ -1710,10 +1713,70 @@
     }
     return best;
   }
+  // Edit 83 (P7.2): car barks are speech bubbles on the cars, drawn at a legible size in the frame layer: speech solid, shout
+  // doubled, mutter dashed, thought dotted. Above the car's tag, else below; never over the dummy or another bubble.
+  function drawBubblesHD(s) {
+    if (!STORY || !fx.bubbles.size) return;
+    const dur = pv('proto.barks.seconds') || 2.4, now = app.realT, size = Math.max(kMin(), 16), font = '700 ' + size + 'px ' + F_UI, lh = size + 3, pad = 8, maxW = 230;
+    const toC = (ax, ay) => [FX + ax * RA, FY + ay * RA], placed = [], cars = carsOf(s);
+    if (s.body.alive) { const [bx, by] = toC(s.body.x / U - 10, s.body.y / U - 16); placed.push({ x: bx, y: by, w: 20 * RA, h: 24 * RA }); }
+    const hit = (r) => placed.some((q) => r.x < q.x + q.w && r.x + r.w > q.x && r.y < q.y + q.h && r.y + r.h > q.y);
+    const order = [...fx.bubbles.entries()].sort((a, b2) => b2[1].priority - a[1].priority || b2[1].t0 - a[1].t0);
+    for (const [id, bk] of order) {
+      const c = cars.find((q) => q.id === id), age = now - bk.t0; if (!c || age > dur) continue;
+      const lines = wrapLines(bk.text, maxW - 2 * pad, font).slice(0, 3); ctx.font = font;
+      const w = Math.max(...lines.map((l) => ctx.measureText(l).width)) + 2 * pad, h = lines.length * lh + 2 * pad - 2;
+      const t = tagRect(c), [cx, top] = toC(c.x / U, t.y0), [, bot] = toC(0, c.y / U - (c._lift || 0) + Math.max(c.L, c.W) / U / 2);
+      let x = clamp(cx - w / 2, FX + 4, FX + FW - w - 4), y = top - 10 - h, below = false;
+      if (y < FY + 4 || hit({ x, y, w, h })) { y = bot + 10; below = true; }
+      if (y + h > FY + FH - 4 || hit({ x, y, w, h })) { if (bk.priority < 2) continue; y = clamp(top - 10 - h, FY + 4, FY + FH - h - 4); below = false; }
+      placed.push({ x, y, w, h }); app.bubblesDrawn = (app.bubblesDrawn || 0) + 1;
+      const st = bk.style, edge = kCss(K.barkEdge), fill = kCss(K.barkFill), ink = kCss(K.barkInk), ax = clamp(cx, x + 16, x + w - 16);
+      ctx.save(); ctx.globalAlpha = Math.min(1, 3 * (dur - age));
+      if (st === 'thought') { const ty = below ? y - 6 : y + h + 6; [[0, 0, 4], [3, below ? -7 : 7, 2.5]].forEach(([dx, dy, r]) => { ctx.beginPath(); ctx.arc(ax + dx, ty + dy, r, 0, TAU); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = edge; ctx.lineWidth = 1.5; ctx.stroke(); }); }
+      else { ctx.beginPath(); const by = below ? y : y + h; ctx.moveTo(ax - 7, by); ctx.lineTo(ax, by + (below ? -10 : 10)); ctx.lineTo(ax + 7, by); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = edge; ctx.lineWidth = 2; ctx.stroke(); }
+      rr(x, y, w, h, 10); ctx.fillStyle = fill; ctx.fill();
+      ctx.setLineDash(st === 'mutter' ? [6, 4] : st === 'thought' ? [2, 4] : []); ctx.lineWidth = 2; ctx.strokeStyle = edge; ctx.stroke(); ctx.setLineDash([]);
+      if (st === 'shout') { rr(x - 3, y - 3, w + 6, h + 6, 12); ctx.lineWidth = 1.5; ctx.stroke(); }
+      if (st !== 'thought') { ctx.beginPath(); const by = below ? y + 1 : y + h - 1; ctx.moveTo(ax - 5, by); ctx.lineTo(ax + 5, by); ctx.strokeStyle = fill; ctx.lineWidth = 3; ctx.stroke(); }
+      lines.forEach((l, k) => txt(l, x + w / 2, y + pad + size * 0.82 + k * lh, font, ink, 'center'));
+      ctx.restore();
+    }
+  }
+  // Edit 83 (P7.2): the bottom line carries the objective: the story's brief for the tile in test, or the Arcade district's quota.
+  // A toast takes the line while it lives.
+  function objective(s) {
+    if (!s) return null;
+    if (s.storyMode) {
+      const pr = s.story, id = s.levelId, act = STORY.activeTile(pr, id), here = s.screenName();
+      if (s.rescue && s.rescue.ferry) return ['FARSIGHT DRONE', 'Carrying the chassis to ' + s.rescue.tile + '.'];
+      if (!act) return ['STORY', INFO(id).name + ' is cleared.'];
+      const task = STORY.tileOf(id, act).task, need = STORY.needOf(id, act, s.P), lab = STORY.taskText(task, s.P).label.toLowerCase(), cnt = ' (' + pr.tileWO + ' of ' + need + ')';
+      const what = (need === 1 ? 'Write off a body' : 'Write off ' + need + ' bodies') + (task.kind === 'any' ? '' : '. Last hit: ' + lab);
+      if (here === act) return ['OBJECTIVE · ' + act, what + cnt + '.'];
+      return ['OBJECTIVE · ' + act, 'Back to ' + act + ': ' + what.charAt(0).toLowerCase() + what.slice(1) + cnt + '.'];
+    }
+    if (s.isCity && s.quota) return ['OBJECTIVE · ' + INFO(s.levelId).name.toUpperCase(), 'Write off ' + s.quota + ' bodies (' + s.run.writeOffs + ' of ' + s.quota + ').'];
+    return null;
+  }
   function drawMessages(s) {
     const items = [];
     if (app.toast && app.realT - app.toast.t < 1.6) items.push({ kind: 'toast', text: app.toast.msg, a: Math.min(1, 3 * (1.6 - (app.realT - app.toast.t))) });
-    const bk = s && liveBark(s); if (bk) items.push({ kind: 'bark', text: bk.bk.text, tag: bk.tag, spent: bk.spent, dim: bk.bk.style === 'mutter', a: bk.a });
+    if (!STORY) { const bk = s && liveBark(s); if (bk) items.push({ kind: 'bark', text: bk.bk.text, tag: bk.tag, spent: bk.spent, dim: bk.bk.style === 'mutter', a: bk.a }); }
+    if (STORY && !items.length) { // Edit 83: the objective line
+      const ob = objective(s); if (!ob) return;
+      const top = FY + FH + 8, bot = VH - 2, cy = (top + bot) / 2, MIN = kMin(); let size = TY.sec;
+      const fit = () => { ctx.font = '700 ' + size + 'px ' + F_UI; const lw = ctx.measureText(ob[0]).width + 24; ctx.font = '400 ' + size + 'px ' + F_UI; return lw + 12 + ctx.measureText(ob[1]).width <= FW - 16; };
+      while (!fit() && size > MIN) size--;
+      ctx.font = '700 ' + size + 'px ' + F_UI; const lw = ctx.measureText(ob[0]).width + 24; ctx.font = '400 ' + size + 'px ' + F_UI;
+      let text = ob[1]; while (text.length > 8 && lw + 12 + ctx.measureText(text).width > FW - 16) text = text.slice(0, -2);
+      if (text !== ob[1]) text = text.replace(/\s+\S*$/, '') + '…';
+      const total = lw + 12 + ctx.measureText(text).width, x0 = FX + FW / 2 - total / 2, ph = size + 10;
+      rr(x0, cy - ph / 2, lw, ph, 10); ctx.fillStyle = C.dummy; ctx.fill();
+      txt(ob[0], x0 + 12, cy + size * 0.36, '700 ' + size + 'px ' + F_UI, C.primary);
+      txt(text, x0 + lw + 12, cy + size * 0.36, '400 ' + size + 'px ' + F_UI, FT.text);
+      return;
+    }
     if (!items.length) return;
     const top = FY + FH + 8, bot = VH - 2, GAP = 28;
     const widthOf = (it, size, pill) => { ctx.font = '700 ' + size + 'px ' + F_UI; const tw = ctx.measureText(it.text).width; if (it.kind === 'toast') return tw + (pill ? 24 : 0); ctx.font = '700 ' + size + 'px ' + F_MONO; return ctx.measureText(it.tag).width + 14 + 10 + tw; };
@@ -1807,7 +1870,7 @@
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function drawTopBar(s) {
     const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
-    const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? ' · RIVER RESCUE' : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
+    const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? (s.rescue && s.rescue.ferry ? ' · DRONE' : ' · RIVER RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
     const items = s.storyMode ? [[null, INFO(s.levelId).name.toUpperCase() + ' · ' + s.screenName() + where], ['TILE', s.story.tileWO + ' / ' + STORY.needOf(s.levelId, STORY.activeTile(s.story, s.levelId) || s.screenName(), s.P)], ['POINTS', num(r.points)], ['CREDITS', String(r.credits)]] // Edit 81
       : [[null, roadLabel(s.p6 ? s.levelId : s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
@@ -1902,8 +1965,7 @@
     const Wd = s.P['world.width'], Hd = s.P['world.height'], lanes = !!(s.W6 && s.W6.recs), mc = lanes ? mapCanvas(s, G) : null;
     for (let iy = 0; iy < D.rows; iy++) for (let ix = 0; ix < D.cols; ix++) {
       const x = gx + ix * (cw + g), y = gy + iy * (ch + g), cur = D.cur[0] === ix && D.cur[1] === iy, cell = D.cells[iy][ix];
-      const st = sm ? STORY.tileState(s.story, s.levelId, 'ABC'[ix] + (iy + 1)) : null, seen = sm ? st !== 'hidden' : D.visited.has(iy * D.cols + ix);
-      if (sm && st === 'hidden') { rr(x, y, cw, ch, 5); ctx.fillStyle = FT.track; ctx.fill(); ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.stroke(); txt('?', x + cw / 2, y + ch / 2 + 7, fLab, FT.off, 'center'); continue; }
+      const st = sm ? STORY.tileState(s.story, s.levelId, 'ABC'[ix] + (iy + 1)) : null, seen = sm ? st === 'cleared' : D.visited.has(iy * D.cols + ix); // Edit 83: only cleared tiles at full strength
       rr(x, y, cw, ch, 5); ctx.fillStyle = lanes ? (seen || cur ? FT.item : FT.track) : cur ? FT.sel : seen ? FT.item : FT.track; ctx.fill();
       ctx.save(); rr(x, y, cw, ch, 5); ctx.clip();
       if (iy === 0 && !W6) { ctx.fillStyle = rgba(PIX.PAL.water.length === 7 ? PIX.PAL.water : '#4FC3E8', 0.9); ctx.fillRect(x, y, cw, 4); }
@@ -1921,12 +1983,13 @@
       }
       if (cell.focal) { ctx.beginPath(); ctx.arc(x + cw / 2, y + ch / 2, 3, 0, TAU); ctx.fillStyle = FT.accent; ctx.fill(); }
       ctx.restore();
-      rr(x, y, cw, ch, 5); ctx.strokeStyle = cur ? FT.accent : FT.itemEdge; ctx.lineWidth = cur ? 3 : 1;
-      if (cur && FT.neon) { ctx.save(); ctx.shadowColor = FT.accent; ctx.shadowBlur = 8; ctx.stroke(); ctx.restore(); } else ctx.stroke();
+      if (sm && st === 'active') { rr(x - 1.5, y - 1.5, cw + 3, ch + 3, 6); ctx.strokeStyle = C.dummy; ctx.lineWidth = 3; ctx.stroke(); } // Edit 83: the live tile, ringed in yellow
+      else if (sm && !cur) { rr(x, y, cw, ch, 5); ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.stroke(); }
+      if (sm && st === 'hidden') { rr(x, y, cw, ch, 5); ctx.fillStyle = 'rgba(40,46,56,0.55)'; ctx.fill(); } // greyed out until cleared
+      if (!sm || (cur && st !== 'active')) { rr(x, y, cw, ch, 5); ctx.strokeStyle = cur ? FT.accent : FT.itemEdge; ctx.lineWidth = cur ? 3 : 1;
+        if (cur && FT.neon) { ctx.save(); ctx.shadowColor = FT.accent; ctx.shadowBlur = 8; ctx.stroke(); ctx.restore(); } else ctx.stroke(); }
     }
-    if (sm) drawMapFences(s, G);
-    const b = s.body;
-    if (sm) drawBriefFoot(s, X, gy + D.rows * ch + (D.rows - 1) * g + 10, W);
+    const b = s.body; // Edit 83: the objective sits on the bottom line; the live tile's yellow ring marks its fences
     if (b.alive) { const x = gx + D.cur[0] * (cw + g) + clamp(b.x / Wd, 0, 1) * cw, y = gy + D.cur[1] * (ch + g) + clamp(b.y / Hd, 0, 1) * ch; ctx.beginPath(); ctx.arc(x, y, 5, 0, TAU); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 2; ctx.stroke(); }
   }
   // Right: the chassis. Each part shows the damage it took (sim: impact.part, body.parts); installed modules glow aqua.
@@ -2037,7 +2100,7 @@
     txt(TOUCH.on || app.device === 'pad' ? 'PRESS A TO START' : TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
   }
   // ---------- Edit 81 (P7): the title's two modes; the story map; the tile card; the brief under the district map; fences
-  const STORY_FOOT = 64; // the brief under the district map, reference units
+  const STORY_FOOT = 0; // Edit 83: the brief moved from under the district map to the bottom line
   const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 'S');
   function storyCursor() { // the tile in test (or the last one, once certified), as [column 0–8, row 0–2] on the story map
     const pr = app.story, D = STORY.DIST, did = pr.complete ? D[D.length - 1].id : pr.district, di = D.findIndex((d) => d.id === did);
@@ -2095,13 +2158,11 @@
       const at = (t) => { const [c, r] = STORY.cellOf(t); return [gx + c * (cw + g), top + r * (ch + g)]; };
       for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
         const t = 'ABC'[c] + (r + 1), st = STORY.tileState(pr, d.id, t), [cx, cy] = at(t), on = sel[0] === di * 3 + c && sel[1] === r, pulse = st === 'active' && Math.floor(app.realT * 2) % 2 === 0;
-        rr(cx, cy, cw, ch, 6); ctx.fillStyle = st === 'cleared' ? 'rgba(79,195,232,0.22)' : st === 'active' ? (pulse ? FT.sel : FT.keyTop) : FT.track; ctx.fill();
-        ctx.strokeStyle = on || st === 'active' ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : st === 'active' ? 2 : 1; ctx.stroke();
-        if (st === 'hidden') txt('?', cx + cw / 2, cy + ch / 2 + 7, fLab, FT.off, 'center');
-        else {
-          txt(t, cx + 8, cy + 22, '700 17px ' + F_UI, st === 'active' && pulse ? FT.selText : FT.text);
-          txt(st === 'cleared' ? '✓' : pr.tileWO + '/' + needT(d.id, t), cx + cw - 8, cy + ch - 9, '700 15px ' + F_UI, st === 'cleared' ? FT.accent : pulse ? FT.selText : FT.accent, 'right');
-        }
+        rr(cx, cy, cw, ch, 6); ctx.fillStyle = st === 'cleared' ? 'rgba(79,195,232,0.30)' : st === 'active' ? FT.keyTop : 'rgba(40,46,56,0.55)'; ctx.fill(); // Edit 83: uncleared greyed out
+        ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1; ctx.stroke();
+        if (st === 'active') { rr(cx - 2, cy - 2, cw + 4, ch + 4, 8); ctx.strokeStyle = C.dummy; ctx.lineWidth = pulse ? 4 : 3; ctx.stroke(); } // the live tile, ringed in yellow
+        txt(t, cx + 8, cy + 22, '700 17px ' + F_UI, st === 'hidden' ? FT.off : FT.text);
+        if (st !== 'hidden') txt(st === 'cleared' ? '✓' : pr.tileWO + '/' + needT(d.id, t), cx + cw - 8, cy + ch - 9, '700 15px ' + F_UI, st === 'cleared' ? FT.accent : C.dummy, 'right');
       }
       // the route between revealed tiles, a dot in the gap where one leads to the next
       for (let i = 1; i < d.order.length; i++) {
@@ -2178,20 +2239,14 @@
   }
   const c32 = (hex) => { const n = parseInt(hex.slice(1), 16); return (0xFF000000 | ((n & 255) << 16) | (n & 0xFF00) | ((n >> 16) & 255)) >>> 0; };
   const FENCE = { rail: c32('#F5C542'), band: c32('#1A1F24'), post: c32('#3A4550'), mesh: c32('#E8F0F4') };
-  function drawStoryFence(s) { // Edit 81: a Farsight test fence along every side that holds: hazard rails, mesh, posts. Art pixels
+  function drawStoryFence(s) { // Edit 83: a bounded edge, as in Zelda: no barrier across the road, a yellow glow at the screen's edge. Art pixels
     if (!s.storyMode || !s.fenceSides) return;
     const sides = s.fenceSides(); if (!sides.length) return;
     const at = (sd, i, d) => (sd === 'N' ? [i, d] : sd === 'S' ? [i, AH - 1 - d] : sd === 'W' ? [d, i] : [AW - 1 - d, i]);
+    const pulse = RM ? 1 : 0.8 + 0.2 * Math.sin(app.realT * 4), A = [0.9, 0.6, 0.36, 0.18, 0.08, 0.03];
     for (const sd of sides) {
       const len = sd === 'N' || sd === 'S' ? AW : AH;
-      for (let i = 0; i < len; i++) {
-        for (let d = 0; d < 5; d++) {
-          const [x, y] = at(sd, i, d);
-          if (d === 0 || d === 4) FB.put(x, y, (i >> 2) & 1 ? FENCE.rail : FENCE.band);
-          else FB.mix(x, y, FENCE.mesh, (i + d) % 2 ? 0.6 : 0.18);
-        }
-        if (i % 10 === 0) for (let d = 0; d < 7; d++) { const [x, y] = at(sd, i, d); FB.put(x, y, FENCE.post); }
-      }
+      for (let i = 0; i < len; i++) for (let d = 0; d < A.length; d++) { const [x, y] = at(sd, i, d); FB.mix(x, y, FENCE.rail, A[d] * pulse); }
     }
   }
   function drawReport(s) {
@@ -2490,7 +2545,7 @@
     for (let i = TUNE.length - 1; i >= 0; i--) if (gone.has(TUNE[i][0])) TUNE.splice(i, 1);
   }
   if (STORY) { // Edit 81–82: the story (from the next deploy): a credit a body, its prices, the gift, the brief's combos, each tile's write-offs
-    TUNE.push(['economy.creditsPerWriteOff', 0, 3, 1], ['story.price.ability.level1', 1, 10, 1], ['story.price.ability.level2', 1, 10, 1], ['story.price.ability.level3', 1, 10, 1], ['story.giftCredits', 0, 10, 1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
+    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.price.ability.level1', 1, 10, 1], ['story.price.ability.level2', 1, 10, 1], ['story.price.ability.level3', 1, 10, 1], ['story.giftCredits', 0, 10, 1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.writeOffs.' + d.id + '.' + t, 1, 6, 1]);
   }
   for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
@@ -2614,4 +2669,5 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR }; // Edit 75–76: for the tests
+  window.__dummiesUI = { objective }; // Edit 83: for the tests
 })();

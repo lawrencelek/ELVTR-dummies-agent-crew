@@ -1,13 +1,16 @@
-/* DUMMIES P7.1 (GDD Edits 81–82): Story mode. The Test City, tile by tile: Monument, then Parkland, then Waterfront.
+/* DUMMIES P7.2 (GDD Edits 81–83): Story mode. The Test City, tile by tile: Monument, then Parkland, then Waterfront.
    - A district opens on its first tile (content/story/story.json, `order`). The dummy spawns there.
    - A tile wants story.writeOffs.<district>.<tile> write-offs that meet Farsight's brief: a test on the hit that writes the
      chassis off (Edit 82: a count per tile; only the last hit counts, D66).
-   - Fences hold the tile in test on every side; they cannot be jumped. A cleared tile drops its fences. The next tile opens
-     until the dummy enters it, then its fences close behind.
-   - Cleared tiles stay open: walk back through them. Write-offs there score, but count for nothing.
+   - Edit 83: fences hold every edge toward a tile not yet open; they cannot be jumped. Open tiles: the cleared ones and the
+     tile in test. Cleared tiles stay open: walk back through them. Write-offs there score, but count for nothing.
    - Edit 82: every body written off pays economy.creditsPerWriteOff, counted or not. Levels cost story.price.ability.level1–3
      (3, 4, 5): a level-1 power-up is three bodies.
    - Some tiles carry a gift: an ability level installed on arrival, or story.giftCredits credits.
+   - Edit 83: a clear calls a Farsight drone. It lifts the dummy, carries it across the edge into the next tile, and sets it
+     down off the road near where it crossed (story.ferryDepth). Then the next tile's card.
+   - Edit 83: P7SIM, the P7.2 values for both modes: the knock keeps proto.recoilScale of the Newtonian velocity and slides at
+     most proto.bounce.maxThrow.
    - The map reveals cleared tiles and the one in test. Progress is one plain object (`progress`), saved by the page.
    Headless in Node: require('./story.js'). In the page: window.STORY. */
 (function (root) {
@@ -20,7 +23,8 @@
   const nameOf = (c, r) => 'ABC'[c] + (r + 1);
   const cellOf = (t) => ['ABC'.indexOf(t[0]), +t[1] - 1];
   const DIST = DATA.districts, TOTAL = DIST.reduce((a, d) => a + d.order.length, 0);
-  const BASE = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM);
+  const P7SIM = { 'proto.recoilScale': 0.7, 'proto.bounce.maxThrow': 40 }; // Edit 83: the ricochet the dummy survives; Arcade and Story
+  const BASE = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM, P7SIM);
 
   // ---------- progress: one plain object, JSON-safe
   function newProgress() {
@@ -69,7 +73,7 @@
   class StorySim extends W6.Sim6 {
     // progress: newProgress() or a saved one, its district = this district. opts: Sim6's (world, warm)
     constructor(id, overrides, progress, opts) {
-      const pr = progress, ov = Object.assign({}, overrides || {}), P0 = Object.assign({}, BASE, ov);
+      const pr = progress, ov = Object.assign({}, P7SIM, overrides || {}), P0 = Object.assign({}, BASE, ov);
       ov['run.appearances.road'] = P0['story.shiftCars']; // the story has no shift clock: a district's traffic runs for story.shiftCars cars
       for (const L of [1, 2, 3]) ov['economy.price.ability.level' + L] = P0['story.price.ability.level' + L]; // Edit 82: the story's prices, 3, 4, 5
       const carry = { owned: Object.assign({}, pr.owned), credits: pr.credits, points: pr.points, chassis: pr.chassis, writeOffs: pr.writeOffs, t: pr.t, purchases: [], milestones: pr.milestones || {} };
@@ -100,14 +104,66 @@
     step(cmd) {
       if (this.phase === 'brief') return;
       super.step(cmd);
-      if (this.phase === 'play' && this.pendingBrief) { this.pendingBrief = false; this.phase = 'brief'; }
+      if (this.phase === 'play' && this.pendingBrief && !this.rescue) { this.pendingBrief = false; this.phase = 'brief'; } // after a ferry lands
     }
-    // a tile may be crossed into when both sides are cleared, or from a cleared tile into the next one before the dummy enters it
+    // ----- Edit 83: the ferry. After a clear, a drone carries the new chassis from the cleared tile into the next one
+    leaveShop() {
+      const st = this.report && this.report.story;
+      super.leaveShop();
+      if (this.storyMode && st && st.cleared && st.next && !st.districtDone && this.phase === 'play') this.startFerry(st.tile, st.next);
+    }
+    startFerry(from, to) {
+      const b = this.body, P = this.P, W = P['world.width'], H = P['world.height'], [fc, fr] = cellOf(from), [tc, tr] = cellOf(to);
+      const side = tc > fc ? 'E' : tc < fc ? 'W' : tr > fr ? 'S' : 'N', [sx, sy] = SIDES[side];
+      const hx = sx ? (sx > 0 ? W + 40 : -40) : b.x, hy = sy ? (sy > 0 ? H + 40 : -40) : b.y; // the drone comes in from the next tile's side
+      b.mode = 'rescue'; Object.assign(b, { lunge: null, stair: null, jump: null, z: 0, vx: 0, vy: 0, level: 0, floor: null, _spr: null });
+      this.rescue = { ferry: true, side, cell: [tc, tr], tile: to, t: 0, phase: 'inbound', k: 0, under: 0, up: 0, lift: P['proto.droneLiftSeconds'], v: P['proto.droneSpeed'], to: null,
+        drone: { x: hx, y: hy, alt: 1, state: 'inbound', rescue: true, hx, hy } };
+      this.emit('story-ferry', { from, to, side });
+    }
+    arrivalPoint(side) { // off the road (landPoints: free ground or the hilltop), within story.ferryDepth of the entry edge, nearest the crossing
+      const P = this.P, b = this.body, W = P['world.width'], H = P['world.height'], dep = P['story.ferryDepth'], r = P['body.radius'];
+      const depth = (q) => (side === 'E' ? q.x : side === 'W' ? W - q.x : side === 'S' ? q.y : H - q.y); // in from the edge it entered by
+      const ex = side === 'E' ? 0 : side === 'W' ? W : b.x, ey = side === 'S' ? 0 : side === 'N' ? H : b.y;
+      const pts = this.landPoints().filter((q) => depth(q) >= r + 24); // clear of the edge by a body and more
+      const near = pts.filter((q) => depth(q) <= dep), pool = near.length ? near : pts;
+      let best = null; for (const q of pool) { const d = Math.hypot(q.x - ex, q.y - ey); if (!best || d < best.d) best = Object.assign({ d }, q); }
+      return best || Object.assign({ d: 0 }, this.level.spawns[0]);
+    }
+    stepRescue(dt) {
+      const rs = this.rescue;
+      if (!rs || !rs.ferry) return super.stepRescue(dt);
+      const b = this.body, P = this.P, W = P['world.width'], H = P['world.height'], d = rs.drone;
+      rs.t += dt; rs.k += dt;
+      const fly = (x, y) => { const dx = x - d.x, dy = y - d.y, l = Math.hypot(dx, dy), st = rs.v * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
+      const next = (ph) => { rs.phase = ph; rs.k = 0; d.state = ph; };
+      if (rs.phase === 'inbound') { if (fly(b.x, b.y)) next('lift'); }
+      else if (rs.phase === 'lift') { const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * f; d.alt = 1 - 0.6 * Math.sin(Math.PI * f); if (f >= 1) { next('carry'); d.alt = 1; } }
+      else if (rs.phase === 'carry') { // to the edge and over it
+        const [sx, sy] = SIDES[rs.side], tx = sx ? (sx > 0 ? W + 2 : -2) : Math.max(40, Math.min(W - 40, b.x)), ty = sy ? (sy > 0 ? H + 2 : -2) : Math.max(40, Math.min(H - 40, b.y));
+        fly(tx, ty); b.x = d.x; b.y = d.y; b.px = b.x; b.py = b.y;
+        if ((sx > 0 && d.x > W) || (sx < 0 && d.x < 0) || (sy > 0 && d.y > H) || (sy < 0 && d.y < 0)) {
+          d.x -= sx * W; d.y -= sy * H; d.hx -= sx * W; d.hy -= sy * H;
+          this.flip(rs.side, rs.cell, null); // the screen scrolls; the next tile's fences close behind (arrive)
+          rs.to = this.arrivalPoint(rs.side); next('in');
+        }
+      } else if (rs.phase === 'in') { const arrived = fly(rs.to.x, rs.to.y); b.x = d.x; b.y = d.y; b.px = b.x; b.py = b.y; if (arrived) next('drop'); }
+      else if (rs.phase === 'drop') {
+        const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * (1 - f);
+        if (f >= 1) {
+          Object.assign(b, { x: rs.to.x, y: rs.to.y, px: rs.to.x, py: rs.to.y, level: rs.to.level || 0, floor: rs.to.floor != null ? rs.to.floor : null, mode: 'idle', vx: 0, vy: 0 });
+          const [sx, sy] = SIDES[rs.side]; d.hx = sx ? (sx > 0 ? W + 40 : -40) : d.x; d.hy = sy ? (sy > 0 ? H + 40 : -40) : d.y; d.state = 'outbound'; (this.leaving = this.leaving || []).push(d); // on, the way it was going
+          this.rescue = null;
+          this.emit('story-ferried', { tile: this.screenName(), x: +b.x.toFixed(1), y: +b.y.toFixed(1), seconds: +rs.t.toFixed(2) });
+        }
+      }
+    }
+    // Edit 83: the open tiles are the cleared ones and the tile in test. An edge between two open tiles is open; every other edge
+    // of an open tile is fenced. Cleared tiles stay reachable from the tile in test (P7–7.1 closed it behind the dummy)
     canCross(to) {
       if (!this.storyMode) return true;
-      const pr = this.story, dn = doneIn(pr, this.levelId), act = activeTile(pr, this.levelId), from = this.screenName(), tn = nameOf(to[0], to[1]);
-      if (dn.includes(from) && dn.includes(tn)) return true;
-      return !this.entered && tn === act && dn.includes(from);
+      const pr = this.story, dn = doneIn(pr, this.levelId), act = activeTile(pr, this.levelId), open = (t) => dn.includes(t) || t === act;
+      return open(this.screenName()) && open(nameOf(to[0], to[1]));
     }
     fenceSides() { // the current screen's sides that a fence holds
       if (!this.storyMode) return [];
@@ -204,6 +260,6 @@
     trace() { const tr = super.trace(); tr.story = JSON.parse(JSON.stringify(this.story)); return tr; }
   }
 
-  const api = { DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
+  const api = { P7SIM, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
   if (NODE) module.exports = api; else root.STORY = api;
 })(typeof window !== 'undefined' ? window : globalThis);
