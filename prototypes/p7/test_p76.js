@@ -1,4 +1,7 @@
-// Prototype 7.5 (GDD Edits 81–86) checks. Run from prototypes/p7: node test_p75.js [screenshot folder]
+// Prototype 7.6 (GDD Edits 81–87) checks. Run from prototypes/p7: node test_p76.js [screenshot folder]
+// Edit 87: one top edge. BODY, the field and a POINTS/CREDITS box (BODY's size) start on the field's bezel; the chassis under it; the
+// objective on the top strip; the map titled [MAP] · [TILE]; the touch chips small, top left. Touch: Pause › Controls › Adjust
+// layout moves and sizes the stick and the Y X B A diamond anywhere (ui.touch.scaleMin–scaleMax), saved in this browser.
 // Edit 86: a clean screen. No row under the stage: options (sound, palette, full screen, tuning, pad setup) and the controls of
 // the device in hand live in the pause menu; BODY as tall as DASH, the map raised; no FARSIGHT wordmark in play.
 // Edit 85: Story's traffic per tile (story.traffic.<district>.<tile> on the tile in test and its neighbours; Arcade per district);
@@ -12,8 +15,8 @@
 // tile, off the road near the crossing; fences only toward tiles not yet open; the objective on the bottom line; bubbles on the cars.
 // 1. Content: the orders; neighbours; tales, tasks, gifts; registry IDs; abilities gifted in time; every brief possible where set.
 // 2. Headless: defaults; the ricochet; the fence; a real write-off; clears; the ferry; cleared tiles open; gifts; prices; the fill;
-//    the next district; the certificate. Arcade: one district a run. 6.4–6.10, 7 and 7.1 frozen.
-// 3. Browser (Playwright, dummies_p7_5.html): title; Arcade and its first verb; the story map; the card; a fence; a report, the
+//    the next district; the certificate. Arcade: one district a run. 6.4–6.10 and 7–7.5 frozen.
+// 3. Browser (Playwright, dummies_p7_6.html): title; Arcade and its first verb; the story map; the card; a fence; a report, the
 //    shop, the ferry; the gift: the drone with the module, the gift screen, the hold; the objective line; progress saved; a phone.
 'use strict';
 const fs = require('fs'), path = require('path');
@@ -39,11 +42,11 @@ const D = STORY.DIST;
   const bad = []; for (const d of D) for (const t of d.order) { const q = d.tiles[t]; if (!q || !q.title || !q.tale || q.tale.split(' ').length < 12 || !q.task || !kinds.has(q.task.kind)) bad.push(d.id + ' ' + t); if (q && q.task.param && REG[q.task.param] == null) bad.push(t + ' ' + q.task.param); if (q && q.gift && q.gift.node && !nodes[q.gift.node]) bad.push(t + ' ' + q.gift.node); if (q && q.gift && q.gift.credits && REG[q.gift.credits] == null) bad.push(t + ' ' + q.gift.credits); if (REG['story.writeOffs.' + d.id + '.' + t] == null) bad.push(t + ' writeOffs'); }
   const words = D.reduce((a, d) => a + d.order.reduce((b, t) => b + d.tiles[t].tale.split(' ').length, 0), 0);
   ok(!bad.length, 'every tile has a title, a tale (' + words + ' words in all), a task Farsight knows and, where set, a gift; every number a registry ID (story.task.comboEasy, story.task.comboHard, story.writeOffs.<district>.<tile>)' + (bad.length ? ': ' + bad.join(', ') : ''));
-  const ids = ['economy.creditsPerWriteOff', 'story.price.ability.level1', 'story.price.ability.level2', 'story.price.ability.level3', 'story.task.comboEasy', 'story.task.comboHard', 'story.shiftCars', 'proto.recoilScale', 'proto.bounce.maxThrow', 'story.ferryDepth', 'arcade.giftEvery', 'ui.gift.fallSeconds', 'ui.gift.holdSeconds', 'world.deckDropGaps', 'world.deckFlightsMin', 'props.cone.minVisible'];
+  const ids = ['economy.creditsPerWriteOff', 'story.price.ability.level1', 'story.price.ability.level2', 'story.price.ability.level3', 'story.task.comboEasy', 'story.task.comboHard', 'story.shiftCars', 'proto.recoilScale', 'proto.bounce.maxThrow', 'story.ferryDepth', 'arcade.giftEvery', 'ui.gift.fallSeconds', 'ui.gift.holdSeconds', 'world.deckDropGaps', 'world.deckFlightsMin', 'props.cone.minVisible', 'ui.touch.scaleMin', 'ui.touch.scaleMax', 'ui.touch.scaleStep'];
   const regFile = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'content', 'params', 'tuning.parameters.json'), 'utf8')), inFile = new Set(regFile.entries.map((e) => e.id));
   const tiles = D.flatMap((d) => d.order.map((t) => 'story.writeOffs.' + d.id + '.' + t)), trafficIds = D.flatMap((d) => d.order.map((t) => 'story.traffic.' + d.id + '.' + t)), retired = ['story.tileWriteOffs', 'story.clearPowerUps', 'story.pointsPerPowerUp', 'story.giftPowerUps', 'story.giftCredits'];
   const byId = new Map(regFile.entries.map((e) => [e.id, e]));
-  ok(ids.concat(tiles, trafficIds).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 8[23]\)/.test(byId.get(k).status)) && byId.get('proto.recoilScale').default === REG['proto.recoilScale'] && byId.get('proto.bounce.maxThrow').default === REG['proto.bounce.maxThrow'] && regFile.registryVersion.startsWith('edit85'),
+  ok(ids.concat(tiles, trafficIds).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 8[23]\)/.test(byId.get(k).status)) && byId.get('proto.recoilScale').default === REG['proto.recoilScale'] && byId.get('proto.bounce.maxThrow').default === REG['proto.bounce.maxThrow'] && regFile.registryVersion.startsWith('edit87'),
     'the story\'s values are registry IDs (' + ids.map((k) => k + ' ' + REG[k]).join(', ') + '); 27 tile counts; 27 tile traffic scales; ' + retired.length + ' P7 IDs retired; registry ' + regFile.registryVersion);
   const per = D.map((d) => d.name + ' ' + d.order.map((t) => REG['story.writeOffs.' + d.id + '.' + t]).join('')), sum = tiles.reduce((a, k) => a + REG[k], 0);
   ok(tiles.every((k) => REG[k] >= 1 && REG[k] <= 2) && sum === 35, 'write-offs per tile, retuned so the tracks fill at the end: ' + per.join(' · ') + ' (in story order); ' + sum + ' bodies (7.1: 62)');
@@ -293,13 +296,13 @@ const NO_ROAD = { 'parkland:B1': 'no Z0 road passes under it (D70)' }; // a high
   const list = ['dummies_p6_4.html', 'dummies_p6_5.html', 'dummies_p6_6.html', 'dummies_p6_7.html', 'dummies_p6_8.html', 'dummies_p6_9.html', 'dummies_p6_10.html'];
   const p7 = (() => { try { return md5(execSync('git show HEAD:prototypes/p7/dummies_p7.html', { maxBuffer: 1 << 26, cwd: __dirname })) === md5(fs.readFileSync(path.join(__dirname, 'dummies_p7.html'))); } catch (e) { return false; } })();
   const p7f = (f) => { try { return md5(execSync('git show HEAD:prototypes/p7/' + f, { maxBuffer: 1 << 26, cwd: __dirname })) === md5(fs.readFileSync(path.join(__dirname, f))); } catch (e) { return false; } };
-  ok(list.every(same) && p7 && ['dummies_p7_1.html', 'dummies_p7_2.html', 'dummies_p7_3.html', 'dummies_p7_4.html'].every(p7f), 'dummies_p6_4.html to dummies_p6_10.html and dummies_p7.html to dummies_p7_4.html are byte-identical to their commits (the shared code builds P7.5)');
+  ok(list.every(same) && p7 && ['dummies_p7_1.html', 'dummies_p7_2.html', 'dummies_p7_3.html', 'dummies_p7_4.html', 'dummies_p7_5.html'].every(p7f), 'dummies_p6_4.html to dummies_p6_10.html and dummies_p7.html to dummies_p7_5.html are byte-identical to their commits (the shared code builds P7.6)');
 }
 // ---------- 4. the page
 (async () => {
   let chromium;
   try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP browser checks: playwright not found'); return done(); }
-  const url = 'file://' + path.join(__dirname, 'dummies_p7_5.html');
+  const url = 'file://' + path.join(__dirname, 'dummies_p7_6.html');
   const br = await chromium.launch(), logs = [];
   const watch = (pg) => pg.on('pageerror', (e) => logs.push(e.message));
   const shot = async (pg, name) => { if (OUT) await pg.screenshot({ path: path.join(OUT, name) }); };
@@ -307,25 +310,27 @@ const NO_ROAD = { 'parkland:B1': 'no Z0 road passes under it (D70)' }; // a high
   const ctx = await br.newContext({ viewport: { width: 1300, height: 900 } }), pg = await ctx.newPage(); watch(pg);
   await pg.goto(url); await pg.waitForTimeout(1200);
   const t0 = await pg.evaluate(() => ({ screen: window.__dummies.screen, status: document.getElementById('status').textContent }));
-  await shot(pg, 'p75_title.png');
-  ok(t0.screen === 'title' && /^P7\.5 /.test(t0.status), 'the title offers two modes, ARCADE and STORY (build ' + t0.status.split(' ')[0] + ')');
+  await shot(pg, 'p76_title.png');
+  ok(t0.screen === 'title' && /^P7\.6 /.test(t0.status), 'the title offers two modes, ARCADE and STORY (build ' + t0.status.split(' ')[0] + ')');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(300);
-  const a1 = await pg.evaluate(() => window.__dummies.screen); await shot(pg, 'p75_arcade.png');
+  const a1 = await pg.evaluate(() => window.__dummies.screen); await shot(pg, 'p76_arcade.png');
   await pg.keyboard.press('ArrowDown'); await pg.keyboard.press('Space');
   const a2 = await wait(pg, () => window.__dummies.sim && window.__dummies.sim.phase === 'play', 30000);
   const a3 = await pg.evaluate(() => { const s = window.__dummies.sim; return { id: s.levelId, final: s.isFinal, story: !!s.storyMode }; });
   ok(a1 === 'arcade' && a2 && a3.id === 'waterfront' && a3.final && !a3.story, `ARCADE: pick a district (${a3.id}); it plays alone, as 6.10 plays it`);
+  const ah = await pg.evaluate(() => window.__dummiesUI.hud());
+  ok(ah.stats.rows === 'POINTS CARS LEFT' && ah.stats.y === ah.body.y, `Arcade's box: ${ah.stats.rows} (CARS LEFT kept: the shift's clock)`);
   const ao = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
   await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; b.hits.push({ kind: 'dash', cls: 'van', combo: 1, assessed: 120, lost: 30, angle: 90, model: 'VAN-02' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
   await wait(pg, () => window.__dummies.sim.phase === 'report', 8000); await pg.keyboard.press('Space'); await pg.waitForTimeout(250); await pg.keyboard.press('ShiftLeft');
-  await wait(pg, () => { const s = window.__dummies.sim; return s.rescue && s.rescue.gift && Math.abs(s.rescue.drone.y - s.body.y) < 140; }, 8000); await shot(pg, 'p75_arcade_drone.png');
-  await wait(pg, () => window.__dummies.sim.phase === 'gift', 8000); await pg.waitForTimeout(1300); await shot(pg, 'p75_arcade_gift.png');
+  await wait(pg, () => { const s = window.__dummies.sim; return s.rescue && s.rescue.gift && Math.abs(s.rescue.drone.y - s.body.y) < 140; }, 8000); await shot(pg, 'p76_arcade_drone.png');
+  await wait(pg, () => window.__dummies.sim.phase === 'gift', 8000); await pg.waitForTimeout(1300); await shot(pg, 'p76_arcade_gift.png');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(400);
   const ag = await pg.evaluate(() => { const s = window.__dummies.sim; return { phase: s.phase, legs: s.has('jump'), ob: window.__dummiesUI.objective(s) }; });
   ok(/Legs 1 comes with the next write-off/.test(ao ? ao[1] : '') && ag.phase === 'play' && ag.legs && /Hands 1 comes with the next write-off/.test(ag.ob ? ag.ob[1] : ''),
     `Arcade: "${ao ? ao[1] : ''}"; after the write-off a drone brings Legs 1 with the gift screen; then "${ag.ob ? ag.ob[1] : ''}"`);
   { // Edit 85: Waterfront A2's bridge: the new flight up from the beach; the gaps over the avenue
-    await pg.evaluate(() => { const s = window.__dummies.sim; s.enter(s.W6.at(0, 1)); Object.assign(s.body, { x: -500, y: -500 }); }); await pg.waitForTimeout(500); await shot(pg, 'p75_bridge_flight.png');
+    await pg.evaluate(() => { const s = window.__dummies.sim; s.enter(s.W6.at(0, 1)); Object.assign(s.body, { x: -500, y: -500 }); }); await pg.waitForTimeout(500); await shot(pg, 'p76_bridge_flight.png');
     const fl = await pg.evaluate(() => { const g = window.__dummies.sim.W6.at(0, 1).game, f = g.floors.find((q) => q.kind === 'deck'); return { flights: g.stairs.filter((q) => q.head === f.i).length, gaps: (f.layer.gapSpans || []).length }; });
     ok(fl.flights === 1 && fl.gaps >= 2, `in the page, Waterfront A2's bridge has a flight up from the beach (${fl.flights}) and ${fl.gaps} drop gaps`);
   }
@@ -334,31 +339,34 @@ const NO_ROAD = { 'parkland:B1': 'no Z0 road passes under it (D70)' }; // a high
   await pg.keyboard.press('Space'); await pg.waitForTimeout(200);
   await pg.keyboard.press('ArrowRight'); await pg.keyboard.press('Space'); await pg.waitForTimeout(400);
   const m = await pg.evaluate(() => ({ screen: window.__dummies.screen, story: window.__dummies.story }));
-  await shot(pg, 'p75_map.png');
+  await shot(pg, 'p76_map.png');
   ok(m.screen === 'storymap' && m.story && m.story.district === 'monument', 'STORY: the map of the Test City; only Monument A1 is revealed');
-  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150); await shot(pg, 'p75_map_hidden.png'); await pg.keyboard.press('ArrowLeft');
+  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150); await shot(pg, 'p76_map_hidden.png'); await pg.keyboard.press('ArrowLeft');
   await pg.keyboard.press('Space');
   const b1 = await wait(pg, () => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(300);
-  await shot(pg, 'p75_brief.png');
+  await shot(pg, 'p76_brief.png');
   ok(b1, 'deploying opens the tile card: the tale of the LED wall and Farsight\'s brief');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(200);
-  await shot(pg, 'p75_a1_gap.png'); // Edit 85: Monument A1's highway, its parapet open over the road (lit)
+  await shot(pg, 'p76_a1_gap.png'); // Edit 85: Monument A1's highway, its parapet open over the road (lit)
   { // Edit 86: a clean screen; options and controls in the pause menu
     const ui = await pg.evaluate(() => { const r = document.getElementById('game').getBoundingClientRect(); return { bar: document.querySelector('.bar').hidden, mon: document.getElementById('padmon').hidden, h: r.height, vh: window.innerHeight, left: window.__dummies.layoutY.left }; });
-    ok(ui.bar && ui.mon && ui.h >= ui.vh - 2 && ui.left === 458, `no row under the screen (options, keys and the pad monitor moved into the pause menu); the stage fills the window (${Math.round(ui.h)} of ${ui.vh} px); BODY as tall as DASH, so the district map rises: the touch zone starts at ${ui.left} (P7.4: 522)`);
-    await pg.keyboard.press('Escape'); await pg.waitForTimeout(150); await shot(pg, 'p75_pause.png');
+    ok(ui.bar && ui.mon && ui.h >= ui.vh - 2 && ui.left === 430, `no row under the screen; the stage fills the window (${Math.round(ui.h)} of ${ui.vh} px); BODY on the field's top edge, so the map rises: the touch zone starts at ${ui.left} (P7.5: 458)`);
+    const H = await pg.evaluate(() => window.__dummiesUI.hud()), top = H.field.y, same = (a, b) => Math.abs(a - b) < 0.5;
+    ok(same(H.body.y, top) && same(H.stats.y, top) && same(H.stats.w, H.body.w) && same(H.stats.h, H.body.h) && H.stats.rows === 'POINTS CREDITS' && H.chassis.y > H.stats.y + H.stats.h && H.objective.y >= 0 && H.objective.y + H.objective.h <= top && H.map.title === 'MONUMENT · A1',
+      `Edit 87, one top edge (y ${top}): BODY ${H.body.w}×${H.body.h}, the field, ${H.stats.rows} ${H.stats.w}×${H.stats.h}; the chassis beneath (y ${H.chassis.y}); the objective on the top strip ("${H.objective.text}"); the map titled "${H.map.title}"`);
+    await pg.keyboard.press('Escape'); await pg.waitForTimeout(150); await shot(pg, 'p76_pause.png');
     const pi = await pg.evaluate(() => window.__dummies.paused);
     await pg.keyboard.press('ArrowDown'); await pg.keyboard.press('ArrowDown'); await pg.keyboard.press('Space'); await pg.waitForTimeout(150);
     const op = await pg.evaluate(() => ({ page: window.__dummies.pausePage, items: window.__dummiesUI.optionItems(), sound: window.__dummies.sound }));
-    await shot(pg, 'p75_options.png');
+    await shot(pg, 'p76_options.png');
     await pg.keyboard.press('Space'); await pg.waitForTimeout(100); const snd = await pg.evaluate(() => window.__dummies.sound); await pg.keyboard.press('Space'); await pg.waitForTimeout(100);
     ok(pi && op.page === 'options' && op.items.join('|').replace(/: (on|off)/g, '') === 'Sound|Palette: cyber → day|Full screen|Tuning panel|Gamepad setup|Back' && snd === !op.sound, 'ESC pauses; Options: ' + op.items.join(' · ') + '; Sound toggles from the menu');
     await pg.keyboard.press('Escape'); await pg.waitForTimeout(100); await pg.keyboard.press('ArrowDown'); await pg.keyboard.press('Space'); await pg.waitForTimeout(150);
     const ck = await pg.evaluate(() => ({ page: window.__dummies.pausePage, dev: window.__dummiesUI.deviceOf(), rows: window.__dummiesUI.controlRows().rows.map((r) => r[1]).join(' ') }));
-    await shot(pg, 'p75_controls_keys.png');
+    await shot(pg, 'p76_controls_keys.png');
     await pg.evaluate(() => { window.__dummies.device = 'pad'; }); await pg.waitForTimeout(120);
     const cp = await pg.evaluate(() => ({ dev: window.__dummiesUI.deviceOf(), rows: window.__dummiesUI.controlRows().rows.map((r) => r[1]).join(' ') }));
-    await shot(pg, 'p75_controls_pad.png');
+    await shot(pg, 'p76_controls_pad.png');
     await pg.evaluate(() => { window.__dummies.device = 'keys'; });
     ok(ck.page === 'controls' && ck.dev === 'keys' && /^WASD \/ arrows Space \/ K L \/ Shift J \/ E I \/ Q Esc \/ P T G$/.test(ck.rows) && cp.dev === 'pad' && /^Stick \/ d-pad A B X Y Start Hold Start$/.test(cp.rows), `Controls shows the device in hand: keyboard (${ck.rows}); gamepad (${cp.rows})`);
     await pg.keyboard.press('Escape'); await pg.waitForTimeout(80); await pg.keyboard.press('Escape'); await pg.waitForTimeout(150);
@@ -367,70 +375,108 @@ const NO_ROAD = { 'parkland:B1': 'no Z0 road passes under it (D70)' }; // a high
   ok(den[0] === 1.5 && den[1] === 1.5 && den[2] === 1, `in the page, Story runs Monument A1 and its neighbours at story.traffic.monument.A1 (${den[0]}), C3 at ${den[2]}`);
   await pg.keyboard.down('KeyD'); await pg.waitForTimeout(3800); await pg.keyboard.up('KeyD'); await pg.waitForTimeout(150);
   const f = await pg.evaluate(() => { const s = window.__dummies.sim; return { x: s.body.x, scr: s.screenName(), toast: window.__dummies.toast && window.__dummies.toast.msg }; });
-  await shot(pg, 'p75_fence.png');
+  await shot(pg, 'p76_fence.png');
   ok(f.scr === 'A1' && f.x > 700 && /Fence/.test(f.toast || ''), `the fence on A1's east side holds the dummy (x ${Math.round(f.x)}): "${f.toast}"`);
   const ob = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
-  ok(ob && /^OBJECTIVE · A1/.test(ob[0]) && /Write off a body \(0 of 1\)/.test(ob[1]), 'the bottom line carries the objective: "' + (ob ? ob.join(' · ') : '') + '"');
+  ok(ob && /^OBJECTIVE · A1/.test(ob[0]) && /Write off a body \(0 of 1\)/.test(ob[1]), 'the top strip carries the objective: "' + (ob ? ob.join(' · ') : '') + '"');
   await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; s.run.credits = 2; b.hits.push({ kind: 'dash', cls: 'van', combo: 1, assessed: 120, lost: 30, angle: 90, model: 'VAN-02' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
   await wait(pg, () => window.__dummies.sim.phase === 'report', 8000); await pg.waitForTimeout(200);
-  await shot(pg, 'p75_report.png');
+  await shot(pg, 'p76_report.png');
   const saved = await pg.evaluate(() => JSON.parse(localStorage.getItem('dummies.p7.story') || 'null'));
   ok(saved && saved.done.monument && saved.done.monument[0] === 'A1' && saved.credits === 3, 'the write-off clears A1 (1 of 1) and pays its credit (3 in all); progress is saved in this browser');
-  await pg.keyboard.press('Space'); await pg.waitForTimeout(300); await shot(pg, 'p75_shop.png');
+  await pg.keyboard.press('Space'); await pg.waitForTimeout(300); await shot(pg, 'p76_shop.png');
   const sh = await pg.evaluate(() => window.__dummies.sim.phase);
   ok(sh === 'shop', 'with 3 credits, the shop follows: a level-1 power-up costs 3');
   await pg.keyboard.press('ShiftLeft'); await wait(pg, () => { const s = window.__dummies.sim; return s.rescue && s.rescue.phase === 'carry' && s.body.x > 520; }, 15000); await pg.waitForTimeout(100);
-  await shot(pg, 'p75_ferry.png');
+  await shot(pg, 'p76_ferry.png');
   const fo = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
-  const fb = await wait(pg, () => window.__dummies.sim.phase === 'brief', 20000); await pg.waitForTimeout(200); await shot(pg, 'p75_brief_b1.png');
+  const fb = await wait(pg, () => window.__dummies.sim.phase === 'brief', 20000); await pg.waitForTimeout(200); await shot(pg, 'p76_brief_b1.png');
   const fp = await pg.evaluate(() => { const s = window.__dummies.sim; return { scr: s.screenName(), x: s.body.x, fences: s.fenceSides().join() }; });
   ok(fb && fp.scr === 'B1' && fp.x < 200 && fp.fences === 'E,S' && /DRONE/.test(fo ? fo[0] : ''), `deploying, a drone carries the chassis to B1 ("${fo ? fo.join(' · ') : ''}") and sets it down by the west edge (x ${Math.round(fp.x)}); B1's card`);
-  await pg.keyboard.press('Space'); await pg.waitForTimeout(400); await shot(pg, 'p75_b1.png');
+  await pg.keyboard.press('Space'); await pg.waitForTimeout(400); await shot(pg, 'p76_b1.png');
   // Edit 84: clear B1; the drone that ferries the chassis to C1 brings Legs 1, in view; the gift screen; A waits for the hold
   await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; b.hits.push({ kind: 'drop', cls: 'sedan', combo: 1, assessed: 120, lost: 30, angle: 90, model: 'SED-01' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
   await wait(pg, () => window.__dummies.sim.phase === 'report', 8000); await pg.waitForTimeout(150); await pg.keyboard.press('Space'); await pg.waitForTimeout(250);
   if (await pg.evaluate(() => window.__dummies.sim.phase === 'shop')) await pg.keyboard.press('ShiftLeft');
-  await wait(pg, () => { const s = window.__dummies.sim, rs = s.rescue; return rs && rs.gift && rs.phase === 'inbound' && Math.abs(rs.drone.x - s.body.x) < 150; }, 10000); await shot(pg, 'p75_drone_item.png');
+  await wait(pg, () => { const s = window.__dummies.sim, rs = s.rescue; return rs && rs.gift && rs.phase === 'inbound' && Math.abs(rs.drone.x - s.body.x) < 150; }, 10000); await shot(pg, 'p76_drone_item.png');
   const dob = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
-  await wait(pg, () => { const rs = window.__dummies.sim.rescue; return rs && rs.phase === 'give' && rs.item > 0.5; }, 10000); await shot(pg, 'p75_give.png');
+  await wait(pg, () => { const rs = window.__dummies.sim.rescue; return rs && rs.phase === 'give' && rs.item > 0.5; }, 10000); await shot(pg, 'p76_give.png');
   await wait(pg, () => window.__dummies.sim.phase === 'gift', 8000);
   const pre = await pg.evaluate(() => window.__dummiesUI.gift().age); await pg.keyboard.press('Space'); await pg.waitForTimeout(60);
   const early = await pg.evaluate(() => ({ phase: window.__dummies.sim.phase, ready: window.__dummiesUI.giftReady(), age: window.__dummiesUI.gift() && window.__dummiesUI.gift().age }));
-  for (const [a, f] of [[0.2, 'p75_gift_drone.png'], [0.5, 'p75_gift_fall.png'], [0.78, 'p75_gift_land.png']]) { await pg.evaluate((q) => window.__dummiesUI.pinGift(q), a); await pg.waitForTimeout(60); await shot(pg, f); } // the screen at fixed moments
+  for (const [a, f] of [[0.2, 'p76_gift_drone.png'], [0.5, 'p76_gift_fall.png'], [0.78, 'p76_gift_land.png']]) { await pg.evaluate((q) => window.__dummiesUI.pinGift(q), a); await pg.waitForTimeout(60); await shot(pg, f); } // the screen at fixed moments
   await pg.evaluate(() => window.__dummiesUI.pinGift(null));
-  await wait(pg, () => window.__dummiesUI.giftReady(), 4000); await pg.waitForTimeout(500); await shot(pg, 'p75_gift.png');
+  await wait(pg, () => window.__dummiesUI.giftReady(), 4000); await pg.waitForTimeout(500); await shot(pg, 'p76_gift.png');
   ok(/DRONE/.test(dob ? dob[0] : '') && /Bringing Legs 1, then on to C1/.test(dob ? dob[1] : '') && early.phase === 'gift' && !early.ready,
     `B1 cleared: the ferry drone flies in with Legs 1 under it ("${dob ? dob.join(' · ') : ''}"), lowers it onto the chassis; the gift screen; A at ${pre.toFixed(2)} s is ignored (ui.gift.holdSeconds)` + (early.phase !== 'gift' || early.ready ? ' [' + JSON.stringify(early) + ']' : ''));
   await pg.keyboard.press('Space');
   const cb = await wait(pg, () => window.__dummies.sim.phase === 'brief', 20000);
   const c1 = await pg.evaluate(() => { const s = window.__dummies.sim; return { scr: s.screenName(), legs: s.has('jump'), gift: window.__dummiesUI.gift() }; });
-  await pg.waitForTimeout(200); await shot(pg, 'p75_brief_c1.png');
+  await pg.waitForTimeout(200); await shot(pg, 'p76_brief_c1.png');
   ok(cb && c1.scr === 'C1' && c1.legs && !c1.gift, 'A continues: the drone carries the chassis, Legs 1 fitted, into C1; C1\'s card (a jump into a car)');
   const pg2 = await ctx.newPage(); watch(pg2); await pg2.goto(url); await pg2.waitForTimeout(800);
   await pg2.keyboard.press('ArrowRight'); await pg2.keyboard.press('Space'); await pg2.waitForTimeout(300);
   const re = await pg2.evaluate(() => ({ screen: window.__dummies.screen, wo: window.__dummies.story && window.__dummies.story.tileWO, done: window.__dummies.story && (window.__dummies.story.done.monument || []).join() }));
-  await shot(pg2, 'p75_map_progress.png');
+  await shot(pg2, 'p76_map_progress.png');
   ok(re.screen === 'storymap' && re.wo === 0 && re.done === 'A1,B1', 'a reload resumes the story: A1 and B1 cleared, C1 in test');
   await pg2.close();
-  // a phone held sideways: the story's card and its map fit; the touch stick sits below the brief
-  const ph = await br.newContext({ viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 }), pp = await ph.newPage(); watch(pp);
-  await pp.goto(url); await pp.waitForTimeout(900);
-  await pp.evaluate(() => { const a = window.__dummies; a.titleSel = 1; });
-  await pp.evaluate(() => { const e = new KeyboardEvent('keydown', { code: 'Space' }); window.dispatchEvent(e); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'Space' })); });
-  await pp.waitForTimeout(200);
-  await pp.evaluate(() => { window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' })); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'Space' })); });
-  await wait(pp, () => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000);
-  await pp.evaluate(() => window.__dummies.sim.continueBrief()); await pp.waitForTimeout(400);
-  const L = await pp.evaluate(() => { const L = window.__dummiesInput.touchLayoutCss(), a = window.__dummies; return { on: window.__dummiesInput.TOUCH.on, base: L.home, left: a.layoutY && a.layoutY.left }; });
-  await shot(pp, 'p75_phone.png');
-  await pp.evaluate(() => { const a = window.__dummies; a.paused = true; a.pausePage = 'controls'; }); await pp.waitForTimeout(150); await shot(pp, 'p75_phone_controls.png');
-  const tc = await pp.evaluate(() => ({ dev: window.__dummiesUI.deviceOf(), rows: window.__dummiesUI.controlRows().rows.map((r) => r[1]).join(' '), opts: window.__dummiesUI.optionItems().join('|') }));
-  await pp.evaluate(() => { const a = window.__dummies; a.paused = false; a.pausePage = null; });
-  ok(tc.dev === 'touch' && /^Stick, left A B X Y ❚❚ ⤢$/.test(tc.rows) && !/Tuning|Gamepad/.test(tc.opts), `on a phone, Controls shows touch (${tc.rows}); Options leave out tuning and pad setup`);
-  ok(L.on && L.base, 'phone, sideways: touch on; the stick sits under the district map');
+  // phones held sideways. Edit 87: the HUD in the 16:9 centre; the stick and the diamond default under the side panels; a wide phone's
+  // margins are free; Pause › Controls › Adjust layout moves and sizes both, saved in this browser
+  const story = async (p) => { await p.evaluate(() => { window.__dummies.titleSel = 1; });
+    for (let i = 0; i < 2; i++) { await p.evaluate(() => { window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' })); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'Space' })); }); await p.waitForTimeout(200); }
+    await wait(p, () => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await p.evaluate(() => window.__dummies.sim.continueBrief()); await p.waitForTimeout(400); };
+  const phone = async (w, h, dpr) => { const c = await br.newContext({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true, deviceScaleFactor: dpr }), p = await c.newPage(); watch(p);
+    await p.goto(url); await p.waitForTimeout(900); await story(p); return [c, p]; };
+  const lay = (p) => p.evaluate(() => { const I = window.__dummiesInput, L = I.touchLayout(), r = document.getElementById('game').getBoundingClientRect(), k = r.width / L.Wc; // CSS px a touch unit
+    const css = (q) => ({ x: r.left + q.x * k, y: r.top + q.y * k }), bar = I.editBar(L);
+    return { gx: L.gx, Wc: L.Wc, sr: L.sr, sr0: L.sr0, fr: L.fr, fr0: L.fr0, home: L.home, c: L.c, chip: L.chip, homeCss: css(L.home), cCss: css(L.c), pauseCss: css({ x: L.chip.pause.x + L.chip.pause.w / 2, y: L.chip.pause.y + L.chip.pause.h / 2 }),
+      plusCss: css({ x: bar.plus.x + bar.plus.w / 2, y: bar.plus.y + bar.plus.h / 2 }), doneCss: css({ x: bar.done.x + bar.done.w / 2, y: bar.done.y + bar.done.h / 2 }), toCss: k, left: r.left, top: r.top }; });
+  const ptr = (p, type, x, y, id) => p.evaluate(([t, x, y, id]) => { document.getElementById('game').dispatchEvent(new PointerEvent(t, { pointerType: 'touch', clientX: x, clientY: y, pointerId: id, bubbles: true, cancelable: true })); }, [type, x, y, id]);
+  const drag = async (p, a, b, id) => { await ptr(p, 'pointerdown', a.x, a.y, id); for (let i = 1; i <= 6; i++) await ptr(p, 'pointermove', a.x + (b.x - a.x) * i / 6, a.y + (b.y - a.y) * i / 6, id); await ptr(p, 'pointerup', b.x, b.y, id); await p.waitForTimeout(60); };
+  const tap = async (p, a, id) => { await ptr(p, 'pointerdown', a.x, a.y, id); await ptr(p, 'pointerup', a.x, a.y, id); await p.waitForTimeout(80); };
+  { // a 16:9 phone: no side margins
+    const [c, p] = await phone(640, 360, 3), L = await lay(p); await shot(p, 'p76_phone169.png');
+    const H = await p.evaluate(() => window.__dummiesUI.hud());
+    ok(L.gx < 1 && L.home.x > 16 && L.home.x < 240 && L.c.x > 1040 && L.c.x < 1280 && L.chip.pause.y + L.chip.pause.h <= H.field.y && L.chip.full.x + L.chip.full.w <= 240, `16:9 phone: the stick under the map (x ${Math.round(L.home.x)}), the diamond under the chassis (x ${Math.round(L.c.x)}); ❚❚ PAUSE and ⤢ FULL small, top left, above BODY (${L.chip.pause.w}×${L.chip.pause.h})`);
+    await c.close();
+  }
+  const [ph, pp] = await phone(892, 412, 3.5); // a Samsung Galaxy S25 Ultra, 19.5:9
+  const L = await lay(pp), H = await pp.evaluate(() => window.__dummiesUI.hud()); await shot(pp, 'p76_s25.png');
+  const in169 = (x) => x >= L.gx - 0.5 && x <= L.gx + 1280.5;
+  ok(L.gx > 100 && in169(L.chip.pause.x) && in169(L.chip.full.x + L.chip.full.w) && L.home.x > L.gx && L.home.x < L.gx + 240 && L.c.x > L.gx + 1040 && L.c.x < L.gx + 1280 && H.stats.x + H.stats.w <= 1280,
+    `19.5:9 (S25 Ultra, 892×412 CSS): the 16:9 frame centred, ${Math.round(L.gx)} units of margin a side; every panel, the chips, the stick and the diamond inside it by default`);
+  await tap(pp, L.pauseCss, 3); const pz = await pp.evaluate(() => window.__dummies.paused);
+  await pp.evaluate(() => { const a = window.__dummies; a.pausePage = 'controls'; a.ctlSel = 0; }); await pp.waitForTimeout(100);
+  const tc = await pp.evaluate(() => ({ dev: window.__dummiesUI.deviceOf(), rows: window.__dummiesUI.controlRows().rows.map((r) => r[1]).join(' '), items: window.__dummiesUI.controlItems().join('|'), opts: window.__dummiesUI.optionItems().join('|') }));
+  await shot(pp, 'p76_phone_controls.png');
+  await pp.keyboard.press('Space'); await pp.waitForTimeout(150); const ed0 = await pp.evaluate(() => !!window.__dummies.touchEdit);
+  ok(pz && tc.dev === 'touch' && /^Stick, left A B X Y ❚❚ ⤢$/.test(tc.rows) && tc.items === 'Adjust layout|Reset layout|Back' && !/Tuning|Gamepad/.test(tc.opts) && ed0,
+    `the small ❚❚ chip pauses; on a phone, Controls shows touch (${tc.rows}) and offers ${tc.items.split('|').join(' · ')}; Adjust layout opens the editor`);
+  await drag(pp, L.homeCss, { x: L.left + 50 * L.toCss + 4, y: L.homeCss.y }, 5); // the stick into the left margin
+  await drag(pp, L.cCss, { x: L.left + (L.Wc - 70) * L.toCss, y: L.cCss.y - 20 }, 6); // the diamond into the right margin
+  await shot(pp, 'p76_s25_edit.png');
+  const L1 = await lay(pp); await tap(pp, L1.plusCss, 7); await tap(pp, L1.plusCss, 7); const L2 = await lay(pp);
+  await shot(pp, 'p76_s25_edit_size.png');
+  for (let i = 0; i < 10; i++) await pp.evaluate(() => window.__dummiesInput.touchEditSize(1)); const kMax = await pp.evaluate(() => window.__dummies.touchCfg.face.k);
+  for (let i = 0; i < 20; i++) await pp.evaluate(() => window.__dummiesInput.touchEditSize(-1)); const kMin = await pp.evaluate(() => window.__dummies.touchCfg.face.k);
+  for (let i = 0; i < 6; i++) await pp.evaluate(() => window.__dummiesInput.touchEditSize(1));
+  const L3 = await lay(pp); await tap(pp, L3.doneCss, 8);
+  const st = await pp.evaluate(() => ({ edit: !!window.__dummies.touchEdit, cfg: JSON.parse(localStorage.getItem('dummies.p7.touch') || 'null') }));
+  ok(L1.home.x < L1.gx && L1.c.x > L1.gx + 1280 && Math.abs(L2.fr / L2.fr0 - 1.2) < 0.01 && Math.abs(L2.sr - L1.sr) < 0.01 && kMax === 1.6 && kMin === 0.6 && !st.edit && st.cfg && st.cfg.stick && st.cfg.face && st.cfg.face.k === 1.2,
+    `Adjust layout: the stick dragged into the left margin (x ${Math.round(L1.home.x)} < ${Math.round(L1.gx)}), the diamond into the right (x ${Math.round(L1.c.x)}); + SIZE twice: the buttons ×${(L2.fr / L2.fr0).toFixed(2)}, the stick unchanged; size held to ${kMin}–${kMax} (ui.touch.scaleMin–scaleMax); DONE saves (${JSON.stringify(st.cfg)})`);
+  await pp.evaluate(() => { const a = window.__dummies; a.paused = false; a.pausePage = null; }); await pp.waitForTimeout(150); await shot(pp, 'p76_s25_custom.png');
+  const L4 = await lay(pp), y0 = await pp.evaluate(() => window.__dummies.sim.body.y);
+  await ptr(pp, 'pointerdown', L4.homeCss.x, L4.homeCss.y, 9); for (let i = 1; i <= 8; i++) { await ptr(pp, 'pointermove', L4.homeCss.x, L4.homeCss.y - 5 * i, 9); await pp.waitForTimeout(50); }
+  await pp.waitForTimeout(400); const y1 = await pp.evaluate(() => window.__dummies.sim.body.y); await ptr(pp, 'pointerup', L4.homeCss.x, L4.homeCss.y - 40, 9);
+  ok(y1 < y0 - 20, `in play, a thumb on the moved stick (in the margin) walks the dummy north (${Math.round(y0)} → ${Math.round(y1)})`);
+  await pp.reload(); await pp.waitForTimeout(900); await story(pp); const L5 = await lay(pp);
+  await pp.evaluate(() => { const a = window.__dummies; a.paused = true; a.pausePage = 'controls'; a.ctlSel = 1; }); await pp.keyboard.press('Space'); await pp.waitForTimeout(150);
+  const L6 = await lay(pp), rs = await pp.evaluate(() => ({ cfg: window.__dummies.touchCfg, ls: localStorage.getItem('dummies.p7.touch') }));
+  ok(Math.abs(L5.home.x - L4.home.x) < 0.5 && Math.abs(L5.fr - L4.fr) < 0.01 && rs.cfg === null && rs.ls === null && Math.abs(L6.home.x - L.home.x) < 0.5 && Math.abs(L6.c.x - L.c.x) < 0.5,
+    'a reload keeps the layout; Reset layout restores the defaults and clears the save' + (rs.cfg !== null || Math.abs(L5.home.x - L4.home.x) >= 0.5 ? ' ' + JSON.stringify({ h5: L5.home, h4: L4.home, cfg: rs.cfg, h6: L6.home, h: L.home }) : ''));
   await ph.close();
   ok(!logs.length, 'browser: no page errors' + (logs.length ? ': ' + logs.slice(0, 3).join(' | ') : ''));
   await br.close();
   done();
-})().catch((e) => { console.log('FAIL browser: ' + e.message); fail++; done(); });
+})().catch((e) => { console.log('FAIL browser: ' + e.message); fail++; done(); process.exit(1); }); // an open browser would hold the process
 function done() { console.log('\n' + pass + ' passed, ' + fail + ' failed'); process.exitCode = fail ? 1 : 0; }

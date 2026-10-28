@@ -132,7 +132,7 @@
     'proto.parts.torsoRechargeLoss': 1.5, 'proto.parts.torsoRechargeFloor': 0.5,
     // Edits 74–75: input (gamepad stick, touch stick, pad setup) and touch sizes in CSS px
     'proto.input.deadzone': 0.2, 'proto.input.stickOuter': 0.9, 'proto.input.padSetupHoldSeconds': 1, 'proto.input.touchDeadzone': 0.12, 'proto.input.touchOuter': 0.85,
-    'proto.input.touchFloat': 1, 'ui.touch.stickRadius': 60, 'ui.touch.margin': 16, 'ui.touch.faceRadius': 30,
+    'proto.input.touchFloat': 1, 'ui.touch.stickRadius': 60, 'ui.touch.margin': 16, 'ui.touch.faceRadius': 30, 'ui.touch.scaleMin': 0.6, 'ui.touch.scaleMax': 1.6, 'ui.touch.scaleStep': 0.1, // Edit 87: the player's sizes for the stick and the diamond
   };
   // P1-only proposed parameters (brief §P1.9). Not in the registry.
   const PROTO = {

@@ -76,7 +76,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.5' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.6' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -278,39 +278,52 @@
     const lock = () => { try { const o = screen.orientation; if (o && o.lock) o.lock('landscape').catch(() => {}); } catch (e) { /* not offered */ } };
     try { const el = document.documentElement; if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); return; } if (el.requestFullscreen) el.requestFullscreen({ navigationUI: 'hide' }).then(lock, () => {}); else lock(); } catch (e) { /* not offered */ }
   }
+  // Edit 87 (P7.6): the player places and sizes the stick and the diamond (Pause › Controls › Adjust layout), saved in this
+  // browser as fractions of the screen and a size factor (ui.touch.scaleMin–ui.touch.scaleMax). The default keeps both inside
+  // the 16:9 frame, under the side panels; a wide phone's margins are free for the player's own placement.
+  const TOUCH_KEY = 'dummies.p7.touch';
+  app.touchCfg = (() => { try { return JSON.parse(localStorage.getItem(TOUCH_KEY) || 'null'); } catch (e) { return null; } })();
+  function saveTouchCfg() { try { if (app.touchCfg) localStorage.setItem(TOUCH_KEY, JSON.stringify(app.touchCfg)); else localStorage.removeItem(TOUCH_KEY); } catch (e) { /* storage off: this visit only */ } }
   function touchLayout() {
     const dpr = window.devicePixelRatio || 1, css = dpr / scale, Wc = cv.width / scale, Hc = cv.height / scale, gx = ox / scale, gy = oy / scale, m = pv('ui.touch.margin') * css;
     const ly = app.layoutY || { left: 530, right: 450 };
     const zl = { x0: 0, x1: gx + FX, y0: gy + ly.left + 10, y1: Hc }, zr = { x0: gx + FX + FW, x1: Wc, y0: gy + ly.right + 10, y1: Hc };
-    const sr = Math.max(36, Math.min(pv('ui.touch.stickRadius') * css * 1.15, (zl.x1 - zl.x0) / 2 - m / 2, (zl.y1 - zl.y0) / 2 - m / 2));
-    const home = { x: clamp(gx + FX / 2, zl.x0 + m + sr, zl.x1 - sr - 6), y: zl.y1 - m - sr };
-    const gap = 6, fr = Math.max(22, Math.min(pv('ui.touch.faceRadius') * css * 1.15, (zr.x1 - zr.x0 - m - 2 * gap) / 4.83, (zr.y1 - zr.y0 - m - 2 * gap) / 4.83)), sp = (2 * fr + gap) / Math.SQRT2; // round glass keys on a diamond: neighbours never touch
-    const c = { x: clamp(gx + FX + FW + (VW - FX - FW) / 2, zr.x0 + sp + fr + 6, zr.x1 - m - sp - fr), y: zr.y1 - m - sp - fr };
+    const sr0 = Math.max(36, Math.min(pv('ui.touch.stickRadius') * css * 1.15, (zl.x1 - zl.x0) / 2 - m / 2, (zl.y1 - zl.y0) / 2 - m / 2));
+    let sr = sr0, home = { x: clamp(gx + FX / 2, zl.x0 + m + sr, zl.x1 - sr - 6), y: zl.y1 - m - sr };
+    const gap = 6, fr0 = Math.max(22, Math.min(pv('ui.touch.faceRadius') * css * 1.15, (zr.x1 - zr.x0 - m - 2 * gap) / 4.83, (zr.y1 - zr.y0 - m - 2 * gap) / 4.83));
+    let fr = fr0, sp = (2 * fr + gap) / Math.SQRT2; // round glass keys on a diamond: neighbours never touch
+    let c = { x: clamp(gx + FX + FW + (VW - FX - FW) / 2, zr.x0 + sp + fr + 6, zr.x1 - m - sp - fr), y: zr.y1 - m - sp - fr };
+    let sz = { x0: 0, x1: zl.x1 + sr * 0.5, y0: zl.y0 - sr * 0.5, y1: Hc }; // where a thumb takes the stick
+    const cfg = app.touchCfg || {}, kOf = (q) => clamp((q && q.k) || 1, pv('ui.touch.scaleMin'), pv('ui.touch.scaleMax'));
+    if (cfg.stick) { sr = sr0 * kOf(cfg.stick); home = { x: clamp(cfg.stick.fx * Wc, sr + 4, Wc - sr - 4), y: clamp(cfg.stick.fy * Hc, sr + 4, Hc - sr - 4) }; sz = { x0: Math.max(0, home.x - 1.7 * sr), x1: Math.min(Wc, home.x + 1.7 * sr), y0: Math.max(0, home.y - 1.7 * sr), y1: Math.min(Hc, home.y + 1.7 * sr) }; }
+    if (cfg.face) { fr = fr0 * kOf(cfg.face); sp = (2 * fr + gap) / Math.SQRT2; const e = sp + fr + 4; c = { x: clamp(cfg.face.fx * Wc, e, Wc - e), y: clamp(cfg.face.fy * Hc, e, Hc - e) }; }
     const face = FACE.map(([id, dx, dy, l, w]) => ({ id, x: c.x + dx * sp, y: c.y + dy * sp, r: fr, l, w }));
-    const side = gx >= 136, chip = side ? { pause: { x: gx - 128, y: gy + 10, w: 120, h: 46 }, full: { x: gx - 128, y: gy + 66, w: 120, h: 46 } }
+    const side = gx >= 136, chip = STORY ? { pause: { x: gx + 16, y: gy + 4, w: 76, h: 26 }, full: { x: gx + 98, y: gy + 4, w: 64, h: 26 } } // Edit 87: small, top left, inside the frame
+      : side ? { pause: { x: gx - 128, y: gy + 10, w: 120, h: 46 }, full: { x: gx - 128, y: gy + 66, w: 120, h: 46 } }
       : { pause: { x: gx + 12, y: gy + 2, w: 132, h: 40 }, full: null }; // no margin: over the brand; full screen from the upright prompt
-    return { zl, zr, sr, home, face, chip, css };
+    return { zl, zr, sz, sr, sr0, fr, fr0, sp, c, home, face, chip, css, Wc, Hc, gx, gy };
   }
   function touchLayoutCss() { // for the tests: the layout in CSS pixels of the page
     const L = touchLayout(), r = cv.getBoundingClientRect(), k = scale / (window.devicePixelRatio || 1), p = (q) => ({ x: r.left + q.x * k, y: r.top + q.y * k });
     return { sr: L.sr * k, home: p(L.home), face: L.face.map((f) => Object.assign(p(f), { id: f.id, r: f.r * k })), field: { x0: r.left + (ox / scale + FX) * k, x1: r.left + (ox / scale + FX + FW) * k }, chip: L.chip };
   }
-  const inChip = (c, x, y) => c && x >= c.x && x <= c.x + c.w && y >= c.y && y <= c.y + c.h;
+  const inChip = (c, x, y, pad) => c && x >= c.x - (pad || 0) && x <= c.x + c.w + (pad || 0) && y >= c.y - (pad || 0) && y <= c.y + c.h + (pad || 0);
   function touchEvent(e) {
     if (!TOUCH.on || e.pointerType === 'mouse') return;
     e.preventDefault(); Snd.init(); app.device = 'touch';
     const r = cv.getBoundingClientRect(), k = (window.devicePixelRatio || 1) / scale, x = (e.clientX - r.left) * k, y = (e.clientY - r.top) * k, id = e.pointerId;
     const L = TOUCH.L || (TOUCH.L = touchLayout());
+    if (app.touchEdit) { touchEditEvent(e, x, y, id, L); return; } // Edit 87: placing the controls
     if (e.type === 'pointerdown') {
       if (TOUCH.portrait) return;
       try { cv.setPointerCapture(id); } catch (err) { /* not offered */ }
-      if (inChip(L.chip.pause, x, y)) { menuQ.push('pause'); return; }
-      if (inChip(L.chip.full, x, y)) { fullscreen(); return; }
+      if (inChip(L.chip.pause, x, y, STORY ? 8 : 0)) { menuQ.push('pause'); return; } // Edit 87: small chips, a finger's reach
+      if (inChip(L.chip.full, x, y, STORY ? 8 : 0)) { fullscreen(); return; }
       const f = L.face.slice().sort((p1, p2) => Math.hypot(x - p1.x, y - p1.y) - Math.hypot(x - p2.x, y - p2.y)).find((q2) => Math.hypot(x - q2.x, y - q2.y) <= q2.r * 1.35); // the nearest key within reach
       if (f) { TOUCH.ptr.set(id, f.id); TOUCH.down[f.id] = true; if (f.id === 'a') { q.a++; menuQ.push('ok'); } else if (f.id === 'b') { q.b++; menuQ.push('back'); } else q[f.id]++; return; }
-      if (x < L.zl.x1 + L.sr * 0.5 && y > L.zl.y0 - L.sr * 0.5) { // the left zone takes the thumb; the stick floats to it
+      if (x >= L.sz.x0 && x <= L.sz.x1 && y >= L.sz.y0 && y <= L.sz.y1) { // the stick's zone takes the thumb; the stick floats to it
         TOUCH.ptr.set(id, 'stick');
-        TOUCH.base = pv('proto.input.touchFloat') ? { x: clamp(x, L.sr * 0.7, L.zl.x1), y: clamp(y, L.zl.y0, L.zl.y1 - L.sr * 0.7) } : { x: L.home.x, y: L.home.y };
+        TOUCH.base = pv('proto.input.touchFloat') ? { x: clamp(x, L.sz.x0 + L.sr * 0.7, L.sz.x1 - L.sr * 0.3), y: clamp(y, L.sz.y0 + L.sr * 0.5, L.sz.y1 - L.sr * 0.7) } : { x: L.home.x, y: L.home.y };
         stickAt(x, y);
       }
       return;
@@ -320,6 +333,50 @@
     TOUCH.ptr.delete(id);
     if (kind === 'stick') { TOUCH.base = null; TOUCH.knob = null; TOUCH.move = { x: 0, y: 0, m: 0 }; touchDirs(); }
     else if (kind) { TOUCH.down[kind] = false; if (kind === 'b') q.bUp++; }
+  }
+  // Edit 87: Adjust layout. Drag the stick or the diamond anywhere on the screen; − and + size the one selected; Reset; Done
+  function editBar(L) { // the toolbar, centred on the field (touch units)
+    const w = 520, h = 150, x = L.gx + FX + FW / 2 - w / 2, y = L.gy + FY + FH / 2 - h / 2, bw = 100, bh = 46, by = y + h - bh - 16, bx = (i) => x + 20 + i * (bw + 26);
+    return { x, y, w, h, minus: { x: bx(0), y: by, w: bw, h: bh }, plus: { x: bx(1), y: by, w: bw, h: bh }, reset: { x: bx(2), y: by, w: bw, h: bh }, done: { x: bx(3), y: by, w: bw, h: bh } };
+  }
+  function touchEditEvent(e, x, y, id, L) {
+    const ed = app.touchEdit, cfg = app.touchCfg || (app.touchCfg = {});
+    const put = (what, cx, cy) => { const k = (cfg[what] && cfg[what].k) || 1; cfg[what] = { fx: clamp(cx / L.Wc, 0, 1), fy: clamp(cy / L.Hc, 0, 1), k }; TOUCH.L = touchLayout(); };
+    if (e.type === 'pointerdown') {
+      try { cv.setPointerCapture(id); } catch (err) { /* not offered */ }
+      const bar = editBar(L);
+      if (inChip(bar.done, x, y)) { touchEditEnd(); return; }
+      if (inChip(bar.reset, x, y)) { app.touchCfg = null; saveTouchCfg(); TOUCH.L = touchLayout(); toast('Touch controls reset'); return; }
+      if (inChip(bar.minus, x, y) || inChip(bar.plus, x, y)) { touchEditSize(inChip(bar.plus, x, y) ? 1 : -1); return; }
+      const ds = Math.hypot(x - L.home.x, y - L.home.y), df = Math.hypot(x - L.c.x, y - L.c.y);
+      const what = ds <= L.sr * 1.25 && (ds / L.sr <= df / (L.sp + L.fr)) ? 'stick' : df <= L.sp + L.fr * 1.25 ? 'face' : null;
+      if (!what) return;
+      ed.sel = what; const at = what === 'stick' ? L.home : L.c; ed.drag = { id, what, dx: at.x - x, dy: at.y - y };
+      if (!cfg[what]) put(what, at.x, at.y);
+      return;
+    }
+    const dr = ed.drag; if (!dr || dr.id !== id) return;
+    if (e.type === 'pointermove') { put(dr.what, x + dr.dx, y + dr.dy); return; }
+    ed.drag = null; saveTouchCfg();
+  }
+  function touchEditSize(dir) {
+    const ed = app.touchEdit, L = TOUCH.L || touchLayout(), cfg = app.touchCfg || (app.touchCfg = {}), what = ed.sel || 'stick';
+    const at = what === 'stick' ? L.home : L.c, cur = cfg[what] || { fx: at.x / L.Wc, fy: at.y / L.Hc, k: 1 };
+    cur.k = clamp(Math.round(((cur.k || 1) + dir * pv('ui.touch.scaleStep')) * 100) / 100, pv('ui.touch.scaleMin'), pv('ui.touch.scaleMax'));
+    cfg[what] = cur; saveTouchCfg(); TOUCH.L = touchLayout();
+  }
+  function touchEditStart() { app.touchEdit = { sel: 'stick', drag: null }; }
+  function touchEditEnd() { saveTouchCfg(); app.touchEdit = null; TOUCH.L = touchLayout(); clearEdges(); }
+  function drawTouchEdit(L) { // over the paused game: a veil, the two controls ringed, the toolbar
+    const ed = app.touchEdit; if (!ed) return;
+    const ring = (x, y, r, on) => { ctx.save(); ctx.setLineDash([8, 6]); ctx.lineWidth = on ? 4 : 2; ctx.strokeStyle = on ? C.dummy : FT.edge; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke(); ctx.restore(); };
+    ring(L.home.x, L.home.y, L.sr + 10, ed.sel === 'stick'); ring(L.c.x, L.c.y, L.sp + L.fr + 10, ed.sel === 'face');
+    const bar = editBar(L), cfg = app.touchCfg || {}, k = (cfg[ed.sel] && cfg[ed.sel].k) || 1;
+    panel(bar.x, bar.y, bar.w, bar.h);
+    txt('TOUCH LAYOUT', bar.x + 20, bar.y + 34, fLab, FT.accent);
+    txt('Drag the stick or the buttons anywhere. Tap one to size it.', bar.x + 20, bar.y + 62, '400 17px ' + F_UI, FT.text);
+    txt((ed.sel === 'stick' ? 'MOVE STICK' : 'Y X B A BUTTONS') + ' · ' + Math.round(k * 100) + '%', bar.x + bar.w - 20, bar.y + 34, '700 16px ' + F_UI, C.dummy, 'right');
+    for (const [key, label] of [['minus', '−  SIZE'], ['plus', '+  SIZE'], ['reset', 'RESET'], ['done', 'DONE']]) { const c = bar[key]; glassKey(c.x, c.y, c.w, c.h); txt(label, c.x + c.w / 2, c.y + c.h / 2 + 6, '700 16px ' + F_UI, key === 'done' ? C.dummy : FT.text, 'center'); }
   }
   function stickAt(x, y) { // analog: any angle; speed by deflection. The base follows a thumb that runs past the rim
     const L = TOUCH.L, R = L.sr, b = TOUCH.base;
@@ -338,7 +395,8 @@
     TOUCH.portrait = window.innerHeight > window.innerWidth;
     if (TOUCH.rot) TOUCH.rot.hidden = !TOUCH.portrait;
     if (TOUCH.portrait) { TOUCH.ptr.clear(); TOUCH.move = { x: 0, y: 0, m: 0 }; TOUCH.base = null; return; }
-    const L = TOUCH.L = touchLayout(), s = app.sim, R = L.sr, b = TOUCH.base || L.home, mv = TOUCH.move;
+    const L = TOUCH.L = touchLayout(), s = app.sim, R = L.sr, b = (!app.touchEdit && TOUCH.base) || L.home, mv = TOUCH.move;
+    if (app.touchEdit) { ctx.fillStyle = 'rgba(5,7,13,0.62)'; ctx.fillRect(0, 0, L.Wc, L.Hc); } // Edit 87: the game dims while the controls are placed
     const glow = (fn) => { if (FT.neon) { ctx.save(); ctx.shadowColor = FT.edge; ctx.shadowBlur = 12; fn(); ctx.restore(); } else fn(); };
     const disc = (x, y, r) => { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); };
     // the stick: a glass dial with ticks; the knob a key cap
@@ -366,10 +424,11 @@
     ctx.globalAlpha = 1;
     // pause and full screen: glass keys
     for (const [kk, label] of [['pause', '❚❚ PAUSE'], ['full', '⤢ FULL']]) {
-      const c = L.chip[kk]; if (!c) continue;
-      glassKey(c.x, c.y, c.w, c.h); txt(label, c.x + c.w / 2, c.y + c.h / 2 + 6, '700 17px ' + F_UI, FT.text, 'center');
+      const c = L.chip[kk]; if (!c || app.touchEdit) continue;
+      glassKey(c.x, c.y, c.w, c.h); txt(label, c.x + c.w / 2, c.y + c.h / 2 + (STORY ? 5 : 6), (STORY ? '700 13px ' : '700 17px ') + F_UI, FT.text, 'center');
     }
     ctx.restore();
+    if (app.touchEdit) drawTouchEdit(L);
   }
   if (touchDevice()) touchOn();
 
@@ -841,9 +900,16 @@
         else if (m === 'ok') { startLevel(app.level); return; }
         continue;
       }
+      if (app.paused && app.touchEdit) { if (m === 'pause' || m === 'back' || m === 'ok') touchEditEnd(); continue; } // Edit 87: placing the touch controls
       if (app.paused && app.pausePage) { // Edit 86: a page of the pause menu (Options, Controls); B or ESC returns
         if (m === 'pause' || m === 'back') { app.pausePage = null; continue; }
-        if (app.pausePage === 'controls') { if (m === 'ok') app.pausePage = null; continue; }
+        if (app.pausePage === 'controls') { // Edit 87: on touch, adjust or reset the layout here
+          const CI = controlItems();
+          if (m === 'up') app.ctlSel = ((app.ctlSel || 0) + CI.length - 1) % CI.length;
+          else if (m === 'down') app.ctlSel = ((app.ctlSel || 0) + 1) % CI.length;
+          else if (m === 'ok') { const it = CI[app.ctlSel || 0]; if (it === 'Adjust layout') touchEditStart(); else if (it === 'Reset layout') { app.touchCfg = null; saveTouchCfg(); TOUCH.L = null; toast('Touch controls reset'); } else app.pausePage = null; }
+          continue;
+        }
         const OI = optionItems();
         if (m === 'up') app.optSel = (app.optSel + OI.length - 1) % OI.length;
         else if (m === 'down') app.optSel = (app.optSel + 1) % OI.length;
@@ -866,7 +932,7 @@
             else { s.withdraw(); app.paused = false; }
           } else if (item === 'Show trace') showTrace();
           else if (item === 'Options') { app.pausePage = 'options'; app.optSel = 0; }
-          else if (item === 'Controls') app.pausePage = 'controls';
+          else if (item === 'Controls') { app.pausePage = 'controls'; app.ctlSel = 0; }
           else if (item === 'Quit to title') { if (app.mode === 'story') saveStory(); app.screen = 'title'; app.sim = null; app.paused = false; }
         }
         continue;
@@ -1824,20 +1890,20 @@
     if (!STORY) { const bk = s && liveBark(s); if (bk) items.push({ kind: 'bark', text: bk.bk.text, tag: bk.tag, spent: bk.spent, dim: bk.bk.style === 'mutter', a: bk.a }); }
     if (STORY && !items.length) { // Edit 83: the objective line
       const ob = objective(s); if (!ob) return;
-      const top = FY + FH + 8, bot = VH - 2, cy = (top + bot) / 2, MIN = kMin(); let size = TY.sec;
+      const top = 3, bot = FY - 9, cy = (top + bot) / 2, MIN = kMin(); let size = TY.sec; // Edit 87: the objective sits on the top strip, from the field's left edge
       const fit = () => { ctx.font = '700 ' + size + 'px ' + F_UI; const lw = ctx.measureText(ob[0]).width + 24; ctx.font = '400 ' + size + 'px ' + F_UI; return lw + 12 + ctx.measureText(ob[1]).width <= FW - 16; };
       while (!fit() && size > MIN) size--;
       ctx.font = '700 ' + size + 'px ' + F_UI; const lw = ctx.measureText(ob[0]).width + 24; ctx.font = '400 ' + size + 'px ' + F_UI;
       let text = ob[1]; while (text.length > 8 && lw + 12 + ctx.measureText(text).width > FW - 16) text = text.slice(0, -2);
       if (text !== ob[1]) text = text.replace(/\s+\S*$/, '') + '…';
-      const total = lw + 12 + ctx.measureText(text).width, x0 = FX + FW / 2 - total / 2, ph = size + 10;
-      rr(x0, cy - ph / 2, lw, ph, 10); ctx.fillStyle = C.dummy; ctx.fill();
+      const total = lw + 12 + ctx.measureText(text).width, x0 = FX - 6, ph = size + 10;
+      rr(x0, cy - ph / 2, lw, ph, 10); ctx.fillStyle = C.dummy; ctx.fill(); if (app.hud) app.hud.objective = { x: x0, y: cy - ph / 2, w: total, h: ph, text: ob[0] + ' ' + text };
       txt(ob[0], x0 + 12, cy + size * 0.36, '700 ' + size + 'px ' + F_UI, C.primary);
       txt(text, x0 + lw + 12, cy + size * 0.36, '400 ' + size + 'px ' + F_UI, FT.text);
       return;
     }
     if (!items.length) return;
-    const top = FY + FH + 8, bot = VH - 2, GAP = 28;
+    const top = STORY ? 3 : FY + FH + 8, bot = STORY ? FY - 9 : VH - 2, GAP = 28; // Edit 87: toasts take the top strip in turn
     const widthOf = (it, size, pill) => { ctx.font = '700 ' + size + 'px ' + F_UI; const tw = ctx.measureText(it.text).width; if (it.kind === 'toast') return tw + (pill ? 24 : 0); ctx.font = '700 ' + size + 'px ' + F_MONO; return ctx.measureText(it.tag).width + 14 + 10 + tw; };
     const lineW = (size, pill) => items.reduce((a, it) => a + widthOf(it, size, pill), 0) + (items.length - 1) * GAP;
     // one line if it fits (the field's width, else the canvas's), at the secondary size down to ui.typeFieldLabel; else a line each at that size
@@ -1883,7 +1949,8 @@
     if (brand) txt('FARSIGHT', 24, TOPY + 1, '900 30px ' + F_BRAND, FT.brand);
     if (brand && FT.neon) ctx.restore();
     const s = app.sim;
-    if (app.screen === 'title' || !s) txt(app.screen === 'loading' ? 'BUILDING DISTRICT' : app.screen === 'storymap' ? 'STORY · THE TEST CITY' : app.screen === 'arcade' ? 'ARCADE · SELECT A DISTRICT' : STORY ? 'SELECT A MODE' : 'SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
+    if (STORY && app.screen === 'game' && s) { /* Edit 87: the objective and toasts own the top strip (drawMessages); facts sit in the side boxes */ }
+    else if (app.screen === 'title' || !s) txt(app.screen === 'loading' ? 'BUILDING DISTRICT' : app.screen === 'storymap' ? 'STORY · THE TEST CITY' : app.screen === 'arcade' ? 'ARCADE · SELECT A DISTRICT' : STORY ? 'SELECT A MODE' : 'SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
     else drawTopBar(s);
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
@@ -1928,6 +1995,19 @@
   }
   const WHERE6 = { walk: 'WALKWAY', hill: 'HILLTOP', terrace: 'TERRACE', ring: 'RING', deck: 'HIGHWAY', roof: 'ROOF' }; // P6 floors
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
+  function whereOf(s) { // the body's level, as the top bar named it (Edit 44, P6 floors)
+    const b = s.body, f = bodyFloor(s);
+    return b.mode === 'rescue' ? (s.rescue && s.rescue.ferry ? ' · DRONE' : ' · RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level;
+  }
+  function fitTextR(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color, 'right'); }
+  function fitText(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color); }
+  function drawStatsBox(s) { // Edit 87: top right, BODY's size: POINTS and CREDITS (Arcade: POINTS and CARS LEFT, its clock)
+    const X = FX + FW + 16, W = VW - X - 16, Y = FY - 6, r = s.run;
+    const left = s.carsLeft ? s.carsLeft() : 0, rows = s.storyMode ? [['POINTS', num(r.points)], ['CREDITS', String(r.credits)]] : [['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
+    panel(X, Y, W, 86); if (app.hud) app.hud.stats = { x: X, y: Y, w: W, h: 86, rows: rows.map((q) => q[0]).join(' ') };
+    rows.forEach(([k, v], i) => { const y = Y + 34 + i * 34; txt(k, X + 14, y, fLab, FT.dim); txt(v, X + W - 14, y + 2, fNum, FT.text, 'right'); });
+    return Y + 86;
+  }
   function drawTopBar(s) {
     const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
     const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? (s.rescue && s.rescue.ferry ? ' · DRONE' : ' · RIVER RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
@@ -1945,8 +2025,8 @@
   function drawHUD(s) {
     const b = s.body, P = s.P, hp = b.alive ? b.health : 0, frac = clamp(hp / P['damage.bodyHealth'], 0, 1);
     const X = 16, W = FX - 32, TX = 30, BW = W - 28; // left column: as wide as the space beside the field
-    const BY = STORY ? 62 : 62, BH = STORY ? 86 : 150, DY = BY + BH + 10; // Edit 86 (P7.5): BODY as tall as DASH: the number on the label's row, the bar beneath
-    panel(X, BY, W, BH);
+    const BY = STORY ? FY - 6 : 62, BH = STORY ? 86 : 150, DY = BY + BH + 10; // Edit 87: on the field's top edge // Edit 86 (P7.5): BODY as tall as DASH: the number on the label's row, the bar beneath
+    panel(X, BY, W, BH); app.hud = { body: { x: X, y: BY, w: W, h: BH } }; // Edit 87: the boxes as drawn, for the tests
     if (STORY) { txt('BODY', TX, BY + 36, fLab, FT.dim); txt(num(hp), X + W - 14, BY + 40, '700 36px ' + F_MONO, frac < 0.3 && b.alive ? C.warning : FT.text, 'right'); }
     else { txt('BODY', TX, 92, fLab, FT.dim); txt(num(hp), TX, 146, '700 48px ' + F_MONO, frac < 0.3 && b.alive ? C.warning : FT.text); }
     const barY = STORY ? BY + 52 : 164, barH = STORY ? 22 : 26;
@@ -1964,6 +2044,7 @@
       if (f > 0) { rr(x, DY + 44, Math.max(6, pw * f), 28, 6); ctx.fillStyle = f >= 1 ? FT.text : FT.dim; ctx.fill(); }
     }
     drawDistrict(s);
+    if (STORY) drawStatsBox(s);
     const cb = drawBodyPanel(s);
     drawKeysPanel(s, cb);
     app.layoutY = { left: s.district ? (() => { const G = mapGeom(s.district); return G.Y + 66 + G.mh + (s.storyMode ? STORY_FOOT : 0); })() : MAPY, right: cb }; // Edit 75: the touch zones start below these
@@ -1975,7 +2056,7 @@
   // both directions of a road are one line; a stretch already drawn at its level is not drawn again, so dashes stay clean
   // where junction and ring routes repeat it. Drawn once a district, at the canvas's scale.
   const MAP_Z = [null, '#3D7BFF', '#FF4FD8'], MAP_LW = 3, MAP_DASH = [6, 4];
-  const MAPY = STORY ? 254 : 318; // Edit 86 (P7.5): the map rises with the compact BODY panel
+  const MAPY = STORY ? FY - 6 + 192 : 318; // Edit 86–87: the map rises with the compact BODY panel, on the field's top edge
   const mapCache = { key: null, cv: null };
   function mapGeom(D) {
     const X = 16, Y = MAPY, W = FX - 32, g = 6, cw = Math.min(56, Math.floor((W - 16 - (D.cols - 1) * g) / D.cols)), ch = Math.round(cw * 0.75), gx = X + (W - (D.cols * cw + (D.cols - 1) * g)) / 2, gy = Y + 50;
@@ -2025,7 +2106,8 @@
     const G = mapGeom(D), { X, Y, W, g, cw, ch, gx, gy } = G;
     const sm = s.storyMode, foot = sm ? STORY_FOOT : 0; // Edit 81: the story reveals tiles as they open; the brief sits under the map
     panel(X, Y, W, 50 + D.rows * ch + (D.rows - 1) * g + 16 + foot);
-    txt('DISTRICT', 30, Y + 32, fLab, FT.dim); txt(s.screenName(), X + W - 14, Y + 32, fLab, FT.text, 'right');
+    if (STORY) { const t = INFO(s.levelId).name.toUpperCase() + ' · ' + s.screenName() + whereOf(s); fitText(t, X + 14, Y + 32, W - 28, 24, 14, FT.text); if (app.hud) app.hud.map = { x: X, y: Y, w: W, title: t }; } // Edit 87: [map] · [tile]
+    else { txt('DISTRICT', 30, Y + 32, fLab, FT.dim); txt(s.screenName(), X + W - 14, Y + 32, fLab, FT.text, 'right'); }
     const Wd = s.P['world.width'], Hd = s.P['world.height'], lanes = !!(s.W6 && s.W6.recs), mc = lanes ? mapCanvas(s, G) : null;
     for (let iy = 0; iy < D.rows; iy++) for (let ix = 0; ix < D.cols; ix++) {
       const x = gx + ix * (cw + g), y = gy + iy * (ch + g), cur = D.cur[0] === ix && D.cur[1] === iy, cell = D.cells[iy][ix];
@@ -2105,10 +2187,10 @@
   }
   // The chassis doll is drawn at ui.artScale like the field: one doll pixel = one art pixel, on the art grid.
   function drawBodyPanel(s) {
-    const X = FX + FW + 16, W = VW - X - 16, Y = 62, b = s.body, U = RA, eff = b.alive ? partEffects(s) : []; // U here: reference units per art px
-    const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + (STORY ? 28 : 36), dV = STORY ? 30 : 38; // Edit 86: a tighter foot
-    const ph = yHit - Y + (STORY ? 50 : 66) + (eff.length ? 16 + eff.length * 32 : 0);
-    panel(X, Y, W, ph);
+    const X = FX + FW + 16, W = VW - X - 16, Y = STORY ? FY - 6 + 96 : 62, b = s.body, U = RA, eff = b.alive ? partEffects(s) : []; // U here: reference units per art px; Edit 87: under the stats box
+    const DW = PIX.DOLL_W * U, DH = PIX.DOLL_H * U, top = Y + 44, yHit = top + DH + (STORY ? 26 : 36), dV = STORY ? 0 : 38; // Edit 86–87: LAST HIT on one row
+    const ph = yHit - Y + (STORY ? 20 : 66) + (eff.length ? 16 + eff.length * 32 : 0);
+    panel(X, Y, W, ph); if (app.hud) app.hud.chassis = { x: X, y: Y, w: W, h: ph };
     txt('CHASSIS ' + String(b.chassis).padStart(2, '0'), X + 14, Y + 30, fLab, FT.dim);
     const lp = fx.lastPart, flash = lp && app.realT - lp.t < 0.3 && Math.floor(app.realT * 16) % 2 === 0 ? lp.part : '';
     const dx = Math.round((X + W / 2 - DW / 2) / U) * U, dy = Math.round(top / U) * U;
@@ -2116,7 +2198,8 @@
     ctx.drawImage(dollCanvas(partLevels(s), flash, dollMods(s)), dx, dy, DW, DH);
     ctx.globalAlpha = 1;
     txt('LAST HIT', X + 14, yHit, STORY ? '700 15px ' + F_UI : fTxt, FT.dim);
-    txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, yHit + dV, fLab, lp ? FT.text : FT.dim);
+    if (STORY) fitTextR(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + W - 14, yHit, W - 110, 20, 13, lp ? FT.text : FT.dim);
+    else txt(lp ? PART_NAME[lp.part] + '  −' + num(lp.lost) : '—', X + 14, yHit + dV, fLab, lp ? FT.text : FT.dim);
     eff.forEach(([k2, v], i) => { const y = yHit + dV + 48 + i * 32; txt(k2, X + 14, y, fTxt, FT.dim); txt(v, X + W - 14, y, fLab, C.warning, 'right'); });
     return Y + ph;
   }
@@ -2598,6 +2681,7 @@
     else if (it === 'Gamepad setup') { app.padCmd = 'setup'; app.paused = false; app.pausePage = null; }
     else if (it === 'Back') app.pausePage = null;
   }
+  const controlItems = () => (TOUCH.on ? ['Adjust layout', 'Reset layout', 'Back'] : ['Back']); // Edit 87
   function controlRows(s) { // the device in hand: keys, a gamepad, or touch; a locked verb names what unlocks it
     const d = deviceOf(), lock = (n, label) => (s.has(n) ? '' : 'Locked: ' + label + ', by drone'), K3 = { keys: 0, pad: 1, touch: 2 }[d];
     const rows = [
@@ -2610,7 +2694,7 @@
     ];
     if (d === 'keys') rows.push(['TUNING', 'T', ''], ['GAMEPAD SETUP', 'G', '']);
     if (d === 'pad') rows.push(['GAMEPAD SETUP', 'Hold Start', '']);
-    if (d === 'touch') rows.push(['FULL SCREEN', '⤢', '']);
+    if (d === 'touch') rows.push(['FULL SCREEN', '⤢', '', app.touchCfg ? 'Your layout: Adjust layout to change' : 'Adjust layout: move and size the stick and buttons']);
     return { d, rows };
   }
   function drawControls(s, x, y, w, h) {
@@ -2634,7 +2718,7 @@
     panel(x, y, w, h);
     txt(page === 'options' ? 'OPTIONS' : page === 'controls' ? 'CONTROLS' : 'PAUSED', x + 22, y + 40, fLab, FT.accent);
     if (page === 'options') menuList(optionItems(), app.optSel, x + 18, y + 62, w - 36);
-    else if (page === 'controls') menuList(['Back'], 0, x + 18, y + 62, w - 36);
+    else if (page === 'controls') menuList(controlItems(), app.ctlSel || 0, x + 18, y + 62, w - 36);
     else {
       const items = pauseItems().slice(), story = app.mode === 'story';
       if (app.confirmRefuse && !story) items[2] = 'Confirm refusal';
@@ -2680,7 +2764,7 @@
     drawField(s);
     drawHUD(s);
     drawComboMeter(s);
-    if (app.paused) drawPause(s);
+    if (app.paused) { if (!app.touchEdit) drawPause(s); } // Edit 87: placing the touch controls shows the game, dimmed, not the menu
     else if (s.phase === 'brief') drawBrief(s); // Edit 81: the tile card
     else if (s.phase === 'gift') drawGiftPopup(s); // Edit 84
     else if (s.phase === 'report') drawReport(s);
@@ -2882,6 +2966,6 @@
   requestAnimationFrame(frame);
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
-  window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR }; // Edit 75–76: for the tests
-  window.__dummiesUI = { objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
+  window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
+  window.__dummiesUI = { controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();
