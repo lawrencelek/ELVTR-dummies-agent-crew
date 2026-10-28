@@ -49,13 +49,31 @@
     screen: 'title', level: 0, difficulty: 1, sim: null, paused: false, pauseSel: 0, confirmRefuse: false,
     shopCol: 0, shopRow: 0, endSel: 0, tune: {}, lastEv: 0, toast: null, realT: 0, sound: true, tuned: false,
     device: 'keys', padCmd: null, layoutY: null, showJumpable: false, // Edit 75: the device last used; pad setup; touch zones; the jumpable outline
-    mode: 'arcade', titleSel: 0, story: null, mapSel: null, newConfirm: false, // Edit 81: the game mode; the title's row; story progress; the story map's cursor
+    mode: 'arcade', titleSel: 0, story: null, mapSel: null, // Edit 81: the game mode; the title's row; story progress; the story map's cursor
+    slot: 0, saveSel: 0, slotAct: 0, saveMode: null, saveConfirm: null, nameEntry: null, // Edit 88: the slot in play; the save screen's row, action, mode, confirm; the name entry
   };
-  // Edit 81: story progress is saved in this browser (one slot). Without storage it lasts the visit.
-  const SAVE_KEY = 'dummies.p7.story';
-  function loadStory() { try { const v = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return v && v.v === 1 && STORY && STORY.districtOf(v.district) ? v : null; } catch (e) { return null; } }
-  function saveStory() { if (!app.story) return; try { localStorage.setItem(SAVE_KEY, JSON.stringify(app.story)); } catch (e) { /* storage off: progress lasts this visit */ } }
-  if (STORY) app.story = loadStory(); // a story saved in this browser, shown on the title
+  // Edit 88 (P7.7): three save slots (story.saveSlots), each a name (story.saveNameMax characters), a time stamp and the story's
+  // progress (district, tile in test, cleared tiles, credits, points, levels, chassis). Saved in this browser after every count,
+  // clear, gift and purchase, as before (Edit 81), into the slot in play. 7.1–7.6 kept one story under SAVE_KEY: it moves into
+  // slot 1 once, and stays for those builds. Without storage, a slot lasts the visit.
+  const SAVE_KEY = 'dummies.p7.story', SLOT_KEY = 'dummies.p7.save', MOVED_KEY = 'dummies.p7.saveMoved', memSlots = {};
+  const okProgress = (v) => !!(v && v.v === 1 && STORY && STORY.districtOf(v.district));
+  const slotCount = () => Math.max(1, Math.min(4, Math.round(pv('story.saveSlots') || 3)));
+  const nameMax = () => Math.max(4, Math.round(pv('story.saveNameMax') || 12));
+  const defaultName = (n) => ('TEST DUMMY ' + n).slice(0, nameMax());
+  function readSlot(n) { let v = memSlots[n] || null; try { const raw = localStorage.getItem(SLOT_KEY + n); if (raw != null) v = JSON.parse(raw); } catch (e) { /* storage off */ } return v && v.v === 1 && okProgress(v.progress) && typeof v.name === 'string' ? v : null; }
+  let slotCache = null;
+  function writeSlot(n, v) { slotCache = null; memSlots[n] = v; try { localStorage.setItem(SLOT_KEY + n, JSON.stringify(v)); } catch (e) { /* storage off: the slot lasts this visit */ } }
+  function eraseSlot(n) { slotCache = null; delete memSlots[n]; try { localStorage.removeItem(SLOT_KEY + n); } catch (e) { /* storage off */ } }
+  function allSlots() { if (STORY && !moved) moveOldStory(); if (slotCache && slotCache.length === slotCount()) return slotCache; const out = []; for (let n = 1; n <= slotCount(); n++) out.push(readSlot(n)); return (slotCache = out); }
+  function saveStory() { if (!app.story || !app.slot) return; const cur = readSlot(app.slot); writeSlot(app.slot, { v: 1, name: cur ? cur.name : defaultName(app.slot), saved: Date.now(), progress: app.story }); }
+  function loadSlot(n) { const v = readSlot(n); if (!v) return false; app.slot = n; app.story = v.progress; app.mode = 'story'; return true; }
+  let moved = false;
+  function moveOldStory() { // the one story of 7.1–7.6, into slot 1, once
+    moved = true; try { if (!localStorage.getItem(MOVED_KEY)) { const old = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (okProgress(old) && !readSlot(1)) writeSlot(1, { v: 1, name: defaultName(1), saved: Date.now(), progress: old, moved: true }); localStorage.setItem(MOVED_KEY, '1'); } } catch (e) { /* storage off */ }
+  }
+  const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  function stamp(ms) { const d = new Date(ms), p2 = (x) => String(x).padStart(2, '0'); return p2(d.getDate()) + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear() + ' · ' + p2(d.getHours()) + ':' + p2(d.getMinutes()); } // the browser's local time
   const FIELD = {};
   const previews = W6 ? [] : LEVEL_LIST.map((id) => new Sim(id, Object.assign({ 'run.appearances.road': 0 }, FIELD)));
   function preview(i) { // P6: the district's start screen, art only, built on first sight
@@ -76,7 +94,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.6' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.7' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -155,9 +173,78 @@
     fx.seenScreens = new Set(D ? [app.sim.screenName()] : []);
   }
 
-  function startStory() { app.mode = 'story'; if (!app.story) app.story = loadStory() || STORY.newProgress(); saveStory(); startLevel(LEVEL_LIST.indexOf(app.story.district)); } // Edit 81
+  function startStory() { app.mode = 'story'; if (!app.story) app.story = STORY.newProgress(); saveStory(); startLevel(LEVEL_LIST.indexOf(app.story.district)); } // Edit 81
   function toStoryMap() { saveStory(); app.screen = 'storymap'; app.sim = null; app.paused = false; app.mapSel = null; clearEdges(); }
-  function titleItems() { return STORY ? ['ARCADE', 'STORY'].concat(app.story && STORY.clearedCount(app.story) + app.story.tileWO > 0 ? ['NEW STORY'] : []) : []; }
+  function titleItems() { return STORY ? ['ARCADE', 'STORY'] : []; } // Edit 88: a new story starts from the save screen
+  // Edit 88: the save screen. NEW GAME, then the slots. A slot: CONTINUE, RENAME, ERASE (A twice). NEW GAME takes the first empty
+  // slot; with none empty, the player picks one to overwrite (A twice). A new game and RENAME open the name entry
+  function toSaves() {
+    app.mode = 'story'; app.screen = 'saves'; app.sim = null; app.paused = false; app.saveMode = null; app.saveConfirm = null; app.slotAct = 0; app.nameEntry = null; clearEdges();
+    const S = allSlots(); let best = 0, t = -1; S.forEach((v, i) => { if (v && v.saved > t) { t = v.saved; best = i + 1; } }); app.saveSel = app.slot && S[app.slot - 1] ? app.slot : best;
+  }
+  const slotActs = (n) => (app.saveMode === 'overwrite' ? ['OVERWRITE'] : allSlots()[n - 1] ? ['CONTINUE', 'RENAME', 'ERASE'] : ['NEW GAME']);
+  // the name entry: a Zelda-style grid for the stick, the pad and touch; a keyboard types directly
+  const NAME_ROWS = ['ABCDEFGHIJKLM', 'NOPQRSTUVWXYZ', "0123456789-.'"], NAME_KEYS = ['SPACE', 'DEL', 'OK'], NAME_COLS = 13;
+  const nameKeyOf = (c) => (c < 4 ? 0 : c < 9 ? 1 : 2); // the bottom row's three wide keys, by column
+  // touch: a tap on the name opens the phone's own keyboard through this hidden field
+  const nameInput = document.createElement('input');
+  Object.assign(nameInput, { id: 'name-input', type: 'text', autocomplete: 'off', spellcheck: false }); nameInput.setAttribute('autocapitalize', 'characters'); nameInput.setAttribute('enterkeyhint', 'done'); nameInput.setAttribute('aria-label', 'Save slot name');
+  nameInput.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;font-size:16px;';
+  document.body.appendChild(nameInput);
+  const cleanName = (t) => t.toUpperCase().replace(/[^A-Z0-9 .'-]/g, '').slice(0, nameMax());
+  nameInput.addEventListener('input', () => { const ne = app.nameEntry; if (!ne) return; ne.text = cleanName(nameInput.value); ne.fresh = false; if (nameInput.value !== ne.text) nameInput.value = ne.text; });
+  nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); nameDone(); } else if (e.key === 'Escape') { e.preventDefault(); nameCancel(); } });
+  function nameStart(slot, kind) { const cur = readSlot(slot); app.nameEntry = { slot, kind, text: kind === 'rename' && cur ? cur.name : defaultName(slot), fresh: true, r: 3, c: 10 }; nameInput.value = ''; }
+  function nameCancel() { app.nameEntry = null; nameInput.blur(); }
+  function nameFocus() { try { nameInput.focus({ preventScroll: true }); } catch (e) { /* not offered */ } }
+  cv.addEventListener('pointerup', () => { if (app.focusName && app.nameEntry) nameFocus(); app.focusName = false; }); // some phones open the keyboard only on the finger's lift
+  function nameType(ch) { const ne = app.nameEntry; if (!ne) return; if (ne.fresh) { ne.text = ''; ne.fresh = false; } if (ne.text.length < nameMax()) ne.text += ch; nameInput.value = ne.text; }
+  function nameDel() { const ne = app.nameEntry; if (!ne) return; if (ne.fresh) { ne.text = ''; ne.fresh = false; } else ne.text = ne.text.slice(0, -1); nameInput.value = ne.text; }
+  function nameDone() {
+    const ne = app.nameEntry; if (!ne) return; const name = cleanName(ne.text).trim() || defaultName(ne.slot); app.nameEntry = null; nameInput.blur();
+    if (ne.kind === 'rename') { const cur = readSlot(ne.slot); if (cur) { cur.name = name; writeSlot(ne.slot, cur); } toast('Renamed: ' + name); return; } // a rename keeps the time stamp
+    app.slot = ne.slot; app.story = STORY.newProgress(); app.mode = 'story';
+    writeSlot(ne.slot, { v: 1, name, saved: Date.now(), progress: app.story }); toStoryMap();
+  }
+  function nameOk() { const ne = app.nameEntry; if (!ne) return; if (ne.r < 3) nameType(NAME_ROWS[ne.r][ne.c]); else { const k = NAME_KEYS[nameKeyOf(ne.c)]; if (k === 'SPACE') nameType(' '); else if (k === 'DEL') nameDel(); else nameDone(); } }
+  function nameMenu(m) { // stick, pad or arrows: the grid; A presses; B deletes (on an empty name, cancels); START finishes
+    const ne = app.nameEntry;
+    if (m === 'left' || m === 'right') { if (ne.r < 3) ne.c = (ne.c + (m === 'right' ? 1 : NAME_COLS - 1)) % NAME_COLS; else { const k = (nameKeyOf(ne.c) + (m === 'right' ? 1 : 2)) % 3; ne.c = [1, 6, 10][k]; } }
+    else if (m === 'up') ne.r = (ne.r + 3) % 4;
+    else if (m === 'down') ne.r = (ne.r + 1) % 4;
+    else if (m === 'ok') nameOk();
+    else if (m === 'back') { if (ne.text.length && !ne.fresh) nameDel(); else nameCancel(); }
+    else if (m === 'pause') nameDone();
+  }
+  function savesMenu(m) {
+    const n = slotCount(), S = allSlots(), sel = app.saveSel, acts = sel ? slotActs(sel) : [];
+    if (m === 'back' || m === 'pause') { if (app.saveConfirm) app.saveConfirm = null; else if (app.saveMode) app.saveMode = null; else app.screen = 'title'; return; }
+    if (m === 'up' || m === 'down') { app.saveSel = (sel + (m === 'down' ? 1 : n)) % (n + 1); if (app.saveMode === 'overwrite' && app.saveSel === 0) app.saveSel = m === 'down' ? 1 : n; app.slotAct = 0; app.saveConfirm = null; return; }
+    if (m === 'left' || m === 'right') { if (sel && acts.length > 1) { app.slotAct = (app.slotAct + (m === 'right' ? 1 : acts.length - 1)) % acts.length; app.saveConfirm = null; } return; }
+    if (m !== 'ok') return;
+    if (!sel) { const free = S.findIndex((v) => !v); if (free >= 0) nameStart(free + 1, 'new'); else { app.saveMode = 'overwrite'; app.saveSel = 1; app.slotAct = 0; toast('All ' + n + ' slots in use: choose one to overwrite'); } return; }
+    const act = acts[Math.min(app.slotAct, acts.length - 1)];
+    if (act === 'CONTINUE') { if (loadSlot(sel)) toStoryMap(); }
+    else if (act === 'NEW GAME') nameStart(sel, 'new');
+    else if (act === 'RENAME') nameStart(sel, 'rename');
+    else if (act === 'ERASE' || act === 'OVERWRITE') {
+      if (app.saveConfirm !== act + sel) { app.saveConfirm = act + sel; return; }
+      app.saveConfirm = null;
+      if (act === 'ERASE') { const nm = S[sel - 1] && S[sel - 1].name; eraseSlot(sel); if (app.slot === sel) { app.slot = 0; app.story = null; } app.slotAct = 0; toast('Erased: ' + nm); }
+      else { app.saveMode = null; nameStart(sel, 'new'); }
+    }
+  }
+  // a keyboard types the name directly: letters, digits, space, - . '; Backspace deletes; Enter finishes; Esc cancels
+  window.addEventListener('keydown', (e) => {
+    const ne = app.nameEntry; if (!ne || app.screen !== 'saves' || e.ctrlKey || e.metaKey || e.altKey || e.target === nameInput) return; // the hidden field types for itself
+    let used = true;
+    if (e.key && e.key.length === 1 && /[A-Za-z0-9 .'\-]/.test(e.key)) nameType(e.key.toUpperCase());
+    else if (e.key === 'Backspace') nameDel();
+    else if (e.key === 'Enter') nameDone();
+    else if (e.key === 'Escape') nameCancel();
+    else used = false;
+    if (used) { e.preventDefault(); e.stopImmediatePropagation(); app.device = 'keys'; }
+  }, true);
 
   // ---------- input. Edit 75 (P6.5): four buttons, as on a gamepad: A dash, B jump, X grab, Y throw.
   // Keys: Space or K dash (A) · L or Shift jump (B) · J or E grab (X) · I or Q throw (Y): IJKL sits like the pad's diamond.
@@ -180,7 +267,7 @@
     ShiftRight: 'b', Escape: 'pause', KeyP: 'pause', KeyT: 'tune',
   };
   function clearEdges() { q.a = q.b = q.bUp = q.x = q.y = 0; menuQ.length = 0; }
-  function inUI(e) { return e.target && e.target.closest && e.target.closest('#tune, #trace, button'); }
+  function inUI(e) { return e.target && e.target.closest && e.target.closest('#tune, #trace, button, #name-input'); }
   window.addEventListener('keydown', (e) => {
     const k = MAP[e.code];
     if (!k || inUI(e)) return;
@@ -204,7 +291,9 @@
     if (k === 'b') q.bUp++;
   });
   window.addEventListener('blur', () => { held.clear(); if (app.screen === 'game' && app.sim && !app.sim.run.ending) app.paused = true; });
-  cv.addEventListener('pointerdown', () => { cv.focus(); Snd.init(); });
+  cv.addEventListener('pointerdown', (e) => { cv.focus(); Snd.init();
+    if (e.pointerType === 'mouse' && app.screen === 'saves') { const r = cv.getBoundingClientRect(), k = (window.devicePixelRatio || 1) / scale; saveTap((e.clientX - r.left) * k - ox / scale, (e.clientY - r.top) * k - oy / scale); } // Edit 88: a click on the save screen
+  });
 
   // Gamepads (Edit 75: pads.js, shared with the controls prototype). Every connected pad is read; the last one used drives.
   // Standard mapping: stick or d-pad moves; A (or RT) dash, B jump, X grab, Y throw; START pauses; hold START (or G) to set up.
@@ -317,6 +406,7 @@
     if (e.type === 'pointerdown') {
       if (TOUCH.portrait) return;
       try { cv.setPointerCapture(id); } catch (err) { /* not offered */ }
+      if (app.screen === 'saves' && saveTap(x - L.gx, y - L.gy)) return; // Edit 88: tap a slot, an action or a key
       if (inChip(L.chip.pause, x, y, STORY ? 8 : 0)) { menuQ.push('pause'); return; } // Edit 87: small chips, a finger's reach
       if (inChip(L.chip.full, x, y, STORY ? 8 : 0)) { fullscreen(); return; }
       const f = L.face.slice().sort((p1, p2) => Math.hypot(x - p1.x, y - p1.y) - Math.hypot(x - p2.x, y - p2.y)).find((q2) => Math.hypot(x - q2.x, y - q2.y) <= q2.r * 1.35); // the nearest key within reach
@@ -870,22 +960,17 @@
     if (app.screen === 'loading') { menuQ.length = 0; return; }
     while (menuQ.length) {
       const m = menuQ.shift();
-      if (app.screen === 'title' && STORY) { // Edit 81: ARCADE or STORY (NEW STORY once a story has begun)
+      if (app.screen === 'title' && STORY) { // Edit 81: ARCADE or STORY. Edit 88: STORY opens the save screen
         const items = titleItems();
-        if (m === 'up' || m === 'left') { app.titleSel = (app.titleSel + items.length - 1) % items.length; app.newConfirm = false; }
-        else if (m === 'down' || m === 'right') { app.titleSel = (app.titleSel + 1) % items.length; app.newConfirm = false; }
-        else if (m === 'ok') {
-          const it = items[app.titleSel] || 'ARCADE';
-          if (it === 'ARCADE') { app.mode = 'arcade'; app.screen = 'arcade'; }
-          else if (it === 'STORY') { app.mode = 'story'; app.story = app.story || loadStory() || STORY.newProgress(); toStoryMap(); }
-          else if (!app.newConfirm) app.newConfirm = true;
-          else { app.story = STORY.newProgress(); app.newConfirm = false; app.mode = 'story'; app.titleSel = 1; toStoryMap(); }
-        }
+        if (m === 'up' || m === 'left') app.titleSel = (app.titleSel + items.length - 1) % items.length;
+        else if (m === 'down' || m === 'right') app.titleSel = (app.titleSel + 1) % items.length;
+        else if (m === 'ok') { if ((items[app.titleSel] || 'ARCADE') === 'ARCADE') { app.mode = 'arcade'; app.screen = 'arcade'; } else toSaves(); }
         continue;
       }
+      if (app.screen === 'saves') { if (app.nameEntry) nameMenu(m); else savesMenu(m); if (app.screen !== 'saves') return; continue; } // Edit 88
       if (app.screen === 'storymap') { // Edit 81: the Test City; the cursor reads any tile's tale; A deploys to the tile in test
         const cur = app.mapSel || storyCursor(), pr = app.story;
-        if (m === 'back') { app.screen = 'title'; continue; }
+        if (m === 'back') { toSaves(); continue; } // Edit 88: back to the save screen
         if (m === 'left' || m === 'right') app.mapSel = [(cur[0] + (m === 'right' ? 1 : 8)) % 9, cur[1]];
         else if (m === 'up' || m === 'down') app.mapSel = [cur[0], (cur[1] + (m === 'down' ? 1 : 2)) % 3];
         else if (m === 'ok' && pr && !pr.complete) { startStory(); return; }
@@ -1944,13 +2029,13 @@
       const o = ctx.createRadialGradient(gx, gy, 10, gx, gy, gr); o.addColorStop(0, gc); o.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = o; ctx.fillRect(0, 0, VW, VH);
     }
-    const brand = !STORY || app.screen !== 'game'; // Edit 86 (P7.5): in play the corner stays clear (the touch pause chip sits there); menus keep the brand
+    const brand = !STORY || (app.screen !== 'game' && !TOUCH.on); // Edit 86 (P7.5): in play the corner stays clear (the touch pause chip sits there); menus keep the brand. Edit 88: on touch the chips keep that corner on every screen
     if (brand && FT.neon) { ctx.save(); ctx.shadowColor = FT.brand; ctx.shadowBlur = 14; }
     if (brand) txt('FARSIGHT', 24, TOPY + 1, '900 30px ' + F_BRAND, FT.brand);
     if (brand && FT.neon) ctx.restore();
     const s = app.sim;
     if (STORY && app.screen === 'game' && s) { /* Edit 87: the objective and toasts own the top strip (drawMessages); facts sit in the side boxes */ }
-    else if (app.screen === 'title' || !s) txt(app.screen === 'loading' ? 'BUILDING DISTRICT' : app.screen === 'storymap' ? 'STORY · THE TEST CITY' : app.screen === 'arcade' ? 'ARCADE · SELECT A DISTRICT' : STORY ? 'SELECT A MODE' : 'SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
+    else if (app.screen === 'title' || !s) txt(app.screen === 'loading' ? 'BUILDING DISTRICT' : app.screen === 'storymap' ? 'STORY · THE TEST CITY' : app.screen === 'saves' ? 'STORY · SAVE GAMES' : app.screen === 'arcade' ? 'ARCADE · SELECT A DISTRICT' : STORY ? 'SELECT A MODE' : 'SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
     else drawTopBar(s);
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
@@ -2267,8 +2352,8 @@
     panel(x, y, w, h);
     txt('DUMMIES', x + 30, y + 76, '900 64px ' + F_BRAND, FT.text);
     wrapText('You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.', x + 32, y + 116, w - 64, 30, fTxt, FT.dim, 2);
-    const items = titleItems(), pr = app.story, cl = pr ? STORY.clearedCount(pr) : 0;
-    const sub = !pr ? 'Begins in Monument, tile A1' : pr.complete ? 'Certified: all ' + STORY.TOTAL + ' tiles' : cl + ' of ' + STORY.TOTAL + ' tiles cleared · next ' + INFO(pr.district).name + ' ' + STORY.activeTile(pr, pr.district);
+    const items = titleItems(), S = allSlots(), last = S.filter(Boolean).sort((a, b) => b.saved - a.saved)[0], pr = last && last.progress; // Edit 88: the latest save
+    const sub = !last ? slotCount() + ' save slots · a new game begins in Monument A1' : last.name + ' · ' + (pr.complete ? 'certified' : INFO(pr.district).name + ' ' + STORY.activeTile(pr, pr.district) + ' · ' + STORY.clearedCount(pr) + ' of ' + STORY.TOTAL);
     const cards = [['ARCADE', 'Pick one district and write off its quota. The score is the run.', 'Parkland · Waterfront · Monument'],
       ['STORY', 'The Test City, tile by tile. Each tile wants its write-offs to Farsight\'s brief.', sub]];
     const cw = (w - 56 - 20) / 2, top = y + 162, chh = 206;
@@ -2279,15 +2364,97 @@
       wrapText(line, cx + 22, top + 88, cw - 44, 27, '400 19px ' + F_UI, on ? FT.selText : FT.text, 3);
       wrapText(foot, cx + 22, top + chh - 22, cw - 44, 24, '700 17px ' + F_UI, on ? FT.selText : FT.dim, 1);
     });
-    if (items.includes('NEW STORY')) {
-      const on = app.titleSel === 2, t = app.newConfirm ? 'PRESS AGAIN TO ERASE THE STORY' : 'NEW STORY';
-      ctx.font = fLab; const tw = ctx.measureText(t).width + 40, by = top + chh + 18;
-      rr(x + w / 2 - tw / 2, by, tw, 42, 12); ctx.fillStyle = on ? (app.newConfirm ? C.warning : FT.sel) : FT.item; ctx.fill();
-      ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
-      txt(t, x + w / 2, by + 29, fLab, on ? FT.selText : FT.dim, 'center');
-    }
     const pd = TOUCH.on || app.device === 'pad';
     txt(pd ? 'STICK CHOOSE · A SELECT' : 'ARROWS CHOOSE · SPACE SELECT', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
+  }
+  // Edit 88: the save screen. NEW GAME; then each slot: its number, name, time stamp; where the story stands (district, tile in
+  // test, tiles cleared); points, credits, levels, chassis. The chosen slot shows its actions; ERASE and OVERWRITE ask twice
+  const saveHits = []; // tappable and clickable rects, in reference units, rebuilt each frame
+  function slotLines(v) {
+    const pr = v.progress, cl = STORY.clearedCount(pr), t = pr.complete ? null : STORY.activeTile(pr, pr.district);
+    return [pr.complete ? 'CERTIFIED · ALL ' + STORY.TOTAL + ' TILES' : INFO(pr.district).name.toUpperCase() + ' · ' + t + ' · TILE ' + STORY.tileNumber(pr.district, t) + ' OF ' + STORY.TOTAL + (pr.tileWO ? ' · ' + pr.tileWO + ' OF ' + STORY.needOf(pr.district, t) + ' WRITE-OFFS' : ''),
+      cl + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points || 0) + ' POINTS · ' + plural(pr.credits || 0, 'CREDIT') + ' · ' + plural(Object.keys(pr.owned || {}).length, 'LEVEL') + ' · CHASSIS ' + String(pr.chassis || 0).padStart(2, '0')];
+  }
+  function drawSaves() {
+    drawField(preview(Math.max(0, LEVEL_LIST.indexOf('monument'))), true);
+    veil(); saveHits.length = 0;
+    const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, n = slotCount(), S = allSlots(), over = app.saveMode === 'overwrite';
+    panel(x, y, w, h);
+    if (app.nameEntry) { drawNameEntry(x, y, w, h); return; }
+    txt('SAVE GAMES', x + 24, y + 40, fLab, FT.accent);
+    txt('SAVED IN THIS BROWSER', x + w - 24, y + 40, '700 15px ' + F_UI, FT.dim, 'right');
+    const ny = y + 56, nh = 48, onN = app.saveSel === 0, free = S.findIndex((v) => !v);
+    rr(x + 24, ny, w - 48, nh, 12); ctx.fillStyle = onN && !over ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = onN && !over ? FT.accent : FT.itemEdge; ctx.lineWidth = onN ? 3 : 1.5; ctx.stroke();
+    txt('NEW GAME', x + 44, ny + 33, '900 24px ' + F_BRAND, onN && !over ? FT.selText : FT.text);
+    txt(over ? 'CHOOSE A SLOT TO OVERWRITE · B CANCELS' : free >= 0 ? 'Monument A1 · into slot ' + (free + 1) : 'All ' + n + ' slots in use · overwrite one', x + w - 44, ny + 31, '700 16px ' + F_UI, over ? C.warning : onN ? FT.selText : FT.dim, 'right');
+    saveHits.push({ x: x + 24, y: ny, w: w - 48, h: nh, sel: 0 });
+    const top = ny + nh + 12, gap = 10, ch = Math.min(148, Math.floor((y + h - 34 - top - (n - 1) * gap) / n));
+    for (let i = 0; i < n; i++) {
+      const v = S[i], cy = top + i * (ch + gap), on = app.saveSel === i + 1, cx = x + 24, cw = w - 48;
+      rr(cx, cy, cw, ch, 12); ctx.fillStyle = on ? FT.keyTop : FT.item; ctx.fill(); ctx.strokeStyle = on ? (over ? C.warning : FT.accent) : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
+      saveHits.push({ x: cx, y: cy, w: cw, h: ch, sel: i + 1 });
+      rr(cx + 16, cy + 14, 44, 44, 10); ctx.fillStyle = v ? C.dummy : FT.track; ctx.fill(); txt(String(i + 1), cx + 38, cy + 46, '900 28px ' + F_BRAND, v ? C.primary : FT.dim, 'center');
+      if (v) {
+        txt(v.name, cx + 76, cy + 42, '900 28px ' + F_MONO, FT.text);
+        txt(stamp(v.saved), cx + cw - 18, cy + 30, '700 16px ' + F_UI, FT.dim, 'right');
+        if (app.slot === i + 1) txt('IN PLAY', cx + cw - 18, cy + 52, '700 14px ' + F_UI, C.dummy, 'right');
+        const [l1, l2] = slotLines(v);
+        fitText(l1, cx + 76, cy + 72, cw - 94, 18, 13, FT.text);
+        wrapText(l2, cx + 76, cy + 96, cw - 94, 20, '400 16px ' + F_UI, FT.dim, 1);
+      } else {
+        txt('EMPTY', cx + 76, cy + 42, '900 28px ' + F_MONO, FT.off);
+        wrapText('No story saved here.', cx + 76, cy + 72, cw - 94, 20, '400 16px ' + F_UI, FT.dim, 1);
+      }
+      if (on) { // the actions
+        const acts = slotActs(i + 1); let ax = cx + 76; const ay = cy + ch - 38;
+        acts.forEach((a, j) => {
+          const conf = app.saveConfirm === a + (i + 1), label = conf ? a + '? A AGAIN' : a, sj = j === Math.min(app.slotAct, acts.length - 1);
+          ctx.font = '700 16px ' + F_UI; const aw = ctx.measureText(label).width + 30;
+          rr(ax, ay, aw, 30, 8); ctx.fillStyle = conf ? C.warning : sj ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = sj ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+          txt(label, ax + aw / 2, ay + 21, '700 16px ' + F_UI, conf ? '#FFFFFF' : sj ? FT.selText : FT.text, 'center');
+          saveHits.push({ x: ax, y: ay, w: aw, h: 30, sel: i + 1, act: j });
+          ax += aw + 10;
+        });
+      }
+    }
+    const pd = TOUCH.on || app.device === 'pad';
+    txt(pd ? 'STICK CHOOSE · A SELECT · B BACK' : 'ARROWS CHOOSE · SPACE SELECT · SHIFT BACK', x + w / 2, y + h - 12, '700 15px ' + F_UI, FT.dim, 'center');
+  }
+  function nameKeyRects(x, y, w) { // the grid, in reference units: 13 × 3 letters, then SPACE · DEL · OK
+    const kw = 50, kh = 58, g = 5, gw = NAME_COLS * kw + (NAME_COLS - 1) * g, gx = x + (w - gw) / 2, gy = y + 196, out = [];
+    for (let r = 0; r < 3; r++) for (let c = 0; c < NAME_COLS; c++) out.push({ r, c, x: gx + c * (kw + g), y: gy + r * (kh + 8), w: kw, h: kh, label: NAME_ROWS[r][c] });
+    [[0, 3], [4, 8], [9, 12]].forEach(([c0, c1], k) => out.push({ r: 3, c: [1, 6, 10][k], x: gx + c0 * (kw + g), y: gy + 3 * (kh + 8), w: (c1 - c0 + 1) * kw + (c1 - c0) * g, h: kh, label: NAME_KEYS[k] }));
+    return out;
+  }
+  function drawNameEntry(x, y, w, h) {
+    const ne = app.nameEntry, M = nameMax();
+    txt((ne.kind === 'rename' ? 'RENAME SLOT ' : 'NEW GAME · SLOT ') + ne.slot, x + 24, y + 40, fLab, FT.accent);
+    txt(ne.text.length + ' / ' + M, x + w - 24, y + 40, '700 15px ' + F_UI, FT.dim, 'right');
+    const cw = 44, fx0 = x + (w - M * cw) / 2, fy = y + 78, blink = Math.floor(app.realT * 2.5) % 2 === 0;
+    saveHits.push({ x: fx0 - 10, y: fy - 10, w: M * cw + 20, h: 76, field: true }); // touch: the phone's own keyboard
+    for (let i = 0; i < M; i++) {
+      const cx = fx0 + i * cw, ch = ne.text[i] || '';
+      if (ne.fresh && ch) { ctx.fillStyle = FT.sel; ctx.fillRect(cx + 2, fy, cw - 4, 56); }
+      txt(ch, cx + cw / 2, fy + 40, '700 32px ' + F_MONO, ne.fresh ? FT.selText : FT.text, 'center');
+      ctx.fillStyle = i === ne.text.length && !ne.fresh && blink ? C.dummy : FT.itemEdge; ctx.fillRect(cx + 5, fy + 54, cw - 10, i === ne.text.length && !ne.fresh ? 4 : 2);
+    }
+    wrapText(TOUCH.on && document.activeElement !== nameInput ? 'Tap the name for the phone\'s keyboard, or use the keys below.' : ne.fresh ? 'Type to replace the name, or OK to keep it.' : 'Up to ' + M + ' characters: letters, digits, space, - . \'', x + 24, y + 166, w - 48, 22, '400 17px ' + F_UI, FT.dim, 1);
+    for (const k of nameKeyRects(x, y, w)) {
+      const on = k.r === ne.r && (k.r < 3 ? k.c === ne.c : nameKeyOf(k.c) === nameKeyOf(ne.c)), ok = k.label === 'OK';
+      rr(k.x, k.y, k.w, k.h, 8); ctx.fillStyle = on ? FT.sel : ok ? FT.credit : FT.item; ctx.fill(); ctx.strokeStyle = on ? FT.accent : ok ? C.dummy : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
+      txt(k.label, k.x + k.w / 2, k.y + k.h / 2 + 9, (k.r < 3 ? '700 26px ' + F_MONO : '700 19px ' + F_UI), on ? FT.selText : FT.text, 'center');
+      saveHits.push({ x: k.x, y: k.y, w: k.w, h: k.h, key: k });
+    }
+    const pd = TOUCH.on || app.device === 'pad';
+    txt(TOUCH.on ? 'TAP A KEY · STICK AND A · B DELETES' : pd ? 'STICK CHOOSE · A TYPE · B DELETE · START OK' : 'TYPE THE NAME · ENTER OK · BACKSPACE DELETE · ESC CANCEL', x + w / 2, y + h - 12, '700 15px ' + F_UI, FT.dim, 'center');
+  }
+  function saveTap(rx, ry) { // a tap or a click on the save screen (reference units)
+    const hit = saveHits.slice().reverse().find((q2) => rx >= q2.x && rx <= q2.x + q2.w && ry >= q2.y && ry <= q2.y + q2.h); if (!hit) return false;
+    if (hit.field) { if (app.nameEntry) { nameInput.value = app.nameEntry.fresh ? '' : app.nameEntry.text; app.focusName = true; nameFocus(); } return true; }
+    if (hit.key) { const ne = app.nameEntry; if (!ne) return true; ne.r = hit.key.r; ne.c = hit.key.c; nameOk(); return true; }
+    if (hit.act != null) { app.saveSel = hit.sel; app.slotAct = hit.act; savesMenu('ok'); return true; }
+    if (app.saveSel !== hit.sel) { app.saveSel = hit.sel; app.slotAct = 0; app.saveConfirm = null; if (hit.sel === 0) savesMenu('ok'); } else if (hit.sel === 0) savesMenu('ok');
+    return true;
   }
   function drawStoryMap() {
     const pr = app.story; if (!pr) { app.screen = 'title'; return; }
@@ -2295,8 +2462,10 @@
     veil();
     const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, needT = (id, t) => pv('story.writeOffs.' + id + '.' + t); // Edit 82: a count per tile
     panel(x, y, w, h);
-    txt('THE TEST CITY', x + 24, y + 40, fLab, FT.accent);
-    txt(STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · ' + plural(pr.credits, 'CREDIT'), x + w - 24, y + 40, fLab, FT.text, 'right');
+    const sv = app.slot && allSlots()[app.slot - 1], stat = STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · ' + plural(pr.credits, 'CREDIT');
+    ctx.font = '700 18px ' + F_UI; const sw = ctx.measureText(stat).width;
+    txt(stat, x + w - 24, y + 40, '700 18px ' + F_UI, FT.text, 'right');
+    fitText(sv ? 'SLOT ' + app.slot + ' · ' + sv.name : 'THE TEST CITY', x + 24, y + 40, w - 48 - sw - 24, TY.sec, 14, FT.accent); // Edit 88: the slot in play
     const sel = app.mapSel || storyCursor(), gap = 24, gw = (w - 48 - 2 * gap) / 3, g = 6, cw = (gw - 2 * g) / 3, ch = Math.round(cw * 0.8), top = y + 86;
     STORY.DIST.forEach((d, di) => {
       const gx = x + 24 + di * (gw + gap), here = !pr.complete && pr.district === d.id, dn = STORY.doneIn(pr, d.id);
@@ -2748,6 +2917,7 @@
   }
 
   function render() {
+    if (!app.nameEntry && document.activeElement === nameInput) nameInput.blur(); // Edit 88: the hidden name field never keeps the keys
     ctx.setTransform(scale, 0, 0, scale, ox, oy);
     ctx.imageSmoothingEnabled = false;
     { const g = ctx.createLinearGradient(0, 0, 0, VH); g.addColorStop(0, FT.bg[0]); g.addColorStop(0.5, FT.bg[1]); g.addColorStop(1, FT.bg[2]); ctx.fillStyle = g; ctx.fillRect(-ox / scale - 1, -oy / scale - 1, cv.width / scale + 2, cv.height / scale + 2); } // Edit 76: the margins
@@ -2759,6 +2929,7 @@
     if (app.screen === 'title') { if (STORY) drawModeTitle(); else drawTitle(); return; }
     if (app.screen === 'arcade') { drawTitle(); return; } // Edit 81
     if (app.screen === 'storymap') { drawStoryMap(); return; }
+    if (app.screen === 'saves') { drawSaves(); return; } // Edit 88
     if (app.screen === 'loading') { drawLoading(); return; }
     const s = app.sim;
     drawField(s);
@@ -2967,5 +3138,6 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
-  window.__dummiesUI = { controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
+  window.__dummiesUI = { saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), saveHits: () => JSON.parse(JSON.stringify(saveHits)), slotActs, // Edit 88
+    controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();

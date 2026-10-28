@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit87-2026-10-28",
+ "registryVersion": "edit88-2026-10-28",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -9886,6 +9886,50 @@
    "integrationStatus": "prototype-p7.2",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
    "purpose": "\"deposits the player on a part of the screen close to the entrance point but not on the road\""
+  },
+  {
+   "status": "proposed",
+   "source": "Edit 88 (28 October): Prototype 7.7",
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.7",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "group": "Story",
+   "owner": "UI",
+   "type": "number",
+   "applyAt": "next-run",
+   "id": "story.saveSlots",
+   "label": "Story save slots",
+   "description": "STORY opens the save screen: NEW GAME, then this many slots. Each keeps a name, a time stamp and one story's progress (district, tile in test, cleared tiles, points, credits, levels, chassis). Saved in this browser.",
+   "unit": "slots",
+   "default": 3,
+   "validation": {
+    "min": 1,
+    "max": 4
+   },
+   "purpose": "Several players, or several runs, on one device (user request, 28 October)"
+  },
+  {
+   "status": "proposed",
+   "source": "Edit 88 (28 October): Prototype 7.7",
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.7",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "group": "Story",
+   "owner": "UI",
+   "type": "number",
+   "applyAt": "next-run",
+   "id": "story.saveNameMax",
+   "label": "Save name length",
+   "description": "A slot's name holds at most this many characters: A–Z, 0–9, space, - . ' (upper case). The default name is TEST DUMMY <slot>.",
+   "unit": "characters",
+   "default": 12,
+   "validation": {
+    "min": 4,
+    "max": 16
+   },
+   "purpose": "A 12-character file name (user request, 28 October)"
   },
   {
    "id": "arcade.giftEvery",

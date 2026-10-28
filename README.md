@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 7.6](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_6.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–87.
+> **Current prototype: [Prototype 7.7](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_7.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–88.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 7.6 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_6.html` | Current (Edit 87). One top edge: BODY, the field, a POINTS · CREDITS box; the objective on top; touch controls the player moves and sizes |
+> | 7.7 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_7.html` | Current (Edit 88). Save games: NEW GAME and three named slots, each with a time stamp and its own story (tile, points, credits, levels); CONTINUE, RENAME, ERASE |
+> | 7.6 | `prototypes/p7/` | `dummies_p7_6.html` | Frozen (Edit 87). One top edge: BODY, the field, a POINTS · CREDITS box; the objective on top; touch controls the player moves and sizes |
 > | 7.5 | `prototypes/p7/` | `dummies_p7_5.html` | Frozen (Edit 86). A clean screen: no row under the stage; options and per-device controls in the pause menu; BODY as tall as DASH; no wordmark in play |
 > | 7.4 | `prototypes/p7/` | `dummies_p7_4.html` | Frozen (Edit 85). Story traffic per tile (the tile in test and its neighbours; Arcade per district); every highway a flight and a lit parapet gap over each road beneath; cones never on a road or out of view |
 > | 7.3 | `prototypes/p7/` | `dummies_p7_3.html` | Frozen (Edit 84). Verbs issued, levels bought: Legs 1, Hands 1, Arms 1 come by drone (Monument C1, A2, C3; Arcade one a write-off), never sold. The drone carries the module in view and lowers it onto the dummy; a gift screen: the module falls onto the chassis with a flash, rays and a fanfare |

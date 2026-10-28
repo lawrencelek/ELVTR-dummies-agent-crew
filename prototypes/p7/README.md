@@ -1,6 +1,19 @@
-# DUMMIES — Prototype 7.6: Arcade and Story
+# DUMMIES — Prototype 7.7: Arcade and Story
 
-**Prototype 7.6 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–87 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.5 stay frozen as `dummies_p7.html` to `dummies_p7_5.html`; 6.4–6.10 in `../p6/`.
+**Prototype 7.7 · 28 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–88 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.6 stay frozen as `dummies_p7.html` to `dummies_p7_6.html`; 6.4–6.10 in `../p6/`.
+
+Prototype 7.7 (Edit 88): save games.
+- **STORY opens the save screen:** NEW GAME, then three slots (`story.saveSlots`).
+- **A slot:** its name, its time stamp (the last save, local time), and the story's progress.
+  - Where it stands: district, tile in test, tile number; write-offs on the tile.
+  - Tiles cleared, points, credits, levels owned, chassis.
+- **Actions:** CONTINUE · RENAME · ERASE (A twice). An empty slot: NEW GAME.
+- **NEW GAME:** the first empty slot. All in use: pick one to overwrite (A twice).
+- **Names:** up to `story.saveNameMax` (12) characters: A–Z, 0–9, space, - . '. Default TEST DUMMY 1–3.
+  - Keyboard: type; Enter OK; Backspace deletes; Esc cancels.
+  - Stick or pad: a letter grid; A types; B deletes; START OK. Touch: tap the keys, or tap the name for the phone's keyboard.
+- **Saving:** automatic, into the slot in play, after every count, clear, gift and purchase. A rename keeps the time stamp.
+- **7.6's story** moves into slot 1 once. 7.1–7.6 keep theirs.
 
 Prototype 7.6 (Edit 87): one top edge; touch controls the player places.
 - **One top edge:** BODY, the field and a new POINTS · CREDITS box start level. The box is BODY's size; the chassis sits under it.
@@ -60,9 +73,10 @@ The title has two modes.
 
 ## Files
 
-- **`dummies_p7_6.html`:** the game. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
-- **`p7_6_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_7.html`:** the game. Open in a browser; no server.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
+- **`p7_7_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_6.html`:** Prototype 7.6 (Edit 87). Frozen.
 - **`dummies_p7_5.html`:** Prototype 7.5 (Edit 86). Frozen.
 - **`dummies_p7_4.html`:** Prototype 7.4 (Edit 85). Frozen.
 - **`dummies_p7_3.html`:** Prototype 7.3 (Edit 84). Frozen.
@@ -73,7 +87,7 @@ The title has two modes.
 - **`../../content/story/story.json`:** the story's content: the order of tiles, 27 tales, Farsight's briefs and gifts. Numbers are registry IDs.
 - **`../p6/game.js`, `../p6/world6.js`, `../p6/sim.js`:** the shared game code: the title, the story map, the tile card, fences, the gift screen, the story's HUD.
 - **`build.py`:** `python3 build.py` → both pages. `../p6/build.py` refuses: 6.10 is frozen.
-- **`test_p76.js`:** `node test_p76.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`test_p77.js`:** `node test_p77.js [screenshot folder]` → the checks; screenshots into the folder.
 
 ## Title
 
@@ -84,7 +98,26 @@ The title has two modes.
 | Back | SHIFT | B | B |
 
 - **ARCADE** → the district list and difficulty. A cleared district ends the run: Licensed.
-- **STORY** → the story map. **NEW STORY** appears once a story has begun; press it twice to erase.
+- **STORY** → the save screen (Edit 88). Its card names the latest save.
+
+## Save games (Edit 88)
+
+| | Keys | Gamepad | Touch |
+|---|---|---|---|
+| Choose a row | arrows | stick or d-pad | stick, or tap |
+| Choose an action | left, right | stick or d-pad | tap |
+| Select | SPACE | A | A, or tap |
+| Back | SHIFT or ESC | B | B |
+
+- **Rows:** NEW GAME; slots 1–3 (`story.saveSlots`). The cursor starts on the latest save.
+- **A slot card:** number, name, time stamp (DD MON YYYY · HH:MM, local); IN PLAY on the slot in play.
+  - "MONUMENT · C2 · TILE 4 OF 27". "3 / 27 TILES · 2,450 POINTS · 1 CREDIT · 1 LEVEL · CHASSIS 04".
+- **CONTINUE:** the story map of that slot. **RENAME:** the name entry; the time stamp stays. **ERASE:** A twice.
+- **NEW GAME:** the first empty slot, then its name. None empty: choose a slot; OVERWRITE asks twice.
+- **Name entry:** `story.saveNameMax` (12) characters, upper case: A–Z, 0–9, space, - . '. The default (TEST DUMMY n) is selected: typing replaces it.
+  - Keys: type it; Enter OK; Backspace deletes; Esc cancels. Pad and stick: the grid; A types; B deletes (empty: cancels); START OK.
+  - Touch: tap the grid's keys; tap the name for the phone's own keyboard.
+- **Stored** in this browser: `dummies.p7.save1`–`3`. 7.6's `dummies.p7.story` moves into slot 1 once and stays for 7.1–7.6.
 
 ## Story
 
@@ -117,7 +150,7 @@ The title has two modes.
   - Cars still enter the view only across its edges. Out of view, a car stopped `traffic.offscreenCullSeconds` (12 s) is removed.
   - Scales above 1: Monument A1 1.5, B1 1.75; Parkland C1 1.75, C2 1.75, B3 1.25, A3 2, A2 1.5, B1 2, B2 1.25; Waterfront B1 1.5, C2 1.5, A2 1.5.
 - **The map:** uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength. The cursor reads any revealed tile's tale.
-- **Saved** in this browser after every count, clear, gift and purchase. A reload resumes the tile in test.
+- **Saved** into the slot in play after every count, clear, gift and purchase. A reload: STORY, CONTINUE resumes the tile in test.
 - **The end:** clearing Waterfront B2 certifies the Test City.
 
 ### The 27 tiles
@@ -198,6 +231,16 @@ The title has two modes.
   - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢; Adjust layout · Reset layout · Back.
 - **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.price.ability.level1`–`level3`, `arcade.giftEvery`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
 
+![P7.7: the save screen, all three slots in use](docs/p77_saves_full.png)
+
+![P7.7: NEW GAME: the name, typed](docs/p77_name_typed.png)
+
+![P7.7: OVERWRITE asks twice](docs/p77_overwrite.png)
+
+![P7.7: phone: the name entry by taps](docs/p77_phone_name.png)
+
+![P7.7: the story map, headed with the slot](docs/p77_map.png)
+
 ![P7.6: one top edge: BODY, the field, POINTS · CREDITS; the objective on the top strip](docs/p76_a1_gap.png)
 
 ![P7.6: S25 Ultra (19.5:9): the 16:9 frame centred, the controls in it by default](docs/p76_s25.png)
@@ -254,10 +297,11 @@ The title has two modes.
 
 ## Evidence
 
-- `node test_p76.js docs` → 73/73.
-  - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit87), 27 tile counts (35 bodies), 27 tile traffic scales, 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs at Monument C1, A2, C3; every brief possible where set.
-  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps; 49 cone homes, none on a road, none hidden. Tile density. 6.4–6.10 and 7–7.5 byte-identical.
-  - Browser: the title (P7.6); one top edge at y 34 (BODY 208 × 86, the field, POINTS · CREDITS 208 × 86; the chassis at 130); the objective on the top strip; the map titled MONUMENT · A1; Arcade's box POINTS · CARS LEFT; the touch zone from 430; Pause › Options and Controls; Arcade and its first verb; the story through B1's gift into C1; a reload.
+- `node test_p77.js docs` → 84/84.
+  - Save games (Edit 88): STORY opens the save screen, three empty slots; NEW GAME names slot 1 (TEST DUMMY 1 offered; typed CRASH-TESTER, 12 of 12); the slot saves points and credits after a write-off; a reload offers the latest slot first, its time stamp and lines; CONTINUE resumes. 7.6's story moves into slot 1. The grid types a name; all three in use: OVERWRITE asks twice; RENAME keeps the time stamp; ERASE asks twice; ESC cancels. Each slot keeps its own story. Touch: tap NEW GAME, keys, the name (the phone's keyboard), OK; tap RENAME.
+  - Content: the orders; neighbours; 27 tales, tasks, verbs; registry IDs (edit88), 27 tile counts (35 bodies), 27 tile traffic scales, 5 earlier IDs retired; the fill lands on Waterfront B2 (body 34 of 35); the verbs at Monument C1, A2, C3; every brief possible where set.
+  - Headless: defaults; the ricochet; fences; the ferry; the shop refuses verbs; the gift phase; resume with a verb owed; Monument → Parkland; Waterfront B2 certifies. Arcade's verbs. Edit 85: 15 highways, each with a flight; 14 with drop gaps; 49 cone homes, none on a road, none hidden. Tile density. 6.4–6.10 and 7–7.6 byte-identical.
+  - Browser: the title (P7.7); one top edge at y 34 (BODY 208 × 86, the field, POINTS · CREDITS 208 × 86; the chassis at 130); the objective on the top strip; the map titled MONUMENT · A1; Arcade's box POINTS · CARS LEFT; the touch zone from 430; Pause › Options and Controls; Arcade and its first verb; the story through B1's gift into C1; a reload.
   - Phones: 16:9 (640 × 360): the stick under the map, the diamond under the chassis, chips 76 × 26 above BODY. S25 Ultra (892 × 412): 139 units of margin a side, everything inside the 16:9 frame; the ❚❚ chip pauses; Controls offers Adjust layout · Reset layout · Back; the stick dragged into the left margin, the diamond into the right; + SIZE twice ×1.20; size held to 0.6–1.6; DONE saves; the moved stick walks the dummy; a reload keeps the layout; Reset restores it. No page errors.
 - `../p6/test_p610.js` → 47/47 (6.10's rules on the shared code). `../p6/test_sim.js` → 104/104. `../p6/test_p6.js` → 72/73 (Parkland's street-emptiness limit, as on 6.4).
 - `../jump/test_jump.js` → 28/28. `../controls/test_controls.js` → 34/34.
@@ -266,7 +310,8 @@ The title has two modes.
 
 - Tales and briefs are proposals (status Proposed in `story.json`). The tile counts are proposals too (D65).
 - Credits come from every body, so replaying a cleared tile buys levels sooner. Missed briefs do too.
-- One save slot, in this browser only. A P7 save loads into 7.1 with its credits.
+- Three slots, in this browser only: no cloud save, no export. A P7 save loads into 7.1 with its credits.
+- A slot's time stamp is the browser's local time.
 - Barks still name the district, not the tile.
 - Short Arcade districts end before every verb arrives: Parkland Legs 1 only; Waterfront Legs 1 and Hands 1 (D69).
 - Parkland B1: no road under its highway, a street empty 67% of the time, a cone brief (D70).
@@ -277,4 +322,4 @@ The title has two modes.
 
 ## Build
 
-`python3 build.py` → `dummies_p7_6.html` and `p7_6_page.html`.
+`python3 build.py` → `dummies_p7_7.html` and `p7_7_page.html`.
