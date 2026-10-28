@@ -76,7 +76,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7 (GDD Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.1' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -756,10 +756,9 @@
         case 'story-enter': [392, 523, 659].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.05, j * 0.08)); break; // Edit 81
         case 'story-count': Snd.tone(660, 990, 0.12, 'triangle', 0.07); toast('COUNTED · ' + e.tile + ' ' + e.n + ' / ' + e.need); break;
         case 'story-miss': Snd.tone(200, 150, 0.12, 'square', 0.05); toast(e.why === 'task' ? 'NOT COUNTED · the brief wants ' + STORY.taskText(STORY.tileOf(s.levelId, e.tile).task, s.P).label.toLowerCase() : e.why === 'cleared' ? 'NOT COUNTED · ' + e.tile + ' is already cleared' : 'NOT COUNTED · ' + e.tile + ' is not in test'); break;
-        case 'story-clear': [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.14, 'triangle', 0.07, j * 0.09)); toast('TILE ' + e.tile + ' CLEARED · +' + plural(e.powerUps, 'POWER-UP') + (e.next ? ' · ' + e.next + ' OPEN' : '')); break;
-        case 'story-bonus': Snd.tone(784, 1046, 0.12, 'triangle', 0.06, 0.4); toast('SCORE · +' + plural(e.powerUps, 'POWER-UP')); break;
-        case 'story-gift': toast('FARSIGHT GIFT · ' + (e.node ? NODE(e.node).name.toUpperCase() + ' INSTALLED' : '+' + plural(e.powerUps, 'POWER-UP'))); break;
-        case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + s.P['story.tileWriteOffs'] + ')'); break;
+        case 'story-clear': [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.14, 'triangle', 0.07, j * 0.09)); toast('TILE ' + e.tile + ' CLEARED' + (e.next ? ' · ' + e.next + ' OPEN' : '')); break;
+        case 'story-gift': toast('FARSIGHT GIFT · ' + (e.node ? NODE(e.node).name.toUpperCase() + ' INSTALLED' : '+' + plural(e.credits, 'CREDIT'))); break;
+        case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + STORY.needOf(s.levelId, e.tile, s.P) + ')'); break;
         case 'ending': if (e.kind === 'Licensed' || e.kind === 'Certified') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
         default: break;
       }
@@ -1809,7 +1808,7 @@
   function drawTopBar(s) {
     const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
     const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? ' · RIVER RESCUE' : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
-    const items = s.storyMode ? [[null, INFO(s.levelId).name.toUpperCase() + ' · ' + s.screenName() + where], ['TILE', s.story.tileWO + ' / ' + s.P['story.tileWriteOffs']], ['POINTS', num(r.points)], ['POWER-UPS', String(r.credits)]] // Edit 81
+    const items = s.storyMode ? [[null, INFO(s.levelId).name.toUpperCase() + ' · ' + s.screenName() + where], ['TILE', s.story.tileWO + ' / ' + STORY.needOf(s.levelId, STORY.activeTile(s.story, s.levelId) || s.screenName(), s.P)], ['POINTS', num(r.points)], ['CREDITS', String(r.credits)]] // Edit 81
       : [[null, roadLabel(s.p6 ? s.levelId : s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
     const gap = (1264 - FX - w.reduce((a, b) => a + b, 0)) / (items.length - 1);
@@ -2048,7 +2047,7 @@
   function giftText(g) {
     if (!g) return null;
     if (g.node) { const nd = NODE(g.node); return (nd ? nd.name : g.node) + (nd && nd.desc ? ': ' + nd.desc : ''); }
-    if (g.powerUps) { const n = pv(g.powerUps); return '+' + n + ' power-up' + (n === 1 ? '' : 's') + ', spent in the shop.'; }
+    if (g.credits) { const n = pv(g.credits); return '+' + n + ' credit' + (n === 1 ? '' : 's') + ', to spend in the shop.'; }
     return null;
   }
   function drawModeTitle() {
@@ -2061,7 +2060,7 @@
     const items = titleItems(), pr = app.story, cl = pr ? STORY.clearedCount(pr) : 0;
     const sub = !pr ? 'Begins in Monument, tile A1' : pr.complete ? 'Certified: all ' + STORY.TOTAL + ' tiles' : cl + ' of ' + STORY.TOTAL + ' tiles cleared · next ' + INFO(pr.district).name + ' ' + STORY.activeTile(pr, pr.district);
     const cards = [['ARCADE', 'Pick one district and write off its quota. The score is the run.', 'Parkland · Waterfront · Monument'],
-      ['STORY', 'The Test City, tile by tile: ' + pv('story.tileWriteOffs') + ' write-offs a tile, to Farsight\'s brief.', sub]];
+      ['STORY', 'The Test City, tile by tile. Each tile wants its write-offs to Farsight\'s brief.', sub]];
     const cw = (w - 56 - 20) / 2, top = y + 162, chh = 206;
     cards.forEach(([name, line, foot], i) => {
       const cx = x + 28 + i * (cw + 20), on = (app.titleSel % items.length) === i;
@@ -2084,10 +2083,10 @@
     const pr = app.story; if (!pr) { app.screen = 'title'; return; }
     drawField(preview(Math.max(0, LEVEL_LIST.indexOf(pr.district))), true);
     veil();
-    const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, need = pv('story.tileWriteOffs');
+    const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, needT = (id, t) => pv('story.writeOffs.' + id + '.' + t); // Edit 82: a count per tile
     panel(x, y, w, h);
     txt('THE TEST CITY', x + 24, y + 40, fLab, FT.accent);
-    txt(STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · ' + plural(pr.credits, 'POWER-UP'), x + w - 24, y + 40, fLab, FT.text, 'right');
+    txt(STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · ' + plural(pr.credits, 'CREDIT'), x + w - 24, y + 40, fLab, FT.text, 'right');
     const sel = app.mapSel || storyCursor(), gap = 24, gw = (w - 48 - 2 * gap) / 3, g = 6, cw = (gw - 2 * g) / 3, ch = Math.round(cw * 0.8), top = y + 86;
     STORY.DIST.forEach((d, di) => {
       const gx = x + 24 + di * (gw + gap), here = !pr.complete && pr.district === d.id, dn = STORY.doneIn(pr, d.id);
@@ -2101,7 +2100,7 @@
         if (st === 'hidden') txt('?', cx + cw / 2, cy + ch / 2 + 7, fLab, FT.off, 'center');
         else {
           txt(t, cx + 8, cy + 22, '700 17px ' + F_UI, st === 'active' && pulse ? FT.selText : FT.text);
-          txt(st === 'cleared' ? '✓' : pr.tileWO + '/' + need, cx + cw - 8, cy + ch - 9, '700 15px ' + F_UI, st === 'cleared' ? FT.accent : pulse ? FT.selText : FT.accent, 'right');
+          txt(st === 'cleared' ? '✓' : pr.tileWO + '/' + needT(d.id, t), cx + cw - 8, cy + ch - 9, '700 15px ' + F_UI, st === 'cleared' ? FT.accent : pulse ? FT.selText : FT.accent, 'right');
         }
       }
       // the route between revealed tiles, a dot in the gap where one leads to the next
@@ -2118,7 +2117,7 @@
     const iy = top + 3 * ch + 2 * g + 22, ih = y + h - 82 - iy, ix = x + 24, iw = w - 48;
     rr(ix, iy, iw, ih, 12); ctx.fillStyle = FT.item; ctx.fill(); ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.stroke();
     const pts = pr.tilePoints[d.id + ':' + t];
-    txt(d.name.toUpperCase() + ' · ' + t + ' · TILE ' + STORY.tileNumber(d.id, t) + ' OF ' + STORY.TOTAL + (st === 'cleared' ? ' · CLEARED' + (pts != null ? ' · ' + num(pts) + ' POINTS' : '') : st === 'active' ? ' · IN TEST · ' + pr.tileWO + ' OF ' + need : ''), ix + 18, iy + 30, '700 16px ' + F_UI, FT.accent);
+    txt(d.name.toUpperCase() + ' · ' + t + ' · TILE ' + STORY.tileNumber(d.id, t) + ' OF ' + STORY.TOTAL + (st === 'cleared' ? ' · CLEARED' + (pts != null ? ' · ' + num(pts) + ' POINTS' : '') : st === 'active' ? ' · IN TEST · ' + pr.tileWO + ' OF ' + needT(d.id, t) : st === 'hidden' ? '' : ''), ix + 18, iy + 30, '700 16px ' + F_UI, FT.accent);
     if (st === 'hidden') {
       txt('Not yet surveyed', ix + 18, iy + 70, '900 26px ' + F_BRAND, FT.dim);
       wrapText('Clear the tiles before it. The map opens one tile at a time.', ix + 18, iy + 104, iw - 36, 26, '400 19px ' + F_UI, FT.dim, 2);
@@ -2136,7 +2135,7 @@
   }
   function drawBrief(s) { // the tile card: where you are, how it came to be, what Farsight wants
     veil();
-    const pr = s.story, t = s.screenName(), d = STORY.districtOf(s.levelId), tile = d.tiles[t], P = s.P, tx = STORY.taskText(tile.task, P), need = P['story.tileWriteOffs'];
+    const pr = s.story, t = s.screenName(), d = STORY.districtOf(s.levelId), tile = d.tiles[t], P = s.P, tx = STORY.taskText(tile.task, P), need = STORY.needOf(d.id, t, P);
     const x = FX + 36, y = FY + 26, w = FW - 72, h = FH - 52;
     panel(x, y, w, h);
     txt(d.name.toUpperCase() + ' · TILE ' + t + ' · ' + STORY.tileNumber(d.id, t) + ' OF ' + STORY.TOTAL, x + 30, y + 44, fLab, FT.accent);
@@ -2147,14 +2146,14 @@
     ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x + 30, yy); ctx.lineTo(x + w - 30, yy); ctx.stroke();
     yy += 38;
     txt('FARSIGHT BRIEF', x + 30, yy, fLab, FT.accent); txt(tx.label, x + w - 30, yy, fLab, FT.text, 'right');
-    yy += 32; yy += 28 * wrapText(tx.brief + ' ' + need + ' counted write-offs clear the tile' + (pr.tileWO ? ' (' + pr.tileWO + ' so far).' : '.'), x + 32, yy, w - 64, 28, '400 19px ' + F_UI, FT.text, 3);
+    yy += 32; yy += 28 * wrapText(tx.brief + ' ' + (need === 1 ? 'One counted write-off clears the tile.' : need + ' counted write-offs clear the tile' + (pr.tileWO ? ' (' + pr.tileWO + ' so far).' : '.')), x + 32, yy, w - 64, 28, '400 19px ' + F_UI, FT.text, 3);
     const gt = tile.gift && pr.gifts[d.id + ':' + t] ? giftText(tile.gift) : null;
     if (gt) { yy += 12; rr(x + 28, yy, w - 56, 48, 12); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke(); wrapText('GIFT · ' + gt, x + 46, yy + 31, w - 92, 24, '700 18px ' + F_UI, FT.text, 1); }
     txt(TOUCH.on || app.device === 'pad' ? 'A  BEGIN THE TEST' : 'SPACE  BEGIN THE TEST', x + w - 30, y + h - 24, fLab, FT.accent, 'right');
     txt('Fenced until cleared. Cleared tiles stay open.', x + 30, y + h - 24, '400 17px ' + F_UI, FT.dim);
   }
   function drawBriefFoot(s, X, y, W) { // under the district map: the brief and the tile's count
-    const pr = s.story, t = STORY.activeTile(pr, s.levelId), tile = t ? STORY.districtOf(s.levelId).tiles[t] : null, need = s.P['story.tileWriteOffs'];
+    const pr = s.story, t = STORY.activeTile(pr, s.levelId), tile = t ? STORY.districtOf(s.levelId).tiles[t] : null, need = t ? STORY.needOf(s.levelId, t, s.P) : 0;
     if (!tile) return;
     const tx = STORY.taskText(tile.task, s.P), here = s.screenName() === t;
     txt('BRIEF · ' + t, 30, y + 18, '700 15px ' + F_UI, here ? FT.accent : FT.dim);
@@ -2199,7 +2198,7 @@
     veil();
     const rp = s.report, x = FX + 40, y = FY + 36, w = FW - 80, h = FH - 72;
     panel(x, y, w, h);
-    const sr = rp.story; // Edit 81: the story's count, the brief, the power-ups
+    const sr = rp.story; // Edit 81: the story's count and the brief. Edit 82: a credit a body
     txt(sr ? (sr.districtDone ? INFO(s.levelId).name.toUpperCase() + ' CLEARED · NEXT ' + INFO(rp.nextRoad).name.toUpperCase() : sr.cleared ? 'TILE ' + sr.tile + ' CLEARED' : 'WRITE-OFF REPORT · ' + sr.tile)
       : rp.roadCleared ? roadLabel(s.level.id) + ' CLEARED' : copy('report.eyebrow', 'WRITE-OFF REPORT').toUpperCase(), x + 30, y + 44, fLab, FT.accent);
     const chs = String(rp.chassis).padStart(2, '0');
@@ -2215,8 +2214,8 @@
       [shortId(hh.model), hh.angle != null ? Math.round(hh.angle) + '°' : '—', num(hh.assessed), num(hh.lost)].forEach((v, i) => txt(String(v), x + 30 + cols[i][1], yy, fNum, FT.text));
     });
     rr(x + 28, y + h - 116, w - 56, 52, 12); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke();
-    if (sr) { const nx = (s.story.bonusPaid + 1) * s.P['story.pointsPerPowerUp'];
-      txt(sr.gained ? '+' + sr.gained + ' power-up' + (sr.gained === 1 ? '' : 's') + (sr.cleared ? ' for the clear' : '') + (sr.bonus ? (sr.cleared ? ', ' : ' for ') + sr.bonus + ' for the score' : '') + '. Balance: ' + s.run.credits + '.' : 'Next power-up: clear ' + sr.active + ', or reach ' + num(nx) + ' points.', x + 46, y + h - 82, fLab, FT.text); }
+    if (sr) { const c = sr.cheapest;
+      txt('+' + plural(sr.gained, 'credit').toLowerCase() + ' for the body. Balance: ' + s.run.credits + '.' + (c ? (s.run.credits >= c.price ? ' ' + NODE(c.node).name + ' is yours for ' + c.price + '.' : ' ' + NODE(c.node).name + ' at ' + c.price + '.') : ' Every track is full.'), x + 46, y + h - 82, fLab, FT.text); }
     else txt(copy('report.credit', 'One body credit granted. Balance: {credits}.', { credits: s.run.credits }), x + 46, y + h - 82, fLab, FT.text);
     txt(TOUCH.on || app.device === 'pad' ? 'A  CONTINUE' : 'SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, FT.accent, 'right');
   }
@@ -2226,7 +2225,7 @@
     const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36;
     panel(x, y, w, h);
     txt(copy('shop.eyebrow', 'MODIFICATION SERVICES').toUpperCase(), x + 28, y + 46, fLab, FT.accent);
-    const CUR = s.storyMode ? 'POWER-UP' : 'CREDIT', ct = s.run.credits + ' ' + CUR + (s.run.credits === 1 ? '' : 'S'); // Edit 81: the story pays in power-ups
+    const CUR = 'CREDIT', ct = s.run.credits + ' ' + CUR + (s.run.credits === 1 ? '' : 'S'); // Edit 82: credits in both modes
     ctx.font = fLab; const cw = ctx.measureText(ct).width + 36;
     rr(x + w - 28 - cw, y + 16, cw, 44, 12); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.5; ctx.stroke();
     txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center'); // dark on safety yellow in both palettes
@@ -2256,7 +2255,7 @@
     const on = app.shopRow === SHOP_ROWS;
     rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
     ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
-    txt(s.storyMode ? (s.run.credits ? 'Keep ' + plural(s.run.credits, 'power-up').toLowerCase() + '. Deploy next chassis' : 'Deploy next chassis') : s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
+    txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
     txt(FOUR ? (TOUCH.on ? 'STICK SELECT · A BUY · B DEPLOY' : app.device === 'pad' ? 'STICK SELECT · A BUY · B DEPLOY' : 'ARROWS SELECT · SPACE BUY · SHIFT DEPLOY') : 'ARROWS SELECT · SPACE BUY · K DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
   }
   // Edit 77 (P6.7): the ability shop. Four tracks, one per button (A Battery, B Legs, X Arms, Y Throw); levels 1–3 down each.
@@ -2285,7 +2284,7 @@
     const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36, P = s.P; let max = P['abilities.maxLevel'];
     panel(x, y, w, h);
     txt(copy('shop.eyebrow', 'MODIFICATION SERVICES').toUpperCase(), x + 28, y + 46, fLab, FT.accent);
-    const CUR = s.storyMode ? 'POWER-UP' : 'CREDIT', ct = s.run.credits + ' ' + CUR + (s.run.credits === 1 ? '' : 'S'); // Edit 81: the story pays in power-ups
+    const CUR = 'CREDIT', ct = s.run.credits + ' ' + CUR + (s.run.credits === 1 ? '' : 'S'); // Edit 82: credits in both modes
     ctx.font = fLab; const cw = ctx.measureText(ct).width + 36;
     rr(x + w - 28 - cw, y + 16, cw, 44, 12); ctx.fillStyle = C.dummy; ctx.fill(); ctx.strokeStyle = C.joints; ctx.lineWidth = 1.5; ctx.stroke();
     txt(ct, x + w - 28 - cw / 2, y + 46, fLab, C.primary, 'center');
@@ -2310,7 +2309,7 @@
       ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx + 14, top + 172); ctx.lineTo(cx + colW - 14, top + 172); ctx.stroke();
       if (n) {
         const nst = abilityStats(s, t, lv + 1), price = P[NODES7[n].price];
-        txt('NEXT · ' + (chk.ok ? price + ' ' + CUR + (price === 1 ? '' : 'S') : chk.why.toUpperCase()), cx + 14, top + 200, (s.storyMode ? '700 14px ' : '700 16px ') + F_UI, chk.ok ? FT.accent : FT.off); // Edit 81: POWER-UPS is longer
+        txt('NEXT · ' + (chk.ok ? price + ' ' + CUR + (price === 1 ? '' : 'S') : chk.why.toUpperCase()), cx + 14, top + 200, '700 16px ' + F_UI, chk.ok ? FT.accent : FT.off);
         txt(nst[0], cx + 14, top + 226, '400 17px ' + F_UI, FT.dim); if (nst[1]) txt(nst[1], cx + 14, top + 250, '400 17px ' + F_UI, FT.dim);
       } else txt('MAXED', cx + 14, top + 200, '700 16px ' + F_UI, FT.accent);
     });
@@ -2329,7 +2328,7 @@
     const on = app.shopRow === SHOP_ROWS;
     rr(x + 28, y + h - 118, w - 56, 52, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
     ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
-    txt(s.storyMode ? (s.run.credits ? 'Keep ' + plural(s.run.credits, 'power-up').toLowerCase() + '. Deploy next chassis' : 'Deploy next chassis') : s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
+    txt(s.run.credits ? copy('shop.bank', 'Keep {credits} in credit. Deploy next chassis', { credits: s.run.credits }) : copy('shop.deploy', 'Deploy next chassis'), x + w / 2, y + h - 84, fLab, on ? FT.selText : FT.text, 'center');
     txt(TOUCH.on || app.device === 'pad' ? 'STICK SELECT · A BUY NEXT LEVEL · B DEPLOY' : 'ARROWS SELECT · SPACE BUY NEXT LEVEL · SHIFT DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
   }
   const PART_WORD = { battery: 'Torso', legs: 'Leg', arms: 'Grip', throw: 'Throw' };
@@ -2490,7 +2489,10 @@
       'scoring.coneLink', 'scoring.coneHitPoints', 'upgrades.ricochetScale', 'upgrades.throwDistance', 'upgrades.spineLimit', 'upgrades.hipsTurnRate', 'upgrades.bigCapacity', 'abilities.battery.rechargeCut', 'abilities.arms.conesPerLevel', 'abilities.throw.distanceStep', 'economy.price.ability.level4']);
     for (let i = TUNE.length - 1; i >= 0; i--) if (gone.has(TUNE[i][0])) TUNE.splice(i, 1);
   }
-  if (STORY) TUNE.push(['story.tileWriteOffs', 1, 6, 1], ['story.clearPowerUps', 0, 3, 1], ['story.pointsPerPowerUp', 2000, 40000, 1000], ['story.giftPowerUps', 0, 3, 1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]); // Edit 81: the story (applies from the next deploy)
+  if (STORY) { // Edit 81–82: the story (from the next deploy): a credit a body, its prices, the gift, the brief's combos, each tile's write-offs
+    TUNE.push(['economy.creditsPerWriteOff', 0, 3, 1], ['story.price.ability.level1', 1, 10, 1], ['story.price.ability.level2', 1, 10, 1], ['story.price.ability.level3', 1, 10, 1], ['story.giftCredits', 0, 10, 1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
+    for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.writeOffs.' + d.id + '.' + t, 1, 6, 1]);
+  }
   for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
   const tuneEl = document.getElementById('tune'), grid = document.getElementById('tune-grid');
   function current(id) {

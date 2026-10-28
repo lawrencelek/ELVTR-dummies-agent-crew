@@ -473,6 +473,11 @@ All entries dated 6 October 2026 unless stated. Times are not recorded.
 | 457 | No clock in the story: a district runs `story.shiftCars` (5,000) cars; no Failed test | proposed (assistant) | Progress, not pressure | — | — |
 | 458 | Story progress saved in the browser (one slot), after every count, clear, gift and purchase. NEW STORY erases on a second press | proposed (assistant) | 81 bodies span sessions | One device, one slot | Reload resumes A1 at 1 of 3 |
 | 459 | Prototype 6.10 frozen; the shared code in `prototypes/p6` builds P7 from `prototypes/p7/build.py`. `p6/build.py` refuses | proposed (assistant) | One source; old builds byte-identical | — | test_p610 47/47 on the shared code |
+| 460 | Credits: `economy.creditsPerWriteOff` (1) for every body written off, in Arcade and Story, counted or not. Story clears and score pay nothing. Retires `story.clearPowerUps`, `story.pointsPerPowerUp` (P7 keeps them). Closes D63 | user-decided (28 October): "One credit per body destroyed" | One rule in both modes; every body pays | Replaying cleared tiles buys levels | Missed write-off: +1; a million points: +1 |
+| 461 | Story prices: `story.price.ability.level1` 3, `level2` 4, `level3` 5; they stand in for `economy.price.ability.level1`–`level3` in a story run. Arcade keeps 1, 2, 3. Credit gifts: `story.giftCredits` 3 (Parkland C1, Waterfront A1) | user-decided: "V1 powerups cost 3 credits, V2 powerups cost 4 credits, V3 powerups cost 5 credits"; Arcade unchanged and the gift value proposed (assistant) | A level-1 power-up is three bodies | A track costs 12; all 43 | Battery 1 at 3 |
+| 462 | Arcade plays one district a run. Closes D64 | user-decided: "yes one district per arcade run" | — | — | Parkland: 2 write-offs → Licensed |
+| 463 | Write-offs per tile: `story.writeOffs.<district>.<tile>`, 27 IDs, 1–3 each (Monument 17, Parkland 22, Waterfront 23; 62 in all). Retires `story.tileWriteOffs`. Closes D65 | user-decided: "let's tune the write-offs per level tile"; values proposed (assistant) | 1 for a rare brief, 2 to learn a verb, 3 later | — | A1 cleared at 2 |
+| 464 | Only the last hit counts against a brief. Closes D66. Prototype 7.1 is the final P7; Prototype 7 frozen | user-decided: "yes only the last hit counts"; "This is the final P7.1" | — | — | test_p71 43/43 |
 
 ## Open decisions (to make)
 
@@ -542,7 +547,7 @@ These are listed so nothing is lost. None is decided. Options marked *recommende
 | D60 | Hitch-hopping: car to car, the combo clock never runs | Count a hitch's ride on the clock; cap held time per chain; keep | **Closed 27 October:** no hitch in 6.10 (row 448) |
 | D61 | "Default ricochet is 'X'": built as the plain bounce with no Arms | Keep (Arms on Y adds the push); the push on X, Hands on Y | Raised 27 October (row 447) |
 | D62 | The push costs nothing: a parked car becomes a launch pad (183–263 u/s, 109–253 units) | A push costs `battery.lungeCost`; only a recent hit counts (`abilities.arms.pushReach` 0); keep | Raised 27 October (row 445; review A19) |
-| D63 | "Three bodies = one powerup": built as one shop credit, levels at 1, 2, 3 | Keep; a whole ability level of choice per clear | Raised 28 October (row 453) |
-| D64 | Arcade, "three maps you can play individually": built as one district a run | Keep; 6.10's carry to the next district | Raised 28 October (row 449) |
-| D65 | Story length: 27 tiles × 3 = 81 bodies | Keep; `story.tileWriteOffs` 2; 3 only on each district's last tile | Raised 28 October (row 451) |
-| D66 | A brief tests the fatal hit only | Keep; any hit of the counted body | Raised 28 October (row 451) |
+| D63 | "Three bodies = one powerup": built as one shop credit, levels at 1, 2, 3 | Keep; a whole ability level of choice per clear | **Closed 28 October:** one credit a body; story levels cost 3, 4, 5 (rows 460–461) |
+| D64 | Arcade, "three maps you can play individually": built as one district a run | Keep; 6.10's carry to the next district | **Closed 28 October:** one district a run (row 462) |
+| D65 | Story length: 27 tiles × 3 = 81 bodies | Keep; `story.tileWriteOffs` 2; 3 only on each district's last tile | **Closed 28 October:** a count per tile, 62 in all (row 463) |
+| D66 | A brief tests the fatal hit only | Keep; any hit of the counted body | **Closed 28 October:** the last hit counts (row 464) |

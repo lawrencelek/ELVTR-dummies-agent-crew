@@ -1,14 +1,15 @@
 {
  "meta": {
   "name": "DUMMIES story: the Test City, tile by tile",
-  "version": "edit81-2026-10-28",
+  "version": "edit82-2026-10-28",
   "status": "Proposed (tales, briefs and gifts); the order of tiles is user-decided",
-  "consumers": ["prototypes/p7 (story.js, game.js)"],
-  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edit 81"],
+  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.1"],
+  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–82"],
   "rules": [
    "Numbers live in the registry: tasks and gifts name parameter IDs, never values.",
    "A task tests the hit that writes the chassis off (the fatal hit).",
-   "Tile names are column-row, as in the game: A1 is the top-left tile."
+   "Tile names are column-row, as in the game: A1 is the top-left tile.",
+   "Each tile's write-offs are story.writeOffs.<district>.<tile> in the registry (Edit 82)."
   ]
  },
  "tasks": {
@@ -55,7 +56,7 @@
    "intro": "Farsight's Expo site: a garden grid, pavilions and pools, built to prove the city could be calm.",
    "order": ["C1", "C2", "C3", "B3", "A3", "A2", "A1", "B1", "B2"],
    "tiles": {
-    "C1": { "title": "The lantern pavilion", "task": { "kind": "drop" }, "gift": { "powerUps": "story.giftPowerUps" },
+    "C1": { "title": "The lantern pavilion", "task": { "kind": "drop" }, "gift": { "credits": "story.giftCredits" },
      "tale": "The lantern was the Expo's first exhibit: a paper lamp the size of a house. Visitors crossed the footbridge to see it lit. When the Expo closed, the bridge stayed and the cars moved in underneath." },
     "C2": { "title": "The amphitheatre", "task": { "kind": "cls", "cls": "van" }, "gift": null,
      "tale": "The terraces were cut for an audience that never came. They face a stage where the avenue now turns. The seats still face the road, so every crossing is a performance." },
@@ -80,7 +81,7 @@
    "intro": "The valley by the river: a hill walled by towers, a circus on the valley floor, two bridges to the far bank.",
    "order": ["A1", "B1", "C1", "C2", "C3", "B3", "A3", "A2", "B2"],
    "tiles": {
-    "A1": { "title": "The west portal", "task": { "kind": "cls", "cls": "bus" }, "gift": { "powerUps": "story.giftPowerUps" },
+    "A1": { "title": "The west portal", "task": { "kind": "cls", "cls": "bus" }, "gift": { "credits": "story.giftCredits" },
      "tale": "The upper town was built on the hill first, for the engineers. When the west bridge was approved, it was approved straight through a building. The portal block kept its tenants and lost its view." },
     "B1": { "title": "The tunnel portal", "task": { "kind": "jump" }, "gift": null,
      "tale": "The tunnel was bored north under the hill to reach the next valley. Nobody has been cleared to see what is there. Cars go in. Some data comes back." },

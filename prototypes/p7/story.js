@@ -1,11 +1,13 @@
-/* DUMMIES P7 (GDD Edit 81): Story mode. The Test City, tile by tile: Monument, then Parkland, then Waterfront.
+/* DUMMIES P7.1 (GDD Edits 81–82): Story mode. The Test City, tile by tile: Monument, then Parkland, then Waterfront.
    - A district opens on its first tile (content/story/story.json, `order`). The dummy spawns there.
-   - A tile wants story.tileWriteOffs write-offs that meet Farsight's brief: a test on the hit that writes the chassis off.
+   - A tile wants story.writeOffs.<district>.<tile> write-offs that meet Farsight's brief: a test on the hit that writes the
+     chassis off (Edit 82: a count per tile; only the last hit counts, D66).
    - Fences hold the tile in test on every side; they cannot be jumped. A cleared tile drops its fences. The next tile opens
      until the dummy enters it, then its fences close behind.
    - Cleared tiles stay open: walk back through them. Write-offs there score, but count for nothing.
-   - Clearing a tile pays story.clearPowerUps power-ups (shop credits). Every story.pointsPerPowerUp points pays one more.
-   - Some tiles carry a gift: an ability level installed on arrival, or story.giftPowerUps power-ups.
+   - Edit 82: every body written off pays economy.creditsPerWriteOff, counted or not. Levels cost story.price.ability.level1–3
+     (3, 4, 5): a level-1 power-up is three bodies.
+   - Some tiles carry a gift: an ability level installed on arrival, or story.giftCredits credits.
    - The map reveals cleared tiles and the one in test. Progress is one plain object (`progress`), saved by the page.
    Headless in Node: require('./story.js'). In the page: window.STORY. */
 (function (root) {
@@ -22,7 +24,7 @@
 
   // ---------- progress: one plain object, JSON-safe
   function newProgress() {
-    return { v: 1, district: DIST[0].id, done: {}, tileWO: 0, bonusPaid: 0, owned: {}, credits: 0, points: 0, chassis: 0, writeOffs: 0, t: 0,
+    return { v: 1, district: DIST[0].id, done: {}, tileWO: 0, owned: {}, credits: 0, points: 0, chassis: 0, writeOffs: 0, t: 0,
       gifts: {}, tilePoints: {}, complete: false };
   }
   const districtOf = (id) => DIST.find((d) => d.id === id) || null;
@@ -38,6 +40,7 @@
     return 'hidden';
   }
   const tileOf = (id, t) => { const d = districtOf(id); return d ? d.tiles[t] : null; };
+  const needOf = (id, t, P) => (P || BASE)['story.writeOffs.' + id + '.' + t]; // Edit 82: write-offs that clear this tile
 
   // ---------- the brief: text and test
   function taskText(task, P) {
@@ -68,6 +71,7 @@
     constructor(id, overrides, progress, opts) {
       const pr = progress, ov = Object.assign({}, overrides || {}), P0 = Object.assign({}, BASE, ov);
       ov['run.appearances.road'] = P0['story.shiftCars']; // the story has no shift clock: a district's traffic runs for story.shiftCars cars
+      for (const L of [1, 2, 3]) ov['economy.price.ability.level' + L] = P0['story.price.ability.level' + L]; // Edit 82: the story's prices, 3, 4, 5
       const carry = { owned: Object.assign({}, pr.owned), credits: pr.credits, points: pr.points, chassis: pr.chassis, writeOffs: pr.writeOffs, t: pr.t, purchases: [], milestones: pr.milestones || {} };
       super(id, ov, carry, Object.assign({}, opts || {}, { startTile: activeTile(pr, id) || districtOf(id).order[0], story: pr }));
     }
@@ -87,7 +91,7 @@
       if (g && !pr.gifts[key]) {
         pr.gifts[key] = true;
         if (g.node) { this.run.owned[g.node] = true; this.emit('story-gift', { tile: t, node: g.node }); }
-        if (g.powerUps) { this.run.credits += P[g.powerUps]; this.emit('story-gift', { tile: t, powerUps: P[g.powerUps] }); }
+        if (g.credits) { this.run.credits += P[g.credits]; this.emit('story-gift', { tile: t, credits: P[g.credits] }); }
       }
       this.syncProgress();
       this.emit('story-enter', { tile: t, n: tileNumber(this.levelId, t), task: tile ? tile.task : null });
@@ -147,7 +151,7 @@
       super.writeOff();
       if (!this.storyMode) return;
       const pr = this.story, P = this.P, t = this.screenName(), act = activeTile(pr, this.levelId), tile = tileOf(this.levelId, t);
-      const res = { tile: t, active: act, counted: false, why: null, n: pr.tileWO, need: P['story.tileWriteOffs'], kind: hit ? hit.kind : null, cls: hit ? hit.cls : null, combo: hit ? hit.combo : 0, level };
+      const res = { tile: t, active: act, counted: false, why: null, n: pr.tileWO, need: needOf(this.levelId, act || t, P), kind: hit ? hit.kind : null, cls: hit ? hit.cls : null, combo: hit ? hit.combo : 0, level };
       if (t !== act || !this.entered) res.why = doneIn(pr, this.levelId).includes(t) ? 'cleared' : 'elsewhere';
       else if (!meets(tile.task, hit, level, P)) res.why = 'task';
       else { pr.tileWO++; res.counted = true; res.n = pr.tileWO; }
@@ -162,28 +166,32 @@
       b.reported = true;
       const pr = this.story, id = this.levelId, res = this.storyLast || { counted: false };
       let cleared = false, districtDone = false, storyDone = false, next = null;
-      if (res.counted && pr.tileWO >= P['story.tileWriteOffs']) {
+      r.credits += P['economy.creditsPerWriteOff']; // Edit 82: a credit a body, counted or not
+      if (res.counted && pr.tileWO >= res.need) {
         cleared = true;
         pr.done[id] = doneIn(pr, id).concat([res.tile]); pr.tileWO = 0;
         pr.tilePoints[id + ':' + res.tile] = Math.round(r.points - (this.tilePts0 || 0));
-        r.credits += P['story.clearPowerUps']; this.entered = false;
+        this.entered = false;
         next = activeTile(pr, id);
         districtDone = !next; storyDone = districtDone && !nextDistrict(id);
         if (districtDone && !storyDone) pr.district = nextDistrict(id);
-        this.emit('story-clear', { tile: res.tile, next, district: id, districtDone, storyDone, powerUps: P['story.clearPowerUps'], points: pr.tilePoints[id + ':' + res.tile] });
+        this.emit('story-clear', { tile: res.tile, next, district: id, districtDone, storyDone, points: pr.tilePoints[id + ':' + res.tile] });
       }
-      let bonus = 0;
-      while (r.points >= (pr.bonusPaid + 1) * P['story.pointsPerPowerUp']) { pr.bonusPaid++; r.credits++; bonus++; }
-      if (bonus) this.emit('story-bonus', { powerUps: bonus, points: Math.round(r.points) });
       this.syncProgress();
       this.report = { chassis: b.chassis, hits: b.hits.slice(), points: Math.round(r.points - b.points0), credits: r.credits,
         roadCleared: districtDone && !storyDone, nextRoad: districtDone ? pr.district : null,
-        story: Object.assign({}, res, { cleared, bonus, next, districtDone, storyDone, gained: (cleared ? P['story.clearPowerUps'] : 0) + bonus }) };
+        story: Object.assign({}, res, { cleared, next, districtDone, storyDone, gained: P['economy.creditsPerWriteOff'], cheapest: this.cheapest() }) };
       if (storyDone) { pr.complete = true; this.syncProgress(); return this.end('Certified'); }
       this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
     }
-    continueReport() { // no power-ups to spend: straight to the next chassis
-      if (this.storyMode && this.phase === 'report' && this.run.credits <= 0 && !(this.report && this.report.roadCleared)) { this.phase = 'shop'; this.leaveShop(); this.emit('shop-skip', {}); return; }
+    cheapest() { // the next level the credits could buy soonest: { node, price }, or null when every track is full
+      let best = null;
+      for (const t of Object.keys(this.tracks())) { const L = this.tier(t) + 1; if (L > this.trackMax(t)) continue; const n = t + L, nd = this.nodes()[n]; if (!nd) continue; const price = this.P[nd.price]; if (!best || price < best.price) best = { node: n, price }; }
+      return best;
+    }
+    continueReport() { // Edit 82: nothing affordable, straight to the next chassis
+      const c = this.cheapest();
+      if (this.storyMode && this.phase === 'report' && (!c || this.run.credits < c.price) && !(this.report && this.report.roadCleared)) { this.phase = 'shop'; this.leaveShop(); this.emit('shop-skip', {}); return; }
       super.continueReport();
     }
     buy(n) { const out = super.buy(n); if (this.storyMode) this.syncProgress(); return out; }
@@ -196,6 +204,6 @@
     trace() { const tr = super.trace(); tr.story = JSON.parse(JSON.stringify(this.story)); return tr; }
   }
 
-  const api = { DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, taskText, meets, nameOf, cellOf, StorySim };
+  const api = { DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
   if (NODE) module.exports = api; else root.STORY = api;
 })(typeof window !== 'undefined' ? window : globalThis);
