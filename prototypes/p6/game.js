@@ -76,7 +76,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.2' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.3' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -135,7 +135,8 @@
     const nL = ((window.DISTRICT_DB || {}).districts || {})[LEVEL_LIST[i]], nLay = nL && nL.length ? nL.length : 1;
     const layout = app.tune['proto.layout'] != null ? app.tune['proto.layout'] : 1 + Math.floor(Math.random() * nLay);
     app.sim = W6 && app.mode === 'story' && STORY ? new STORY.StorySim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, app.tune, FIELD), app.story) // Edit 81: the district's tile in test
-      : W6 ? new W6.Sim6(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, STORY ? STORY.P7SIM : {}, app.tune, FIELD), carry, STORY ? { single: true } : undefined) // Edit 81: Arcade plays one district a run
+      : W6 && STORY ? new STORY.ArcadeSim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, app.tune, FIELD), carry) // Edit 81: Arcade plays one district a run; Edit 84: its verbs come by drone
+      : W6 ? new W6.Sim6(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty }, app.tune, FIELD), carry)
       : new Sim(LEVEL_LIST[i], Object.assign({ 'proto.difficulty': app.difficulty, 'proto.layout': layout }, app.tune, FIELD), carry);
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
@@ -383,9 +384,9 @@
       g.gain.setValueAtTime(gain || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.03);
     },
-    noise(f0, f1, dur, gain) { // band-passed noise sweep: crunch, whoosh, clatter
+    noise(f0, f1, dur, gain, delay) { // band-passed noise sweep: crunch, whoosh, clatter
       if (!this.ctx || !app.sound) return;
-      const c = this.ctx, t = c.currentTime, n = Math.max(1, Math.floor(c.sampleRate * dur));
+      const c = this.ctx, t = c.currentTime + (delay || 0), n = Math.max(1, Math.floor(c.sampleRate * dur));
       if (!this.buf || this.buf.length < n) { this.buf = c.createBuffer(1, Math.max(n, c.sampleRate), c.sampleRate); const d = this.buf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
       const src = c.createBufferSource(), bp = c.createBiquadFilter(), g = c.createGain();
       src.buffer = this.buf; bp.type = 'bandpass'; bp.Q.value = 1.2;
@@ -757,8 +758,11 @@
         case 'story-count': Snd.tone(660, 990, 0.12, 'triangle', 0.07); toast('COUNTED · ' + e.tile + ' ' + e.n + ' / ' + e.need); break;
         case 'story-miss': Snd.tone(200, 150, 0.12, 'square', 0.05); toast(e.why === 'task' ? 'NOT COUNTED · the brief wants ' + STORY.taskText(STORY.tileOf(s.levelId, e.tile).task, s.P).label.toLowerCase() : e.why === 'cleared' ? 'NOT COUNTED · ' + e.tile + ' is already cleared' : 'NOT COUNTED · ' + e.tile + ' is not in test'); break;
         case 'story-clear': [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.14, 'triangle', 0.07, j * 0.09)); toast('TILE ' + e.tile + ' CLEARED' + (e.next ? ' · ' + e.next + ' OPEN' : '')); break;
-        case 'story-gift': toast('FARSIGHT GIFT · ' + (e.node ? NODE(e.node).name.toUpperCase() + ' INSTALLED' : '+' + plural(e.credits, 'CREDIT'))); break;
-        case 'story-ferry': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); toast('FARSIGHT DRONE · CARRYING YOU TO ' + e.to); break; // Edit 83
+        case 'story-gift': if (!e.node) toast('FARSIGHT GIFT · +' + plural(e.credits, 'CREDIT')); break; // Edit 84: a verb has its own screen
+        case 'story-ferry': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); if (e.gift) giftChime(); toast(e.gift ? 'FARSIGHT DRONE · ' + NODE(e.gift).name.toUpperCase() + ' ON BOARD · THEN ' + e.to : 'FARSIGHT DRONE · CARRYING YOU TO ' + e.to); break; // Edit 83
+        case 'story-deliver': case 'arcade-deliver': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); giftChime(); toast('FARSIGHT DRONE · DELIVERING ' + NODE(e.node).name.toUpperCase()); break; // Edit 84
+        case 'gift': fx.gift = { node: e.node, t0: app.realT }; giftFanfare(Math.max(0.1, pv('ui.gift.fallSeconds'))); break; // Edit 84: the gift screen
+        case 'delivered': Snd.tone(320, 480, 0.12, 'triangle', 0.05); break;
         case 'story-ferried': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
         case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + STORY.needOf(s.levelId, e.tile, s.P) + ')'); break;
         case 'ending': if (e.kind === 'Licensed' || e.kind === 'Certified') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
@@ -768,6 +772,18 @@
     if (s.storyMode) for (let i = app.lastEv; i < ev.length; i++) if (/^story-|^purchase$/.test(ev[i].type)) { saveStory(); break; } // Edit 81
     app.lastEv = ev.length;
     deriveCases(s);
+  }
+  // Edit 84: the gift's sounds (original). A chime when a drone brings a module into view. On the gift screen: a rising whoosh
+  // while the module falls, a thud as it lands, then a rising D-major arpeggio, a held chord over the root, and a sparkle
+  function giftChime() { Snd.tone(1318.5, 1318.5, 0.14, 'sine', 0.05); Snd.tone(1760, 1760, 0.3, 'sine', 0.05, 0.12); }
+  function giftFanfare(fall) {
+    Snd.tone(280, 1300, fall, 'sine', 0.035); Snd.noise(500, 4200, fall, 0.03);
+    Snd.tone(150, 45, 0.32, 'square', 0.09, fall); Snd.noise(4200, 900, 0.3, 0.06, fall);
+    const a0 = fall + 0.06, c0 = a0 + 4 * 0.09;
+    [587.33, 739.99, 880, 1174.66].forEach((f, j) => { Snd.tone(f, f, 0.18, 'triangle', 0.08, a0 + j * 0.09); Snd.tone(f * 2, f * 2, 0.08, 'square', 0.014, a0 + j * 0.09); });
+    [880, 1174.66, 1479.98].forEach((f) => Snd.tone(f, f * 1.004, 1.4, 'triangle', 0.045, c0));
+    Snd.tone(293.66, 293.66, 1.4, 'sine', 0.06, c0);
+    [2349.3, 2959.96, 3520, 2637].forEach((f, j) => Snd.tone(f, f, 0.07, 'sine', 0.02, c0 + 0.12 + j * 0.13));
   }
   function horn() { Snd.tone(440, 430, 0.16, 'square', 0.05); Snd.tone(349, 340, 0.22, 'square', 0.05, 0.18); }
   function dashify(str) { return String(str).replace(/lunge/gi, (m) => (m[0] === 'L' ? (m === 'LUNGE' ? 'DASH' : 'Dash') : 'dash')); } // display name only
@@ -846,6 +862,7 @@
       }
       if (!s) continue;
       if (s.phase === 'brief' && m === 'ok') { s.continueBrief(); clearEdges(); return; } // Edit 81: the tile card
+      if (s.phase === 'gift') { if (m === 'ok' && giftReady()) { s.continueGift(); fx.gift = null; clearEdges(); Snd.tone(660, 990, 0.1, 'triangle', 0.05); return; } continue; } // Edit 84: the gift screen
       if (s.phase === 'report' && m === 'ok') s.continueReport();
       else if (s.phase === 'shop') {
         const nc = SHOP_GRID.length, colLen = () => SHOP_GRID[app.shopCol].length;
@@ -1627,9 +1644,22 @@
     if (b.mode !== 'rescue') drawNose(s);
     drawEffects(s); drawRingsStreaks(); drawParts(s);
     for (const d of s.drawDrones()) { // P6.1 (D37): the rescue drone flies in from the edge, then carries the dummy below it
-      const rs = s.rescue, held = d.rescue && rs && rs.drone === d && (rs.phase === 'lift' || rs.phase === 'carry' || rs.phase === 'in' || rs.phase === 'drop'); // Edit 83: the ferry's 'in'
-      if (!held) { drawDrone(s, d); continue; }
-      const up = rs.up + 20, x = Math.round(d.x / U), y = Math.round(d.y / U) - up; PIX.line(x, y + 2, x, y + 7, (px, py) => FB.put(px, py, K.label));
+      const rs = s.rescue, mine = d.rescue && rs && rs.drone === d, deliv = mine && (rs.gift || rs.given !== undefined);
+      const held = mine && (rs.phase === 'lift' || rs.phase === 'carry' || rs.phase === 'in' || rs.phase === 'drop' || rs.phase === 'give'); // Edit 83: the ferry's 'in'; Edit 84: 'give'
+      if (!held) { // Edit 84: a drone with a gift flies high, the module hanging under it, glowing
+        if (!deliv) { drawDrone(s, d); continue; }
+        drawDrone(s, Object.assign({}, d, { alt: GIFT_ALT / 4 }));
+        if (rs.gift) { const x = Math.round(d.x / U), y = Math.round(d.y / U) - GIFT_ALT; PIX.line(x, y + 2, x, y + 6, (px, py) => FB.put(px, py, K.label)); drawGiftBox(x, y + 11); }
+        continue;
+      }
+      if (rs.phase === 'give') { // Edit 84: the drone hovers and lowers the module onto the dummy on a cable (rs.item 0 → 1)
+        const x = Math.round(d.x / U), y = Math.round(d.y / U) - GIFT_ALT, k = rs.item, e = k * k * (3 - 2 * k), by = Math.round(b.y / U) - 9, my = Math.round(y + 11 + (by - y - 11) * e);
+        PIX.line(x, y + 2, x, my - 5, (px, py) => FB.put(px, py, K.label)); drawGiftBox(x, my);
+        drawDrone(s, Object.assign({}, d, { alt: GIFT_ALT / 4 }));
+        continue;
+      }
+      const dip = rs.given !== undefined && rs.phase === 'lift' ? Math.round((GIFT_ALT - 20) * Math.max(0, 1 - rs.k / 0.3)) : 0; // after a gift: down from the hover to the tether
+      const up = rs.up + 20 + dip, x = Math.round(d.x / U), y = Math.round(d.y / U) - up; PIX.line(x, y + 2, x, y + 7 + dip, (px, py) => FB.put(px, py, K.label));
       drawDrone(s, Object.assign({}, d, { y: d.y - up * U + d.alt * 4 * U }));
     }
     for (const c of mine) drawTag(s, c);
@@ -1641,10 +1671,19 @@
     drawStamp(s);
     if (b.alive) { const wear = 1 - b.health / P['damage.bodyHealth'], vf = lowHealth('vignetteFrom', 0.7); if (wear > vf) { const pulse = (0.5 + 0.5 * Math.sin(app.realT * 6)) * (wear - vf) / Math.max(0.05, 1 - vf), band = 8; for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) { const d = Math.min(x, y, AW - 1 - x, AH - 1 - y); if (d >= band) { x = AW - 1 - band; continue; } if ((x + y) % 2 === 0 || d < 3) FB.mix(x, y, K.warn, (0.12 + 0.3 * pulse) * (1 - d / band)); } } }
   }
+  // Edit 84: the module a drone brings: a small aqua case with a pulsing halo (art pixels)
+  const GIFT_ALT = 36;
+  const GIFT_BOX = (() => { const n = 9, m = n - 1, S = { w: n, h: n, d: new Uint32Array(n * n), ox: 4, oy: 4 }; for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const edge = x === 0 || y === 0 || x === m || y === m, corner = (x === 0 || x === m) && (y === 0 || y === m); S.d[y * n + x] = corner ? 0 : edge ? K.label : x === 4 || y === 4 ? K.white : K.podCrown; } return S; })();
+  function drawGiftBox(x, y) {
+    const t = app.realT, r = 7 + (Math.floor(t * 8) % 2);
+    for (const [dx, dy] of PIX.circle(r)) FB.mix(x + dx, y + dy, K.podCrown, 0.5);
+    PIX.blit(FB, GIFT_BOX, x, y);
+    if (Math.floor(t * 5) % 3 === 0) { FB.put(x + 4, y - 6, K.white); FB.put(x - 6, y + 3, K.white); FB.put(x + 6, y + 5, K.white); }
+  }
   function rescueLift(s) { const rs = s.rescue; return rs ? Math.round(rs.up) : 0; }
   function drawRescue6(s) { // P6.1 (D37): the dummy sinks below the waterline, a drone lifts it out and sets it down on land
     const rs = s.rescue, b = s.body; if (!rs) return;
-    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift';
+    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = !rs.ferry && !rs.gift && rs.given === undefined && (rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift'); // Edit 84: a ferry or a delivery is on land
     if (wet) for (let k = 0; k < 2; k++) { const r = 3 + ((t * 7 + k * 5) % 10); for (const [x, y] of PIX.circle(r)) FB.mix(cx + x, wl + Math.round(y * 0.45), K.white, 0.4 * (1 - r / 13)); } // ripples
     if (rs.under >= 0.999) { if (Math.floor(t * 5) % 2) FB.put(cx + (Math.floor(t * 9) % 3) - 1, wl - 1 - (Math.floor(t * 12) % 4), K.white); return; } // bubbles: under the surface
     const wear = clamp(1 - b.health / s.P['damage.bodyHealth'], 0, 1), S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
@@ -1749,14 +1788,23 @@
     if (!s) return null;
     if (s.storyMode) {
       const pr = s.story, id = s.levelId, act = STORY.activeTile(pr, id), here = s.screenName();
-      if (s.rescue && s.rescue.ferry) return ['FARSIGHT DRONE', 'Carrying the chassis to ' + s.rescue.tile + '.'];
+      const rs = s.rescue, gn = rs && (rs.gift || rs.given);
+      if (rs && gn && !rs.ferry) return ['FARSIGHT DRONE', 'Delivering ' + NODE(gn).name + '.']; // Edit 84
+      if (rs && rs.gift) return ['FARSIGHT DRONE', 'Bringing ' + NODE(rs.gift).name + ', then on to ' + rs.tile + '.'];
+      if (rs && rs.ferry) return ['FARSIGHT DRONE', 'Carrying the chassis to ' + rs.tile + '.'];
       if (!act) return ['STORY', INFO(id).name + ' is cleared.'];
       const task = STORY.tileOf(id, act).task, need = STORY.needOf(id, act, s.P), lab = STORY.taskText(task, s.P).label.toLowerCase(), cnt = ' (' + pr.tileWO + ' of ' + need + ')';
       const what = (need === 1 ? 'Write off a body' : 'Write off ' + need + ' bodies') + (task.kind === 'any' ? '' : '. Last hit: ' + lab);
       if (here === act) return ['OBJECTIVE · ' + act, what + cnt + '.'];
       return ['OBJECTIVE · ' + act, 'Back to ' + act + ': ' + what.charAt(0).toLowerCase() + what.slice(1) + cnt + '.'];
     }
-    if (s.isCity && s.quota) return ['OBJECTIVE · ' + INFO(s.levelId).name.toUpperCase(), 'Write off ' + s.quota + ' bodies (' + s.run.writeOffs + ' of ' + s.quota + ').'];
+    if (s.isCity && s.quota) {
+      const rs = s.rescue; if (rs && (rs.gift || rs.given)) return ['FARSIGHT DRONE', 'Delivering ' + NODE(rs.gift || rs.given).name + '.']; // Edit 84
+      let line = 'Write off ' + s.quota + ' bodies (' + s.run.writeOffs + ' of ' + s.quota + ').';
+      const nv = s.nextVerb && s.nextVerb(), every = s.P['arcade.giftEvery'];
+      if (nv && every > 0) { const k = every - (s.run.writeOffs % every); line += ' ' + NODE(nv).name + (k === 1 ? ' comes with the next write-off.' : ' comes in ' + k + ' write-offs.'); }
+      return ['OBJECTIVE · ' + INFO(s.levelId).name.toUpperCase(), line];
+    }
     return null;
   }
   function drawMessages(s) {
@@ -2213,6 +2261,98 @@
     txt(TOUCH.on || app.device === 'pad' ? 'A  BEGIN THE TEST' : 'SPACE  BEGIN THE TEST', x + w - 30, y + h - 24, fLab, FT.accent, 'right');
     txt('Fenced until cleared. Cleared tiles stay open.', x + 30, y + h - 24, '400 17px ' + F_UI, FT.dim);
   }
+  // Edit 84: the gift screen, as in Zelda's item fanfare. The chassis, lit. A drone brings the module down over its part and lets go;
+  // it falls (ui.gift.fallSeconds) and lands with a flash, a ring, sparks and the fanfare. Then the verb: its name, its button,
+  // what it does, and what the shop now sells on the same track. A continues after ui.gift.holdSeconds.
+  const giftArt = new Map(), sprArt = new Map();
+  function sprCanvas(S) {
+    if (sprArt.has(S)) return sprArt.get(S);
+    const cv2 = document.createElement('canvas'); cv2.width = S.w; cv2.height = S.h;
+    const c2 = cv2.getContext('2d'), id = c2.createImageData(S.w, S.h); new Uint32Array(id.data.buffer).set(S.d); c2.putImageData(id, 0, 0);
+    sprArt.set(S, cv2); return cv2;
+  }
+  function giftArtOf(s, node) { // the chassis without the new module (base), the module's own pixels (mod), the same in white (white), its centre
+    const nd = NODES7[node], lv = partLevels(s), own = dollMods(s), m = nd && DOLL_MODS[nd.track] ? DOLL_MODS[nd.track][nd.level - 1] : null;
+    const key = node + JSON.stringify(lv) + own.join();
+    if (giftArt.has(key)) return giftArt.get(key);
+    const before = own.filter((q) => q !== m), after = m && !own.includes(m) ? own.concat(m) : own;
+    const A = PIX.doll(lv, '', before), B = PIX.doll(lv, '', after), W = A.w, H = A.h, N = W * H;
+    const mk = (fill) => { const cv2 = document.createElement('canvas'); cv2.width = W; cv2.height = H; const c2 = cv2.getContext('2d'), id = c2.createImageData(W, H); fill(new Uint32Array(id.data.buffer)); c2.putImageData(id, 0, 0); return cv2; };
+    let n = 0, sx = 0, sy = 0, x0 = W, y0 = H, x1 = 0, y1 = 0;
+    for (let i = 0; i < N; i++) if (A.d[i] !== B.d[i] && B.d[i]) { const px = i % W, py = Math.floor(i / W); n++; sx += px; sy += py; x0 = Math.min(x0, px); y0 = Math.min(y0, py); x1 = Math.max(x1, px); y1 = Math.max(y1, py); }
+    const out = { base: mk((u) => u.set(A.d)), mod: mk((u) => { for (let i = 0; i < N; i++) if (A.d[i] !== B.d[i]) u[i] = B.d[i]; }),
+      white: mk((u) => { for (let i = 0; i < N; i++) if (A.d[i] !== B.d[i] && B.d[i]) u[i] = 0xFFFFFFFF; }), cx: n ? sx / n : W / 2, cy: n ? sy / n : H / 2, n, box: n ? [x0, y0, x1 + 1, y1 + 1] : [0, 0, W, H] };
+    if (giftArt.size > 8) giftArt.clear();
+    giftArt.set(key, out); return out;
+  }
+  function giftReady() { return !!fx.gift && app.realT - fx.gift.t0 >= pv('ui.gift.holdSeconds'); }
+  function drawGiftPopup(s) {
+    const g = fx.gift, nd = g && NODES7[g.node], tr = nd && TRACKS[nd.track]; if (!nd || !tr) return;
+    const t = g.pin != null ? g.pin : app.realT - g.t0, fall = Math.max(0.1, pv('ui.gift.fallSeconds')), land = t - fall, P = s.P, art = giftArtOf(s, g.node);
+    const clamp01 = (v) => Math.max(0, Math.min(1, v)), back = (u) => 1 + 2.70158 * Math.pow(u - 1, 3) + 1.70158 * Math.pow(u - 1, 2);
+    ctx.save(); ctx.globalAlpha = clamp01(t / 0.18); veil(); veil(); ctx.restore();
+    const x = FX + 36, y = FY + 26, w = FW - 72, h = FH - 52, k = RM ? 1 : 0.86 + 0.14 * back(clamp01(t / 0.3));
+    const sh = !RM && land >= 0 && land < 0.35 ? 8 * Math.pow(1 - land / 0.35, 2) : 0, ox = sh * Math.sin(t * 93), oy = sh * Math.cos(t * 71);
+    ctx.save(); ctx.translate(x + w / 2 + ox, y + h / 2 + oy); ctx.scale(k, k); ctx.translate(-(x + w / 2), -(y + h / 2));
+    panel(x, y, w, h);
+    const SC = 4, DW = PIX.DOLL_W * SC, DH = PIX.DOLL_H * SC, dx = x + 40, dy = Math.round(y + (h - DH) / 2 + 18), mx = dx + (art.cx + 0.5) * SC, my = dy + (art.cy + 0.5) * SC, rx = dx + DW / 2, ry = dy + DH * 0.42;
+    ctx.save(); rr(x + 2, y + 2, w - 4, h - 4, 14); ctx.clip();
+    { const gl = ctx.createRadialGradient(rx, ry, 20, rx, ry, 260); gl.addColorStop(0, 'rgba(63,208,255,0.22)'); gl.addColorStop(1, 'rgba(63,208,255,0)'); ctx.fillStyle = gl; ctx.fillRect(x, y, w, h); }
+    if (land >= 0) { // rays, turning
+      const a = clamp01(land / 0.3), rot = RM ? 0.3 : app.realT * 0.5, R = 360, N = 14, gr = ctx.createRadialGradient(mx, my, 8, mx, my, R);
+      gr.addColorStop(0, 'rgba(245,197,66,' + (0.6 * a) + ')'); gr.addColorStop(1, 'rgba(245,197,66,0)');
+      ctx.fillStyle = gr; ctx.beginPath();
+      for (let i = 0; i < N; i++) { const a0 = rot + i * TAU / N; ctx.moveTo(mx, my); ctx.arc(mx, my, R, a0, a0 + TAU / N * 0.42); ctx.closePath(); }
+      ctx.fill();
+    }
+    ctx.imageSmoothingEnabled = false;
+    ctx.globalAlpha = land < 0 ? 0.6 : Math.min(1, 0.6 + land / 0.15); ctx.drawImage(art.base, dx, dy, DW, DH); ctx.globalAlpha = 1; // dimmed until the module lands
+    if (land < 0) { // where it goes: brackets on the module's seat, pulsing
+      const [bx0, by0, bx1, by1] = art.box, X0 = dx + bx0 * SC - 8, Y0 = dy + by0 * SC - 8, X1 = dx + bx1 * SC + 8, Y1 = dy + by1 * SC + 8, L = 14;
+      ctx.globalAlpha = 0.55 + 0.45 * Math.sin(app.realT * 12); ctx.strokeStyle = C.dummy; ctx.lineWidth = 3; ctx.beginPath();
+      for (const [cx2, cy2, sx2, sy2] of [[X0, Y0, 1, 1], [X1, Y0, -1, 1], [X0, Y1, 1, -1], [X1, Y1, -1, -1]]) { ctx.moveTo(cx2 + sx2 * L, cy2); ctx.lineTo(cx2, cy2); ctx.lineTo(cx2, cy2 + sy2 * L); }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    const p = clamp01(t / fall), q1 = clamp01(p / 0.45), q2 = clamp01((p - 0.45) / 0.55), hover = dy - 46;
+    if (land < 0 && !RM) { // the drone brings it down over the head, lets go, and climbs away; the module falls onto its part
+      const dTop = y - 70, dY = dTop + (hover - dTop) * (1 - Math.pow(1 - q1, 2)) - 260 * q2 * q2, hang = hover + 40;
+      const modY = (q2 > 0 ? hang + (my - hang) * q2 * q2 : dY + 40) - my;
+      const D = sprCanvas(PIX.DRONE), DS = 4;
+      if (q2 === 0) { ctx.strokeStyle = FT.dim; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(mx, dY + 14); ctx.lineTo(mx, my + modY - 14); ctx.stroke(); }
+      ctx.drawImage(D, Math.round(mx - PIX.DRONE.ox * DS), Math.round(dY - PIX.DRONE.oy * DS), PIX.DRONE.w * DS, PIX.DRONE.h * DS);
+      if (q2 > 0) for (let j = 3; j >= 1; j--) { ctx.globalAlpha = 0.16 * (4 - j) * q2; ctx.drawImage(art.mod, dx, dy + modY - j * 22 * q2, DW, DH); }
+      ctx.globalAlpha = 1; ctx.shadowColor = FT.accent; ctx.shadowBlur = 24; ctx.drawImage(art.mod, dx, dy + modY, DW, DH); ctx.shadowBlur = 0;
+    } else if (land < 0) { ctx.globalAlpha = p; ctx.drawImage(art.mod, dx, dy, DW, DH); ctx.globalAlpha = 1; } // reduced motion: it fades in
+    else {
+      const bob = !RM && land < 0.22 ? -10 * Math.sin(Math.PI * land / 0.22) : 0;
+      ctx.shadowColor = FT.accent; ctx.shadowBlur = 14 + 10 * Math.sin(app.realT * 5); ctx.drawImage(art.mod, dx, dy + bob, DW, DH); ctx.shadowBlur = 0;
+      if (land < 0.5 && Math.floor(land * 14) % 2 === 0) ctx.drawImage(art.white, dx, dy + bob, DW, DH); // the flash
+      for (const [d0, col, wd] of [[0, C.dummy, 5], [0.1, FT.accent, 3]]) { const u = clamp01((land - d0) / 0.6); if (u <= 0 || u >= 1) continue; const e = 1 - Math.pow(1 - u, 3); ctx.globalAlpha = 1 - u; ctx.strokeStyle = col; ctx.lineWidth = wd; ctx.beginPath(); ctx.arc(mx, my, 16 + 230 * e, 0, TAU); ctx.stroke(); }
+      const u = clamp01(land / 0.55); if (u < 1) { const e = 1 - Math.pow(1 - u, 2); ctx.globalAlpha = 1 - u; ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 3; ctx.beginPath(); for (let i = 0; i < 16; i++) { const a = i * TAU / 16 + 0.2, r0 = 22 + 250 * e, r1 = r0 + 26 * (1 - e) + 4; ctx.moveTo(mx + Math.cos(a) * r0, my + Math.sin(a) * r0); ctx.lineTo(mx + Math.cos(a) * r1, my + Math.sin(a) * r1); } ctx.stroke(); }
+      ctx.globalAlpha = 1;
+      if (land < 0.3 && !RM) { const fa = 0.32 * (1 - land / 0.3); ctx.fillStyle = 'rgba(255,255,255,' + fa + ')'; ctx.fillRect(x, y, w, h); } // the whole screen flashes once
+    }
+    ctx.restore();
+    const tx = dx + DW + 44, tw = x + w - 30 - tx, pd = TOUCH.on || app.device === 'pad', rs = s.rescue;
+    txt(land < 0 ? 'FARSIGHT DRONE · INCOMING' : 'NEW VERB INSTALLED', tx, y + 62, fLab, land < 0 && Math.floor(t * 4) % 2 ? FT.dim : FT.accent);
+    if (land >= 0) {
+      const a1 = clamp01(land / 0.15), pop = RM ? 1 : 1 + 0.4 * Math.pow(clamp01(1 - land / 0.28), 2);
+      ctx.save(); ctx.globalAlpha = a1; ctx.translate(tx, y + 140); ctx.scale(pop, pop); txt(nd.name.toUpperCase(), 0, 0, '900 64px ' + F_BRAND, C.dummy); ctx.restore();
+      ctx.save(); ctx.globalAlpha = clamp01((land - 0.12) / 0.2);
+      const br = 24, bx = tx + br, by = y + 196;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = FT.keyTop; ctx.fill(); ctx.strokeStyle = BADGE[tr.button]; ctx.lineWidth = 3; ctx.stroke();
+      txt(tr.button, bx, by + 9, '700 26px ' + F_MONO, FT.text, 'center'); txt(tr.verb, bx + br + 16, by + 12, '900 34px ' + F_BRAND, FT.text);
+      let yy = y + 262; yy += 30 * wrapText(nd.desc, tx, yy, tw, 30, '400 22px ' + F_UI, FT.text, 4) + 18;
+      const nx = NODES7[nd.track + (nd.level + 1)];
+      ctx.globalAlpha = clamp01((land - 0.45) / 0.3);
+      ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(tx, yy - 6); ctx.lineTo(tx + tw, yy - 6); ctx.stroke();
+      if (nx) { const pr = P[nx.price]; txt('NOW IN THE SHOP', tx, yy + 26, fLab, FT.accent); wrapText(nx.name + ' · ' + pr + ' credit' + (pr === 1 ? '' : 's') + '. ' + nx.desc, tx, yy + 58, tw, 26, '400 19px ' + F_UI, FT.dim, 3); }
+      else txt('THE ONLY LEVEL OF ' + tr.name.toUpperCase(), tx, yy + 26, fLab, FT.accent);
+      ctx.restore();
+    }
+    if (giftReady() && Math.floor(app.realT * 2.5) % 3) txt((pd ? 'A  ' : 'SPACE  ') + (rs && rs.ferry ? 'ON TO ' + rs.tile : 'CONTINUE'), x + w - 30, y + h - 26, fLab, FT.accent, 'right');
+    ctx.restore();
+  }
   function drawBriefFoot(s, X, y, W) { // under the district map: the brief and the tile's count
     const pr = s.story, t = STORY.activeTile(pr, s.levelId), tile = t ? STORY.districtOf(s.levelId).tiles[t] : null, need = t ? STORY.needOf(s.levelId, t, s.P) : 0;
     if (!tile) return;
@@ -2471,6 +2611,7 @@
     drawComboMeter(s);
     if (app.paused) drawPause(s);
     else if (s.phase === 'brief') drawBrief(s); // Edit 81: the tile card
+    else if (s.phase === 'gift') drawGiftPopup(s); // Edit 84
     else if (s.phase === 'report') drawReport(s);
     else if (s.phase === 'shop') drawShop(s);
     else if (s.phase === 'ending') drawEnding(s);
@@ -2545,7 +2686,7 @@
     for (let i = TUNE.length - 1; i >= 0; i--) if (gone.has(TUNE[i][0])) TUNE.splice(i, 1);
   }
   if (STORY) { // Edit 81–82: the story (from the next deploy): a credit a body, its prices, the gift, the brief's combos, each tile's write-offs
-    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.price.ability.level1', 1, 10, 1], ['story.price.ability.level2', 1, 10, 1], ['story.price.ability.level3', 1, 10, 1], ['story.giftCredits', 0, 10, 1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
+    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.price.ability.level1', 1, 10, 1], ['story.price.ability.level2', 1, 10, 1], ['story.price.ability.level3', 1, 10, 1], ['arcade.giftEvery', 1, 5, 1], ['ui.gift.fallSeconds', 0.1, 3, 0.05], ['ui.gift.holdSeconds', 0, 5, 0.1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.writeOffs.' + d.id + '.' + t, 1, 6, 1]);
   }
   for (const id of Object.keys(CPARAM)) { const v = CPARAM[id]; TUNE.push([id, 0, Math.max(1, Math.ceil(v * 3)), v >= 10 ? 1 : 0.01]); } // generated presentation IDs
@@ -2669,5 +2810,5 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR }; // Edit 75–76: for the tests
-  window.__dummiesUI = { objective }; // Edit 83: for the tests
+  window.__dummiesUI = { objective, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();

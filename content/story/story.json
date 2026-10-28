@@ -1,16 +1,17 @@
 {
  "meta": {
   "name": "DUMMIES story: the Test City, tile by tile",
-  "version": "edit83-2026-10-28",
+  "version": "edit84-2026-10-28",
   "status": "Proposed (tales, briefs and gifts); the order of tiles is user-decided",
-  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.2"],
-  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–83"],
+  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.3"],
+  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–84"],
   "rules": [
    "Numbers live in the registry: tasks and gifts name parameter IDs, never values.",
    "A task tests the hit that writes the chassis off (the fatal hit).",
    "Tile names are column-row, as in the game: A1 is the top-left tile.",
    "Each tile's write-offs are story.writeOffs.<district>.<tile> in the registry (Edit 82).",
-   "Gifts are only the verbs a brief needs: Legs 1, Hands 1, Arms 1 (Edit 83)."
+   "Gifts are only the verbs a brief needs: Legs 1, Hands 1, Arms 1 (Edit 83), one every three tiles: Monument C1, A2, C3 (Edit 84).",
+   "A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade issues the same verbs in the same order, one per arcade.giftEvery write-offs."
   ]
  },
  "tasks": {
@@ -40,15 +41,15 @@
      "tale": "The drum tower went up overnight to hide the bend under the high road. Engineers call it a lighthouse for cars. The cars call it the clock: every turn it lights is a turn they must not miss." },
     "C2": { "title": "The portal tower", "task": { "kind": "level" }, "gift": null,
      "tale": "The high road was planned first. The tower was planned in its way. Neither would move, so Farsight drove the road through the tower and opened a plaza on its roof. The tenants say the traffic is good company." },
-    "B2": { "title": "The monument", "task": { "kind": "cone" }, "gift": { "node": "hands1" },
+    "B2": { "title": "The monument", "task": { "kind": "struck" }, "gift": null,
      "tale": "Nobody agrees what the monument commemorates. Its plaque reads ZERO ACCIDENTS and gives no date. The road splits around it out of respect. The walkway ring circles it out of habit." },
-    "A2": { "title": "The neon arcade", "task": { "kind": "push" }, "gift": { "node": "arms1" },
+    "A2": { "title": "The neon arcade", "task": { "kind": "cone" }, "gift": { "node": "hands1" },
      "tale": "The arcade was a car park until the cars learned to park themselves. Shops moved in under the highway. Their signs flash prices at the traffic. The traffic has no money, but it reads every sign." },
     "A3": { "title": "The stacked cubes", "task": { "kind": "combo", "param": "story.task.comboEasy" }, "gift": null,
      "tale": "Each cube was built on the last as the budget arrived, one quarter at a time. Every cube leans out further than the one below. The planners call this growth. The wind calls it a dare." },
-    "B3": { "title": "The LED canyon", "task": { "kind": "struck" }, "gift": null,
+    "B3": { "title": "The LED canyon", "task": { "kind": "jump" }, "gift": null,
      "tale": "Two advertising walls were raised to face each other, and the road had to jog between them. Now the screens advertise to each other all night. The skybridge was added so that someone would watch." },
-    "C3": { "title": "The LED gateway", "task": { "kind": "combo", "param": "story.task.comboHard" }, "gift": null,
+    "C3": { "title": "The LED gateway", "task": { "kind": "push" }, "gift": { "node": "arms1" },
      "tale": "The gateway marks the edge of Monument, where the neon stops. Every car that passes under it is thanked for driving safely. It has no choice in the matter." }
    }
   },

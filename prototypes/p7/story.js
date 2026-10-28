@@ -1,4 +1,4 @@
-/* DUMMIES P7.2 (GDD Edits 81–83): Story mode. The Test City, tile by tile: Monument, then Parkland, then Waterfront.
+/* DUMMIES P7.3 (GDD Edits 81–84): Story mode, and Arcade's verbs. The Test City, tile by tile: Monument, then Parkland, then Waterfront.
    - A district opens on its first tile (content/story/story.json, `order`). The dummy spawns there.
    - A tile wants story.writeOffs.<district>.<tile> write-offs that meet Farsight's brief: a test on the hit that writes the
      chassis off (Edit 82: a count per tile; only the last hit counts, D66).
@@ -6,9 +6,14 @@
      tile in test. Cleared tiles stay open: walk back through them. Write-offs there score, but count for nothing.
    - Edit 82: every body written off pays economy.creditsPerWriteOff, counted or not. Levels cost story.price.ability.level1–3
      (3, 4, 5): a level-1 power-up is three bodies.
-   - Some tiles carry a gift: an ability level installed on arrival, or story.giftCredits credits.
+   - Some tiles carry a gift: a verb (an ability's level 1), installed on arrival. Verbs are issued, never sold (Edit 84).
    - Edit 83: a clear calls a Farsight drone. It lifts the dummy, carries it across the edge into the next tile, and sets it
      down off the road near where it crossed (story.ferryDepth). Then the next tile's card.
+   - Edit 84: gifts ride in on the drone. The drone that ferries the dummy into a gift tile carries the module in view, lowers
+     it onto the dummy (proto.droneLiftSeconds), and the sim pauses in phase 'gift' for the gift screen (continueGift). Then it
+     carries the dummy across. Monument: Legs 1 at C1, Hands 1 at A2, Arms 1 at C3.
+   - Edit 84: ArcadeSim. One district a run; the drone issues the same verbs, in the story's order, to the new chassis after every
+     arcade.giftEvery write-offs.
    - Edit 83: P7SIM, the P7.2 values for both modes: the knock keeps proto.recoilScale of the Newtonian velocity and slides at
      most proto.bounce.maxThrow.
    - The map reveals cleared tiles and the one in test. Progress is one plain object (`progress`), saved by the page.
@@ -69,6 +74,37 @@
     }
   }
 
+  // ---------- Edit 84: the verbs Farsight issues, in the story's order (legs1, hands1, arms1), and the drone that brings them
+  const VERBS = (() => { const out = []; for (const d of DIST) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node && !out.includes(g.node)) out.push(g.node); } return out; })();
+  const VERB_AT = {}; for (const d of DIST) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node && !VERB_AT[g.node]) VERB_AT[g.node] = t; }
+  // Option B (Edit 84): verbs are issued, levels are bought. A verb not yet issued is not in the shop
+  const issued = (sim, n) => !VERBS.includes(n) || !!sim.run.owned[n];
+  // a drone flies in from (hx, hy) to the body; with a gift it lowers the module, installs it and pauses the sim for the gift screen
+  function droneTo(sim, hx, hy, opts) {
+    const b = sim.body, P = sim.P;
+    b.mode = 'rescue'; Object.assign(b, { lunge: null, stair: null, jump: null, z: 0, vx: 0, vy: 0, _spr: null });
+    return Object.assign({ t: 0, phase: 'inbound', k: 0, under: 0, up: 0, item: 0, lift: P['proto.droneLiftSeconds'], v: P['proto.droneSpeed'], to: null,
+      drone: { x: hx, y: hy, alt: 1, state: 'inbound', rescue: true, hx, hy } }, opts);
+  }
+  // inbound → give (the module lowers onto the dummy; then phase 'gift') → the ferry's lift, or away
+  function stepDelivery(sim, dt) {
+    const rs = sim.rescue, b = sim.body, d = rs.drone;
+    rs.t += dt; rs.k += dt;
+    const fly = (x, y) => { const dx = x - d.x, dy = y - d.y, l = Math.hypot(dx, dy), st = rs.v * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
+    const next = (ph) => { rs.phase = ph; rs.k = 0; d.state = ph; };
+    if (rs.phase === 'inbound') { if (fly(b.x, b.y)) next(rs.gift ? 'give' : rs.ferry ? 'lift' : 'away'); return true; }
+    if (rs.phase === 'give') {
+      rs.item = Math.min(1, rs.k / rs.lift);
+      if (rs.item >= 1) { sim.installGift(rs.gift); rs.given = rs.gift; rs.gift = null; next(rs.ferry ? 'lift' : 'away'); sim.phase = 'gift'; } // the gift screen
+      return true;
+    }
+    if (rs.phase === 'away') { // a delivery only: the drone leaves, the dummy is free
+      Object.assign(b, { mode: 'idle', vx: 0, vy: 0 }); d.state = 'outbound'; d.alt = 9; (sim.leaving = sim.leaving || []).push(d); sim.rescue = null; // alt 9: the gift drone's hover
+      sim.emit('delivered', { node: rs.given || null }); return true;
+    }
+    return false;
+  }
+
   // ---------- the story's player sim: a Sim6 that starts on the district's tile in test, fences it, and counts the brief
   class StorySim extends W6.Sim6 {
     // progress: newProgress() or a saved one, its district = this district. opts: Sim6's (world, warm)
@@ -87,22 +123,28 @@
       const t = this.screenName();
       this.entered = t === activeTile(this.story, this.levelId);
       if (this.entered) this.arrive(t);
-      this.phase = 'brief'; // the tile card: its tale and Farsight's brief (continueBrief)
+      if (this.rescue) { this.pendingBrief = true; this.phase = 'play'; } // a gift still owed: the drone brings it first (Edit 84)
+      else this.phase = 'brief'; // the tile card: its tale and Farsight's brief (continueBrief)
     }
-    arrive(t) { // the dummy is in the tile in test: its fences close; any gift is installed once
+    giftOf(t) { const tile = tileOf(this.levelId, t), g = tile && tile.gift; return g && g.node && !this.story.gifts[this.levelId + ':' + t] ? g.node : null; }
+    arrive(t) { // the dummy is in the tile in test. A verb not yet delivered comes by drone (Edit 84)
       const pr = this.story, P = this.P, key = this.levelId + ':' + t, tile = tileOf(this.levelId, t), g = tile && tile.gift;
       this.entered = true; this.tilePts0 = this.run.points; this.tileT0 = this.t;
-      if (g && !pr.gifts[key]) {
-        pr.gifts[key] = true;
-        if (g.node) { this.run.owned[g.node] = true; this.emit('story-gift', { tile: t, node: g.node }); }
-        if (g.credits) { this.run.credits += P[g.credits]; this.emit('story-gift', { tile: t, credits: P[g.credits] }); }
-      }
+      if (g && g.credits && !pr.gifts[key]) { pr.gifts[key] = true; this.run.credits += P[g.credits]; this.emit('story-gift', { tile: t, credits: P[g.credits] }); }
+      const owed = this.giftOf(t);
+      if (owed && !this.rescue) { const b = this.body; this.rescue = droneTo(this, b.x, -40, { gift: owed, tile: t }); this.emit('story-deliver', { tile: t, node: owed }); }
       this.syncProgress();
       this.emit('story-enter', { tile: t, n: tileNumber(this.levelId, t), task: tile ? tile.task : null });
     }
+    installGift(node) { // Edit 84: the module is on the body
+      const t = (this.rescue && this.rescue.tile) || this.screenName();
+      this.run.owned[node] = true; this.story.gifts[this.levelId + ':' + t] = true; this.syncProgress();
+      this.emit('gift', { node, tile: t }); this.emit('story-gift', { tile: t, node });
+    }
     continueBrief() { if (this.phase === 'brief') this.phase = 'play'; }
+    continueGift() { if (this.phase === 'gift') this.phase = 'play'; } // Edit 84: after the gift screen
     step(cmd) {
-      if (this.phase === 'brief') return;
+      if (this.phase === 'brief' || this.phase === 'gift') return;
       super.step(cmd);
       if (this.phase === 'play' && this.pendingBrief && !this.rescue) { this.pendingBrief = false; this.phase = 'brief'; } // after a ferry lands
     }
@@ -116,10 +158,10 @@
       const b = this.body, P = this.P, W = P['world.width'], H = P['world.height'], [fc, fr] = cellOf(from), [tc, tr] = cellOf(to);
       const side = tc > fc ? 'E' : tc < fc ? 'W' : tr > fr ? 'S' : 'N', [sx, sy] = SIDES[side];
       const hx = sx ? (sx > 0 ? W + 40 : -40) : b.x, hy = sy ? (sy > 0 ? H + 40 : -40) : b.y; // the drone comes in from the next tile's side
-      b.mode = 'rescue'; Object.assign(b, { lunge: null, stair: null, jump: null, z: 0, vx: 0, vy: 0, level: 0, floor: null, _spr: null });
-      this.rescue = { ferry: true, side, cell: [tc, tr], tile: to, t: 0, phase: 'inbound', k: 0, under: 0, up: 0, lift: P['proto.droneLiftSeconds'], v: P['proto.droneSpeed'], to: null,
-        drone: { x: hx, y: hy, alt: 1, state: 'inbound', rescue: true, hx, hy } };
-      this.emit('story-ferry', { from, to, side });
+      const gift = this.giftOf(to); // Edit 84: the drone brings the next tile's verb with it
+      this.rescue = droneTo(this, hx, hy, { ferry: true, side, cell: [tc, tr], tile: to, gift });
+      Object.assign(b, { level: 0, floor: null });
+      this.emit('story-ferry', { from, to, side, gift });
     }
     arrivalPoint(side) { // off the road (landPoints: free ground or the hilltop), within story.ferryDepth of the entry edge, nearest the crossing
       const P = this.P, b = this.body, W = P['world.width'], H = P['world.height'], dep = P['story.ferryDepth'], r = P['body.radius'];
@@ -132,13 +174,12 @@
     }
     stepRescue(dt) {
       const rs = this.rescue;
-      if (!rs || !rs.ferry) return super.stepRescue(dt);
+      if (!rs || !(rs.ferry || rs.gift || rs.given !== undefined)) return super.stepRescue(dt);
+      if (stepDelivery(this, dt) || !this.rescue) return;
       const b = this.body, P = this.P, W = P['world.width'], H = P['world.height'], d = rs.drone;
-      rs.t += dt; rs.k += dt;
       const fly = (x, y) => { const dx = x - d.x, dy = y - d.y, l = Math.hypot(dx, dy), st = rs.v * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
       const next = (ph) => { rs.phase = ph; rs.k = 0; d.state = ph; };
-      if (rs.phase === 'inbound') { if (fly(b.x, b.y)) next('lift'); }
-      else if (rs.phase === 'lift') { const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * f; d.alt = 1 - 0.6 * Math.sin(Math.PI * f); if (f >= 1) { next('carry'); d.alt = 1; } }
+      if (rs.phase === 'lift') { const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * f; d.alt = 1 - 0.6 * Math.sin(Math.PI * f); if (f >= 1) { next('carry'); d.alt = 1; } }
       else if (rs.phase === 'carry') { // to the edge and over it
         const [sx, sy] = SIDES[rs.side], tx = sx ? (sx > 0 ? W + 2 : -2) : Math.max(40, Math.min(W - 40, b.x)), ty = sy ? (sy > 0 ? H + 2 : -2) : Math.max(40, Math.min(H - 40, b.y));
         fly(tx, ty); b.x = d.x; b.y = d.y; b.px = b.x; b.py = b.y;
@@ -240,9 +281,10 @@
       if (storyDone) { pr.complete = true; this.syncProgress(); return this.end('Certified'); }
       this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
     }
+    canBuy(n) { return issued(this, n) ? super.canBuy(n) : { ok: false, why: 'gift at ' + VERB_AT[n] }; } // Edit 84
     cheapest() { // the next level the credits could buy soonest: { node, price }, or null when every track is full
       let best = null;
-      for (const t of Object.keys(this.tracks())) { const L = this.tier(t) + 1; if (L > this.trackMax(t)) continue; const n = t + L, nd = this.nodes()[n]; if (!nd) continue; const price = this.P[nd.price]; if (!best || price < best.price) best = { node: n, price }; }
+      for (const t of Object.keys(this.tracks())) { const L = this.tier(t) + 1; if (L > this.trackMax(t)) continue; const n = t + L, nd = this.nodes()[n]; if (!nd || !issued(this, n)) continue; const price = this.P[nd.price]; if (!best || price < best.price) best = { node: n, price }; }
       return best;
     }
     continueReport() { // Edit 82: nothing affordable, straight to the next chassis
@@ -260,6 +302,27 @@
     trace() { const tr = super.trace(); tr.story = JSON.parse(JSON.stringify(this.story)); return tr; }
   }
 
-  const api = { P7SIM, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
+  // ---------- Edit 84: Arcade. One district a run (Sim6 single); P7SIM's ricochet; after every arcade.giftEvery write-offs the next
+  // verb rides in on a drone to the new chassis, with the same gift screen as the story
+  class ArcadeSim extends W6.Sim6 {
+    constructor(id, overrides, carry, opts) { super(id, Object.assign({}, P7SIM, overrides || {}), carry, Object.assign({ single: true }, opts || {})); }
+    writeOff() {
+      super.writeOff();
+      const n = this.run.writeOffs, every = this.P['arcade.giftEvery'], next = VERBS.find((v) => !this.run.owned[v]);
+      if (next && every > 0 && n % every === 0) this.pendingGift = next;
+    }
+    canBuy(n) { return issued(this, n) ? super.canBuy(n) : { ok: false, why: 'drone gift' }; }
+    leaveShop() {
+      super.leaveShop();
+      if (this.pendingGift && this.run.owned[this.pendingGift]) this.pendingGift = this.nextVerb();
+      if (this.phase === 'play' && this.pendingGift && !this.run.ending) { const b = this.body; this.rescue = droneTo(this, b.x, -40, { gift: this.pendingGift }); this.emit('arcade-deliver', { node: this.pendingGift }); this.pendingGift = null; }
+    }
+    installGift(node) { this.run.owned[node] = true; this.emit('gift', { node }); }
+    continueGift() { if (this.phase === 'gift') this.phase = 'play'; }
+    stepRescue(dt) { const rs = this.rescue; if (rs && (rs.gift || rs.given !== undefined)) { stepDelivery(this, dt); return; } super.stepRescue(dt); }
+    nextVerb() { return VERBS.find((v) => !this.run.owned[v]) || null; }
+  }
+
+  const api = { P7SIM, VERBS, VERB_AT, ArcadeSim, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
   if (NODE) module.exports = api; else root.STORY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

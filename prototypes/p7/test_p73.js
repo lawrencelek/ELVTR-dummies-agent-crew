@@ -1,12 +1,15 @@
-// Prototype 7.2 (GDD Edits 81–83) checks. Run from prototypes/p7: node test_p72.js [screenshot folder]
+// Prototype 7.3 (GDD Edits 81–84) checks. Run from prototypes/p7: node test_p73.js [screenshot folder]
+// Edit 84 (option B): verbs are issued, levels are bought. Monument issues Legs 1 at C1, Hands 1 at A2, Arms 1 at C3 (a verb every
+// three tiles); the drone that carries the dummy in brings it, in view, and the gift screen shows it landing on the chassis. Arcade
+// issues the same verbs, one per arcade.giftEvery write-offs. Verbs are not sold.
 // Edit 83: defaults (two dashes, standard recharge and recoil, no ability); the story's tracks fill only at Waterfront's end (35 bodies,
 // gifts only Legs 1, Hands 1, Arms 1); the ricochet capped (proto.recoilScale 0.7, proto.bounce.maxThrow 40); the drone ferry to the next
 // tile, off the road near the crossing; fences only toward tiles not yet open; the objective on the bottom line; bubbles on the cars.
 // 1. Content: the orders; neighbours; tales, tasks, gifts; registry IDs; abilities gifted in time; every brief possible where set.
 // 2. Headless: defaults; the ricochet; the fence; a real write-off; clears; the ferry; cleared tiles open; gifts; prices; the fill;
 //    the next district; the certificate. Arcade: one district a run. 6.4–6.10, 7 and 7.1 frozen.
-// 3. Browser (Playwright, dummies_p7_2.html): title; Arcade; the story map; the card; a fence; a report, the shop, the ferry; the
-//    objective line; progress saved; a phone; no page errors.
+// 3. Browser (Playwright, dummies_p7_3.html): title; Arcade and its first verb; the story map; the card; a fence; a report, the
+//    shop, the ferry; the gift: the drone with the module, the gift screen, the hold; the objective line; progress saved; a phone.
 'use strict';
 const fs = require('fs'), path = require('path');
 const STORY = require('./story.js');
@@ -31,11 +34,11 @@ const D = STORY.DIST;
   const bad = []; for (const d of D) for (const t of d.order) { const q = d.tiles[t]; if (!q || !q.title || !q.tale || q.tale.split(' ').length < 12 || !q.task || !kinds.has(q.task.kind)) bad.push(d.id + ' ' + t); if (q && q.task.param && REG[q.task.param] == null) bad.push(t + ' ' + q.task.param); if (q && q.gift && q.gift.node && !nodes[q.gift.node]) bad.push(t + ' ' + q.gift.node); if (q && q.gift && q.gift.credits && REG[q.gift.credits] == null) bad.push(t + ' ' + q.gift.credits); if (REG['story.writeOffs.' + d.id + '.' + t] == null) bad.push(t + ' writeOffs'); }
   const words = D.reduce((a, d) => a + d.order.reduce((b, t) => b + d.tiles[t].tale.split(' ').length, 0), 0);
   ok(!bad.length, 'every tile has a title, a tale (' + words + ' words in all), a task Farsight knows and, where set, a gift; every number a registry ID (story.task.comboEasy, story.task.comboHard, story.writeOffs.<district>.<tile>)' + (bad.length ? ': ' + bad.join(', ') : ''));
-  const ids = ['economy.creditsPerWriteOff', 'story.price.ability.level1', 'story.price.ability.level2', 'story.price.ability.level3', 'story.task.comboEasy', 'story.task.comboHard', 'story.shiftCars', 'proto.recoilScale', 'proto.bounce.maxThrow', 'story.ferryDepth'];
+  const ids = ['economy.creditsPerWriteOff', 'story.price.ability.level1', 'story.price.ability.level2', 'story.price.ability.level3', 'story.task.comboEasy', 'story.task.comboHard', 'story.shiftCars', 'proto.recoilScale', 'proto.bounce.maxThrow', 'story.ferryDepth', 'arcade.giftEvery', 'ui.gift.fallSeconds', 'ui.gift.holdSeconds'];
   const regFile = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'content', 'params', 'tuning.parameters.json'), 'utf8')), inFile = new Set(regFile.entries.map((e) => e.id));
   const tiles = D.flatMap((d) => d.order.map((t) => 'story.writeOffs.' + d.id + '.' + t)), retired = ['story.tileWriteOffs', 'story.clearPowerUps', 'story.pointsPerPowerUp', 'story.giftPowerUps', 'story.giftCredits'];
   const byId = new Map(regFile.entries.map((e) => [e.id, e]));
-  ok(ids.concat(tiles).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 8[23]\)/.test(byId.get(k).status)) && byId.get('proto.recoilScale').default === REG['proto.recoilScale'] && byId.get('proto.bounce.maxThrow').default === REG['proto.bounce.maxThrow'] && regFile.registryVersion.startsWith('edit83'),
+  ok(ids.concat(tiles).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 8[23]\)/.test(byId.get(k).status)) && byId.get('proto.recoilScale').default === REG['proto.recoilScale'] && byId.get('proto.bounce.maxThrow').default === REG['proto.bounce.maxThrow'] && regFile.registryVersion.startsWith('edit84'),
     'the story\'s values are registry IDs (' + ids.map((k) => k + ' ' + REG[k]).join(', ') + '); 27 tile counts; ' + retired.length + ' P7 IDs retired; registry ' + regFile.registryVersion);
   const per = D.map((d) => d.name + ' ' + d.order.map((t) => REG['story.writeOffs.' + d.id + '.' + t]).join('')), sum = tiles.reduce((a, k) => a + REG[k], 0);
   ok(tiles.every((k) => REG[k] >= 1 && REG[k] <= 2) && sum === 35, 'write-offs per tile, retuned so the tracks fill at the end: ' + per.join(' · ') + ' (in story order); ' + sum + ' bodies (7.1: 62)');
@@ -55,7 +58,12 @@ const D = STORY.DIST;
   // abilities a task needs, gifted at or before its tile (never left to the shop)
   const NEED = { jump: 'legs1', push: 'arms1', cone: 'hands1' }, got = new Set(), late = [];
   for (const d of D) for (const t of d.order) { const q = d.tiles[t]; if (q.gift && q.gift.node) got.add(q.gift.node); const n = NEED[q.task.kind]; if (n && !got.has(n)) late.push(d.id + ' ' + t); }
-  ok(!late.length, 'every task\'s ability is gifted by its tile: Legs 1 at Monument C1 (jump), Hands 1 at B2 (cone), Arms 1 at A2 (push); no other gift' + (late.length ? ': late at ' + late.join(', ') : ''));
+  ok(!late.length, 'every task\'s ability is gifted by its tile: Legs 1 at Monument C1 (jump), Hands 1 at A2 (cone), Arms 1 at C3 (push); no other gift' + (late.length ? ': late at ' + late.join(', ') : ''));
+  // Edit 84: a verb every three tiles, Monument only; the briefs reordered so each verb is used where it arrives
+  const at = []; for (const d of D) for (const t of d.order) { const g = d.tiles[t].gift; if (g && g.node) at.push(g.node + '@' + d.id + ' ' + t + ' #' + STORY.tileNumber(d.id, t)); }
+  const mon = D[0].order.map((t) => t + ' ' + D[0].tiles[t].task.kind).join(', ');
+  ok(at.join() === 'legs1@monument C1 #3,hands1@monument A2 #6,arms1@monument C3 #9' && STORY.VERBS.join() === 'legs1,hands1,arms1' && mon === 'A1 any, B1 drop, C1 jump, C2 level, B2 struck, A2 cone, A3 combo, B3 jump, C3 push',
+    'option B: Farsight issues a verb every three tiles: ' + at.join(', ') + '. Monument\'s briefs follow: ' + mon);
 }
 // what each tile offers: traffic by class and level over 90 s, floors, cones
 const SURVEY = {};
@@ -115,7 +123,7 @@ const kill = (s, hit) => { const b = s.body; b.hits.push(Object.assign({ kind: '
 const next = (s) => { s.continueReport(); s.leaveShop(); };
 const W = REG['world.width'], H = REG['world.height'], R = REG['body.radius'];
 { // defaults: two dashes, standard recharge, standard recoil, no ability (Arcade and Story)
-  const a = new W6.Sim6('parkland', Object.assign({}, STORY.P7SIM), null, { warm: 0, single: true }), pr0 = STORY.newProgress(), st = new STORY.StorySim('monument', {}, pr0, { warm: 0 });
+  const a = new STORY.ArcadeSim('parkland', {}, null, { warm: 0 }), pr0 = STORY.newProgress(), st = new STORY.StorySim('monument', {}, pr0, { warm: 0 });
   const none = (s) => Object.keys(s.tracks()).every((t) => s.tier(t) === 0) && !s.has('jump') && !s.has('carry') && !s.has('push');
   ok(none(a) && none(st) && a.capacity() === 2 && st.capacity() === 2 && a.secondsPerCharge() === REG['battery.secondsPerCharge'] && st.secondsPerCharge() === REG['battery.secondsPerCharge'] && a.P['proto.recoilScale'] === 0.7 && st.P['proto.recoilScale'] === 0.7,
     `by default: two dashes (battery.capacity ${a.capacity()}), standard recharge (${a.secondsPerCharge()} s), standard recoil (proto.recoilScale ${a.P['proto.recoilScale']}, throw ≤ ${a.P['proto.bounce.maxThrow']}), no other ability; Arcade and Story alike`);
@@ -172,9 +180,17 @@ const offRoad = (s) => s.sc.roadOk(s.body.x, s.body.y, REG['world.laneWidth'] + 
     `three credits open the shop: a level-1 power-up costs ${REG['story.price.ability.level1']} (Battery 1 bought); level 2 ${REG['story.price.ability.level2']}, level 3 ${REG['story.price.ability.level3']}. No clear, no ferry: the chassis stays in A1`);
   Object.assign(s.body, { x: W - 40, y: 224, vx: 0, vy: 0, mode: 'idle' }); walk(s, 1, 0, 120);
   kill(s, { kind: 'drop' });
-  ok(pr.done.monument.join() === 'A1,B1' && s.report.story.cleared, 'walked back into B1, a drop clears it');
-  s.continueReport(); runTo(s, (q) => q.phase === 'brief');
-  ok(s.screenName() === 'C1' && s.has('jump') && ev(s, 'story-gift').some((e) => e.node === 'legs1') && offRoad(s), 'the drone carries the next chassis to C1; Farsight installs Legs 1 there (the jump) for its brief, a jump into a car');
+  const sold = s.canBuy('legs1');
+  ok(pr.done.monument.join() === 'A1,B1' && s.report.story.cleared && !sold.ok && sold.why === 'gift at C1', 'walked back into B1, a drop clears it. The shop does not sell Legs 1: "' + sold.why + '" (verbs are issued)');
+  s.continueReport(); const fy2 = ev(s, 'story-ferry').slice(-1)[0], seen = [];
+  runTo(s, (q) => { const p = q.rescue && q.rescue.phase; if (p && seen[seen.length - 1] !== p) seen.push(p); return q.phase === 'gift'; });
+  const gv = ev(s, 'gift')[0];
+  ok(fy2 && fy2.gift === 'legs1' && seen.join('>') === 'inbound>give>lift' && s.phase === 'gift' && gv && gv.node === 'legs1' && s.has('jump') && s.screenName() === 'B1' && s.rescue.phase === 'lift',
+    'the ferry drone brings Legs 1 in view (' + seen.join(' › ') + '), lowers it onto the chassis and installs it; the sim holds in phase gift, the gift screen, before the flight');
+  const k0 = s.rescue.k; for (let i = 0; i < 120; i++) s.step({});
+  ok(s.phase === 'gift' && s.rescue.k === k0, 'the gift screen holds the world: 2 s later, still phase gift, the drone waiting');
+  s.continueGift(); runTo(s, (q) => q.phase === 'brief');
+  ok(s.screenName() === 'C1' && s.has('jump') && ev(s, 'story-gift').some((e) => e.node === 'legs1') && offRoad(s) && !s.rescue, 'A continues: the drone carries the chassis, Legs 1 fitted, to C1 and sets it down off the road; C1\'s card, a jump into a car');
   s.continueBrief(); const c0 = s.run.credits; s.run.points = 1e6; kill(s, { kind: 'jump' });
   ok(s.run.credits === c0 + 1, 'the score buys nothing: a million points, still one credit for the body');
   ok(pr.done.monument.join() === 'A1,B1,C1' && pr.credits === s.run.credits && pr.owned.legs1 && pr.owned.battery1 && pr.points === s.run.points, 'progress follows the run (tiles, credits, abilities, points): one plain object the page saves');
@@ -183,8 +199,10 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
 { // the end of a district, the next one, the certificate
   const pr = STORY.newProgress(); pr.done.monument = ['A1', 'B1', 'C1', 'C2', 'B2', 'A2', 'A3', 'B3']; pr.tileWO = REG['story.writeOffs.monument.C3'] - 1; pr.credits = 0;
   const s = story('monument', pr);
-  ok(s.screenName() === 'C3', 'a saved story resumes on the tile in test: Monument C3 (8 cleared)');
-  s.continueBrief(); kill(s, { kind: 'dash', combo: REG['story.task.comboHard'] });
+  const owe = s.rescue && s.rescue.gift; runTo(s, (q) => q.phase === 'gift'); const gs = s.phase; s.continueGift(); runTo(s, (q) => q.phase === 'brief');
+  ok(s.screenName() === 'C3' && owe === 'arms1' && gs === 'gift' && s.phase === 'brief' && s.has('push') && ev(s, 'delivered').length === 1 && s.body.mode === 'idle',
+    'a saved story resumes on the tile in test, Monument C3 (8 cleared). Arms 1 is still owed: a drone delivers it (gift screen), leaves, then C3\'s card');
+  s.continueBrief(); kill(s, { kind: 'push' });
   ok(s.report.roadCleared && s.report.story.districtDone && pr.district === 'parkland', 'clearing C3 clears Monument; the story moves on to Parkland');
   s.continueReport(); s.leaveShop();
   ok(s.phase === 'next' && !s.rescue, 'after the report, the page builds the next district (phase next); no ferry between districts');
@@ -194,6 +212,19 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   const p3 = STORY.newProgress(); p3.district = 'waterfront'; p3.done = { monument: D[0].order.slice(), parkland: D[1].order.slice(), waterfront: ['A1', 'B1', 'C1', 'C2', 'C3', 'B3', 'A3', 'A2'] }; p3.tileWO = REG['story.writeOffs.waterfront.B2'] - 1;
   const s3 = story('waterfront', p3); s3.continueBrief(); kill(s3, { combo: 5 });
   ok(s3.screenName() === 'B2' && s3.run.ending && s3.run.ending.kind === 'Certified' && p3.complete && STORY.clearedCount(p3) === 27, 'the last tile, Waterfront B2 (the circus): the Test City is certified (27 of 27)');
+}
+{ // Edit 84: Arcade issues the verbs too, one per arcade.giftEvery write-offs, by drone to the new chassis
+  const a = new STORY.ArcadeSim('monument', {}, null, { warm: 0 }), got = [];
+  for (let k = 0; k < a.quota - 1; k++) {
+    a.body.hits.push({ kind: 'dash' }); a.body.health = 0; a.writeOff(); a.checkTerminal(); settle(a); a.continueReport();
+    const sold = a.canBuy(STORY.VERBS[k] || 'legs1'); a.leaveShop(); const rs = a.rescue, dl = ev(a, 'arcade-deliver')[k];
+    runTo(a, (q) => q.phase === 'gift'); const gp = a.phase; a.continueGift(); runTo(a, (q) => !q.rescue);
+    got.push((dl && dl.node) + (sold.ok ? ' sold' : '') + (gp === 'gift' ? '' : ' no screen') + (a.body.mode === 'idle' ? '' : ' held'));
+  }
+  ok(got.join() === 'legs1,hands1,arms1' && a.has('jump') && a.has('carry') && a.has('push') && a.run.credits === 3 && REG['arcade.giftEvery'] === 1,
+    `Arcade: a drone brings the next verb to each new chassis, in the story's order (arcade.giftEvery ${REG['arcade.giftEvery']}): ${got.join(', ')}; each with the gift screen; none sold; the credits stay for levels (${a.run.credits})`);
+  const ob = new STORY.ArcadeSim('monument', { 'arcade.giftEvery': 2 }, null, { warm: 0 }); ob.body.hits.push({ kind: 'dash' }); ob.body.health = 0; ob.writeOff(); ob.checkTerminal(); settle(ob); ob.continueReport(); ob.leaveShop();
+  ok(!ob.rescue && ob.nextVerb() === 'legs1', 'with arcade.giftEvery 2, the first write-off brings nothing; Legs 1 waits for the second');
 }
 { // Arcade: one district a run
   const s = new W6.Sim6('parkland', {}, null, { warm: 0, single: true });
@@ -210,14 +241,14 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   const same = (f) => { let head = null; try { head = execSync('git show HEAD:prototypes/p6/' + f, { maxBuffer: 1 << 26, cwd: __dirname }); } catch (e) { head = null; } return !!head && md5(head) === md5(fs.readFileSync(path.join(__dirname, '..', 'p6', f))); };
   const list = ['dummies_p6_4.html', 'dummies_p6_5.html', 'dummies_p6_6.html', 'dummies_p6_7.html', 'dummies_p6_8.html', 'dummies_p6_9.html', 'dummies_p6_10.html'];
   const p7 = (() => { try { return md5(execSync('git show HEAD:prototypes/p7/dummies_p7.html', { maxBuffer: 1 << 26, cwd: __dirname })) === md5(fs.readFileSync(path.join(__dirname, 'dummies_p7.html'))); } catch (e) { return false; } })();
-  const p71 = (() => { try { return md5(execSync('git show HEAD:prototypes/p7/dummies_p7_1.html', { maxBuffer: 1 << 26, cwd: __dirname })) === md5(fs.readFileSync(path.join(__dirname, 'dummies_p7_1.html'))); } catch (e) { return false; } })();
-  ok(list.every(same) && p7 && p71, 'dummies_p6_4.html to dummies_p6_10.html, dummies_p7.html and dummies_p7_1.html are byte-identical to their commits (the shared code builds P7.2)');
+  const p7f = (f) => { try { return md5(execSync('git show HEAD:prototypes/p7/' + f, { maxBuffer: 1 << 26, cwd: __dirname })) === md5(fs.readFileSync(path.join(__dirname, f))); } catch (e) { return false; } };
+  ok(list.every(same) && p7 && p7f('dummies_p7_1.html') && p7f('dummies_p7_2.html'), 'dummies_p6_4.html to dummies_p6_10.html, dummies_p7.html, dummies_p7_1.html and dummies_p7_2.html are byte-identical to their commits (the shared code builds P7.3)');
 }
 // ---------- 4. the page
 (async () => {
   let chromium;
   try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP browser checks: playwright not found'); return done(); }
-  const url = 'file://' + path.join(__dirname, 'dummies_p7_2.html');
+  const url = 'file://' + path.join(__dirname, 'dummies_p7_3.html');
   const br = await chromium.launch(), logs = [];
   const watch = (pg) => pg.on('pageerror', (e) => logs.push(e.message));
   const shot = async (pg, name) => { if (OUT) await pg.screenshot({ path: path.join(OUT, name) }); };
@@ -225,53 +256,82 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   const ctx = await br.newContext({ viewport: { width: 1300, height: 900 } }), pg = await ctx.newPage(); watch(pg);
   await pg.goto(url); await pg.waitForTimeout(1200);
   const t0 = await pg.evaluate(() => ({ screen: window.__dummies.screen, status: document.getElementById('status').textContent }));
-  await shot(pg, 'p72_title.png');
-  ok(t0.screen === 'title' && /^P7\.2 /.test(t0.status), 'the title offers two modes, ARCADE and STORY (build ' + t0.status.split(' ')[0] + ')');
+  await shot(pg, 'p73_title.png');
+  ok(t0.screen === 'title' && /^P7\.3 /.test(t0.status), 'the title offers two modes, ARCADE and STORY (build ' + t0.status.split(' ')[0] + ')');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(300);
-  const a1 = await pg.evaluate(() => window.__dummies.screen); await shot(pg, 'p72_arcade.png');
+  const a1 = await pg.evaluate(() => window.__dummies.screen); await shot(pg, 'p73_arcade.png');
   await pg.keyboard.press('ArrowDown'); await pg.keyboard.press('Space');
   const a2 = await wait(pg, () => window.__dummies.sim && window.__dummies.sim.phase === 'play', 30000);
   const a3 = await pg.evaluate(() => { const s = window.__dummies.sim; return { id: s.levelId, final: s.isFinal, story: !!s.storyMode }; });
   ok(a1 === 'arcade' && a2 && a3.id === 'waterfront' && a3.final && !a3.story, `ARCADE: pick a district (${a3.id}); it plays alone, as 6.10 plays it`);
+  const ao = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
+  await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; b.hits.push({ kind: 'dash', cls: 'van', combo: 1, assessed: 120, lost: 30, angle: 90, model: 'VAN-02' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
+  await wait(pg, () => window.__dummies.sim.phase === 'report', 8000); await pg.keyboard.press('Space'); await pg.waitForTimeout(250); await pg.keyboard.press('ShiftLeft');
+  await wait(pg, () => { const s = window.__dummies.sim; return s.rescue && s.rescue.gift && Math.abs(s.rescue.drone.y - s.body.y) < 140; }, 8000); await shot(pg, 'p73_arcade_drone.png');
+  await wait(pg, () => window.__dummies.sim.phase === 'gift', 8000); await pg.waitForTimeout(1300); await shot(pg, 'p73_arcade_gift.png');
+  await pg.keyboard.press('Space'); await pg.waitForTimeout(400);
+  const ag = await pg.evaluate(() => { const s = window.__dummies.sim; return { phase: s.phase, legs: s.has('jump'), ob: window.__dummiesUI.objective(s) }; });
+  ok(/Legs 1 comes with the next write-off/.test(ao ? ao[1] : '') && ag.phase === 'play' && ag.legs && /Hands 1 comes with the next write-off/.test(ag.ob ? ag.ob[1] : ''),
+    `Arcade: "${ao ? ao[1] : ''}"; after the write-off a drone brings Legs 1 with the gift screen; then "${ag.ob ? ag.ob[1] : ''}"`);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(150);
   for (let i = 0; i < 4; i++) await pg.keyboard.press('ArrowDown');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(200);
   await pg.keyboard.press('ArrowRight'); await pg.keyboard.press('Space'); await pg.waitForTimeout(400);
   const m = await pg.evaluate(() => ({ screen: window.__dummies.screen, story: window.__dummies.story }));
-  await shot(pg, 'p72_map.png');
+  await shot(pg, 'p73_map.png');
   ok(m.screen === 'storymap' && m.story && m.story.district === 'monument', 'STORY: the map of the Test City; only Monument A1 is revealed');
-  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150); await shot(pg, 'p72_map_hidden.png'); await pg.keyboard.press('ArrowLeft');
+  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150); await shot(pg, 'p73_map_hidden.png'); await pg.keyboard.press('ArrowLeft');
   await pg.keyboard.press('Space');
   const b1 = await wait(pg, () => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(300);
-  await shot(pg, 'p72_brief.png');
+  await shot(pg, 'p73_brief.png');
   ok(b1, 'deploying opens the tile card: the tale of the LED wall and Farsight\'s brief');
   await pg.keyboard.press('Space'); await pg.waitForTimeout(200);
   await pg.keyboard.down('KeyD'); await pg.waitForTimeout(3800); await pg.keyboard.up('KeyD'); await pg.waitForTimeout(150);
   const f = await pg.evaluate(() => { const s = window.__dummies.sim; return { x: s.body.x, scr: s.screenName(), toast: window.__dummies.toast && window.__dummies.toast.msg }; });
-  await shot(pg, 'p72_fence.png');
+  await shot(pg, 'p73_fence.png');
   ok(f.scr === 'A1' && f.x > 700 && /Fence/.test(f.toast || ''), `the fence on A1's east side holds the dummy (x ${Math.round(f.x)}): "${f.toast}"`);
   const ob = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
   ok(ob && /^OBJECTIVE · A1/.test(ob[0]) && /Write off a body \(0 of 1\)/.test(ob[1]), 'the bottom line carries the objective: "' + (ob ? ob.join(' · ') : '') + '"');
   await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; s.run.credits = 2; b.hits.push({ kind: 'dash', cls: 'van', combo: 1, assessed: 120, lost: 30, angle: 90, model: 'VAN-02' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
   await wait(pg, () => window.__dummies.sim.phase === 'report', 8000); await pg.waitForTimeout(200);
-  await shot(pg, 'p72_report.png');
+  await shot(pg, 'p73_report.png');
   const saved = await pg.evaluate(() => JSON.parse(localStorage.getItem('dummies.p7.story') || 'null'));
   ok(saved && saved.done.monument && saved.done.monument[0] === 'A1' && saved.credits === 3, 'the write-off clears A1 (1 of 1) and pays its credit (3 in all); progress is saved in this browser');
-  await pg.keyboard.press('Space'); await pg.waitForTimeout(300); await shot(pg, 'p72_shop.png');
+  await pg.keyboard.press('Space'); await pg.waitForTimeout(300); await shot(pg, 'p73_shop.png');
   const sh = await pg.evaluate(() => window.__dummies.sim.phase);
   ok(sh === 'shop', 'with 3 credits, the shop follows: a level-1 power-up costs 3');
   await pg.keyboard.press('ShiftLeft'); await wait(pg, () => { const s = window.__dummies.sim; return s.rescue && s.rescue.phase === 'carry' && s.body.x > 520; }, 15000); await pg.waitForTimeout(100);
-  await shot(pg, 'p72_ferry.png');
+  await shot(pg, 'p73_ferry.png');
   const fo = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
-  const fb = await wait(pg, () => window.__dummies.sim.phase === 'brief', 20000); await pg.waitForTimeout(200); await shot(pg, 'p72_brief_b1.png');
+  const fb = await wait(pg, () => window.__dummies.sim.phase === 'brief', 20000); await pg.waitForTimeout(200); await shot(pg, 'p73_brief_b1.png');
   const fp = await pg.evaluate(() => { const s = window.__dummies.sim; return { scr: s.screenName(), x: s.body.x, fences: s.fenceSides().join() }; });
   ok(fb && fp.scr === 'B1' && fp.x < 200 && fp.fences === 'E,S' && /DRONE/.test(fo ? fo[0] : ''), `deploying, a drone carries the chassis to B1 ("${fo ? fo.join(' · ') : ''}") and sets it down by the west edge (x ${Math.round(fp.x)}); B1's card`);
-  await pg.keyboard.press('Space'); await pg.waitForTimeout(400); await shot(pg, 'p72_b1.png');
+  await pg.keyboard.press('Space'); await pg.waitForTimeout(400); await shot(pg, 'p73_b1.png');
+  // Edit 84: clear B1; the drone that ferries the chassis to C1 brings Legs 1, in view; the gift screen; A waits for the hold
+  await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; b.hits.push({ kind: 'drop', cls: 'sedan', combo: 1, assessed: 120, lost: 30, angle: 90, model: 'SED-01' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
+  await wait(pg, () => window.__dummies.sim.phase === 'report', 8000); await pg.waitForTimeout(150); await pg.keyboard.press('Space'); await pg.waitForTimeout(250);
+  if (await pg.evaluate(() => window.__dummies.sim.phase === 'shop')) await pg.keyboard.press('ShiftLeft');
+  await wait(pg, () => { const s = window.__dummies.sim, rs = s.rescue; return rs && rs.gift && rs.phase === 'inbound' && Math.abs(rs.drone.x - s.body.x) < 150; }, 10000); await shot(pg, 'p73_drone_item.png');
+  const dob = await pg.evaluate(() => window.__dummiesUI.objective(window.__dummies.sim));
+  await wait(pg, () => { const rs = window.__dummies.sim.rescue; return rs && rs.phase === 'give' && rs.item > 0.5; }, 10000); await shot(pg, 'p73_give.png');
+  await wait(pg, () => window.__dummies.sim.phase === 'gift', 8000);
+  const pre = await pg.evaluate(() => window.__dummiesUI.gift().age); await pg.keyboard.press('Space'); await pg.waitForTimeout(60);
+  const early = await pg.evaluate(() => ({ phase: window.__dummies.sim.phase, ready: window.__dummiesUI.giftReady(), age: window.__dummiesUI.gift() && window.__dummiesUI.gift().age }));
+  for (const [a, f] of [[0.2, 'p73_gift_drone.png'], [0.5, 'p73_gift_fall.png'], [0.78, 'p73_gift_land.png']]) { await pg.evaluate((q) => window.__dummiesUI.pinGift(q), a); await pg.waitForTimeout(60); await shot(pg, f); } // the screen at fixed moments
+  await pg.evaluate(() => window.__dummiesUI.pinGift(null));
+  await wait(pg, () => window.__dummiesUI.giftReady(), 4000); await pg.waitForTimeout(500); await shot(pg, 'p73_gift.png');
+  ok(/DRONE/.test(dob ? dob[0] : '') && /Bringing Legs 1, then on to C1/.test(dob ? dob[1] : '') && early.phase === 'gift' && !early.ready,
+    `B1 cleared: the ferry drone flies in with Legs 1 under it ("${dob ? dob.join(' · ') : ''}"), lowers it onto the chassis; the gift screen; A at ${pre.toFixed(2)} s is ignored (ui.gift.holdSeconds)` + (early.phase !== 'gift' || early.ready ? ' [' + JSON.stringify(early) + ']' : ''));
+  await pg.keyboard.press('Space');
+  const cb = await wait(pg, () => window.__dummies.sim.phase === 'brief', 20000);
+  const c1 = await pg.evaluate(() => { const s = window.__dummies.sim; return { scr: s.screenName(), legs: s.has('jump'), gift: window.__dummiesUI.gift() }; });
+  await pg.waitForTimeout(200); await shot(pg, 'p73_brief_c1.png');
+  ok(cb && c1.scr === 'C1' && c1.legs && !c1.gift, 'A continues: the drone carries the chassis, Legs 1 fitted, into C1; C1\'s card (a jump into a car)');
   const pg2 = await ctx.newPage(); watch(pg2); await pg2.goto(url); await pg2.waitForTimeout(800);
   await pg2.keyboard.press('ArrowRight'); await pg2.keyboard.press('Space'); await pg2.waitForTimeout(300);
   const re = await pg2.evaluate(() => ({ screen: window.__dummies.screen, wo: window.__dummies.story && window.__dummies.story.tileWO, done: window.__dummies.story && (window.__dummies.story.done.monument || []).join() }));
-  await shot(pg2, 'p72_map_progress.png');
-  ok(re.screen === 'storymap' && re.wo === 0 && re.done === 'A1', 'a reload resumes the story: A1 cleared, B1 in test');
+  await shot(pg2, 'p73_map_progress.png');
+  ok(re.screen === 'storymap' && re.wo === 0 && re.done === 'A1,B1', 'a reload resumes the story: A1 and B1 cleared, C1 in test');
   await pg2.close();
   // a phone held sideways: the story's card and its map fit; the touch stick sits below the brief
   const ph = await br.newContext({ viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 }), pp = await ph.newPage(); watch(pp);
@@ -283,7 +343,7 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   await wait(pp, () => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000);
   await pp.evaluate(() => window.__dummies.sim.continueBrief()); await pp.waitForTimeout(400);
   const L = await pp.evaluate(() => { const L = window.__dummiesInput.touchLayoutCss(), a = window.__dummies; return { on: window.__dummiesInput.TOUCH.on, base: L.home, left: a.layoutY && a.layoutY.left }; });
-  await shot(pp, 'p72_phone.png');
+  await shot(pp, 'p73_phone.png');
   ok(L.on && L.base, 'phone, sideways: touch on; the stick sits under the district map');
   await ph.close();
   ok(!logs.length, 'browser: no page errors' + (logs.length ? ': ' + logs.slice(0, 3).join(' | ') : ''));

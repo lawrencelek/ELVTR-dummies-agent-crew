@@ -115,6 +115,7 @@
     // Edit 81 (P7): Story mode. Write-offs a tile; power-ups for a clear, a gift and a score; the brief's combo lengths; the story's shift
     'story.tileWriteOffs': 3, 'story.clearPowerUps': 1, 'story.pointsPerPowerUp': 15000, 'story.giftPowerUps': 1, 'story.task.comboEasy': 2, 'story.task.comboHard': 3, 'story.shiftCars': 5000,
     // Edit 82 (P7.1): a credit a body (Arcade and Story); story prices 3, 4, 5; a credit gift; write-offs per tile, in the story's order
+    'arcade.giftEvery': 1, 'ui.gift.fallSeconds': 0.7, 'ui.gift.holdSeconds': 1.2, // Edit 84 (P7.3): Arcade issues a verb per write-off; the gift screen's fall and hold
     'proto.bounce.maxThrow': 0, 'story.ferryDepth': 160, // Edit 83 (P7.2): the knock's longest slide (0: no cap; P7.2 sets it); how far in from the entry edge the drone sets the dummy down
     'economy.creditsPerWriteOff': 1, 'story.price.ability.level1': 3, 'story.price.ability.level2': 4, 'story.price.ability.level3': 5, 'story.giftCredits': 3,
     'story.writeOffs.monument.A1': 1, 'story.writeOffs.monument.B1': 1, 'story.writeOffs.monument.C1': 1, 'story.writeOffs.monument.C2': 1, 'story.writeOffs.monument.B2': 1, 'story.writeOffs.monument.A2': 1, 'story.writeOffs.monument.A3': 1, 'story.writeOffs.monument.B3': 1, 'story.writeOffs.monument.C3': 2,
