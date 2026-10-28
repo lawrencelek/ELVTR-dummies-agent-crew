@@ -16,6 +16,10 @@
      arcade.giftEvery write-offs.
    - Edit 83: P7SIM, the P7.2 values for both modes: the knock keeps proto.recoilScale of the Newtonian velocity and slides at
      most proto.bounce.maxThrow.
+   - Edit 89: Story has no credits. Points level the dummy up: story.level.firstPoints to level 2, each next level
+     story.level.stepPoints more, to story.level.max. A level-up grants story.level.upgrades upgrades; one fits the next level of
+     an unlocked track in the workshop (after a write-off). Verbs still come by drone; a track opens with its verb. Battery is
+     open from the start. Arcade keeps credits.
    - The map reveals cleared tiles and the one in test. Progress is one plain object (`progress`), saved by the page.
    Headless in Node: require('./story.js'). In the page: window.STORY. */
 (function (root) {
@@ -59,6 +63,15 @@
   const hasRing = (sc) => !!(sc.islands || sc.ringSim);
   function storyDensity(pr, id, P) {
     return (sc) => { const t = !pr.complete && pr.district === id ? activeTile(pr, id) : null; if (!t) return 1; const [c, r] = cellOf(t), dd = Math.abs(sc.col - c) + Math.abs(sc.row - r); return dd === 0 || (dd === 1 && !hasRing(sc)) ? trafficOf(id, t, P) : 1; };
+  }
+
+  // ---------- Edit 89: the dummy's level, from its points (both modes may read it; Story spends it)
+  function levelOf(points, P) {
+    P = P || BASE;
+    const first = P['story.level.firstPoints'], step = P['story.level.stepPoints'], max = P['story.level.max'];
+    let level = 1, base = 0, need = first;
+    while (level < max && points >= base + need) { base += need; level++; need += step; }
+    return { level, base, need: level < max ? need : 0, next: level < max ? base + need : null, into: points - base, max, frac: level < max ? Math.max(0, Math.min(1, (points - base) / need)) : 1 };
   }
 
   // ---------- the brief: text and test
@@ -129,7 +142,7 @@
       super.reset();
       if (!this.W6 || !this.opts || !this.opts.story) return; // the base constructor's first reset, before the world exists
       this.story = this.opts.story; this.storyMode = true;
-      this.fenceHit = null; this.storyLast = null;
+      this.fenceHit = null; this.storyLast = null; this.lvSeen = levelOf(this.run.points, this.P).level; // Edit 89
       const t = this.screenName();
       this.entered = t === activeTile(this.story, this.levelId);
       if (this.entered) this.arrive(t);
@@ -156,6 +169,7 @@
     step(cmd) {
       if (this.phase === 'brief' || this.phase === 'gift') return;
       super.step(cmd);
+      if (this.storyMode) { const lv = levelOf(this.run.points, this.P).level; while (this.lvSeen < lv) { this.lvSeen++; this.emit('level-up', { level: this.lvSeen, upgrades: this.upgradesLeft(), points: Math.round(this.run.points) }); } } // Edit 89
       if (this.phase === 'play' && this.pendingBrief && !this.rescue) { this.pendingBrief = false; this.phase = 'brief'; } // after a ferry lands
     }
     // ----- Edit 83: the ferry. After a clear, a drone carries the new chassis from the cleared tile into the next one
@@ -273,7 +287,6 @@
       b.reported = true;
       const pr = this.story, id = this.levelId, res = this.storyLast || { counted: false };
       let cleared = false, districtDone = false, storyDone = false, next = null;
-      r.credits += P['economy.creditsPerWriteOff']; // Edit 82: a credit a body, counted or not
       if (res.counted && pr.tileWO >= res.need) {
         cleared = true;
         pr.done[id] = doneIn(pr, id).concat([res.tile]); pr.tileWO = 0;
@@ -285,24 +298,43 @@
         this.emit('story-clear', { tile: res.tile, next, district: id, districtDone, storyDone, points: pr.tilePoints[id + ':' + res.tile] });
       }
       this.syncProgress();
+      const lv = levelOf(r.points, P), lv0 = levelOf(b.points0 || 0, P); // Edit 89: the level before and after this body
       this.report = { chassis: b.chassis, hits: b.hits.slice(), points: Math.round(r.points - b.points0), credits: r.credits,
         roadCleared: districtDone && !storyDone, nextRoad: districtDone ? pr.district : null,
-        story: Object.assign({}, res, { cleared, next, districtDone, storyDone, gained: P['economy.creditsPerWriteOff'], cheapest: this.cheapest() }) };
+        story: Object.assign({}, res, { cleared, next, districtDone, storyDone, level: lv, levelBefore: lv0.level, upgrades: this.upgradesLeft(), fit: this.fitList() }) };
       if (storyDone) { pr.complete = true; this.syncProgress(); return this.end('Certified'); }
       this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
     }
-    canBuy(n) { return issued(this, n) ? super.canBuy(n) : { ok: false, why: 'gift at ' + VERB_AT[n] }; } // Edit 84
-    cheapest() { // the next level the credits could buy soonest: { node, price }, or null when every track is full
-      let best = null;
-      for (const t of Object.keys(this.tracks())) { const L = this.tier(t) + 1; if (L > this.trackMax(t)) continue; const n = t + L, nd = this.nodes()[n]; if (!nd || !issued(this, n)) continue; const price = this.P[nd.price]; if (!best || price < best.price) best = { node: n, price }; }
-      return best;
+    // ----- Edit 89: upgrades, not credits. Earned by level; one fits the next level of an open track (its verb issued; Battery open)
+    levelInfo() { return levelOf(this.run.points, this.P); }
+    upgradesEarned() { return (this.levelInfo().level - 1) * this.P['story.level.upgrades']; }
+    boughtCount() { return Object.keys(this.run.owned).filter((n) => this.run.owned[n] && this.nodes()[n] && !VERBS.includes(n)).length; }
+    upgradesLeft() { return Math.max(0, this.upgradesEarned() - this.boughtCount()); }
+    trackOpen(t) { const n1 = t + 1; return !VERBS.includes(n1) || !!this.run.owned[n1]; } // a verb-led track opens with its verb
+    fitList() { const out = []; for (const t of Object.keys(this.tracks())) { if (!this.trackOpen(t)) continue; const L = this.tier(t) + 1; if (L <= this.trackMax(t) && this.nodes()[t + L]) out.push(t + L); } return out; } // what an upgrade could fit now
+    canBuy(n) {
+      if (!issued(this, n)) return { ok: false, why: 'gift at ' + VERB_AT[n] }; // Edit 84
+      if (!this.storyMode) return super.canBuy(n);
+      const nd = this.nodes()[n], r = this.run;
+      if (!nd || nd.level > this.trackMax(nd.track)) return { ok: false, why: 'not made' };
+      if (r.owned[n]) return { ok: false, why: 'fitted' };
+      if (nd.pre && !r.owned[nd.pre]) return { ok: false, why: 'needs ' + this.nodes()[nd.pre].name };
+      return this.upgradesLeft() < 1 ? { ok: false, why: 'level up first' } : { ok: true, price: 1, unit: 'upgrade' };
     }
-    continueReport() { // Edit 82: nothing affordable, straight to the next chassis
-      const c = this.cheapest();
-      if (this.storyMode && this.phase === 'report' && (!c || this.run.credits < c.price) && !(this.report && this.report.roadCleared)) { this.phase = 'shop'; this.leaveShop(); this.emit('shop-skip', {}); return; }
+    continueReport() { // Edit 89: no upgrade to fit, or nothing to fit it to: straight to the next chassis
+      if (this.storyMode && this.phase === 'report' && (this.upgradesLeft() < 1 || !this.fitList().length) && !(this.report && this.report.roadCleared)) { this.phase = 'shop'; this.leaveShop(); this.emit('shop-skip', {}); return; }
       super.continueReport();
     }
-    buy(n) { const out = super.buy(n); if (this.storyMode) this.syncProgress(); return out; }
+    buy(n) {
+      if (!this.storyMode) return super.buy(n);
+      if (this.phase !== 'shop') return { ok: false, why: 'workshop closed' };
+      const chk = this.canBuy(n);
+      if (!chk.ok) { this.emit('purchase-denied', { node: n, why: chk.why }); return chk; }
+      this.run.owned[n] = true; this.run.purchases.push(n);
+      this.emit('purchase', { node: n, price: 1, unit: 'upgrade', upgrades: this.upgradesLeft() });
+      this.mile('firstPurchase', { node: n }); this.syncProgress();
+      return chk;
+    }
     syncProgress() {
       const pr = this.story, r = this.run;
       pr.owned = Object.assign({}, r.owned); pr.credits = r.credits; pr.points = r.points; pr.chassis = r.chassis;
@@ -333,6 +365,6 @@
     nextVerb() { return VERBS.find((v) => !this.run.owned[v]) || null; }
   }
 
-  const api = { P7SIM, VERBS, VERB_AT, ArcadeSim, trafficOf, storyDensity, hasRing, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
+  const api = { levelOf, P7SIM, VERBS, VERB_AT, ArcadeSim, trafficOf, storyDensity, hasRing, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };
   if (NODE) module.exports = api; else root.STORY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

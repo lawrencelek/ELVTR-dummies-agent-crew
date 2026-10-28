@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit88-2026-10-28",
+ "registryVersion": "edit89-2026-10-28",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -9170,7 +9170,7 @@
    "unit": "credits",
    "type": "number",
    "default": 3,
-   "status": "user-decided",
+   "status": "retired (Edit 89): Story has no credits; points raise the level, a level grants an upgrade (story.level.*). Arcade keeps economy.price.ability.*",
    "source": "Edit 82 (28 October): Prototype 7.1",
    "editable": true,
    "protectedReason": null,
@@ -9192,7 +9192,7 @@
    "unit": "credits",
    "type": "number",
    "default": 4,
-   "status": "user-decided",
+   "status": "retired (Edit 89): Story has no credits; points raise the level, a level grants an upgrade (story.level.*). Arcade keeps economy.price.ability.*",
    "source": "Edit 82 (28 October): Prototype 7.1",
    "editable": true,
    "protectedReason": null,
@@ -9214,7 +9214,7 @@
    "unit": "credits",
    "type": "number",
    "default": 5,
-   "status": "user-decided",
+   "status": "retired (Edit 89): Story has no credits; points raise the level, a level grants an upgrade (story.level.*). Arcade keeps economy.price.ability.*",
    "source": "Edit 82 (28 October): Prototype 7.1",
    "editable": true,
    "protectedReason": null,
@@ -9930,6 +9930,94 @@
     "max": 16
    },
    "purpose": "A 12-character file name (user request, 28 October)"
+  },
+  {
+   "status": "proposed",
+   "source": "Edit 89 (28 October): Prototype 7.8",
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.8",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "group": "Story",
+   "owner": "Systems design",
+   "type": "number",
+   "applyAt": "next-run",
+   "id": "story.level.firstPoints",
+   "label": "Points to level 2",
+   "description": "Story: points level the dummy up. Level 2 needs this many points; each next level needs story.level.stepPoints more than the one before (levels 2–9 at 6,500, 15,000, 25,500, 38,000, 52,500, 69,000, 87,500, 108,000).",
+   "unit": "points",
+   "default": 6500,
+   "validation": {
+    "min": 1000,
+    "max": 50000
+   },
+   "purpose": "A first level-up within two bodies: the hook (user request, 28 October)"
+  },
+  {
+   "status": "proposed",
+   "source": "Edit 89 (28 October): Prototype 7.8",
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.8",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "group": "Story",
+   "owner": "Systems design",
+   "type": "number",
+   "applyAt": "next-run",
+   "id": "story.level.stepPoints",
+   "label": "Points per level, growth",
+   "description": "Each level needs this many more points than the last. At 3,500 points a body the last level lands in Waterfront.",
+   "unit": "points",
+   "default": 2000,
+   "validation": {
+    "min": 0,
+    "max": 20000
+   },
+   "purpose": "Levels slow as the story goes on; the tracks fill near the end"
+  },
+  {
+   "status": "proposed",
+   "source": "Edit 89 (28 October): Prototype 7.8",
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.8",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "group": "Story",
+   "owner": "Systems design",
+   "type": "number",
+   "applyAt": "next-run",
+   "id": "story.level.max",
+   "label": "Top level",
+   "description": "The dummy's top level. Levels 2 to this one each grant story.level.upgrades upgrades: 8, one for each level the drones do not bring (Battery 1–3, Legs 2–3, Hands 2, Arms 2–3).",
+   "unit": "level",
+   "default": 9,
+   "validation": {
+    "min": 2,
+    "max": 20
+   },
+   "purpose": "One upgrade for every level that is not a verb"
+  },
+  {
+   "status": "proposed",
+   "source": "Edit 89 (28 October): Prototype 7.8",
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.8",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "group": "Story",
+   "owner": "Systems design",
+   "type": "number",
+   "applyAt": "next-run",
+   "id": "story.level.upgrades",
+   "label": "Upgrades per level",
+   "description": "Upgrades a level-up grants. An upgrade fits the next level of an open track in the workshop (Battery from the start; Legs, Hands, Arms once their verb arrives).",
+   "unit": "upgrades",
+   "default": 1,
+   "validation": {
+    "min": 1,
+    "max": 3
+   },
+   "purpose": "Story spends upgrades, not credits (user request, 28 October)"
   },
   {
    "id": "arcade.giftEvery",

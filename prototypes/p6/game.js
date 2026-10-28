@@ -52,6 +52,11 @@
     mode: 'arcade', titleSel: 0, story: null, mapSel: null, // Edit 81: the game mode; the title's row; story progress; the story map's cursor
     slot: 0, saveSel: 0, slotAct: 0, saveMode: null, saveConfirm: null, nameEntry: null, // Edit 88: the slot in play; the save screen's row, action, mode, confirm; the name entry
   };
+  // Edit 89 (P7.8): every menu answers a tap (touch) or a click (mouse). Each frame, the screens drawn list their targets here,
+  // in reference units; a tap runs the topmost one under the finger. In play the list is empty: the field takes no taps
+  const HITS = [];
+  function hitbox(x, y, w, h, tag, fn) { HITS.push({ x, y, w, h, tag, fn }); }
+  function uiTap(rx, ry) { for (let i = HITS.length - 1; i >= 0; i--) { const q2 = HITS[i]; if (rx >= q2.x && rx <= q2.x + q2.w && ry >= q2.y && ry <= q2.y + q2.h) { q2.fn(); return true; } } return false; }
   // Edit 88 (P7.7): three save slots (story.saveSlots), each a name (story.saveNameMax characters), a time stamp and the story's
   // progress (district, tile in test, cleared tiles, credits, points, levels, chassis). Saved in this browser after every count,
   // clear, gift and purchase, as before (Edit 81), into the slot in play. 7.1–7.6 kept one story under SAVE_KEY: it moves into
@@ -94,7 +99,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.7' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.8' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.8 (GDD Edit 89: touch on every menu; Story levels from points and upgrades, not credits; the workshop, around the chassis); 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -159,7 +164,7 @@
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
-    fx.marks = []; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
+    fx.marks = []; fx.levelUp = null; fx.fit = null; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
     fx.rings = []; fx.streaks = []; fx.bubbles.clear(); fx.carBarkT.clear(); fx.cars.clear(); fx.nm.clear(); fx.nmDone.clear();
     fx.lungeWatch = null; fx.lastImpact = null; fx.upgradeWatch = null; if (!carry) fx.pendingNodes = [];
     app.present = [];
@@ -292,7 +297,7 @@
   });
   window.addEventListener('blur', () => { held.clear(); if (app.screen === 'game' && app.sim && !app.sim.run.ending) app.paused = true; });
   cv.addEventListener('pointerdown', (e) => { cv.focus(); Snd.init();
-    if (e.pointerType === 'mouse' && app.screen === 'saves') { const r = cv.getBoundingClientRect(), k = (window.devicePixelRatio || 1) / scale; saveTap((e.clientX - r.left) * k - ox / scale, (e.clientY - r.top) * k - oy / scale); } // Edit 88: a click on the save screen
+    if (e.pointerType === 'mouse') { const r = cv.getBoundingClientRect(), k = (window.devicePixelRatio || 1) / scale; uiTap((e.clientX - r.left) * k - ox / scale, (e.clientY - r.top) * k - oy / scale); } // Edit 89: a click on any menu
   });
 
   // Gamepads (Edit 75: pads.js, shared with the controls prototype). Every connected pad is read; the last one used drives.
@@ -350,9 +355,12 @@
   // screen's side margins. Layout in reference units from the canvas corner (the game's units), so the margins count.
   const FACE = [['y', 0, -1, 'Y', ABIL4 ? 'PUSH' : 'THROW'], ['x', -1, 0, 'X', ABIL3 ? 'GRAB' : 'GRAB'], ['b', 1, 0, 'B', 'JUMP'], ['a', 0, 1, 'A', 'DASH']].filter((f) => !(ABIL3 && f[0] === 'y')); // Edit 79: no Y in 6.9
   const FACE_NODE = { a: null, b: 'jump', x: 'carry', y: ABIL4 ? 'push' : 'throw' };
-  function touchDevice() {
-    try { return /(^#|[#&])touch\b/.test(location.hash) || /[?&]touch\b/.test(location.search) || window.matchMedia('(hover: none) and (pointer: coarse)').matches; }
-    catch (e) { return false; }
+  function touchDevice() { // Edit 89: phones with a stylus (S Pen) report a fine, hovering pointer: the first touch switches touch on too (below)
+    try {
+      if (/(^#|[#&])touch\b/.test(location.hash) || /[?&]touch\b/.test(location.search)) return true;
+      const mm = (qy) => !!(window.matchMedia && window.matchMedia(qy).matches), pts = navigator.maxTouchPoints || 0;
+      return mm('(hover: none) and (pointer: coarse)') || mm('(pointer: coarse)') || (pts > 0 && mm('(any-pointer: coarse)')) || (pts > 0 && /Android|iPhone|iPad|iPod|Mobile|SamsungBrowser/i.test(navigator.userAgent || ''));
+    } catch (e) { return false; }
   }
   function touchOn() {
     if (TOUCH.on) return;
@@ -406,11 +414,11 @@
     if (e.type === 'pointerdown') {
       if (TOUCH.portrait) return;
       try { cv.setPointerCapture(id); } catch (err) { /* not offered */ }
-      if (app.screen === 'saves' && saveTap(x - L.gx, y - L.gy)) return; // Edit 88: tap a slot, an action or a key
       if (inChip(L.chip.pause, x, y, STORY ? 8 : 0)) { menuQ.push('pause'); return; } // Edit 87: small chips, a finger's reach
       if (inChip(L.chip.full, x, y, STORY ? 8 : 0)) { fullscreen(); return; }
       const f = L.face.slice().sort((p1, p2) => Math.hypot(x - p1.x, y - p1.y) - Math.hypot(x - p2.x, y - p2.y)).find((q2) => Math.hypot(x - q2.x, y - q2.y) <= q2.r * 1.35); // the nearest key within reach
       if (f) { TOUCH.ptr.set(id, f.id); TOUCH.down[f.id] = true; if (f.id === 'a') { q.a++; menuQ.push('ok'); } else if (f.id === 'b') { q.b++; menuQ.push('back'); } else q[f.id]++; return; }
+      if (uiTap(x - L.gx, y - L.gy)) return; // Edit 89: a menu's row, card, key or button
       if (x >= L.sz.x0 && x <= L.sz.x1 && y >= L.sz.y0 && y <= L.sz.y1) { // the stick's zone takes the thumb; the stick floats to it
         TOUCH.ptr.set(id, 'stick');
         TOUCH.base = pv('proto.input.touchFloat') ? { x: clamp(x, L.sz.x0 + L.sr * 0.7, L.sz.x1 - L.sr * 0.3), y: clamp(y, L.sz.y0 + L.sr * 0.5, L.sz.y1 - L.sr * 0.7) } : { x: L.home.x, y: L.home.y };
@@ -521,6 +529,7 @@
     if (app.touchEdit) drawTouchEdit(L);
   }
   if (touchDevice()) touchOn();
+  for (const t of ['pointerdown', 'touchstart']) window.addEventListener(t, (e) => { if (!TOUCH.on && (t === 'touchstart' || e.pointerType === 'touch')) touchOn(); }, { capture: true, passive: true }); // Edit 89: a finger on any screen turns touch on
 
   // ---------- audio
   const Snd = {
@@ -882,7 +891,10 @@
           if (!fx.seenScreens.has(e.to)) { fx.seenScreens.add(e.to); toast(e.to + ' · ' + (THEME_NAME[e.focal || e.theme] || e.landmark || '') + (e.turns === 'diagonal' ? ' · 45° road' : '')); } // P4: generated screen names were checked against P3's layouts, so P4 shows the screen's theme
           break;
         }
-        case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); toast(copy('toast.purchase', '{node} installed', { node: NODE(e.node).name })); break;
+        case 'purchase': [523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.1, 'triangle', 0.07, j * 0.07)); Snd.tone(150, 60, 0.18, 'square', 0.06, 0.02); fx.fit = { node: e.node, t0: app.realT }; toast(e.unit === 'upgrade' ? NODE(e.node).name + ' fitted' + (e.upgrades ? ' · ' + e.upgrades + ' upgrade' + (e.upgrades === 1 ? '' : 's') + ' left' : '') : copy('toast.purchase', '{node} installed', { node: NODE(e.node).name })); break; // Edit 89: the fit lands on the workshop's chassis
+        case 'purchase-denied': Snd.tone(180, 140, 0.12, 'square', 0.04); toast(e.why === 'max' ? 'That part is at its top level' : /^gift/.test(e.why) ? 'A Farsight drone brings that part' : e.why === 'level up first' ? 'Level up first: ' + num(Math.max(0, (STORY.levelOf(s.run.points, s.P).next || 0) - s.run.points)) + ' points to go' : e.why[0].toUpperCase() + e.why.slice(1)); break; // Edit 89
+        case 'level-up': fx.levelUp = { level: e.level, upgrades: e.upgrades, t0: app.realT }; levelFanfare(); break; // Edit 89: points level the dummy up
+        case 'shop-open': if (STORY && ABIL4) { const k = SHOP_GRID.findIndex((g) => { const n = nextLevel(s, g[0]); return n && s.canBuy(n).ok; }); app.shopCol = Math.max(0, k); app.shopRow = k >= 0 ? 0 : SHOP_ROWS; fx.fit = null; } break; // Edit 89: the workshop opens on a part an upgrade fits
         case 'pickup': Snd.tone(700, 950, 0.05, 'triangle', 0.06); if (ABIL && s.coneCapacity() > 1) toast('Cones ' + (e.n || 1) + ' / ' + s.coneCapacity()); break;
         case 'drop': Snd.tone(500, 380, 0.06, 'triangle', 0.05); break;
         case 'stair': Snd.tone(260, 300, 0.05, 'triangle', 0.03); break;
@@ -933,6 +945,10 @@
     [880, 1174.66, 1479.98].forEach((f) => Snd.tone(f, f * 1.004, 1.4, 'triangle', 0.045, c0));
     Snd.tone(293.66, 293.66, 1.4, 'sine', 0.06, c0);
     [2349.3, 2959.96, 3520, 2637].forEach((f, j) => Snd.tone(f, f, 0.07, 'sine', 0.02, c0 + 0.12 + j * 0.13));
+  }
+  function levelFanfare() { // Edit 89: LEVEL UP, a bright climb and a held top note (original)
+    [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, j) => { Snd.tone(f, f, 0.12, 'square', 0.03, j * 0.065); Snd.tone(f, f * 1.003, 0.22, 'triangle', 0.06, j * 0.065); });
+    Snd.tone(1046.5, 1046.5, 0.7, 'triangle', 0.05, 0.36); Snd.tone(1568, 1568, 0.5, 'sine', 0.025, 0.42); Snd.noise(3000, 9000, 0.25, 0.02, 0.36);
   }
   function horn() { Snd.tone(440, 430, 0.16, 'square', 0.05); Snd.tone(349, 340, 0.22, 'square', 0.05, 0.18); }
   function dashify(str) { return String(str).replace(/lunge/gi, (m) => (m[0] === 'L' ? (m === 'LUNGE' ? 'DASH' : 'Dash') : 'dash')); } // display name only
@@ -1028,7 +1044,8 @@
       if (s.phase === 'report' && m === 'ok') s.continueReport();
       else if (s.phase === 'shop') {
         const nc = SHOP_GRID.length, colLen = () => SHOP_GRID[app.shopCol].length;
-        if (m === 'left' || m === 'right') { app.shopCol = (app.shopCol + (m === 'right' ? 1 : -1) + nc) % nc; if (app.shopRow < SHOP_ROWS && app.shopRow >= colLen()) app.shopRow = colLen() - 1; }
+        if (STORY && ABIL4 && (m === 'left' || m === 'right' || m === 'up' || m === 'down')) wsMove(m); // Edit 89: the workshop, around the chassis
+        else if (m === 'left' || m === 'right') { app.shopCol = (app.shopCol + (m === 'right' ? 1 : -1) + nc) % nc; if (app.shopRow < SHOP_ROWS && app.shopRow >= colLen()) app.shopRow = colLen() - 1; }
         else if (m === 'up') app.shopRow = app.shopRow === SHOP_ROWS ? colLen() - 1 : Math.max(0, app.shopRow - 1);
         else if (m === 'down') app.shopRow = app.shopRow + 1 >= colLen() ? SHOP_ROWS : app.shopRow + 1;
         else if (m === 'back') { s.leaveShop(); clearEdges(); return; }
@@ -2085,12 +2102,36 @@
     return b.mode === 'rescue' ? (s.rescue && s.rescue.ferry ? ' · DRONE' : ' · RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level;
   }
   function fitTextR(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color, 'right'); }
+  function fitNumR(t, x, y, w, size, color) { let z = size; while (z > 14) { ctx.font = '700 ' + z + 'px ' + F_MONO; if (ctx.measureText(t).width <= w) break; z--; } txt(t, x, y, '700 ' + z + 'px ' + F_MONO, color, 'right'); } // Edit 89: a number that keeps clear of its label
   function fitText(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color); }
+  function drawLevelUp(s) { // Edit 89: LEVEL UP across the field; a burst from the stats box. It does not stop play
+    const lu = fx.levelUp; if (!lu) return; const t = app.realT - lu.t0; if (t > 2.6) { fx.levelUp = null; return; }
+    const a = t < 0.12 ? t / 0.12 : t > 2.1 ? Math.max(0, (2.6 - t) / 0.5) : 1, pop = RM ? 1 : 1 + 0.55 * Math.pow(Math.max(0, 1 - t / 0.25), 2), cx = FX + FW / 2, cy = FY + 132;
+    ctx.save(); ctx.globalAlpha = a;
+    const g = ctx.createLinearGradient(FX, 0, FX + FW, 0); g.addColorStop(0, 'rgba(8,12,24,0)'); g.addColorStop(0.5, 'rgba(8,12,24,0.78)'); g.addColorStop(1, 'rgba(8,12,24,0)'); ctx.fillStyle = g; ctx.fillRect(FX, cy - 62, FW, 128);
+    if (!RM) { ctx.strokeStyle = C.dummy; ctx.lineWidth = 3; ctx.beginPath(); for (let i = 0; i < 14; i++) { const an = i * TAU / 14 + t * 0.8, r0 = 60 + 140 * Math.min(1, t / 0.5), r1 = r0 + 26; ctx.moveTo(cx + Math.cos(an) * r0 * 1.9, cy - 10 + Math.sin(an) * r0 * 0.45); ctx.lineTo(cx + Math.cos(an) * r1 * 1.9, cy - 10 + Math.sin(an) * r1 * 0.45); } ctx.globalAlpha = a * Math.max(0, 1 - t / 0.9); ctx.stroke(); ctx.globalAlpha = a; }
+    ctx.save(); ctx.translate(cx, cy); ctx.scale(pop, pop); if (FT.neon) { ctx.shadowColor = C.dummy; ctx.shadowBlur = 26; } txt('LEVEL UP', 0, 0, '900 66px ' + F_BRAND, C.dummy, 'center'); ctx.restore();
+    txt('LEVEL ' + lu.level + (lu.upgrades > 0 ? '  ·  +1 UPGRADE' : ''), cx, cy + 38, fLab, '#FFFFFF', 'center');
+    if (lu.upgrades > 0) txt('Fit it in the workshop after this body', cx, cy + 60, '400 16px ' + F_UI, FT.dim, 'center');
+    const X = FX + FW + 16, W = VW - X - 16, bx = X + W - 30, by = FY - 6 + 62, u = Math.min(1, t / 0.9); // the stats box bursts
+    if (u < 1 && !RM) for (const [d0, col] of [[0, C.dummy], [0.15, FT.accent]]) { const v = Math.max(0, Math.min(1, (u - d0) / 0.85)); if (v <= 0 || v >= 1) continue; ctx.globalAlpha = 1 - v; ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(bx, by, 8 + 110 * (1 - Math.pow(1 - v, 3)), 0, TAU); ctx.stroke(); }
+    ctx.restore();
+  }
   function drawStatsBox(s) { // Edit 87: top right, BODY's size: POINTS and CREDITS (Arcade: POINTS and CARS LEFT, its clock)
     const X = FX + FW + 16, W = VW - X - 16, Y = FY - 6, r = s.run;
+    if (s.storyMode && s.upgradesLeft) { // Edit 89: Story: POINTS and LEVEL; a bar to the next level; unspent upgrades as a badge
+      const lv = STORY.levelOf(r.points, s.P), left = s.upgradesLeft(), lu = fx.levelUp && app.realT - fx.levelUp.t0 < 1.4, blink = lu && Math.floor(app.realT * 8) % 2 === 0;
+      panel(X, Y, W, 86); if (app.hud) app.hud.stats = { x: X, y: Y, w: W, h: 86, rows: 'POINTS LEVEL', level: lv.level, upgrades: left, frac: lv.frac };
+      ctx.font = fLab; const lw = ctx.measureText('POINTS').width; txt('POINTS', X + 14, Y + 32, fLab, FT.dim); fitNumR(num(r.points), X + W - 14, Y + 34, W - 28 - lw - 10, TY.lb, FT.text);
+      txt('LEVEL', X + 14, Y + 62, fLab, blink ? C.dummy : FT.dim); txt(String(lv.level), X + W - 14, Y + 64, fNum, blink ? C.dummy : FT.text, 'right');
+      if (left > 0) { ctx.font = fLab; const lx = X + 14 + ctx.measureText('LEVEL').width + 10, t = '+' + left; ctx.font = '700 15px ' + F_UI; const pw = ctx.measureText(t).width + 14; rr(lx, Y + 46, pw, 22, 11); ctx.fillStyle = C.dummy; ctx.fill(); txt(t, lx + pw / 2, Y + 62, '700 15px ' + F_UI, C.primary, 'center'); }
+      rr(X + 14, Y + 72, W - 28, 6, 3); ctx.fillStyle = FT.track; ctx.fill();
+      if (lv.frac > 0) { rr(X + 14, Y + 72, Math.max(6, (W - 28) * lv.frac), 6, 3); ctx.fillStyle = blink ? '#FFFFFF' : C.dummy; ctx.fill(); }
+      return Y + 86;
+    }
     const left = s.carsLeft ? s.carsLeft() : 0, rows = s.storyMode ? [['POINTS', num(r.points)], ['CREDITS', String(r.credits)]] : [['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     panel(X, Y, W, 86); if (app.hud) app.hud.stats = { x: X, y: Y, w: W, h: 86, rows: rows.map((q) => q[0]).join(' ') };
-    rows.forEach(([k, v], i) => { const y = Y + 34 + i * 34; txt(k, X + 14, y, fLab, FT.dim); txt(v, X + W - 14, y + 2, fNum, FT.text, 'right'); });
+    rows.forEach(([k, v], i) => { const y = Y + 34 + i * 34; txt(k, X + 14, y, fLab, FT.dim); ctx.font = fLab; fitNumR(v, X + W - 14, y + 2, W - 28 - ctx.measureText(k).width - 10, TY.lb, FT.text); });
     return Y + 86;
   }
   function drawTopBar(s) {
@@ -2239,7 +2280,7 @@
     if (app.previewMods) return PIX.MODULES;
     if (ABIL) {
       const out = []; for (const t of Object.keys(TRACKS)) out.push(...DOLL_MODS[t].slice(0, s.tier(t)));
-      const sel = s.phase === 'shop' && app.shopRow < SHOP_ROWS ? NODES7[nextLevel(s, SHOP_GRID[app.shopCol][0])] : null;
+      const nn = s.phase === 'shop' && app.shopRow < SHOP_ROWS ? nextLevel(s, SHOP_GRID[app.shopCol][0]) : null, sel = nn && !(STORY && STORY.VERBS.includes(nn) && !s.run.owned[nn]) ? NODES7[nn] : null; // Edit 89: a part not yet issued is not tried on
       if (sel && s.tier(sel.track) < sel.level && Math.floor(app.realT * 3) % 2 === 0) out.push(...DOLL_MODS[sel.track].slice(s.tier(sel.track), sel.level));
       return out;
     }
@@ -2291,10 +2332,11 @@
 
   // ---------- screens (frame layer). Facts at ui.typeLoadBearing, labels and lines at ui.typeSecondary.
   function veil() { ctx.fillStyle = FT.veil; ctx.fillRect(FX, FY, FW, FH); }
-  function menuList(items, sel, x, y, w, disabled, rowH) {
+  function menuList(items, sel, x, y, w, disabled, rowH, pick) { // Edit 89: pick(i) moves the cursor; a tap picks the row and presses A
     rowH = rowH || 54;
     items.forEach((it, i) => {
       const yy = y + i * rowH, on = i === sel, off = disabled && disabled(i);
+      if (pick) hitbox(x, yy, w, rowH - 10, 'menu:' + it, () => { pick(i); menuQ.push('ok'); });
       rr(x, yy, w, rowH - 10, 10); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
       ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
       txt(it, x + 18, yy + (rowH - 10) / 2 + 8, fLab, off ? FT.off : on ? FT.selText : FT.text);
@@ -2318,6 +2360,7 @@
     wrapText(TT && TT.lines ? fillIn(TT.lines[0], tv) : 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.', x + 32, y + 116, w - 64, 30, fTxt, FT.dim, 2);
     LEVEL_LIST.forEach((id, i) => { // Edit 41: five districts, in order (P6: three)
       const yy = y + 160 + i * 46, on = i === app.level, q = quotaOf(id);
+      hitbox(x + 28, yy, w - 56, 40, 'district:' + id, () => { if (app.level === i) menuQ.push('ok'); else app.level = i; }); // Edit 89: tap to choose; tap again to start
       rr(x + 28, yy, w - 56, 40, 10); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill();
       ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
       txt((i + 1) + '  ' + INFO(id).name, x + 48, yy + 30, fLab, on ? FT.selText : FT.text);
@@ -2325,11 +2368,13 @@
     });
     const dname = DIFFICULTIES[app.difficulty].name.toUpperCase(), dt = '◀  ' + dname + ' · ' + difficultyHealth(app.difficulty) + ' HEALTH  ▶';
     ctx.font = fKey; const dw = ctx.measureText(dt).width + 36;
+    hitbox(x + w / 2 - dw / 2 - 30, y + 386, dw / 2 + 30, 52, 'difficulty:-', () => menuQ.push('left')); hitbox(x + w / 2, y + 386, dw / 2 + 30, 52, 'difficulty:+', () => menuQ.push('right')); // Edit 89: tap ◀ or ▶
     rr(x + w / 2 - dw / 2, y + 392, dw, 40, 20); ctx.fillStyle = app.difficulty === 1 ? FT.item : 'rgba(245,197,66,0.35)'; ctx.fill();
     ctx.strokeStyle = FT.accent; ctx.lineWidth = 1.5; ctx.stroke();
     txt(dt, x + w / 2, y + 420, fKey, FT.text, 'center');
     drawKeys(TOUCH.on ? [['STICK', 'MOVE'], ['A', 'DASH'], ['❚❚', 'PAUSE']] : app.device === 'pad' ? [['STICK', 'MOVE'], ['A', 'DASH'], ['START', 'PAUSE']] : [['WASD', 'MOVE'], ['SPACE', 'DASH'], ['ESC', 'PAUSE']], x + w / 2, y + 450);
-    txt(TOUCH.on || app.device === 'pad' ? 'PRESS A TO START' : TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
+    if (TOUCH.on) { const bw = 340; rr(x + w / 2 - bw / 2, y + h - 56, bw, 44, 12); ctx.fillStyle = FT.sel; ctx.fill(); ctx.strokeStyle = FT.accent; ctx.lineWidth = 1.5; ctx.stroke(); txt('START · ' + INFO(LEVEL_LIST[app.level]).name.toUpperCase(), x + w / 2, y + h - 26, fLab, FT.selText, 'center'); hitbox(x + w / 2 - bw / 2, y + h - 56, bw, 44, 'start', () => menuQ.push('ok')); } // Edit 89
+    else txt(app.device === 'pad' ? 'PRESS A TO START' : TT && TT.start ? TT.start.toUpperCase() : 'PRESS SPACE TO START', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
   }
   // ---------- Edit 81 (P7): the title's two modes; the story map; the tile card; the brief under the district map; fences
   const STORY_FOOT = 0; // Edit 83: the brief moved from under the district map to the bottom line
@@ -2359,25 +2404,25 @@
     const cw = (w - 56 - 20) / 2, top = y + 162, chh = 206;
     cards.forEach(([name, line, foot], i) => {
       const cx = x + 28 + i * (cw + 20), on = (app.titleSel % items.length) === i;
+      hitbox(cx, top, cw, chh, 'title:' + name, () => { app.titleSel = i; menuQ.push('ok'); }); // Edit 89
       rr(cx, top, cw, chh, 14); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
       txt(name, cx + 22, top + 50, '900 34px ' + F_BRAND, on ? FT.selText : FT.text);
       wrapText(line, cx + 22, top + 88, cw - 44, 27, '400 19px ' + F_UI, on ? FT.selText : FT.text, 3);
-      wrapText(foot, cx + 22, top + chh - 22, cw - 44, 24, '700 17px ' + F_UI, on ? FT.selText : FT.dim, 1);
+      fitText(foot, cx + 22, top + chh - 22, cw - 44, 17, 12, on ? FT.selText : FT.dim); // Edit 89: shrink to fit, never cut
     });
     const pd = TOUCH.on || app.device === 'pad';
-    txt(pd ? 'STICK CHOOSE · A SELECT' : 'ARROWS CHOOSE · SPACE SELECT', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
+    txt(TOUCH.on ? 'TAP A MODE' : pd ? 'STICK CHOOSE · A SELECT' : 'ARROWS CHOOSE · SPACE SELECT', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
   }
   // Edit 88: the save screen. NEW GAME; then each slot: its number, name, time stamp; where the story stands (district, tile in
   // test, tiles cleared); points, credits, levels, chassis. The chosen slot shows its actions; ERASE and OVERWRITE ask twice
-  const saveHits = []; // tappable and clickable rects, in reference units, rebuilt each frame
   function slotLines(v) {
     const pr = v.progress, cl = STORY.clearedCount(pr), t = pr.complete ? null : STORY.activeTile(pr, pr.district);
     return [pr.complete ? 'CERTIFIED · ALL ' + STORY.TOTAL + ' TILES' : INFO(pr.district).name.toUpperCase() + ' · ' + t + ' · TILE ' + STORY.tileNumber(pr.district, t) + ' OF ' + STORY.TOTAL + (pr.tileWO ? ' · ' + pr.tileWO + ' OF ' + STORY.needOf(pr.district, t) + ' WRITE-OFFS' : ''),
-      cl + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points || 0) + ' POINTS · ' + plural(pr.credits || 0, 'CREDIT') + ' · ' + plural(Object.keys(pr.owned || {}).length, 'LEVEL') + ' · CHASSIS ' + String(pr.chassis || 0).padStart(2, '0')];
+      cl + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points || 0) + ' POINTS · LEVEL ' + STORY.levelOf(pr.points || 0).level + ' · CHASSIS ' + String(pr.chassis || 0).padStart(2, '0')]; // Edit 89: the dummy's level, not credits
   }
   function drawSaves() {
     drawField(preview(Math.max(0, LEVEL_LIST.indexOf('monument'))), true);
-    veil(); saveHits.length = 0;
+    veil();
     const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, n = slotCount(), S = allSlots(), over = app.saveMode === 'overwrite';
     panel(x, y, w, h);
     if (app.nameEntry) { drawNameEntry(x, y, w, h); return; }
@@ -2387,12 +2432,12 @@
     rr(x + 24, ny, w - 48, nh, 12); ctx.fillStyle = onN && !over ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = onN && !over ? FT.accent : FT.itemEdge; ctx.lineWidth = onN ? 3 : 1.5; ctx.stroke();
     txt('NEW GAME', x + 44, ny + 33, '900 24px ' + F_BRAND, onN && !over ? FT.selText : FT.text);
     txt(over ? 'CHOOSE A SLOT TO OVERWRITE · B CANCELS' : free >= 0 ? 'Monument A1 · into slot ' + (free + 1) : 'All ' + n + ' slots in use · overwrite one', x + w - 44, ny + 31, '700 16px ' + F_UI, over ? C.warning : onN ? FT.selText : FT.dim, 'right');
-    saveHits.push({ x: x + 24, y: ny, w: w - 48, h: nh, sel: 0 });
+    hitbox(x + 24, ny, w - 48, nh, 'save:new', () => { if (app.saveMode) { app.saveMode = null; return; } app.saveSel = 0; app.slotAct = 0; app.saveConfirm = null; savesMenu('ok'); });
     const top = ny + nh + 12, gap = 10, ch = Math.min(148, Math.floor((y + h - 34 - top - (n - 1) * gap) / n));
     for (let i = 0; i < n; i++) {
       const v = S[i], cy = top + i * (ch + gap), on = app.saveSel === i + 1, cx = x + 24, cw = w - 48;
       rr(cx, cy, cw, ch, 12); ctx.fillStyle = on ? FT.keyTop : FT.item; ctx.fill(); ctx.strokeStyle = on ? (over ? C.warning : FT.accent) : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
-      saveHits.push({ x: cx, y: cy, w: cw, h: ch, sel: i + 1 });
+      hitbox(cx, cy, cw, ch, 'save:' + (i + 1), () => { if (app.saveSel !== i + 1) { app.saveSel = i + 1; app.slotAct = 0; app.saveConfirm = null; } });
       rr(cx + 16, cy + 14, 44, 44, 10); ctx.fillStyle = v ? C.dummy : FT.track; ctx.fill(); txt(String(i + 1), cx + 38, cy + 46, '900 28px ' + F_BRAND, v ? C.primary : FT.dim, 'center');
       if (v) {
         txt(v.name, cx + 76, cy + 42, '900 28px ' + F_MONO, FT.text);
@@ -2412,13 +2457,13 @@
           ctx.font = '700 16px ' + F_UI; const aw = ctx.measureText(label).width + 30;
           rr(ax, ay, aw, 30, 8); ctx.fillStyle = conf ? C.warning : sj ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = sj ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
           txt(label, ax + aw / 2, ay + 21, '700 16px ' + F_UI, conf ? '#FFFFFF' : sj ? FT.selText : FT.text, 'center');
-          saveHits.push({ x: ax, y: ay, w: aw, h: 30, sel: i + 1, act: j });
+          hitbox(ax, ay, aw, 30, 'act:' + (i + 1) + ':' + a, () => { app.saveSel = i + 1; app.slotAct = j; savesMenu('ok'); });
           ax += aw + 10;
         });
       }
     }
     const pd = TOUCH.on || app.device === 'pad';
-    txt(pd ? 'STICK CHOOSE · A SELECT · B BACK' : 'ARROWS CHOOSE · SPACE SELECT · SHIFT BACK', x + w / 2, y + h - 12, '700 15px ' + F_UI, FT.dim, 'center');
+    txt(TOUCH.on ? 'TAP A SLOT, THEN WHAT TO DO · B BACK' : pd ? 'STICK CHOOSE · A SELECT · B BACK' : 'ARROWS CHOOSE · SPACE SELECT · SHIFT BACK', x + w / 2, y + h - 12, '700 15px ' + F_UI, FT.dim, 'center');
   }
   function nameKeyRects(x, y, w) { // the grid, in reference units: 13 × 3 letters, then SPACE · DEL · OK
     const kw = 50, kh = 58, g = 5, gw = NAME_COLS * kw + (NAME_COLS - 1) * g, gx = x + (w - gw) / 2, gy = y + 196, out = [];
@@ -2431,7 +2476,7 @@
     txt((ne.kind === 'rename' ? 'RENAME SLOT ' : 'NEW GAME · SLOT ') + ne.slot, x + 24, y + 40, fLab, FT.accent);
     txt(ne.text.length + ' / ' + M, x + w - 24, y + 40, '700 15px ' + F_UI, FT.dim, 'right');
     const cw = 44, fx0 = x + (w - M * cw) / 2, fy = y + 78, blink = Math.floor(app.realT * 2.5) % 2 === 0;
-    saveHits.push({ x: fx0 - 10, y: fy - 10, w: M * cw + 20, h: 76, field: true }); // touch: the phone's own keyboard
+    hitbox(fx0 - 10, fy - 10, M * cw + 20, 76, 'name', () => { if (app.nameEntry) { nameInput.value = app.nameEntry.fresh ? '' : app.nameEntry.text; app.focusName = true; nameFocus(); } }); // touch: the phone's own keyboard
     for (let i = 0; i < M; i++) {
       const cx = fx0 + i * cw, ch = ne.text[i] || '';
       if (ne.fresh && ch) { ctx.fillStyle = FT.sel; ctx.fillRect(cx + 2, fy, cw - 4, 56); }
@@ -2443,18 +2488,10 @@
       const on = k.r === ne.r && (k.r < 3 ? k.c === ne.c : nameKeyOf(k.c) === nameKeyOf(ne.c)), ok = k.label === 'OK';
       rr(k.x, k.y, k.w, k.h, 8); ctx.fillStyle = on ? FT.sel : ok ? FT.credit : FT.item; ctx.fill(); ctx.strokeStyle = on ? FT.accent : ok ? C.dummy : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
       txt(k.label, k.x + k.w / 2, k.y + k.h / 2 + 9, (k.r < 3 ? '700 26px ' + F_MONO : '700 19px ' + F_UI), on ? FT.selText : FT.text, 'center');
-      saveHits.push({ x: k.x, y: k.y, w: k.w, h: k.h, key: k });
+      hitbox(k.x, k.y, k.w, k.h, 'key:' + k.label, () => { const ne2 = app.nameEntry; if (!ne2) return; ne2.r = k.r; ne2.c = k.c; nameOk(); });
     }
     const pd = TOUCH.on || app.device === 'pad';
     txt(TOUCH.on ? 'TAP A KEY · STICK AND A · B DELETES' : pd ? 'STICK CHOOSE · A TYPE · B DELETE · START OK' : 'TYPE THE NAME · ENTER OK · BACKSPACE DELETE · ESC CANCEL', x + w / 2, y + h - 12, '700 15px ' + F_UI, FT.dim, 'center');
-  }
-  function saveTap(rx, ry) { // a tap or a click on the save screen (reference units)
-    const hit = saveHits.slice().reverse().find((q2) => rx >= q2.x && rx <= q2.x + q2.w && ry >= q2.y && ry <= q2.y + q2.h); if (!hit) return false;
-    if (hit.field) { if (app.nameEntry) { nameInput.value = app.nameEntry.fresh ? '' : app.nameEntry.text; app.focusName = true; nameFocus(); } return true; }
-    if (hit.key) { const ne = app.nameEntry; if (!ne) return true; ne.r = hit.key.r; ne.c = hit.key.c; nameOk(); return true; }
-    if (hit.act != null) { app.saveSel = hit.sel; app.slotAct = hit.act; savesMenu('ok'); return true; }
-    if (app.saveSel !== hit.sel) { app.saveSel = hit.sel; app.slotAct = 0; app.saveConfirm = null; if (hit.sel === 0) savesMenu('ok'); } else if (hit.sel === 0) savesMenu('ok');
-    return true;
   }
   function drawStoryMap() {
     const pr = app.story; if (!pr) { app.screen = 'title'; return; }
@@ -2462,7 +2499,7 @@
     veil();
     const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, needT = (id, t) => pv('story.writeOffs.' + id + '.' + t); // Edit 82: a count per tile
     panel(x, y, w, h);
-    const sv = app.slot && allSlots()[app.slot - 1], stat = STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · ' + plural(pr.credits, 'CREDIT');
+    const sv = app.slot && allSlots()[app.slot - 1], stat = STORY.clearedCount(pr) + ' / ' + STORY.TOTAL + ' TILES · ' + num(pr.points) + ' POINTS · LEVEL ' + STORY.levelOf(pr.points || 0).level; // Edit 89
     ctx.font = '700 18px ' + F_UI; const sw = ctx.measureText(stat).width;
     txt(stat, x + w - 24, y + 40, '700 18px ' + F_UI, FT.text, 'right');
     fitText(sv ? 'SLOT ' + app.slot + ' · ' + sv.name : 'THE TEST CITY', x + 24, y + 40, w - 48 - sw - 24, TY.sec, 14, FT.accent); // Edit 88: the slot in play
@@ -2474,6 +2511,7 @@
       const at = (t) => { const [c, r] = STORY.cellOf(t); return [gx + c * (cw + g), top + r * (ch + g)]; };
       for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
         const t = 'ABC'[c] + (r + 1), st = STORY.tileState(pr, d.id, t), [cx, cy] = at(t), on = sel[0] === di * 3 + c && sel[1] === r, pulse = st === 'active' && Math.floor(app.realT * 2) % 2 === 0;
+        hitbox(cx, cy, cw, ch, 'tile:' + d.id + ':' + t, () => { if (on && st === 'active') menuQ.push('ok'); else app.mapSel = [di * 3 + c, r]; }); // Edit 89: tap to read; the tile in test, tapped again, deploys
         rr(cx, cy, cw, ch, 6); ctx.fillStyle = st === 'cleared' ? 'rgba(79,195,232,0.30)' : st === 'active' ? FT.keyTop : 'rgba(40,46,56,0.55)'; ctx.fill(); // Edit 83: uncleared greyed out
         ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1; ctx.stroke();
         if (st === 'active') { rr(cx - 2, cy - 2, cw + 4, ch + 4, 8); ctx.strokeStyle = C.dummy; ctx.lineWidth = pulse ? 4 : 3; ctx.stroke(); } // the live tile, ringed in yellow
@@ -2506,15 +2544,16 @@
     }
     const on = !pr.complete, bt = pr.complete ? 'THE TEST CITY IS CERTIFIED' : 'DEPLOY · ' + INFO(pr.district).name.toUpperCase() + ' ' + STORY.activeTile(pr, pr.district);
     rr(x + 24, y + h - 72, w - 48, 44, 12); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = FT.accent; ctx.lineWidth = 1.5; ctx.stroke();
+    if (on) hitbox(x + 24, y + h - 72, w - 48, 44, 'deploy', () => menuQ.push('ok')); // Edit 89
     txt(bt, x + w / 2, y + h - 42, fLab, on ? FT.selText : FT.text, 'center');
     const pd = TOUCH.on || app.device === 'pad';
-    txt(pd ? 'STICK READ A TILE · A DEPLOY · B BACK' : 'ARROWS READ A TILE · SPACE DEPLOY · SHIFT BACK', x + w / 2, y + h - 8, '700 15px ' + F_UI, FT.dim, 'center');
+    txt(TOUCH.on ? 'TAP A TILE TO READ IT · TAP DEPLOY · B BACK' : pd ? 'STICK READ A TILE · A DEPLOY · B BACK' : 'ARROWS READ A TILE · SPACE DEPLOY · SHIFT BACK', x + w / 2, y + h - 8, '700 15px ' + F_UI, FT.dim, 'center');
   }
   function drawBrief(s) { // the tile card: where you are, how it came to be, what Farsight wants
     veil();
     const pr = s.story, t = s.screenName(), d = STORY.districtOf(s.levelId), tile = d.tiles[t], P = s.P, tx = STORY.taskText(tile.task, P), need = STORY.needOf(d.id, t, P);
     const x = FX + 36, y = FY + 26, w = FW - 72, h = FH - 52;
-    panel(x, y, w, h);
+    panel(x, y, w, h); hitbox(x, y, w, h, 'brief', () => menuQ.push('ok')); // Edit 89: a tap begins
     txt(d.name.toUpperCase() + ' · TILE ' + t + ' · ' + STORY.tileNumber(d.id, t) + ' OF ' + STORY.TOTAL, x + 30, y + 44, fLab, FT.accent);
     txt(tile.title, x + 30, y + 96, '900 40px ' + F_BRAND, FT.text);
     let yy = y + 138;
@@ -2526,7 +2565,7 @@
     yy += 32; yy += 28 * wrapText(tx.brief + ' ' + (need === 1 ? 'One counted write-off clears the tile.' : need + ' counted write-offs clear the tile' + (pr.tileWO ? ' (' + pr.tileWO + ' so far).' : '.')), x + 32, yy, w - 64, 28, '400 19px ' + F_UI, FT.text, 3);
     const gt = tile.gift && pr.gifts[d.id + ':' + t] ? giftText(tile.gift) : null;
     if (gt) { yy += 12; rr(x + 28, yy, w - 56, 48, 12); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke(); wrapText('GIFT · ' + gt, x + 46, yy + 31, w - 92, 24, '700 18px ' + F_UI, FT.text, 1); }
-    txt(TOUCH.on || app.device === 'pad' ? 'A  BEGIN THE TEST' : 'SPACE  BEGIN THE TEST', x + w - 30, y + h - 24, fLab, FT.accent, 'right');
+    txt(TOUCH.on ? 'TAP TO BEGIN THE TEST' : app.device === 'pad' ? 'A  BEGIN THE TEST' : 'SPACE  BEGIN THE TEST', x + w - 30, y + h - 24, fLab, FT.accent, 'right');
     txt('Fenced until cleared. Cleared tiles stay open.', x + 30, y + h - 24, '400 17px ' + F_UI, FT.dim);
   }
   // Edit 84: the gift screen, as in Zelda's item fanfare. The chassis, lit. A drone brings the module down over its part and lets go;
@@ -2614,11 +2653,12 @@
       const nx = NODES7[nd.track + (nd.level + 1)];
       ctx.globalAlpha = clamp01((land - 0.45) / 0.3);
       ctx.strokeStyle = FT.itemEdge; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(tx, yy - 6); ctx.lineTo(tx + tw, yy - 6); ctx.stroke();
-      if (nx) { const pr = P[nx.price]; txt('NOW IN THE SHOP', tx, yy + 26, fLab, FT.accent); wrapText(nx.name + ' · ' + pr + ' credit' + (pr === 1 ? '' : 's') + '. ' + nx.desc, tx, yy + 58, tw, 26, '400 19px ' + F_UI, FT.dim, 3); }
+      if (nx) { const pr = P[nx.price]; txt('NOW IN THE WORKSHOP', tx, yy + 26, fLab, FT.accent); wrapText(nx.name + ' · ' + (s.storyMode ? '1 upgrade' : pr + ' credit' + (pr === 1 ? '' : 's')) + '. ' + nx.desc, tx, yy + 58, tw, 26, '400 19px ' + F_UI, FT.dim, 3); } // Edit 89
       else txt('THE ONLY LEVEL OF ' + tr.name.toUpperCase(), tx, yy + 26, fLab, FT.accent);
       ctx.restore();
     }
-    if (giftReady() && Math.floor(app.realT * 2.5) % 3) txt((pd ? 'A  ' : 'SPACE  ') + (rs && rs.ferry ? 'ON TO ' + rs.tile : 'CONTINUE'), x + w - 30, y + h - 26, fLab, FT.accent, 'right');
+    hitbox(x, y, w, h, 'gift', () => menuQ.push('ok')); // Edit 89: a tap continues, once the hold is over
+    if (giftReady() && Math.floor(app.realT * 2.5) % 3) txt((TOUCH.on ? 'TAP · ' : pd ? 'A  ' : 'SPACE  ') + (rs && rs.ferry ? 'ON TO ' + rs.tile : 'CONTINUE'), x + w - 30, y + h - 26, fLab, FT.accent, 'right');
     ctx.restore();
   }
   function drawBriefFoot(s, X, y, W) { // under the district map: the brief and the tile's count
@@ -2660,7 +2700,7 @@
   function drawReport(s) {
     veil();
     const rp = s.report, x = FX + 40, y = FY + 36, w = FW - 80, h = FH - 72;
-    panel(x, y, w, h);
+    panel(x, y, w, h); hitbox(x, y, w, h, 'report', () => menuQ.push('ok')); // Edit 89: a tap continues
     const sr = rp.story; // Edit 81: the story's count and the brief. Edit 82: a credit a body
     txt(sr ? (sr.districtDone ? INFO(s.levelId).name.toUpperCase() + ' CLEARED · NEXT ' + INFO(rp.nextRoad).name.toUpperCase() : sr.cleared ? 'TILE ' + sr.tile + ' CLEARED' : 'WRITE-OFF REPORT · ' + sr.tile)
       : rp.roadCleared ? roadLabel(s.level.id) + ' CLEARED' : copy('report.eyebrow', 'WRITE-OFF REPORT').toUpperCase(), x + 30, y + 44, fLab, FT.accent);
@@ -2677,12 +2717,19 @@
       [shortId(hh.model), hh.angle != null ? Math.round(hh.angle) + '°' : '—', num(hh.assessed), num(hh.lost)].forEach((v, i) => txt(String(v), x + 30 + cols[i][1], yy, fNum, FT.text));
     });
     rr(x + 28, y + h - 116, w - 56, 52, 12); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke();
-    if (sr) { const c = sr.cheapest;
+    if (sr && sr.level) { // Edit 89: the level, the bar to the next, and what the upgrades wait for
+      const lv = sr.level, up = sr.levelBefore && lv.level > sr.levelBefore;
+      let line = (up ? 'LEVEL UP: ' + sr.levelBefore + ' → ' + lv.level : 'LEVEL ' + lv.level) + (lv.next ? ' · ' + num(lv.next - s.run.points) + ' POINTS TO LEVEL ' + (lv.level + 1) : ' · TOP LEVEL');
+      if (sr.upgrades > 0) line += sr.fit && sr.fit.length ? ' · ' + sr.upgrades + ' UPGRADE' + (sr.upgrades === 1 ? '' : 'S') + ': THE WORKSHOP IS NEXT' : ' · UPGRADES WAIT FOR A DRONE';
+      fitText(line, x + 46, y + h - 84, w - 92, TY.sec, 13, up ? C.dummy : FT.text);
+      rr(x + 46, y + h - 76, w - 92, 6, 3); ctx.fillStyle = FT.track; ctx.fill(); if (lv.frac > 0) { rr(x + 46, y + h - 76, Math.max(6, (w - 92) * lv.frac), 6, 3); ctx.fillStyle = C.dummy; ctx.fill(); }
+    } else if (sr) { const c = sr.cheapest;
       txt('+' + plural(sr.gained, 'credit').toLowerCase() + ' for the body. Balance: ' + s.run.credits + '.' + (c ? (s.run.credits >= c.price ? ' ' + NODE(c.node).name + ' is yours for ' + c.price + '.' : ' ' + NODE(c.node).name + ' at ' + c.price + '.') : ' Every track is full.'), x + 46, y + h - 82, fLab, FT.text); }
     else txt(copy('report.credit', 'One body credit granted. Balance: {credits}.', { credits: s.run.credits }), x + 46, y + h - 82, fLab, FT.text);
-    txt(TOUCH.on || app.device === 'pad' ? 'A  CONTINUE' : 'SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, FT.accent, 'right');
+    txt(TOUCH.on ? 'TAP TO CONTINUE' : app.device === 'pad' ? 'A  CONTINUE' : 'SPACE  CONTINUE', x + w - 30, y + h - 26, fLab, FT.accent, 'right');
   }
   function drawShop(s) {
+    if (STORY && ABIL4) return drawWorkshop(s); // Edit 89
     if (ABIL) return drawAbilityShop(s);
     veil();
     const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36;
@@ -2795,6 +2842,95 @@
     txt(TOUCH.on || app.device === 'pad' ? 'STICK SELECT · A BUY NEXT LEVEL · B DEPLOY' : 'ARROWS SELECT · SPACE BUY NEXT LEVEL · SHIFT DEPLOY', x + w / 2, y + h - 24, fLab, FT.dim, 'center');
   }
   const PART_WORD = { battery: 'Torso', legs: 'Leg', arms: 'Grip', throw: 'Throw' };
+  // Edit 89 (P7.8): the workshop. The next chassis, large, in the middle; its four parts around it, each a card wired to its seat on
+  // the chassis: the part, its button, its level pips, what it does now, what the next level adds and costs (Story: an upgrade;
+  // Arcade: credits). A part whose verb is not yet issued stays dark: no name, no levels, "a drone brings it". A fits; B deploys
+  const WS_POS = { arms: [0, 0], hands: [0, 1], battery: [1, 0], legs: [1, 1] }; // column, row around the chassis
+  const seatArt = {};
+  function seatOf(t) { // a track's first module on the chassis: its centre, in art pixels
+    if (seatArt[t]) return seatArt[t];
+    const m = DOLL_MODS[t] && DOLL_MODS[t][0], A = PIX.doll({}, '', []), B = PIX.doll({}, '', m ? [m] : []);
+    let n = 0, sx = 0, sy = 0; for (let i = 0; i < A.d.length; i++) if (A.d[i] !== B.d[i] && B.d[i]) { n++; sx += i % A.w; sy += Math.floor(i / A.w); }
+    return (seatArt[t] = n ? { x: sx / n + 0.5, y: sy / n + 0.5 } : { x: A.w / 2, y: A.h / 2 });
+  }
+  const wsLocked = (s, t) => !!(STORY && STORY.VERBS.includes(t + '1') && !s.run.owned[t + '1']);
+  const wsCost = (s, n) => (s.storyMode ? '1 UPGRADE' : plural(s.P[NODES7[n].price], 'CREDIT'));
+  function wsMove(m) { // the four cards around the chassis, DONE beneath
+    const t = SHOP_GRID[app.shopCol][0], [c, r] = WS_POS[t] || [0, 0], at = (c2, r2) => SHOP_GRID.findIndex((g) => WS_POS[g[0]] && WS_POS[g[0]][0] === c2 && WS_POS[g[0]][1] === r2);
+    if (app.shopRow === SHOP_ROWS) { if (m === 'up') app.shopRow = 0; return; }
+    if (m === 'left' || m === 'right') { const k = at(1 - c, r); if (k >= 0) app.shopCol = k; }
+    else if (m === 'up') { const k = at(c, r - 1); if (k >= 0) app.shopCol = k; }
+    else if (m === 'down') { const k = at(c, r + 1); if (k >= 0) app.shopCol = k; else app.shopRow = SHOP_ROWS; }
+  }
+  function drawWorkshop(s) {
+    veil(); veil();
+    const x = FX + 22, y = FY + 18, w = FW - 44, h = FH - 36, story = s.storyMode, r0 = s.run;
+    panel(x, y, w, h);
+    const nextCh = String((s.report ? s.report.chassis : r0.chassis) + 1).padStart(2, '0');
+    txt('WORKSHOP · CHASSIS ' + nextCh, x + 28, y + 44, fLab, FT.accent);
+    const left = story ? s.upgradesLeft() : r0.credits, lvN = story ? STORY.levelOf(r0.points, s.P) : null;
+    const pill = story ? 'LEVEL ' + lvN.level + ' · ' + left + ' UPGRADE' + (left === 1 ? '' : 'S') : plural(left, 'CREDIT');
+    ctx.font = fLab; const pw = ctx.measureText(pill).width + 32;
+    rr(x + w - 28 - pw, y + 16, pw, 40, 12); ctx.fillStyle = left > 0 ? C.dummy : FT.item; ctx.fill(); ctx.strokeStyle = left > 0 ? C.joints : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+    txt(pill, x + w - 28 - pw / 2, y + 44, fLab, left > 0 ? C.primary : FT.dim, 'center');
+    // the chassis
+    const SC = 3, DW = PIX.DOLL_W * SC, DH = PIX.DOLL_H * SC, dx = Math.round(x + w / 2 - DW / 2), dy = y + 66, fit = fx.fit && app.realT - fx.fit.t0 < 0.9 ? fx.fit : null;
+    { const gl = ctx.createRadialGradient(x + w / 2, dy + DH * 0.45, 20, x + w / 2, dy + DH * 0.45, 230); gl.addColorStop(0, 'rgba(63,208,255,0.20)'); gl.addColorStop(1, 'rgba(63,208,255,0)'); ctx.fillStyle = gl; ctx.fillRect(x, y + 60, w, DH + 20); }
+    ctx.imageSmoothingEnabled = false; ctx.drawImage(dollCanvas({}, '', dollMods(s)), dx, dy, DW, DH);
+    const seatAt = (t) => { const q2 = seatOf(t); return { x: dx + q2.x * SC, y: dy + q2.y * SC }; };
+    const selT = app.shopRow < SHOP_ROWS ? SHOP_GRID[app.shopCol][0] : null, cw = 236, chh = 152;
+    for (const [t] of SHOP_GRID) {
+      const pos = WS_POS[t]; if (!pos) continue;
+      const [c, r] = pos, cx = c === 0 ? x + 22 : x + w - 22 - cw, cy = y + 70 + r * (chh + 18), tr = TRACKS[t], locked = wsLocked(s, t), lv = s.tier(t), max = s.trackMax(t), n = nextLevel(s, t), chk = n ? s.canBuy(n) : null, on = selT === t, sp = seatAt(t);
+      const k = SHOP_GRID.findIndex((g) => g[0] === t);
+      hitbox(cx, cy, cw, chh, 'part:' + t, () => { if (app.shopCol === k && app.shopRow < SHOP_ROWS) menuQ.push('ok'); else { app.shopCol = k; app.shopRow = 0; } });
+      hitbox(sp.x - 26, sp.y - 26, 52, 52, 'seat:' + t, () => { if (app.shopCol === k && app.shopRow < SHOP_ROWS) menuQ.push('ok'); else { app.shopCol = k; app.shopRow = 0; } });
+      // the wire to its seat
+      const ex = c === 0 ? cx + cw : cx, ey = cy + chh / 2;
+      ctx.strokeStyle = on ? C.dummy : locked ? 'rgba(127,168,188,0.25)' : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.setLineDash(locked ? [4, 4] : []);
+      ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo((ex + sp.x) / 2, ey); ctx.lineTo(sp.x, sp.y); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(sp.x, sp.y, on ? 7 : 5, 0, TAU); ctx.fillStyle = on ? C.dummy : locked ? FT.off : FT.accent; ctx.fill();
+      if (on) { ctx.strokeStyle = C.dummy; ctx.lineWidth = 2.5; ctx.globalAlpha = 0.5 + 0.5 * Math.sin(app.realT * 6); ctx.beginPath(); ctx.arc(sp.x, sp.y, 18 + 3 * Math.sin(app.realT * 6), 0, TAU); ctx.stroke(); ctx.globalAlpha = 1; }
+      // the card
+      rr(cx, cy, cw, chh, 12); ctx.fillStyle = on ? FT.keyTop : locked ? 'rgba(40,46,56,0.55)' : FT.item; ctx.fill(); ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
+      const br = 14, bx = cx + cw - br - 12, by = cy + 26;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = FT.keyTop; ctx.fill(); ctx.strokeStyle = locked ? FT.off : BADGE[tr.button]; ctx.lineWidth = 2; ctx.stroke();
+      txt(tr.button, bx, by + 6, '700 16px ' + F_MONO, locked ? FT.off : FT.text, 'center');
+      if (locked) { txt('???', cx + 16, cy + 40, '900 26px ' + F_BRAND, FT.off); wrapText('A Farsight drone brings this part.', cx + 16, cy + 82, cw - 32, 22, '400 17px ' + F_UI, FT.dim, 3); continue; }
+      txt(tr.name.toUpperCase(), cx + 16, cy + 34, '900 22px ' + F_BRAND, FT.text);
+      const pw2 = (cw - 32 - 6 * (max - 1)) / max;
+      for (let L = 1; L <= max; L++) { const px = cx + 16 + (L - 1) * (pw2 + 6), own = L <= lv, nxt = L === lv + 1 && on && Math.floor(app.realT * 3) % 2 === 0; rr(px, cy + 48, pw2, 12, 4); ctx.fillStyle = own ? (fit && NODES7[fit.node] && NODES7[fit.node].track === t && L === lv && Math.floor(app.realT * 12) % 2 === 0 ? '#FFFFFF' : FT.accent) : nxt ? 'rgba(245,197,66,0.6)' : 'rgba(159,176,186,0.18)'; ctx.fill(); }
+      const st = abilityStats(s, t, lv); txt(lv ? st[0] : st[0], cx + 16, cy + 86, '700 17px ' + F_UI, lv ? FT.text : FT.dim);
+      if (n) { const nst = abilityStats(s, t, lv + 1); txt('NEXT · ' + nst[0], cx + 16, cy + 112, '400 16px ' + F_UI, FT.dim); txt(chk && chk.ok ? wsCost(s, n) : (chk ? chk.why : '').toUpperCase(), cx + 16, cy + 138, '700 16px ' + F_UI, chk && chk.ok ? C.dummy : FT.off); }
+      else txt('FULL', cx + 16, cy + 112, '700 16px ' + F_UI, FT.accent);
+    }
+    if (fit) { // the module lands: a white flash, rings, sparks
+      const nd = NODES7[fit.node], sp = nd ? seatAt(nd.track) : null, u = (app.realT - fit.t0) / 0.9;
+      if (sp) { ctx.save(); for (const [d0, col, wd] of [[0, C.dummy, 5], [0.12, FT.accent, 3]]) { const v = Math.max(0, Math.min(1, (u - d0) / 0.8)); if (v <= 0 || v >= 1) continue; ctx.globalAlpha = 1 - v; ctx.strokeStyle = col; ctx.lineWidth = wd; ctx.beginPath(); ctx.arc(sp.x, sp.y, 10 + 120 * (1 - Math.pow(1 - v, 3)), 0, TAU); ctx.stroke(); }
+        if (!RM) { ctx.globalAlpha = Math.max(0, 1 - u); ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2.5; ctx.beginPath(); for (let i = 0; i < 12; i++) { const an = i * TAU / 12 + 0.3, r1 = 16 + 90 * u, r2 = r1 + 14 * (1 - u) + 4; ctx.moveTo(sp.x + Math.cos(an) * r1, sp.y + Math.sin(an) * r1); ctx.lineTo(sp.x + Math.cos(an) * r2, sp.y + Math.sin(an) * r2); } ctx.stroke(); }
+        ctx.globalAlpha = Math.max(0, 0.8 * (1 - u * 2)); const gw = ctx.createRadialGradient(sp.x, sp.y, 2, sp.x, sp.y, 40); gw.addColorStop(0, '#FFFFFF'); gw.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gw; ctx.fillRect(sp.x - 40, sp.y - 40, 80, 80); ctx.restore(); }
+    }
+    // what the selection means
+    let msg = '';
+    if (!selT) msg = story ? (left > 0 ? 'Keep ' + left + ' upgrade' + (left === 1 ? '' : 's') + ' for later, or fit ' + (left === 1 ? 'it' : 'them') + ' now.' : 'Chassis ' + nextCh + ' is ready.') : (left > 0 ? 'Keep ' + left + ' credit' + (left === 1 ? '' : 's') + '.' : 'Chassis ' + nextCh + ' is ready.');
+    else if (wsLocked(s, selT)) msg = 'A Farsight drone brings this part. Keep testing.';
+    else { const n = nextLevel(s, selT); if (!n) msg = TRACKS[selT].name + ' is at its top level.'; else { const nd = NODES7[n], chk = s.canBuy(n); msg = nd.name + ': ' + nd.desc; if (story && !chk.ok && chk.why === 'level up first' && lvN.next) msg += ' Level ' + (lvN.level + 1) + ' at ' + num(lvN.next) + ' points.'; } }
+    wrapText(msg, x + 28, y + 424, w - 56, 24, '400 18px ' + F_UI, FT.text, 2);
+    if (story) { // the loop: points raise the level; each level brings an upgrade
+      const ly = y + 486; txt('LEVEL ' + lvN.level, x + 28, ly, fLab, FT.text); txt(lvN.next ? num(lvN.next - r0.points) + ' POINTS TO LEVEL ' + (lvN.level + 1) + ' · +1 UPGRADE' : 'TOP LEVEL', x + w - 28, ly, '700 15px ' + F_UI, FT.dim, 'right');
+      rr(x + 28, ly + 10, w - 56, 8, 4); ctx.fillStyle = FT.track; ctx.fill(); if (lvN.frac > 0) { rr(x + 28, ly + 10, Math.max(8, (w - 56) * lvN.frac), 8, 4); ctx.fillStyle = C.dummy; ctx.fill(); }
+    }
+    // FIT and DONE
+    const by2 = y + h - 80, bh = 50, bw = (w - 56 - 16) / 2, n0 = selT ? nextLevel(s, selT) : null, c0 = n0 && !wsLocked(s, selT) ? s.canBuy(n0) : null, can = !!(c0 && c0.ok), onD = app.shopRow === SHOP_ROWS;
+    rr(x + 28, by2, bw, bh, 12); ctx.fillStyle = can && !onD ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = can ? C.dummy : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+    fitText(can ? 'FIT ' + NODES7[n0].name.toUpperCase() + ' · ' + wsCost(s, n0) : !selT ? 'CHOOSE A PART' : wsLocked(s, selT) ? 'NOT YET ISSUED' : !n0 ? 'FULL' : (c0 ? c0.why : '').toUpperCase(), x + 46, by2 + 32, bw - 36, TY.sec, 13, can && !onD ? FT.selText : can ? FT.text : FT.off);
+    hitbox(x + 28, by2, bw, bh, 'fit', () => { if (app.shopRow === SHOP_ROWS) app.shopRow = 0; menuQ.push('ok'); });
+    rr(x + 28 + bw + 16, by2, bw, bh, 12); ctx.fillStyle = onD ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = onD ? FT.accent : FT.itemEdge; ctx.lineWidth = 1.5; ctx.stroke();
+    fitText('DONE · DEPLOY CHASSIS ' + nextCh, x + 46 + bw + 16, by2 + 32, bw - 36, TY.sec, 13, onD ? FT.selText : FT.text);
+    hitbox(x + 28 + bw + 16, by2, bw, bh, 'done', () => { app.shopRow = SHOP_ROWS; menuQ.push('ok'); });
+    txt(TOUCH.on ? 'TAP A PART · TAP FIT · TAP DONE' : app.device === 'pad' ? 'STICK A PART · A FIT · B DONE' : 'ARROWS A PART · SPACE FIT · SHIFT DONE', x + w / 2, y + h - 12, '700 15px ' + F_UI, FT.dim, 'center');
+    if (app.hud) app.hud.workshop = { sel: selT, left, pill };
+  }
   // Cue key: the field's own pixel marks, shown at field scale, with what each means.
   const CUE_KEY = [
     ['intention', 'Has noticed you'], ['committed', 'Route fixed'], ['expiring', 'Commitment ending'], ['interrupted', 'Braking for safety'],
@@ -2886,12 +3022,12 @@
     const x = FX + 18, y = FY + 18, w = 300, h = FH - 36, page = STORY ? app.pausePage : null;
     panel(x, y, w, h);
     txt(page === 'options' ? 'OPTIONS' : page === 'controls' ? 'CONTROLS' : 'PAUSED', x + 22, y + 40, fLab, FT.accent);
-    if (page === 'options') menuList(optionItems(), app.optSel, x + 18, y + 62, w - 36);
-    else if (page === 'controls') menuList(controlItems(), app.ctlSel || 0, x + 18, y + 62, w - 36);
+    if (page === 'options') menuList(optionItems(), app.optSel, x + 18, y + 62, w - 36, null, 0, (i) => { app.optSel = i; });
+    else if (page === 'controls') menuList(controlItems(), app.ctlSel || 0, x + 18, y + 62, w - 36, null, 0, (i) => { app.ctlSel = i; });
     else {
       const items = pauseItems().slice(), story = app.mode === 'story';
       if (app.confirmRefuse && !story) items[2] = 'Confirm refusal';
-      menuList(items, app.pauseSel, x + 18, y + 62, w - 36, (i) => !story && i === 2 && s.run.writeOffs < 1);
+      menuList(items, app.pauseSel, x + 18, y + 62, w - 36, (i) => !story && i === 2 && s.run.writeOffs < 1, 0, (i) => { if (app.pauseSel !== i) app.confirmRefuse = false; app.pauseSel = i; });
       const ny = STORY ? y + 62 + items.length * 54 + 16 : y + 362;
       wrapText(story ? 'The story map saves this tile\'s count. The body in play is lost.' : s.run.writeOffs < 1 ? 'Refusal opens after one completed body.' : 'Refusal is a deliberate ending.', x + 22, ny, w - 44, 26, STORY ? '400 17px ' + F_UI : fTxt, FT.dim, 3);
     }
@@ -2913,7 +3049,7 @@
     const cw = (w - 56) / stats.length;
     stats.forEach(([k, v], i) => { txt(k, x + 28 + i * cw, y + 222, fLab, FT.dim); txt(v, x + 28 + i * cw, y + 262, fNum, FT.text); });
     const items = endItems(s);
-    menuList(items, app.endSel, x + 28, y + h - 20 - items.length * 54, 460);
+    menuList(items, app.endSel, x + 28, y + h - 20 - items.length * 54, 460, null, 0, (i) => { app.endSel = i; });
   }
 
   function render() {
@@ -2925,6 +3061,7 @@
     if (TOUCH.on) { ctx.setTransform(scale, 0, 0, scale, 0, 0); drawTouch(); }
   }
   function renderScreen() {
+    HITS.length = 0; // Edit 89: this frame's tap targets
     drawFrame();
     if (app.screen === 'title') { if (STORY) drawModeTitle(); else drawTitle(); return; }
     if (app.screen === 'arcade') { drawTitle(); return; } // Edit 81
@@ -2935,6 +3072,7 @@
     drawField(s);
     drawHUD(s);
     drawComboMeter(s);
+    if (!app.paused && s.phase !== 'report' && s.phase !== 'shop') drawLevelUp(s); // Edit 89
     if (app.paused) { if (!app.touchEdit) drawPause(s); } // Edit 87: placing the touch controls shows the game, dimmed, not the menu
     else if (s.phase === 'brief') drawBrief(s); // Edit 81: the tile card
     else if (s.phase === 'gift') drawGiftPopup(s); // Edit 84
@@ -3012,7 +3150,7 @@
     for (let i = TUNE.length - 1; i >= 0; i--) if (gone.has(TUNE[i][0])) TUNE.splice(i, 1);
   }
   if (STORY) { // Edit 81–82: the story (from the next deploy): a credit a body, its prices, the gift, the brief's combos, each tile's write-offs
-    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.price.ability.level1', 1, 10, 1], ['story.price.ability.level2', 1, 10, 1], ['story.price.ability.level3', 1, 10, 1], ['arcade.giftEvery', 1, 5, 1], ['ui.gift.fallSeconds', 0.1, 3, 0.05], ['ui.gift.holdSeconds', 0, 5, 0.1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
+    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.level.firstPoints', 1000, 30000, 500], ['story.level.stepPoints', 0, 10000, 250], ['story.level.max', 2, 12, 1], ['story.level.upgrades', 1, 3, 1], ['arcade.giftEvery', 1, 5, 1], ['ui.gift.fallSeconds', 0.1, 3, 0.05], ['ui.gift.holdSeconds', 0, 5, 0.1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.writeOffs.' + d.id + '.' + t, 1, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.traffic.' + d.id + '.' + t, 0.5, 3, 0.25]); // Edit 85: each tile's traffic
   }
@@ -3138,6 +3276,6 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
-  window.__dummiesUI = { saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), saveHits: () => JSON.parse(JSON.stringify(saveHits)), slotActs, // Edit 88
+  window.__dummiesUI = { saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88
     controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();
