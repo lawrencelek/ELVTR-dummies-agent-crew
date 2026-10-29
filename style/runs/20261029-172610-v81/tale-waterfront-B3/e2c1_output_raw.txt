@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the two sentences and 32 words against F6 ([EDIT96#3.2]). I checked the stilt houses and Chassis 0 for landmark and tile truth under V11 and R4 ([STORY#WB3], [EDIT95#3.1]). I checked that Arms 3 is issued here, and that the push duty matches the PUSH OFF A CAR brief, under F7 and R5 ([STORY#S1], [STORY#S3]). I checked the deadpan, motivating voice under T1, T3, T4 and T5 ([EDIT95#3.2], [PLAY#PS2]). I checked the glossary and the banned words under V1 and V3 ([EDIT95#3.1], [FLEET#F3]). I checked that the tale fits the CUSTOMS story frame under V6 ([EDIT95#3.3]).
+Total: 10.

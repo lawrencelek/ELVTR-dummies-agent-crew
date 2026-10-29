@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The pier tower is a customs post. It logs everything that floats on the river: containers, ducks and, so far, one dummy, inbound. Be thrown into a car. Customs is watching." The tale has four sentences, and the limit is two. [EDIT96#3.2] Fix: Cut it to two sentences of no more than 35 words, with the extra words naming the customs post. For example: "The east pier tower is a customs post; it logs every Certified dummy that ships across the river to our clients. Be thrown into a car, and earn your entry."
+- tale · T1 (major, −2) "containers, ducks and, so far, one dummy, inbound … Customs is watching." The list of things on the river ends in a joke, which counts as irony that winks, and "Customs is watching" sounds like a warning, so the line doesn't motivate the trainee. [EDIT95#3.2] Fix: Drop "ducks" and "so far". Replace "Customs is watching." with a flat line that motivates and ties the post to Certified dummies shipping to clients, as in the F6 fix.
+Total: 10 − 4 − 2 = 4.

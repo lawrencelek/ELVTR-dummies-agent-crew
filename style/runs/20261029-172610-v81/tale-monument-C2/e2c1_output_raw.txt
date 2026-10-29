@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3, T4, T5 and T13 [EDIT95#3.2, EDIT95#3.1]; V1, V3, V6 and V11 [EDIT95#3.1, EDIT95#3.3]; F6 [EDIT96#3.2]; and R4 and R5 [STORY#MC2, STORY#S3]. It has 25 words in two sentences and names the portal tower and its raised road. Its duty matches the brief's "Z1 or above" ("on that road, at height"), it names no equipment on a tile that issues none, and its tone is deadpan with no "!".
+Total: 10.

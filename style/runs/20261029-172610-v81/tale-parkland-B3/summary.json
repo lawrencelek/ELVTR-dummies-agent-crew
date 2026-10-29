@@ -1,0 +1,129 @@
+{
+ "case": "tale-parkland-B3",
+ "class": "V8.1 tale",
+ "title": "Prototype 7.13 tale parkland B3, for Prototype 8.1",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  8,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 3,
+ "accepted": true,
+ "final_version": 3,
+ "seconds": 135.8,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 19.4,
+   "output_tokens": 1804,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14404530000000001
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.6,
+   "output_tokens": 850,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.12784869999999998
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 18.8,
+   "output_tokens": 1630,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13100730000000002
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 18.4,
+   "output_tokens": 1716,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.04159990000000001
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 7.4,
+   "output_tokens": 570,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11086009999999999
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 23.1,
+   "output_tokens": 2132,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1495523
+  },
+  {
+   "label": "f3",
+   "role": "refiner",
+   "seconds": 8.0,
+   "output_tokens": 664,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.12176400000000001
+  },
+  {
+   "label": "e4",
+   "role": "evaluator",
+   "seconds": 15.4,
+   "output_tokens": 1264,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13072620000000001
+  },
+  {
+   "label": "e4c1",
+   "role": "evaluator",
+   "seconds": 14.6,
+   "output_tokens": 1278,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0331006
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.9905
+}

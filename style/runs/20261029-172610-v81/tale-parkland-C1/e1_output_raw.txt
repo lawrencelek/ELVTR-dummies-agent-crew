@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight calls it safety equipment" names the publisher inside the game, which is only allowed in the Credits. [EDIT95#0] Fix: remove "Farsight". Rewrite the tale in two sentences: "The paper lantern, the Expo's first exhibit, is lit again for our clients. Arms 1 is fitted: under the footbridge, push off one car into the next, and the Expo opens safer."
+- tale · F6 (blocking, −4) "The paper lantern was the Expo's first exhibit, and it is lit again for the visitors. Arms 1 is fitted; Farsight calls it safety equipment. Under the footbridge, push off one car into the next." has three sentences, one more than the limit of two. [EDIT96#3.2] Fix: join the equipment line and the duty into one sentence, as in the V1 fix (30 words, two sentences).
+- tale · T1 (major, −2) "calls it safety equipment" is winking irony that undercuts the equipment instead of stating it flat and motivating the trainee, and the joke would stay even with the company's name in place of Farsight. [EDIT95#3.2] Fix: state the equipment plainly ("Arms 1 is fitted") and tie the push to the duty ("and the Expo opens safer").
+Total: 10 − 4 − 4 − 2 = 1.

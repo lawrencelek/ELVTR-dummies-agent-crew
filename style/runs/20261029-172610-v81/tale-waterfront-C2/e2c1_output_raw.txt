@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the voice and length rules (T1–T5, T13; F5–F7), the vocabulary and story rules (V1–V4, V6, V8, V9, V11) and the truth rules (R4, R5): 28 words in two sentences, no "!", the east beach terrace's rail and ships as canon gives them, the CUSTOMS frame of Certified dummies shipping to clients, a duty that matches DROP ONTO A CAR, and no equipment on a tile that issues none. [EDIT96#3.2] [EDIT95#3.2] [EDIT95#3.1] [EDIT95#3.3] [STORY#WC2] [STORY#S3] [EDIT93#3.1] [DECISIONS#rows-311-320~2]
+Total: 10.

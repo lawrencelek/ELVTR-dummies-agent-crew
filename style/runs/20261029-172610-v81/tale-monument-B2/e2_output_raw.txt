@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the tone rules T1, T3, T4, T5 and T13; the vocabulary and lore rules V1, V3, V6, V8, V9 and V11; the formatting rules F5, F6 and F7; and the truth rules R4 and R5. It has 28 words in two sentences, and its place-detail words ("The monument's plaque reads ZERO ACCIDENTS, a target rather than a record") account for the length over 20. It keeps the fixed phrase ZERO ACCIDENTS exact, calls the cars colleagues, and states a duty that matches STRUCK, NOT DASHING. It names no equipment on a tile that issues none, and it has no "!" and no banned words. [EDIT96#3.2] [EDIT95#3.1] [EDIT95#3.2] [EDIT95#3.3] [STORY#S2] [STORY#S3] [STORY#MB2]
+Total: 10.

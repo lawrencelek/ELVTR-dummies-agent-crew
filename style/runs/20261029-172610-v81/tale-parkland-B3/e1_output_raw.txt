@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight would like to know" names the publisher inside the game, and Farsight may appear only in the Credits. [EDIT95#0] Fix: replace it with "Dummy Corporation" or "we", or rewrite the sentence as in F6.
+- tale · F6 (blocking, −4) "The obelisk marks the surveyors' first stake. A school party will visit it on opening day, escorted by the police fleet. Farsight would like to know how the police fleet handles a dummy first." has 3 sentences, and the limit is 2. [EDIT96#3.2] Fix: "The obelisk marks the surveyors' first stake. Before opening day's school party, the police fleet trains on you." (2 sentences, 18 words.)
+- tale · T1 (major, −2) "would like to know how the police fleet handles a dummy first" is a dry, winking aside that does not motivate the trainee or turn the place toward its duty. [EDIT95#3.2] Fix: state the duty flatly as training the police fleet, as in the F6 fix "the police fleet trains on you."
+- tale · T5 (minor, −1) "handles a dummy" talks about the trainee in the third person, and the company speaks under another company's name instead of addressing "you". [EDIT95#3.2] Fix: address the trainee as "you", as in the F6 fix.
+Total: 10 − 4 − 4 − 2 − 1 = 1 (floor 1).

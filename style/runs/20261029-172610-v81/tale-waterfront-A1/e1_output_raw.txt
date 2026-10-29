@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight requires the bus fleet's data" Farsight is the publisher, and it may appear only in the Credits; this tale is in-game text. [EDIT95#0] Fix: replace "Farsight requires" with "We require", so the line reads "We require the bus fleet's data before you cross the river."
+- tale · T13 (minor, −1) "The bus is slow and very large." "very" is a banned intensifier, and the sentence also carries two adjectives. [EDIT95#3.2] Fix: cut the sentence and keep its point in the closing clause "it will not miss."
+- tale · F6 (blocking, −4) "The upper town houses the engineers, and the bus carries them to the bridge. Farsight requires the bus fleet's data before anyone crosses the river. The bus is slow and very large. It will not miss." The tale has 36 words and 4 sentences, above the caps of 35 words and 2 sentences. [EDIT96#3.2] Fix: rewrite it as two sentences: "We require the bus fleet's data before you cross the river. At the west portal, the bus carries engineers from the upper town to the bridge; it will not miss." (30 words, and the words past 20 name the place.)
+Total: 10 − 4 − 1 − 4 = 1.

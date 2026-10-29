@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "C1", "title": "The east portal", "tale": "The east bridge was built to correct the west; its portal block faces the other way. The police here check papers, and a police car's final hit moves yours forward."}

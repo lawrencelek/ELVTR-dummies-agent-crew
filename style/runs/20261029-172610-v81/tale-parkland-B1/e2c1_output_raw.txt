@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale's 32 words and two sentences against F6 [EDIT96#3.2]. I checked deadpan, motivating tone with no "!" against T1–T2 [EDIT95#3.2]. I checked that the write-off is framed as duty, against T3–T4 [EDIT95#3.1]. I checked that it names the cascade beside the highway, against V11 [STORY#PB1]. I checked "Go up to the highway" against the brief's raised road at Z1 or above, against R5 [STORY#S3]. I checked that it names no equipment on a tile that issues none, against F7 and R5 [STORY#S1]. I checked for banned words and other company names, against V1 and V4 [EDIT95#0].
+Total: 10.

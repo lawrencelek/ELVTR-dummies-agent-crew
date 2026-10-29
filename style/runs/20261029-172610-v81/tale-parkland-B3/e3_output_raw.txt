@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · T1 (major, −2) "Until then, your training covers the police fleet: a police car makes the final hit." The second sentence just repeats the brief and never says why the hit matters, so it reads flat but does not motivate the trainee. [EDIT95#3.2] Fix: tie the hit to the escort's safety: "The obelisk marks the surveyors' first stake, and on opening day the police fleet escorts a school party here. Before then, a police car makes your final hit, and the escort is proven." (32 words, two sentences, one adjective per sentence)
+Total: 10 − 2 = 8.

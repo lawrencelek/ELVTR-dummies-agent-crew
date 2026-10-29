@@ -187,7 +187,7 @@
    "group": "Style",
    "owner": "Narrative",
    "label": "Words per text (V2)",
-   "description": "Words in any in-game text of the company's voice.",
+   "description": "Words in any in-game text of the company's voice, except a tale (style.v2.tale.maxWords).",
    "unit": "words",
    "type": "number",
    "default": 20,
@@ -205,6 +205,18 @@
    "default": 15,
    "status": "user-decided (29 October)",
    "source": "GDD Edit 95 §3.2"
+  },
+  {
+   "id": "style.v2.tale.maxWords",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Words per tale (V2.3)",
+   "description": "Words in a tale on the tile card. The extra words over style.v2.text.maxWords name the place. Still at most style.v2.text.maxSentences sentences.",
+   "unit": "words",
+   "type": "number",
+   "default": 35,
+   "status": "user-decided (29 October)",
+   "source": "GDD Edit 96 §3.2: \"The tales can be slightly longer up to 35 words if needed\""
   }
  ]
 }

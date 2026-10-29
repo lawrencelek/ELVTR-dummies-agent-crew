@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked both sentences for tone, vocabulary, length and truth, and found no violations. Tone: the voice is deadpan and plainly motivating, with no "!" and at most one adjective per sentence, and it speaks to "you" in a training frame (T1–T5, T13) [EDIT95#3.2, EDIT95#3.1, PLAY#PS2]. Vocabulary and story frame: no banned word, and "write-off" and "Certification" are used as the glossary defines them (V1, V3). The text fits the INDUCTION frame (V6) and names the portal tower and its tenants, then turns the place toward the duty (V11) [EDIT95#3.3, STORY#MC2]. Length: 25 words in two sentences, under the tale cap, and lint found nothing (F5, F6) [EDIT96#3.2]. Truth: "on that road, at height" matches the brief's Z1-or-above final hit, and no equipment is named on a tile that issues none (R4, R5) [STORY#S3, STORY#MC2, EDIT93#3.1].
+Total: 10.

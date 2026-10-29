@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale's 2 sentences and 28 words against F6 [EDIT96#3.2], and the deadpan, training-framed voice addressed to "you" against T1, T3, T4 and T5 [EDIT95#3.2] [EDIT95#3.1]. ZERO ACCIDENTS is kept exact under V6 [EDIT95#3.3], and the monument's plaque is named and turned toward the duty under V11 and R4 [STORY#MB2]. The stand-or-walk duty, with no dash and no equipment, matches the STRUCK, NOT DASHING brief under R5 [STORY#S3], and the text has no banned words or Farsight under V1 [EDIT95#0].
+Total: 10.

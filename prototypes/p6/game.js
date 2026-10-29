@@ -571,7 +571,7 @@
     },
   };
   const THEME_NAME = { start: 'Start screen', flyover: 'Pillars', barrier: 'Barrier run', plain: 'Open street',
-    monument: 'Lantern monument', fountain: 'Fountain square', roundabout: 'Roundabout', tower: 'FARSIGHT Tower', plate: 'Test plates' };
+    monument: 'Lantern monument', fountain: 'Fountain square', roundabout: 'Roundabout', tower: LT('n33', 'FARSIGHT Tower'), plate: 'Test plates' }; // Edit 96 (P8.1): n33
   const LEVEL6 = { walk: 'Walkway: no traffic up here. Step off the side to drop onto cars below.', hill: 'Hilltop (Z1): streets with traffic. Step off the cliff edge to drop to the valley.',
     terrace: 'Terrace: step off the edge to drop to the beach.', ring: 'Ring deck: highway traffic gives way at the entries. Escalators lead down.' }; // P6 (Edit 62)
   const maxHP = (s) => (s && s.maxHealth ? s.maxHealth() : s.P['damage.bodyHealth']); // Edit 91: on foot, a lighter chassis

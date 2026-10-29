@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked n27–n33 against these rules and found no violations:
+  - **Tone T1–T5, T13, T14:** the texts are flat and motivating, use "your training", have no "!", no intensifiers, no repeated slogan, and adjectives stay within limit. [EDIT95#3.2] [PLAY#PS0]
+  - **Banned words V1:** "count for more" replaces the slot's "score more", and "Corporation Tower" replaces the old FARSIGHT Tower. [EDIT95#0] [FSG#districts-and-landmarks-p3-city-edits-41-44]
+  - **Company name V4:** "Corporation" follows the CORPORATION DRONE pattern. [EDIT95#4.2]
+  - **Training framing T3:** a write-off is framed as progress.
+  - **Length and form F5, F6, F10:** every text is two sentences or fewer, 18 words or fewer, within maxChars, with no digits and the title case kept.
+  - **Truth R4:** the two flyovers, one above the other, the tower at the centre and on B2, the plates that count more, and the test centre the city was modelled on all match the slot and the facts kept. [EDIT96#3.4]
+Total: 10.

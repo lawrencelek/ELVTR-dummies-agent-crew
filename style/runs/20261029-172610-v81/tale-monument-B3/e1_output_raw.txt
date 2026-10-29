@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "Two screens face each other across the road and advertise to…" The tale runs to 39 words and 5 sentences, over the limits of 35 words and 2 sentences. [EDIT96#3.2] Fix: "Legs 1 is fitted. In the LED canyon the screens face each other across the road, and every car passes between them: jump into one there, for our clients." (29 words, 2 sentences)
+- tale · T1 (major, −2) "The skybridge was added so that someone would watch. You are now someone." This is ironic, Edit 93-era dry wit that puts the trainee in the audience instead of motivating it to do its duty, and the rule fails irony that winks. [EDIT95#3.2] Fix: drop both sentences, and turn the screens toward the jump and the clients, flatly, as in the F6 fix.
+Total: 10 − 4 − 2 = 4.

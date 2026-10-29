@@ -190,14 +190,15 @@ def narration(f, path, text, kind, district=None, tile=None):
         f.add("F9", "major", path, text, f"{len(sents)} sentences > {PARAMS['style.act.maxSentences']} (style.act.maxSentences)", "STORY#S2")
 
 
-def cap_v2(f, path, text, speaker="company"):
-    """GDD Edit 95: every in-game text at most two sentences and 20 words."""
+def cap_v2(f, path, text, speaker="company", kind=None):
+    """GDD Edit 95: every in-game text at most two sentences and 20 words. Edit 96: a tale, 35 words."""
     t = PLACEHOLDER.sub("X", str(text or "")).strip()
     nw = len([w for w in re.split(r"\s+", t) if re.search(r"[A-Za-z0-9]", w)])
     ns = len([x for x in re.split(r"(?<=[.?!])\s+", t) if re.search(r"[A-Za-z]", x)])
     rule = "C1" if speaker == "credits" else "F6"
-    if nw > PARAMS["style.v2.text.maxWords"]:
-        f.add(rule, "blocking" if rule == "F6" else "major", path, t[:60] + ("…" if len(t) > 60 else ""), f"{nw} words > {PARAMS['style.v2.text.maxWords']} (style.v2.text.maxWords)", "EDIT95#3.2")
+    cap, cid = (PARAMS["style.v2.tale.maxWords"], "style.v2.tale.maxWords") if kind == "tale" else (PARAMS["style.v2.text.maxWords"], "style.v2.text.maxWords")
+    if nw > cap:
+        f.add(rule, "blocking" if rule == "F6" else "major", path, t[:60] + ("…" if len(t) > 60 else ""), f"{nw} words > {cap} ({cid})", "EDIT96#3.2" if kind == "tale" else "EDIT95#3.2")
     if ns > PARAMS["style.v2.text.maxSentences"]:
         f.add(rule, "blocking" if rule == "F6" else "major", path, t[:60] + ("…" if len(t) > 60 else ""), f"{ns} sentences > {PARAMS['style.v2.text.maxSentences']} (style.v2.text.maxSentences)", "EDIT95#3.2")
 
@@ -208,7 +209,9 @@ def narration_v2(f, path, text, kind, district=None, tile=None, sign=False, spea
     if re.search(r"\d", rest) and speaker != "credits":
         f.add("F5", "major", path, " ".join(re.findall(r"\S*\d\S*", rest)), "typed figure; numbers live in the registry", "STORY#S1")
     if kind != "label":
-        cap_v2(f, path, text, speaker)
+        cap_v2(f, path, text, speaker, kind)
+    if kind == "tale" and PLACEHOLDER.search(text):   # V2.4: the game draws a tale as written; the brief carries the number
+        f.add("F5", "major", path, " ".join(PLACEHOLDER.findall(text)), "a placeholder in a tale: the card draws it as written; the brief carries the number", "EDIT96#3.2")
     if kind == "tale":
         voc = tile_vocab(district, tile)
         if voc is not None:

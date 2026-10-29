@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "keeps the three pools level by hand" "level" is a banned word in every in-game text. [EDIT95#0], [FLEET#F2] Fix: replace "level" with "even": "keeps the reservoir's three pools even by hand".
+- tale · F6 (blocking, −4) "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by hitting one car into the next." The tale has 37 words and 4 sentences, but the cap is 35 words and 2 sentences. [EDIT96#3.2] Fix: cut it to two sentences and no more than 35 words, as in the replacement below.
+- tale · R5 (blocking, −4) "Teach them by hitting one car into the next." This says the trainee knocks one car into another, but the brief says to push off one car and take the final hit from the next car. [STORY#S3], [STORY#PA1] Fix: "Arms 2 is fitted: push off one car, and let the next one write you off." Full tale: "The gardener keeps the reservoir's three pools even by hand, and asks that cars stop before the water. Arms 2 is fitted: push off one car, and let the next one write you off."
+Total: 10 − 4 − 4 − 4 = 1.

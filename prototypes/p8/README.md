@@ -1,6 +1,17 @@
-# DUMMIES — Prototype 8: Dummy Corporation
+# DUMMIES — Prototype 8.1: Dummy Corporation
 
-**Prototype 8 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edit 95 (`coder/gdd/DUMMIES_GDD_Edit95_Prototype_8_Lore_Dummy_Corporation.md`), on Prototype 7.13 (Edit 94). Style: `style/STYLE_GUIDE_V2.md`. Prototypes 7 to 7.13 stay frozen in `../p7/`.
+**Prototype 8.1 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edits 95–96 (`coder/gdd/`), on Prototype 7.13 (Edit 94). Style: `style/STYLE_GUIDE_V2.md` (V2.4). Prototype 8 stays frozen as `dummies_p8.html`; 7 to 7.13 in `../p7/`.
+
+Prototype 8.1 (Edit 96): longer tales; CBD and Campus in the lore. Text only.
+- **Tales:** up to 35 words (`style.v2.tale.maxWords`), still two sentences. The extra words name the place.
+  - 7.13's 27 tales, through the loop again. 25 to 35 words; mean 30. Longest 192 characters (7.13: 223).
+  - Monument A1: "A conveyor sets you down at the welcome wall, where a screen shows your face and the word WELCOME. Your first duty toward Certification: stand in the road until a colleague notices you."
+- **CBD and Campus** (unused since Edit 41): no Farsight left.
+  - Campus: Calibration Campus. CBD's landmark: Corporation Tower; B2 Corporation Tower Plaza.
+  - Blurbs and banners rewritten (n27–n33), patched into the district table and the places by `lore.js`.
+- **Text:** style run `style/runs/20261029-172610-v81`; everything else from Prototype 8's run.
+- **Open:** D80 (terminal signage, a fleet job, the glossary; never drawn).
+
 
 Prototype 8 (Edit 95): the lore refinement. Text only; gameplay is 7.13's.
 - **The company in the game:** Dummy Corporation. It manufactures custom dummies for high net-worth individuals.
@@ -17,25 +28,26 @@ Prototype 8 (Edit 95): the lore refinement. Text only; gameplay is 7.13's.
 - **The text:** 27 tales, 3 act lines, the ending, 11 briefs, 26 notices, 11 barks. All from one run of the style loop on Style Guide V2 (`style/runs/20261029-161328-v8`).
 
 ```
-python3 style/loop.py --v8                                  # the text: every 7.13 text that breaks V2, through the loop (four stages)
-python3 prototypes/p8/make_lore.py style/runs/<id>-v8       # place it: content/story/story_v2.json, prototypes/p8/lore.js
-python3 prototypes/p8/build.py                              # dummies_p8.html, p8_page.html
-cd prototypes/p8 && node test_p8.js docs                    # the checks; screenshots and the text inventory in docs/
+python3 style/loop.py --v81                                 # 8.1's text: the tales and CBD/Campus on V2.3, then the batch (three stages)
+python3 prototypes/p8/make_lore.py style/runs/<id>-v81      # place it: content/story/story_v2.json, prototypes/p8/lore.js
+python3 prototypes/p8/build.py                              # dummies_p8_1.html, p8_1_page.html (Prototype 8 is frozen)
+cd prototypes/p8 && node test_p81.js docs/p81               # the checks; screenshots and the text inventory in docs/p81/
 node prototypes/p8/text_audit.js <build.html> <out.json>    # every string a build draws, on a scripted tour
 ```
 
 | File | Role |
 |---|---|
-| `dummies_p8.html` | The build. Self-contained; open it in a browser |
-| `p8_page.html` | The same, without `<html>` and `<body>`, for a host page |
+| `dummies_p8_1.html` | The build. Self-contained; open it in a browser |
+| `p8_1_page.html` | The same, without `<html>` and `<body>`, for a host page |
+| `dummies_p8.html`, `p8_page.html` | Prototype 8, frozen |
 | `build.py` | Bundles `../jump`, `../p6` (shared code), the fleet, `content/story/story_v2.json`, `lore.js`, `../p7/story.js`, `../controls/pads.js` |
 | `make_lore.py` | Writes `story_v2.json` and `lore.js` from a run's `v8_copy.json`. Refuses a run with any piece not accepted |
-| `lore.js` | Generated. `window.DUMMIES_LORE` (notices n01–n26), `window.DUMMIES_CREDITS`, and patches to the bundled content and fleet text |
+| `lore.js` | Generated. `window.DUMMIES_LORE` (notices n01–n33), `window.DUMMIES_CREDITS`, and patches to the bundled content and fleet text |
 | `shell.html` | The page around the scripts |
 | `text_audit.js` | Hooks the canvas's `fillText` on a tour of every screen. Lists strings that name Farsight, and lines over two sentences or 20 words |
-| `test_p8.js` | The checks: the lore layer, the frozen builds, the page |
-| `docs/` | Screenshots from the tour; `p8_texts.json`, the 291 strings drawn |
+| `test_p81.js` | The checks: the lore layer, the frozen builds, the page |
+| `docs/`, `docs/p81/` | Screenshots from the tour; `p8_texts.json`, the strings drawn (8: 291; 8.1: 295) |
 
 - **Gating:** the shared code (`../p6/game.js`, `../p6/world6.js`, `../p7/story.js`) reads the lore layer only when bundled. Without it, every string falls back to 7.13's.
-- **Not drawn, still Farsight:** CBD and Campus districts, terminal signage, a fleet model's job, the fleet glossary (D80). Prototype 8 never shows them.
+- **Not drawn, still Farsight:** Prototype 8: CBD and Campus, terminal signage, a fleet model's job, the fleet glossary (D80). 8.1 rewrites CBD and Campus.
 - **Open:** D78 (tile barks), D79 (7.13's text), D80 (data never drawn).

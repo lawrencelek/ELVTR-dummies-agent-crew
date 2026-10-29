@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all seven notices against T1–T5, T13 and T14 for tone and voice (`EDIT95#3.2`, `PLAY#PS2`), V1–V4 and V8–V9 for words and lore (`EDIT95#0`, `EDIT95#3.1`, `EDIT95#4.2`), F5, F6 and F10 for length, digits and slot form (`EDIT96#3.2`, `EDIT95#4.2`), and R4 against the slot's facts (two flyovers, towers, a centre tower, impact plates that count for more) (`EDIT96#3.4`). "Corporation Tower" is allowed as the Corporation's name for the old FARSIGHT Tower (`FSG#districts-and-landmarks-p3-city-edits-41-44`), and every text fits its maxChars.
+Total: 10.

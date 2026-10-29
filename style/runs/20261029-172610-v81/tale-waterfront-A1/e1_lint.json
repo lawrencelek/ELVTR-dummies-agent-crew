@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "T13",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "tale",
+  "quote": "very",
+  "measured": "an intensifier",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The upper town houses the engineers, and the bus carries the…",
+  "measured": "36 words > 35 (style.v2.tale.maxWords); 4 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT96#3.2"
+ }
+]

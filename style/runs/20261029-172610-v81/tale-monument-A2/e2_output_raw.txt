@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3, T4, T5, T13 and T14 for tone; V1, V3, V4, V6, V8, V9 and V11 for vocabulary and lore; F5, F6 and F7 for formatting; and R4 and R5 for truth. It has two sentences and 31 words, of which 14 name the place, as EDIT96#3.2 asks. It names the neon shops landmark and connects their signs to the duty, as EDIT95#3.1 asks. It names Hands 1 on the tile that issues it, as STORY#MA2 and STORY#S1 require. Its duty matches the CONE-BAITED CAR brief in STORY#S3, it calls the car a "colleague" as EDIT95#3.3 does, and its deadpan register uses no "!", as EDIT95#3.2 requires.
+Total: 10.

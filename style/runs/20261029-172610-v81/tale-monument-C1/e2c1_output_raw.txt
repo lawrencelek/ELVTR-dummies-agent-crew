@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1 and T3–T5, T13 and T14, Vocabulary V1–V4, V6, V8, V9 and V11, Formatting F5–F7, and Truth R4 and R5: it has 31 words in two sentences, names the LED drum and the high road's broken rail as its place, gives a drop-onto-a-car duty that matches the brief, names no equipment on a tile that issues none, and keeps a flat, motivating Corporation voice with no "!". [EDIT96#3.2] [EDIT95#3.1] [EDIT95#3.2] [STORY#MC1] [STORY#S3] [EDIT93#3.1]
+Total: 10.

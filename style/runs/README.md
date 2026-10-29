@@ -6,6 +6,7 @@ Each run folder holds every agent input and output, the lint findings, each vers
 
 | Run | Guide | Job | Result |
 |---|---|---|---|
+| [`20261029-172610-v81`](20261029-172610-v81/trace.md) | V2.3 → V2.4 | Prototype 8.1's text: 7.13's 27 tales on V2.3 (35 words), the CBD and Campus text, then the story and six opening lines as one batch, twice | 30 of 30 at 10/10, confirmed. 132 calls, $16.68. Tales 25–35 words |
 | [`20261029-161328-v8`](20261029-161328-v8/trace.md) | V2.0 → V2.2 | Prototype 8's text, four stages: 45 pieces one by one (V2.0); the story as one batch (V2.1); Arcade's banners (V2.1); the story and six opening lines as one batch (V2.2) | 48 of 48 at 10/10, confirmed. 183 calls, $19.88. The text: `v8_copy.json`, placed by `prototypes/p8/make_lore.py` |
 
 - Each stage's folder keeps the guide it read (`STYLE_GUIDE.snapshot.md`). The run's root snapshot is V2.0. The V2.1 snapshots in `story-batch/` and `arcade-banners/` were written after those stages ran (see their first line).

@@ -12,7 +12,7 @@ Rules:
 - Keep the piece's purpose: the same speaker, tier, event and place; for a tale, the same tile, equipment and duty.
 - Use only facts in the SLOT and CANON. A neutral line beats a vivid false one. When unsure, say less.
 - Keep it in the game's voice, not merely clean. Dummy Corporation is deadpan and inspirational: it motivates the trainee toward Certification and service to clients, flatly, with few adjectives. A Luxury car stays superior, a Budget car stays short-fused.
-- Count before you answer. Dummy Corporation's texts: at most two sentences and 20 words; aim for 15. A bark: at most 48 characters and two sentences.
+- Count before you answer. Dummy Corporation's texts: at most two sentences and 20 words; aim for 15. A tale: at most two sentences and 35 words; spend the words past 20 on the place. A bark: at most 48 characters and two sentences.
 - Farsight is never named inside the game. Only the Credits name it.
 
 Output exactly one JSON object with the same schema as CONTENT. No prose before or after it. No markdown fences.

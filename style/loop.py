@@ -50,7 +50,7 @@ EVENT_LINES = {"impact": ["FLEET#F9.1~2"], "writeoff": ["FLEET#F9.2"], "near-mis
                "honk": ["FLEET#F9.6"], "upgrade-seen": ["FLEET#F9.12"], "part-seen": ["FLEET#F9.13"]}
 BASE_V2 = {
     "car": BASE["car"] + ["EDIT95#3.2"],
-    "company": ["EDIT95#0", "EDIT95#3.1", "EDIT95#3.2", "EDIT95#3.3", "EDIT95#4.2", "PLAY#PS0", "PLAY#PS2", "PLAY#PS5", "STORY#S1", "STORY#S2", "STORY#S3",
+    "company": ["EDIT96#0", "EDIT96#3.2", "EDIT95#0", "EDIT95#3.1", "EDIT95#3.2", "EDIT95#3.3", "EDIT95#4.2", "PLAY#PS0", "PLAY#PS2", "PLAY#PS5", "STORY#S1", "STORY#S2", "STORY#S3",
                 "FLEET#F2", "FLEET#F3", "DECISIONS#rows-541-550"],
 }
 GUIDES = {   # the guide a run reads: its file, its agents' prompts, its knowledge base, its lint mode, its canon
@@ -115,7 +115,7 @@ def slot_text(piece):
     elif k == "tale":
         out += [f"- Kind: tale, `content/story/story{'_v2' if VERSION == 'v2' else ''}.json` `districts[].tiles.<tile>.tale`. Speaker: {GUIDES[VERSION]['voice']}. Shown on the tile card.",
                 '- Schema: {"kind": "tale", "district", "tile", "title", "tale"}',
-                (f"- Length: at most {P['style.v2.text.maxSentences']} sentences and {P['style.v2.text.maxWords']} words (style.v2.text.*); aim for {P['style.v2.text.targetWords']}." if VERSION == "v2" else
+                (f"- Length: at most {P['style.v2.text.maxSentences']} sentences and {P['style.v2.tale.maxWords']} words (style.v2.text.maxSentences, style.v2.tale.maxWords). The words past {P['style.v2.text.maxWords']} name the place; a tale may stay short." if VERSION == "v2" else
                  f"- Card: at most {P['style.tale.maxChars']} characters (style.tale.maxChars); sentences of at most {P['style.tale.maxSentenceWords']} words."),
                 f"- Tile: {tile_facts(piece['district'], piece['tile'])}"]
     elif k == "brief":
@@ -151,7 +151,7 @@ def slot_text(piece):
         out += ["- Kind: credits, Prototype 8's Credits card (title menu; after the CERTIFIED ending). Extra-diegetic: Farsight, the publisher, is named here and only here.",
                 '- Schema: {"kind": "credits", "lines": ["…"]}']
     if VERSION == "v2" and k != "barks":
-        out.append(f"- Every text: at most {P['style.v2.text.maxSentences']} sentences and {P['style.v2.text.maxWords']} words (GDD Edit 95).")
+        out.append(f"- Every text: at most {P['style.v2.text.maxSentences']} sentences. A tale: at most {P['style.v2.tale.maxWords']} words (GDD Edit 96); any other text: at most {P['style.v2.text.maxWords']} (GDD Edit 95).")
     return "\n".join(out)
 
 
@@ -677,12 +677,12 @@ V8_BANNERS = [   # Arcade's opening banner: each district's mood line (prototype
 ]
 
 
-def v8_review(run_dir):
+def v8_review(run_dir, spec_dir=None, note=None, name="review"):
     """Stage 4 of --v8, on V2.2 (V11): what the player reads in the story, with the title's and Arcade's opening lines, as one batch.
-    T14 then counts a slogan across the title and the story; V11 asks every tale for its place."""
+    T14 then counts a slogan across the title and the story; V11 asks every tale for its place. spec_dir: the run that wrote the notices' slots."""
     run_dir = Path(run_dir)
     c = json.loads((run_dir / "v8_copy.json").read_text(encoding="utf-8"))
-    nspec = {it["id"]: it for name in ("notices", "arcade-banners") for it in json.loads((run_dir / name / "r0_piece.json").read_text(encoding="utf-8"))["items"]}
+    nspec = {it["id"]: it for name in ("notices", "arcade-banners") for it in json.loads((Path(spec_dir or run_dir) / name / "r0_piece.json").read_text(encoding="utf-8"))["items"]}
     items = []
     for i in ("n01", "n02", "n03", "n24", "n25", "n26"):
         items.append({"id": i, "kind": "notice", "where": nspec[i]["where"], "maxChars": nspec[i]["maxChars"], "text": c["notices"][i]})
@@ -690,10 +690,10 @@ def v8_review(run_dir):
         items.append({"id": f"act-{d['id']}", "kind": "act", "district": d["id"], "text": c["acts"][d["id"]]})
         items += [{"id": f"{CODE[d['id']]}{t}", "kind": "tale", "district": d["id"], "tile": t, "text": c["tales"][d["id"]][t]} for t in d["order"]]
     items.append({"id": "ending", "kind": "ending", "text": c["ending"]})
-    s = job_piece(run_dir, "review", {"kind": "batch", "items": items}, {"id": "review", "class": "V8 batch", "title": "The story's 31 texts and six opening lines, on V2.2"})
+    s = job_piece(run_dir, name, {"kind": "batch", "items": items}, {"id": name, "class": "V8 batch", "title": "The story's 31 texts and six opening lines, on " + ("V2.4" if name == "review-2" else "V2.3" if note else "V2.2")})
     if "error" in s:
         raise RuntimeError(s["error"])
-    fin = json.loads((run_dir / "review" / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+    fin = json.loads((run_dir / name / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
     for it in fin["items"]:
         if it["kind"] == "act":
             c["acts"][it["district"]] = it["text"]
@@ -703,10 +703,50 @@ def v8_review(run_dir):
             c["notices"][it["id"]] = it["text"]
         else:
             c["ending"] = it["text"]
-    c["accepted"]["review"] = s["accepted"]
+    c["accepted"][name] = s["accepted"]
     (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != "review"] + [s]
-    run_trace(run_dir, "Prototype 8's text on Style Guide V2", res, V8_NOTE)
+    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != name] + [s]
+    run_trace(run_dir, "Prototype 8.1's text on Style Guide V2.3" if note else "Prototype 8's text on Style Guide V2", res, note or V8_NOTE)
+    return run_dir
+
+
+V8_RUN = "20261029-161328-v8"   # Prototype 8's run: the base of Prototype 8.1's text
+V81_DISTRICTS = [   # GDD Edit 96 §3.4: the unused CBD and Campus districts (Edit 41), in the lore. (id, where, Prototype 8's text, width)
+    ("n27", "Campus: the district's name (sim.js DISTRICTS.campus.name), title case; set in capitals on labels ('2 · NAME'). Campus Quay, Lab Street and Calibration Road are its screens", "FARSIGHT Campus", 26),
+    ("n28", "CBD: the district's blurb (sim.js DISTRICTS.cbd.blurb), on the district picker. Its form: towers and barriers; a tower on the centre screen", "Towers and barriers. FARSIGHT Tower stands at the centre.", 90),
+    ("n29", "Campus: the district's blurb (sim.js DISTRICTS.campus.blurb), on the district picker. Its form: the test centre the city was modelled on; impact plates on the road score more", "The test centre the city was modelled on. Calibrated plates score more.", 90),
+    ("n30", "CBD: the district's opening banner (content.js places.districts.cbd.intro). Two flyovers cross it, one low and one high; a tower at the centre; towers shade the street", "Two flyovers cross the district, one low and one high. FARSIGHT Tower stands at the centre, and towers shade the street.", 120),
+    ("n31", "Campus: the district's opening banner (content.js places.districts.campus.intro). Impact plates mark the road at the centre; a hit on a plate pays more", "Impact plates mark the road at the centre. A hit taken on a plate pays more.", 120),
+    ("n32", "CBD B2: the centre screen's name (content.js places.districts.cbd.screens.B2), on the map and the screen toast. Its neighbours: Exchange Avenue, Ledger Avenue, Central Quay, Trade Street", "FARSIGHT Tower Plaza", 26),
+    ("n33", "the CBD's centre landmark, its theme name (game.js THEME_NAME.tower), in the screen toast 'B2 · NAME'. The other themes: Lantern monument, Fountain square, Roundabout, Test plates", "FARSIGHT Tower", 22),
+]
+V81_NOTE = ("Prototype 8.1 (GDD Edit 96). Stage 1: Prototype 7.13's 27 tales, as shipped, on V2.3 (a tale may run to 35 words), and the unused CBD and Campus districts' text "
+            "(`districts`, notices n27–n33). Stage 2 (`review`): the story with Prototype 8's act lines, ending and six opening lines, as one batch. "
+            "Stage 3 (`review-2`): the same batch on V2.4 (no placeholder in a tale). "
+            "Everything else is Prototype 8's text (run `" + V8_RUN + "`).")
+
+
+def v81(workers):
+    """Prototype 8.1's text (GDD Edit 96): the tales again, with room for the place, and the CBD and Campus districts."""
+    run_dir = new_run("v81")
+    jobs = []
+    for name, piece in lint.shipped():
+        if piece["kind"] == "tale":
+            spec = {"id": name.replace(" ", "-"), "class": "V8.1 tale", "title": "Prototype 7.13 " + name + ", for Prototype 8.1"}
+            jobs.append((job_piece, (run_dir, spec["id"], piece, spec)))
+    dist = {"kind": "notices", "items": [{"id": i, "where": w, "text": t, "caps": False, "maxChars": m} for i, w, t, m in V81_DISTRICTS]}
+    jobs.append((job_piece, (run_dir, "districts", dist, {"id": "districts", "class": "V8.1 notices", "title": "The unused CBD and Campus districts"})))
+    res = run_all(run_dir, jobs, workers)
+    run_trace(run_dir, "Prototype 8.1's text on Style Guide V2.3", res, V81_NOTE)
+    base = json.loads((RUNS / V8_RUN / "v8_copy.json").read_text(encoding="utf-8"))
+    new = v8_collect(run_dir, res)
+    out = dict(base, run=run_dir.name, base=V8_RUN, guide=GUIDES[VERSION]["file"],
+               accepted=dict({f"{V8_RUN}/{k}": v for k, v in base["accepted"].items()}, **new["accepted"]))
+    out["tales"] = {d: dict(base["tales"][d], **new["tales"].get(d, {})) for d in base["tales"]}
+    out["notices"] = dict(base["notices"], **new["notices"])
+    (run_dir / "v8_copy.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    v8_review(run_dir, spec_dir=RUNS / V8_RUN, note=V81_NOTE)
+    v8_review(run_dir, spec_dir=RUNS / V8_RUN, note=V81_NOTE, name="review-2")
     return run_dir
 
 
@@ -890,10 +930,12 @@ def main():
     ap.add_argument("--v8-batch", metavar="RUN")
     ap.add_argument("--v8-banners", metavar="RUN")
     ap.add_argument("--v8-review", metavar="RUN")
+    ap.add_argument("--v81", action="store_true")
+    ap.add_argument("--v81-review2", metavar="RUN")
     ap.add_argument("--guide", choices=sorted(GUIDES), default=None, help="v1: STYLE_GUIDE.md (default); v2: STYLE_GUIDE_V2.md (--v8 implies v2)")
     ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args()
-    set_guide(a.guide or ("v2" if a.v8 or a.v8_batch or a.v8_banners or a.v8_review else "v1"))
+    set_guide(a.guide or ("v2" if a.v8 or a.v8_batch or a.v8_banners or a.v8_review or a.v81 or a.v81_review2 else "v1"))
     index()
     if a.examples:
         print(examples(a.workers))
@@ -915,13 +957,17 @@ def main():
         print(v8_banners(a.v8_banners))
     if a.v8_review:
         print(v8_review(a.v8_review))
+    if a.v81:
+        print(v81(a.workers))
+    if a.v81_review2:
+        print(v8_review(a.v81_review2, spec_dir=RUNS / V8_RUN, note=V81_NOTE, name="review-2"))
     if a.piece:
         run_dir = new_run("piece")
         piece = json.loads(Path(a.piece).read_text(encoding="utf-8"))
         s = run_piece(Case(run_dir, "piece"), {"id": "piece", "title": Path(a.piece).name}, piece=piece)
         run_trace(run_dir, "One piece", [s])
         print(run_dir, s["scores"])
-    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece, a.v8, a.v8_batch, a.v8_banners, a.v8_review]):
+    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece, a.v8, a.v8_batch, a.v8_banners, a.v8_review, a.v81, a.v81_review2]):
         ap.print_help()
 
 

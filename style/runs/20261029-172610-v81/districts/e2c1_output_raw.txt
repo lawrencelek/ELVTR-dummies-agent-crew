@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- n30 · T13 (minor, −1) "Two flyovers cross it, one low and one high." This sentence has two adjectives ("low", "high"), and the rule allows at most one per sentence. [EDIT95#3.2] Fix: "Two flyovers cross it, one above the other."
+Total: 10 − 1 = 9.

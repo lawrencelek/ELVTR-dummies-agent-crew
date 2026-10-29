@@ -1,6 +1,6 @@
 # DUMMIES — Style Guide V2 (Dummy Corporation)
 
-**29 October 2026 · Lawrence Lek** · The lore refinement of GDD Edit 95, for Prototype 8. A separate guide: `STYLE_GUIDE.md` (V1, Assignment 6) stays as it was, for Prototype 7.13.
+**29 October 2026 · Lawrence Lek** · The lore refinement of GDD Edits 95–96, for Prototypes 8 and 8.1. A separate guide: `STYLE_GUIDE.md` (V1, Assignment 6) stays as it was, for Prototype 7.13.
 
 - **Game:** DUMMIES. A crash-test dummy in SHENZHEN SMART CITY trains in the traffic. The self-driving cars are the city's workers.
 - **The company in the game:** Dummy Corporation. It manufactures custom dummies for high net-worth individuals.
@@ -8,9 +8,11 @@
 - **The dummy's purpose:** do its job, complete its training, join the Certified dummies, and be sacrificed in service to high net-worth individuals.
 - **Story (Narrative A, Certified, kept):** Act I Monument, INDUCTION · Act II Parkland, OPENING DAY · Act III Waterfront, CUSTOMS. 27 tiles. Ending: CERTIFIED.
 - **Tone reference:** *Play Station* (Lawrence Lek, 2017): slogans, programme names, perks, fine print (`PLAY#PS1`–`PLAY#PS5`).
-- **Precedence:** newest wins. EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 replaces every source that names Farsight inside the game. A user-decided DECISIONS row beats any doc.
+- **Precedence:** newest wins. EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 and EDIT96 replace every source that names Farsight inside the game. A user-decided DECISIONS row beats any doc.
 - **V2.1** (29 October): T14 and V10. Stage 1 of the Prototype 8 run put one slogan ("brings Certification closer") in five story texts and two notices, and stated the sacrifice nowhere (run `20261029-161328-v8`).
 - **V2.2** (29 October): V11. Stage 2's tales kept the duty and could lose the place: Monument A1, B1 and A2 and Parkland A1 named no landmark.
+- **V2.3** (29 October): F6 lets a tale run to 35 words (`style.v2.tale.maxWords`), user-decided (GDD Edit 96). §0 adds the unused CBD and Campus districts.
+- **V2.4** (29 October): F5 bars placeholders from tales. The Prototype 8.1 review batch had put "{n}" in Parkland B2 and Waterfront B2 (run `20261029-172610-v81`).
 - **Sources** are chunk IDs from `style/kb/manifest_v2.json`. **Statistics** are IDs in `style/style.params.json`.
 
 ## 0 What it governs
@@ -23,6 +25,7 @@
 | Dummy Corporation | The ending | `story_v2.json` `ending` |
 | Dummy Corporation | Notices: title lines, drone and gift labels, part notes, toasts, signage, Arcade's district banners | `prototypes/p8/lore.js` |
 | The cars | Barks: one bubble per event | `content/db/fleet.json` `barks[]`; Prototype 8's overrides in `lore.js` |
+| Dummy Corporation | The unused CBD and Campus districts: names, blurbs, intros, landmark and screen names (GDD Edit 96 §3.4) | `lore.js` notices n27–n33 |
 | The Credits | Who made and published the game. Extra-diegetic | `lore.js` `credits` |
 
 - **Out of scope:** menu chrome and controls help (NEW GAME, PRESS SPACE TO START). They are interface, not voice (decision 540). They still name no company.
@@ -101,8 +104,8 @@ Total: 10 − <n> − <n> = <X>.
 | F2 | Cars | One bubble, one ink: plain text on one line. | `FSG#field-text` | Lint `plain` | major |
 | F3 | Cars | Ends with ".", "!" or "?". | `FLEET#F2` | Lint `end` | major |
 | F4 | Cars | Fields fit the event: style, priority (write-off 3, hit 2, chatter 1). | `EDIT39#6.6`, `EDIT26#6.6` | Lint `fields` | major |
-| F5 | Both | No typed gameplay figures. Numbers live in the registry. Placeholders and paperwork numbers only, as in V1. | `STORY#S1`, `FSG#canon-rules` | Lint `digits` | major |
-| F6 | Dummy Corporation | Every in-game text: at most two sentences (`style.v2.text.maxSentences`) and at most 20 words (`style.v2.text.maxWords`). Aim for 15 (`style.v2.text.targetWords`). Tales, briefs, act lines, the ending, notices. | `EDIT95#3.2` | Lint `length` | blocking |
+| F5 | Both | No typed gameplay figures. Numbers live in the registry. Placeholders and paperwork numbers only, as in V1. A tale takes no placeholder: the card draws it as written, and the brief carries the number. | `STORY#S1`, `FSG#canon-rules` | Lint `digits`, `placeholders` | major |
+| F6 | Dummy Corporation | Every in-game text: at most two sentences (`style.v2.text.maxSentences`). A tale: at most 35 words (`style.v2.tale.maxWords`); the words past 20 name the place. Briefs, act lines, the ending, notices: at most 20 words (`style.v2.text.maxWords`); aim for 15 (`style.v2.text.targetWords`). | `EDIT96#3.2`, `EDIT95#3.2` | Lint `length` | blocking |
 | F7 | Dummy Corporation | A tale on a tile that issues equipment names it, by rank or in words ("Legs 1 is fitted."). | `DECISIONS#rows-531-540~2` (row 531), `STORY#MB3` | Judge | major |
 | F8 | Dummy Corporation | A brief: a caps label of at most 19 characters (`style.brief.labelMaxChars`), then the duty: what the training covers and what the final hit must be. | `STORY#S3`, `EDIT95#3.2` | Lint `brief` | major |
 | F9 | Cars | At most two sentences (`style.v2.text.maxSentences`). | `EDIT95#3.2` | Lint `sentences` | blocking |
@@ -130,7 +133,7 @@ Total: 10 − <n> − <n> = <X>.
 |---|---|---|---|
 | Dummy Corporation | "Every write-off brings Certification closer. Stand in the road." | "Farsight welcomes you to the Test City!" | V1, T2 |
 | Dummy Corporation | "Our clients cannot afford accidents. You can." | "Poor dummy. It hurts, but you are so brave." | T4, T13 |
-| Dummy Corporation | "Legs 1 is fitted. Jump into a car between the screens." | A 40-word tale about the screens' history | F6 |
+| Dummy Corporation | "Legs 1 is fitted. Jump into a car between the screens." | A 40-word tale about the screens' history, in five sentences | F6 |
 | Dummy Corporation | "Success is measured against the possible, not the probable." (`PLAY#PS2`, the register) | "It's work! It's play!" (`PLAY#PS4`, not adopted) | T1, T2 |
 | Cars | "Bumper damage on a Luxury trim. Typical." | "Done! Done! You happy now?!" (three sentences) | F9 |
 | Credits | "DUMMIES · A game by Lawrence Lek · Published by Farsight" | "Farsight: aligning AI with your interests." in a tale | C1, V1 |

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked T1–T5 and T13–T14, V1–V4, V6 and V8–V11, F5–F7 and R4–R5 against STORY#PB3, STORY#S3, EDIT95#3.1, EDIT95#3.2, EDIT95#3.3 and EDIT96#3.2: the tale is 33 words in two sentences with no "!" and one adjective per sentence; it names the obelisk court, which the tile has; it turns the opening-day school party and its police escort toward the duty; it matches the brief's police-car final hit; and it names no equipment on a tile that issues none.
+Total: 10.

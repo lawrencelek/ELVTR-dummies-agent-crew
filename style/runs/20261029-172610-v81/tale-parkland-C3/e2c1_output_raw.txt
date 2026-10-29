@@ -1,0 +1,7 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I found no violations. The tale has two sentences and 30 words, within F6 [EDIT96#3.2]. Fifteen of those words go to the place, so the duty alone would fit inside 20. It names the arch and the roundabout and turns them toward the duty, as V11 asks [STORY#PC3, EDIT95#3.1]. The duty matches the COMBO brief, including the {n} placeholder, and no equipment is named on a tile that issues none (R5, F7, F5) [STORY#S3, STORY#S1]. "Visitors" fits the OPENING DAY frame under V6 [EDIT95#3.3]. The tone is flat, has no "!" and no intensifiers, and stays in a training register (T1–T5, T13) [EDIT95#3.2, PLAY#PS0]. There are no banned words, no other company name and no Farsight (V1, V4) [EDIT95#0].
+
+Total: 10.

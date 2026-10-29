@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "B1", "title": "The podium bridge", "tale": "Battery 1 is fitted, for the dash. Shoppers never came to the podium bridge; staff now watch from it as you dash into a colleague, toward Certification."}

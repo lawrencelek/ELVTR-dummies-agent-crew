@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The east bridge was built a year after the west, to correct …",
+  "measured": "37 words > 35 (style.v2.tale.maxWords); 4 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT96#3.2"
+ }
+]

@@ -1,0 +1,68 @@
+{
+ "case": "tale-waterfront-B2",
+ "class": "V8.1 tale",
+ "title": "Prototype 7.13 tale waterfront B2, for Prototype 8.1",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 61.5,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 23.4,
+   "output_tokens": 2277,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15164919999999998
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 9.6,
+   "output_tokens": 934,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1283044
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 12.6,
+   "output_tokens": 1134,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1307737
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 15.9,
+   "output_tokens": 1484,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.037317499999999997
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.448
+}

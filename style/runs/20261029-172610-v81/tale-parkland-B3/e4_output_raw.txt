@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the cap of 35 words and two sentences (34 words; lint found nothing) [EDIT96#3.2], the banned words, the company's name and the bar on "!" [EDIT95#0, EDIT95#3.2], and the deadpan training frame with no pity [EDIT95#3.1, EDIT95#3.3]. It names the obelisk and turns it toward the duty [STORY#PB3], matches the brief's police-car final hit, names no equipment on a tile that issues none [STORY#S1, STORY#S3], and invents nothing the tile does not have [STORY#PB3].
+Total: 10.

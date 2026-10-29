@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has two sentences and 34 words, under the 35-word cap. It is deadpan, uses no "!" and no more than one adjective per sentence, and frames the run as training ([EDIT96#3.2], [EDIT95#3.2]). It names the obelisk court from the canon and points that place at the duty ([EDIT95#3.1]). It keeps the OPENING DAY frame, with the school party in narration only ([EDIT95#3.3], [STORY#PB3]). Its duty matches the A POLICE CAR brief, it names no equipment on a tile that issues none, and it uses no banned words, company names or figures ([STORY#S3], [STORY#S1], [EDIT95#0]).
+Total: 10.

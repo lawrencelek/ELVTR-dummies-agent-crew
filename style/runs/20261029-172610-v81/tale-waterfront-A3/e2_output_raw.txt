@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against the tone rules T1–T5, T13 and T14 [EDIT95#3.2] [EDIT95#3.1] [PLAY#PS2]. Also checked the glossary, the CUSTOMS story frame, clients and landmark rules V1, V3, V6, V8, V9 and V11 [EDIT95#3.1] [EDIT95#3.3] [STORY#S2]. Length and equipment rules F5–F7 passed: 27 words in two sentences, no equipment named and none issued here [EDIT96#3.2] [STORY#WA3]. Tile and brief truth rules R4–R5 passed: the west customs post and its log are on this tile, and the raised-road duty matches ON A RAISED ROAD [STORY#WA3] [STORY#S3].
+Total: 10.

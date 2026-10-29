@@ -44,13 +44,14 @@ A separate guide for the lore refinement. `STYLE_GUIDE.md` (V1) stays as submitt
 ```
 python3 style/style_kb.py --v2                     # the V2 knowledge base: Edit 95 and PLAY first; kb/manifest_v2.json
 python3 style/loop.py --v8                         # Prototype 8's text, four stages (below); writes runs/<id>-v8/v8_copy.json
+python3 style/loop.py --v81                        # Prototype 8.1's text: 7.13's tales and CBD/Campus on V2.3, then the batch twice
 python3 style/loop.py --guide v2 --piece x.json    # one piece on V2
 ```
 
 | File | Role |
 |---|---|
-| `STYLE_GUIDE_V2.md` | 41 rules (V2.2). V2.0 had 38; V2.1 added T14 (one slogan per batch) and V10 (the purpose stated); V2.2 added V11 (environmental storytelling) |
+| `STYLE_GUIDE_V2.md` | 41 rules (V2.4). V2.0 had 38; V2.1 added T14 (one slogan per batch) and V10 (the purpose stated); V2.2 added V11 (environmental storytelling); V2.3 lets a tale run to 35 words (F6); V2.4 bars placeholders from tales (F5) |
 | `agents/v2/` | The three agents for V2: Dummy Corporation's voice, the 20-word cap, Farsight only in the Credits |
 | `lint.py` | `lint.MODE = "v2"`: Farsight blocking outside the Credits, intensifiers, the company's name, the sentence and word caps, a batch's repeated phrases |
-| `loop.py --v8` | Stage 1: each 7.13 text that breaks V2, piece by piece. Stage 2: the story's 31 texts as one batch. Stage 3: Arcade's district banners. Stage 4: the story and six opening lines as one batch, on V2.2 |
+| `loop.py --v8`, `--v81` | Prototype 8. Stage 1: each 7.13 text that breaks V2, piece by piece. Stage 2: the story's 31 texts as one batch. Stage 3: Arcade's district banners. Stage 4: the story and six opening lines as one batch, on V2.2. Prototype 8.1 (`--v81`): 7.13's tales and the CBD and Campus text on V2.3, then that batch on V2.3 and V2.4 |
 

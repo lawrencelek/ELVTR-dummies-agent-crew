@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked tone and register for T1 to T5 and T13, using EDIT95#3.2 and PLAY#PS2. I checked the training frame and that harm reads as service without gore or a wink, for T3 and T4, using EDIT95#3.1. I checked the OPENING DAY frame, with the board narrated and no client named, for V6 and V9, using EDIT95#3.3 and STORY#PC2. I checked that the place is named through the amphitheatre's terraces and avenue, for V11 and R4, using STORY#PC2. I checked that the duty matches the A VAN brief, with no equipment named on a tile that issues none, for R5 and F7, using STORY#PC2 and STORY#S1. I checked length (2 sentences, 30 words) and the absence of Farsight, for F6 and V1, using EDIT96#3.2 and EDIT95#0.
+Total: 10.

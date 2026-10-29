@@ -1,0 +1,105 @@
+{
+ "case": "districts",
+ "class": "V8.1 notices",
+ "title": "The unused CBD and Campus districts",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  9,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 122.1,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 21.9,
+   "output_tokens": 2320,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1573895
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 20.4,
+   "output_tokens": 2211,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1600916
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 14.9,
+   "output_tokens": 1301,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1307715
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 17.5,
+   "output_tokens": 1622,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0399567
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 14.7,
+   "output_tokens": 1221,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13003650000000003
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 17.4,
+   "output_tokens": 1594,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1491784
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 15.3,
+   "output_tokens": 1380,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0355814
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.803
+}

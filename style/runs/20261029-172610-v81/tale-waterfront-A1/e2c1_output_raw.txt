@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3, T4 and T5 (deadpan voice, training framing, "you" and "we" address) [EDIT95#3.2]; V1, V3, V4, V8 and V9 (glossary, "write you off", clients served but unnamed) [EDIT95#3.1]; V6, since crossing the river to the clients matches CUSTOMS [EDIT95#3.3]; V11, since the west portal, the upper town and the bridge are turned toward the duty [STORY#WA1]; F6 at 34 words in 2 sentences, where the 15 words of place carry the tale past 20 [EDIT96#3.2]; F7 and R5, since the duty matches the A BUS brief and no equipment is named on a tile that issues none [STORY#S3, EDIT93#3.1]; and R4, since every detail is one the tile has [STORY#WA1].
+Total: 10.

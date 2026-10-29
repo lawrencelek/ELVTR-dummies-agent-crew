@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The shops under the highway sell nothing. Their signs flash …",
+  "measured": "36 words > 35 (style.v2.tale.maxWords); 5 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT96#3.2"
+ }
+]

@@ -1,0 +1,14 @@
+SCORE: 10/10
+REASON:
+- None.
+All rules for Dummy Corporation's voice are met:
+  - **Length and form (F6):** the tale has two sentences and 27 words, the extra words name the place, and lint found nothing [EDIT96#3.2].
+  - **Tone (T1, T2, T4, T5, T13):** it is flat and motivating, has no "!", treats the sacrifice as an honour with no pity, speaks to "you", and has no more than one adjective per sentence [EDIT95#3.2].
+  - **Banned words, city and glossary (V1–V3):** none are broken [EDIT95#3.1].
+  - **Story frame (V6):** dummies are bound for clients across the river, which fits CUSTOMS [EDIT95#3.3].
+  - **Clients (V9):** clients are served and never seen [EDIT95#3.1].
+  - **Place (V11):** the tale names the west customs post and its log, and turns them toward the duty [EDIT95#3.1].
+  - **Equipment (F7):** none is named, which is correct because this tile issues none [STORY#WA3].
+  - **Tile truth (R4):** the tale names only what the tile has [STORY#WA3].
+  - **Duty (R5):** the raised road matches the brief ON A RAISED ROAD [STORY#S3].
+Total: 10.

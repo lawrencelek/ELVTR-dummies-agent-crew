@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations: the tale stays within 32 words and two sentences, with the place named in the words past 20 (F6), it fits Battery 3 (F7), and its duty matches the COMBO ×{n} brief (R5) [EDIT96#3.2, STORY#S3, STORY#WB2]. The tone is deadpan and inspirational and stays in the training frame (T1, T3, T4, T5, T13) [EDIT95#3.2, EDIT95#3.1]. It keeps the CUSTOMS frame and the exact phrase ZERO ACCIDENTS (EXCLUDING TESTS) (V6) [EDIT95#3.3, EDIT92#3]. The circus island's monument is true to the tile (V11, R4) [STORY#WB2], the clients are served and never named (V9) [EDIT95#3.1], and it uses no banned words, no Farsight and no stray figures (V1, V4, F5) [EDIT95#0].
+Total: 10.

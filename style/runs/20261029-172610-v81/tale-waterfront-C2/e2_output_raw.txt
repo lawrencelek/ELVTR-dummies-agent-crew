@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the tale, which has 28 words in two sentences, against these rules: length F6 [EDIT96#3.2]; tone T1–T5 and T13 [EDIT95#3.2]; place V11 [EDIT95#3.1]; the CUSTOMS frame V6 [EDIT95#3.3]; the glossary V3, the dummy V8 and clients V9 [EDIT95#3.1]; and truth R4–R5. It names the east beach terrace, keeps the drop-from-above duty of DROP ONTO A CAR, and names no equipment, which fits [STORY#WC2], [STORY#S3] and [EDIT93#3.1].
+Total: 10.

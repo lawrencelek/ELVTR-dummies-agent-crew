@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:it write you off",
+  "quote": "it write you off",
+  "measured": "'it write you off' in 3 texts (MA2, PA2, WA1) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ },
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:car into the next",
+  "quote": "car into the next",
+  "measured": "'car into the next' in 3 texts (PC1, PA1, WB3) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ },
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:link n or later",
+  "quote": "link n or later",
+  "measured": "'link n or later' in 3 texts (PC3, PB2, WB2) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ }
+]

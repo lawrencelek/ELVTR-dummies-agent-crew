@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all 37 texts for tone, temperament, frame and glossary (T1, T3–T5, T13; V3, V6, V8, V9), the place in every tale, and equipment and brief truth (V11, F7, R4, R5 against [STORY#S1] and [EDIT93#3.1]). Across the batch I checked T14 and V10; act-waterfront states the sacrifice plainly per [EDIT95#3.1]. Lint found no length, slogan or other issues ([EDIT96#3.2], [EDIT95#3.2], [EDIT95#4.2]).
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 6/10
+REASON:
+- PB2 · F5 (major, −2) "carry a chain to link {n} or later" puts a placeholder in a tale, and the card shows "{n}" exactly as written. [EDIT96#3.2] Fix: replace with "carry the chain your brief asks for", so the line reads "The board watches the ring over the pools; carry the chain your brief asks for, and the Expo opens to clients."
+- WB2 · F5 (major, −2) "end a combo on link {n} or later" puts a placeholder in a tale, and the card shows "{n}" exactly as written. [EDIT96#3.2] Fix: replace with "complete the chain your brief sets", so the line reads "Battery 3 is fitted: complete the chain your brief sets, and you are Certified for our clients."
+Total: 10 − 2 − 2 = 6.

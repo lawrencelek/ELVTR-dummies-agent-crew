@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · V3 (major, −2) "Until then, you train the police fleet" makes the dummy the trainer of the cars, but in the glossary training is the dummy's own job and the dummy is a trainee. [EDIT95#3.1] Fix: "Until then, your training covers the police fleet: a police car makes the final hit." (33 words, two sentences.)
+Total: 10 − 2 = 8.

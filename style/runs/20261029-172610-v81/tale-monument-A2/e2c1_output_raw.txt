@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the tale against tone (T1, T3, T4, T5, T13), place (V3, V6, V8, V11), format (F5, F6, F7) and truth (R4, R5). Lint found nothing. The tale has 31 words in two sentences. It names the neon shops under the highway, and the traffic reading their signs leads into the cone duty [STORY#MA2, EDIT96#3.2, EDIT95#3.1]. "Hands 1" is a part rank, so the digit is allowed, and the part is issued on this tile [STORY#S1]. The duty matches the CONE-BAITED CAR brief: the final hit comes from a colleague reacting to the cone [STORY#S3]. The voice stays deadpan: colleagues, a write-off, no "!" [EDIT95#3.2].
+Total: 10.
