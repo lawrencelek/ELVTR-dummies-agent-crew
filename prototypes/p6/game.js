@@ -741,6 +741,21 @@
   }
   // Barks from the fleet database: highest priority wins, then the most specific line; seeded pick among equals.
   // Write-offs always speak; hits outrank chatter; chatter waits out the global and per-car cooldowns (proto.barks.*).
+  // Edit 94 (P7.13): the place a bark names. Story: the tile on screen (B2). Arcade: the district, as before
+  function barkPlace(s) {
+    if (!s) return null;
+    const dn = INFO(s.levelId) ? INFO(s.levelId).name : String(s.levelId || '');
+    if (!s.storyMode || typeof s.screenName !== 'function') return dn;
+    return s.screenName() || dn;
+  }
+  function barkPlaceText(text, s) { // Edit 94 (P7.13): the district's name in a Story bark becomes the tile's code, in the line's own case
+    if (!s || !s.storyMode || !INFO(s.levelId)) return text;
+    const dn = INFO(s.levelId).name, pl = barkPlace(s);
+    if (!dn || !pl || pl === dn) return text;
+    return String(text).replace(new RegExp(dn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), (m) => (m === m.toUpperCase() ? pl.toUpperCase() : pl));
+  }
+  function exposeBarkPlace() { const ui = window.__dummiesUI = window.__dummiesUI || {}; if (ui.barkPlace !== barkPlace) ui.barkPlace = barkPlace; } // Edit 94 (P7.13): the test hook
+  exposeBarkPlace();
   function barkLine(e, s) {
     if (!FLEET || !e.car) return;
     const info = fx.cars.get(e.car);
@@ -766,7 +781,7 @@
     const onScreen = new Set([...fx.bubbles.values()].filter((bk) => now - bk.t0 < dur).map((bk) => bk.id));
     const fresh = top.filter((ln) => !onScreen.has(ln.id) && ln.id !== fx.lastLine), use = fresh.length ? fresh : top; // no line twice at once
     const pick = use[(Math.round(e.t * 60) + info.slot * 7 + fx.barkN++) % use.length];
-    const text = fillIn(pick.text, e); fx.lastLine = pick.id;
+    const text = barkPlaceText(fillIn(pick.text, e), s); fx.lastLine = pick.id; // Edit 94 (P7.13): barks name the tile in Story
     fx.bubbles.set(e.car, { text, style: pick.style || 'speech', priority: pr, t0: now, car: e.car, id: pick.id });
     fx.barkT = now; fx.carBarkT.set(e.car, { t: now, pr });
     app.present.push({ t: +s.t.toFixed(4), type: 'bark', car: e.car, event: e.type, line: pick.id, text });
@@ -937,6 +952,7 @@
         case 'story-deliver': case 'arcade-deliver': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); giftChime(); toast('FARSIGHT DRONE · DELIVERING ' + NODE(e.node).name.toUpperCase()); break; // Edit 84
         case 'gift': fx.gift = { node: e.node, t0: app.realT }; giftFanfare(Math.max(0.1, pv('ui.gift.fallSeconds'))); break; // Edit 84: the gift screen
         case 'delivered': Snd.tone(320, 480, 0.12, 'triangle', 0.05); break;
+        case 'unveil': [392, 523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.2, 'triangle', 0.06, j * 0.14)); if (app.mode === 'story') saveStory(); break; // Edit 94 (P7.13): the unveiling; the CERTIFIED save
         case 'story-ferried': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
         case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + STORY.needOf(s.levelId, e.tile, s.P) + ')'); break;
         case 'ending': if (e.kind === 'Licensed' || e.kind === 'Certified') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
@@ -1050,6 +1066,7 @@
       }
       if (!s) continue;
       if (s.phase === 'brief' && m === 'ok') { s.continueBrief(); clearEdges(); return; } // Edit 81: the tile card
+      if (s.phase === 'unveil') { if (m === 'ok') { s.continueUnveil(); app.endSel = 0; clearEdges(); return; } continue; } // Edit 94 (P7.13): A continues to the ending
       if (s.phase === 'gift') { if (m === 'ok' && giftReady()) { s.continueGift(); fx.gift = null; clearEdges(); Snd.tone(660, 990, 0.1, 'triangle', 0.05); return; } continue; } // Edit 84: the gift screen
       if (s.phase === 'report' && m === 'ok') s.continueReport();
       else if (s.phase === 'shop') {
@@ -1825,6 +1842,7 @@
         (s.level.checkpoints || []).forEach((cp, i) => { if ((cp.deck && l.dk && l.dk.off === cp.off && l.z === cp.z) || (cp.hill && l.hill)) drawBoom(s, cp, i); }); // a highway or hill street leaving the district
         if (l === cueLayer) drawLights(s, lcars.filter((c) => elevOf(c) === lvl)); shadows6(s, lcars, me ? true : 'no'); if (l === cueLayer) cues(); }),
     });
+    { const dm = sc.dummyMonument; if (dm && dm.shroud && s.monumentShrouded?.()) PIX.blit(FB, dm.shroud, dm.x, dm.y); } // Edit 94 (P7.13): the circus's monument, shrouded until B2 clears
     drawStoryFence(s); // Edit 81: a tile in test is fenced
     for (const c of cars) { ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); relight(c); } // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
     if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
@@ -1872,7 +1890,7 @@
   function rescueLift(s) { const rs = s.rescue; return rs ? Math.round(rs.up) : 0; }
   function drawRescue6(s) { // P6.1 (D37): the dummy sinks below the waterline, a drone lifts it out and sets it down on land
     const rs = s.rescue, b = s.body; if (!rs) return;
-    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = !rs.ferry && !rs.gift && rs.given === undefined && (rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift'); // Edit 84: a ferry or a delivery is on land
+    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = !rs.voyage && !rs.ferry && !rs.gift && rs.given === undefined && (rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift'); // Edit 84: a ferry or a delivery is on land
     if (wet) for (let k = 0; k < 2; k++) { const r = 3 + ((t * 7 + k * 5) % 10); for (const [x, y] of PIX.circle(r)) FB.mix(cx + x, wl + Math.round(y * 0.45), K.white, 0.4 * (1 - r / 13)); } // ripples
     if (rs.under >= 0.999) { if (Math.floor(t * 5) % 2) FB.put(cx + (Math.floor(t * 9) % 3) - 1, wl - 1 - (Math.floor(t * 12) % 4), K.white); return; } // bubbles: under the surface
     const wear = clamp(1 - b.health / maxHP(s), 0, 1), S = PIX.dummy(b.facing, Math.min(5, Math.round(wear * 5)));
@@ -1913,6 +1931,7 @@
   // Frame-layer messages over the field: road intro and toasts, at ui.typeSecondary.
   function drawFieldHD(s) {
     const P = s.P;
+    exposeBarkPlace(); // Edit 94 (P7.13)
     drawBubblesHD(s); // Edit 83: barks are speech bubbles on the cars again
     const since = s.t - (s.tStart || 0);
     if (since < 4 && s.phase === 'play' && !s.storyMode) { // Edit 81: the story's tile card replaces the banner
@@ -1974,6 +1993,7 @@
   // Edit 83 (P7.2): the bottom line carries the objective: the story's brief for the tile in test, or the Arcade district's quota.
   // A toast takes the line while it lives.
   function objective(s) {
+    exposeBarkPlace(); // Edit 94 (P7.13)
     if (!s) return null;
     if (s.storyMode) {
       const pr = s.story, id = s.levelId, act = STORY.activeTile(pr, id), here = s.screenName();
@@ -3061,6 +3081,23 @@
     renderScreen();
     if (TOUCH.on) { ctx.setTransform(scale, 0, 0, scale, 0, 0); drawTouch(); }
   }
+  // Edit 94 (P7.13): the unveiling. The monument stands uncovered in the field; its plaque shows the run
+  function unveilTime(t) { t = Math.max(0, Math.round(t || 0)); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, sec = t % 60; return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(sec).padStart(2, '0'); }
+  function drawUnveil(s) {
+    const p = s.unveil && s.unveil.plaque, cv = document.querySelector('canvas'), g = cv && cv.getContext('2d');
+    if (!p || !g) return;
+    const W = cv.width, H = cv.height, k = Math.max(1, Math.round(Math.min(W, H) / 300)), pw = 160 * k, ph = 96 * k, x = Math.round((W - pw) / 2), y = Math.round(H - ph - 24 * k);
+    g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false;
+    g.fillStyle = 'rgba(12,18,24,0.9)'; g.fillRect(x, y, pw, ph);
+    g.strokeStyle = '#4fe3e0'; g.lineWidth = k; g.strokeRect(x + k / 2, y + k / 2, pw - k, ph - k);
+    g.textBaseline = 'top'; g.textAlign = 'center';
+    g.fillStyle = '#4fe3e0'; g.font = 7 * k + 'px monospace'; g.fillText('THE DUMMY MONUMENT · UNVEILED', W / 2, y + 6 * k);
+    g.fillStyle = '#d8dee4'; g.font = 6 * k + 'px monospace'; g.fillText('ZERO ACCIDENTS (EXCLUDING TESTS)', W / 2, y + 17 * k);
+    const rows = [['CHASSIS SPENT', String(p.chassis || 0)], ['POINTS', num(Math.round(p.points || 0))], ['BEST COMBO', '×' + (p.bestCombo || 0)], ['TIME', unveilTime(p.t)]];
+    rows.forEach(([a, b], i) => { const ry = y + (31 + i * 11) * k; g.textAlign = 'left'; g.fillStyle = '#9aa6b2'; g.fillText(a, x + 12 * k, ry); g.textAlign = 'right'; g.fillStyle = '#ffffff'; g.fillText(b, x + pw - 12 * k, ry); });
+    g.textAlign = 'center'; g.fillStyle = '#4fe3e0'; g.fillText('A · CONTINUE', W / 2, y + ph - 12 * k);
+    g.restore();
+  }
   function renderScreen() {
     HITS.length = 0; // Edit 89: this frame's tap targets
     drawFrame();
@@ -3076,6 +3113,7 @@
     if (app.paused) { if (!app.touchEdit) drawPause(s); } // Edit 87: placing the touch controls shows the game, dimmed, not the menu
     else if (s.phase === 'brief') drawBrief(s); // Edit 81: the tile card
     else if (s.phase === 'gift') drawGiftPopup(s); // Edit 84
+    else if (s.phase === 'unveil') drawUnveil(s); // Edit 94 (P7.13): the plaque
     else if (s.phase === 'report') drawReport(s);
     else if (s.phase === 'shop') drawShop(s);
     else if (s.phase === 'ending') drawEnding(s);

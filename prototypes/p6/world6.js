@@ -916,7 +916,24 @@
     for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) { const d = Math.hypot(x, y); if (d > R) continue; B.put(x0 + x, y0 + y, d > R - 1.5 ? ((Math.round(Math.atan2(y, x) * 12) % 2) ? N.cyan : CON.l) : (x % 6 === 0 || y % 6 === 0) ? CON.m : ISL); } // paving and an LED ring
     for (let t = 0; t < 40; t++) for (let j = -9; j <= 9; j++) B.shade(x0 - 4 - t * 0.7 + j * 0.7, y0 + t * 0.7 + j * 0.7, 0.7); // the long shadow, down-left
     captureRect(cx - 44, cy - 18, 88, 36, 'sculpture');
-    sc.props.push({ spr: dummyStatue(), x: x0, y: y0, by: cy + 18, bldg: 'dummy monument' }); sc.dummyMonument = { cx, cy };
+    const st = dummyStatue(); // Edit 94 (P7.13): the statue keeps its sprite; its shroud is built beside it
+    sc.props.push({ spr: st, x: x0, y: y0, by: cy + 18, bldg: 'dummy monument' }); sc.dummyMonument = { cx, cy, x: x0, y: y0, shroud: shroudSprite(st) };
+  }
+  // Edit 94 (P7.13): the shroud. A cloth over the statue's own silhouette, a pixel wider: folds, a hem, an aqua cord. Cosmetic only;
+  // game.js draws it while Story reports the monument shrouded
+  function shroudSprite(S) {
+    if (!S || !S.d || !S.w || !S.h) return null;
+    const w = S.w, h = S.h, d = S.d, T = Object.assign({}, S, { d: new d.constructor(d.length) }), top = [], bot = [];
+    for (const k of Object.keys(T)) if (k[0] === '_') delete T[k];
+    for (let x = 0; x < w; x++) { top[x] = h; bot[x] = -1; for (let y = 0; y < h; y++) if (d[y * w + x]) { if (top[x] === h) top[x] = y; bot[x] = y; } }
+    let y0 = h, y1 = -1; for (let x = 0; x < w; x++) if (bot[x] >= 0) { y0 = Math.min(y0, top[x]); y1 = Math.max(y1, bot[x]); }
+    if (y1 < 0) return null;
+    const C = [c32('#232B3E'), c32('#36405A'), c32('#4C5875')], cord = Math.round(y0 + (y1 - y0) * 0.4);
+    for (let x = 0; x < w; x++) {
+      let a = h, b = -1; for (let i = -1; i <= 1; i++) if (x + i >= 0 && x + i < w && bot[x + i] >= 0) { a = Math.min(a, top[x + i]); b = Math.max(b, bot[x + i]); }
+      for (let y = a; y <= b; y++) T.d[y * w + x] = y === cord ? N.cyan : y > b - 2 ? C[0] : y === a ? C[2] : [C[2], C[1], C[1], C[0]][x % 4];
+    }
+    return T;
   }
   // ---------- Edit 92 (P7.11): the story's tile art (world.storyArt). Cosmetic only: pixels on sprites already placed, flat marks on the
   // ground, props never captured. No solid, floor, stair, spawn or cone home changes
@@ -987,12 +1004,20 @@
     PIX.smallText(B2, t, x, y, K.white);
     return S;
   }
+  let SCN = null; // Edit 94 (P7.13): the screen buildScreen is building
   function containerShip(B, x0, y0) { // Waterfront B3: the ship that will take the certified model to market, moored on the river
     const L = 120, Wd = 22, put = (x, y, c) => B.put(x0 + x, y0 + y, c);
+    const faces = !!(ACCESS && ACCESS.storyArt); // Edit 94 (P7.13): every crate carries the dummy's face (D76), cosmetic only
     for (let t = 0; t < 30; t++) for (let x = 6; x < L; x++) B.shade(x0 + x - t * 0.7, y0 + Wd + t * 0.7, 0.9); // its shadow on the water
     for (let y = 0; y < Wd; y++) for (let x = 0; x < L; x++) { const bow = x > L - 14 ? (x - (L - 14)) * 0.8 : 0; if (Math.abs(y - Wd / 2) > Wd / 2 - bow) continue; put(x, y, Math.abs(y - Wd / 2) > Wd / 2 - bow - 1.5 ? K.white : c32('#2A3346')); }
     const cols = [N.cyan, N.magenta, c32('#5F6E86'), c32('#C9D3DA'), LEDS[2 % LEDS.length]];
-    for (let r = 0; r < 3; r++) for (let q = 0; q < 8; q++) { const bx = 24 + q * 10, by = 3 + r * 6; for (let y = 0; y < 5; y++) for (let x = 0; x < 9; x++) put(bx + x, by + y - 2, y === 0 || x === 0 ? K.bldgOutline : cols[(q * 3 + r * 2 + q * r) % cols.length]); }
+    let crates = 0;
+    for (let r = 0; r < 3; r++) for (let q = 0; q < 8; q++) {
+      const bx = 24 + q * 10, by = 3 + r * 6; crates++;
+      for (let y = 0; y < 5; y++) for (let x = 0; x < 9; x++) put(bx + x, by + y - 2, y === 0 || x === 0 ? K.bldgOutline : cols[(q * 3 + r * 2 + q * r) % cols.length]);
+      if (faces) for (const [x, y] of [[3, 1], [6, 1], [3, 3], [4, 3], [5, 3], [6, 3]]) put(bx + x, by + y - 2, K.bldgOutline); // Edit 94 (P7.13): the face: two eyes, a mouth
+    }
+    if (faces && SCN) { const sx = (x0 + L / 2) * U, sy = (y0 + Wd / 2) * U; SCN.containerShip = { x: sx, y: sy, crates, face: true }; SCN.ship = { x: sx, y: sy }; } // Edit 94 (P7.13): the finale's ship, on the scene
     for (let y = 2; y < Wd - 2; y++) for (let x = 6; x < 18; x++) put(x, y - 6, y === 2 || x === 6 || x === 17 ? K.bldgOutline : y % 3 === 0 ? N.cyan : K.white); // the bridge
     for (let x = -10; x < 0; x++) for (const yy of [Wd / 2 - 3, Wd / 2 + 3]) if ((x + 20) % 3) put(x, Math.round(yy + x * 0.2), mixK(N.cyan, K.white, 0.5)); // the wake
   }
@@ -1145,6 +1170,7 @@
     const name = TILE(col, row), ox = col * W, oy = row * H, rng = PIX.rng(1000 + col * 37 + row * 101 + D.id.length * 7), plan = D.tiles[name];
     const sc = { D, name, col, row, ox, oy, props: [], layers: [], tops: [], note: plan[0] + '. Landmark: ' + plan[1] + '.', stairs: [], reserve: [], solids: [], solidsZ: [], roofs: [], floorsX: [], waterPolys: [], polys0: [], cones: [], drones: [] };
     CAP = sc.solids; // P6: every mass drawn from here is a solid of this screen
+    SCN = sc; // Edit 94 (P7.13): the screen being built, for the story's tile art that reports itself (the container ship)
     PARKGRID = D.id === 'parkland' ? gridLines(sc) : null; // 6.2 (Edit 70)
     for (const rb of [D.roundabout, D.ring]) if (rb && rb.arms.length < P['world.roundaboutMinArms']) console.warn('a roundabout with too few arms', D.id); // Edit 52
     const RBS = (D.roundabouts || []).concat(D.roundabout ? [D.roundabout] : []), rbHere = RBS.find((q) => q.tile === name); // Edit 56: street roundabouts

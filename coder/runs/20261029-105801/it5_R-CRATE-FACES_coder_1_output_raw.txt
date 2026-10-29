@@ -1,0 +1,36 @@
+=== SUMMARY
+- I couldn't see where `containerShip` is called. So `buildScreen` now records the screen it is building in `SCN`, set next to `CAP = sc.solids`, and `containerShip` writes to that screen.
+- Under `ACCESS.storyArt`, `containerShip` sets `sc.containerShip = { x, y, crates: 24, face: true }` and `sc.ship = { x, y }`. Both are in world units at the hull's centre. R-VOYAGE's `shipPoint` reads `sc.ship`, so the voyage drone now lands on the ship.
+- Under the same flag, each crate gets a dark face mark: two eyes and a mouth, drawn on the crate's pixels.
+- Nothing solid changes. The ship adds no solid, floor, stair, spawn or cone home.
+- p1: Story's Waterfront B3 gets `face: true` and 24 crates.
+- p2: the 6.10 world has no `ACCESS.storyArt`, so it records no ship. If its art already calls `containerShip`, the crates stay as they were.
+- Risk: the B3 crate faces are not checked on screen, so look at them in a screenshot. If `H.scene` returns something other than the screen object `buildScreen` makes, p1 fails.
+=== EDIT prototypes/p6/world6.js
+<<<<<<< FIND
+    CAP = sc.solids; // P6: every mass drawn from here is a solid of this screen
+=======
+    CAP = sc.solids; // P6: every mass drawn from here is a solid of this screen
+    SCN = sc; // Edit 94 (P7.13): the screen being built, for the story's tile art that reports itself (the container ship)
+>>>>>>> REPLACE
+<<<<<<< FIND
+  function containerShip(B, x0, y0) { // Waterfront B3: the ship that will take the certified model to market, moored on the river
+    const L = 120, Wd = 22, put = (x, y, c) => B.put(x0 + x, y0 + y, c);
+=======
+  let SCN = null; // Edit 94 (P7.13): the screen buildScreen is building
+  function containerShip(B, x0, y0) { // Waterfront B3: the ship that will take the certified model to market, moored on the river
+    const L = 120, Wd = 22, put = (x, y, c) => B.put(x0 + x, y0 + y, c);
+    const faces = !!(ACCESS && ACCESS.storyArt); // Edit 94 (P7.13): every crate carries the dummy's face (D76), cosmetic only
+>>>>>>> REPLACE
+<<<<<<< FIND
+    for (let r = 0; r < 3; r++) for (let q = 0; q < 8; q++) { const bx = 24 + q * 10, by = 3 + r * 6; for (let y = 0; y < 5; y++) for (let x = 0; x < 9; x++) put(bx + x, by + y - 2, y === 0 || x === 0 ? K.bldgOutline : cols[(q * 3 + r * 2 + q * r) % cols.length]); }
+=======
+    let crates = 0;
+    for (let r = 0; r < 3; r++) for (let q = 0; q < 8; q++) {
+      const bx = 24 + q * 10, by = 3 + r * 6; crates++;
+      for (let y = 0; y < 5; y++) for (let x = 0; x < 9; x++) put(bx + x, by + y - 2, y === 0 || x === 0 ? K.bldgOutline : cols[(q * 3 + r * 2 + q * r) % cols.length]);
+      if (faces) for (const [x, y] of [[3, 1], [6, 1], [3, 3], [4, 3], [5, 3], [6, 3]]) put(bx + x, by + y - 2, K.bldgOutline); // Edit 94 (P7.13): the face: two eyes, a mouth
+    }
+    if (faces && SCN) { const sx = (x0 + L / 2) * U, sy = (y0 + Wd / 2) * U; SCN.containerShip = { x: sx, y: sy, crates, face: true }; SCN.ship = { x: sx, y: sy }; } // Edit 94 (P7.13): the finale's ship, on the scene
+>>>>>>> REPLACE
+=== END

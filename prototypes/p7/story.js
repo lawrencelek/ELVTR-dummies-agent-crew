@@ -37,13 +37,16 @@
     'world.deckDropGaps': 1, 'world.deckFlightsMin': 1, 'props.cone.minVisible': 0.9, // Edit 85: every highway a flight and a drop gap; cones in view
     'battery.dashJumpCost': 0, 'abilities.hands.tapDrop': 1, // Edit 90: a dash's jump is free; X taps a cone down when none is in reach
     'proto.batteryModel': 1, 'world.dummyMonument': 1, // Edit 91: Battery 1 the dash, 2 a second charge, 3 a faster recharge; the circus's monument
-    'world.storyArt': 1 }; // Edit 92: the story's tile art (Narrative A, Certified), cosmetic only
+    'world.storyArt': 1, // Edit 92: the story's tile art (Narrative A, Certified), cosmetic only
+    'world.monumentShroud': 1 }; // Edit 94 (P7.13): the circus's monument shrouded in Story until Waterfront B2 clears (D76)
+  const CIRCUS = { district: 'waterfront', tile: 'B2' }; // Edit 94 (P7.13): the monument's tile, the story's last
+  const VOYAGE = { district: 'waterfront', tile: 'B3' }; // Edit 94 (P7.13): the stilt houses, where the container ship is moored
   const BASE = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM, P7SIM);
 
   // ---------- progress: one plain object, JSON-safe
   function newProgress() {
     return { v: 1, district: DIST[0].id, done: {}, tileWO: 0, owned: {}, credits: 0, points: 0, chassis: 0, writeOffs: 0, t: 0,
-      gifts: {}, tilePoints: {}, complete: false };
+      gifts: {}, tilePoints: {}, complete: false, bestCombo: 0 }; // Edit 94 (P7.13): bestCombo, optional (old saves load without it)
   }
   const districtOf = (id) => DIST.find((d) => d.id === id) || null;
   const doneIn = (pr, id) => (pr.done && pr.done[id]) || [];
@@ -164,9 +167,55 @@
     }
     continueBrief() { if (this.phase === 'brief') this.phase = 'play'; }
     continueGift() { if (this.phase === 'gift') this.phase = 'play'; } // Edit 84: after the gift screen
+    continueUnveil() { if (this.phase !== 'unveil') return; if (this.unveil) this.unveil.done = true; this.startVoyage(); } // Edit 94 (P7.13): the plaque read, the voyage, then the ending
+    // Edit 94 (P7.13): the voyage. A Farsight drone lifts the dummy over the river to the container ship at Waterfront B3 (D76)
+    startVoyage() {
+      const b = this.body, from = this.screenName(), [c, r] = this.district.cur, [tc, tr] = cellOf(VOYAGE.tile);
+      const side = tc > c ? 'E' : tc < c ? 'W' : tr > r ? 'S' : 'N';
+      Object.assign(b, { alive: true, health: this.maxHealth(), level: 0, floor: null, held: null, carried: [], gesture: null });
+      this.rescue = droneTo(this, b.x, -40, { voyage: true, side, cell: [tc, tr], tile: VOYAGE.tile });
+      this.phase = 'voyage';
+      this.emit('voyage', { from, to: VOYAGE.tile, side });
+    }
+    shipPoint() { const P = this.P, sp = this.sc && this.sc.ship; return sp ? { x: sp.x, y: sp.y } : { x: P['world.width'] / 2, y: P['world.height'] / 2 }; } // Edit 94 (P7.13): the ship, or the tile's middle
+    stepVoyage(dt) { // Edit 94 (P7.13): inbound → lift → carry over the edge → in to the ship → set down → the ending
+      const rs = this.rescue; this.rescue = null; W6.Sim6.prototype.stepRescue.call(this, dt); this.rescue = rs; // the drones already leaving fly on
+      rs.t += dt; rs.k += dt;
+      const b = this.body, P = this.P, W = P['world.width'], H = P['world.height'], d = rs.drone;
+      const fly = (x, y) => { const dx = x - d.x, dy = y - d.y, l = Math.hypot(dx, dy), st = rs.v * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
+      const next = (ph) => { rs.phase = ph; rs.k = 0; d.state = ph; };
+      const hold = () => { b.x = d.x; b.y = d.y; b.px = b.x; b.py = b.y; };
+      if (rs.phase === 'inbound') { if (fly(b.x, b.y)) next('lift'); }
+      else if (rs.phase === 'lift') { const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * f; d.alt = 1 - 0.6 * Math.sin(Math.PI * f); if (f >= 1) { next('carry'); d.alt = 1; } }
+      else if (rs.phase === 'carry') { // over the river, to the edge and across it
+        const [sx, sy] = SIDES[rs.side], tx = sx ? (sx > 0 ? W + 2 : -2) : Math.max(40, Math.min(W - 40, b.x)), ty = sy ? (sy > 0 ? H + 2 : -2) : Math.max(40, Math.min(H - 40, b.y));
+        fly(tx, ty); hold();
+        if ((sx > 0 && d.x > W) || (sx < 0 && d.x < 0) || (sy > 0 && d.y > H) || (sy < 0 && d.y < 0)) {
+          d.x -= sx * W; d.y -= sy * H; d.hx -= sx * W; d.hy -= sy * H;
+          this.flip(rs.side, rs.cell, null); // the screen moves on to the ship's tile
+          rs.to = this.shipPoint(); next('in');
+        }
+      } else if (rs.phase === 'in') { const arrived = fly(rs.to.x, rs.to.y); hold(); if (arrived) next('drop'); }
+      else if (rs.phase === 'drop') {
+        const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * (1 - f);
+        if (f >= 1) {
+          Object.assign(b, { x: rs.to.x, y: rs.to.y, px: rs.to.x, py: rs.to.y, mode: 'idle', vx: 0, vy: 0 });
+          d.hx = d.x; d.hy = -40; d.state = 'outbound'; (this.leaving = this.leaving || []).push(d);
+          this.rescue = null;
+          this.emit('voyage-end', { tile: this.screenName(), seconds: +rs.t.toFixed(2) });
+          this.end('Certified');
+        }
+      }
+    }
+    // Edit 94 (P7.13): progress.bestCombo, the largest combo of any hit in the story
+    noteCombo(c) { const pr = this.story; if (this.storyMode && pr && (c || 0) > (pr.bestCombo || 0)) pr.bestCombo = c; }
+    emit(type, data) { const out = super.emit(type, data); if (type === 'impact' && data && data.combo) this.noteCombo(data.combo); return out; }
     step(cmd) {
-      if (this.phase === 'brief' || this.phase === 'gift') return;
-      super.step(cmd);
+      if (this.phase === 'brief' || this.phase === 'gift' || this.phase === 'unveil') return; // Edit 94 (P7.13): the unveiling holds the sim
+      const voy = !!(this.rescue && this.rescue.voyage); // Edit 94 (P7.13): the voyage runs as the ferry does, the world live, no input
+      if (voy && this.phase === 'voyage') this.phase = 'play';
+      super.step(voy ? {} : cmd);
+      if (voy && this.phase === 'play' && this.rescue && this.rescue.voyage) this.phase = 'voyage';
       if (this.phase === 'play' && this.pendingBrief && !this.rescue) { this.pendingBrief = false; this.phase = 'brief'; } // after a ferry lands
     }
     // ----- Edit 83: the ferry. After a clear, a drone carries the new chassis from the cleared tile into the next one
@@ -195,6 +244,7 @@
     }
     stepRescue(dt) {
       const rs = this.rescue;
+      if (rs && rs.voyage) return this.stepVoyage(dt); // Edit 94 (P7.13): the flight to the ship
       if (!rs || !(rs.ferry || rs.gift || rs.given !== undefined)) return super.stepRescue(dt);
       if (stepDelivery(this, dt) || !this.rescue) return;
       const b = this.body, P = this.P, W = P['world.width'], H = P['world.height'], d = rs.drone;
@@ -275,6 +325,7 @@
       const b = this.body, hit = b.hits[b.hits.length - 1] || null, level = b.level || 0;
       super.writeOff();
       if (!this.storyMode) return;
+      for (const h of b.hits) this.noteCombo(h.combo || 0); // Edit 94 (P7.13): the run's best combo
       const pr = this.story, P = this.P, t = this.screenName(), act = activeTile(pr, this.levelId), tile = tileOf(this.levelId, t);
       const res = { tile: t, active: act, counted: false, why: null, n: pr.tileWO, need: needOf(this.levelId, act || t, P), kind: hit ? hit.kind : null, cls: hit ? hit.cls : null, combo: hit ? hit.combo : 0, level };
       if (t !== act || !this.entered) res.why = doneIn(pr, this.levelId).includes(t) ? 'cleared' : 'elsewhere';
@@ -305,7 +356,12 @@
       this.report = { chassis: b.chassis, hits: b.hits.slice(), points: Math.round(r.points - b.points0), credits: r.credits,
         roadCleared: districtDone && !storyDone, nextRoad: districtDone ? pr.district : null,
         story: Object.assign({}, res, { cleared, next, districtDone, storyDone, parts: partsOwned(r.owned), nextGift: nextGift(pr) }) }; // Edit 91: parts, not levels
-      if (storyDone) { pr.complete = true; this.syncProgress(); return this.end('Certified'); }
+      if (storyDone) { // Edit 94 (P7.13): the circus clears; the monument is unveiled with the run's plaque, then the ending (D76)
+        pr.complete = true; this.syncProgress();
+        const plaque = { chassis: pr.chassis, points: pr.points, bestCombo: pr.bestCombo || 0, t: pr.t };
+        this.unveil = { plaque, done: false }; this.phase = 'unveil';
+        this.emit('unveil', plaque); return;
+      }
       this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
     }
     // ----- Edit 91: Story has no shop. Every part arrives by drone; the report goes straight to the next chassis
@@ -321,6 +377,8 @@
       pr.writeOffs = this.totalWriteOffs(); pr.t = +(this.tOffset + this.t).toFixed(2); pr.milestones = Object.assign({}, this.milestones);
     }
     task() { const tile = tileOf(this.levelId, activeTile(this.story, this.levelId) || ''); return tile ? tile.task : null; }
+    // Edit 94 (P7.13): the DUMMY MONUMENT stays shrouded until the circus, Waterfront B2, clears (D76)
+    monumentShrouded() { const P = this.P; return !!(this.storyMode && this.story && P['world.monumentShroud'] && P['world.dummyMonument'] && !doneIn(this.story, CIRCUS.district).includes(CIRCUS.tile)); }
     trace() { const tr = super.trace(); tr.story = JSON.parse(JSON.stringify(this.story)); return tr; }
   }
 

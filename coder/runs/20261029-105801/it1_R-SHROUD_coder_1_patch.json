@@ -1,0 +1,43 @@
+{
+ "summary": "- story.js: adds `'world.monumentShroud': 1` to P7SIM (p4). Adds `StorySim.monumentShrouded()`, which is true while Story's Waterfront B2 is not cleared and false once B2 is in `story.done` (p1, p2). ArcadeSim does not get this method, so Arcade's monument stays uncovered (p4).\n- world6.js: `dummyMonument` now also builds a shroud sprite from the statue's own outline: one pixel wider, slate cloth folds, a darker hem and an aqua cord. Nothing solid changes. The 6.10 world still has no monument (p4).\n- game.js: `drawLive6` draws the shroud over the statue right after the scene is drawn, while `s.monumentShrouded?.()` is true. Waterfront B2 in test shows it (p5).\n- Registry: `world.monumentShroud` is added with default 0 and set to 1 in P7SIM, following the gating convention (the analyst proposed default 1) (p3).\n- Assumption: I did not see `dummyStatue`'s code. The shroud assumes the statue sprite stores `w`, `h` and pixel array `d` (as `PIX.doll` does), and that `PIX.blit` places it at the prop's `x, y`. If not, no shroud is built and none is drawn. p1–p4 do not depend on it; p5 checks only that the sim reports the shroud, so check its screenshot (`shroud_b2`).\n- Draw order: the shroud is drawn after the scene, so it covers anything standing in front of the island. The dummy's see-through outline still shows over it.",
+ "edits": [
+  {
+   "path": "prototypes/p7/story.js",
+   "find": "    'world.storyArt': 1 }; // Edit 92: the story's tile art (Narrative A, Certified), cosmetic only",
+   "replace": "    'world.storyArt': 1, // Edit 92: the story's tile art (Narrative A, Certified), cosmetic only\n    'world.monumentShroud': 1 }; // Edit 94 (P7.13): the circus's monument shrouded in Story until Waterfront B2 clears (D76)\n  const CIRCUS = { district: 'waterfront', tile: 'B2' }; // Edit 94 (P7.13): the monument's tile, the story's last"
+  },
+  {
+   "path": "prototypes/p7/story.js",
+   "find": "    task() { const tile = tileOf(this.levelId, activeTile(this.story, this.levelId) || ''); return tile ? tile.task : null; }",
+   "replace": "    task() { const tile = tileOf(this.levelId, activeTile(this.story, this.levelId) || ''); return tile ? tile.task : null; }\n    // Edit 94 (P7.13): the DUMMY MONUMENT stays shrouded until the circus, Waterfront B2, clears (D76)\n    monumentShrouded() { const P = this.P; return !!(this.storyMode && this.story && P['world.monumentShroud'] && P['world.dummyMonument'] && !doneIn(this.story, CIRCUS.district).includes(CIRCUS.tile)); }"
+  },
+  {
+   "path": "prototypes/p6/world6.js",
+   "find": "    sc.props.push({ spr: dummyStatue(), x: x0, y: y0, by: cy + 18, bldg: 'dummy monument' }); sc.dummyMonument = { cx, cy };\n  }",
+   "replace": "    const st = dummyStatue(); // Edit 94 (P7.13): the statue keeps its sprite; its shroud is built beside it\n    sc.props.push({ spr: st, x: x0, y: y0, by: cy + 18, bldg: 'dummy monument' }); sc.dummyMonument = { cx, cy, x: x0, y: y0, shroud: shroudSprite(st) };\n  }\n  // Edit 94 (P7.13): the shroud. A cloth over the statue's own silhouette, a pixel wider: folds, a hem, an aqua cord. Cosmetic only;\n  // game.js draws it while Story reports the monument shrouded\n  function shroudSprite(S) {\n    if (!S || !S.d || !S.w || !S.h) return null;\n    const w = S.w, h = S.h, d = S.d, T = Object.assign({}, S, { d: new d.constructor(d.length) }), top = [], bot = [];\n    for (const k of Object.keys(T)) if (k[0] === '_') delete T[k];\n    for (let x = 0; x < w; x++) { top[x] = h; bot[x] = -1; for (let y = 0; y < h; y++) if (d[y * w + x]) { if (top[x] === h) top[x] = y; bot[x] = y; } }\n    let y0 = h, y1 = -1; for (let x = 0; x < w; x++) if (bot[x] >= 0) { y0 = Math.min(y0, top[x]); y1 = Math.max(y1, bot[x]); }\n    if (y1 < 0) return null;\n    const C = [c32('#232B3E'), c32('#36405A'), c32('#4C5875')], cord = Math.round(y0 + (y1 - y0) * 0.4);\n    for (let x = 0; x < w; x++) {\n      let a = h, b = -1; for (let i = -1; i <= 1; i++) if (x + i >= 0 && x + i < w && bot[x + i] >= 0) { a = Math.min(a, top[x + i]); b = Math.max(b, bot[x + i]); }\n      for (let y = a; y <= b; y++) T.d[y * w + x] = y === cord ? N.cyan : y > b - 2 ? C[0] : y === a ? C[2] : [C[2], C[1], C[1], C[0]][x % 4];\n    }\n    return T;\n  }"
+  },
+  {
+   "path": "prototypes/p6/game.js",
+   "find": "    drawStoryFence(s); // Edit 81: a tile in test is fenced",
+   "replace": "    { const dm = sc.dummyMonument; if (dm && dm.shroud && s.monumentShrouded?.()) PIX.blit(FB, dm.shroud, dm.x, dm.y); } // Edit 94 (P7.13): the circus's monument, shrouded until B2 clears\n    drawStoryFence(s); // Edit 81: a tile in test is fenced"
+  }
+ ],
+ "creates": [],
+ "registry": [
+  {
+   "id": "world.monumentShroud",
+   "group": "world",
+   "owner": "systems",
+   "label": "Monument shroud",
+   "description": "P7: the DUMMY MONUMENT in Waterfront B2 is shrouded in Story until Waterfront B2 clears (Edit 92 §3.2, D76)",
+   "unit": "flag",
+   "type": "number",
+   "default": 0,
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "purpose": "Edit 94 (P7.13): the finale's reward is seen; the circus's monument stays covered until the last tile clears. 1 in P7SIM; 0 keeps 6.10 and older rules"
+  }
+ ]
+}

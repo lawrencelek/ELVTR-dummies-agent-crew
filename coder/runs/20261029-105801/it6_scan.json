@@ -1,0 +1,9361 @@
+{
+ "registryVersion": "edit93-2026-10-29",
+ "files": {
+  "prototypes/p7/story.js": {
+   "bytes": 31913,
+   "lines": 397,
+   "sha256": "b4514dc1dbfaf5f1f306441ad6d15a8be201bef950af7166a8640da043068400"
+  },
+  "prototypes/p6/game.js": {
+   "bytes": 297098,
+   "lines": 3320,
+   "sha256": "d58dde9525bcc5527714243ad5d82403865a128f3133e32a56ace39111972bd4"
+  },
+  "prototypes/p6/world6.js": {
+   "bytes": 254772,
+   "lines": 2425,
+   "sha256": "d6b3b0755ca93133f5e42f0e41507c475b013551324acb366e29cd5cc667aca5"
+  },
+  "prototypes/p6/sim.js": {
+   "bytes": 293400,
+   "lines": 3669,
+   "sha256": "0e43d3c3b35cf6b88a021e8389c54973f3a0ed23e7058c582c597227b3487c9e"
+  },
+  "prototypes/p6/pixel.js": {
+   "bytes": 85518,
+   "lines": 1149,
+   "sha256": "4184549803aaa7124f2d584946939e56d4f2445a94406290057238f792ac226c"
+  },
+  "prototypes/p6/lab.js": {
+   "bytes": 30690,
+   "lines": 354,
+   "sha256": "3353da0a23713caac6cacba63ab9ef4230834e4291c4997a9757fef3cc3ae99a"
+  },
+  "prototypes/p6/circus_valley.js": {
+   "bytes": 54190,
+   "lines": 372,
+   "sha256": "24fb9fd6bc425b6314263f12870480ca62edad85f55b3466d86e97fdc5150fb2"
+  },
+  "prototypes/p6/content.js": {
+   "bytes": 98207,
+   "lines": 3,
+   "sha256": "b58192d70f32f2f2002fb182bc248ee3daa075415914328c96facd96f20f2dd5"
+  },
+  "prototypes/jump/jump.js": {
+   "bytes": 4774,
+   "lines": 53,
+   "sha256": "fc6a194372f4ea0882ce0541dd493325c0c332109525a4f316d6c6959118720e"
+  },
+  "prototypes/controls/pads.js": {
+   "bytes": 8397,
+   "lines": 98,
+   "sha256": "ceee3a184281dc700df5c96a8d100ea270ea490f261580b2f6d7cbe58936e1f4"
+  },
+  "prototypes/p7/build.py": {
+   "bytes": 2782,
+   "lines": 31,
+   "sha256": "42ff3313b3e7dd903c739193caa43c02535880e599943f323b7d1a59ab66999f"
+  },
+  "prototypes/p7/shell.html": {
+   "bytes": 9608,
+   "lines": 121,
+   "sha256": "8f1ae2ace3030bb325781d239b2be30ca849b5daf860ee1926cc9cfe3ece75e9"
+  },
+  "content/story/story.json": {
+   "bytes": 13042,
+   "lines": 115,
+   "sha256": "fa7ca7aebbd0f1aa9afe8a6424f85cd082905d50acedb8168152e6f4afcf20e5"
+  },
+  "content/params/tuning.parameters.json": {
+   "bytes": 393780,
+   "lines": 12455,
+   "sha256": "5412c9b003216f0be91b657d3a9229c60385903aeb1251aa6a414c5b74c69d03"
+  }
+ },
+ "symbols": {
+  "prototypes/p7/story.js": [
+   {
+    "name": "SIDES",
+    "kind": "const",
+    "line": 32,
+    "end": 32,
+    "chars": 57
+   },
+   {
+    "name": "nameOf",
+    "kind": "arrow",
+    "line": 33,
+    "end": 33,
+    "chars": 38
+   },
+   {
+    "name": "cellOf",
+    "kind": "arrow",
+    "line": 34,
+    "end": 34,
+    "chars": 49
+   },
+   {
+    "name": "P7SIM",
+    "kind": "const",
+    "line": 36,
+    "end": 36,
+    "chars": 126
+   },
+   {
+    "name": "CIRCUS",
+    "kind": "const",
+    "line": 42,
+    "end": 42,
+    "chars": 106
+   },
+   {
+    "name": "VOYAGE",
+    "kind": "const",
+    "line": 43,
+    "end": 43,
+    "chars": 121
+   },
+   {
+    "name": "newProgress",
+    "kind": "function",
+    "line": 47,
+    "end": 50,
+    "chars": 281
+   },
+   {
+    "name": "districtOf",
+    "kind": "arrow",
+    "line": 51,
+    "end": 51,
+    "chars": 59
+   },
+   {
+    "name": "doneIn",
+    "kind": "arrow",
+    "line": 52,
+    "end": 52,
+    "chars": 52
+   },
+   {
+    "name": "activeTile",
+    "kind": "function",
+    "line": 53,
+    "end": 53,
+    "chars": 133
+   },
+   {
+    "name": "clearedCount",
+    "kind": "function",
+    "line": 54,
+    "end": 54,
+    "chars": 82
+   },
+   {
+    "name": "tileNumber",
+    "kind": "function",
+    "line": 55,
+    "end": 55,
+    "chars": 141
+   },
+   {
+    "name": "nextDistrict",
+    "kind": "function",
+    "line": 56,
+    "end": 56,
+    "chars": 128
+   },
+   {
+    "name": "tileState",
+    "kind": "function",
+    "line": 58,
+    "end": 62,
+    "chars": 190
+   },
+   {
+    "name": "tileOf",
+    "kind": "arrow",
+    "line": 63,
+    "end": 63,
+    "chars": 79
+   },
+   {
+    "name": "needOf",
+    "kind": "arrow",
+    "line": 64,
+    "end": 64,
+    "chars": 114
+   },
+   {
+    "name": "trafficOf",
+    "kind": "arrow",
+    "line": 69,
+    "end": 69,
+    "chars": 76
+   },
+   {
+    "name": "hasRing",
+    "kind": "arrow",
+    "line": 70,
+    "end": 70,
+    "chars": 47
+   },
+   {
+    "name": "storyDensity",
+    "kind": "function",
+    "line": 71,
+    "end": 73,
+    "chars": 294
+   },
+   {
+    "name": "taskText",
+    "kind": "function",
+    "line": 76,
+    "end": 82,
+    "chars": 528
+   },
+   {
+    "name": "fill",
+    "kind": "arrow",
+    "line": 80,
+    "end": 80,
+    "chars": 121
+   },
+   {
+    "name": "meets",
+    "kind": "function",
+    "line": 84,
+    "end": 96,
+    "chars": 512
+   },
+   {
+    "name": "VERBS",
+    "kind": "const",
+    "line": 99,
+    "end": 99,
+    "chars": 184
+   },
+   {
+    "name": "VERB_AT",
+    "kind": "const",
+    "line": 100,
+    "end": 100,
+    "chars": 164
+   },
+   {
+    "name": "giftsCleared",
+    "kind": "function",
+    "line": 102,
+    "end": 102,
+    "chars": 170
+   },
+   {
+    "name": "nextGift",
+    "kind": "function",
+    "line": 103,
+    "end": 103,
+    "chars": 233
+   },
+   {
+    "name": "partsOwned",
+    "kind": "arrow",
+    "line": 104,
+    "end": 104,
+    "chars": 70
+   },
+   {
+    "name": "droneTo",
+    "kind": "function",
+    "line": 106,
+    "end": 111,
+    "chars": 424
+   },
+   {
+    "name": "stepDelivery",
+    "kind": "function",
+    "line": 113,
+    "end": 129,
+    "chars": 1136
+   },
+   {
+    "name": "fly",
+    "kind": "arrow",
+    "line": 116,
+    "end": 116,
+    "chars": 195
+   },
+   {
+    "name": "next",
+    "kind": "arrow",
+    "line": 117,
+    "end": 117,
+    "chars": 57
+   },
+   {
+    "name": "StorySim",
+    "kind": "class",
+    "line": 132,
+    "end": 383,
+    "chars": 19932
+   },
+   {
+    "name": "StorySim.constructor",
+    "kind": "method",
+    "line": 134,
+    "end": 141,
+    "chars": 930
+   },
+   {
+    "name": "StorySim.reset",
+    "kind": "method",
+    "line": 142,
+    "end": 152,
+    "chars": 640
+   },
+   {
+    "name": "StorySim.giftOf",
+    "kind": "method",
+    "line": 153,
+    "end": 153,
+    "chars": 155
+   },
+   {
+    "name": "StorySim.arrive",
+    "kind": "method",
+    "line": 154,
+    "end": 162,
+    "chars": 821
+   },
+   {
+    "name": "StorySim.installGift",
+    "kind": "method",
+    "line": 163,
+    "end": 167,
+    "chars": 516
+   },
+   {
+    "name": "StorySim.continueBrief",
+    "kind": "method",
+    "line": 168,
+    "end": 168,
+    "chars": 68
+   },
+   {
+    "name": "StorySim.continueGift",
+    "kind": "method",
+    "line": 169,
+    "end": 169,
+    "chars": 66
+   },
+   {
+    "name": "StorySim.continueUnveil",
+    "kind": "method",
+    "line": 170,
+    "end": 170,
+    "chars": 119
+   },
+   {
+    "name": "StorySim.startVoyage",
+    "kind": "method",
+    "line": 172,
+    "end": 179,
+    "chars": 526
+   },
+   {
+    "name": "StorySim.shipPoint",
+    "kind": "method",
+    "line": 180,
+    "end": 180,
+    "chars": 153
+   },
+   {
+    "name": "StorySim.stepVoyage",
+    "kind": "method",
+    "line": 181,
+    "end": 209,
+    "chars": 2246
+   },
+   {
+    "name": "fly",
+    "kind": "arrow",
+    "line": 185,
+    "end": 185,
+    "chars": 195
+   },
+   {
+    "name": "next",
+    "kind": "arrow",
+    "line": 186,
+    "end": 186,
+    "chars": 57
+   },
+   {
+    "name": "hold",
+    "kind": "arrow",
+    "line": 187,
+    "end": 187,
+    "chars": 62
+   },
+   {
+    "name": "StorySim.noteCombo",
+    "kind": "method",
+    "line": 211,
+    "end": 211,
+    "chars": 117
+   },
+   {
+    "name": "StorySim.emit",
+    "kind": "method",
+    "line": 212,
+    "end": 212,
+    "chars": 141
+   },
+   {
+    "name": "StorySim.step",
+    "kind": "method",
+    "line": 213,
+    "end": 220,
+    "chars": 639
+   },
+   {
+    "name": "StorySim.leaveShop",
+    "kind": "method",
+    "line": 222,
+    "end": 226,
+    "chars": 232
+   },
+   {
+    "name": "StorySim.startFerry",
+    "kind": "method",
+    "line": 227,
+    "end": 235,
+    "chars": 699
+   },
+   {
+    "name": "StorySim.arrivalPoint",
+    "kind": "method",
+    "line": 236,
+    "end": 244,
+    "chars": 945
+   },
+   {
+    "name": "depth",
+    "kind": "arrow",
+    "line": 238,
+    "end": 238,
+    "chars": 126
+   },
+   {
+    "name": "StorySim.stepRescue",
+    "kind": "method",
+    "line": 245,
+    "end": 272,
+    "chars": 2399
+   },
+   {
+    "name": "fly",
+    "kind": "arrow",
+    "line": 251,
+    "end": 251,
+    "chars": 195
+   },
+   {
+    "name": "next",
+    "kind": "arrow",
+    "line": 252,
+    "end": 252,
+    "chars": 57
+   },
+   {
+    "name": "StorySim.canCross",
+    "kind": "method",
+    "line": 275,
+    "end": 279,
+    "chars": 267
+   },
+   {
+    "name": "StorySim.fenceSides",
+    "kind": "method",
+    "line": 280,
+    "end": 285,
+    "chars": 339
+   },
+   {
+    "name": "StorySim.flip",
+    "kind": "method",
+    "line": 286,
+    "end": 291,
+    "chars": 241
+   },
+   {
+    "name": "StorySim.moveBody",
+    "kind": "method",
+    "line": 292,
+    "end": 292,
+    "chars": 73
+   },
+   {
+    "name": "StorySim.fenceClamp",
+    "kind": "method",
+    "line": 293,
+    "end": 315,
+    "chars": 1599
+   },
+   {
+    "name": "stop",
+    "kind": "arrow",
+    "line": 298,
+    "end": 302,
+    "chars": 238
+   },
+   {
+    "name": "StorySim.spawnBody",
+    "kind": "method",
+    "line": 316,
+    "end": 316,
+    "chars": 74
+   },
+   {
+    "name": "StorySim.hitFloor",
+    "kind": "method",
+    "line": 318,
+    "end": 323,
+    "chars": 322
+   },
+   {
+    "name": "StorySim.writeOff",
+    "kind": "method",
+    "line": 324,
+    "end": 336,
+    "chars": 957
+   },
+   {
+    "name": "StorySim.checkTerminal",
+    "kind": "method",
+    "line": 337,
+    "end": 366,
+    "chars": 2020
+   },
+   {
+    "name": "StorySim.canBuy",
+    "kind": "method",
+    "line": 368,
+    "end": 368,
+    "chars": 128
+   },
+   {
+    "name": "StorySim.buy",
+    "kind": "method",
+    "line": 369,
+    "end": 369,
+    "chars": 149
+   },
+   {
+    "name": "StorySim.continueReport",
+    "kind": "method",
+    "line": 370,
+    "end": 373,
+    "chars": 231
+   },
+   {
+    "name": "StorySim.syncProgress",
+    "kind": "method",
+    "line": 374,
+    "end": 378,
+    "chars": 320
+   },
+   {
+    "name": "StorySim.task",
+    "kind": "method",
+    "line": 379,
+    "end": 379,
+    "chars": 121
+   },
+   {
+    "name": "StorySim.monumentShrouded",
+    "kind": "method",
+    "line": 381,
+    "end": 381,
+    "chars": 200
+   },
+   {
+    "name": "StorySim.trace",
+    "kind": "method",
+    "line": 382,
+    "end": 382,
+    "chars": 99
+   },
+   {
+    "name": "ArcadeSim",
+    "kind": "class",
+    "line": 387,
+    "end": 392,
+    "chars": 297
+   },
+   {
+    "name": "ArcadeSim.constructor",
+    "kind": "method",
+    "line": 388,
+    "end": 391,
+    "chars": 261
+   }
+  ],
+  "prototypes/p6/game.js": [
+   {
+    "name": "INFO",
+    "kind": "arrow",
+    "line": 9,
+    "end": 9,
+    "chars": 62
+   },
+   {
+    "name": "TOUCH",
+    "kind": "const",
+    "line": 34,
+    "end": 34,
+    "chars": 47
+   },
+   {
+    "name": "resize",
+    "kind": "function",
+    "line": 35,
+    "end": 42,
+    "chars": 535
+   },
+   {
+    "name": "HITS",
+    "kind": "const",
+    "line": 57,
+    "end": 57,
+    "chars": 10
+   },
+   {
+    "name": "hitbox",
+    "kind": "function",
+    "line": 58,
+    "end": 58,
+    "chars": 67
+   },
+   {
+    "name": "uiTap",
+    "kind": "function",
+    "line": 59,
+    "end": 59,
+    "chars": 196
+   },
+   {
+    "name": "okProgress",
+    "kind": "arrow",
+    "line": 65,
+    "end": 65,
+    "chars": 80
+   },
+   {
+    "name": "slotCount",
+    "kind": "arrow",
+    "line": 66,
+    "end": 66,
+    "chars": 83
+   },
+   {
+    "name": "nameMax",
+    "kind": "arrow",
+    "line": 67,
+    "end": 67,
+    "chars": 71
+   },
+   {
+    "name": "defaultName",
+    "kind": "arrow",
+    "line": 68,
+    "end": 68,
+    "chars": 61
+   },
+   {
+    "name": "readSlot",
+    "kind": "function",
+    "line": 69,
+    "end": 69,
+    "chars": 260
+   },
+   {
+    "name": "writeSlot",
+    "kind": "function",
+    "line": 71,
+    "end": 71,
+    "chars": 176
+   },
+   {
+    "name": "eraseSlot",
+    "kind": "function",
+    "line": 72,
+    "end": 72,
+    "chars": 133
+   },
+   {
+    "name": "allSlots",
+    "kind": "function",
+    "line": 73,
+    "end": 73,
+    "chars": 224
+   },
+   {
+    "name": "saveStory",
+    "kind": "function",
+    "line": 74,
+    "end": 74,
+    "chars": 201
+   },
+   {
+    "name": "loadSlot",
+    "kind": "function",
+    "line": 75,
+    "end": 75,
+    "chars": 131
+   },
+   {
+    "name": "moveOldStory",
+    "kind": "function",
+    "line": 77,
+    "end": 79,
+    "chars": 401
+   },
+   {
+    "name": "MON",
+    "kind": "const",
+    "line": 80,
+    "end": 80,
+    "chars": 91
+   },
+   {
+    "name": "stamp",
+    "kind": "function",
+    "line": 81,
+    "end": 81,
+    "chars": 205
+   },
+   {
+    "name": "FIELD",
+    "kind": "const",
+    "line": 82,
+    "end": 82,
+    "chars": 11
+   },
+   {
+    "name": "preview",
+    "kind": "function",
+    "line": 84,
+    "end": 88,
+    "chars": 298
+   },
+   {
+    "name": "clamp",
+    "kind": "arrow",
+    "line": 90,
+    "end": 90,
+    "chars": 49
+   },
+   {
+    "name": "CPARAM",
+    "kind": "const",
+    "line": 100,
+    "end": 100,
+    "chars": 12
+   },
+   {
+    "name": "pv",
+    "kind": "function",
+    "line": 103,
+    "end": 109,
+    "chars": 324
+   },
+   {
+    "name": "jv",
+    "kind": "function",
+    "line": 110,
+    "end": 113,
+    "chars": 240
+   },
+   {
+    "name": "fillIn",
+    "kind": "function",
+    "line": 114,
+    "end": 114,
+    "chars": 114
+   },
+   {
+    "name": "place",
+    "kind": "function",
+    "line": 115,
+    "end": 115,
+    "chars": 139
+   },
+   {
+    "name": "copy",
+    "kind": "function",
+    "line": 116,
+    "end": 119,
+    "chars": 193
+   },
+   {
+    "name": "kick",
+    "kind": "function",
+    "line": 130,
+    "end": 130,
+    "chars": 160
+   },
+   {
+    "name": "shakeOffset",
+    "kind": "function",
+    "line": 131,
+    "end": 136,
+    "chars": 262
+   },
+   {
+    "name": "puff",
+    "kind": "function",
+    "line": 137,
+    "end": 142,
+    "chars": 450
+   },
+   {
+    "name": "mix",
+    "kind": "function",
+    "line": 143,
+    "end": 147,
+    "chars": 213
+   },
+   {
+    "name": "h",
+    "kind": "arrow",
+    "line": 144,
+    "end": 144,
+    "chars": 65
+   },
+   {
+    "name": "startLevel",
+    "kind": "function",
+    "line": 150,
+    "end": 153,
+    "chars": 314
+   },
+   {
+    "name": "startLevelNow",
+    "kind": "function",
+    "line": 154,
+    "end": 179,
+    "chars": 2292
+   },
+   {
+    "name": "startStory",
+    "kind": "function",
+    "line": 181,
+    "end": 181,
+    "chars": 150
+   },
+   {
+    "name": "toStoryMap",
+    "kind": "function",
+    "line": 182,
+    "end": 182,
+    "chars": 123
+   },
+   {
+    "name": "titleItems",
+    "kind": "function",
+    "line": 183,
+    "end": 183,
+    "chars": 57
+   },
+   {
+    "name": "toSaves",
+    "kind": "function",
+    "line": 186,
+    "end": 189,
+    "chars": 383
+   },
+   {
+    "name": "slotActs",
+    "kind": "arrow",
+    "line": 190,
+    "end": 190,
+    "chars": 134
+   },
+   {
+    "name": "NAME_ROWS",
+    "kind": "const",
+    "line": 192,
+    "end": 192,
+    "chars": 116
+   },
+   {
+    "name": "nameKeyOf",
+    "kind": "arrow",
+    "line": 193,
+    "end": 193,
+    "chars": 94
+   },
+   {
+    "name": "cleanName",
+    "kind": "arrow",
+    "line": 199,
+    "end": 199,
+    "chars": 85
+   },
+   {
+    "name": "nameStart",
+    "kind": "function",
+    "line": 202,
+    "end": 202,
+    "chars": 196
+   },
+   {
+    "name": "nameCancel",
+    "kind": "function",
+    "line": 203,
+    "end": 203,
+    "chars": 56
+   },
+   {
+    "name": "nameFocus",
+    "kind": "function",
+    "line": 204,
+    "end": 204,
+    "chars": 97
+   },
+   {
+    "name": "nameType",
+    "kind": "function",
+    "line": 206,
+    "end": 206,
+    "chars": 183
+   },
+   {
+    "name": "nameDel",
+    "kind": "function",
+    "line": 207,
+    "end": 207,
+    "chars": 170
+   },
+   {
+    "name": "nameDone",
+    "kind": "function",
+    "line": 208,
+    "end": 213,
+    "chars": 526
+   },
+   {
+    "name": "nameOk",
+    "kind": "function",
+    "line": 214,
+    "end": 214,
+    "chars": 233
+   },
+   {
+    "name": "nameMenu",
+    "kind": "function",
+    "line": 215,
+    "end": 223,
+    "chars": 626
+   },
+   {
+    "name": "savesMenu",
+    "kind": "function",
+    "line": 224,
+    "end": 241,
+    "chars": 1633
+   },
+   {
+    "name": "clearEdges",
+    "kind": "function",
+    "line": 275,
+    "end": 275,
+    "chars": 69
+   },
+   {
+    "name": "inUI",
+    "kind": "function",
+    "line": 276,
+    "end": 276,
+    "chars": 106
+   },
+   {
+    "name": "radial",
+    "kind": "arrow",
+    "line": 306,
+    "end": 306,
+    "chars": 209
+   },
+   {
+    "name": "PAD_NAME",
+    "kind": "const",
+    "line": 312,
+    "end": 312,
+    "chars": 125
+   },
+   {
+    "name": "pollPad",
+    "kind": "function",
+    "line": 313,
+    "end": 338,
+    "chars": 1650
+   },
+   {
+    "name": "moveVec",
+    "kind": "function",
+    "line": 339,
+    "end": 345,
+    "chars": 360
+   },
+   {
+    "name": "buildCmd",
+    "kind": "function",
+    "line": 346,
+    "end": 351,
+    "chars": 339
+   },
+   {
+    "name": "FACE",
+    "kind": "const",
+    "line": 357,
+    "end": 357,
+    "chars": 213
+   },
+   {
+    "name": "FACE_NODE",
+    "kind": "const",
+    "line": 358,
+    "end": 358,
+    "chars": 76
+   },
+   {
+    "name": "touchDevice",
+    "kind": "function",
+    "line": 359,
+    "end": 365,
+    "chars": 628
+   },
+   {
+    "name": "mm",
+    "kind": "arrow",
+    "line": 362,
+    "end": 362,
+    "chars": 105
+   },
+   {
+    "name": "touchOn",
+    "kind": "function",
+    "line": 366,
+    "end": 374,
+    "chars": 599
+   },
+   {
+    "name": "fullscreen",
+    "kind": "function",
+    "line": 375,
+    "end": 378,
+    "chars": 446
+   },
+   {
+    "name": "lock",
+    "kind": "arrow",
+    "line": 376,
+    "end": 376,
+    "chars": 140
+   },
+   {
+    "name": "saveTouchCfg",
+    "kind": "function",
+    "line": 384,
+    "end": 384,
+    "chars": 197
+   },
+   {
+    "name": "touchLayout",
+    "kind": "function",
+    "line": 385,
+    "end": 403,
+    "chars": 2420
+   },
+   {
+    "name": "touchLayoutCss",
+    "kind": "function",
+    "line": 404,
+    "end": 407,
+    "chars": 460
+   },
+   {
+    "name": "inChip",
+    "kind": "arrow",
+    "line": 408,
+    "end": 408,
+    "chars": 141
+   },
+   {
+    "name": "touchEvent",
+    "kind": "function",
+    "line": 409,
+    "end": 435,
+    "chars": 2046
+   },
+   {
+    "name": "editBar",
+    "kind": "function",
+    "line": 437,
+    "end": 440,
+    "chars": 429
+   },
+   {
+    "name": "touchEditEvent",
+    "kind": "function",
+    "line": 441,
+    "end": 460,
+    "chars": 1360
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 443,
+    "end": 443,
+    "chars": 170
+   },
+   {
+    "name": "touchEditSize",
+    "kind": "function",
+    "line": 461,
+    "end": 466,
+    "chars": 468
+   },
+   {
+    "name": "touchEditStart",
+    "kind": "function",
+    "line": 467,
+    "end": 467,
+    "chars": 66
+   },
+   {
+    "name": "touchEditEnd",
+    "kind": "function",
+    "line": 468,
+    "end": 468,
+    "chars": 95
+   },
+   {
+    "name": "drawTouchEdit",
+    "kind": "function",
+    "line": 469,
+    "end": 479,
+    "chars": 1252
+   },
+   {
+    "name": "ring",
+    "kind": "arrow",
+    "line": 471,
+    "end": 471,
+    "chars": 206
+   },
+   {
+    "name": "stickAt",
+    "kind": "function",
+    "line": 480,
+    "end": 487,
+    "chars": 470
+   },
+   {
+    "name": "touchDirs",
+    "kind": "function",
+    "line": 488,
+    "end": 492,
+    "chars": 289
+   },
+   {
+    "name": "faceWord",
+    "kind": "function",
+    "line": 495,
+    "end": 503,
+    "chars": 851
+   },
+   {
+    "name": "drawTouch",
+    "kind": "function",
+    "line": 504,
+    "end": 542,
+    "chars": 4327
+   },
+   {
+    "name": "glow",
+    "kind": "arrow",
+    "line": 510,
+    "end": 510,
+    "chars": 127
+   },
+   {
+    "name": "disc",
+    "kind": "arrow",
+    "line": 511,
+    "end": 511,
+    "chars": 66
+   },
+   {
+    "name": "THEME_NAME",
+    "kind": "const",
+    "line": 568,
+    "end": 568,
+    "chars": 103
+   },
+   {
+    "name": "LEVEL6",
+    "kind": "const",
+    "line": 570,
+    "end": 570,
+    "chars": 183
+   },
+   {
+    "name": "maxHP",
+    "kind": "arrow",
+    "line": 572,
+    "end": 572,
+    "chars": 116
+   },
+   {
+    "name": "DENY_TEXT",
+    "kind": "const",
+    "line": 573,
+    "end": 573,
+    "chars": 166
+   },
+   {
+    "name": "juice",
+    "kind": "function",
+    "line": 577,
+    "end": 596,
+    "chars": 1084
+   },
+   {
+    "name": "SENIORITY",
+    "kind": "const",
+    "line": 598,
+    "end": 598,
+    "chars": 58
+   },
+   {
+    "name": "seniorityOf",
+    "kind": "function",
+    "line": 599,
+    "end": 599,
+    "chars": 91
+   },
+   {
+    "name": "trackCars",
+    "kind": "function",
+    "line": 600,
+    "end": 602,
+    "chars": 196
+   },
+   {
+    "name": "upm",
+    "kind": "function",
+    "line": 603,
+    "end": 603,
+    "chars": 77
+   },
+   {
+    "name": "whenOk",
+    "kind": "function",
+    "line": 604,
+    "end": 616,
+    "chars": 800
+   },
+   {
+    "name": "enrich",
+    "kind": "function",
+    "line": 618,
+    "end": 631,
+    "chars": 881
+   },
+   {
+    "name": "present",
+    "kind": "function",
+    "line": 633,
+    "end": 639,
+    "chars": 183
+   },
+   {
+    "name": "carGap",
+    "kind": "function",
+    "line": 640,
+    "end": 644,
+    "chars": 301
+   },
+   {
+    "name": "deriveCases",
+    "kind": "function",
+    "line": 645,
+    "end": 671,
+    "chars": 1451
+   },
+   {
+    "name": "noteContact",
+    "kind": "function",
+    "line": 672,
+    "end": 677,
+    "chars": 183
+   },
+   {
+    "name": "contactOf",
+    "kind": "function",
+    "line": 680,
+    "end": 689,
+    "chars": 790
+   },
+   {
+    "name": "eff",
+    "kind": "arrow",
+    "line": 683,
+    "end": 683,
+    "chars": 174
+   },
+   {
+    "name": "hitJuice",
+    "kind": "function",
+    "line": 690,
+    "end": 735,
+    "chars": 3646
+   },
+   {
+    "name": "brokenPart",
+    "kind": "function",
+    "line": 736,
+    "end": 741,
+    "chars": 211
+   },
+   {
+    "name": "barkPlace",
+    "kind": "function",
+    "line": 745,
+    "end": 750,
+    "chars": 228
+   },
+   {
+    "name": "barkPlaceText",
+    "kind": "function",
+    "line": 751,
+    "end": 756,
+    "chars": 445
+   },
+   {
+    "name": "exposeBarkPlace",
+    "kind": "function",
+    "line": 757,
+    "end": 757,
+    "chars": 137
+   },
+   {
+    "name": "barkLine",
+    "kind": "function",
+    "line": 759,
+    "end": 788,
+    "chars": 2288
+   },
+   {
+    "name": "SIT",
+    "kind": "const",
+    "line": 767,
+    "end": 767,
+    "chars": 105
+   },
+   {
+    "name": "spec",
+    "kind": "arrow",
+    "line": 769,
+    "end": 769,
+    "chars": 40
+   },
+   {
+    "name": "wrapSmall",
+    "kind": "function",
+    "line": 790,
+    "end": 795,
+    "chars": 284
+   },
+   {
+    "name": "drawBarks",
+    "kind": "function",
+    "line": 798,
+    "end": 837,
+    "chars": 3347
+   },
+   {
+    "name": "hits",
+    "kind": "arrow",
+    "line": 809,
+    "end": 809,
+    "chars": 129
+   },
+   {
+    "name": "ring",
+    "kind": "arrow",
+    "line": 826,
+    "end": 829,
+    "chars": 217
+   },
+   {
+    "name": "processEvents",
+    "kind": "function",
+    "line": 838,
+    "end": 965,
+    "chars": 14354
+   },
+   {
+    "name": "giftChime",
+    "kind": "function",
+    "line": 968,
+    "end": 968,
+    "chars": 108
+   },
+   {
+    "name": "giftFanfare",
+    "kind": "function",
+    "line": 969,
+    "end": 977,
+    "chars": 677
+   },
+   {
+    "name": "horn",
+    "kind": "function",
+    "line": 979,
+    "end": 979,
+    "chars": 100
+   },
+   {
+    "name": "dashify",
+    "kind": "function",
+    "line": 980,
+    "end": 980,
+    "chars": 123
+   },
+   {
+    "name": "toast",
+    "kind": "function",
+    "line": 981,
+    "end": 981,
+    "chars": 63
+   },
+   {
+    "name": "PAUSE_STORY",
+    "kind": "const",
+    "line": 985,
+    "end": 985,
+    "chars": 139
+   },
+   {
+    "name": "pauseItems",
+    "kind": "arrow",
+    "line": 986,
+    "end": 986,
+    "chars": 70
+   },
+   {
+    "name": "END_ITEMS",
+    "kind": "const",
+    "line": 987,
+    "end": 987,
+    "chars": 78
+   },
+   {
+    "name": "nextLevel",
+    "kind": "arrow",
+    "line": 991,
+    "end": 991,
+    "chars": 130
+   },
+   {
+    "name": "NODE",
+    "kind": "arrow",
+    "line": 992,
+    "end": 992,
+    "chars": 46
+   },
+   {
+    "name": "nodeDesc",
+    "kind": "arrow",
+    "line": 993,
+    "end": 993,
+    "chars": 124
+   },
+   {
+    "name": "handleMenus",
+    "kind": "function",
+    "line": 994,
+    "end": 1103,
+    "chars": 7765
+   },
+   {
+    "name": "TY",
+    "kind": "const",
+    "line": 1108,
+    "end": 1108,
+    "chars": 102
+   },
+   {
+    "name": "rr",
+    "kind": "function",
+    "line": 1125,
+    "end": 1128,
+    "chars": 223
+   },
+   {
+    "name": "txt",
+    "kind": "function",
+    "line": 1129,
+    "end": 1131,
+    "chars": 185
+   },
+   {
+    "name": "h",
+    "kind": "arrow",
+    "line": 1132,
+    "end": 1133,
+    "chars": 229
+   },
+   {
+    "name": "rgba",
+    "kind": "function",
+    "line": 1132,
+    "end": 1132,
+    "chars": 146
+   },
+   {
+    "name": "roleC",
+    "kind": "function",
+    "line": 1133,
+    "end": 1133,
+    "chars": 92
+   },
+   {
+    "name": "panel",
+    "kind": "function",
+    "line": 1134,
+    "end": 1148,
+    "chars": 936
+   },
+   {
+    "name": "glassKey",
+    "kind": "function",
+    "line": 1149,
+    "end": 1153,
+    "chars": 262
+   },
+   {
+    "name": "fmtT",
+    "kind": "function",
+    "line": 1154,
+    "end": 1154,
+    "chars": 110
+   },
+   {
+    "name": "num",
+    "kind": "function",
+    "line": 1155,
+    "end": 1155,
+    "chars": 56
+   },
+   {
+    "name": "wrapLines",
+    "kind": "function",
+    "line": 1156,
+    "end": 1161,
+    "chars": 303
+   },
+   {
+    "name": "wrapText",
+    "kind": "function",
+    "line": 1162,
+    "end": 1166,
+    "chars": 216
+   },
+   {
+    "name": "drawKeys",
+    "kind": "function",
+    "line": 1167,
+    "end": 1176,
+    "chars": 627
+   },
+   {
+    "name": "ALL",
+    "kind": "arrow",
+    "line": 1185,
+    "end": 1185,
+    "chars": 17
+   },
+   {
+    "name": "toA",
+    "kind": "arrow",
+    "line": 1186,
+    "end": 1186,
+    "chars": 52
+   },
+   {
+    "name": "EXT",
+    "kind": "arrow",
+    "line": 1187,
+    "end": 1187,
+    "chars": 112
+   },
+   {
+    "name": "levelArt",
+    "kind": "function",
+    "line": 1189,
+    "end": 1227,
+    "chars": 4285
+   },
+   {
+    "name": "zL",
+    "kind": "arrow",
+    "line": 1194,
+    "end": 1194,
+    "chars": 85
+   },
+   {
+    "name": "roofSpec",
+    "kind": "arrow",
+    "line": 1195,
+    "end": 1202,
+    "chars": 934
+   },
+   {
+    "name": "sprite",
+    "kind": "arrow",
+    "line": 1203,
+    "end": 1217,
+    "chars": 1534
+   },
+   {
+    "name": "deckAt",
+    "kind": "arrow",
+    "line": 1218,
+    "end": 1218,
+    "chars": 136
+   },
+   {
+    "name": "blockOf",
+    "kind": "arrow",
+    "line": 1219,
+    "end": 1219,
+    "chars": 112
+   },
+   {
+    "name": "flush",
+    "kind": "function",
+    "line": 1228,
+    "end": 1228,
+    "chars": 57
+   },
+   {
+    "name": "carSpr",
+    "kind": "function",
+    "line": 1229,
+    "end": 1229,
+    "chars": 147
+   },
+   {
+    "name": "shortId",
+    "kind": "function",
+    "line": 1230,
+    "end": 1230,
+    "chars": 196
+   },
+   {
+    "name": "coneLift",
+    "kind": "function",
+    "line": 1231,
+    "end": 1231,
+    "chars": 127
+   },
+   {
+    "name": "coneFn",
+    "kind": "function",
+    "line": 1232,
+    "end": 1240,
+    "chars": 441
+   },
+   {
+    "name": "rotRect",
+    "kind": "function",
+    "line": 1241,
+    "end": 1241,
+    "chars": 205
+   },
+   {
+    "name": "arcPoly",
+    "kind": "function",
+    "line": 1242,
+    "end": 1242,
+    "chars": 192
+   },
+   {
+    "name": "mixOnce",
+    "kind": "function",
+    "line": 1243,
+    "end": 1243,
+    "chars": 155
+   },
+   {
+    "name": "corridorPts",
+    "kind": "function",
+    "line": 1245,
+    "end": 1260,
+    "chars": 774
+   },
+   {
+    "name": "blindSpots",
+    "kind": "function",
+    "line": 1261,
+    "end": 1282,
+    "chars": 1161
+   },
+   {
+    "name": "add",
+    "kind": "arrow",
+    "line": 1263,
+    "end": 1272,
+    "chars": 534
+   },
+   {
+    "name": "far",
+    "kind": "arrow",
+    "line": 1270,
+    "end": 1270,
+    "chars": 130
+   },
+   {
+    "name": "drawZones",
+    "kind": "function",
+    "line": 1284,
+    "end": 1303,
+    "chars": 1472
+   },
+   {
+    "name": "open",
+    "kind": "arrow",
+    "line": 1290,
+    "end": 1290,
+    "chars": 86
+   },
+   {
+    "name": "inSensor",
+    "kind": "arrow",
+    "line": 1301,
+    "end": 1301,
+    "chars": 122
+   },
+   {
+    "name": "drawPath",
+    "kind": "function",
+    "line": 1304,
+    "end": 1322,
+    "chars": 1105
+   },
+   {
+    "name": "drawStopCue",
+    "kind": "function",
+    "line": 1324,
+    "end": 1336,
+    "chars": 1034
+   },
+   {
+    "name": "drawViewEdges",
+    "kind": "function",
+    "line": 1337,
+    "end": 1341,
+    "chars": 307
+   },
+   {
+    "name": "markCar",
+    "kind": "function",
+    "line": 1343,
+    "end": 1353,
+    "chars": 667
+   },
+   {
+    "name": "drawMarks",
+    "kind": "function",
+    "line": 1354,
+    "end": 1360,
+    "chars": 395
+   },
+   {
+    "name": "carsOf",
+    "kind": "arrow",
+    "line": 1362,
+    "end": 1362,
+    "chars": 97
+   },
+   {
+    "name": "lay",
+    "kind": "arrow",
+    "line": 1363,
+    "end": 1363,
+    "chars": 45
+   },
+   {
+    "name": "zLift",
+    "kind": "arrow",
+    "line": 1364,
+    "end": 1364,
+    "chars": 91
+   },
+   {
+    "name": "bodyFloor",
+    "kind": "function",
+    "line": 1365,
+    "end": 1365,
+    "chars": 107
+   },
+   {
+    "name": "onFloor",
+    "kind": "function",
+    "line": 1366,
+    "end": 1366,
+    "chars": 157
+   },
+   {
+    "name": "onDeck",
+    "kind": "function",
+    "line": 1367,
+    "end": 1367,
+    "chars": 40
+   },
+   {
+    "name": "onGroundDraw",
+    "kind": "function",
+    "line": 1368,
+    "end": 1368,
+    "chars": 103
+   },
+   {
+    "name": "stairDeck",
+    "kind": "function",
+    "line": 1369,
+    "end": 1369,
+    "chars": 146
+   },
+   {
+    "name": "cueLevel",
+    "kind": "function",
+    "line": 1370,
+    "end": 1375,
+    "chars": 330
+   },
+   {
+    "name": "cueDeck",
+    "kind": "function",
+    "line": 1376,
+    "end": 1383,
+    "chars": 436
+   },
+   {
+    "name": "bodyLift",
+    "kind": "function",
+    "line": 1384,
+    "end": 1390,
+    "chars": 452
+   },
+   {
+    "name": "deckOf",
+    "kind": "function",
+    "line": 1391,
+    "end": 1391,
+    "chars": 105
+   },
+   {
+    "name": "carShadow",
+    "kind": "function",
+    "line": 1392,
+    "end": 1392,
+    "chars": 231
+   },
+   {
+    "name": "dynShadows",
+    "kind": "function",
+    "line": 1393,
+    "end": 1407,
+    "chars": 1263
+   },
+   {
+    "name": "off",
+    "kind": "arrow",
+    "line": 1395,
+    "end": 1395,
+    "chars": 52
+   },
+   {
+    "name": "dropK",
+    "kind": "function",
+    "line": 1408,
+    "end": 1413,
+    "chars": 284
+   },
+   {
+    "name": "reachEnd",
+    "kind": "function",
+    "line": 1414,
+    "end": 1423,
+    "chars": 483
+   },
+   {
+    "name": "drawBodyGround",
+    "kind": "function",
+    "line": 1425,
+    "end": 1445,
+    "chars": 1332
+   },
+   {
+    "name": "drawBodySprite",
+    "kind": "function",
+    "line": 1446,
+    "end": 1468,
+    "chars": 1781
+   },
+   {
+    "name": "drawNose",
+    "kind": "function",
+    "line": 1471,
+    "end": 1480,
+    "chars": 609
+   },
+   {
+    "name": "add",
+    "kind": "arrow",
+    "line": 1475,
+    "end": 1475,
+    "chars": 135
+   },
+   {
+    "name": "drawCarSprite",
+    "kind": "function",
+    "line": 1481,
+    "end": 1493,
+    "chars": 1207
+   },
+   {
+    "name": "roof",
+    "kind": "arrow",
+    "line": 1487,
+    "end": 1487,
+    "chars": 104
+   },
+   {
+    "name": "pip",
+    "kind": "function",
+    "line": 1495,
+    "end": 1509,
+    "chars": 1089
+   },
+   {
+    "name": "drawCarMarks",
+    "kind": "function",
+    "line": 1510,
+    "end": 1519,
+    "chars": 856
+   },
+   {
+    "name": "tagRect",
+    "kind": "function",
+    "line": 1522,
+    "end": 1526,
+    "chars": 305
+   },
+   {
+    "name": "drawTag",
+    "kind": "function",
+    "line": 1527,
+    "end": 1542,
+    "chars": 1015
+   },
+   {
+    "name": "drawDrone",
+    "kind": "function",
+    "line": 1543,
+    "end": 1549,
+    "chars": 575
+   },
+   {
+    "name": "drawDeck",
+    "kind": "function",
+    "line": 1553,
+    "end": 1577,
+    "chars": 2002
+   },
+   {
+    "name": "drawLights",
+    "kind": "function",
+    "line": 1581,
+    "end": 1608,
+    "chars": 2038
+   },
+   {
+    "name": "drawBoom",
+    "kind": "function",
+    "line": 1610,
+    "end": 1617,
+    "chars": 783
+   },
+   {
+    "name": "drawSprites",
+    "kind": "function",
+    "line": 1618,
+    "end": 1646,
+    "chars": 2941
+   },
+   {
+    "name": "L",
+    "kind": "arrow",
+    "line": 1629,
+    "end": 1629,
+    "chars": 110
+   },
+   {
+    "name": "relight",
+    "kind": "function",
+    "line": 1647,
+    "end": 1649,
+    "chars": 417
+   },
+   {
+    "name": "ghost",
+    "kind": "function",
+    "line": 1650,
+    "end": 1653,
+    "chars": 251
+   },
+   {
+    "name": "drawEffects",
+    "kind": "function",
+    "line": 1654,
+    "end": 1692,
+    "chars": 3320
+   },
+   {
+    "name": "drawRingsStreaks",
+    "kind": "function",
+    "line": 1693,
+    "end": 1708,
+    "chars": 996
+   },
+   {
+    "name": "ROLE_K",
+    "kind": "const",
+    "line": 1709,
+    "end": 1709,
+    "chars": 156
+   },
+   {
+    "name": "roleK",
+    "kind": "function",
+    "line": 1710,
+    "end": 1710,
+    "chars": 55
+   },
+   {
+    "name": "lowHealth",
+    "kind": "function",
+    "line": 1711,
+    "end": 1711,
+    "chars": 126
+   },
+   {
+    "name": "drawParts",
+    "kind": "function",
+    "line": 1712,
+    "end": 1731,
+    "chars": 1634
+   },
+   {
+    "name": "mixRect",
+    "kind": "function",
+    "line": 1732,
+    "end": 1732,
+    "chars": 115
+   },
+   {
+    "name": "drawStamp",
+    "kind": "function",
+    "line": 1733,
+    "end": 1741,
+    "chars": 854
+   },
+   {
+    "name": "drawLive",
+    "kind": "function",
+    "line": 1742,
+    "end": 1779,
+    "chars": 2505
+   },
+   {
+    "name": "cues",
+    "kind": "arrow",
+    "line": 1749,
+    "end": 1753,
+    "chars": 363
+   },
+   {
+    "name": "composeScroll",
+    "kind": "function",
+    "line": 1783,
+    "end": 1794,
+    "chars": 778
+   },
+   {
+    "name": "elevOf",
+    "kind": "arrow",
+    "line": 1799,
+    "end": 1799,
+    "chars": 28
+   },
+   {
+    "name": "where6",
+    "kind": "function",
+    "line": 1800,
+    "end": 1809,
+    "chars": 741
+   },
+   {
+    "name": "shadows6",
+    "kind": "function",
+    "line": 1810,
+    "end": 1816,
+    "chars": 807
+   },
+   {
+    "name": "drawLive6",
+    "kind": "function",
+    "line": 1817,
+    "end": 1880,
+    "chars": 6736
+   },
+   {
+    "name": "cues",
+    "kind": "arrow",
+    "line": 1821,
+    "end": 1825,
+    "chars": 363
+   },
+   {
+    "name": "into",
+    "kind": "arrow",
+    "line": 1827,
+    "end": 1827,
+    "chars": 87
+   },
+   {
+    "name": "meItem",
+    "kind": "arrow",
+    "line": 1828,
+    "end": 1828,
+    "chars": 141
+   },
+   {
+    "name": "GIFT_BOX",
+    "kind": "const",
+    "line": 1883,
+    "end": 1883,
+    "chars": 376
+   },
+   {
+    "name": "drawGiftBox",
+    "kind": "function",
+    "line": 1884,
+    "end": 1889,
+    "chars": 332
+   },
+   {
+    "name": "rescueLift",
+    "kind": "function",
+    "line": 1890,
+    "end": 1890,
+    "chars": 73
+   },
+   {
+    "name": "drawRescue6",
+    "kind": "function",
+    "line": 1891,
+    "end": 1899,
+    "chars": 1232
+   },
+   {
+    "name": "drawLoading",
+    "kind": "function",
+    "line": 1900,
+    "end": 1906,
+    "chars": 326
+   },
+   {
+    "name": "drawField",
+    "kind": "function",
+    "line": 1907,
+    "end": 1914,
+    "chars": 463
+   },
+   {
+    "name": "drawField6",
+    "kind": "function",
+    "line": 1915,
+    "end": 1921,
+    "chars": 318
+   },
+   {
+    "name": "blitField",
+    "kind": "function",
+    "line": 1922,
+    "end": 1930,
+    "chars": 431
+   },
+   {
+    "name": "drawFieldHD",
+    "kind": "function",
+    "line": 1932,
+    "end": 1949,
+    "chars": 1431
+   },
+   {
+    "name": "kMin",
+    "kind": "arrow",
+    "line": 1952,
+    "end": 1952,
+    "chars": 147
+   },
+   {
+    "name": "liveBark",
+    "kind": "function",
+    "line": 1953,
+    "end": 1962,
+    "chars": 549
+   },
+   {
+    "name": "drawBubblesHD",
+    "kind": "function",
+    "line": 1965,
+    "end": 1992,
+    "chars": 2970
+   },
+   {
+    "name": "toC",
+    "kind": "arrow",
+    "line": 1968,
+    "end": 1968,
+    "chars": 78
+   },
+   {
+    "name": "hit",
+    "kind": "arrow",
+    "line": 1970,
+    "end": 1970,
+    "chars": 106
+   },
+   {
+    "name": "objective",
+    "kind": "function",
+    "line": 1995,
+    "end": 2016,
+    "chars": 1557
+   },
+   {
+    "name": "drawMessages",
+    "kind": "function",
+    "line": 2017,
+    "end": 2065,
+    "chars": 4778
+   },
+   {
+    "name": "fit",
+    "kind": "arrow",
+    "line": 2024,
+    "end": 2024,
+    "chars": 201
+   },
+   {
+    "name": "widthOf",
+    "kind": "arrow",
+    "line": 2037,
+    "end": 2037,
+    "chars": 267
+   },
+   {
+    "name": "lineW",
+    "kind": "arrow",
+    "line": 2038,
+    "end": 2038,
+    "chars": 107
+   },
+   {
+    "name": "fits",
+    "kind": "arrow",
+    "line": 2041,
+    "end": 2041,
+    "chars": 39
+   },
+   {
+    "name": "clip",
+    "kind": "arrow",
+    "line": 2045,
+    "end": 2045,
+    "chars": 291
+   },
+   {
+    "name": "drawItem",
+    "kind": "arrow",
+    "line": 2046,
+    "end": 2059,
+    "chars": 1167
+   },
+   {
+    "name": "roadLabel",
+    "kind": "function",
+    "line": 2067,
+    "end": 2067,
+    "chars": 320
+   },
+   {
+    "name": "drawFrame",
+    "kind": "function",
+    "line": 2068,
+    "end": 2088,
+    "chars": 1820
+   },
+   {
+    "name": "playKeys",
+    "kind": "function",
+    "line": 2091,
+    "end": 2111,
+    "chars": 1631
+   },
+   {
+    "name": "drawKeysPanel",
+    "kind": "function",
+    "line": 2112,
+    "end": 2125,
+    "chars": 878
+   },
+   {
+    "name": "WHERE6",
+    "kind": "const",
+    "line": 2126,
+    "end": 2126,
+    "chars": 124
+   },
+   {
+    "name": "whereOf",
+    "kind": "function",
+    "line": 2128,
+    "end": 2131,
+    "chars": 335
+   },
+   {
+    "name": "fitTextR",
+    "kind": "function",
+    "line": 2132,
+    "end": 2132,
+    "chars": 216
+   },
+   {
+    "name": "fitNumR",
+    "kind": "function",
+    "line": 2133,
+    "end": 2133,
+    "chars": 215
+   },
+   {
+    "name": "fitText",
+    "kind": "function",
+    "line": 2134,
+    "end": 2134,
+    "chars": 206
+   },
+   {
+    "name": "drawScore",
+    "kind": "function",
+    "line": 2135,
+    "end": 2144,
+    "chars": 1010
+   },
+   {
+    "name": "drawTopBar",
+    "kind": "function",
+    "line": 2145,
+    "end": 2157,
+    "chars": 1846
+   },
+   {
+    "name": "drawHUD",
+    "kind": "function",
+    "line": 2159,
+    "end": 2187,
+    "chars": 2385
+   },
+   {
+    "name": "MAP_Z",
+    "kind": "const",
+    "line": 2193,
+    "end": 2193,
+    "chars": 68
+   },
+   {
+    "name": "mapGeom",
+    "kind": "function",
+    "line": 2196,
+    "end": 2199,
+    "chars": 342
+   },
+   {
+    "name": "mapRoads",
+    "kind": "function",
+    "line": 2200,
+    "end": 2221,
+    "chars": 1987
+   },
+   {
+    "name": "off",
+    "kind": "arrow",
+    "line": 2202,
+    "end": 2202,
+    "chars": 228
+   },
+   {
+    "name": "mapCanvas",
+    "kind": "function",
+    "line": 2222,
+    "end": 2237,
+    "chars": 995
+   },
+   {
+    "name": "drawDistrict",
+    "kind": "function",
+    "line": 2238,
+    "end": 2275,
+    "chars": 4350
+   },
+   {
+    "name": "PART_NAME",
+    "kind": "const",
+    "line": 2277,
+    "end": 2277,
+    "chars": 105
+   },
+   {
+    "name": "partLevels",
+    "kind": "function",
+    "line": 2279,
+    "end": 2283,
+    "chars": 269
+   },
+   {
+    "name": "dollMods",
+    "kind": "function",
+    "line": 2288,
+    "end": 2300,
+    "chars": 1024
+   },
+   {
+    "name": "own",
+    "kind": "arrow",
+    "line": 2298,
+    "end": 2298,
+    "chars": 195
+   },
+   {
+    "name": "dollCanvas",
+    "kind": "function",
+    "line": 2301,
+    "end": 2309,
+    "chars": 547
+   },
+   {
+    "name": "partEffects",
+    "kind": "function",
+    "line": 2310,
+    "end": 2322,
+    "chars": 848
+   },
+   {
+    "name": "PART_TAG",
+    "kind": "const",
+    "line": 2326,
+    "end": 2326,
+    "chars": 141
+   },
+   {
+    "name": "partReds",
+    "kind": "function",
+    "line": 2327,
+    "end": 2327,
+    "chars": 218
+   },
+   {
+    "name": "redText",
+    "kind": "function",
+    "line": 2328,
+    "end": 2328,
+    "chars": 163
+   },
+   {
+    "name": "drawBodyPanel",
+    "kind": "function",
+    "line": 2329,
+    "end": 2357,
+    "chars": 2499
+   },
+   {
+    "name": "veil",
+    "kind": "function",
+    "line": 2360,
+    "end": 2360,
+    "chars": 65
+   },
+   {
+    "name": "menuList",
+    "kind": "function",
+    "line": 2361,
+    "end": 2370,
+    "chars": 638
+   },
+   {
+    "name": "difficultyHealth",
+    "kind": "function",
+    "line": 2371,
+    "end": 2371,
+    "chars": 125
+   },
+   {
+    "name": "endItems",
+    "kind": "function",
+    "line": 2372,
+    "end": 2377,
+    "chars": 404
+   },
+   {
+    "name": "quotaOf",
+    "kind": "function",
+    "line": 2378,
+    "end": 2378,
+    "chars": 183
+   },
+   {
+    "name": "drawTitle",
+    "kind": "function",
+    "line": 2379,
+    "end": 2404,
+    "chars": 2779
+   },
+   {
+    "name": "plural",
+    "kind": "arrow",
+    "line": 2407,
+    "end": 2407,
+    "chars": 54
+   },
+   {
+    "name": "storyCursor",
+    "kind": "function",
+    "line": 2408,
+    "end": 2412,
+    "chars": 385
+   },
+   {
+    "name": "giftText",
+    "kind": "function",
+    "line": 2413,
+    "end": 2418,
+    "chars": 303
+   },
+   {
+    "name": "drawModeTitle",
+    "kind": "function",
+    "line": 2419,
+    "end": 2441,
+    "chars": 2073
+   },
+   {
+    "name": "slotLines",
+    "kind": "function",
+    "line": 2444,
+    "end": 2448,
+    "chars": 659
+   },
+   {
+    "name": "drawSaves",
+    "kind": "function",
+    "line": 2449,
+    "end": 2493,
+    "chars": 3866
+   },
+   {
+    "name": "nameKeyRects",
+    "kind": "function",
+    "line": 2494,
+    "end": 2499,
+    "chars": 615
+   },
+   {
+    "name": "drawNameEntry",
+    "kind": "function",
+    "line": 2500,
+    "end": 2521,
+    "chars": 2341
+   },
+   {
+    "name": "drawStoryMap",
+    "kind": "function",
+    "line": 2522,
+    "end": 2577,
+    "chars": 5719
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 2537,
+    "end": 2537,
+    "chars": 95
+   },
+   {
+    "name": "drawBrief",
+    "kind": "function",
+    "line": 2578,
+    "end": 2596,
+    "chars": 2102
+   },
+   {
+    "name": "sprCanvas",
+    "kind": "function",
+    "line": 2601,
+    "end": 2606,
+    "chars": 325
+   },
+   {
+    "name": "giftArtOf",
+    "kind": "function",
+    "line": 2607,
+    "end": 2620,
+    "chars": 1554
+   },
+   {
+    "name": "mk",
+    "kind": "arrow",
+    "line": 2613,
+    "end": 2613,
+    "chars": 237
+   },
+   {
+    "name": "giftReady",
+    "kind": "function",
+    "line": 2621,
+    "end": 2621,
+    "chars": 88
+   },
+   {
+    "name": "drawGiftPopup",
+    "kind": "function",
+    "line": 2622,
+    "end": 2689,
+    "chars": 7351
+   },
+   {
+    "name": "clamp01",
+    "kind": "arrow",
+    "line": 2625,
+    "end": 2625,
+    "chars": 124
+   },
+   {
+    "name": "drawBriefFoot",
+    "kind": "function",
+    "line": 2690,
+    "end": 2697,
+    "chars": 763
+   },
+   {
+    "name": "drawMapFences",
+    "kind": "function",
+    "line": 2698,
+    "end": 2713,
+    "chars": 1110
+   },
+   {
+    "name": "open",
+    "kind": "arrow",
+    "line": 2700,
+    "end": 2700,
+    "chars": 136
+   },
+   {
+    "name": "seen",
+    "kind": "arrow",
+    "line": 2701,
+    "end": 2701,
+    "chars": 54
+   },
+   {
+    "name": "c32",
+    "kind": "arrow",
+    "line": 2714,
+    "end": 2714,
+    "chars": 138
+   },
+   {
+    "name": "FENCE",
+    "kind": "const",
+    "line": 2715,
+    "end": 2715,
+    "chars": 99
+   },
+   {
+    "name": "drawStoryFence",
+    "kind": "function",
+    "line": 2716,
+    "end": 2725,
+    "chars": 708
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 2719,
+    "end": 2719,
+    "chars": 112
+   },
+   {
+    "name": "drawReport",
+    "kind": "function",
+    "line": 2726,
+    "end": 2753,
+    "chars": 3153
+   },
+   {
+    "name": "drawShop",
+    "kind": "function",
+    "line": 2754,
+    "end": 2793,
+    "chars": 3279
+   },
+   {
+    "name": "BADGE",
+    "kind": "const",
+    "line": 2796,
+    "end": 2796,
+    "chars": 65
+   },
+   {
+    "name": "abilityStats",
+    "kind": "function",
+    "line": 2798,
+    "end": 2815,
+    "chars": 1998
+   },
+   {
+    "name": "drawAbilityShop",
+    "kind": "function",
+    "line": 2816,
+    "end": 2867,
+    "chars": 4477
+   },
+   {
+    "name": "PART_WORD",
+    "kind": "const",
+    "line": 2868,
+    "end": 2868,
+    "chars": 76
+   },
+   {
+    "name": "WS_POS",
+    "kind": "const",
+    "line": 2872,
+    "end": 2872,
+    "chars": 106
+   },
+   {
+    "name": "seatOf",
+    "kind": "function",
+    "line": 2874,
+    "end": 2879,
+    "chars": 480
+   },
+   {
+    "name": "wsLocked",
+    "kind": "arrow",
+    "line": 2880,
+    "end": 2880,
+    "chars": 108
+   },
+   {
+    "name": "wsCost",
+    "kind": "arrow",
+    "line": 2881,
+    "end": 2881,
+    "chars": 88
+   },
+   {
+    "name": "wsMove",
+    "kind": "function",
+    "line": 2882,
+    "end": 2888,
+    "chars": 620
+   },
+   {
+    "name": "drawWorkshop",
+    "kind": "function",
+    "line": 2889,
+    "end": 2952,
+    "chars": 8337
+   },
+   {
+    "name": "seatAt",
+    "kind": "arrow",
+    "line": 2903,
+    "end": 2903,
+    "chars": 90
+   },
+   {
+    "name": "CUE_KEY",
+    "kind": "const",
+    "line": 2954,
+    "end": 2979,
+    "chars": 2275
+   },
+   {
+    "name": "cueCanvas",
+    "kind": "function",
+    "line": 2960,
+    "end": 2979,
+    "chars": 1852
+   },
+   {
+    "name": "car",
+    "kind": "arrow",
+    "line": 2964,
+    "end": 2964,
+    "chars": 132
+   },
+   {
+    "name": "loc",
+    "kind": "arrow",
+    "line": 2965,
+    "end": 2965,
+    "chars": 53
+   },
+   {
+    "name": "drawCueKey",
+    "kind": "function",
+    "line": 2980,
+    "end": 2989,
+    "chars": 472
+   },
+   {
+    "name": "deviceOf",
+    "kind": "arrow",
+    "line": 2993,
+    "end": 2993,
+    "chars": 78
+   },
+   {
+    "name": "optionItems",
+    "kind": "function",
+    "line": 2994,
+    "end": 2999,
+    "chars": 293
+   },
+   {
+    "name": "optionDo",
+    "kind": "function",
+    "line": 3000,
+    "end": 3007,
+    "chars": 754
+   },
+   {
+    "name": "controlItems",
+    "kind": "arrow",
+    "line": 3008,
+    "end": 3008,
+    "chars": 98
+   },
+   {
+    "name": "controlRows",
+    "kind": "function",
+    "line": 3009,
+    "end": 3024,
+    "chars": 1515
+   },
+   {
+    "name": "nm",
+    "kind": "arrow",
+    "line": 3011,
+    "end": 3011,
+    "chars": 95
+   },
+   {
+    "name": "drawControls",
+    "kind": "function",
+    "line": 3025,
+    "end": 3039,
+    "chars": 1177
+   },
+   {
+    "name": "drawPause",
+    "kind": "function",
+    "line": 3040,
+    "end": 3058,
+    "chars": 1687
+   },
+   {
+    "name": "drawEnding",
+    "kind": "function",
+    "line": 3059,
+    "end": 3074,
+    "chars": 1571
+   },
+   {
+    "name": "render",
+    "kind": "function",
+    "line": 3076,
+    "end": 3083,
+    "chars": 621
+   },
+   {
+    "name": "unveilTime",
+    "kind": "function",
+    "line": 3085,
+    "end": 3085,
+    "chars": 229
+   },
+   {
+    "name": "drawUnveil",
+    "kind": "function",
+    "line": 3086,
+    "end": 3100,
+    "chars": 1422
+   },
+   {
+    "name": "renderScreen",
+    "kind": "function",
+    "line": 3101,
+    "end": 3121,
+    "chars": 1043
+   },
+   {
+    "name": "MOVE_NAME",
+    "kind": "const",
+    "line": 3124,
+    "end": 3124,
+    "chars": 137
+   },
+   {
+    "name": "drawComboMeter",
+    "kind": "function",
+    "line": 3125,
+    "end": 3136,
+    "chars": 1380
+   },
+   {
+    "name": "drawPadSetup",
+    "kind": "function",
+    "line": 3137,
+    "end": 3144,
+    "chars": 579
+   },
+   {
+    "name": "TUNE",
+    "kind": "const",
+    "line": 3147,
+    "end": 3189,
+    "chars": 5931
+   },
+   {
+    "name": "current",
+    "kind": "function",
+    "line": 3197,
+    "end": 3201,
+    "chars": 216
+   },
+   {
+    "name": "setParam",
+    "kind": "function",
+    "line": 3202,
+    "end": 3206,
+    "chars": 243
+   },
+   {
+    "name": "buildTune",
+    "kind": "function",
+    "line": 3207,
+    "end": 3252,
+    "chars": 4472
+   },
+   {
+    "name": "syncTune",
+    "kind": "function",
+    "line": 3253,
+    "end": 3261,
+    "chars": 833
+   },
+   {
+    "name": "toggleTune",
+    "kind": "function",
+    "line": 3262,
+    "end": 3262,
+    "chars": 142
+   },
+   {
+    "name": "showTrace",
+    "kind": "function",
+    "line": 3273,
+    "end": 3277,
+    "chars": 227
+   },
+   {
+    "name": "done",
+    "kind": "arrow",
+    "line": 3281,
+    "end": 3281,
+    "chars": 141
+   },
+   {
+    "name": "appStatus",
+    "kind": "function",
+    "line": 3287,
+    "end": 3287,
+    "chars": 85
+   },
+   {
+    "name": "frame",
+    "kind": "function",
+    "line": 3290,
+    "end": 3311,
+    "chars": 1752
+   }
+  ],
+  "prototypes/p6/world6.js": [
+   {
+    "name": "P6SIM",
+    "kind": "const",
+    "line": 19,
+    "end": 19,
+    "chars": 224
+   },
+   {
+    "name": "EXT",
+    "kind": "arrow",
+    "line": 29,
+    "end": 29,
+    "chars": 223
+   },
+   {
+    "name": "CON",
+    "kind": "const",
+    "line": 32,
+    "end": 32,
+    "chars": 188
+   },
+   {
+    "name": "apronOf",
+    "kind": "arrow",
+    "line": 37,
+    "end": 37,
+    "chars": 246
+   },
+   {
+    "name": "capture",
+    "kind": "function",
+    "line": 42,
+    "end": 54,
+    "chars": 700
+   },
+   {
+    "name": "captureRect",
+    "kind": "arrow",
+    "line": 55,
+    "end": 55,
+    "chars": 97
+   },
+   {
+    "name": "each",
+    "kind": "function",
+    "line": 57,
+    "end": 57,
+    "chars": 122
+   },
+   {
+    "name": "walk",
+    "kind": "function",
+    "line": 58,
+    "end": 58,
+    "chars": 320
+   },
+   {
+    "name": "clipRun",
+    "kind": "function",
+    "line": 59,
+    "end": 74,
+    "chars": 1337
+   },
+   {
+    "name": "onScreen",
+    "kind": "arrow",
+    "line": 72,
+    "end": 72,
+    "chars": 339
+   },
+   {
+    "name": "shift",
+    "kind": "arrow",
+    "line": 75,
+    "end": 75,
+    "chars": 63
+   },
+   {
+    "name": "chamf",
+    "kind": "arrow",
+    "line": 76,
+    "end": 76,
+    "chars": 259
+   },
+   {
+    "name": "lawn",
+    "kind": "function",
+    "line": 77,
+    "end": 77,
+    "chars": 125
+   },
+   {
+    "name": "pathLine",
+    "kind": "function",
+    "line": 78,
+    "end": 81,
+    "chars": 367
+   },
+   {
+    "name": "tiles",
+    "kind": "function",
+    "line": 82,
+    "end": 84,
+    "chars": 379
+   },
+   {
+    "name": "pool",
+    "kind": "function",
+    "line": 85,
+    "end": 94,
+    "chars": 634
+   },
+   {
+    "name": "HG",
+    "kind": "const",
+    "line": 96,
+    "end": 96,
+    "chars": 179
+   },
+   {
+    "name": "hsh",
+    "kind": "arrow",
+    "line": 98,
+    "end": 98,
+    "chars": 77
+   },
+   {
+    "name": "hedgeC",
+    "kind": "arrow",
+    "line": 99,
+    "end": 99,
+    "chars": 143
+   },
+   {
+    "name": "lawnC",
+    "kind": "arrow",
+    "line": 100,
+    "end": 100,
+    "chars": 112
+   },
+   {
+    "name": "TURF",
+    "kind": "const",
+    "line": 101,
+    "end": 101,
+    "chars": 132
+   },
+   {
+    "name": "turfC",
+    "kind": "arrow",
+    "line": 102,
+    "end": 102,
+    "chars": 205
+   },
+   {
+    "name": "mossC",
+    "kind": "arrow",
+    "line": 103,
+    "end": 103,
+    "chars": 81
+   },
+   {
+    "name": "mass",
+    "kind": "function",
+    "line": 104,
+    "end": 133,
+    "chars": 2227
+   },
+   {
+    "name": "block",
+    "kind": "function",
+    "line": 134,
+    "end": 134,
+    "chars": 220
+   },
+   {
+    "name": "paveC",
+    "kind": "arrow",
+    "line": 137,
+    "end": 137,
+    "chars": 242
+   },
+   {
+    "name": "slabC",
+    "kind": "arrow",
+    "line": 138,
+    "end": 138,
+    "chars": 212
+   },
+   {
+    "name": "diagC",
+    "kind": "arrow",
+    "line": 139,
+    "end": 139,
+    "chars": 181
+   },
+   {
+    "name": "onPath",
+    "kind": "arrow",
+    "line": 144,
+    "end": 144,
+    "chars": 149
+   },
+   {
+    "name": "pathMX",
+    "kind": "arrow",
+    "line": 146,
+    "end": 146,
+    "chars": 237
+   },
+   {
+    "name": "pathMY",
+    "kind": "arrow",
+    "line": 147,
+    "end": 147,
+    "chars": 237
+   },
+   {
+    "name": "gardenPave",
+    "kind": "function",
+    "line": 148,
+    "end": 162,
+    "chars": 1531
+   },
+   {
+    "name": "on1",
+    "kind": "arrow",
+    "line": 158,
+    "end": 158,
+    "chars": 156
+   },
+   {
+    "name": "drawBed",
+    "kind": "function",
+    "line": 163,
+    "end": 171,
+    "chars": 1017
+   },
+   {
+    "name": "MED",
+    "kind": "const",
+    "line": 177,
+    "end": 177,
+    "chars": 90
+   },
+   {
+    "name": "GREAT",
+    "kind": "const",
+    "line": 178,
+    "end": 178,
+    "chars": 142
+   },
+   {
+    "name": "smallPlanter",
+    "kind": "function",
+    "line": 179,
+    "end": 182,
+    "chars": 416
+   },
+   {
+    "name": "PROG",
+    "kind": "const",
+    "line": 186,
+    "end": 186,
+    "chars": 168
+   },
+   {
+    "name": "PAV",
+    "kind": "const",
+    "line": 187,
+    "end": 187,
+    "chars": 329
+   },
+   {
+    "name": "jet",
+    "kind": "function",
+    "line": 188,
+    "end": 192,
+    "chars": 547
+   },
+   {
+    "name": "shellSprite",
+    "kind": "function",
+    "line": 193,
+    "end": 203,
+    "chars": 1057
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 195,
+    "end": 195,
+    "chars": 111
+   },
+   {
+    "name": "towerSprite",
+    "kind": "function",
+    "line": 204,
+    "end": 212,
+    "chars": 1158
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 206,
+    "end": 206,
+    "chars": 111
+   },
+   {
+    "name": "domeSprite",
+    "kind": "function",
+    "line": 213,
+    "end": 219,
+    "chars": 1141
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 215,
+    "end": 215,
+    "chars": 130
+   },
+   {
+    "name": "lawnPanel",
+    "kind": "function",
+    "line": 220,
+    "end": 223,
+    "chars": 403
+   },
+   {
+    "name": "parterre",
+    "kind": "function",
+    "line": 224,
+    "end": 228,
+    "chars": 407
+   },
+   {
+    "name": "fountainCell",
+    "kind": "function",
+    "line": 229,
+    "end": 233,
+    "chars": 347
+   },
+   {
+    "name": "plazaCell",
+    "kind": "function",
+    "line": 234,
+    "end": 240,
+    "chars": 822
+   },
+   {
+    "name": "fountainSmall",
+    "kind": "function",
+    "line": 241,
+    "end": 245,
+    "chars": 551
+   },
+   {
+    "name": "pavilion",
+    "kind": "function",
+    "line": 246,
+    "end": 262,
+    "chars": 1860
+   },
+   {
+    "name": "cellRect",
+    "kind": "function",
+    "line": 263,
+    "end": 265,
+    "chars": 387
+   },
+   {
+    "name": "gardenPlan",
+    "kind": "function",
+    "line": 266,
+    "end": 325,
+    "chars": 6816
+   },
+   {
+    "name": "okR",
+    "kind": "arrow",
+    "line": 268,
+    "end": 268,
+    "chars": 197
+   },
+   {
+    "name": "gapW",
+    "kind": "arrow",
+    "line": 283,
+    "end": 283,
+    "chars": 192
+   },
+   {
+    "name": "touch",
+    "kind": "arrow",
+    "line": 292,
+    "end": 292,
+    "chars": 116
+   },
+   {
+    "name": "gardenSculptures",
+    "kind": "function",
+    "line": 326,
+    "end": 329,
+    "chars": 639
+   },
+   {
+    "name": "brutal",
+    "kind": "function",
+    "line": 333,
+    "end": 404,
+    "chars": 7379
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 336,
+    "end": 336,
+    "chars": 128
+   },
+   {
+    "name": "half",
+    "kind": "arrow",
+    "line": 337,
+    "end": 337,
+    "chars": 185
+   },
+   {
+    "name": "inV",
+    "kind": "arrow",
+    "line": 351,
+    "end": 351,
+    "chars": 282
+   },
+   {
+    "name": "darker",
+    "kind": "arrow",
+    "line": 352,
+    "end": 352,
+    "chars": 66
+   },
+   {
+    "name": "face",
+    "kind": "arrow",
+    "line": 353,
+    "end": 362,
+    "chars": 817
+   },
+   {
+    "name": "drawVol",
+    "kind": "arrow",
+    "line": 363,
+    "end": 379,
+    "chars": 1219
+   },
+   {
+    "name": "shadeRoof",
+    "kind": "arrow",
+    "line": 380,
+    "end": 384,
+    "chars": 654
+   },
+   {
+    "name": "brutalShadow",
+    "kind": "function",
+    "line": 405,
+    "end": 416,
+    "chars": 1034
+   },
+   {
+    "name": "fp",
+    "kind": "arrow",
+    "line": 407,
+    "end": 407,
+    "chars": 212
+   },
+   {
+    "name": "monolith",
+    "kind": "function",
+    "line": 417,
+    "end": 421,
+    "chars": 320
+   },
+   {
+    "name": "planter",
+    "kind": "function",
+    "line": 422,
+    "end": 426,
+    "chars": 604
+   },
+   {
+    "name": "sculpture",
+    "kind": "function",
+    "line": 429,
+    "end": 438,
+    "chars": 2059
+   },
+   {
+    "name": "R",
+    "kind": "arrow",
+    "line": 431,
+    "end": 431,
+    "chars": 269
+   },
+   {
+    "name": "bollard",
+    "kind": "function",
+    "line": 439,
+    "end": 439,
+    "chars": 105
+   },
+   {
+    "name": "sculptureCourt",
+    "kind": "function",
+    "line": 442,
+    "end": 449,
+    "chars": 784
+   },
+   {
+    "name": "SCULPT",
+    "kind": "const",
+    "line": 450,
+    "end": 450,
+    "chars": 54
+   },
+   {
+    "name": "escalators",
+    "kind": "function",
+    "line": 452,
+    "end": 456,
+    "chars": 439
+   },
+   {
+    "name": "stairProp",
+    "kind": "arrow",
+    "line": 457,
+    "end": 457,
+    "chars": 151
+   },
+   {
+    "name": "ringRoutes",
+    "kind": "function",
+    "line": 459,
+    "end": 462,
+    "chars": 452
+   },
+   {
+    "name": "ringLayer",
+    "kind": "function",
+    "line": 463,
+    "end": 502,
+    "chars": 4908
+   },
+   {
+    "name": "inArc",
+    "kind": "arrow",
+    "line": 467,
+    "end": 467,
+    "chars": 47
+   },
+   {
+    "name": "straightDeck",
+    "kind": "function",
+    "line": 503,
+    "end": 513,
+    "chars": 1521
+   },
+   {
+    "name": "deckDropGaps",
+    "kind": "function",
+    "line": 517,
+    "end": 529,
+    "chars": 1091
+   },
+   {
+    "name": "opened",
+    "kind": "arrow",
+    "line": 519,
+    "end": 519,
+    "chars": 164
+   },
+   {
+    "name": "crossings",
+    "kind": "arrow",
+    "line": 520,
+    "end": 520,
+    "chars": 294
+   },
+   {
+    "name": "deckFlight",
+    "kind": "function",
+    "line": 531,
+    "end": 534,
+    "chars": 310
+   },
+   {
+    "name": "apronMat",
+    "kind": "function",
+    "line": 536,
+    "end": 541,
+    "chars": 835
+   },
+   {
+    "name": "walkGaps",
+    "kind": "function",
+    "line": 548,
+    "end": 572,
+    "chars": 1795
+   },
+   {
+    "name": "clear",
+    "kind": "arrow",
+    "line": 554,
+    "end": 554,
+    "chars": 127
+   },
+   {
+    "name": "walkwayLayer",
+    "kind": "function",
+    "line": 576,
+    "end": 610,
+    "chars": 3834
+   },
+   {
+    "name": "gapAt",
+    "kind": "arrow",
+    "line": 580,
+    "end": 580,
+    "chars": 263
+   },
+   {
+    "name": "out",
+    "kind": "arrow",
+    "line": 586,
+    "end": 586,
+    "chars": 163
+   },
+   {
+    "name": "edgeOf",
+    "kind": "arrow",
+    "line": 587,
+    "end": 587,
+    "chars": 191
+   },
+   {
+    "name": "drawMonument",
+    "kind": "function",
+    "line": 612,
+    "end": 621,
+    "chars": 1217
+   },
+   {
+    "name": "splitRoad",
+    "kind": "function",
+    "line": 623,
+    "end": 628,
+    "chars": 371
+   },
+   {
+    "name": "paintSplit",
+    "kind": "function",
+    "line": 629,
+    "end": 642,
+    "chars": 1019
+   },
+   {
+    "name": "fil",
+    "kind": "arrow",
+    "line": 647,
+    "end": 647,
+    "chars": 48
+   },
+   {
+    "name": "loop2",
+    "kind": "arrow",
+    "line": 648,
+    "end": 648,
+    "chars": 108
+   },
+   {
+    "name": "DISTRICTS",
+    "kind": "const",
+    "line": 649,
+    "end": 667,
+    "chars": 3024
+   },
+   {
+    "name": "TILE",
+    "kind": "arrow",
+    "line": 685,
+    "end": 685,
+    "chars": 36
+   },
+   {
+    "name": "polyMask",
+    "kind": "function",
+    "line": 691,
+    "end": 700,
+    "chars": 963
+   },
+   {
+    "name": "HILL_SOLID",
+    "kind": "const",
+    "line": 702,
+    "end": 706,
+    "chars": 394
+   },
+   {
+    "name": "WROAD",
+    "kind": "arrow",
+    "line": 707,
+    "end": 707,
+    "chars": 85
+   },
+   {
+    "name": "BRIDGE_GAPS",
+    "kind": "const",
+    "line": 708,
+    "end": 708,
+    "chars": 132
+   },
+   {
+    "name": "WATER",
+    "kind": "const",
+    "line": 709,
+    "end": 709,
+    "chars": 135
+   },
+   {
+    "name": "flight",
+    "kind": "function",
+    "line": 719,
+    "end": 722,
+    "chars": 456
+   },
+   {
+    "name": "WSTAIRS",
+    "kind": "const",
+    "line": 723,
+    "end": 731,
+    "chars": 899
+   },
+   {
+    "name": "lvl0",
+    "kind": "arrow",
+    "line": 732,
+    "end": 732,
+    "chars": 161
+   },
+   {
+    "name": "SAND",
+    "kind": "const",
+    "line": 733,
+    "end": 733,
+    "chars": 99
+   },
+   {
+    "name": "terraceSprite",
+    "kind": "function",
+    "line": 735,
+    "end": 745,
+    "chars": 1646
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 737,
+    "end": 737,
+    "chars": 122
+   },
+   {
+    "name": "stiltSprite",
+    "kind": "function",
+    "line": 747,
+    "end": 760,
+    "chars": 1694
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 749,
+    "end": 749,
+    "chars": 111
+   },
+   {
+    "name": "portalSprite",
+    "kind": "function",
+    "line": 762,
+    "end": 773,
+    "chars": 951
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 764,
+    "end": 764,
+    "chars": 88
+   },
+   {
+    "name": "waterPre",
+    "kind": "function",
+    "line": 775,
+    "end": 848,
+    "chars": 7881
+   },
+   {
+    "name": "box",
+    "kind": "arrow",
+    "line": 818,
+    "end": 818,
+    "chars": 107
+   },
+   {
+    "name": "waterTile",
+    "kind": "function",
+    "line": 850,
+    "end": 887,
+    "chars": 4051
+   },
+   {
+    "name": "dummyStatue",
+    "kind": "function",
+    "line": 890,
+    "end": 913,
+    "chars": 2758
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 892,
+    "end": 892,
+    "chars": 162
+   },
+   {
+    "name": "tone",
+    "kind": "arrow",
+    "line": 893,
+    "end": 893,
+    "chars": 164
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 896,
+    "end": 896,
+    "chars": 82
+   },
+   {
+    "name": "box",
+    "kind": "arrow",
+    "line": 897,
+    "end": 900,
+    "chars": 468
+   },
+   {
+    "name": "dummyMonument",
+    "kind": "function",
+    "line": 914,
+    "end": 921,
+    "chars": 852
+   },
+   {
+    "name": "shroudSprite",
+    "kind": "function",
+    "line": 924,
+    "end": 937,
+    "chars": 1033
+   },
+   {
+    "name": "ART",
+    "kind": "arrow",
+    "line": 940,
+    "end": 940,
+    "chars": 42
+   },
+   {
+    "name": "onSpr",
+    "kind": "arrow",
+    "line": 941,
+    "end": 941,
+    "chars": 165
+   },
+   {
+    "name": "lumOf",
+    "kind": "arrow",
+    "line": 942,
+    "end": 942,
+    "chars": 94
+   },
+   {
+    "name": "welcomeWall",
+    "kind": "function",
+    "line": 943,
+    "end": 952,
+    "chars": 1118
+   },
+   {
+    "name": "shopSigns",
+    "kind": "function",
+    "line": 953,
+    "end": 961,
+    "chars": 999
+   },
+   {
+    "name": "cubeRim",
+    "kind": "function",
+    "line": 962,
+    "end": 966,
+    "chars": 538
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 963,
+    "end": 963,
+    "chars": 120
+   },
+   {
+    "name": "gatewayLayer",
+    "kind": "function",
+    "line": 967,
+    "end": 983,
+    "chars": 1938
+   },
+   {
+    "name": "vtext",
+    "kind": "arrow",
+    "line": 979,
+    "end": 979,
+    "chars": 245
+   },
+   {
+    "name": "lanternSprite",
+    "kind": "function",
+    "line": 984,
+    "end": 992,
+    "chars": 1002
+   },
+   {
+    "name": "falls",
+    "kind": "function",
+    "line": 993,
+    "end": 997,
+    "chars": 520
+   },
+   {
+    "name": "runnel",
+    "kind": "function",
+    "line": 998,
+    "end": 1000,
+    "chars": 274
+   },
+   {
+    "name": "customsSign",
+    "kind": "function",
+    "line": 1001,
+    "end": 1006,
+    "chars": 446
+   },
+   {
+    "name": "containerShip",
+    "kind": "function",
+    "line": 1008,
+    "end": 1023,
+    "chars": 1855
+   },
+   {
+    "name": "sceneSim",
+    "kind": "function",
+    "line": 1026,
+    "end": 1036,
+    "chars": 1129
+   },
+   {
+    "name": "labSim",
+    "kind": "function",
+    "line": 1038,
+    "end": 1043,
+    "chars": 398
+   },
+   {
+    "name": "junctionArms",
+    "kind": "function",
+    "line": 1045,
+    "end": 1055,
+    "chars": 945
+   },
+   {
+    "name": "vDeck",
+    "kind": "function",
+    "line": 1057,
+    "end": 1081,
+    "chars": 2971
+   },
+   {
+    "name": "gridLines",
+    "kind": "function",
+    "line": 1083,
+    "end": 1089,
+    "chars": 412
+   },
+   {
+    "name": "alignFlights",
+    "kind": "function",
+    "line": 1092,
+    "end": 1106,
+    "chars": 1169
+   },
+   {
+    "name": "holeOpenings",
+    "kind": "function",
+    "line": 1108,
+    "end": 1118,
+    "chars": 542
+   },
+   {
+    "name": "vEscalators",
+    "kind": "function",
+    "line": 1119,
+    "end": 1123,
+    "chars": 698
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 1121,
+    "end": 1121,
+    "chars": 126
+   },
+   {
+    "name": "waterBlock",
+    "kind": "function",
+    "line": 1125,
+    "end": 1129,
+    "chars": 469
+   },
+   {
+    "name": "cubeStack",
+    "kind": "function",
+    "line": 1131,
+    "end": 1140,
+    "chars": 777
+   },
+   {
+    "name": "poolFP",
+    "kind": "function",
+    "line": 1141,
+    "end": 1149,
+    "chars": 505
+   },
+   {
+    "name": "ledPanel",
+    "kind": "function",
+    "line": 1150,
+    "end": 1154,
+    "chars": 483
+   },
+   {
+    "name": "drum",
+    "kind": "function",
+    "line": 1155,
+    "end": 1161,
+    "chars": 858
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 1157,
+    "end": 1157,
+    "chars": 130
+   },
+   {
+    "name": "billboard",
+    "kind": "function",
+    "line": 1162,
+    "end": 1167,
+    "chars": 640
+   },
+   {
+    "name": "buildScreen",
+    "kind": "function",
+    "line": 1169,
+    "end": 1307,
+    "chars": 16381
+   },
+   {
+    "name": "RBS",
+    "kind": "const",
+    "line": 1176,
+    "end": 1176,
+    "chars": 145
+   },
+   {
+    "name": "ANG",
+    "kind": "const",
+    "line": 1178,
+    "end": 1178,
+    "chars": 161
+   },
+   {
+    "name": "lvl",
+    "kind": "arrow",
+    "line": 1191,
+    "end": 1191,
+    "chars": 283
+   },
+   {
+    "name": "rd",
+    "kind": "arrow",
+    "line": 1231,
+    "end": 1231,
+    "chars": 123
+   },
+   {
+    "name": "roadOk",
+    "kind": "arrow",
+    "line": 1232,
+    "end": 1232,
+    "chars": 54
+   },
+   {
+    "name": "blocked",
+    "kind": "arrow",
+    "line": 1274,
+    "end": 1274,
+    "chars": 330
+   },
+   {
+    "name": "underDeck",
+    "kind": "arrow",
+    "line": 1275,
+    "end": 1275,
+    "chars": 64
+   },
+   {
+    "name": "inRects",
+    "kind": "arrow",
+    "line": 1276,
+    "end": 1276,
+    "chars": 124
+   },
+   {
+    "name": "free",
+    "kind": "arrow",
+    "line": 1277,
+    "end": 1277,
+    "chars": 147
+   },
+   {
+    "name": "diagRoads",
+    "kind": "function",
+    "line": 1309,
+    "end": 1317,
+    "chars": 784
+   },
+   {
+    "name": "parkTile",
+    "kind": "function",
+    "line": 1318,
+    "end": 1384,
+    "chars": 9354
+   },
+   {
+    "name": "free",
+    "kind": "arrow",
+    "line": 1323,
+    "end": 1323,
+    "chars": 89
+   },
+   {
+    "name": "okP",
+    "kind": "arrow",
+    "line": 1324,
+    "end": 1324,
+    "chars": 40
+   },
+   {
+    "name": "piece",
+    "kind": "arrow",
+    "line": 1328,
+    "end": 1328,
+    "chars": 203
+   },
+   {
+    "name": "SP",
+    "kind": "const",
+    "line": 1329,
+    "end": 1338,
+    "chars": 1004
+   },
+   {
+    "name": "cas",
+    "kind": "arrow",
+    "line": 1348,
+    "end": 1348,
+    "chars": 138
+   },
+   {
+    "name": "tb",
+    "kind": "arrow",
+    "line": 1374,
+    "end": 1374,
+    "chars": 92
+   },
+   {
+    "name": "monumentTile",
+    "kind": "function",
+    "line": 1386,
+    "end": 1441,
+    "chars": 7564
+   },
+   {
+    "name": "u",
+    "kind": "arrow",
+    "line": 1387,
+    "end": 1387,
+    "chars": 487
+   },
+   {
+    "name": "chongqing",
+    "kind": "function",
+    "line": 1444,
+    "end": 1464,
+    "chars": 3388
+   },
+   {
+    "name": "monumentCentre",
+    "kind": "function",
+    "line": 1465,
+    "end": 1501,
+    "chars": 5033
+   },
+   {
+    "name": "sq",
+    "kind": "arrow",
+    "line": 1467,
+    "end": 1467,
+    "chars": 201
+   },
+   {
+    "name": "diag",
+    "kind": "arrow",
+    "line": 1471,
+    "end": 1472,
+    "chars": 431
+   },
+   {
+    "name": "laneD",
+    "kind": "arrow",
+    "line": 1481,
+    "end": 1481,
+    "chars": 113
+   },
+   {
+    "name": "okP",
+    "kind": "arrow",
+    "line": 1485,
+    "end": 1485,
+    "chars": 74
+   },
+   {
+    "name": "inR",
+    "kind": "arrow",
+    "line": 1506,
+    "end": 1506,
+    "chars": 123
+   },
+   {
+    "name": "polyDist",
+    "kind": "function",
+    "line": 1507,
+    "end": 1515,
+    "chars": 503
+   },
+   {
+    "name": "mergeRects",
+    "kind": "function",
+    "line": 1516,
+    "end": 1524,
+    "chars": 503
+   },
+   {
+    "name": "rectFloor",
+    "kind": "arrow",
+    "line": 1525,
+    "end": 1525,
+    "chars": 156
+   },
+   {
+    "name": "deckFloor",
+    "kind": "function",
+    "line": 1526,
+    "end": 1531,
+    "chars": 820
+   },
+   {
+    "name": "ringFloor",
+    "kind": "function",
+    "line": 1532,
+    "end": 1538,
+    "chars": 1088
+   },
+   {
+    "name": "inArc",
+    "kind": "arrow",
+    "line": 1534,
+    "end": 1534,
+    "chars": 40
+   },
+   {
+    "name": "coneShows",
+    "kind": "function",
+    "line": 1541,
+    "end": 1550,
+    "chars": 891
+   },
+   {
+    "name": "gameData",
+    "kind": "function",
+    "line": 1551,
+    "end": 1604,
+    "chars": 6931
+   },
+   {
+    "name": "offPoly",
+    "kind": "arrow",
+    "line": 1583,
+    "end": 1583,
+    "chars": 95
+   },
+   {
+    "name": "ground",
+    "kind": "arrow",
+    "line": 1584,
+    "end": 1584,
+    "chars": 250
+   },
+   {
+    "name": "pick",
+    "kind": "arrow",
+    "line": 1585,
+    "end": 1585,
+    "chars": 224
+   },
+   {
+    "name": "score",
+    "kind": "arrow",
+    "line": 1589,
+    "end": 1589,
+    "chars": 253
+   },
+   {
+    "name": "horizE",
+    "kind": "arrow",
+    "line": 1609,
+    "end": 1609,
+    "chars": 42
+   },
+   {
+    "name": "edgePt",
+    "kind": "arrow",
+    "line": 1610,
+    "end": 1610,
+    "chars": 106
+   },
+   {
+    "name": "edgeRect",
+    "kind": "arrow",
+    "line": 1611,
+    "end": 1611,
+    "chars": 77
+   },
+   {
+    "name": "groundFree",
+    "kind": "function",
+    "line": 1612,
+    "end": 1612,
+    "chars": 211
+   },
+   {
+    "name": "INW",
+    "kind": "const",
+    "line": 1615,
+    "end": 1615,
+    "chars": 55
+   },
+   {
+    "name": "arrives",
+    "kind": "function",
+    "line": 1616,
+    "end": 1621,
+    "chars": 329
+   },
+   {
+    "name": "cpZone",
+    "kind": "arrow",
+    "line": 1622,
+    "end": 1622,
+    "chars": 331
+   },
+   {
+    "name": "runsOf",
+    "kind": "function",
+    "line": 1623,
+    "end": 1623,
+    "chars": 329
+   },
+   {
+    "name": "edgePass",
+    "kind": "function",
+    "line": 1624,
+    "end": 1704,
+    "chars": 8224
+   },
+   {
+    "name": "pre",
+    "kind": "arrow",
+    "line": 1627,
+    "end": 1627,
+    "chars": 51
+   },
+   {
+    "name": "plantFlags",
+    "kind": "arrow",
+    "line": 1631,
+    "end": 1640,
+    "chars": 708
+   },
+   {
+    "name": "hashId",
+    "kind": "arrow",
+    "line": 1711,
+    "end": 1711,
+    "chars": 139
+   },
+   {
+    "name": "NOOP",
+    "kind": "arrow",
+    "line": 1712,
+    "end": 1712,
+    "chars": 15
+   },
+   {
+    "name": "quiet",
+    "kind": "function",
+    "line": 1713,
+    "end": 1717,
+    "chars": 441
+   },
+   {
+    "name": "linkWorld",
+    "kind": "function",
+    "line": 1718,
+    "end": 1765,
+    "chars": 4225
+   },
+   {
+    "name": "add",
+    "kind": "arrow",
+    "line": 1725,
+    "end": 1725,
+    "chars": 137
+   },
+   {
+    "name": "outside",
+    "kind": "arrow",
+    "line": 1735,
+    "end": 1735,
+    "chars": 77
+   },
+   {
+    "name": "SD",
+    "kind": "const",
+    "line": 1741,
+    "end": 1741,
+    "chars": 139
+   },
+   {
+    "name": "recOf",
+    "kind": "function",
+    "line": 1766,
+    "end": 1771,
+    "chars": 384
+   },
+   {
+    "name": "routeOf",
+    "kind": "arrow",
+    "line": 1772,
+    "end": 1776,
+    "chars": 395
+   },
+   {
+    "name": "ghostOf",
+    "kind": "function",
+    "line": 1777,
+    "end": 1782,
+    "chars": 324
+   },
+   {
+    "name": "seamGhosts",
+    "kind": "function",
+    "line": 1783,
+    "end": 1792,
+    "chars": 743
+   },
+   {
+    "name": "trafficTick",
+    "kind": "function",
+    "line": 1794,
+    "end": 1801,
+    "chars": 260
+   },
+   {
+    "name": "seamGiveWay",
+    "kind": "function",
+    "line": 1805,
+    "end": 1818,
+    "chars": 855
+   },
+   {
+    "name": "stepWorld",
+    "kind": "function",
+    "line": 1819,
+    "end": 1857,
+    "chars": 2483
+   },
+   {
+    "name": "seen",
+    "kind": "function",
+    "line": 1863,
+    "end": 1868,
+    "chars": 362
+   },
+   {
+    "name": "groupCars",
+    "kind": "function",
+    "line": 1869,
+    "end": 1869,
+    "chars": 196
+   },
+   {
+    "name": "sameRec",
+    "kind": "arrow",
+    "line": 1870,
+    "end": 1870,
+    "chars": 117
+   },
+   {
+    "name": "roomAt",
+    "kind": "function",
+    "line": 1871,
+    "end": 1875,
+    "chars": 474
+   },
+   {
+    "name": "queued",
+    "kind": "function",
+    "line": 1876,
+    "end": 1880,
+    "chars": 354
+   },
+   {
+    "name": "spawn",
+    "kind": "function",
+    "line": 1881,
+    "end": 1890,
+    "chars": 523
+   },
+   {
+    "name": "manage",
+    "kind": "function",
+    "line": 1891,
+    "end": 1914,
+    "chars": 2158
+   },
+   {
+    "name": "goLive",
+    "kind": "function",
+    "line": 1915,
+    "end": 1918,
+    "chars": 266
+   },
+   {
+    "name": "fillDead",
+    "kind": "function",
+    "line": 1926,
+    "end": 1956,
+    "chars": 3387
+   },
+   {
+    "name": "mark",
+    "kind": "arrow",
+    "line": 1930,
+    "end": 1930,
+    "chars": 351
+   },
+   {
+    "name": "fp",
+    "kind": "arrow",
+    "line": 1952,
+    "end": 1952,
+    "chars": 246
+   },
+   {
+    "name": "fillPockets",
+    "kind": "function",
+    "line": 1957,
+    "end": 1990,
+    "chars": 4831
+   },
+   {
+    "name": "link",
+    "kind": "arrow",
+    "line": 1959,
+    "end": 1959,
+    "chars": 173
+   },
+   {
+    "name": "stand",
+    "kind": "arrow",
+    "line": 1960,
+    "end": 1960,
+    "chars": 380
+   },
+   {
+    "name": "gAt",
+    "kind": "arrow",
+    "line": 1967,
+    "end": 1967,
+    "chars": 325
+   },
+   {
+    "name": "fAt",
+    "kind": "arrow",
+    "line": 1968,
+    "end": 1968,
+    "chars": 136
+   },
+   {
+    "name": "fp",
+    "kind": "arrow",
+    "line": 1986,
+    "end": 1986,
+    "chars": 246
+   },
+   {
+    "name": "buildWorld",
+    "kind": "function",
+    "line": 1991,
+    "end": 2015,
+    "chars": 1964
+   },
+   {
+    "name": "viewCars",
+    "kind": "function",
+    "line": 2017,
+    "end": 2022,
+    "chars": 298
+   },
+   {
+    "name": "carKey",
+    "kind": "arrow",
+    "line": 2025,
+    "end": 2025,
+    "chars": 92
+   },
+   {
+    "name": "carSpr",
+    "kind": "arrow",
+    "line": 2026,
+    "end": 2026,
+    "chars": 126
+   },
+   {
+    "name": "compose",
+    "kind": "function",
+    "line": 2028,
+    "end": 2062,
+    "chars": 2535
+   },
+   {
+    "name": "drawLayer",
+    "kind": "arrow",
+    "line": 2039,
+    "end": 2053,
+    "chars": 1300
+   },
+   {
+    "name": "layerOf",
+    "kind": "function",
+    "line": 2064,
+    "end": 2069,
+    "chars": 314
+   },
+   {
+    "name": "INFO",
+    "kind": "arrow",
+    "line": 2073,
+    "end": 2073,
+    "chars": 115
+   },
+   {
+    "name": "nameOf",
+    "kind": "arrow",
+    "line": 2074,
+    "end": 2074,
+    "chars": 38
+   },
+   {
+    "name": "Sim6",
+    "kind": "class",
+    "line": 2075,
+    "end": 2410,
+    "chars": 29225
+   },
+   {
+    "name": "Sim6.constructor",
+    "kind": "method",
+    "line": 2076,
+    "end": 2085,
+    "chars": 1369
+   },
+   {
+    "name": "Sim6.reset",
+    "kind": "method",
+    "line": 2086,
+    "end": 2104,
+    "chars": 1698
+   },
+   {
+    "name": "Sim6.enter",
+    "kind": "method",
+    "line": 2105,
+    "end": 2105,
+    "chars": 152
+   },
+   {
+    "name": "Sim6.screenName",
+    "kind": "method",
+    "line": 2106,
+    "end": 2106,
+    "chars": 75
+   },
+   {
+    "name": "Sim6.buildView",
+    "kind": "method",
+    "line": 2107,
+    "end": 2107,
+    "chars": 78
+   },
+   {
+    "name": "Sim6.carsLeft",
+    "kind": "method",
+    "line": 2108,
+    "end": 2108,
+    "chars": 69
+   },
+   {
+    "name": "Sim6.allCars",
+    "kind": "method",
+    "line": 2109,
+    "end": 2109,
+    "chars": 133
+   },
+   {
+    "name": "Sim6.bodyLayer",
+    "kind": "method",
+    "line": 2110,
+    "end": 2110,
+    "chars": 152
+   },
+   {
+    "name": "Sim6.meets",
+    "kind": "method",
+    "line": 2111,
+    "end": 2111,
+    "chars": 55
+   },
+   {
+    "name": "Sim6.bodyDeck",
+    "kind": "method",
+    "line": 2112,
+    "end": 2112,
+    "chars": 27
+   },
+   {
+    "name": "Sim6.floorOf",
+    "kind": "method",
+    "line": 2113,
+    "end": 2113,
+    "chars": 118
+   },
+   {
+    "name": "Sim6.onGround",
+    "kind": "method",
+    "line": 2114,
+    "end": 2114,
+    "chars": 113
+   },
+   {
+    "name": "Sim6.spawnBody",
+    "kind": "method",
+    "line": 2115,
+    "end": 2120,
+    "chars": 302
+   },
+   {
+    "name": "Sim6.pickSpawn",
+    "kind": "method",
+    "line": 2121,
+    "end": 2125,
+    "chars": 299
+   },
+   {
+    "name": "Sim6.step",
+    "kind": "method",
+    "line": 2127,
+    "end": 2161,
+    "chars": 2180
+   },
+   {
+    "name": "Sim6.moveBody",
+    "kind": "method",
+    "line": 2162,
+    "end": 2162,
+    "chars": 112
+   },
+   {
+    "name": "Sim6.bodyControl",
+    "kind": "method",
+    "line": 2163,
+    "end": 2163,
+    "chars": 93
+   },
+   {
+    "name": "Sim6.floorStep",
+    "kind": "method",
+    "line": 2165,
+    "end": 2174,
+    "chars": 766
+   },
+   {
+    "name": "Sim6.stairStep",
+    "kind": "method",
+    "line": 2175,
+    "end": 2186,
+    "chars": 1019
+   },
+   {
+    "name": "Sim6.floorMove",
+    "kind": "method",
+    "line": 2189,
+    "end": 2211,
+    "chars": 2071
+   },
+   {
+    "name": "block",
+    "kind": "arrow",
+    "line": 2193,
+    "end": 2193,
+    "chars": 65
+   },
+   {
+    "name": "Sim6.neighbourFloor",
+    "kind": "method",
+    "line": 2212,
+    "end": 2220,
+    "chars": 586
+   },
+   {
+    "name": "Sim6.startDrop6",
+    "kind": "method",
+    "line": 2223,
+    "end": 2237,
+    "chars": 1286
+   },
+   {
+    "name": "plan",
+    "kind": "arrow",
+    "line": 2227,
+    "end": 2227,
+    "chars": 162
+   },
+   {
+    "name": "Sim6.land",
+    "kind": "method",
+    "line": 2238,
+    "end": 2242,
+    "chars": 203
+   },
+   {
+    "name": "Sim6.startRescue",
+    "kind": "method",
+    "line": 2245,
+    "end": 2257,
+    "chars": 1357
+   },
+   {
+    "name": "Sim6.landPoints",
+    "kind": "method",
+    "line": 2258,
+    "end": 2268,
+    "chars": 1120
+   },
+   {
+    "name": "Sim6.stepRescue",
+    "kind": "method",
+    "line": 2269,
+    "end": 2290,
+    "chars": 1955
+   },
+   {
+    "name": "next",
+    "kind": "arrow",
+    "line": 2276,
+    "end": 2276,
+    "chars": 43
+   },
+   {
+    "name": "Sim6.collideBody",
+    "kind": "method",
+    "line": 2292,
+    "end": 2352,
+    "chars": 5090
+   },
+   {
+    "name": "block",
+    "kind": "arrow",
+    "line": 2296,
+    "end": 2296,
+    "chars": 65
+   },
+   {
+    "name": "push",
+    "kind": "arrow",
+    "line": 2297,
+    "end": 2297,
+    "chars": 207
+   },
+   {
+    "name": "rect",
+    "kind": "arrow",
+    "line": 2298,
+    "end": 2298,
+    "chars": 97
+   },
+   {
+    "name": "Sim6.edgeOpen",
+    "kind": "method",
+    "line": 2353,
+    "end": 2358,
+    "chars": 591
+   },
+   {
+    "name": "Sim6.moveCones",
+    "kind": "method",
+    "line": 2359,
+    "end": 2359,
+    "chars": 143
+   },
+   {
+    "name": "Sim6.coneSpotValid",
+    "kind": "method",
+    "line": 2360,
+    "end": 2360,
+    "chars": 184
+   },
+   {
+    "name": "Sim6.dropHeld",
+    "kind": "method",
+    "line": 2361,
+    "end": 2361,
+    "chars": 146
+   },
+   {
+    "name": "Sim6.throwHeld",
+    "kind": "method",
+    "line": 2362,
+    "end": 2362,
+    "chars": 148
+   },
+   {
+    "name": "Sim6.checkFlip",
+    "kind": "method",
+    "line": 2364,
+    "end": 2379,
+    "chars": 1592
+   },
+   {
+    "name": "Sim6.canCross",
+    "kind": "method",
+    "line": 2380,
+    "end": 2380,
+    "chars": 27
+   },
+   {
+    "name": "Sim6.edgeLift",
+    "kind": "method",
+    "line": 2381,
+    "end": 2381,
+    "chars": 91
+   },
+   {
+    "name": "Sim6.flip",
+    "kind": "method",
+    "line": 2382,
+    "end": 2398,
+    "chars": 1188
+   },
+   {
+    "name": "Sim6.checkTerminal",
+    "kind": "method",
+    "line": 2399,
+    "end": 2402,
+    "chars": 187
+   },
+   {
+    "name": "Sim6.drawDrones",
+    "kind": "method",
+    "line": 2403,
+    "end": 2403,
+    "chars": 246
+   },
+   {
+    "name": "Sim6.trace",
+    "kind": "method",
+    "line": 2404,
+    "end": 2409,
+    "chars": 513
+   },
+   {
+    "name": "circleRect",
+    "kind": "function",
+    "line": 2412,
+    "end": 2421,
+    "chars": 582
+   }
+  ],
+  "prototypes/p6/sim.js": [
+   {
+    "name": "REG",
+    "kind": "const",
+    "line": 7,
+    "end": 171,
+    "chars": 24557
+   },
+   {
+    "name": "PROTO",
+    "kind": "const",
+    "line": 139,
+    "end": 182,
+    "chars": 4519
+   },
+   {
+    "name": "OVERRIDES",
+    "kind": "const",
+    "line": 174,
+    "end": 200,
+    "chars": 1956
+   },
+   {
+    "name": "NODES",
+    "kind": "const",
+    "line": 184,
+    "end": 186,
+    "chars": 170
+   },
+   {
+    "name": "NODES4",
+    "kind": "const",
+    "line": 202,
+    "end": 202,
+    "chars": 94
+   },
+   {
+    "name": "TRACKS",
+    "kind": "const",
+    "line": 210,
+    "end": 212,
+    "chars": 293
+   },
+   {
+    "name": "NODES7",
+    "kind": "const",
+    "line": 220,
+    "end": 220,
+    "chars": 12
+   },
+   {
+    "name": "TRACKS9",
+    "kind": "const",
+    "line": 223,
+    "end": 225,
+    "chars": 251
+   },
+   {
+    "name": "NODES9",
+    "kind": "const",
+    "line": 231,
+    "end": 231,
+    "chars": 12
+   },
+   {
+    "name": "TRACKS10",
+    "kind": "const",
+    "line": 234,
+    "end": 237,
+    "chars": 230
+   },
+   {
+    "name": "NODES10",
+    "kind": "const",
+    "line": 241,
+    "end": 241,
+    "chars": 13
+   },
+   {
+    "name": "ABIL10_HAS",
+    "kind": "const",
+    "line": 247,
+    "end": 247,
+    "chars": 172
+   },
+   {
+    "name": "ABIL9_HAS",
+    "kind": "const",
+    "line": 248,
+    "end": 248,
+    "chars": 165
+   },
+   {
+    "name": "ABIL_HAS",
+    "kind": "const",
+    "line": 249,
+    "end": 249,
+    "chars": 169
+   },
+   {
+    "name": "clamp",
+    "kind": "arrow",
+    "line": 253,
+    "end": 253,
+    "chars": 49
+   },
+   {
+    "name": "wrap",
+    "kind": "arrow",
+    "line": 255,
+    "end": 255,
+    "chars": 88
+   },
+   {
+    "name": "turnTo",
+    "kind": "arrow",
+    "line": 256,
+    "end": 256,
+    "chars": 121
+   },
+   {
+    "name": "makePath",
+    "kind": "function",
+    "line": 259,
+    "end": 263,
+    "chars": 217
+   },
+   {
+    "name": "pathTangents",
+    "kind": "function",
+    "line": 268,
+    "end": 273,
+    "chars": 439
+   },
+   {
+    "name": "pathAt",
+    "kind": "function",
+    "line": 275,
+    "end": 292,
+    "chars": 1183
+   },
+   {
+    "name": "pathSignal",
+    "kind": "function",
+    "line": 295,
+    "end": 304,
+    "chars": 657
+   },
+   {
+    "name": "offsetPts",
+    "kind": "function",
+    "line": 305,
+    "end": 311,
+    "chars": 279
+   },
+   {
+    "name": "ease",
+    "kind": "arrow",
+    "line": 312,
+    "end": 312,
+    "chars": 46
+   },
+   {
+    "name": "easeD",
+    "kind": "arrow",
+    "line": 313,
+    "end": 313,
+    "chars": 51
+   },
+   {
+    "name": "pathProject",
+    "kind": "function",
+    "line": 315,
+    "end": 325,
+    "chars": 582
+   },
+   {
+    "name": "arcPts",
+    "kind": "function",
+    "line": 326,
+    "end": 330,
+    "chars": 197
+   },
+   {
+    "name": "LEVELS",
+    "kind": "const",
+    "line": 333,
+    "end": 350,
+    "chars": 1569
+   },
+   {
+    "name": "ROADS",
+    "kind": "const",
+    "line": 386,
+    "end": 386,
+    "chars": 95
+   },
+   {
+    "name": "DIFFICULTIES",
+    "kind": "const",
+    "line": 388,
+    "end": 388,
+    "chars": 51
+   },
+   {
+    "name": "lanesOf",
+    "kind": "function",
+    "line": 390,
+    "end": 390,
+    "chars": 136
+   },
+   {
+    "name": "buildLevel",
+    "kind": "function",
+    "line": 391,
+    "end": 400,
+    "chars": 529
+   },
+   {
+    "name": "liftOf",
+    "kind": "arrow",
+    "line": 403,
+    "end": 403,
+    "chars": 151
+   },
+   {
+    "name": "rectDist",
+    "kind": "arrow",
+    "line": 404,
+    "end": 404,
+    "chars": 106
+   },
+   {
+    "name": "overlapGap",
+    "kind": "arrow",
+    "line": 405,
+    "end": 405,
+    "chars": 115
+   },
+   {
+    "name": "prng",
+    "kind": "function",
+    "line": 406,
+    "end": 406,
+    "chars": 218
+   },
+   {
+    "name": "pick",
+    "kind": "arrow",
+    "line": 407,
+    "end": 407,
+    "chars": 53
+   },
+   {
+    "name": "roadDist",
+    "kind": "function",
+    "line": 408,
+    "end": 412,
+    "chars": 520
+   },
+   {
+    "name": "makePatches",
+    "kind": "function",
+    "line": 416,
+    "end": 442,
+    "chars": 1711
+   },
+   {
+    "name": "ok",
+    "kind": "arrow",
+    "line": 422,
+    "end": 427,
+    "chars": 398
+   },
+   {
+    "name": "onRoad",
+    "kind": "arrow",
+    "line": 428,
+    "end": 428,
+    "chars": 60
+   },
+   {
+    "name": "SIDE",
+    "kind": "const",
+    "line": 448,
+    "end": 448,
+    "chars": 97
+   },
+   {
+    "name": "across",
+    "kind": "arrow",
+    "line": 450,
+    "end": 450,
+    "chars": 155
+   },
+   {
+    "name": "horiz",
+    "kind": "arrow",
+    "line": 452,
+    "end": 452,
+    "chars": 41
+   },
+   {
+    "name": "sideOf",
+    "kind": "arrow",
+    "line": 453,
+    "end": 453,
+    "chars": 85
+   },
+   {
+    "name": "edgeCrossings",
+    "kind": "function",
+    "line": 454,
+    "end": 467,
+    "chars": 605
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 458,
+    "end": 462,
+    "chars": 246
+   },
+   {
+    "name": "seamSight",
+    "kind": "arrow",
+    "line": 470,
+    "end": 470,
+    "chars": 266
+   },
+   {
+    "name": "laneEnds",
+    "kind": "function",
+    "line": 473,
+    "end": 490,
+    "chars": 1040
+   },
+   {
+    "name": "hit",
+    "kind": "arrow",
+    "line": 478,
+    "end": 483,
+    "chars": 341
+   },
+   {
+    "name": "inward",
+    "kind": "arrow",
+    "line": 488,
+    "end": 488,
+    "chars": 173
+   },
+   {
+    "name": "edgePoint",
+    "kind": "arrow",
+    "line": 491,
+    "end": 491,
+    "chars": 137
+   },
+   {
+    "name": "roadCenter",
+    "kind": "function",
+    "line": 492,
+    "end": 507,
+    "chars": 1247
+   },
+   {
+    "name": "hamiltonPaths",
+    "kind": "function",
+    "line": 508,
+    "end": 521,
+    "chars": 528
+   },
+   {
+    "name": "go",
+    "kind": "arrow",
+    "line": 510,
+    "end": 518,
+    "chars": 368
+   },
+   {
+    "name": "edgeClear",
+    "kind": "function",
+    "line": 523,
+    "end": 527,
+    "chars": 326
+   },
+   {
+    "name": "gateZones",
+    "kind": "function",
+    "line": 529,
+    "end": 536,
+    "chars": 384
+   },
+   {
+    "name": "planDistrict",
+    "kind": "function",
+    "line": 537,
+    "end": 597,
+    "chars": 4696
+   },
+   {
+    "name": "inside",
+    "kind": "arrow",
+    "line": 540,
+    "end": 540,
+    "chars": 94
+   },
+   {
+    "name": "outsides",
+    "kind": "arrow",
+    "line": 541,
+    "end": 541,
+    "chars": 88
+   },
+   {
+    "name": "isStart",
+    "kind": "arrow",
+    "line": 558,
+    "end": 558,
+    "chars": 56
+   },
+   {
+    "name": "fixedOff",
+    "kind": "arrow",
+    "line": 563,
+    "end": 563,
+    "chars": 124
+   },
+   {
+    "name": "free",
+    "kind": "arrow",
+    "line": 587,
+    "end": 591,
+    "chars": 459
+   },
+   {
+    "name": "straightRuns",
+    "kind": "function",
+    "line": 599,
+    "end": 607,
+    "chars": 476
+   },
+   {
+    "name": "generateScreen",
+    "kind": "function",
+    "line": 610,
+    "end": 889,
+    "chars": 27270
+   },
+   {
+    "name": "edgeSides",
+    "kind": "arrow",
+    "line": 623,
+    "end": 623,
+    "chars": 186
+   },
+   {
+    "name": "crossOK",
+    "kind": "arrow",
+    "line": 624,
+    "end": 624,
+    "chars": 123
+   },
+   {
+    "name": "inside",
+    "kind": "arrow",
+    "line": 639,
+    "end": 639,
+    "chars": 107
+   },
+   {
+    "name": "offRoad",
+    "kind": "arrow",
+    "line": 640,
+    "end": 640,
+    "chars": 174
+   },
+   {
+    "name": "clearKeep",
+    "kind": "arrow",
+    "line": 641,
+    "end": 641,
+    "chars": 64
+   },
+   {
+    "name": "verge",
+    "kind": "arrow",
+    "line": 659,
+    "end": 667,
+    "chars": 453
+   },
+   {
+    "name": "spread",
+    "kind": "arrow",
+    "line": 668,
+    "end": 676,
+    "chars": 507
+   },
+   {
+    "name": "keepDist",
+    "kind": "arrow",
+    "line": 677,
+    "end": 677,
+    "chars": 85
+   },
+   {
+    "name": "tooNear",
+    "kind": "arrow",
+    "line": 706,
+    "end": 710,
+    "chars": 1040
+   },
+   {
+    "name": "mark",
+    "kind": "arrow",
+    "line": 710,
+    "end": 710,
+    "chars": 346
+   },
+   {
+    "name": "reachable",
+    "kind": "arrow",
+    "line": 712,
+    "end": 717,
+    "chars": 384
+   },
+   {
+    "name": "flood",
+    "kind": "arrow",
+    "line": 718,
+    "end": 724,
+    "chars": 864
+   },
+   {
+    "name": "form",
+    "kind": "arrow",
+    "line": 730,
+    "end": 734,
+    "chars": 432
+   },
+   {
+    "name": "take",
+    "kind": "arrow",
+    "line": 735,
+    "end": 743,
+    "chars": 561
+   },
+   {
+    "name": "roofOf",
+    "kind": "arrow",
+    "line": 746,
+    "end": 746,
+    "chars": 208
+   },
+   {
+    "name": "addStair",
+    "kind": "arrow",
+    "line": 747,
+    "end": 747,
+    "chars": 106
+   },
+   {
+    "name": "bridge",
+    "kind": "arrow",
+    "line": 750,
+    "end": 762,
+    "chars": 1042
+   },
+   {
+    "name": "lotOK",
+    "kind": "arrow",
+    "line": 767,
+    "end": 776,
+    "chars": 1157
+   },
+   {
+    "name": "platformize",
+    "kind": "arrow",
+    "line": 797,
+    "end": 815,
+    "chars": 1676
+   },
+   {
+    "name": "bad",
+    "kind": "arrow",
+    "line": 857,
+    "end": 857,
+    "chars": 201
+   },
+   {
+    "name": "cellLevel",
+    "kind": "function",
+    "line": 891,
+    "end": 897,
+    "chars": 389
+   },
+   {
+    "name": "finishLevel",
+    "kind": "function",
+    "line": 898,
+    "end": 908,
+    "chars": 962
+   },
+   {
+    "name": "stitchCity",
+    "kind": "function",
+    "line": 914,
+    "end": 946,
+    "chars": 2401
+   },
+   {
+    "name": "onScreen",
+    "kind": "arrow",
+    "line": 918,
+    "end": 918,
+    "chars": 130
+   },
+   {
+    "name": "piece",
+    "kind": "arrow",
+    "line": 923,
+    "end": 923,
+    "chars": 69
+   },
+   {
+    "name": "planRoom",
+    "kind": "function",
+    "line": 948,
+    "end": 958,
+    "chars": 949
+   },
+   {
+    "name": "roomFor",
+    "kind": "function",
+    "line": 960,
+    "end": 980,
+    "chars": 2727
+   },
+   {
+    "name": "cellName",
+    "kind": "arrow",
+    "line": 981,
+    "end": 981,
+    "chars": 88
+   },
+   {
+    "name": "edgeSpans",
+    "kind": "function",
+    "line": 984,
+    "end": 1005,
+    "chars": 1170
+   },
+   {
+    "name": "open",
+    "kind": "arrow",
+    "line": 995,
+    "end": 995,
+    "chars": 71
+   },
+   {
+    "name": "DISTRICT_LIST",
+    "kind": "const",
+    "line": 1010,
+    "end": 1010,
+    "chars": 72
+   },
+   {
+    "name": "DISTRICTS",
+    "kind": "const",
+    "line": 1011,
+    "end": 1012,
+    "chars": 178
+   },
+   {
+    "name": "INFO",
+    "kind": "arrow",
+    "line": 1018,
+    "end": 1018,
+    "chars": 43
+   },
+   {
+    "name": "dpar",
+    "kind": "arrow",
+    "line": 1019,
+    "end": 1019,
+    "chars": 57
+   },
+   {
+    "name": "chaikin",
+    "kind": "function",
+    "line": 1020,
+    "end": 1027,
+    "chars": 426
+   },
+   {
+    "name": "deckCrossOK",
+    "kind": "function",
+    "line": 1031,
+    "end": 1039,
+    "chars": 483
+   },
+   {
+    "name": "TURN_STYLES",
+    "kind": "const",
+    "line": 1042,
+    "end": 1042,
+    "chars": 100
+   },
+   {
+    "name": "filletAny",
+    "kind": "function",
+    "line": 1044,
+    "end": 1059,
+    "chars": 1279
+   },
+   {
+    "name": "fillet",
+    "kind": "function",
+    "line": 1060,
+    "end": 1073,
+    "chars": 977
+   },
+   {
+    "name": "skeletons",
+    "kind": "function",
+    "line": 1075,
+    "end": 1109,
+    "chars": 2577
+   },
+   {
+    "name": "snap",
+    "kind": "arrow",
+    "line": 1077,
+    "end": 1077,
+    "chars": 78
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 1081,
+    "end": 1081,
+    "chars": 45
+   },
+   {
+    "name": "buildableArea",
+    "kind": "function",
+    "line": 1112,
+    "end": 1123,
+    "chars": 744
+   },
+   {
+    "name": "routeCenter",
+    "kind": "function",
+    "line": 1125,
+    "end": 1137,
+    "chars": 1024
+   },
+   {
+    "name": "acrossCity",
+    "kind": "arrow",
+    "line": 1139,
+    "end": 1139,
+    "chars": 183
+   },
+   {
+    "name": "roundaboutCenter",
+    "kind": "function",
+    "line": 1142,
+    "end": 1161,
+    "chars": 1693
+   },
+   {
+    "name": "fil",
+    "kind": "arrow",
+    "line": 1149,
+    "end": 1154,
+    "chars": 457
+   },
+   {
+    "name": "planCity",
+    "kind": "function",
+    "line": 1162,
+    "end": 1238,
+    "chars": 6677
+   },
+   {
+    "name": "inside",
+    "kind": "arrow",
+    "line": 1166,
+    "end": 1166,
+    "chars": 94
+   },
+   {
+    "name": "outsides",
+    "kind": "arrow",
+    "line": 1167,
+    "end": 1167,
+    "chars": 88
+   },
+   {
+    "name": "isC",
+    "kind": "arrow",
+    "line": 1168,
+    "end": 1168,
+    "chars": 54
+   },
+   {
+    "name": "rowDecks",
+    "kind": "arrow",
+    "line": 1190,
+    "end": 1190,
+    "chars": 54
+   },
+   {
+    "name": "offsFor",
+    "kind": "arrow",
+    "line": 1191,
+    "end": 1191,
+    "chars": 147
+   },
+   {
+    "name": "crosses",
+    "kind": "arrow",
+    "line": 1222,
+    "end": 1222,
+    "chars": 141
+   },
+   {
+    "name": "placeLandmark",
+    "kind": "function",
+    "line": 1240,
+    "end": 1260,
+    "chars": 1695
+   },
+   {
+    "name": "placePlates",
+    "kind": "function",
+    "line": 1262,
+    "end": 1273,
+    "chars": 757
+   },
+   {
+    "name": "onRoad",
+    "kind": "arrow",
+    "line": 1264,
+    "end": 1264,
+    "chars": 52
+   },
+   {
+    "name": "deckPillars",
+    "kind": "function",
+    "line": 1276,
+    "end": 1287,
+    "chars": 995
+   },
+   {
+    "name": "LEVELS3",
+    "kind": "const",
+    "line": 1292,
+    "end": 1292,
+    "chars": 62
+   },
+   {
+    "name": "perimeter",
+    "kind": "function",
+    "line": 1295,
+    "end": 1326,
+    "chars": 2586
+   },
+   {
+    "name": "outside",
+    "kind": "arrow",
+    "line": 1299,
+    "end": 1299,
+    "chars": 150
+   },
+   {
+    "name": "zHeight",
+    "kind": "arrow",
+    "line": 1328,
+    "end": 1328,
+    "chars": 92
+   },
+   {
+    "name": "stairRun",
+    "kind": "arrow",
+    "line": 1330,
+    "end": 1330,
+    "chars": 145
+   },
+   {
+    "name": "checkZone",
+    "kind": "function",
+    "line": 1332,
+    "end": 1336,
+    "chars": 410
+   },
+   {
+    "name": "buildDecks",
+    "kind": "function",
+    "line": 1339,
+    "end": 1381,
+    "chars": 3593
+   },
+   {
+    "name": "inB",
+    "kind": "arrow",
+    "line": 1343,
+    "end": 1343,
+    "chars": 85
+   },
+   {
+    "name": "freeOf",
+    "kind": "arrow",
+    "line": 1344,
+    "end": 1344,
+    "chars": 87
+   },
+   {
+    "name": "landingOf",
+    "kind": "arrow",
+    "line": 1355,
+    "end": 1355,
+    "chars": 106
+   },
+   {
+    "name": "deckCenter",
+    "kind": "arrow",
+    "line": 1383,
+    "end": 1383,
+    "chars": 121
+   },
+   {
+    "name": "deckLanesOf",
+    "kind": "function",
+    "line": 1384,
+    "end": 1388,
+    "chars": 295
+   },
+   {
+    "name": "bakedDB",
+    "kind": "function",
+    "line": 1391,
+    "end": 1395,
+    "chars": 400
+   },
+   {
+    "name": "cityDistrict",
+    "kind": "function",
+    "line": 1396,
+    "end": 1413,
+    "chars": 1562
+   },
+   {
+    "name": "bakeCity",
+    "kind": "function",
+    "line": 1415,
+    "end": 1424,
+    "chars": 736
+   },
+   {
+    "name": "r1",
+    "kind": "arrow",
+    "line": 1416,
+    "end": 1416,
+    "chars": 36
+   },
+   {
+    "name": "circleRect",
+    "kind": "function",
+    "line": 1427,
+    "end": 1437,
+    "chars": 566
+   },
+   {
+    "name": "circleCar",
+    "kind": "function",
+    "line": 1439,
+    "end": 1453,
+    "chars": 807
+   },
+   {
+    "name": "segRect",
+    "kind": "function",
+    "line": 1454,
+    "end": 1463,
+    "chars": 460
+   },
+   {
+    "name": "segCar",
+    "kind": "function",
+    "line": 1464,
+    "end": 1469,
+    "chars": 316
+   },
+   {
+    "name": "loc",
+    "kind": "arrow",
+    "line": 1466,
+    "end": 1466,
+    "chars": 84
+   },
+   {
+    "name": "zoneOf",
+    "kind": "function",
+    "line": 1471,
+    "end": 1477,
+    "chars": 347
+   },
+   {
+    "name": "impulseImpact",
+    "kind": "function",
+    "line": 1483,
+    "end": 1503,
+    "chars": 1588
+   },
+   {
+    "name": "dropImpact",
+    "kind": "function",
+    "line": 1506,
+    "end": 1514,
+    "chars": 771
+   },
+   {
+    "name": "FLEET5",
+    "kind": "const",
+    "line": 1516,
+    "end": 1516,
+    "chars": 40
+   },
+   {
+    "name": "fleetClass",
+    "kind": "function",
+    "line": 1517,
+    "end": 1522,
+    "chars": 205
+   },
+   {
+    "name": "minBend",
+    "kind": "function",
+    "line": 1526,
+    "end": 1538,
+    "chars": 834
+   },
+   {
+    "name": "assess",
+    "kind": "function",
+    "line": 1539,
+    "end": 1543,
+    "chars": 249
+   },
+   {
+    "name": "lay",
+    "kind": "arrow",
+    "line": 1546,
+    "end": 1546,
+    "chars": 45
+   },
+   {
+    "name": "Sim",
+    "kind": "class",
+    "line": 1549,
+    "end": 3661,
+    "chars": 153726
+   },
+   {
+    "name": "Sim.constructor",
+    "kind": "method",
+    "line": 1551,
+    "end": 1563,
+    "chars": 1030
+   },
+   {
+    "name": "Sim.reset",
+    "kind": "method",
+    "line": 1565,
+    "end": 1590,
+    "chars": 2254
+   },
+   {
+    "name": "g",
+    "kind": "arrow",
+    "line": 1571,
+    "end": 1571,
+    "chars": 43
+   },
+   {
+    "name": "Sim.tracks",
+    "kind": "method",
+    "line": 1592,
+    "end": 1592,
+    "chars": 156
+   },
+   {
+    "name": "Sim.nodes",
+    "kind": "method",
+    "line": 1593,
+    "end": 1593,
+    "chars": 152
+   },
+   {
+    "name": "Sim.trackMax",
+    "kind": "method",
+    "line": 1594,
+    "end": 1594,
+    "chars": 160
+   },
+   {
+    "name": "Sim.has",
+    "kind": "method",
+    "line": 1595,
+    "end": 1595,
+    "chars": 407
+   },
+   {
+    "name": "Sim.tier",
+    "kind": "method",
+    "line": 1596,
+    "end": 1596,
+    "chars": 186
+   },
+   {
+    "name": "Sim.shield",
+    "kind": "method",
+    "line": 1597,
+    "end": 1597,
+    "chars": 113
+   },
+   {
+    "name": "Sim.secondsPerCharge",
+    "kind": "method",
+    "line": 1598,
+    "end": 1604,
+    "chars": 761
+   },
+   {
+    "name": "Sim.jumpAirtime",
+    "kind": "method",
+    "line": 1606,
+    "end": 1606,
+    "chars": 197
+   },
+   {
+    "name": "Sim.coneCapacity",
+    "kind": "method",
+    "line": 1607,
+    "end": 1607,
+    "chars": 244
+   },
+   {
+    "name": "Sim.throwReach",
+    "kind": "method",
+    "line": 1608,
+    "end": 1608,
+    "chars": 179
+   },
+   {
+    "name": "Sim.carriedCones",
+    "kind": "method",
+    "line": 1609,
+    "end": 1609,
+    "chars": 114
+   },
+   {
+    "name": "Sim.takeCone",
+    "kind": "method",
+    "line": 1610,
+    "end": 1610,
+    "chars": 204
+   },
+   {
+    "name": "Sim.popCone",
+    "kind": "method",
+    "line": 1611,
+    "end": 1611,
+    "chars": 208
+   },
+   {
+    "name": "Sim.capacity",
+    "kind": "method",
+    "line": 1612,
+    "end": 1612,
+    "chars": 252
+   },
+   {
+    "name": "Sim.dashFitted",
+    "kind": "method",
+    "line": 1613,
+    "end": 1613,
+    "chars": 88
+   },
+   {
+    "name": "Sim.maxHealth",
+    "kind": "method",
+    "line": 1614,
+    "end": 1614,
+    "chars": 107
+   },
+   {
+    "name": "Sim.conesFor",
+    "kind": "method",
+    "line": 1616,
+    "end": 1623,
+    "chars": 485
+   },
+   {
+    "name": "Sim.surfaceAt",
+    "kind": "method",
+    "line": 1625,
+    "end": 1629,
+    "chars": 228
+   },
+   {
+    "name": "Sim.terrain",
+    "kind": "method",
+    "line": 1630,
+    "end": 1630,
+    "chars": 141
+   },
+   {
+    "name": "Sim.gripK",
+    "kind": "method",
+    "line": 1632,
+    "end": 1632,
+    "chars": 206
+   },
+   {
+    "name": "Sim.onGround",
+    "kind": "method",
+    "line": 1634,
+    "end": 1634,
+    "chars": 90
+   },
+   {
+    "name": "Sim.underfoot",
+    "kind": "method",
+    "line": 1635,
+    "end": 1635,
+    "chars": 101
+   },
+   {
+    "name": "Sim.bodyLayer",
+    "kind": "method",
+    "line": 1637,
+    "end": 1637,
+    "chars": 129
+   },
+   {
+    "name": "Sim.meets",
+    "kind": "method",
+    "line": 1638,
+    "end": 1638,
+    "chars": 99
+   },
+   {
+    "name": "Sim.emit",
+    "kind": "method",
+    "line": 1639,
+    "end": 1639,
+    "chars": 154
+   },
+   {
+    "name": "Sim.mile",
+    "kind": "method",
+    "line": 1640,
+    "end": 1640,
+    "chars": 203
+   },
+   {
+    "name": "Sim.totalWriteOffs",
+    "kind": "method",
+    "line": 1641,
+    "end": 1641,
+    "chars": 73
+   },
+   {
+    "name": "Sim.carryOut",
+    "kind": "method",
+    "line": 1642,
+    "end": 1647,
+    "chars": 404
+   },
+   {
+    "name": "Sim.pickSpawn",
+    "kind": "method",
+    "line": 1650,
+    "end": 1653,
+    "chars": 185
+   },
+   {
+    "name": "Sim.spawnBody",
+    "kind": "method",
+    "line": 1654,
+    "end": 1666,
+    "chars": 995
+   },
+   {
+    "name": "Sim.reach",
+    "kind": "method",
+    "line": 1669,
+    "end": 1673,
+    "chars": 237
+   },
+   {
+    "name": "Sim.deny",
+    "kind": "method",
+    "line": 1674,
+    "end": 1674,
+    "chars": 103
+   },
+   {
+    "name": "Sim.startLunge",
+    "kind": "method",
+    "line": 1676,
+    "end": 1684,
+    "chars": 613
+   },
+   {
+    "name": "Sim.bodyControl",
+    "kind": "method",
+    "line": 1686,
+    "end": 1787,
+    "chars": 6906
+   },
+   {
+    "name": "Sim.handleB",
+    "kind": "method",
+    "line": 1789,
+    "end": 1806,
+    "chars": 764
+   },
+   {
+    "name": "Sim.handleXY",
+    "kind": "method",
+    "line": 1808,
+    "end": 1822,
+    "chars": 981
+   },
+   {
+    "name": "Sim.handleArms",
+    "kind": "method",
+    "line": 1825,
+    "end": 1843,
+    "chars": 982
+   },
+   {
+    "name": "Sim.handleHands",
+    "kind": "method",
+    "line": 1846,
+    "end": 1860,
+    "chars": 1080
+   },
+   {
+    "name": "Sim.handlePush",
+    "kind": "method",
+    "line": 1865,
+    "end": 1879,
+    "chars": 1253
+   },
+   {
+    "name": "Sim.pushTarget",
+    "kind": "method",
+    "line": 1880,
+    "end": 1886,
+    "chars": 709
+   },
+   {
+    "name": "Sim.carById",
+    "kind": "method",
+    "line": 1887,
+    "end": 1887,
+    "chars": 98
+   },
+   {
+    "name": "Sim.hitchTarget",
+    "kind": "method",
+    "line": 1888,
+    "end": 1896,
+    "chars": 486
+   },
+   {
+    "name": "Sim.startHitch",
+    "kind": "method",
+    "line": 1897,
+    "end": 1904,
+    "chars": 710
+   },
+   {
+    "name": "Sim.stepHitch",
+    "kind": "method",
+    "line": 1905,
+    "end": 1911,
+    "chars": 481
+   },
+   {
+    "name": "Sim.releaseHitch",
+    "kind": "method",
+    "line": 1914,
+    "end": 1925,
+    "chars": 859
+   },
+   {
+    "name": "Sim.comboClock",
+    "kind": "method",
+    "line": 1928,
+    "end": 1934,
+    "chars": 510
+   },
+   {
+    "name": "Sim.comboLink",
+    "kind": "method",
+    "line": 1935,
+    "end": 1943,
+    "chars": 753
+   },
+   {
+    "name": "Sim.tryJump",
+    "kind": "method",
+    "line": 1947,
+    "end": 1962,
+    "chars": 1403
+   },
+   {
+    "name": "Sim.landJump",
+    "kind": "method",
+    "line": 1963,
+    "end": 1969,
+    "chars": 705
+   },
+   {
+    "name": "Sim.bounce",
+    "kind": "method",
+    "line": 1971,
+    "end": 1976,
+    "chars": 558
+   },
+   {
+    "name": "Sim.nearestCone",
+    "kind": "method",
+    "line": 1977,
+    "end": 1986,
+    "chars": 409
+   },
+   {
+    "name": "Sim.coneSpotValid",
+    "kind": "method",
+    "line": 1987,
+    "end": 1994,
+    "chars": 625
+   },
+   {
+    "name": "Sim.releasePoint",
+    "kind": "method",
+    "line": 1995,
+    "end": 1998,
+    "chars": 228
+   },
+   {
+    "name": "Sim.dropHeld",
+    "kind": "method",
+    "line": 1999,
+    "end": 2004,
+    "chars": 384
+   },
+   {
+    "name": "Sim.throwHeld",
+    "kind": "method",
+    "line": 2005,
+    "end": 2014,
+    "chars": 678
+   },
+   {
+    "name": "Sim.releaseHeldAtDeath",
+    "kind": "method",
+    "line": 2015,
+    "end": 2024,
+    "chars": 493
+   },
+   {
+    "name": "Sim.retryPending",
+    "kind": "method",
+    "line": 2025,
+    "end": 2034,
+    "chars": 483
+   },
+   {
+    "name": "Sim.moveBody",
+    "kind": "method",
+    "line": 2036,
+    "end": 2064,
+    "chars": 1496
+   },
+   {
+    "name": "Sim.collideBody",
+    "kind": "method",
+    "line": 2066,
+    "end": 2123,
+    "chars": 3724
+   },
+   {
+    "name": "block",
+    "kind": "arrow",
+    "line": 2069,
+    "end": 2069,
+    "chars": 65
+   },
+   {
+    "name": "Sim.stairT",
+    "kind": "method",
+    "line": 2127,
+    "end": 2127,
+    "chars": 86
+   },
+   {
+    "name": "Sim.stairSpan",
+    "kind": "method",
+    "line": 2128,
+    "end": 2128,
+    "chars": 103
+   },
+   {
+    "name": "Sim.stairFoot",
+    "kind": "method",
+    "line": 2130,
+    "end": 2133,
+    "chars": 231
+   },
+   {
+    "name": "Sim.checkZone",
+    "kind": "method",
+    "line": 2134,
+    "end": 2134,
+    "chars": 94
+   },
+   {
+    "name": "Sim.boomPoint",
+    "kind": "method",
+    "line": 2135,
+    "end": 2135,
+    "chars": 258
+   },
+   {
+    "name": "Sim.stepBooms",
+    "kind": "method",
+    "line": 2136,
+    "end": 2142,
+    "chars": 469
+   },
+   {
+    "name": "Sim.floorOf",
+    "kind": "method",
+    "line": 2143,
+    "end": 2143,
+    "chars": 110
+   },
+   {
+    "name": "Sim.bodyDeck",
+    "kind": "method",
+    "line": 2144,
+    "end": 2144,
+    "chars": 87
+   },
+   {
+    "name": "Sim.enterStair",
+    "kind": "method",
+    "line": 2145,
+    "end": 2151,
+    "chars": 300
+   },
+   {
+    "name": "Sim.floorStep",
+    "kind": "method",
+    "line": 2152,
+    "end": 2162,
+    "chars": 471
+   },
+   {
+    "name": "Sim.stairStep",
+    "kind": "method",
+    "line": 2163,
+    "end": 2174,
+    "chars": 1013
+   },
+   {
+    "name": "onto",
+    "kind": "arrow",
+    "line": 2167,
+    "end": 2167,
+    "chars": 147
+   },
+   {
+    "name": "Sim.floorMove",
+    "kind": "method",
+    "line": 2177,
+    "end": 2203,
+    "chars": 2219
+   },
+   {
+    "name": "block",
+    "kind": "arrow",
+    "line": 2180,
+    "end": 2180,
+    "chars": 65
+   },
+   {
+    "name": "Sim.deckEdgeOpen",
+    "kind": "method",
+    "line": 2204,
+    "end": 2210,
+    "chars": 391
+   },
+   {
+    "name": "Sim.startDrop",
+    "kind": "method",
+    "line": 2213,
+    "end": 2228,
+    "chars": 1333
+   },
+   {
+    "name": "plan",
+    "kind": "arrow",
+    "line": 2218,
+    "end": 2218,
+    "chars": 149
+   },
+   {
+    "name": "Sim.land",
+    "kind": "method",
+    "line": 2230,
+    "end": 2248,
+    "chars": 1438
+   },
+   {
+    "name": "Sim.moveCones",
+    "kind": "method",
+    "line": 2249,
+    "end": 2280,
+    "chars": 2111
+   },
+   {
+    "name": "Sim.admit",
+    "kind": "method",
+    "line": 2283,
+    "end": 2301,
+    "chars": 1653
+   },
+   {
+    "name": "Sim.giveWayHold",
+    "kind": "method",
+    "line": 2305,
+    "end": 2336,
+    "chars": 3548
+   },
+   {
+    "name": "Sim.mergingPast",
+    "kind": "method",
+    "line": 2339,
+    "end": 2345,
+    "chars": 464
+   },
+   {
+    "name": "Sim.jRank",
+    "kind": "method",
+    "line": 2348,
+    "end": 2348,
+    "chars": 62
+   },
+   {
+    "name": "Sim.jCommitted",
+    "kind": "method",
+    "line": 2349,
+    "end": 2349,
+    "chars": 106
+   },
+   {
+    "name": "Sim.junctionHold",
+    "kind": "method",
+    "line": 2353,
+    "end": 2377,
+    "chars": 1940
+   },
+   {
+    "name": "Sim.queuedBehind",
+    "kind": "method",
+    "line": 2378,
+    "end": 2378,
+    "chars": 139
+   },
+   {
+    "name": "Sim.junctionLetIn",
+    "kind": "method",
+    "line": 2380,
+    "end": 2396,
+    "chars": 867
+   },
+   {
+    "name": "Sim.junctionPast",
+    "kind": "method",
+    "line": 2398,
+    "end": 2403,
+    "chars": 346
+   },
+   {
+    "name": "Sim.jamCause",
+    "kind": "method",
+    "line": 2406,
+    "end": 2421,
+    "chars": 1283
+   },
+   {
+    "name": "Sim.needsRoom",
+    "kind": "method",
+    "line": 2423,
+    "end": 2433,
+    "chars": 886
+   },
+   {
+    "name": "Sim.jammed",
+    "kind": "method",
+    "line": 2434,
+    "end": 2444,
+    "chars": 575
+   },
+   {
+    "name": "Sim.newCar",
+    "kind": "method",
+    "line": 2446,
+    "end": 2459,
+    "chars": 950
+   },
+   {
+    "name": "Sim.modelStandoff",
+    "kind": "method",
+    "line": 2461,
+    "end": 2461,
+    "chars": 166
+   },
+   {
+    "name": "Sim.admissionInterval",
+    "kind": "method",
+    "line": 2462,
+    "end": 2462,
+    "chars": 199
+   },
+   {
+    "name": "Sim.deckCls",
+    "kind": "method",
+    "line": 2465,
+    "end": 2465,
+    "chars": 145
+   },
+   {
+    "name": "Sim.busRoad",
+    "kind": "method",
+    "line": 2467,
+    "end": 2471,
+    "chars": 301
+   },
+   {
+    "name": "Sim.addDeckCar",
+    "kind": "method",
+    "line": 2472,
+    "end": 2477,
+    "chars": 282
+   },
+   {
+    "name": "Sim.fillDeckCars",
+    "kind": "method",
+    "line": 2478,
+    "end": 2489,
+    "chars": 897
+   },
+   {
+    "name": "Sim.admitDeck",
+    "kind": "method",
+    "line": 2490,
+    "end": 2502,
+    "chars": 1211
+   },
+   {
+    "name": "Sim.pose",
+    "kind": "method",
+    "line": 2503,
+    "end": 2510,
+    "chars": 493
+   },
+   {
+    "name": "Sim.partShare",
+    "kind": "method",
+    "line": 2513,
+    "end": 2513,
+    "chars": 94
+   },
+   {
+    "name": "Sim.partEffect",
+    "kind": "method",
+    "line": 2515,
+    "end": 2525,
+    "chars": 1173
+   },
+   {
+    "name": "Sim.armsBroken",
+    "kind": "method",
+    "line": 2526,
+    "end": 2526,
+    "chars": 257
+   },
+   {
+    "name": "Sim.coneWidth",
+    "kind": "method",
+    "line": 2527,
+    "end": 2527,
+    "chars": 77
+   },
+   {
+    "name": "Sim.partOf",
+    "kind": "method",
+    "line": 2528,
+    "end": 2534,
+    "chars": 401
+   },
+   {
+    "name": "Sim.occluded",
+    "kind": "method",
+    "line": 2535,
+    "end": 2539,
+    "chars": 408
+   },
+   {
+    "name": "Sim.plannedD",
+    "kind": "method",
+    "line": 2541,
+    "end": 2545,
+    "chars": 168
+   },
+   {
+    "name": "Sim.perceive",
+    "kind": "method",
+    "line": 2546,
+    "end": 2566,
+    "chars": 1530
+   },
+   {
+    "name": "Sim.inBeam",
+    "kind": "method",
+    "line": 2568,
+    "end": 2568,
+    "chars": 90
+   },
+   {
+    "name": "Sim.assessBody",
+    "kind": "method",
+    "line": 2571,
+    "end": 2587,
+    "chars": 1124
+   },
+   {
+    "name": "Sim.ringStep",
+    "kind": "method",
+    "line": 2593,
+    "end": 2626,
+    "chars": 3027
+   },
+   {
+    "name": "shift",
+    "kind": "arrow",
+    "line": 2598,
+    "end": 2598,
+    "chars": 133
+   },
+   {
+    "name": "Sim.ringKeep",
+    "kind": "method",
+    "line": 2627,
+    "end": 2631,
+    "chars": 253
+   },
+   {
+    "name": "Sim.ringLap",
+    "kind": "method",
+    "line": 2632,
+    "end": 2637,
+    "chars": 424
+   },
+   {
+    "name": "Sim.ringExitBlocked",
+    "kind": "method",
+    "line": 2638,
+    "end": 2644,
+    "chars": 569
+   },
+   {
+    "name": "Sim.ringCrawl",
+    "kind": "method",
+    "line": 2645,
+    "end": 2648,
+    "chars": 214
+   },
+   {
+    "name": "Sim.ringLaneClear",
+    "kind": "method",
+    "line": 2649,
+    "end": 2661,
+    "chars": 1197
+   },
+   {
+    "name": "Sim.leadGap",
+    "kind": "method",
+    "line": 2662,
+    "end": 2696,
+    "chars": 2930
+   },
+   {
+    "name": "wide",
+    "kind": "arrow",
+    "line": 2671,
+    "end": 2671,
+    "chars": 96
+   },
+   {
+    "name": "Sim.corridorBlocked",
+    "kind": "method",
+    "line": 2698,
+    "end": 2706,
+    "chars": 533
+   },
+   {
+    "name": "Sim.oncomingAhead",
+    "kind": "method",
+    "line": 2707,
+    "end": 2714,
+    "chars": 386
+   },
+   {
+    "name": "Sim.carBeside",
+    "kind": "method",
+    "line": 2715,
+    "end": 2722,
+    "chars": 375
+   },
+   {
+    "name": "Sim.bodyBeside",
+    "kind": "method",
+    "line": 2723,
+    "end": 2729,
+    "chars": 356
+   },
+   {
+    "name": "Sim.choose",
+    "kind": "method",
+    "line": 2732,
+    "end": 2801,
+    "chars": 4812
+   },
+   {
+    "name": "staticsClear",
+    "kind": "arrow",
+    "line": 2761,
+    "end": 2772,
+    "chars": 517
+   },
+   {
+    "name": "targetClear",
+    "kind": "arrow",
+    "line": 2774,
+    "end": 2777,
+    "chars": 206
+   },
+   {
+    "name": "routeClear",
+    "kind": "arrow",
+    "line": 2778,
+    "end": 2781,
+    "chars": 261
+   },
+   {
+    "name": "Sim.cornerSpeed",
+    "kind": "method",
+    "line": 2804,
+    "end": 2819,
+    "chars": 1267
+   },
+   {
+    "name": "Sim.manSpeed",
+    "kind": "method",
+    "line": 2820,
+    "end": 2834,
+    "chars": 886
+   },
+   {
+    "name": "Sim.remaining",
+    "kind": "method",
+    "line": 2836,
+    "end": 2843,
+    "chars": 329
+   },
+   {
+    "name": "Sim.commit",
+    "kind": "method",
+    "line": 2844,
+    "end": 2853,
+    "chars": 530
+   },
+   {
+    "name": "Sim.obstacleAhead",
+    "kind": "method",
+    "line": 2854,
+    "end": 2865,
+    "chars": 611
+   },
+   {
+    "name": "Sim.rearBlocked",
+    "kind": "method",
+    "line": 2866,
+    "end": 2872,
+    "chars": 668
+   },
+   {
+    "name": "behind",
+    "kind": "arrow",
+    "line": 2868,
+    "end": 2868,
+    "chars": 196
+   },
+   {
+    "name": "Sim.reasonToWait",
+    "kind": "method",
+    "line": 2873,
+    "end": 2877,
+    "chars": 257
+   },
+   {
+    "name": "Sim.blockingCone",
+    "kind": "method",
+    "line": 2878,
+    "end": 2887,
+    "chars": 449
+   },
+   {
+    "name": "Sim.dispatchDrone",
+    "kind": "method",
+    "line": 2889,
+    "end": 2895,
+    "chars": 424
+   },
+   {
+    "name": "Sim.droneTarget",
+    "kind": "method",
+    "line": 2896,
+    "end": 2900,
+    "chars": 290
+   },
+   {
+    "name": "Sim.stepDrones",
+    "kind": "method",
+    "line": 2901,
+    "end": 2944,
+    "chars": 2868
+   },
+   {
+    "name": "fly",
+    "kind": "arrow",
+    "line": 2912,
+    "end": 2912,
+    "chars": 190
+   },
+   {
+    "name": "Sim.carAI",
+    "kind": "method",
+    "line": 2945,
+    "end": 3129,
+    "chars": 14532
+   },
+   {
+    "name": "Sim.moveCars",
+    "kind": "method",
+    "line": 3130,
+    "end": 3152,
+    "chars": 1093
+   },
+   {
+    "name": "Sim.predict",
+    "kind": "method",
+    "line": 3154,
+    "end": 3167,
+    "chars": 622
+   },
+   {
+    "name": "Sim.carCue",
+    "kind": "method",
+    "line": 3168,
+    "end": 3174,
+    "chars": 254
+   },
+   {
+    "name": "Sim.signalSide",
+    "kind": "method",
+    "line": 3175,
+    "end": 3179,
+    "chars": 309
+   },
+   {
+    "name": "Sim.turnSignal",
+    "kind": "method",
+    "line": 3188,
+    "end": 3201,
+    "chars": 900
+   },
+   {
+    "name": "Sim.ringPrevArc",
+    "kind": "method",
+    "line": 3202,
+    "end": 3214,
+    "chars": 814
+   },
+   {
+    "name": "Sim.exitCars",
+    "kind": "method",
+    "line": 3215,
+    "end": 3221,
+    "chars": 245
+   },
+   {
+    "name": "Sim.account",
+    "kind": "method",
+    "line": 3224,
+    "end": 3276,
+    "chars": 4280
+   },
+   {
+    "name": "Sim.writeOff",
+    "kind": "method",
+    "line": 3277,
+    "end": 3285,
+    "chars": 440
+   },
+   {
+    "name": "Sim.end",
+    "kind": "method",
+    "line": 3286,
+    "end": 3294,
+    "chars": 513
+   },
+   {
+    "name": "Sim.checkTerminal",
+    "kind": "method",
+    "line": 3295,
+    "end": 3310,
+    "chars": 1068
+   },
+   {
+    "name": "Sim.trackUse",
+    "kind": "method",
+    "line": 3312,
+    "end": 3320,
+    "chars": 405
+   },
+   {
+    "name": "Sim.step",
+    "kind": "method",
+    "line": 3323,
+    "end": 3359,
+    "chars": 1673
+   },
+   {
+    "name": "Sim.checkFlip",
+    "kind": "method",
+    "line": 3362,
+    "end": 3371,
+    "chars": 629
+   },
+   {
+    "name": "Sim.flip",
+    "kind": "method",
+    "line": 3372,
+    "end": 3398,
+    "chars": 2329
+   },
+   {
+    "name": "Sim.screenName",
+    "kind": "method",
+    "line": 3399,
+    "end": 3399,
+    "chars": 75
+   },
+   {
+    "name": "Sim.edgeOpen",
+    "kind": "method",
+    "line": 3401,
+    "end": 3409,
+    "chars": 588
+   },
+   {
+    "name": "Sim.netOn",
+    "kind": "method",
+    "line": 3417,
+    "end": 3417,
+    "chars": 68
+   },
+   {
+    "name": "Sim.cellOf",
+    "kind": "method",
+    "line": 3418,
+    "end": 3418,
+    "chars": 53
+   },
+   {
+    "name": "Sim.netBuild",
+    "kind": "method",
+    "line": 3419,
+    "end": 3448,
+    "chars": 2380
+   },
+   {
+    "name": "inside",
+    "kind": "arrow",
+    "line": 3430,
+    "end": 3430,
+    "chars": 64
+   },
+   {
+    "name": "busR",
+    "kind": "arrow",
+    "line": 3443,
+    "end": 3443,
+    "chars": 56
+   },
+   {
+    "name": "Sim.saveCell",
+    "kind": "method",
+    "line": 3449,
+    "end": 3449,
+    "chars": 173
+   },
+   {
+    "name": "Sim.loadCell",
+    "kind": "method",
+    "line": 3450,
+    "end": 3450,
+    "chars": 206
+   },
+   {
+    "name": "Sim.inCell",
+    "kind": "method",
+    "line": 3451,
+    "end": 3456,
+    "chars": 610
+   },
+   {
+    "name": "Sim.allCars",
+    "kind": "method",
+    "line": 3457,
+    "end": 3457,
+    "chars": 133
+   },
+   {
+    "name": "Sim.netBodies",
+    "kind": "method",
+    "line": 3458,
+    "end": 3476,
+    "chars": 1064
+   },
+   {
+    "name": "Sim.ghostOf",
+    "kind": "method",
+    "line": 3477,
+    "end": 3483,
+    "chars": 392
+   },
+   {
+    "name": "Sim.netGhosts",
+    "kind": "method",
+    "line": 3484,
+    "end": 3499,
+    "chars": 805
+   },
+   {
+    "name": "Sim.netView",
+    "kind": "method",
+    "line": 3500,
+    "end": 3504,
+    "chars": 372
+   },
+   {
+    "name": "Sim.emitAt",
+    "kind": "method",
+    "line": 3505,
+    "end": 3505,
+    "chars": 157
+   },
+   {
+    "name": "Sim.netAdmit",
+    "kind": "method",
+    "line": 3506,
+    "end": 3514,
+    "chars": 461
+   },
+   {
+    "name": "Sim.netBegin",
+    "kind": "method",
+    "line": 3515,
+    "end": 3524,
+    "chars": 555
+   },
+   {
+    "name": "Sim.netEnd",
+    "kind": "method",
+    "line": 3525,
+    "end": 3538,
+    "chars": 731
+   },
+   {
+    "name": "Sim.netHandover",
+    "kind": "method",
+    "line": 3539,
+    "end": 3561,
+    "chars": 1349
+   },
+   {
+    "name": "Sim.netFill",
+    "kind": "method",
+    "line": 3562,
+    "end": 3616,
+    "chars": 4104
+   },
+   {
+    "name": "chain",
+    "kind": "arrow",
+    "line": 3564,
+    "end": 3573,
+    "chars": 415
+   },
+   {
+    "name": "where",
+    "kind": "arrow",
+    "line": 3574,
+    "end": 3574,
+    "chars": 155
+   },
+   {
+    "name": "clear",
+    "kind": "arrow",
+    "line": 3575,
+    "end": 3575,
+    "chars": 214
+   },
+   {
+    "name": "Sim.continueReport",
+    "kind": "method",
+    "line": 3619,
+    "end": 3619,
+    "chars": 129
+   },
+   {
+    "name": "Sim.canBuy",
+    "kind": "method",
+    "line": 3620,
+    "end": 3635,
+    "chars": 1116
+   },
+   {
+    "name": "Sim.buy",
+    "kind": "method",
+    "line": 3636,
+    "end": 3644,
+    "chars": 458
+   },
+   {
+    "name": "Sim.leaveShop",
+    "kind": "method",
+    "line": 3645,
+    "end": 3649,
+    "chars": 208
+   },
+   {
+    "name": "Sim.withdraw",
+    "kind": "method",
+    "line": 3650,
+    "end": 3654,
+    "chars": 140
+   },
+   {
+    "name": "Sim.trace",
+    "kind": "method",
+    "line": 3655,
+    "end": 3660,
+    "chars": 408
+   }
+  ],
+  "prototypes/p6/pixel.js": [
+   {
+    "name": "SUN",
+    "kind": "const",
+    "line": 9,
+    "end": 9,
+    "chars": 85
+   },
+   {
+    "name": "DAY",
+    "kind": "const",
+    "line": 12,
+    "end": 72,
+    "chars": 5733
+   },
+   {
+    "name": "NIGHT",
+    "kind": "const",
+    "line": 43,
+    "end": 74,
+    "chars": 3113
+   },
+   {
+    "name": "CYBER",
+    "kind": "const",
+    "line": 74,
+    "end": 74,
+    "chars": 96
+   },
+   {
+    "name": "NAME",
+    "kind": "const",
+    "line": 75,
+    "end": 75,
+    "chars": 128
+   },
+   {
+    "name": "rgb",
+    "kind": "function",
+    "line": 77,
+    "end": 77,
+    "chars": 101
+   },
+   {
+    "name": "c32",
+    "kind": "function",
+    "line": 78,
+    "end": 78,
+    "chars": 94
+   },
+   {
+    "name": "mixHex",
+    "kind": "function",
+    "line": 79,
+    "end": 79,
+    "chars": 150
+   },
+   {
+    "name": "KX",
+    "kind": "arrow",
+    "line": 81,
+    "end": 81,
+    "chars": 90
+   },
+   {
+    "name": "Buf",
+    "kind": "class",
+    "line": 84,
+    "end": 107,
+    "chars": 1610
+   },
+   {
+    "name": "Buf.constructor",
+    "kind": "method",
+    "line": 85,
+    "end": 85,
+    "chars": 78
+   },
+   {
+    "name": "Buf.put",
+    "kind": "method",
+    "line": 86,
+    "end": 86,
+    "chars": 140
+   },
+   {
+    "name": "Buf.get",
+    "kind": "method",
+    "line": 87,
+    "end": 87,
+    "chars": 133
+   },
+   {
+    "name": "Buf.mix",
+    "kind": "method",
+    "line": 88,
+    "end": 96,
+    "chars": 627
+   },
+   {
+    "name": "Buf.shade",
+    "kind": "method",
+    "line": 97,
+    "end": 103,
+    "chars": 392
+   },
+   {
+    "name": "Buf.rect",
+    "kind": "method",
+    "line": 104,
+    "end": 104,
+    "chars": 132
+   },
+   {
+    "name": "Buf.fill",
+    "kind": "method",
+    "line": 105,
+    "end": 105,
+    "chars": 27
+   },
+   {
+    "name": "Buf.copyFrom",
+    "kind": "method",
+    "line": 106,
+    "end": 106,
+    "chars": 32
+   },
+   {
+    "name": "line",
+    "kind": "function",
+    "line": 110,
+    "end": 122,
+    "chars": 574
+   },
+   {
+    "name": "polyline",
+    "kind": "function",
+    "line": 123,
+    "end": 123,
+    "chars": 152
+   },
+   {
+    "name": "dash",
+    "kind": "arrow",
+    "line": 124,
+    "end": 124,
+    "chars": 47
+   },
+   {
+    "name": "circle",
+    "kind": "function",
+    "line": 126,
+    "end": 139,
+    "chars": 643
+   },
+   {
+    "name": "disc",
+    "kind": "function",
+    "line": 140,
+    "end": 144,
+    "chars": 262
+   },
+   {
+    "name": "ellipse",
+    "kind": "function",
+    "line": 145,
+    "end": 150,
+    "chars": 275
+   },
+   {
+    "name": "fillPoly",
+    "kind": "function",
+    "line": 151,
+    "end": 169,
+    "chars": 851
+   },
+   {
+    "name": "inPoly",
+    "kind": "function",
+    "line": 170,
+    "end": 177,
+    "chars": 267
+   },
+   {
+    "name": "stamp",
+    "kind": "function",
+    "line": 179,
+    "end": 182,
+    "chars": 203
+   },
+   {
+    "name": "collectLine",
+    "kind": "function",
+    "line": 183,
+    "end": 183,
+    "chars": 142
+   },
+   {
+    "name": "SG",
+    "kind": "const",
+    "line": 233,
+    "end": 258,
+    "chars": 2741
+   },
+   {
+    "name": "sNorm",
+    "kind": "arrow",
+    "line": 260,
+    "end": 260,
+    "chars": 105
+   },
+   {
+    "name": "smallWidth",
+    "kind": "function",
+    "line": 261,
+    "end": 261,
+    "chars": 154
+   },
+   {
+    "name": "smallText",
+    "kind": "function",
+    "line": 262,
+    "end": 271,
+    "chars": 404
+   },
+   {
+    "name": "GLYPH",
+    "kind": "const",
+    "line": 273,
+    "end": 273,
+    "chars": 11
+   },
+   {
+    "name": "textWidth",
+    "kind": "function",
+    "line": 275,
+    "end": 275,
+    "chars": 186
+   },
+   {
+    "name": "text",
+    "kind": "function",
+    "line": 276,
+    "end": 288,
+    "chars": 585
+   },
+   {
+    "name": "spr",
+    "kind": "function",
+    "line": 291,
+    "end": 291,
+    "chars": 73
+   },
+   {
+    "name": "sput",
+    "kind": "function",
+    "line": 292,
+    "end": 292,
+    "chars": 86
+   },
+   {
+    "name": "blit",
+    "kind": "function",
+    "line": 293,
+    "end": 303,
+    "chars": 394
+   },
+   {
+    "name": "fromRows",
+    "kind": "function",
+    "line": 304,
+    "end": 308,
+    "chars": 289
+   },
+   {
+    "name": "carSprite",
+    "kind": "function",
+    "line": 313,
+    "end": 380,
+    "chars": 4241
+   },
+   {
+    "name": "loc",
+    "kind": "arrow",
+    "line": 315,
+    "end": 315,
+    "chars": 58
+   },
+   {
+    "name": "inFoot",
+    "kind": "arrow",
+    "line": 316,
+    "end": 321,
+    "chars": 261
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 329,
+    "end": 329,
+    "chars": 72
+   },
+   {
+    "name": "glassAt",
+    "kind": "arrow",
+    "line": 344,
+    "end": 344,
+    "chars": 122
+   },
+   {
+    "name": "car",
+    "kind": "function",
+    "line": 382,
+    "end": 387,
+    "chars": 347
+   },
+   {
+    "name": "DUMMY",
+    "kind": "const",
+    "line": 390,
+    "end": 410,
+    "chars": 1906
+   },
+   {
+    "name": "edgeRim",
+    "kind": "function",
+    "line": 400,
+    "end": 410,
+    "chars": 621
+   },
+   {
+    "name": "at",
+    "kind": "arrow",
+    "line": 402,
+    "end": 402,
+    "chars": 107
+   },
+   {
+    "name": "rim",
+    "kind": "function",
+    "line": 411,
+    "end": 411,
+    "chars": 61
+   },
+   {
+    "name": "dummy",
+    "kind": "function",
+    "line": 413,
+    "end": 423,
+    "chars": 641
+   },
+   {
+    "name": "MODULES",
+    "kind": "const",
+    "line": 430,
+    "end": 433,
+    "chars": 362
+   },
+   {
+    "name": "LIT",
+    "kind": "const",
+    "line": 433,
+    "end": 433,
+    "chars": 109
+   },
+   {
+    "name": "DENTS",
+    "kind": "const",
+    "line": 434,
+    "end": 434,
+    "chars": 141
+   },
+   {
+    "name": "CRACK",
+    "kind": "const",
+    "line": 436,
+    "end": 436,
+    "chars": 123
+   },
+   {
+    "name": "doll",
+    "kind": "function",
+    "line": 439,
+    "end": 654,
+    "chars": 13089
+   },
+   {
+    "name": "has",
+    "kind": "arrow",
+    "line": 440,
+    "end": 440,
+    "chars": 72
+   },
+   {
+    "name": "set",
+    "kind": "arrow",
+    "line": 445,
+    "end": 448,
+    "chars": 212
+   },
+   {
+    "name": "blob",
+    "kind": "function",
+    "line": 450,
+    "end": 463,
+    "chars": 854
+   },
+   {
+    "name": "dot",
+    "kind": "arrow",
+    "line": 464,
+    "end": 464,
+    "chars": 91
+   },
+   {
+    "name": "dots",
+    "kind": "arrow",
+    "line": 465,
+    "end": 465,
+    "chars": 88
+   },
+   {
+    "name": "decal",
+    "kind": "arrow",
+    "line": 467,
+    "end": 472,
+    "chars": 363
+   },
+   {
+    "name": "mirror",
+    "kind": "arrow",
+    "line": 473,
+    "end": 473,
+    "chars": 39
+   },
+   {
+    "name": "M",
+    "kind": "arrow",
+    "line": 474,
+    "end": 474,
+    "chars": 75
+   },
+   {
+    "name": "side",
+    "kind": "arrow",
+    "line": 475,
+    "end": 475,
+    "chars": 38
+   },
+   {
+    "name": "X",
+    "kind": "arrow",
+    "line": 506,
+    "end": 506,
+    "chars": 23
+   },
+   {
+    "name": "X",
+    "kind": "arrow",
+    "line": 527,
+    "end": 527,
+    "chars": 23
+   },
+   {
+    "name": "X",
+    "kind": "arrow",
+    "line": 545,
+    "end": 545,
+    "chars": 23
+   },
+   {
+    "name": "X",
+    "kind": "arrow",
+    "line": 579,
+    "end": 579,
+    "chars": 23
+   },
+   {
+    "name": "X",
+    "kind": "arrow",
+    "line": 593,
+    "end": 593,
+    "chars": 23
+   },
+   {
+    "name": "lv",
+    "kind": "arrow",
+    "line": 599,
+    "end": 599,
+    "chars": 29
+   },
+   {
+    "name": "onPart",
+    "kind": "arrow",
+    "line": 613,
+    "end": 613,
+    "chars": 180
+   },
+   {
+    "name": "paint",
+    "kind": "arrow",
+    "line": 614,
+    "end": 614,
+    "chars": 56
+   },
+   {
+    "name": "pair",
+    "kind": "function",
+    "line": 655,
+    "end": 655,
+    "chars": 51
+   },
+   {
+    "name": "DRONE",
+    "kind": "const",
+    "line": 657,
+    "end": 664,
+    "chars": 533
+   },
+   {
+    "name": "P",
+    "kind": "arrow",
+    "line": 659,
+    "end": 659,
+    "chars": 43
+   },
+   {
+    "name": "pod",
+    "kind": "function",
+    "line": 665,
+    "end": 677,
+    "chars": 928
+   },
+   {
+    "name": "P",
+    "kind": "arrow",
+    "line": 667,
+    "end": 667,
+    "chars": 42
+   },
+   {
+    "name": "barrier",
+    "kind": "function",
+    "line": 678,
+    "end": 686,
+    "chars": 511
+   },
+   {
+    "name": "P",
+    "kind": "arrow",
+    "line": 680,
+    "end": 680,
+    "chars": 38
+   },
+   {
+    "name": "rng",
+    "kind": "function",
+    "line": 689,
+    "end": 689,
+    "chars": 217
+   },
+   {
+    "name": "blob",
+    "kind": "function",
+    "line": 690,
+    "end": 698,
+    "chars": 549
+   },
+   {
+    "name": "tree",
+    "kind": "function",
+    "line": 699,
+    "end": 705,
+    "chars": 494
+   },
+   {
+    "name": "hedge",
+    "kind": "function",
+    "line": 706,
+    "end": 706,
+    "chars": 90
+   },
+   {
+    "name": "pathGeom",
+    "kind": "function",
+    "line": 709,
+    "end": 731,
+    "chars": 967
+   },
+   {
+    "name": "building",
+    "kind": "function",
+    "line": 734,
+    "end": 774,
+    "chars": 3262
+   },
+   {
+    "name": "P",
+    "kind": "arrow",
+    "line": 737,
+    "end": 737,
+    "chars": 103
+   },
+   {
+    "name": "roofDeck",
+    "kind": "function",
+    "line": 778,
+    "end": 791,
+    "chars": 992
+   },
+   {
+    "name": "isOpen",
+    "kind": "arrow",
+    "line": 780,
+    "end": 780,
+    "chars": 80
+   },
+   {
+    "name": "skybridge",
+    "kind": "function",
+    "line": 794,
+    "end": 806,
+    "chars": 702
+   },
+   {
+    "name": "mixK",
+    "kind": "function",
+    "line": 807,
+    "end": 807,
+    "chars": 239
+   },
+   {
+    "name": "jersey",
+    "kind": "function",
+    "line": 808,
+    "end": 816,
+    "chars": 596
+   },
+   {
+    "name": "rectShadow",
+    "kind": "function",
+    "line": 818,
+    "end": 822,
+    "chars": 342
+   },
+   {
+    "name": "monument",
+    "kind": "function",
+    "line": 826,
+    "end": 840,
+    "chars": 1148
+   },
+   {
+    "name": "fountain",
+    "kind": "function",
+    "line": 842,
+    "end": 853,
+    "chars": 746
+   },
+   {
+    "name": "deck",
+    "kind": "function",
+    "line": 858,
+    "end": 897,
+    "chars": 4038
+   },
+   {
+    "name": "put",
+    "kind": "arrow",
+    "line": 862,
+    "end": 862,
+    "chars": 123
+   },
+   {
+    "name": "inOpen",
+    "kind": "arrow",
+    "line": 866,
+    "end": 866,
+    "chars": 81
+   },
+   {
+    "name": "inGap",
+    "kind": "arrow",
+    "line": 867,
+    "end": 867,
+    "chars": 79
+   },
+   {
+    "name": "nearGap",
+    "kind": "arrow",
+    "line": 868,
+    "end": 868,
+    "chars": 91
+   },
+   {
+    "name": "wall",
+    "kind": "function",
+    "line": 899,
+    "end": 907,
+    "chars": 641
+   },
+   {
+    "name": "booth",
+    "kind": "function",
+    "line": 909,
+    "end": 917,
+    "chars": 549
+   },
+   {
+    "name": "stairs",
+    "kind": "function",
+    "line": 921,
+    "end": 940,
+    "chars": 1283
+   },
+   {
+    "name": "tAt",
+    "kind": "arrow",
+    "line": 925,
+    "end": 925,
+    "chars": 112
+   },
+   {
+    "name": "tone",
+    "kind": "arrow",
+    "line": 926,
+    "end": 926,
+    "chars": 141
+   },
+   {
+    "name": "patchArt",
+    "kind": "function",
+    "line": 942,
+    "end": 953,
+    "chars": 858
+   },
+   {
+    "name": "puddle",
+    "kind": "function",
+    "line": 956,
+    "end": 974,
+    "chars": 1242
+   },
+   {
+    "name": "inS",
+    "kind": "arrow",
+    "line": 958,
+    "end": 962,
+    "chars": 286
+   },
+   {
+    "name": "edgeMarks",
+    "kind": "function",
+    "line": 977,
+    "end": 987,
+    "chars": 620
+   },
+   {
+    "name": "ground",
+    "kind": "function",
+    "line": 989,
+    "end": 1076,
+    "chars": 7022
+   },
+   {
+    "name": "clearOf",
+    "kind": "arrow",
+    "line": 1031,
+    "end": 1033,
+    "chars": 451
+   },
+   {
+    "name": "roadD",
+    "kind": "arrow",
+    "line": 1033,
+    "end": 1033,
+    "chars": 147
+   },
+   {
+    "name": "roadField",
+    "kind": "function",
+    "line": 1078,
+    "end": 1094,
+    "chars": 1180
+   },
+   {
+    "name": "TOOTH",
+    "kind": "const",
+    "line": 1100,
+    "end": 1100,
+    "chars": 11
+   },
+   {
+    "name": "toothMask",
+    "kind": "function",
+    "line": 1101,
+    "end": 1111,
+    "chars": 909
+   },
+   {
+    "name": "r2",
+    "kind": "arrow",
+    "line": 1103,
+    "end": 1103,
+    "chars": 134
+   },
+   {
+    "name": "side",
+    "kind": "arrow",
+    "line": 1105,
+    "end": 1105,
+    "chars": 87
+   },
+   {
+    "name": "giveWayMark",
+    "kind": "function",
+    "line": 1112,
+    "end": 1127,
+    "chars": 1339
+   },
+   {
+    "name": "column",
+    "kind": "function",
+    "line": 1132,
+    "end": 1142,
+    "chars": 797
+   },
+   {
+    "name": "shade",
+    "kind": "arrow",
+    "line": 1134,
+    "end": 1134,
+    "chars": 125
+   }
+  ],
+  "prototypes/p6/lab.js": [
+   {
+    "name": "PIECES",
+    "kind": "const",
+    "line": 10,
+    "end": 11,
+    "chars": 161
+   },
+   {
+    "name": "squareRun",
+    "kind": "arrow",
+    "line": 50,
+    "end": 50,
+    "chars": 166
+   },
+   {
+    "name": "unit",
+    "kind": "arrow",
+    "line": 55,
+    "end": 55,
+    "chars": 104
+   },
+   {
+    "name": "yieldAt",
+    "kind": "function",
+    "line": 58,
+    "end": 66,
+    "chars": 551
+   },
+   {
+    "name": "yieldMarks",
+    "kind": "function",
+    "line": 67,
+    "end": 73,
+    "chars": 601
+   },
+   {
+    "name": "add",
+    "kind": "arrow",
+    "line": 69,
+    "end": 69,
+    "chars": 217
+   },
+   {
+    "name": "toEdgeAny",
+    "kind": "function",
+    "line": 74,
+    "end": 74,
+    "chars": 315
+   },
+   {
+    "name": "toEdge",
+    "kind": "function",
+    "line": 75,
+    "end": 81,
+    "chars": 381
+   },
+   {
+    "name": "ARM",
+    "kind": "const",
+    "line": 82,
+    "end": 85,
+    "chars": 330
+   },
+   {
+    "name": "staggered",
+    "kind": "function",
+    "line": 92,
+    "end": 109,
+    "chars": 1814
+   },
+   {
+    "name": "T1",
+    "kind": "const",
+    "line": 93,
+    "end": 93,
+    "chars": 112
+   },
+   {
+    "name": "turnOf",
+    "kind": "arrow",
+    "line": 96,
+    "end": 96,
+    "chars": 218
+   },
+   {
+    "name": "jRoute",
+    "kind": "function",
+    "line": 110,
+    "end": 121,
+    "chars": 999
+   },
+   {
+    "name": "junction",
+    "kind": "function",
+    "line": 122,
+    "end": 137,
+    "chars": 1130
+   },
+   {
+    "name": "trimFrom",
+    "kind": "function",
+    "line": 138,
+    "end": 147,
+    "chars": 446
+   },
+   {
+    "name": "conflictZones",
+    "kind": "function",
+    "line": 151,
+    "end": 174,
+    "chars": 1764
+   },
+   {
+    "name": "multiRoundabout",
+    "kind": "function",
+    "line": 179,
+    "end": 224,
+    "chars": 4817
+   },
+   {
+    "name": "wrapA",
+    "kind": "arrow",
+    "line": 183,
+    "end": 183,
+    "chars": 105
+   },
+   {
+    "name": "arm",
+    "kind": "arrow",
+    "line": 186,
+    "end": 186,
+    "chars": 111
+   },
+   {
+    "name": "r",
+    "kind": "arrow",
+    "line": 189,
+    "end": 189,
+    "chars": 106
+   },
+   {
+    "name": "bent",
+    "kind": "arrow",
+    "line": 193,
+    "end": 193,
+    "chars": 93
+   },
+   {
+    "name": "outer",
+    "kind": "arrow",
+    "line": 194,
+    "end": 194,
+    "chars": 218
+   },
+   {
+    "name": "turnOf",
+    "kind": "arrow",
+    "line": 215,
+    "end": 215,
+    "chars": 207
+   },
+   {
+    "name": "p3Roundabout",
+    "kind": "function",
+    "line": 226,
+    "end": 234,
+    "chars": 691
+   },
+   {
+    "name": "chaikin",
+    "kind": "function",
+    "line": 235,
+    "end": 242,
+    "chars": 358
+   },
+   {
+    "name": "onScreen",
+    "kind": "arrow",
+    "line": 245,
+    "end": 245,
+    "chars": 74
+   },
+   {
+    "name": "radii",
+    "kind": "function",
+    "line": 246,
+    "end": 254,
+    "chars": 419
+   },
+   {
+    "name": "minRadius",
+    "kind": "function",
+    "line": 255,
+    "end": 259,
+    "chars": 239
+   },
+   {
+    "name": "FLEETS",
+    "kind": "const",
+    "line": 263,
+    "end": 274,
+    "chars": 501
+   },
+   {
+    "name": "CLASSES",
+    "kind": "const",
+    "line": 268,
+    "end": 268,
+    "chars": 57
+   },
+   {
+    "name": "pickClass",
+    "kind": "function",
+    "line": 269,
+    "end": 274,
+    "chars": 232
+   },
+   {
+    "name": "overhang",
+    "kind": "function",
+    "line": 276,
+    "end": 284,
+    "chars": 396
+   },
+   {
+    "name": "makeSim",
+    "kind": "function",
+    "line": 287,
+    "end": 304,
+    "chars": 1547
+   },
+   {
+    "name": "rnd",
+    "kind": "arrow",
+    "line": 296,
+    "end": 296,
+    "chars": 77
+   },
+   {
+    "name": "overlap",
+    "kind": "function",
+    "line": 306,
+    "end": 314,
+    "chars": 547
+   },
+   {
+    "name": "tick",
+    "kind": "function",
+    "line": 316,
+    "end": 338,
+    "chars": 1698
+   },
+   {
+    "name": "run",
+    "kind": "function",
+    "line": 339,
+    "end": 349,
+    "chars": 1225
+   }
+  ],
+  "prototypes/p6/circus_valley.js": [
+   {
+    "name": "SUN",
+    "kind": "const",
+    "line": 15,
+    "end": 15,
+    "chars": 76
+   },
+   {
+    "name": "TILE",
+    "kind": "arrow",
+    "line": 16,
+    "end": 16,
+    "chars": 120
+   },
+   {
+    "name": "dense",
+    "kind": "function",
+    "line": 17,
+    "end": 17,
+    "chars": 297
+   },
+   {
+    "name": "NORTH",
+    "kind": "const",
+    "line": 20,
+    "end": 20,
+    "chars": 147
+   },
+   {
+    "name": "COVE",
+    "kind": "const",
+    "line": 21,
+    "end": 21,
+    "chars": 131
+   },
+   {
+    "name": "inPoly",
+    "kind": "arrow",
+    "line": 27,
+    "end": 27,
+    "chars": 246
+   },
+   {
+    "name": "NORTH_POLY",
+    "kind": "const",
+    "line": 28,
+    "end": 28,
+    "chars": 74
+   },
+   {
+    "name": "RIVER_POLY",
+    "kind": "const",
+    "line": 29,
+    "end": 29,
+    "chars": 74
+   },
+   {
+    "name": "ground",
+    "kind": "function",
+    "line": 31,
+    "end": 34,
+    "chars": 201
+   },
+   {
+    "name": "surface",
+    "kind": "arrow",
+    "line": 35,
+    "end": 35,
+    "chars": 157
+   },
+   {
+    "name": "TYPES",
+    "kind": "const",
+    "line": 40,
+    "end": 41,
+    "chars": 118
+   },
+   {
+    "name": "B",
+    "kind": "arrow",
+    "line": 48,
+    "end": 48,
+    "chars": 85
+   },
+   {
+    "name": "gap",
+    "kind": "arrow",
+    "line": 49,
+    "end": 49,
+    "chars": 36
+   },
+   {
+    "name": "BUILDINGS",
+    "kind": "const",
+    "line": 50,
+    "end": 51,
+    "chars": 240
+   },
+   {
+    "name": "PROPS",
+    "kind": "const",
+    "line": 62,
+    "end": 63,
+    "chars": 50
+   },
+   {
+    "name": "propRect",
+    "kind": "arrow",
+    "line": 68,
+    "end": 68,
+    "chars": 313
+   },
+   {
+    "name": "WALKWAYS",
+    "kind": "const",
+    "line": 70,
+    "end": 71,
+    "chars": 120
+   },
+   {
+    "name": "COVE_STAIRS",
+    "kind": "const",
+    "line": 77,
+    "end": 77,
+    "chars": 76
+   },
+   {
+    "name": "TUNNEL_MOUTH",
+    "kind": "const",
+    "line": 78,
+    "end": 78,
+    "chars": 27
+   },
+   {
+    "name": "PLAN",
+    "kind": "const",
+    "line": 81,
+    "end": 81,
+    "chars": 61
+   },
+   {
+    "name": "distToPoly",
+    "kind": "function",
+    "line": 105,
+    "end": 105,
+    "chars": 323
+   },
+   {
+    "name": "underground",
+    "kind": "arrow",
+    "line": 106,
+    "end": 106,
+    "chars": 106
+   },
+   {
+    "name": "openPts",
+    "kind": "arrow",
+    "line": 107,
+    "end": 107,
+    "chars": 124
+   },
+   {
+    "name": "raised",
+    "kind": "function",
+    "line": 108,
+    "end": 108,
+    "chars": 250
+   },
+   {
+    "name": "segX",
+    "kind": "function",
+    "line": 109,
+    "end": 109,
+    "chars": 385
+   },
+   {
+    "name": "ang",
+    "kind": "arrow",
+    "line": 110,
+    "end": 110,
+    "chars": 150
+   },
+   {
+    "name": "rectPoly",
+    "kind": "arrow",
+    "line": 111,
+    "end": 111,
+    "chars": 78
+   },
+   {
+    "name": "inRect",
+    "kind": "arrow",
+    "line": 112,
+    "end": 112,
+    "chars": 127
+   },
+   {
+    "name": "baseZ",
+    "kind": "arrow",
+    "line": 113,
+    "end": 113,
+    "chars": 86
+   },
+   {
+    "name": "topZ",
+    "kind": "arrow",
+    "line": 114,
+    "end": 114,
+    "chars": 70
+   },
+   {
+    "name": "tile",
+    "kind": "arrow",
+    "line": 115,
+    "end": 115,
+    "chars": 86
+   },
+   {
+    "name": "stairRect",
+    "kind": "arrow",
+    "line": 116,
+    "end": 116,
+    "chars": 273
+   },
+   {
+    "name": "volumes",
+    "kind": "function",
+    "line": 121,
+    "end": 134,
+    "chars": 2318
+   },
+   {
+    "name": "V",
+    "kind": "arrow",
+    "line": 123,
+    "end": 123,
+    "chars": 94
+   },
+   {
+    "name": "propVolumes",
+    "kind": "function",
+    "line": 135,
+    "end": 142,
+    "chars": 842
+   },
+   {
+    "name": "rescue",
+    "kind": "function",
+    "line": 145,
+    "end": 149,
+    "chars": 538
+   },
+   {
+    "name": "land",
+    "kind": "arrow",
+    "line": 146,
+    "end": 146,
+    "chars": 170
+   },
+   {
+    "name": "check",
+    "kind": "function",
+    "line": 152,
+    "end": 205,
+    "chars": 10052
+   },
+   {
+    "name": "atZ1",
+    "kind": "arrow",
+    "line": 195,
+    "end": 195,
+    "chars": 191
+   },
+   {
+    "name": "escalators",
+    "kind": "function",
+    "line": 208,
+    "end": 230,
+    "chars": 2517
+   },
+   {
+    "name": "clear",
+    "kind": "arrow",
+    "line": 210,
+    "end": 210,
+    "chars": 208
+   },
+   {
+    "name": "off",
+    "kind": "arrow",
+    "line": 234,
+    "end": 234,
+    "chars": 56
+   },
+   {
+    "name": "sweep",
+    "kind": "function",
+    "line": 235,
+    "end": 235,
+    "chars": 264
+   },
+   {
+    "name": "LEVELS",
+    "kind": "const",
+    "line": 236,
+    "end": 236,
+    "chars": 32
+   },
+   {
+    "name": "shadows",
+    "kind": "function",
+    "line": 237,
+    "end": 247,
+    "chars": 1007
+   },
+   {
+    "name": "solid",
+    "kind": "arrow",
+    "line": 239,
+    "end": 239,
+    "chars": 165
+   },
+   {
+    "name": "slab",
+    "kind": "arrow",
+    "line": 240,
+    "end": 240,
+    "chars": 187
+   },
+   {
+    "name": "pathD",
+    "kind": "function",
+    "line": 252,
+    "end": 252,
+    "chars": 100
+   },
+   {
+    "name": "stairSvg",
+    "kind": "arrow",
+    "line": 253,
+    "end": 253,
+    "chars": 493
+   },
+   {
+    "name": "propSvg",
+    "kind": "function",
+    "line": 254,
+    "end": 260,
+    "chars": 815
+   },
+   {
+    "name": "svgPlan",
+    "kind": "function",
+    "line": 261,
+    "end": 326,
+    "chars": 11658
+   },
+   {
+    "name": "svgSection",
+    "kind": "function",
+    "line": 328,
+    "end": 366,
+    "chars": 6721
+   },
+   {
+    "name": "zw",
+    "kind": "arrow",
+    "line": 331,
+    "end": 331,
+    "chars": 42
+   },
+   {
+    "name": "txt",
+    "kind": "arrow",
+    "line": 333,
+    "end": 333,
+    "chars": 39
+   }
+  ],
+  "prototypes/p6/content.js": [],
+  "prototypes/jump/jump.js": [
+   {
+    "name": "takeoff",
+    "kind": "function",
+    "line": 14,
+    "end": 20,
+    "chars": 563
+   },
+   {
+    "name": "z",
+    "kind": "function",
+    "line": 21,
+    "end": 21,
+    "chars": 114
+   },
+   {
+    "name": "air",
+    "kind": "function",
+    "line": 22,
+    "end": 28,
+    "chars": 448
+   },
+   {
+    "name": "slide",
+    "kind": "function",
+    "line": 29,
+    "end": 29,
+    "chars": 104
+   },
+   {
+    "name": "above",
+    "kind": "function",
+    "line": 31,
+    "end": 31,
+    "chars": 203
+   },
+   {
+    "name": "reach",
+    "kind": "function",
+    "line": 33,
+    "end": 33,
+    "chars": 63
+   },
+   {
+    "name": "over",
+    "kind": "function",
+    "line": 34,
+    "end": 34,
+    "chars": 80
+   },
+   {
+    "name": "clears",
+    "kind": "function",
+    "line": 35,
+    "end": 35,
+    "chars": 66
+   },
+   {
+    "name": "inside",
+    "kind": "function",
+    "line": 38,
+    "end": 41,
+    "chars": 225
+   },
+   {
+    "name": "clearsAt",
+    "kind": "function",
+    "line": 42,
+    "end": 42,
+    "chars": 103
+   },
+   {
+    "name": "carTime",
+    "kind": "function",
+    "line": 45,
+    "end": 45,
+    "chars": 180
+   },
+   {
+    "name": "carClears",
+    "kind": "function",
+    "line": 46,
+    "end": 46,
+    "chars": 128
+   },
+   {
+    "name": "speeds",
+    "kind": "function",
+    "line": 47,
+    "end": 49,
+    "chars": 208
+   }
+  ],
+  "prototypes/controls/pads.js": [
+   {
+    "name": "HAT",
+    "kind": "const",
+    "line": 11,
+    "end": 11,
+    "chars": 126
+   },
+   {
+    "name": "get",
+    "kind": "method",
+    "line": 13,
+    "end": 13,
+    "chars": 104
+   },
+   {
+    "name": "DEF",
+    "kind": "const",
+    "line": 18,
+    "end": 18,
+    "chars": 72
+   },
+   {
+    "name": "conf",
+    "kind": "arrow",
+    "line": 19,
+    "end": 19,
+    "chars": 162
+   },
+   {
+    "name": "create",
+    "kind": "function",
+    "line": 20,
+    "end": 20,
+    "chars": 123
+   },
+   {
+    "name": "pressed",
+    "kind": "arrow",
+    "line": 21,
+    "end": 21,
+    "chars": 55
+   },
+   {
+    "name": "keyOf",
+    "kind": "arrow",
+    "line": 22,
+    "end": 22,
+    "chars": 72
+   },
+   {
+    "name": "mapFor",
+    "kind": "function",
+    "line": 23,
+    "end": 28,
+    "chars": 408
+   },
+   {
+    "name": "hatDir",
+    "kind": "function",
+    "line": 29,
+    "end": 34,
+    "chars": 402
+   },
+   {
+    "name": "read",
+    "kind": "function",
+    "line": 37,
+    "end": 88,
+    "chars": 4412
+   },
+   {
+    "name": "monitor",
+    "kind": "function",
+    "line": 89,
+    "end": 92,
+    "chars": 301
+   },
+   {
+    "name": "startSetup",
+    "kind": "function",
+    "line": 93,
+    "end": 93,
+    "chars": 62
+   },
+   {
+    "name": "resetMap",
+    "kind": "function",
+    "line": 94,
+    "end": 94,
+    "chars": 90
+   }
+  ]
+ },
+ "registry": {
+  "ids": 506,
+  "readByCode": 430,
+  "unread": [
+   "movement.turnStartup",
+   "sensing.zoneFadeIn",
+   "sensing.zoneOpacity",
+   "upgrades.memorySeconds",
+   "upgrades.earsForecast",
+   "damage.lungeMultiplier",
+   "upgrades.widerView",
+   "upgrades.neckSpeed",
+   "upgrades.jumpWindow",
+   "abilities.battery.rechargeStep",
+   "upgrades.holdSeconds",
+   "upgrades.kineticThreshold",
+   "upgrades.kineticFraction",
+   "upgrades.fastChargeMultiplier",
+   "traffic.busTimeGap",
+   "traffic.arrivalTie",
+   "traffic.stopPause",
+   "vehicles.sports.cruiseSpeed",
+   "vehicles.wagon.cruiseSpeed",
+   "world.safeGroundDwell",
+   "canvas.width",
+   "canvas.height",
+   "sensing.fogRadius",
+   "run.quota.junction",
+   "run.certification",
+   "run.appearanceCeiling",
+   "economy.price.head",
+   "economy.price.legs.grip",
+   "economy.price.battery.fastCharge",
+   "economy.price.head.memory",
+   "economy.price.head.ears",
+   "economy.price.torso.neck",
+   "economy.price.battery.kineticCharge",
+   "economy.price.arms.holdOn",
+   "ui.sideColumn",
+   "ui.horizontalStrip",
+   "ui.cueContrastTier1",
+   "ui.cueContrastTier2",
+   "service.idleSeconds",
+   "service.warningSeconds",
+   "service.restoreFraction",
+   "world.fallRecovery",
+   "traffic.pivotOffset",
+   "traffic.lookAheadBase",
+   "traffic.lookAheadSeconds",
+   "traffic.backOffLengths",
+   "vehicles.occlusionHeight",
+   "vehicles.sports.mass",
+   "vehicles.sports.length",
+   "vehicles.sports.width",
+   "vehicles.sports.height",
+   "vehicles.wagon.mass",
+   "vehicles.wagon.length",
+   "vehicles.wagon.width",
+   "vehicles.wagon.height",
+   "vehicles.suv.mass",
+   "vehicles.suv.length",
+   "vehicles.suv.width",
+   "vehicles.suv.height",
+   "run.quota.roundabout",
+   "run.appearances.junction",
+   "run.appearances.roundabout",
+   "vehicles.suv.cruiseSpeed",
+   "traffic.ringInnerTurn",
+   "world.deckRingInnerTurn",
+   "world.busRoutesPerDistrict",
+   "movement.pivotAngle",
+   "movement.pivotRate",
+   "proto.input.aimDeadzone",
+   "proto.input.mouseAimSeconds",
+   "proto.input.dpadDirections",
+   "proto.input.dpadDead",
+   "ui.touch.dpadRadius",
+   "ui.touch.lungeRadius",
+   "ui.touch.grabRadius",
+   "ui.touch.viewHeight"
+  ]
+ },
+ "p7simFlags": {
+  "proto.recoilScale": 0.7,
+  "proto.bounce.maxThrow": 40.0,
+  "world.deckDropGaps": 1.0,
+  "world.deckFlightsMin": 1.0,
+  "props.cone.minVisible": 0.9,
+  "battery.dashJumpCost": 0.0,
+  "abilities.hands.tapDrop": 1.0,
+  "proto.batteryModel": 1.0,
+  "world.dummyMonument": 1.0,
+  "world.storyArt": 1.0,
+  "world.monumentShroud": 1.0
+ },
+ "events": [
+  "admit",
+  "chassis",
+  "combo",
+  "combo-end",
+  "commit",
+  "cone-hit",
+  "cone-release",
+  "cone-rest",
+  "cone-stop",
+  "cone-struck",
+  "contact-ignored",
+  "credit",
+  "debug-credit",
+  "debug-module",
+  "deck-drop",
+  "delivered",
+  "denied",
+  "drone-dispatch",
+  "drone-drop",
+  "drone-pickup",
+  "drop",
+  "ending",
+  "exit",
+  "gift",
+  "gridlock",
+  "gridlock-clear",
+  "held",
+  "hitch",
+  "honk",
+  "impact",
+  "interrupt",
+  "jump",
+  "jump-land",
+  "knock",
+  "land",
+  "learn-standoff",
+  "level",
+  "lunge",
+  "milestone",
+  "pickup",
+  "punt",
+  "purchase",
+  "purchase-denied",
+  "push",
+  "rail-jump",
+  "release",
+  "rescued",
+  "resume",
+  "ring",
+  "road-cleared",
+  "screen",
+  "shop-open",
+  "shop-skip",
+  "skid",
+  "sling",
+  "slip",
+  "splash",
+  "stair",
+  "story-clear",
+  "story-deliver",
+  "story-enter",
+  "story-fence",
+  "story-ferried",
+  "story-ferry",
+  "story-gift",
+  "throw",
+  "touch",
+  "touch-spent",
+  "unstick",
+  "unveil",
+  "voyage",
+  "voyage-end",
+  "writeoff"
+ ],
+ "phases": [
+  "away",
+  "brief",
+  "carry",
+  "drop",
+  "ending",
+  "gift",
+  "give",
+  "hitstop",
+  "in",
+  "inbound",
+  "lift",
+  "next",
+  "play",
+  "report",
+  "scroll",
+  "shop",
+  "sink",
+  "unveil",
+  "voyage",
+  "writeoff"
+ ],
+ "frozen": {
+  "prototypes/p7/dummies_p7.html": "822d4ca083d2e34056013cc38dff8e9dab9404f06262f6c232afaaca87e2b199",
+  "prototypes/p7/dummies_p7_1.html": "4aee366d61a9fb0adb9b6066bb96f4c29d12a145de6f02a128322795cd30b13f",
+  "prototypes/p7/dummies_p7_10.html": "6a6516b7f0e56e5dfd7e71e2bab8738188c40265a403f9a936c2925a1f9b5703",
+  "prototypes/p7/dummies_p7_11.html": "72cfbe82c418c2c5e7fb1ce7b95e34c58915b9fd63a5819bd1fb84253ff62754",
+  "prototypes/p7/dummies_p7_12.html": "fefece0427cbab6da1205b40ff119438fdeb4ac2ba78ff00a017f38df23e121a",
+  "prototypes/p7/dummies_p7_2.html": "8db45a92a07f4ef61f9a507d29d01196be5420f24d29873bdbd52355be4551a4",
+  "prototypes/p7/dummies_p7_3.html": "314bcd03cd6c7643f6d4c404d6858e20e9671695634857039fe7a67881cd3ed3",
+  "prototypes/p7/dummies_p7_4.html": "1143aea8153ee3a67ec313f705529c34748ad2a99c66314ab75fab2c7d49f754",
+  "prototypes/p7/dummies_p7_5.html": "18b0a59a0240fe7c3acb0a0d2386f5cd417da13f3b8db2d032dbf2daac122240",
+  "prototypes/p7/dummies_p7_6.html": "313a5c71b9e814ace08d07ac5aec9953e9c5e35543e7e091597a931ce203f942",
+  "prototypes/p7/dummies_p7_7.html": "1dc271a70a5a00aa86f895f6d2dfdd89e397ffe4948bc560d734796088412c55",
+  "prototypes/p7/dummies_p7_8.html": "d353f3e33abd78daa902e10cdd6bd3c5f3928f74bae5e8adc3350bce363952b3",
+  "prototypes/p7/dummies_p7_9.html": "eff702b3d6a89a1bfe0dc7da7d895022690fcc3d19a925379b32d4c2b675a0da",
+  "prototypes/p7/p7_10_page.html": "73326483503ea232f1db66c5f9a577254ecc3c478d8b9ce31aadaf41261ff721",
+  "prototypes/p7/p7_11_page.html": "11715eef0501394c28c64509f4fc714dec28d5cd0536563f509178a02c504a2b",
+  "prototypes/p7/p7_12_page.html": "ee2b09090f625e40ac8ed85d933cb321b06d6810d03175c25c519ce996b7cc4c",
+  "prototypes/p7/p7_1_page.html": "bac7e4721388f621c379edae4ab8d5023e4d5785031f2979ee0ae3ec39cc3ec4",
+  "prototypes/p7/p7_2_page.html": "bdf68e15ec3205e066b0b2b0c4846bfefe68ee496035d502b13e5163ec10b6e6",
+  "prototypes/p7/p7_3_page.html": "f04cc39a75ad09dd7722871ffa5362afb210455d058c874fbd14c5c04ef62fc7",
+  "prototypes/p7/p7_4_page.html": "77167ff64dcf5f37956950ab0a26bce87efb319d2e2c55df28c2f77578c78e4c",
+  "prototypes/p7/p7_5_page.html": "6e8048a27dcf7a63e0d7b789af770fdfff601d97a3206bc16a6c560f727510b3",
+  "prototypes/p7/p7_6_page.html": "51c2e126020295029f7a48f06576a5865388653468913a149ca89142bd642ab5",
+  "prototypes/p7/p7_7_page.html": "f8d8607f4413124cf4423952321e7ee03b77e26e4576cf6c1055837155f4eca8",
+  "prototypes/p7/p7_8_page.html": "3c6c4c0e1c4c6e04028e56ee3db8a871cef259c10f7512c79588dec5f3439328",
+  "prototypes/p7/p7_9_page.html": "90e7f32b48b983ff81eaa731a727cc29d9288a673ddf766a9bae7b1fe929a5a6",
+  "prototypes/p7/p7_page.html": "3b4550375df5cf3e30135c1f3619984e85b9d108e7bff47e191918d530c77731",
+  "prototypes/p6/dummies_p6.html": "595ecb5d64485c8b7c051da4d6ef90de04f4e3df235654a54eb485a07a415c70",
+  "prototypes/p6/dummies_p6_1.html": "175de314c2ed1dbfeca7d4d2afb84410df27965b4dec9603ed2c99105edfe149",
+  "prototypes/p6/dummies_p6_10.html": "c8d3f2c4e3112acb452d15b993f390e5be674719b88efc5c29c2d05fbd0eec66",
+  "prototypes/p6/dummies_p6_2.html": "3e26eaffba96c8dd50737bc1407f536abb586e651350fdfc858dcd762b01dc21",
+  "prototypes/p6/dummies_p6_3.html": "3e86d8b26dcb0a4a245a4f9b869ca2926bebc1ab84d0e5dabcd12fb1853caa9c",
+  "prototypes/p6/dummies_p6_4.html": "5663e385cad1b1b1e0af15f4da16cc877d479b5e459d1779a7565ed13db84782",
+  "prototypes/p6/dummies_p6_5.html": "e6ff45afac4dca360d27a624342699f3bb5c7ec57adda5f8308933dad13a00cc",
+  "prototypes/p6/dummies_p6_6.html": "2ccfc5f5c873611da195f85af670de0f8c7670c96f165e5785496aec99c9fef3",
+  "prototypes/p6/dummies_p6_7.html": "efdd39d608644b2488abd0194656ad22d314abc7a436c557bcce7c98abf9d99e",
+  "prototypes/p6/dummies_p6_8.html": "20099579d191650ac08daf10f280e46f31b5d9158f4d1f18c2d7110e4ef311f7",
+  "prototypes/p6/dummies_p6_9.html": "4a517d57d6144d4bb89285c97474fd2265bb40bce129267d7a227398edef65e0"
+ },
+ "live": [
+  "prototypes/p7/dummies_p7_13.html",
+  "prototypes/p7/p7_13_page.html"
+ ]
+}

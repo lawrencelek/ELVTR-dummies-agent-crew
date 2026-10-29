@@ -10920,6 +10920,28 @@
     "max": 1
    },
    "purpose": "\"Update the tile names, and tile assets (cosmetic only without changing gameplay interaction elements)\" (user, 28 October)"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p7.13",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 94 (P7.13): written by the coding agent (coder/, run 20261029-105801)",
+   "status": "proposed",
+   "group": "world",
+   "owner": "systems",
+   "label": "Monument shroud",
+   "applyAt": "next-run",
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "purpose": "Edit 94 (P7.13): the finale's reward is seen; the circus's monument stays covered until the last tile clears. 1 in P7SIM; 0 keeps 6.10 and older rules",
+   "id": "world.monumentShroud",
+   "description": "P7: the DUMMY MONUMENT in Waterfront B2 is shrouded in Story until Waterfront B2 clears (Edit 92 §3.2, D76)",
+   "unit": "flag",
+   "type": "number",
+   "default": 0
   }
  ],
  "tables": {

@@ -1,0 +1,41 @@
+--- a/prototypes/p6/game.js
++++ b/prototypes/p6/game.js
+@@ -742,4 +742,19 @@
+   // Barks from the fleet database: highest priority wins, then the most specific line; seeded pick among equals.
+   // Write-offs always speak; hits outrank chatter; chatter waits out the global and per-car cooldowns (proto.barks.*).
++  // Edit 94 (P7.13): the place a bark names. Story: the tile on screen (B2). Arcade: the district, as before
++  function barkPlace(s) {
++    if (!s) return null;
++    const dn = INFO(s.levelId) ? INFO(s.levelId).name : String(s.levelId || '');
++    if (!s.storyMode || typeof s.screenName !== 'function') return dn;
++    return s.screenName() || dn;
++  }
++  function barkPlaceText(text, s) { // Edit 94 (P7.13): the district's name in a Story bark becomes the tile's code, in the line's own case
++    if (!s || !s.storyMode || !INFO(s.levelId)) return text;
++    const dn = INFO(s.levelId).name, pl = barkPlace(s);
++    if (!dn || !pl || pl === dn) return text;
++    return String(text).replace(new RegExp(dn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), (m) => (m === m.toUpperCase() ? pl.toUpperCase() : pl));
++  }
++  function exposeBarkPlace() { const ui = window.__dummiesUI = window.__dummiesUI || {}; if (ui.barkPlace !== barkPlace) ui.barkPlace = barkPlace; } // Edit 94 (P7.13): the test hook
++  exposeBarkPlace();
+   function barkLine(e, s) {
+     if (!FLEET || !e.car) return;
+@@ -767,5 +782,5 @@
+     const fresh = top.filter((ln) => !onScreen.has(ln.id) && ln.id !== fx.lastLine), use = fresh.length ? fresh : top; // no line twice at once
+     const pick = use[(Math.round(e.t * 60) + info.slot * 7 + fx.barkN++) % use.length];
+-    const text = fillIn(pick.text, e); fx.lastLine = pick.id;
++    const text = barkPlaceText(fillIn(pick.text, e), s); fx.lastLine = pick.id; // Edit 94 (P7.13): barks name the tile in Story
+     fx.bubbles.set(e.car, { text, style: pick.style || 'speech', priority: pr, t0: now, car: e.car, id: pick.id });
+     fx.barkT = now; fx.carBarkT.set(e.car, { t: now, pr });
+@@ -1917,4 +1932,5 @@
+   function drawFieldHD(s) {
+     const P = s.P;
++    exposeBarkPlace(); // Edit 94 (P7.13)
+     drawBubblesHD(s); // Edit 83: barks are speech bubbles on the cars again
+     const since = s.t - (s.tStart || 0);
+@@ -1978,4 +1994,5 @@
+   // A toast takes the line while it lives.
+   function objective(s) {
++    exposeBarkPlace(); // Edit 94 (P7.13)
+     if (!s) return null;
+     if (s.storyMode) {

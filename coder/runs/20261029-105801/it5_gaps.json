@@ -1,0 +1,385 @@
+{
+ "R-SHROUD": {
+  "id": "R-SHROUD",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "shrouded true",
+    "error": null,
+    "ms": 3784,
+    "kind": "sim",
+    "say": "with Waterfront A1 in test, the monument is shrouded"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "before true, after false",
+    "error": null,
+    "ms": 4319,
+    "kind": "sim",
+    "say": "shrouded with B2 in test; unshrouded once the certifying write-off clears B2"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "world.monumentShroud = 0 (proposed)",
+    "error": null,
+    "ms": 0,
+    "kind": "registry",
+    "say": "the shroud flag is registered"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "flag true, arcade shrouded false, 6.10 monument false",
+    "error": null,
+    "ms": 4401,
+    "kind": "sim",
+    "say": "guard: with the flag in P7SIM, Arcade's monument is unshrouded and 6.10 has none"
+   },
+   {
+    "id": "p5",
+    "ok": true,
+    "detail": "{\"tile\":\"B2\",\"shrouded\":true}",
+    "error": null,
+    "ms": 14831,
+    "errors": [],
+    "kind": "page",
+    "say": "in the page, Waterfront B2 in test shows the shrouded monument"
+   }
+  ],
+  "passed": 5,
+  "probes": 5,
+  "blocked": null
+ },
+ "R-UNVEIL": {
+  "id": "R-UNVEIL",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "phase unveil",
+    "error": null,
+    "ms": 4376,
+    "kind": "sim",
+    "say": "the certifying write-off reaches phase 'unveil', not the ending at once"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "{\"chassis\":41,\"points\":125956,\"bestCombo\":7,\"t\":3600} / progress chassis 41 points 125956 combo 7 t 3600",
+    "error": null,
+    "ms": 2669,
+    "kind": "sim",
+    "say": "the plaque carries the run's chassis, points, best combo and time"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "unveil events 1, complete true",
+    "error": null,
+    "ms": 2282,
+    "kind": "sim",
+    "say": "one 'unveil' event; the story is already saved complete (the CERTIFIED stamp)"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "bestCombo 3",
+    "error": null,
+    "ms": 2328,
+    "kind": "sim",
+    "say": "progress keeps the best combo of the run's hits"
+   },
+   {
+    "id": "p5",
+    "ok": true,
+    "detail": "phase unveil",
+    "error": null,
+    "ms": 15215,
+    "errors": [],
+    "kind": "page",
+    "say": "in the page, the last write-off at the circus reaches the unveiling"
+   }
+  ],
+  "passed": 5,
+  "probes": 5,
+  "blocked": null
+ },
+ "R-VOYAGE": {
+  "id": "R-VOYAGE",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "phase voyage, voyage true",
+    "error": null,
+    "ms": 4190,
+    "kind": "sim",
+    "say": "continuing the unveiling starts the voyage with the drone at work"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "voyage 1, end 1, tile B3, ending Certified",
+    "error": null,
+    "ms": 2823,
+    "kind": "sim",
+    "say": "the voyage ends at the ship in B3, then the Certified ending"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "built true, arcade phase play",
+    "error": null,
+    "ms": 2713,
+    "kind": "sim",
+    "say": "guard: with the voyage built, an Arcade Waterfront run never enters unveil or voyage"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "unveil true, voyage true",
+    "error": null,
+    "ms": 16808,
+    "errors": [],
+    "kind": "page",
+    "say": "in the page, A on the unveiling starts the flight to the ship"
+   }
+  ],
+  "passed": 4,
+  "probes": 4,
+  "blocked": null
+ },
+ "R-CRATE-FACES": {
+  "id": "R-CRATE-FACES",
+  "state": "missing",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "null",
+    "error": null,
+    "ms": 3904,
+    "kind": "sim",
+    "say": "Story's Waterfront B3 ship marks its crates with the face"
+   },
+   {
+    "id": "p2",
+    "ok": false,
+    "detail": "story false, 6.10 false",
+    "error": null,
+    "ms": 4479,
+    "kind": "sim",
+    "say": "guard: with the ship exposed, 6.10's Waterfront has no ship"
+   }
+  ],
+  "passed": 0,
+  "probes": 2,
+  "blocked": null
+ },
+ "R-VOYAGE-CREDITS": {
+  "id": "R-VOYAGE-CREDITS",
+  "state": "missing",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "credits none",
+    "error": null,
+    "ms": 509,
+    "kind": "sim",
+    "say": "the story's content carries credits lines"
+   }
+  ],
+  "passed": 0,
+  "probes": 2,
+  "blocked": "decision-open: D77"
+ },
+ "R-SECOND-MARKET": {
+  "id": "R-SECOND-MARKET",
+  "state": "missing",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "learning.sedan.applied undefined",
+    "error": null,
+    "ms": 3329,
+    "kind": "sim",
+    "say": "Story's progress saves the cars' learning"
+   },
+   {
+    "id": "p2",
+    "ok": false,
+    "detail": "no secondMarket",
+    "error": null,
+    "ms": 0,
+    "kind": "sim",
+    "say": "secondMarket restarts the city from a certified story"
+   },
+   {
+    "id": "p3",
+    "ok": false,
+    "detail": "no secondMarket",
+    "error": null,
+    "ms": 0,
+    "kind": "sim",
+    "say": "the new city's cars start with the kept learning"
+   }
+  ],
+  "passed": 0,
+  "probes": 3,
+  "blocked": "decision-open: D77"
+ },
+ "R-TILE-GRADE": {
+  "id": "R-TILE-GRADE",
+  "state": "missing",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "cleared true, grade null",
+    "error": null,
+    "ms": 3462,
+    "kind": "sim",
+    "say": "clearing Monument A1 reports a grade"
+   },
+   {
+    "id": "p2",
+    "ok": false,
+    "detail": "grade null",
+    "error": null,
+    "ms": 1663,
+    "kind": "sim",
+    "say": "the grade is saved on progress"
+   }
+  ],
+  "passed": 0,
+  "probes": 2,
+  "blocked": "no-spec: The GDD does not say what the grade measures, its scale, its thresholds, or where it shows. Edit 90's grade is not given here."
+ },
+ "R-BARK-TILE": {
+  "id": "R-BARK-TILE",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "place B2",
+    "error": null,
+    "ms": 14854,
+    "errors": [],
+    "kind": "page",
+    "say": "in Waterfront B2, barks name the tile"
+   }
+  ],
+  "passed": 1,
+  "probes": 1,
+  "blocked": null
+ },
+ "R-PARKLAND-B1-STREET": {
+  "id": "R-PARKLAND-B1-STREET",
+  "state": "missing",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "B1 drop gaps 0",
+    "error": null,
+    "ms": 3387,
+    "kind": "sim",
+    "say": "Story's Parkland B1 highway has a drop gap"
+   },
+   {
+    "id": "p2",
+    "ok": false,
+    "detail": "world.parklandRow1Street not in the registry",
+    "error": null,
+    "ms": 0,
+    "kind": "registry",
+    "say": "the street's flag is registered"
+   },
+   {
+    "id": "p3",
+    "ok": false,
+    "detail": "flag false, 6.10 gaps 0",
+    "error": null,
+    "ms": 2175,
+    "kind": "sim",
+    "say": "guard: with the flag in P7SIM, 6.10's Parkland B1 has no drop gap"
+   }
+  ],
+  "passed": 0,
+  "probes": 3,
+  "blocked": "decision-open: D70"
+ },
+ "R-ACT-DELIVERY": {
+  "id": "R-ACT-DELIVERY",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "districts 3, tiles 27",
+    "error": null,
+    "ms": 542,
+    "kind": "sim",
+    "say": "three acts and 27 tales in the content"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "matches at 224276",
+    "error": null,
+    "ms": 0,
+    "kind": "code",
+    "say": "the tile card heads with the act"
+   }
+  ],
+  "passed": 2,
+  "probes": 2,
+  "blocked": null
+ },
+ "R-ENDING-SCREEN": {
+  "id": "R-ENDING-SCREEN",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "Your model has passed. It will now be manufactured. A Farsig",
+    "error": null,
+    "ms": 502,
+    "kind": "sim",
+    "say": "the ending text is the GDD's"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "phase ending, ending Certified",
+    "error": null,
+    "ms": 3446,
+    "kind": "sim",
+    "say": "certifying reaches the Certified ending, story complete (through any finale)"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "phase ending",
+    "error": null,
+    "ms": 22303,
+    "errors": [],
+    "kind": "page",
+    "say": "in the page, the last write-off at the circus reaches the ending"
+   }
+  ],
+  "passed": 3,
+  "probes": 3,
+  "blocked": null
+ }
+}

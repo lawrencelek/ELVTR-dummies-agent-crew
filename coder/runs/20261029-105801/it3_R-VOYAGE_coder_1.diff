@@ -1,0 +1,79 @@
+--- a/prototypes/p6/game.js
++++ b/prototypes/p6/game.js
+@@ -1876,5 +1876,5 @@
+   function drawRescue6(s) { // P6.1 (D37): the dummy sinks below the waterline, a drone lifts it out and sets it down on land
+     const rs = s.rescue, b = s.body; if (!rs) return;
+-    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = !rs.ferry && !rs.gift && rs.given === undefined && (rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift'); // Edit 84: a ferry or a delivery is on land
++    const cx = Math.round(b.x / U), wl = Math.round(b.y / U) + 2, t = app.realT, wet = !rs.voyage && !rs.ferry && !rs.gift && rs.given === undefined && (rs.phase === 'sink' || rs.phase === 'inbound' || rs.phase === 'lift'); // Edit 84: a ferry or a delivery is on land
+     if (wet) for (let k = 0; k < 2; k++) { const r = 3 + ((t * 7 + k * 5) % 10); for (const [x, y] of PIX.circle(r)) FB.mix(cx + x, wl + Math.round(y * 0.45), K.white, 0.4 * (1 - r / 13)); } // ripples
+     if (rs.under >= 0.999) { if (Math.floor(t * 5) % 2) FB.put(cx + (Math.floor(t * 9) % 3) - 1, wl - 1 - (Math.floor(t * 12) % 4), K.white); return; } // bubbles: under the surface
+--- a/prototypes/p7/story.js
++++ b/prototypes/p7/story.js
+@@ -41,4 +41,5 @@
+     'world.monumentShroud': 1 }; // Edit 94 (P7.13): the circus's monument shrouded in Story until Waterfront B2 clears (D76)
+   const CIRCUS = { district: 'waterfront', tile: 'B2' }; // Edit 94 (P7.13): the monument's tile, the story's last
++  const VOYAGE = { district: 'waterfront', tile: 'B3' }; // Edit 94 (P7.13): the stilt houses, where the container ship is moored
+   const BASE = Object.assign({}, X.REG, X.PROTO, X.OVERRIDES, W6.P6SIM, P7SIM);
+ 
+@@ -167,5 +168,44 @@
+     continueBrief() { if (this.phase === 'brief') this.phase = 'play'; }
+     continueGift() { if (this.phase === 'gift') this.phase = 'play'; } // Edit 84: after the gift screen
+-    continueUnveil() { if (this.phase !== 'unveil') return; if (this.unveil) this.unveil.done = true; this.end('Certified'); } // Edit 94 (P7.13): the plaque read, the ending follows
++    continueUnveil() { if (this.phase !== 'unveil') return; if (this.unveil) this.unveil.done = true; this.startVoyage(); } // Edit 94 (P7.13): the plaque read, the voyage, then the ending
++    // Edit 94 (P7.13): the voyage. A Farsight drone lifts the dummy over the river to the container ship at Waterfront B3 (D76)
++    startVoyage() {
++      const b = this.body, from = this.screenName(), [c, r] = this.district.cur, [tc, tr] = cellOf(VOYAGE.tile);
++      const side = tc > c ? 'E' : tc < c ? 'W' : tr > r ? 'S' : 'N';
++      Object.assign(b, { alive: true, health: this.maxHealth(), level: 0, floor: null, held: null, carried: [], gesture: null });
++      this.rescue = droneTo(this, b.x, -40, { voyage: true, side, cell: [tc, tr], tile: VOYAGE.tile });
++      this.phase = 'voyage';
++      this.emit('voyage', { from, to: VOYAGE.tile, side });
++    }
++    shipPoint() { const P = this.P, sp = this.sc && this.sc.ship; return sp ? { x: sp.x, y: sp.y } : { x: P['world.width'] / 2, y: P['world.height'] / 2 }; } // Edit 94 (P7.13): the ship, or the tile's middle
++    stepVoyage(dt) { // Edit 94 (P7.13): inbound → lift → carry over the edge → in to the ship → set down → the ending
++      const rs = this.rescue; this.rescue = null; W6.Sim6.prototype.stepRescue.call(this, dt); this.rescue = rs; // the drones already leaving fly on
++      rs.t += dt; rs.k += dt;
++      const b = this.body, P = this.P, W = P['world.width'], H = P['world.height'], d = rs.drone;
++      const fly = (x, y) => { const dx = x - d.x, dy = y - d.y, l = Math.hypot(dx, dy), st = rs.v * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
++      const next = (ph) => { rs.phase = ph; rs.k = 0; d.state = ph; };
++      const hold = () => { b.x = d.x; b.y = d.y; b.px = b.x; b.py = b.y; };
++      if (rs.phase === 'inbound') { if (fly(b.x, b.y)) next('lift'); }
++      else if (rs.phase === 'lift') { const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * f; d.alt = 1 - 0.6 * Math.sin(Math.PI * f); if (f >= 1) { next('carry'); d.alt = 1; } }
++      else if (rs.phase === 'carry') { // over the river, to the edge and across it
++        const [sx, sy] = SIDES[rs.side], tx = sx ? (sx > 0 ? W + 2 : -2) : Math.max(40, Math.min(W - 40, b.x)), ty = sy ? (sy > 0 ? H + 2 : -2) : Math.max(40, Math.min(H - 40, b.y));
++        fly(tx, ty); hold();
++        if ((sx > 0 && d.x > W) || (sx < 0 && d.x < 0) || (sy > 0 && d.y > H) || (sy < 0 && d.y < 0)) {
++          d.x -= sx * W; d.y -= sy * H; d.hx -= sx * W; d.hy -= sy * H;
++          this.flip(rs.side, rs.cell, null); // the screen moves on to the ship's tile
++          rs.to = this.shipPoint(); next('in');
++        }
++      } else if (rs.phase === 'in') { const arrived = fly(rs.to.x, rs.to.y); hold(); if (arrived) next('drop'); }
++      else if (rs.phase === 'drop') {
++        const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * (1 - f);
++        if (f >= 1) {
++          Object.assign(b, { x: rs.to.x, y: rs.to.y, px: rs.to.x, py: rs.to.y, mode: 'idle', vx: 0, vy: 0 });
++          d.hx = d.x; d.hy = -40; d.state = 'outbound'; (this.leaving = this.leaving || []).push(d);
++          this.rescue = null;
++          this.emit('voyage-end', { tile: this.screenName(), seconds: +rs.t.toFixed(2) });
++          this.end('Certified');
++        }
++      }
++    }
+     // Edit 94 (P7.13): progress.bestCombo, the largest combo of any hit in the story
+     noteCombo(c) { const pr = this.story; if (this.storyMode && pr && (c || 0) > (pr.bestCombo || 0)) pr.bestCombo = c; }
+@@ -173,5 +213,8 @@
+     step(cmd) {
+       if (this.phase === 'brief' || this.phase === 'gift' || this.phase === 'unveil') return; // Edit 94 (P7.13): the unveiling holds the sim
+-      super.step(cmd);
++      const voy = !!(this.rescue && this.rescue.voyage); // Edit 94 (P7.13): the voyage runs as the ferry does, the world live, no input
++      if (voy && this.phase === 'voyage') this.phase = 'play';
++      super.step(voy ? {} : cmd);
++      if (voy && this.phase === 'play' && this.rescue && this.rescue.voyage) this.phase = 'voyage';
+       if (this.phase === 'play' && this.pendingBrief && !this.rescue) { this.pendingBrief = false; this.phase = 'brief'; } // after a ferry lands
+     }
+@@ -202,4 +245,5 @@
+     stepRescue(dt) {
+       const rs = this.rescue;
++      if (rs && rs.voyage) return this.stepVoyage(dt); // Edit 94 (P7.13): the flight to the ship
+       if (!rs || !(rs.ferry || rs.gift || rs.given !== undefined)) return super.stepRescue(dt);
+       if (stepDelivery(this, dt) || !this.rescue) return;

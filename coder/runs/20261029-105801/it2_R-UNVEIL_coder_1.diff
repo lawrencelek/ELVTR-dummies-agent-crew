@@ -1,0 +1,81 @@
+--- a/prototypes/p6/game.js
++++ b/prototypes/p6/game.js
+@@ -938,4 +938,5 @@
+         case 'gift': fx.gift = { node: e.node, t0: app.realT }; giftFanfare(Math.max(0.1, pv('ui.gift.fallSeconds'))); break; // Edit 84: the gift screen
+         case 'delivered': Snd.tone(320, 480, 0.12, 'triangle', 0.05); break;
++        case 'unveil': [392, 523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.2, 'triangle', 0.06, j * 0.14)); if (app.mode === 'story') saveStory(); break; // Edit 94 (P7.13): the unveiling; the CERTIFIED save
+         case 'story-ferried': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
+         case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + STORY.needOf(s.levelId, e.tile, s.P) + ')'); break;
+@@ -1051,4 +1052,5 @@
+       if (!s) continue;
+       if (s.phase === 'brief' && m === 'ok') { s.continueBrief(); clearEdges(); return; } // Edit 81: the tile card
++      if (s.phase === 'unveil') { if (m === 'ok') { s.continueUnveil(); app.endSel = 0; clearEdges(); return; } continue; } // Edit 94 (P7.13): A continues to the ending
+       if (s.phase === 'gift') { if (m === 'ok' && giftReady()) { s.continueGift(); fx.gift = null; clearEdges(); Snd.tone(660, 990, 0.1, 'triangle', 0.05); return; } continue; } // Edit 84: the gift screen
+       if (s.phase === 'report' && m === 'ok') s.continueReport();
+@@ -3063,4 +3065,21 @@
+     if (TOUCH.on) { ctx.setTransform(scale, 0, 0, scale, 0, 0); drawTouch(); }
+   }
++  // Edit 94 (P7.13): the unveiling. The monument stands uncovered in the field; its plaque shows the run
++  function unveilTime(t) { t = Math.max(0, Math.round(t || 0)); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, sec = t % 60; return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(sec).padStart(2, '0'); }
++  function drawUnveil(s) {
++    const p = s.unveil && s.unveil.plaque, cv = document.querySelector('canvas'), g = cv && cv.getContext('2d');
++    if (!p || !g) return;
++    const W = cv.width, H = cv.height, k = Math.max(1, Math.round(Math.min(W, H) / 300)), pw = 160 * k, ph = 96 * k, x = Math.round((W - pw) / 2), y = Math.round(H - ph - 24 * k);
++    g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false;
++    g.fillStyle = 'rgba(12,18,24,0.9)'; g.fillRect(x, y, pw, ph);
++    g.strokeStyle = '#4fe3e0'; g.lineWidth = k; g.strokeRect(x + k / 2, y + k / 2, pw - k, ph - k);
++    g.textBaseline = 'top'; g.textAlign = 'center';
++    g.fillStyle = '#4fe3e0'; g.font = 7 * k + 'px monospace'; g.fillText('THE DUMMY MONUMENT · UNVEILED', W / 2, y + 6 * k);
++    g.fillStyle = '#d8dee4'; g.font = 6 * k + 'px monospace'; g.fillText('ZERO ACCIDENTS (EXCLUDING TESTS)', W / 2, y + 17 * k);
++    const rows = [['CHASSIS SPENT', String(p.chassis || 0)], ['POINTS', num(Math.round(p.points || 0))], ['BEST COMBO', '×' + (p.bestCombo || 0)], ['TIME', unveilTime(p.t)]];
++    rows.forEach(([a, b], i) => { const ry = y + (31 + i * 11) * k; g.textAlign = 'left'; g.fillStyle = '#9aa6b2'; g.fillText(a, x + 12 * k, ry); g.textAlign = 'right'; g.fillStyle = '#ffffff'; g.fillText(b, x + pw - 12 * k, ry); });
++    g.textAlign = 'center'; g.fillStyle = '#4fe3e0'; g.fillText('A · CONTINUE', W / 2, y + ph - 12 * k);
++    g.restore();
++  }
+   function renderScreen() {
+     HITS.length = 0; // Edit 89: this frame's tap targets
+@@ -3078,4 +3097,5 @@
+     else if (s.phase === 'brief') drawBrief(s); // Edit 81: the tile card
+     else if (s.phase === 'gift') drawGiftPopup(s); // Edit 84
++    else if (s.phase === 'unveil') drawUnveil(s); // Edit 94 (P7.13): the plaque
+     else if (s.phase === 'report') drawReport(s);
+     else if (s.phase === 'shop') drawShop(s);
+--- a/prototypes/p7/story.js
++++ b/prototypes/p7/story.js
+@@ -46,5 +46,5 @@
+   function newProgress() {
+     return { v: 1, district: DIST[0].id, done: {}, tileWO: 0, owned: {}, credits: 0, points: 0, chassis: 0, writeOffs: 0, t: 0,
+-      gifts: {}, tilePoints: {}, complete: false };
++      gifts: {}, tilePoints: {}, complete: false, bestCombo: 0 }; // Edit 94 (P7.13): bestCombo, optional (old saves load without it)
+   }
+   const districtOf = (id) => DIST.find((d) => d.id === id) || null;
+@@ -167,6 +167,10 @@
+     continueBrief() { if (this.phase === 'brief') this.phase = 'play'; }
+     continueGift() { if (this.phase === 'gift') this.phase = 'play'; } // Edit 84: after the gift screen
++    continueUnveil() { if (this.phase !== 'unveil') return; if (this.unveil) this.unveil.done = true; this.end('Certified'); } // Edit 94 (P7.13): the plaque read, the ending follows
++    // Edit 94 (P7.13): progress.bestCombo, the largest combo of any hit in the story
++    noteCombo(c) { const pr = this.story; if (this.storyMode && pr && (c || 0) > (pr.bestCombo || 0)) pr.bestCombo = c; }
++    emit(type, data) { const out = super.emit(type, data); if (type === 'impact' && data && data.combo) this.noteCombo(data.combo); return out; }
+     step(cmd) {
+-      if (this.phase === 'brief' || this.phase === 'gift') return;
++      if (this.phase === 'brief' || this.phase === 'gift' || this.phase === 'unveil') return; // Edit 94 (P7.13): the unveiling holds the sim
+       super.step(cmd);
+       if (this.phase === 'play' && this.pendingBrief && !this.rescue) { this.pendingBrief = false; this.phase = 'brief'; } // after a ferry lands
+@@ -278,4 +282,5 @@
+       super.writeOff();
+       if (!this.storyMode) return;
++      for (const h of b.hits) this.noteCombo(h.combo || 0); // Edit 94 (P7.13): the run's best combo
+       const pr = this.story, P = this.P, t = this.screenName(), act = activeTile(pr, this.levelId), tile = tileOf(this.levelId, t);
+       const res = { tile: t, active: act, counted: false, why: null, n: pr.tileWO, need: needOf(this.levelId, act || t, P), kind: hit ? hit.kind : null, cls: hit ? hit.cls : null, combo: hit ? hit.combo : 0, level };
+@@ -308,5 +313,10 @@
+         roadCleared: districtDone && !storyDone, nextRoad: districtDone ? pr.district : null,
+         story: Object.assign({}, res, { cleared, next, districtDone, storyDone, parts: partsOwned(r.owned), nextGift: nextGift(pr) }) }; // Edit 91: parts, not levels
+-      if (storyDone) { pr.complete = true; this.syncProgress(); return this.end('Certified'); }
++      if (storyDone) { // Edit 94 (P7.13): the circus clears; the monument is unveiled with the run's plaque, then the ending (D76)
++        pr.complete = true; this.syncProgress();
++        const plaque = { chassis: pr.chassis, points: pr.points, bestCombo: pr.bestCombo || 0, t: pr.t };
++        this.unveil = { plaque, done: false }; this.phase = 'unveil';
++        this.emit('unveil', plaque); return;
++      }
+       this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
+     }
