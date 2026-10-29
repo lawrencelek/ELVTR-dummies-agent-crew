@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked the act line against T1–T5 (dry, procedural, no "!", employment framing, cars as colleagues, "you" with Farsight in the third person), V1–V4, V6 and V8 (no banned terms, title-case "Farsight", Act I Monument INDUCTION frame of new staff and colleagues, dummy as staff) and F5, F9 (no digits, two sentences out of three allowed); it matches the shipped intro word for word. [EDIT92#3, STORY#S2, STORY#S1, DECISIONS#rows-531-540~2, DECISIONS#rows-541-550]
+Total: 10.

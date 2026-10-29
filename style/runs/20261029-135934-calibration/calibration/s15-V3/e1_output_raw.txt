@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s15 · V3 (major, −2) "Another life lost. Back to the spawn point." "Life" and "spawn point" are game words; the fleet glossary replaces them with "write-off" for a destroyed body and "bay" for where a new chassis is issued. [FLEET#F3] Fix: "Another write-off. Back to the bay it goes."
+Total: 10 − 2 = 8.

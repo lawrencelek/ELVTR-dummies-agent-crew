@@ -1,0 +1,63 @@
+{
+ "case": "MA1",
+ "class": "D78 tile barks",
+ "title": "Monument A1 · The welcome wall",
+ "request": "Write the four impact barks a car says when it hits the dummy on this tile, one per price tier (01 Luxury, 02 Corporate, 03 Consumer, 04 Budget). Each line names this tile's place: its landmark from the title or the tale, or the district. Never the grid code. Each in its tier's voice, at most 48 characters, true to an impact on this tile. Pick each line's style.",
+ "scores": [
+  2,
+  10
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "best_version": 1,
+ "seconds": 58.6,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 11.0,
+   "output_tokens": 370,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0521577
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 15.9,
+   "output_tokens": 1255,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13020079999999998
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 16.1,
+   "output_tokens": 1194,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1312052
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 15.6,
+   "output_tokens": 1258,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.130276
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4438
+}

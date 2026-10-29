@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "Show Chassis 0 how far the model has come." The tale ends on an imperative, but the imperative never states the duty (push off one car so the next car makes the final hit), so the duty part of the shape is missing. [STORY#MB3] Fix: change the last sentence to "Push off one car into the next, for Chassis 0." (221 characters in total).
+Total: 10 − 1 = 9.

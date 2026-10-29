@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- t130 · T12 (minor, −1) "LED canyon contact logged. Report filed." This is a place followed by two log entries, with no joke and no feeling under the procedure, so it reads like the flat-report example the rule fails ("Riverside. Low-rise streets. Hit logged."). [SUB4#6.1] Fix: "LED canyon contact. Filing under unforeseen." (44 characters; the procedure is the joke, as in the shipped Corporate line "Side contact. Filing under unforeseen." [FLEET#F9.1~2]).
+Total: 10 − 1 = 9.

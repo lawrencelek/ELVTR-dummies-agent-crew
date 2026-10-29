@@ -1,0 +1,9 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules and found no violation:
+  - **Tone:** it reads as a dry, procedural staff notice in the second person, with no "!" (T1, T2, T5, [EDIT92#3], [STORY#S1]). It frames the work as a duty, not a challenge (T3), and does not comment on any harm (T4, [EDIT39#4.1.1]).
+  - **Vocabulary:** it uses no banned or glossary-replaced words and no other city or brand (V1–V3, [FLEET#F2], [FLEET#F3]). Nothing in it belongs to another act's frame (V6, [STORY#S2]).
+  - **Length:** it fits the card with no long sentence (F6, [EDIT93#3.1/tales-rewritten~2]). It types no figures (F5).
+  - **Equipment and duty:** it names no equipment, which is right because B1 issues none (F7, R5, [STORY#PB1]). Its duty, "Go up to the highway", matches the brief ON A RAISED ROAD, which requires the final hit to land at Z1 or above ([STORY#S3]).
+  - **Tile:** the cascade, the reservoir's water and the highway all belong to Parkland B1 (R4, [STORY#PB1], [DECISIONS#rows-371-380~2] row 375).
+Total: 10.

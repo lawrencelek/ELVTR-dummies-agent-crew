@@ -1,0 +1,14 @@
+{
+ "id": "s19-R4",
+ "expect": "seeded",
+ "rule": "R4",
+ "want": "≤ 6, names R4",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "R4"
+ ],
+ "text": "The obelisk again. Of course it was me.",
+ "cost_usd": 0.1111,
+ "raw": "SCORE: 6/10\nREASON:\n- s19 · R4 (blocking, −4) \"The obelisk again.\" The obelisk belongs to Parkland B3. Monument C1's title and tale only have the LED drum, so this line names a landmark the tile does not have. [STORY#MC1] Fix: \"The drum. Of course it was me.\" Removing \"again\" also drops the hint of an earlier visit, which nothing in the log supports.\nTotal: 10 − 4 = 6."
+}

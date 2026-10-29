@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · V1 (blocking, −4) "The gardener keeps the three pools level by hand." "level" is on the banned list for all story text, and the guide's §6 names this exact shipped tale as one the lint flags. [FLEET#F2] Fix: "The gardener keeps the three pools topped up by hand."
+Total: 10 − 4 = 6.

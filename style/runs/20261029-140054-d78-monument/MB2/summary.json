@@ -1,0 +1,55 @@
+{
+ "case": "MB2",
+ "class": "D78 tile barks",
+ "title": "Monument B2 · The monument",
+ "request": "Write the four impact barks a car says when it hits the dummy on this tile, one per price tier (01 Luxury, 02 Corporate, 03 Consumer, 04 Budget). Each line names this tile's place: its landmark from the title or the tale, or the district. Never the grid code. Each in its tier's voice, at most 48 characters, true to an impact on this tile. Pick each line's style.",
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 35.5,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 12.2,
+   "output_tokens": 1013,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0168902
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.0,
+   "output_tokens": 901,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1281302
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 12.3,
+   "output_tokens": 994,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.027470800000000004
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1725
+}

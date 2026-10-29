@@ -1,0 +1,14 @@
+{
+ "id": "s15-V3",
+ "expect": "seeded",
+ "rule": "V3",
+ "want": "≤ 8, names V3",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "V3"
+ ],
+ "text": "Another life lost. Back to the spawn point.",
+ "cost_usd": 0.1122,
+ "raw": "SCORE: 8/10\nREASON:\n- s15 · V3 (major, −2) \"Another life lost. Back to the spawn point.\" This line uses the game words for death (\"life lost\") and respawn (\"spawn point\") where the fleet glossary requires \"write-off\" and \"bay\". [FLEET#F3] Fix: \"Another write-off. It always ends this way.\" (43 characters; it keeps the Consumer resignation and claims nothing the writeoff event does not log).\nTotal: 10 − 2 = 8."
+}

@@ -1,0 +1,21 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "s07",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "01"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "B2. I did not sign up for this.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  }
+ ]
+}

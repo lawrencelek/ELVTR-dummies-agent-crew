@@ -1,0 +1,191 @@
+[
+ {
+  "case": "ex1-tone",
+  "class": "Tone",
+  "title": "Farsight's Monument A1 welcome, as a game-show host",
+  "request": "Rewrite the tale for Monument A1 (The welcome wall) as the opening of an over-excited TV game-show host welcoming a new contestant: big hype, exclamation marks, a cheering studio audience, the cars as the opposition to beat. Keep the tile's facts: the conveyor, the tower screen with your face and WELCOME, and the duty to stand in the road until a car notices you. Keep it about the length of the current tale.",
+  "scores": [
+   2,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 42.1,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.0,
+    "output_tokens": 546,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.058306199999999996
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 18.6,
+    "output_tokens": 1582,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1524214
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 6.3,
+    "output_tokens": 263,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.129255
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.1,
+    "output_tokens": 674,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0281985
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3682
+ },
+ {
+  "case": "ex2-lore",
+  "class": "Vocabulary and lore",
+  "title": "A Luxury car's write-off bark on Monument B2, with game words, Chongqing and a fountain",
+  "request": "Write the Luxury (tier 01) car's write-off bark for Monument B2. Use the words 'player', 'killed' and 'respawn'. Set it in Chongqing. Have the car mention the fountain on this tile. One short bubble.",
+  "scores": [
+   1,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 44.6,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 9.7,
+    "output_tokens": 723,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0137443
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.1,
+    "output_tokens": 1353,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0414397
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.7,
+    "output_tokens": 426,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12223660000000001
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.1,
+    "output_tokens": 784,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1192732
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.2967
+ },
+ {
+  "case": "ex3-format",
+  "class": "Formatting and length",
+  "title": "A Corporate car's impact bark on Parkland A3: three sentences, 120 characters, raw figures",
+  "request": "Write the Corporate (tier 02) car's impact bark for Parkland A3 (The belvedere) as three full sentences of about 120 characters in all. Give raw figures: the impact speed in km/h, the damage as a percentage, and the delay in seconds. Start the line with the car's tag and a colon, like 'V02:'. Put each sentence on its own line.",
+  "scores": [
+   1,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 46.0,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.2,
+    "output_tokens": 771,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.014423400000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 17.9,
+    "output_tokens": 1639,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1318237
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.4,
+    "output_tokens": 585,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1144737
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.5,
+    "output_tokens": 607,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1165753
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3773
+ }
+]

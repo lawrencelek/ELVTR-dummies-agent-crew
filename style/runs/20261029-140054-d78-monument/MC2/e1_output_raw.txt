@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- t114 · R2 (blocking, −4) "Sixth floor." This says the hit was on the high road at the sixth floor, but the line only requires `tile:C2`, so it also fires for a ground-level hit and no `deck`/`dropZ` condition backs the claim. [FLEET#F8] Fix: "Portal tower contact logged. Incident opened."
+- t115 · R2 (blocking, −4) "Even up the portal tower." "Up" puts the car at height, but no condition backs that and the line also fires for a ground-level hit on C2. [FLEET#F8] Fix: "Even at the portal tower. Of course."
+- t116 · R2 (blocking, −4) "Not in the portal tower" "In" puts the contact inside the tower, on the road through it, but no condition backs that and the line fires anywhere on C2. [STORY#MC2] Fix: "Not by the portal tower, you plank! Cheers!"
+Total: 10 − 4 − 4 − 4 = 1 (floor; raw −2).

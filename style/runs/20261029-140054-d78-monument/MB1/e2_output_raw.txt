@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All four lines pass. I checked them against T6–T12 for the cars and their tiers [FLEET#F2, FLEET#F4, FLEET#F9.1~2], V1–V8 for vocabulary and place names [FLEET#F3, SUB4#6.2], F1–F5 for length and fields [FSG#field-text, EDIT39#6.6], and R1–R4 for truth against the logged `impact` fields and the B1 tile [FLEET#F8, STORY#MB1]. The lint found nothing. The "!" in t108 is allowed in a Budget shout. "Form 12" is Corporate paperwork, not a game figure. "Podium bridge" is the tile's own landmark title, not a grid code. No line claims anything beyond contact on B1.
+Total: 10.

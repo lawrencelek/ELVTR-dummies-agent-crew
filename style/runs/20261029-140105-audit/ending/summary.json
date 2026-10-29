@@ -1,0 +1,44 @@
+{
+ "case": "ending",
+ "class": "audit",
+ "title": "shipped ending",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 15.7,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 8.6,
+   "output_tokens": 686,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0273277
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 7.1,
+   "output_tokens": 476,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0163895
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.0437
+}

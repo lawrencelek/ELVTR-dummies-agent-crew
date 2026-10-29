@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902 against all the car rules and found no violations. Tone and tier: the Corporate voice holds through "KPIs" and procedural deflection, matching the shipped line "Rear contact. Not my liability." [FLEET#F4, FLEET#F9.1~2]. Workers, not narrators: the line is resentment, not lore [FLEET#F2]. Formatting: 41 characters, plain text, ends with ".", speech style at priority 2 suits an impact [EDIT39#6.6]. No "!", no banned words and no digits, and the place is the landmark, not a grid code [SUB4#6.2]. Truth: "Contact" holds for an `impact` event, "the belvedere" is the A3 landmark guaranteed by the `tile:A3` claim, and "Not in my KPIs" states the car's view without inventing a figure or a consequence [STORY#PA3, FLEET#F8, DESIGN#D9.3].
+Total: 10.

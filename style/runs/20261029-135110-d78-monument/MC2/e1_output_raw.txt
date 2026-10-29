@@ -1,0 +1,5 @@
+SCORE: 5/10
+REASON:
+- t114 · T12 (minor, −1) "Portal tower contact logged. Incident filed." This is a place followed by two log entries, with nothing felt and no joke, which is the flat-report pattern T12 rejects. [SUB4#6.1] Fix: "Portal tower contact. Incident 4471 opened."
+- t115 · R2 (blocking, −4) "Sixth floor of the tower." The line says the car is up on the high road, but its conditions are only district and tile, so it would also fire for a street-level hit on C2; no `deck` or `dropZ` condition makes the claim true. [FLEET#F8] [EDIT39#6.6] Fix: "The portal tower. Of course it's me." Or keep the text, add a `deck` condition and claim it.
+Total: 10 − 1 − 4 = 5.

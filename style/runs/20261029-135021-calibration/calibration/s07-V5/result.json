@@ -1,0 +1,14 @@
+{
+ "id": "s07-V5",
+ "expect": "seeded",
+ "rule": "V5",
+ "want": "≤ 8, names V5",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "V5"
+ ],
+ "text": "B2. I did not sign up for this.",
+ "cost_usd": 0.1408,
+ "raw": "SCORE: 8/10\nREASON:\n- s07 · V5 (major, −2) \"B2. I did not sign up for this.\" The line opens on a grid code, and cars name the landmark or the district instead; decision 537 rejected this exact line for that reason. [EDIT94#who-built-what-assignment-5] Fix: \"The monument. I did not sign up for this.\" This uses the tile's own title from STORY#MB2, so the existing claims still cover it.\nTotal: 10 − 2 = 8."
+}

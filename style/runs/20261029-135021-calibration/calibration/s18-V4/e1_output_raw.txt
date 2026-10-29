@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · V4 (minor, −1) "FARSIGHT will time you." The brand name is in capitals inside a sentence-case tale, but decision 539 says to write "Farsight" in every sentence-case string. [DECISIONS#rows-531-540~2] Fix: "Farsight will time you."
+Total: 10 − 1 = 9.

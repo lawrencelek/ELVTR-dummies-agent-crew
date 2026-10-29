@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All 36 lines pass every rule. Checked: tier voice against FLEET#F4, the worker register against FLEET#F2 and DESIGN#D9.3, "!" use against DECISIONS#rows-541-550 row 541, the glossary against FLEET#F3, impact-only truth against FLEET#F8, each tile's landmark against STORY#MA1–MC3 (welcome wall, podium bridge, LED drum, portal tower, monument plaque, neon shops, stacked cubes, LED canyon, LED gateway), places named instead of grid codes against SUB4#6.2, and stock endings against SUB4#6.1. Lint reported no findings.
+Total: 10.

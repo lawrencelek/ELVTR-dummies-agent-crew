@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "T11",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:kind regards",
+  "quote": "kind regards",
+  "measured": "6 lines close on 'kind regards' (t104, t112, t124, t128, t132, t136) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ }
+]

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the T rules (procedural, dry, colleagues framing, no "!", understatement), the V rules (no banned words, Act I INDUCTION frame), the F rules (lint clean, at most 223 characters and 19-word sentences; no equipment issued, so none named) and the R rules (the duty "Step off it onto a car." matches DROP ONTO A CAR; only the drum and the high road named). [EDIT92#3] [STORY#S1] [STORY#S2] [STORY#S3] [STORY#MC1] [EDIT93#3.1/tales-rewritten~1] [FLEET#F2]
+Total: 10.

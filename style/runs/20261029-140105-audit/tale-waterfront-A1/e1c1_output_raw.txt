@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's rules for Tone, Vocabulary and lore, Formatting and length, and Truth, and found no violations. It reads as a dry staff notice, with no "!" and no harm comment ([EDIT92#3], [EDIT39#4.1.1]). It writes "Farsight" in title case ([DECISIONS#rows-531-540~2]). It uses Act III's frame, the river as a border, and names no other city or real brand ([STORY#S2], [FLEET#F1]). It fits the card at 200 characters, with no sentence over 19 words ([EDIT92#measured]). It matches the bus brief and names no equipment, because this tile issues none ([STORY#WA1], [EDIT93#3.1]).
+Total: 10.

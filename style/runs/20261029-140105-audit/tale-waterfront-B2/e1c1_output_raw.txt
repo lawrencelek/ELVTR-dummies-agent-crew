@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone rules T1–T5, V1–V4, V6 and V8, formatting rules F5–F7 and truth rules R4–R5; it is the shipped text, with Battery 3 named as fitted, the fixed phrase ZERO ACCIDENTS (EXCLUDING TESTS) kept exactly, the Act III CUSTOMS frame and only the circus's own landmarks, a chain duty matching the COMBO brief, and lint reporting no length, sentence, digit, banned-word or "!" findings. [STORY#WB2] [EDIT92#3] [STORY#S1] [STORY#S3] [EDIT93#3.1/tales-rewritten~1] [DECISIONS#rows-531-540~2]
+Total: 10.

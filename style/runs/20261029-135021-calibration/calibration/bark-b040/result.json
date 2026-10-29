@@ -1,0 +1,14 @@
+{
+ "id": "bark-b040",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 9,
+ "ok": true,
+ "named": [
+  "T9"
+ ],
+ "text": "WRITE-OFF! Tell dispatch I tried!",
+ "cost_usd": 0.0256,
+ "raw": "SCORE: 9/10\nREASON:\n- b040 · T9 (minor, −1) \"WRITE-OFF! Tell dispatch I tried!\" The line is all rage with no polite form, so the bolted-on politeness the Budget voice calls for is missing. [FLEET#F4] Fix: \"WRITE-OFF! Tell dispatch I tried! Regards.\" (42 characters).\nTotal: 10 − 1 = 9."
+}

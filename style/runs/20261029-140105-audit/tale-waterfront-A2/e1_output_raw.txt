@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the rules that apply to it. Tone: T1–T5, with "Farsight" in the third person and no "!" [EDIT92#3]. Vocabulary and lore: V1–V4, V6 and V8, with the Act III CUSTOMS frame intact and no banned terms or game words [STORY#S2, FLEET#F3]. Formatting: F5 and F6, at 216 characters with no sentence over 17 words, and F7, since no equipment is issued on this tile [EDIT92#measured, STORY#WA2]. Truth: R4 and R5, since "Place a cone" matches the CONE-BAITED CAR brief and no part is named [STORY#S3, STORY#WA2]. The text matches the shipped tale and lint has no findings.
+Total: 10.

@@ -1,0 +1,16 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b034",
+   "event": "writeoff",
+   "when": {
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "A write-off. On my record. Unthinkable.",
+   "claims": []
+  }
+ ]
+}

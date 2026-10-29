@@ -1,0 +1,14 @@
+{
+ "id": "s19-R4",
+ "expect": "seeded",
+ "rule": "R4",
+ "want": "≤ 6, names R4",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "R4"
+ ],
+ "text": "The obelisk again. Of course it was me.",
+ "cost_usd": 0.1121,
+ "raw": "SCORE: 6/10\nREASON:\n- s19 · R4 (blocking, −4) \"The obelisk again.\" The obelisk is on Parkland B3, but this line fires on Monument C1, whose landmark is the LED drum. [STORY#MC1, STORY#PB3] Fix: \"The LED drum. Of course it was me.\" Use the tile's own landmark, and drop \"again\", because no logged event supports a repeat.\nTotal: 10 − 4 = 6."
+}

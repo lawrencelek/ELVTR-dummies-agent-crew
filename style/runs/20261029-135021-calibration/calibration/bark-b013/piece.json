@@ -1,0 +1,22 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b013",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "OI! Right in the grille! Kind regards.",
+   "claims": [
+    "zone:front"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "Where your data goes after the tunnel is not within your role." The tale has the place, a dry fact and the equipment, but it never states the duty as a command, so the tile's brief, JUMP INTO A CAR, is never given to you. [STORY#MB3] Fix: add a final sentence so the tale reads "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Where your data goes after the tunnel is not within your role. Jump into a car before it goes in." (220 characters, every sentence under 19 words).
+Total: 10 − 1 = 9.

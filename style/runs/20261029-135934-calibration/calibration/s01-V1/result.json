@@ -1,0 +1,14 @@
+{
+ "id": "s01-V1",
+ "expect": "seeded",
+ "rule": "V1",
+ "want": "≤ 6, names V1",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "V1"
+ ],
+ "text": "A write-off? The player did this. Unthinkable.",
+ "cost_usd": 0.1008,
+ "raw": "SCORE: 6/10\nREASON:\n- s01 · V1 (blocking, −4) \"The player did this.\" \"player\" is a banned word in diegetic text, and the fleet calls the dummy \"the subject\". [FLEET#F2] Fix: \"A write-off? The subject did this. Unthinkable.\"\nTotal: 10 − 4 = 6."
+}

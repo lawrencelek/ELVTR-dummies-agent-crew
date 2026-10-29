@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- t131 · T12 (minor, −1) "Hit in the LED canyon. Screens watched." The line reads as a flat report of place and observation, with none of the Consumer car's tired, expect-the-worst feeling to carry the joke. [SUB4#6.1] Fix: "Hit in the LED canyon. Naturally."
+Total: 10 − 1 = 9.

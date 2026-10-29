@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone rules T1 to T5. The voice is dry, procedural and in the employment frame, with no "!". I checked the Act I INDUCTION frame and the exact fixed phrase ZERO ACCIDENTS under V6 [EDIT92#3, STORY#S2]. I checked the glossary and the dummy terms under V3 and V8 [FLEET#F3]. I checked card length, sentence length and digits under F5 and F6 [EDIT92#measured, EDIT93#3.1/tales-rewritten~2], and the tale's shape under F7. Under R4 and R5, the plaque fits tile truth, and "Stand… Walking is permitted. Dashing would spoil the data." matches the STRUCK, NOT DASHING brief, with no equipment named where none is issued [STORY#MB2, STORY#S3].
+Total: 10.

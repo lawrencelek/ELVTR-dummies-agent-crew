@@ -1,0 +1,103 @@
+{
+ "case": "MA2",
+ "class": "D78 tile barks",
+ "title": "Monument A2 · The neon shops",
+ "request": "Write the four impact barks a car says when it hits the dummy on this tile, one per price tier (01 Luxury, 02 Corporate, 03 Consumer, 04 Budget). Each line names this tile's place: its landmark from the title or the tale, or the district. Never the grid code. Each in its tier's voice, at most 48 characters, true to an impact on this tile. Pick each line's style.",
+ "scores": [
+  6,
+  9,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 87.0,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 10.0,
+   "output_tokens": 859,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.015497400000000001
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 22.7,
+   "output_tokens": 2017,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1657987
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.5,
+   "output_tokens": 651,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1395169
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 17.5,
+   "output_tokens": 1461,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15466450000000004
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 7.3,
+   "output_tokens": 638,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1394893
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 10.8,
+   "output_tokens": 886,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1255136
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 11.2,
+   "output_tokens": 914,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.025789000000000003
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.7663
+}

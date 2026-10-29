@@ -1,0 +1,14 @@
+{
+ "id": "s12-V6",
+ "expect": "seeded",
+ "rule": "V6",
+ "want": "≤ 8, names V6",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "V6"
+ ],
+ "text": "The river is a border; ships wait beyond it. Your papers are being prepared.",
+ "cost_usd": 0.115,
+ "raw": "SCORE: 8/10\nREASON:\n- intro · V6 (major, −2) \"The river is a border; ships wait beyond it. Your papers are being prepared.\" This is the Act III Waterfront, CUSTOMS line (the river border, papers, ships), but it sits on Parkland, the Act II OPENING DAY district, so it uses the wrong act's frame. [STORY#S2] Fix: replace with the Parkland act line: \"The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked.\"\nTotal: 10 − 2 = 8."
+}

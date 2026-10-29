@@ -1,0 +1,29 @@
+{
+ "case": "tale-parkland-B2",
+ "class": "audit",
+ "title": "shipped tale parkland B2",
+ "request": null,
+ "scores": [
+  10
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "best_version": 0,
+ "seconds": 9.6,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 9.6,
+   "output_tokens": 710,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0288894
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.0289
+}

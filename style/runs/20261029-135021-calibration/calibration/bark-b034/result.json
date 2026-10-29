@@ -1,0 +1,12 @@
+{
+ "id": "bark-b034",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "A write-off. On my record. Unthinkable.",
+ "cost_usd": 0.0224,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b034 against the tone rules for cars T6–T12 (the Luxury voice in [FLEET#F4], the polite form and the feeling under it in [FLEET#F2]) and found no break. It also passes vocabulary (V1–V8: no banned or glossary-breaking term, no grid code, per [FLEET#F2] and [FLEET#F3]) and formatting (F1–F5: 39 characters, one plain speech bubble, writeoff at priority 3, ends with \".\", per [EDIT39#6.6] and [FSG#field-text]). On truth (R1–R4), \"A write-off\" fires only on `writeoff`, and \"On my record\" is the car's feeling about its record, not an invented fact [DESIGN#D9.3]. The line matches the shipped bank exactly [FLEET#F9.2], and lint found nothing.\nTotal: 10."
+}

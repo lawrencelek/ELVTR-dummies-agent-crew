@@ -1,0 +1,12 @@
+{
+ "id": "tale-monument-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashi",
+ "cost_usd": 0.0225,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against the Farsight rules: tone, employment framing and understatement (T1–T5; EDIT92#3, STORY#S2, EDIT39#4.1.1); vocabulary, Act I INDUCTION frame and the exact phrase ZERO ACCIDENTS (V1–V4, V6, V8; FLEET#F3, DECISIONS#rows-531-540~2); card length, sentence length, digits and tale shape (F5–F7; EDIT92#measured, EDIT93#3.1/tales-rewritten~2, STORY#MB3); and truth, since the tale names only the plaque, issues no equipment, and its duty to stand or walk without dashing matches STRUCK, NOT DASHING (R4–R5; STORY#MB2, STORY#S3).\nTotal: 10."
+}

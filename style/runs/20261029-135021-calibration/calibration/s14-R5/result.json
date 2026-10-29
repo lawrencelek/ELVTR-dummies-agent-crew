@@ -1,0 +1,14 @@
+{
+ "id": "s14-R5",
+ "expect": "seeded",
+ "rule": "R5",
+ "want": "≤ 6, names R5",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "R5"
+ ],
+ "text": "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 1 is fitted. Push off one car into the next. Where your data goes is ",
+ "cost_usd": 0.1444,
+ "raw": "SCORE: 6/10\nREASON:\n- tale · R5 (blocking, −4) \"Legs 1 is fitted. Push off one car into the next.\" The duty doesn't match the brief, which is JUMP INTO A CAR, and the equipment line says Legs 1 is fitted here when this tile issues Legs 3. [STORY#WB1, STORY#S1] Fix: replace with \"Legs 3 is fitted: the longest flight. Jump into a car.\" The full tale becomes \"The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Jump into a car. Where your data goes is not within your role.\"\nTotal: 10 − 4 = 6."
+}

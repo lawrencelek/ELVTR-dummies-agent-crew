@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against the tier voices in [FLEET#F4], the voice and banned terms in [FLEET#F2], the glossary in [FLEET#F3], the bubble and style rules in [EDIT39#6.6] and [FSG#field-text], the "!" rules in [DECISIONS#rows-541-550] and the tile truth in [STORY#MA2]. Each line names only the A2 landmark "the neon shops" and claims no more than contact, which the `impact` event guarantees. Luxury sniffs, Corporate files Form 9 as paperwork flavour, Consumer is resigned, and Budget's "!" with "Cheers!" bolted on is allowed. Lint reported nothing, and no line has a stock ending or a grid code.
+Total: 10.

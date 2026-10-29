@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- t109 · R2 (blocking, −4) "A drop onto my roof" The line says the hit was a drop, but its `when` has only district, tile and tier, so any impact on C1 could fire it, including a side or rear hit. [FLEET#F8] Fix: add `"drop": true` to `when` and `"drop"` to `claims`, and keep the text.
+- t110 · R2 (blocking, −4) "Overhead contact." The line says the hit came from above, but nothing in its conditions guarantees a drop. [FLEET#F8] Fix: add `"drop": true` to `when` and `"drop"` to `claims`, or replace the text with "Monument incident logged. Form 9 filed."
+- t111 · V3 (major, −2) "Not the dummy." The fleet never calls it "the dummy"; to the cars it is "the subject" or "it". [FLEET#F3] Fix: "The drum lit the bend. Not the subject."
+- t112 · R2 (blocking, −4) "Off the high road?!" The line names where the drop started, but its conditions guarantee neither a drop nor that it came from the high road. [FLEET#F8] Fix: add `"drop": true` to `when` and `"drop"` to `claims`, and replace the text with "From above?! Mind my paintwork! Kindly!"
+Total: 10 − 4 − 4 − 2 − 4 = 1 (floor; raw −4).

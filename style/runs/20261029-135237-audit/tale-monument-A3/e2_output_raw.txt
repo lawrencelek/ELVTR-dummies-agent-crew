@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale breaks no rule: lint found nothing for length, sentence words, banned terms, "!", digits or "Farsight" casing (F6, T2, V1, F5, V4). It also passes the judgement rules. The voice is dry and procedural, with "Farsight calls this growth" carrying the understatement, and the dummy is addressed by imperative while Farsight is named in the third person (T1, T4, T5). The place is the stacked cubes, the duty is "one hit, then another before the first is forgotten", and no equipment is named on a tile that issues none (F7, R4, R5). That duty matches the COMBO ×{n} brief ("Coverage gap: chains."), and the tale sits inside the ACT I · INDUCTION frame (V6). [STORY#MA3] [STORY#S3] [EDIT92#3] [EDIT93#3.1/tales-rewritten~2] [EDIT39#4.1.1]
+Total: 10.

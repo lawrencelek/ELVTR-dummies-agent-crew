@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against T1–T3 (no "!", the work is framed as a duty), V1, V3, V4 and V8, and F5 and F8 (the label is 19 characters and the "Coverage gap: … The final hit must …" pattern is followed). I also checked them against R5. Both strings match the shipped `struck` row word for word [STORY#S3] [STORY#MB2], and the voice holds [EDIT92#3] [FLEET#F2] [FLEET#F3].
+Total: 10.

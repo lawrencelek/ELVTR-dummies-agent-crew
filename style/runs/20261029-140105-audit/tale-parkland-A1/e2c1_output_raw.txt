@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V8, F5–F7 and R4–R5 and found no violations. Lint returned nothing; the text is about 187 characters, the longest sentence is 10 words, and it has no "!". Replacing the shipped "level" with "even" clears V1. "Arms 2" is a part rank, which narration may use, and it is named on the tile that issues it. The duty, "push off one car into the next", matches the PUSH OFF A CAR brief. The gardener, the pools and the water all come from this tile's canon, and nothing in the tale breaks Act II's frame. [STORY#PA1] [STORY#S1] [STORY#S3] [EDIT92#3] [EDIT93#3.1] [DECISIONS#rows-531-540~2]
+Total: 10.

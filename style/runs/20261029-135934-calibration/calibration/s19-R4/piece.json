@@ -1,0 +1,21 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "s19",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "The obelisk again. Of course it was me.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  }
+ ]
+}

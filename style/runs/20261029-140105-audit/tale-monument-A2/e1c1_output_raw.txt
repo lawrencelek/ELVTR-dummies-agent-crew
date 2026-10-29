@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (it is dry and procedural, calls the cars "Colleagues", addresses the dummy as "you" and has no "!"), V1–V4, V6 and V8 (Act I INDUCTION frame, glossary, no banned terms), F5–F7 (lint is clean, Hands 1 is named on the tile that issues it, and the duty is a dry imperative) and R4–R5 (the neon shops sit under the highway, and the cone duty matches the CONE-BAITED CAR brief), using [EDIT92#3], [STORY#S1], [STORY#S3], [STORY#MA2], [EDIT93#3.1/tales-rewritten~1], [DECISIONS#rows-531-540~2] and [FLEET#F3].
+Total: 10.

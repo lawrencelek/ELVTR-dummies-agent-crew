@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked each sentence of the tale against T1–T5, V1–V4, V6 and V8, F5–F7, and R4–R5: it holds the CUSTOMS frame with the moored ship [STORY#S2] [EDIT92#7]; it names Arms 3, the equipment this tile issues [STORY#WB3] [STORY#S1]; it fits the card at 216 characters, with no sentence over 19 words [EDIT92#measured]; its only figures are a part rank and Chassis 0 [STORY#S1]; it has no "!" [EDIT92#3]; and its duty does not contradict the brief PUSH OFF A CAR [STORY#S3].
+Total: 10.

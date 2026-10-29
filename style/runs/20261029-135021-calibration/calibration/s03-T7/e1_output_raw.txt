@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s03 · T7 (major, −2) "So sorry. Entirely my fault. I do apologise." This line is bound to tier 01 Luxury, and a Luxury car is polished, superior and faintly amused, and never apologises. It apologises three times, which matches the guide's own out-of-voice example "So sorry, my fault entirely." [FLEET#F4] Fix: "Contact? On a Luxury trim? How quaint." (38 characters, keep speech style and priority 2). It names no zone, part or fault, so it needs no claims.
+Total: 10 − 2 = 8.

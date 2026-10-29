@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (dry, procedural, addresses "you", no "!", employment framing, no comment on harm) [EDIT92#3, STORY#S1, EDIT39#4.1.1]; V1–V4, V6 and V8 (no banned terms, one city, glossary, Act III CUSTOMS frame: ships, cranes, estuary) [FLEET#F2, FLEET#F3, STORY#S2]; F5–F7 (no digits; about 188 characters and four sentences, the longest 17 words; no equipment to name on this tile) [EDIT92#measured, EDIT93#3.1/tales-rewritten~2]; and R4–R5 (the terrace and its rail belong to this tile, and the duty "Drop onto a car below." matches DROP ONTO A CAR with no equipment issued) [STORY#WC2, STORY#S3].
+Total: 10.

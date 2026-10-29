@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "The bus is slow and very large. It will not miss." The tale gives the place and a dry fact, but it never states the duty as an order: the bus hit is only implied through "Farsight requires the bus fleet's data". [STORY#S1, EDIT93#3.1] Fix: change the last sentence to "Let the bus find you. It will not miss." This brings the tale to 220 characters, within the 223 limit (style.tale.maxChars).
+Total: 10 − 1 = 9.

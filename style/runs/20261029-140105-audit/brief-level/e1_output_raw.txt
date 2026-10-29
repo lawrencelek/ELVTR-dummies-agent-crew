@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against STORY#S3. Both match the shipped "level" row word for word, and the label is 16 characters, within F8's 19 [STORY#S3]. I checked T1, T2 and T3 for a dry, procedural duty with no "!" [EDIT92#3]. I checked V1, where "level" is only the internal task key and is not shown as text [DECISIONS#rows-531-540~2]. I checked F5, where "Z1" is a Z level, which the rule allows [STORY#S1]. The lint returned no findings.
+Total: 10.

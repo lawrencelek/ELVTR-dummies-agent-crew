@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · R5 (blocking, −4) "Push off one car into the next." The duty is a push, but this tile's brief is JUMP INTO A CAR, and the push needs Arms, which Waterfront does not issue until B3. [STORY#WB1, STORY#S1, STORY#S3] Fix: replace it with "Jump into a car."
+- tale · F7 (major, −2) "Legs 1 is fitted." This tile issues Legs 3, so the tale names the wrong equipment and leaves out what the tile issues. [STORY#WB1, DECISIONS#rows-531-540~2] Fix: replace it with "Legs 3 is fitted: the longest flight."
+Total: 10 − 4 − 2 = 4.

@@ -1,0 +1,44 @@
+{
+ "case": "brief-struck",
+ "class": "audit",
+ "title": "shipped brief struck",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 10.9,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 5.5,
+   "output_tokens": 282,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0944653
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 5.5,
+   "output_tokens": 335,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0135002
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.108
+}

@@ -1,0 +1,12 @@
+{
+ "id": "bark-b013",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "OI! Right in the grille! Kind regards.",
+ "cost_usd": 0.1798,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b013 against every car rule. Tone and tier: T6, T7, T9 and T12 pass, because it is a short-fused Budget voice with \"Kind regards.\" as the polite form over the rage [FLEET#F4, FLEET#F2]. The \"!\" is allowed in a Budget shout under T10 [DECISIONS#rows-541-550]. Vocabulary passes V1, V2, V3, V5, V7 and V8 [FLEET#F2, FLEET#F3]. Format passes F1 to F5: 38 characters, shout style, priority 2 for an impact [EDIT39#6.6, FSG#field-text]. Truth passes R1 to R3: \"grille\" is guaranteed by zone=front/frontDiagonal and backed by the claim zone:front [FLEET#F8]. The line is shipped and in voice [FLEET#F9.1~2].\nTotal: 10."
+}

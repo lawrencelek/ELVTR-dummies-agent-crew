@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- b111 · T10 (major, −2) "It recharges when it hits us?!" The line uses "!" in a speech bark with no tier, and cars may only use "!" in a shout-style bark or a Budget (04) bark. [DECISIONS#rows-541-550] Fix: drop the "!" to give "It recharges when it hits us?", or set `style` to "shout" if the outrage is meant to be shouted.
+Total: 10 − 2 = 8.

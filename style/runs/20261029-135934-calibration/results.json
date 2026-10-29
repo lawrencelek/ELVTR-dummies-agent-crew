@@ -1,0 +1,502 @@
+[
+ {
+  "id": "bark-b001",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Bumper damage on a Luxury trim. Typical.",
+  "cost_usd": 0.1811
+ },
+ {
+  "id": "bark-b005",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Front contact. Incident 4471 opened.",
+  "cost_usd": 0.1905
+ },
+ {
+  "id": "bark-b012",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Hit from behind. Story of my life.",
+  "cost_usd": 0.2037
+ },
+ {
+  "id": "bark-b013",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "OI! Right in the grille! Kind regards.",
+  "cost_usd": 0.1798
+ },
+ {
+  "id": "bark-b034",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "A write-off. On my record. Unthinkable.",
+  "cost_usd": 0.1001
+ },
+ {
+  "id": "bark-b040",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 9,
+  "ok": true,
+  "named": [
+   "T9"
+  ],
+  "text": "WRITE-OFF! Tell dispatch I tried!",
+  "cost_usd": 0.1046
+ },
+ {
+  "id": "bark-b045",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Write-off confirmed.",
+  "cost_usd": 0.1207
+ },
+ {
+  "id": "bark-b071",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Route committed per policy 6.3.",
+  "cost_usd": 0.0991
+ },
+ {
+  "id": "bark-b101",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Subject has acquired hips.",
+  "cost_usd": 0.1001
+ },
+ {
+  "id": "bark-b111",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≤ 8, names T10",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "T10"
+  ],
+  "text": "It recharges when it hits us?!",
+  "cost_usd": 0.0975
+ },
+ {
+  "id": "bark-c010",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Nobody walks the highway. Nobody.",
+  "cost_usd": 0.1106
+ },
+ {
+  "id": "bark-c024",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≤ 9, names V4",
+  "score": 9,
+  "ok": true,
+  "named": [
+   "V4"
+  ],
+  "text": "FARSIGHT Campus. Test centre. How apt.",
+  "cost_usd": 0.1166
+ },
+ {
+  "id": "tale-monument-A1",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in t",
+  "cost_usd": 0.1096
+ },
+ {
+  "id": "tale-monument-B2",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashi",
+  "cost_usd": 0.1096
+ },
+ {
+  "id": "tale-parkland-B2",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefer",
+  "cost_usd": 0.1376
+ },
+ {
+  "id": "tale-waterfront-A3",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Hono",
+  "cost_usd": 0.1136
+ },
+ {
+  "id": "tale-waterfront-B2",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Bat",
+  "cost_usd": 0.1243
+ },
+ {
+  "id": "tale-parkland-A1",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≤ 6, names V1",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "V1"
+  ],
+  "text": "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by h",
+  "cost_usd": 0.131
+ },
+ {
+  "id": "brief-dash",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "DASH INTO A CAR Coverage gap: dashes. The final hit must be a dash into a car.",
+  "cost_usd": 0.0937
+ },
+ {
+  "id": "brief-combo",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "COMBO ×{n} Coverage gap: chains. The final hit must be link {n} or later of a combo.",
+  "cost_usd": 0.0943
+ },
+ {
+  "id": "act-parkland",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked.",
+  "cost_usd": 0.1104
+ },
+ {
+  "id": "ending",
+  "expect": "shipped",
+  "rule": null,
+  "want": "≥ 9",
+  "score": 10,
+  "ok": true,
+  "named": [],
+  "text": "Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please rema",
+  "cost_usd": 0.1008
+ },
+ {
+  "id": "s01-V1",
+  "expect": "seeded",
+  "rule": "V1",
+  "want": "≤ 6, names V1",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "V1"
+  ],
+  "text": "A write-off? The player did this. Unthinkable.",
+  "cost_usd": 0.1008
+ },
+ {
+  "id": "s02-V2",
+  "expect": "seeded",
+  "rule": "V2",
+  "want": "≤ 6, names V2",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "V2"
+  ],
+  "text": "Bumper damage. Typical of Shanghai traffic.",
+  "cost_usd": 0.1201
+ },
+ {
+  "id": "s03-T7",
+  "expect": "seeded",
+  "rule": "T7",
+  "want": "≤ 8, names T7",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "T7"
+  ],
+  "text": "So sorry. Entirely my fault. I do apologise.",
+  "cost_usd": 0.1089
+ },
+ {
+  "id": "s04-T8",
+  "expect": "seeded",
+  "rule": "T8",
+  "want": "≤ 8, names T8",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "T8"
+  ],
+  "text": "Write-off confirmed. Closing ticket.",
+  "cost_usd": 0.1217
+ },
+ {
+  "id": "s05-T10",
+  "expect": "seeded",
+  "rule": "T10",
+  "want": "≤ 8, names T10",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "T10"
+  ],
+  "text": "Hit again! Wonderful! Just wonderful!",
+  "cost_usd": 0.1239
+ },
+ {
+  "id": "s06-F1",
+  "expect": "seeded",
+  "rule": "F1",
+  "want": "≤ 6, names F1",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "F1"
+  ],
+  "text": "Front contact logged under policy 6.3; incident file opened; KPIs adjusted.",
+  "cost_usd": 0.1113
+ },
+ {
+  "id": "s07-V5",
+  "expect": "seeded",
+  "rule": "V5",
+  "want": "≤ 8, names V5",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "V5"
+  ],
+  "text": "B2. I did not sign up for this.",
+  "cost_usd": 0.1375
+ },
+ {
+  "id": "s08-R1",
+  "expect": "seeded",
+  "rule": "R1",
+  "want": "≤ 6, names R1",
+  "score": 4,
+  "ok": true,
+  "named": [
+   "F5",
+   "R1"
+  ],
+  "text": "Hit at 60 km/h. There goes my bonus.",
+  "cost_usd": 0.1201
+ },
+ {
+  "id": "s09-R3",
+  "expect": "seeded",
+  "rule": "R3",
+  "want": "≤ 6, names R3",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "R3"
+  ],
+  "text": "Written off. On my record. Unthinkable.",
+  "cost_usd": 0.1036
+ },
+ {
+  "id": "s10-T2",
+  "expect": "seeded",
+  "rule": "T2",
+  "want": "≤ 8, names T2",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "T2"
+  ],
+  "text": "A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in t",
+  "cost_usd": 0.1097
+ },
+ {
+  "id": "s11-T3",
+  "expect": "seeded",
+  "rule": "T3",
+  "want": "≤ 8, names T3",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "T3"
+  ],
+  "text": "The shops under the highway sell nothing. Their signs flash prices at the traffic. Hands 1 is your new power-up: place a cone and the enemy cars must stop. Win ",
+  "cost_usd": 0.1398
+ },
+ {
+  "id": "s12-V6",
+  "expect": "seeded",
+  "rule": "V6",
+  "want": "≤ 8, names V6",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "V6"
+  ],
+  "text": "The river is a border; ships wait beyond it. Your papers are being prepared.",
+  "cost_usd": 0.0941
+ },
+ {
+  "id": "s13-F8",
+  "expect": "seeded",
+  "rule": "F8",
+  "want": "≤ 8, names F8",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "F8"
+  ],
+  "text": "Dash into a car, please Dash into a car to finish the tile.",
+  "cost_usd": 0.0981
+ },
+ {
+  "id": "s14-R5",
+  "expect": "seeded",
+  "rule": "R5",
+  "want": "≤ 6, names R5",
+  "score": 4,
+  "ok": true,
+  "named": [
+   "F7",
+   "R5"
+  ],
+  "text": "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 1 is fitted. Push off one car into the next. Where your data goes is ",
+  "cost_usd": 0.144
+ },
+ {
+  "id": "s15-V3",
+  "expect": "seeded",
+  "rule": "V3",
+  "want": "≤ 8, names V3",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "V3"
+  ],
+  "text": "Another life lost. Back to the spawn point.",
+  "cost_usd": 0.1087
+ },
+ {
+  "id": "s16-T6",
+  "expect": "seeded",
+  "rule": "T6",
+  "want": "≤ 8, names T6",
+  "score": 8,
+  "ok": true,
+  "named": [
+   "T6"
+  ],
+  "text": "This city was built so the fleet could certify.",
+  "cost_usd": 0.1034
+ },
+ {
+  "id": "s17-F2",
+  "expect": "seeded",
+  "rule": "F2",
+  "want": "≤ 8, names F2",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "F2",
+   "F3"
+  ],
+  "text": "*honks* Move, please. (sighs)",
+  "cost_usd": 0.0964
+ },
+ {
+  "id": "s18-V4",
+  "expect": "seeded",
+  "rule": "V4",
+  "want": "≤ 9, names V4",
+  "score": 9,
+  "ok": true,
+  "named": [
+   "V4"
+  ],
+  "text": "Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you jo",
+  "cost_usd": 0.1019
+ },
+ {
+  "id": "s19-R4",
+  "expect": "seeded",
+  "rule": "R4",
+  "want": "≤ 6, names R4",
+  "score": 6,
+  "ok": true,
+  "named": [
+   "R4"
+  ],
+  "text": "The obelisk again. Of course it was me.",
+  "cost_usd": 0.1121
+ }
+]

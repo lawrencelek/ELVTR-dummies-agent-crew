@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- c024 · V4 (minor, −1) "FARSIGHT Campus" The line is in sentence case, so the brand must be written "Farsight"; only a label set wholly in capitals keeps its caps (ruling 539). [DECISIONS#rows-531-540~2] Fix: "Farsight Campus. Test centre. How apt."
+Total: 10 − 1 = 9.

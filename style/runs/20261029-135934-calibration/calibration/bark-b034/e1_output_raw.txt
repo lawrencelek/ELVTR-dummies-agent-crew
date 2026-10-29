@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. The line "A write-off. On my record. Unthinkable." breaks no rule. It is a shipped line ([FLEET#F9.2]) and the lint found nothing. I checked it against these rules:
+  - **Tone (T6, T7, T9):** it reads as a worker worried about its record. The Luxury voice is superior and indignant, and it does not apologise ([FLEET#F2], [FLEET#F4], [EDIT26#3.2]).
+  - **Vocabulary (V1, V3):** it uses "write-off" from the glossary and no banned word ([FLEET#F3]).
+  - **Formatting (F1–F4):** it is 39 characters, plain text, and ends with ".". A speech bubble at priority 3 is right for a write-off ([EDIT39#6.6]).
+  - **Truth (R1–R3):** it fires only on `writeoff` and asserts nothing beyond the logged write-off. "On my record" is the car's own feeling, not a logged figure ([SUB4#5], [DESIGN#D9.3]).
+Total: 10.

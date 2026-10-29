@@ -1,0 +1,5 @@
+SCORE: 8/10
+REASON:
+- t104, t120, t128, t132, t136 · T11 (minor, −1) "Kind regards" Five Budget lines end on the same tag, and the limit is two (style.bark.maxStockEndings). [SUB4#6.1] Fix: keep t120 and t128 as they are, and rewrite the other three. t104 "Not by the welcome wall! Lovely to meet you!" t132 "Oi! Not in the LED canyon! With respect!" t136 "Not at the LED gateway! Drive safe, you plank!"
+- t115, t127, t131 · T11 (minor, −1) "Of course." Three Consumer lines end on the same tag, and the limit is two (style.bark.maxStockEndings). [SUB4#6.1] Fix: keep t115 and t127, and rewrite t131 as "Hit in the LED canyon. Naturally."
+Total: 10 − 1 − 1 = 8.

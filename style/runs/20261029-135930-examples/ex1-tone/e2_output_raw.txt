@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (`EDIT92#3`, `STORY#S1`, `STORY#S2`, `EDIT39#4.1.1`): it is dry and procedural, calls the car a colleague and the task a duty, names Farsight in the third person and has no "!"; against V1–V8 (`FLEET#F2`, `FLEET#F3`, `DECISIONS#rows-531-540~2`): no banned word, "Farsight" in title case, and the Act I INDUCTION frame fits; against F5–F7 (`EDIT92#measured`, `EDIT93#3.1/tales-rewritten~2`): no digits, under 223 characters and 19 words per sentence, and no equipment is due on this tile; and against R4–R5 (`STORY#MA1`, `EDIT92#7`): the tower screen shows the face and WELCOME, and the duty fits ANY WRITE-OFF.
+Total: 10.

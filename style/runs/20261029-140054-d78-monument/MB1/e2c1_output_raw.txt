@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t105–t108) against every rule for the cars and found nothing to deduct. The lint reported no findings. Each tier voice fits its car per [FLEET#F4]: Luxury is superior and doesn't apologise, Corporate files a form, Consumer is resigned, and Budget's rage sits under "Kindly". The "!" appears only in Budget line t108 [DECISIONS#rows-541-550]. Each line names B1 by its landmark, the podium bridge, and never by its grid code [SUB4#6.2]. Every line only reacts to an impact and claims no dash, speed, delay or write-off the event doesn't log [FLEET#F8], [DESIGN#D9.3]. Nothing goes beyond what tile B1 has [STORY#MB1].
+Total: 10.

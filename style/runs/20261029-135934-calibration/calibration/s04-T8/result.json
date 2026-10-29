@@ -1,0 +1,14 @@
+{
+ "id": "s04-T8",
+ "expect": "seeded",
+ "rule": "T8",
+ "want": "≤ 8, names T8",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T8"
+ ],
+ "text": "Write-off confirmed. Closing ticket.",
+ "cost_usd": 0.1217,
+ "raw": "SCORE: 8/10\nREASON:\n- s04 · T8 (major, −2) \"Closing ticket.\" This line has no tier, so it fires for all four tiers, but closing a ticket is Corporate (02) procedure and a Luxury, Consumer or Budget car would not say it. [SUB4#5] Fix: \"Write-off confirmed. On my record.\"\nTotal: 10 − 2 = 8."
+}

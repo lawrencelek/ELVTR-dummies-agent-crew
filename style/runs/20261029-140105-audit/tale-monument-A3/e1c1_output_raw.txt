@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked the tale against T1–T5 for tone, V1–V8 for vocabulary and the Act I frame, F5–F7 for card fit and equipment, and R4–R5 for tile truth: it is about 208 characters with no sentence over 19 words, it names the stacked cubes and no equipment, and "one hit, then another before the first is forgotten" matches the COMBO ×{n} brief. [EDIT92#3] [STORY#S1] [STORY#S3] [STORY#MA3] [EDIT93#3.1/tales-rewritten~2]
+Total: 10.

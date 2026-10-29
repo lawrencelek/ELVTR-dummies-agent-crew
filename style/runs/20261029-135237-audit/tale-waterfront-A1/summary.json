@@ -1,0 +1,52 @@
+{
+ "case": "tale-waterfront-A1",
+ "class": "audit",
+ "title": "shipped tale waterfront A1",
+ "request": null,
+ "scores": [
+  9,
+  10
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "best_version": 1,
+ "seconds": 34.5,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 13.6,
+   "output_tokens": 1162,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14895350000000002
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 12.2,
+   "output_tokens": 954,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.20854599999999998
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 8.7,
+   "output_tokens": 594,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.142672
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5002
+}

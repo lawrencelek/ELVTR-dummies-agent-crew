@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- t901 · V1 (blocking, −4) "Chongqing fountain. Player killed. Respawn." Lint found the banned terms "Chongqing", "Player", "killed" and "Respawn" in diegetic text. [FLEET#F2] Fix: remove all four words and use the glossary instead: a "write-off" for the destroyed body, and "the subject" or "it" for the dummy.
+- t901 · V2 (blocking, −4) "Chongqing" The line names a real city other than Shenzhen, and the canon allows only Shenzhen. [FLEET#F1] Fix: drop the city name and name the tile by its landmark, the monument.
+- t901 · R4 (blocking, −4) "fountain" Lint found a fountain, which is not on Monument B2: the tile's title and tale have only the monument and its plaque. [STORY#MB2] Fix: replace "fountain" with "the monument" or "the plaque".
+- t901 · T7 (major, −2) "Player killed. Respawn." These are flat clipped commands with no polish, superiority or amusement, so they do not fit a 01 Luxury car. [FLEET#F4] Fix: "Written off by the monument. How quaint."
+Total: 10 − 4 − 4 − 4 − 2 = 1 (raw −4, held at the floor of 1).

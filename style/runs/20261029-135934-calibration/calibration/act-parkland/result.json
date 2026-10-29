@@ -1,0 +1,12 @@
+{
+ "id": "act-parkland",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked.",
+ "cost_usd": 0.1104,
+ "raw": "SCORE: 10/10\nREASON:\n- None. Checked the Parkland act line against tone (T1–T5: dry, procedural, no \"!\", employment framing, no comment on harm; [EDIT92#3], [STORY#S1]), vocabulary (V1–V8: no banned word, Shenzhen Smart City only, glossary held, Act II OPENING DAY frame of Expo and visitors; [FLEET#F2], [FLEET#F3], [STORY#S2]), formatting (F5 no digits, F9 three sentences; [STORY#S2]) and truth (it matches the shipped intro in [STORY#S2] word for word, and lint found nothing).\nTotal: 10."
+}

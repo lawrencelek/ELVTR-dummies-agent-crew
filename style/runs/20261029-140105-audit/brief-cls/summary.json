@@ -1,0 +1,44 @@
+{
+ "case": "brief-cls",
+ "class": "audit",
+ "title": "shipped brief cls",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 10.0,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 5.3,
+   "output_tokens": 315,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.094911
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 4.7,
+   "output_tokens": 251,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0118168
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1067
+}

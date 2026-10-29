@@ -1,0 +1,29 @@
+{
+ "case": "ending",
+ "class": "audit",
+ "title": "shipped ending",
+ "request": null,
+ "scores": [
+  10
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "best_version": 0,
+ "seconds": 8.2,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 8.2,
+   "output_tokens": 452,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0994809
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.0995
+}

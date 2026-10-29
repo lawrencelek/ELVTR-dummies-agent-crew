@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "T10",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "Hit again! Wonderful! Just wonderful!",
+  "measured": "'!' in a speech bark, tier 03",
+  "source": "DECISIONS#rows-541-550"
+ }
+]

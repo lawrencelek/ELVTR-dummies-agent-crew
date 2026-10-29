@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s09 · R3 (blocking, −4) "Written off. On my record. Unthinkable." This line fires on `impact`, but it announces a write-off, and a hit line must never say "written off". [DESIGN#D9.3] Fix: "A dent. On my record. Unthinkable." This keeps the Luxury sniff and claims no write-off. Tier voice (T7), length (F1), fields (F4) and glossary (V3) all pass.
+Total: 10 − 4 = 6.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the act line against T1–T5, V1–V4, V6, V8, F5, F9 and R4. It matches the shipped Parkland intro word for word, uses the OPENING DAY frame (the Expo, visitors), has three sentences with no "!" and no digits, and keeps a dry procedural tone. [STORY#S2] [EDIT92#3] [STORY#S1]
+Total: 10.

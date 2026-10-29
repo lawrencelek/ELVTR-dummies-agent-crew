@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b012 "Hit from behind. Story of my life." against every rule for cars: the line is word for word the shipped Consumer rear-impact bark [FLEET#F9.1~2], and the guide lists it as in voice for 03 Consumer [§8]. The tired, resigned tone fits tier 03 [FLEET#F4]. "Life" here is an idiom, not the game word that V3 bans [FLEET#F3]. The `zone` condition (rear, rearDiagonal) guarantees the claim `zone:rear`, and "behind" matches it [FLEET#F8, EDIT39#6.6]. The line is under 48 characters and has no "!" [FSG#field-text, DECISIONS#rows-541-550]. A shout at priority 2 suits an impact event [EDIT39#6.6]. Lint found nothing.
+Total: 10.

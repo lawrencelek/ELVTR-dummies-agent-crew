@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 against the 01 Luxury voice: it is polished and superior, "How quaint." is faintly amused, and the line does not apologise [FLEET#F4]. The car speaks as a worker, not as a lore narrator, and the line is a joke rather than a flat report [FLEET#F2] [SUB4#6.1]. It uses no banned words, says "write-off" as the fleet glossary does, and names the landmark instead of the grid code B2 [FLEET#F3] [SUB4#6.2]. At 40 characters it is plain text, ends with ".", and its style and priority (speech, 3) fit a write-off [EDIT39#6.6]. It speaks only on the logged `writeoff` event and invents no facts [FLEET#F8] [DESIGN#D9.3]. "The monument" is the title of tile B2 [STORY#MB2], and the claims district:monument and tile:B2 are both guaranteed by the line's conditions.
+Total: 10.

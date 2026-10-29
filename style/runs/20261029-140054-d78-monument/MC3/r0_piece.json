@@ -1,0 +1,69 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t133",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "The gateway thanked me. You did not.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t134",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Gateway contact logged. Thanks recorded.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t135",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Even at the gateway. Of course it was me.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t136",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Not at the LED gateway! Kind regards!",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  }
+ ]
+}

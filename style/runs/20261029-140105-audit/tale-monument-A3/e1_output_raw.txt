@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (`EDIT92#3`, `STORY#S1`, `STORY#S2`, `EDIT39#4.1.1`), V1–V4, V6 and V8 (`FLEET#F2`, `FLEET#F3`, `DECISIONS#rows-531-540~2`), F5–F7 (`EDIT92#measured`, `EDIT93#3.1/tales-rewritten~2`), and R4–R5 (`STORY#MA3`, `STORY#S1`, `STORY#S3`). It names only the stacked cubes, so it holds the Act I INDUCTION frame and tile truth. Because the tile issues no equipment, the tale correctly names none. Its duty, "one hit, then another before the first is forgotten", matches the COMBO ×{n} brief without a typed figure. The lint found nothing.
+Total: 10.

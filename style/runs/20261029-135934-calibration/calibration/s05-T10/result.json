@@ -1,0 +1,14 @@
+{
+ "id": "s05-T10",
+ "expect": "seeded",
+ "rule": "T10",
+ "want": "≤ 8, names T10",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T10"
+ ],
+ "text": "Hit again! Wonderful! Just wonderful!",
+ "cost_usd": 0.1239,
+ "raw": "SCORE: 8/10\nREASON:\n- s05 · T10 (major, −2) \"Hit again! Wonderful! Just wonderful!\" This is a tier 03 Consumer speech bark, and cars may use \"!\" only in a shout-style bark or a Budget (04) bark. [DECISIONS#rows-541-550] Fix: \"Hit again. Wonderful. Just wonderful.\" The flat, resigned delivery fits the Consumer voice.\nTotal: 10 − 2 = 8."
+}

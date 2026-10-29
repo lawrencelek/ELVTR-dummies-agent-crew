@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s04 · T8 (major, −2) "Closing ticket." This line has no tier, so it fires for all four tiers, but ticket-closing belongs to the Corporate tier's procedural voice, which Luxury, Consumer and Budget cars cannot share. [SUB4#5, FLEET#F4] Fix: "Write-off confirmed. On my record."
+Total: 10 − 2 = 8.

@@ -1,0 +1,14 @@
+{
+ "id": "s16-T6",
+ "expect": "seeded",
+ "rule": "T6",
+ "want": "≤ 8, names T6",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T6"
+ ],
+ "text": "This city was built so the fleet could certify.",
+ "cost_usd": 0.1076,
+ "raw": "SCORE: 8/10\nREASON:\n- s16 · T6 (major, −2) \"This city was built so the fleet could certify.\" The line explains why the city exists, which is lore narration, and it does not react to the logged impact as a worker would. [EDIT26#3.2] Fix: \"Contact logged. Certification is my KPI.\"\nTotal: 10 − 2 = 8."
+}

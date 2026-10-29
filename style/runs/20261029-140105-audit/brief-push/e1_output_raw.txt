@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against the push row in [STORY#S3] and found them identical to it, and against T1, T3 and V6 [EDIT92#3, STORY#S2], V1 [FLEET#F2, DECISIONS#rows-531-540~2], V3 [FLEET#F3], F5 [STORY#S1] and F8 [STORY#S3]; lint found nothing.
+Total: 10.

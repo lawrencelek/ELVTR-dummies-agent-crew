@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against tone and story frame (T1–T5, V6; [EDIT92#3], [STORY#S2]), vocabulary (V1–V4, V8; [FLEET#F2], [FLEET#F3], [DECISIONS#rows-531-540~2]), length, sentence length, equipment and figures (F5–F7; [EDIT93#3.1/tales-rewritten~2], [STORY#S1]), and tile and duty truth (R4–R5; [STORY#MA1], [EDIT92#7]). It is the shipped tale word for word, and no rule is broken.
+Total: 10.

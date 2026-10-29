@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules and found no violations. Tone: dry, procedural notice with no "!" (T1, T2; [EDIT92#3]). Framing: Legs 2 is presented as fitted equipment, the wedding guests fit the Opening Day frame, and the dummy is addressed as "you" (T3, T5, V6, V8; [STORY#S2]). Length: 177 characters, one paragraph, longest sentence 11 words (F6; [EDIT93#3.1/tales-rewritten~2]). Equipment: it names Legs 2, the equipment this tile issues (F7, R5; [STORY#S1], [STORY#PA3]). Brief: "Land on a car here" asks for the jump the brief JUMP INTO A CAR requires (R5; [STORY#S3]). Tile truth: it names only the belvedere and opening day (R4; [STORY#PA3]). The text is identical to the shipped tale.
+Total: 10.

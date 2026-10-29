@@ -1,0 +1,15 @@
+{
+ "id": "s14-R5",
+ "expect": "seeded",
+ "rule": "R5",
+ "want": "≤ 6, names R5",
+ "score": 4,
+ "ok": true,
+ "named": [
+  "F7",
+  "R5"
+ ],
+ "text": "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 1 is fitted. Push off one car into the next. Where your data goes is ",
+ "cost_usd": 0.144,
+ "raw": "SCORE: 4/10\nREASON:\n- tale · R5 (blocking, −4) \"Push off one car into the next.\" The duty is a push, but this tile's brief is JUMP INTO A CAR, and the push needs Arms, which Waterfront does not issue until B3. [STORY#WB1, STORY#S1, STORY#S3] Fix: replace it with \"Jump into a car.\"\n- tale · F7 (major, −2) \"Legs 1 is fitted.\" This tile issues Legs 3, so the tale names the wrong equipment and leaves out what the tile issues. [STORY#WB1, DECISIONS#rows-531-540~2] Fix: replace it with \"Legs 3 is fitted: the longest flight.\"\nTotal: 10 − 4 − 2 = 4."
+}

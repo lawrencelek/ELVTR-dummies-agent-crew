@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "F2",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "*honks* Move, please. (sighs)",
+  "measured": "not one plain line: quotes, markup, emoji, speaker tag or stage direction",
+  "source": "FSG#field-text"
+ },
+ {
+  "rule": "F3",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "ase. (sighs)",
+  "measured": "does not end with . ! or ?",
+  "source": "FLEET#F2"
+ }
+]

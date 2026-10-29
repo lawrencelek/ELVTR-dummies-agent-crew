@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- t901 · R2 (blocking, −4) "beside the plaque" The line says the write-off happened next to the plaque, but `writeoff` does not log where the dummy was relative to a landmark, and the `tile:B2` claim only guarantees the write-off happened somewhere on the tile. [FLEET#F8] Fix: name the tile's title instead, which `tile:B2` does guarantee: "A write-off at the monument. How quaint." (40 characters).
+Total: 10 − 4 = 6.

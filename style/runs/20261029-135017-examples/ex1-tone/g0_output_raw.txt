@@ -1,0 +1,1 @@
+{"kind":"tale","district":"monument","tile":"A1","title":"The welcome wall","tale":"Welcome, contestant! A conveyor delivers you beside a tower, and your face is on its screen under WELCOME! Hear the studio cheer! Your first round: stand in the road until a car notices you. Beat the cars!"}

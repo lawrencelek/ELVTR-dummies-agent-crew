@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t117–t120) against tone and tier voice (T6, T7, T9, T10 [FLEET#F4], [FLEET#F2], [DECISIONS#rows-541-550]), vocabulary and lore (V1–V3, V5 [FLEET#F3], [SUB4#6.2]), format (F1–F5 [EDIT39#6.6], [FSG#field-text]) and truth (R1–R4) against the impact fields and Monument B2's monument and plaque ([FLEET#F8], [STORY#MB2]). Lint found nothing, Form 9 is allowed paperwork flavour, and both "!" are in a Budget shout.
+Total: 10.

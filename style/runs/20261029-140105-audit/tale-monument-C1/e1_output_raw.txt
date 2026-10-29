@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V4, V6 and V8, F5–F7, and R4–R5 (Tone, Vocabulary and lore, Formatting and length, Truth). It matches the shipped C1 tale word for word. The lint returned no findings. The tone is dry and corporate, the cars are colleagues, and it stays in Act I, INDUCTION. "Step off it onto a car" fits the DROP ONTO A CAR brief. The tile issues no equipment, and the tale names none. The only place named is the drum, which is this tile's landmark. [STORY#MC1] [EDIT93#3.1/tales-rewritten~1] [EDIT92#3] [STORY#S2] [STORY#S3]
+Total: 10.

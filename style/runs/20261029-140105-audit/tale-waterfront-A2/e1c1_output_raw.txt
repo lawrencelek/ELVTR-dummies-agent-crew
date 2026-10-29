@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the tone rules T1–T5 [EDIT92#3, EDIT39#4.1.1, STORY#MA1]; the duty "Place a cone." against the brief CONE-BAITED CAR, and placing a cone uses equipment issued earlier, on Monument A2 [STORY#WA2, STORY#S1]; the Act III frame against V6 [STORY#S2]; the 223-character and 19-word limits, with the longest sentence at 17 words [EDIT92#measured]; equipment naming, which does not apply because this tile issues none [STORY#WA2]; and the empty lint, with no "!", banned word, figure or grid code.
+Total: 10.

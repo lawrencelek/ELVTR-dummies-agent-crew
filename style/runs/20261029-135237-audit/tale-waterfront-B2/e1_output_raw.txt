@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "A chain of three certifies the city." The duty is stated as a fact, but the tale's shape requires the duty in the imperative, and Parkland B2's "Give it a chain of three." shows the form. [STORY#MB3] Fix: replace it with "Chain three. It certifies the city." The tale drops from 223 to 222 characters, and "And you." stays.
+Total: 10 − 1 = 9.

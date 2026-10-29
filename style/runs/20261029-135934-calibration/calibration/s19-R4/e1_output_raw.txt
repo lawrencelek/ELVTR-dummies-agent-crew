@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s19 · R4 (blocking, −4) "The obelisk again." The obelisk is on Parkland B3, but this line fires on Monument C1, whose landmark is the LED drum. [STORY#MC1, STORY#PB3] Fix: "The LED drum. Of course it was me." Use the tile's own landmark, and drop "again", because no logged event supports a repeat.
+Total: 10 − 4 = 6.

@@ -1,0 +1,14 @@
+{
+ "id": "tale-parkland-A1",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≤ 6, names V1",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "V1"
+ ],
+ "text": "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by h",
+ "cost_usd": 0.131,
+ "raw": "SCORE: 6/10\nREASON:\n- tale · V1 (blocking, −4) \"The gardener keeps the three pools level by hand.\" The banned word \"level\" appears in diegetic text, and the guide lists this shipped tale as one the lint flags (D79). [FLEET#F2] Fix: \"The gardener keeps the three pools even by hand.\"\nTotal: 10 − 4 = 6."
+}

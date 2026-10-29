@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (it reads as a dry, procedural customs notice, with no "!" and no comment on the harm), V1–V4 and V6 (no banned words, the CUSTOMS frame holds, and the customs log matches [EDIT92#3] exactly), V8 (the dummy is "you"), F5–F7 (198 characters, longest sentence 13 words, no figures as digits, no equipment to name) and R4–R5 (the west tower, the customs log and the raised road all belong to this tile, and the duty matches its ON A RAISED ROAD brief), against [STORY#WA3], [STORY#S1], [STORY#S2], [STORY#S3], [EDIT92#3], [EDIT39#4.1.1] and [EDIT93#3.1].
+Total: 10.

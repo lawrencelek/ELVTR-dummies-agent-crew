@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- t110 · T12 (minor, −1) "Monument contact logged. Drum lighting nominal." This is a flat status report (district, hit logged, landmark status) with no feeling or joke, the same pattern as the guide's failing "Riverside. Low-rise streets. Hit logged." [SUB4#6.1] Fix: "Drum lighting nominal. Contact logged anyway." (44 characters, Corporate procedure, and the drum's no-surprise promise becomes the joke.)
+Total: 10 − 1 = 9.

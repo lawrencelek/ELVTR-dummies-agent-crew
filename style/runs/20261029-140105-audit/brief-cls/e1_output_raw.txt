@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label and brief match the shipped cls row in [STORY#S3] word for word and use registry placeholders, not typed figures ([STORY#S1], F5); the brief follows the brief format ([STORY#S3], F8), frames the task as a duty in Farsight's dry voice with no exclamation mark ([EDIT92#3], T1–T3), uses no banned or glossary-breaking terms ([FLEET#F2], [FLEET#F3]), and the shipped instance on Parkland C2 ("A VAN") reads correctly ([STORY#PC2]).
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b045 "Write-off confirmed." against T6–T12, V1–V8, F1–F5 and R1–R4. Lint found nothing. The line is the shipped tier-free write-off fallback [FLEET#F9.2]. It carries no single tier's signature [FLEET#F4, SUB4#5] and is the guide's §8 in-voice tier-free example. It asserts only the logged `writeoff` event, so it needs no claims [FLEET#F8, EDIT39#6.6]. It is the event-correct neutral fallback the canon prefers to a vivid false claim [DESIGN#D9.3, EDIT26#6.6]. Its fields are right: speech, priority 3 [EDIT39#6.6].
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked all four lines against their tier temperaments (t113 Luxury sniff with no apology, t114 Corporate incident log, t115 Consumer resignation, t116 Budget rage with "Cheers!" bolted on) [FLEET#F4], the "!" allowance for t116's Budget shout [DECISIONS#rows-541-550], each line naming its tile by its landmark rather than a grid code [SUB4#6.2], the glossary and banned terms [FLEET#F2, FLEET#F3], length, plain text, endings and fields [EDIT39#6.6, FSG#field-text], and that no line claims anything an impact on Monument C2 does not log [FLEET#F8, STORY#MC2, DESIGN#D9.3].
+Total: 10.

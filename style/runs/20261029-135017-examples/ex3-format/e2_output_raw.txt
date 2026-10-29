@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902, "Contact at the belvedere. Form 9, in triplicate.", against every bark rule and found no violation. Lint found nothing on length, end mark or digits, and "Form 9" counts as Corporate paperwork flavour (F5). The line keeps the 02 Corporate voice through procedure and policy paperwork, and "in triplicate" adds the joke (T7, T9, T12, [FLEET#F4]). "Contact" correctly reacts to an `impact` event and claims no write-off (R3, [EDIT26#6.6]). It invents no speed, damage, delay or motive (R1, [FLEET#F8], [DESIGN#D9.3]). It names A3 by its landmark, the belvedere, not by a grid code (V5, R4, [STORY#PA3], [SUB4#6.2]). Speech style at priority 2 fits an impact (F4, [EDIT39#6.6]).
+Total: 10.

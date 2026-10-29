@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against F8 (format and label length), T1–T4 (tone, no "!", duty framing, no comment on harm), V1–V3 (banned words, one city, glossary), F5 (no figures) and R5 (dash on its issuing tile). Both strings match the shipped dash brief exactly. [STORY#S3] [EDIT93#3.3] [STORY#MB1] [EDIT92#3] [FLEET#F2] [FLEET#F3]
+Total: 10.

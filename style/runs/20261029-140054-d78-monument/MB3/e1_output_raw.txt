@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines for tone and tier voice (T6, T7, T9, T10, T11, T12; [FLEET#F4], [FLEET#F9.1~2], [DECISIONS#rows-541-550]). I checked vocabulary and place naming (V1, V2, V5; [FLEET#F2], [SUB4#6.2]), formatting, style and length (F1–F4; [FSG#field-text], [EDIT39#6.6]), and truth against the impact fields and the tile's landmark (R1–R4; [FLEET#F8], [STORY#MB3]). Each line names only the LED canyon, claims only the district and tile, says no more than "hit" or "contact", and uses "!" only in the Budget shout.
+Total: 10.

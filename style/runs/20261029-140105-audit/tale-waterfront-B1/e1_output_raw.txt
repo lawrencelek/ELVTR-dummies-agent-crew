@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone (T1–T5) for Farsight's dry, procedural voice with no "!", and against the story frame and glossary (V3, V6, V8; [EDIT92#3], [STORY#S2], [FLEET#F3]). I checked the card length and sentence lengths (F6; [EDIT92#measured]). I checked that the tale names Legs 3, the tile's equipment, and that "the longest flight" matches the JUMP INTO A CAR brief (F7, R5; [STORY#S1], [STORY#S3]). I checked tile truth for the tunnel under the hill (R4; [STORY#WB1], [DECISIONS#rows-301-310~2] row 310). The lint found nothing.
+Total: 10.

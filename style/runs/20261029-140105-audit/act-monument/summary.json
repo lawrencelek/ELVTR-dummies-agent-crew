@@ -1,0 +1,44 @@
+{
+ "case": "act-monument",
+ "class": "audit",
+ "title": "shipped act monument",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 11.5,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 6.6,
+   "output_tokens": 332,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1007425
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 4.9,
+   "output_tokens": 260,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0121999
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1129
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 "A write-off beside the plaque. How quaint." against every rule for the cars, and it breaks none. It fires on `writeoff` (R3), keeps the Luxury tier's amused, superior voice without apologising (T7, [FLEET#F4]), and pairs a polite form with feeling (T9, [FLEET#F2]). It names the B2 landmark from the tile's tale rather than a grid code (V5, R4, [STORY#MB2], [SUB4#6.2]). It invents no speed, damage or motive (R1, R2, [FLEET#F8]), uses no banned or game words (V1, V3, [FLEET#F3]), fits 48 characters in plain speech ending in "." (F1–F4, [FSG#field-text]), and stays a joke rather than a flat report (T12, [SUB4#5]).
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t117–t120). The tier voices hold: Luxury is amused and does not apologise, Corporate is procedural and logs against a target, Consumer is resigned and Budget's rage sits under "Kind regards." [FLEET#F4]. Each line is plain, ends correctly and stays within 48 characters with no lint findings [FLEET#F2, FSG#field-text, EDIT39#6.6]. "!" appears only in the Budget shout [DECISIONS#rows-541-550]. Each line names its tile by its landmark, not the grid code [SUB4#6.2]. "Target was zero" draws only on the tile's tale [STORY#MB2]. No line claims a write-off, speed, zone or motive the impact event does not log [FLEET#F8, DESIGN#D9.3]. No closing tag repeats, so T11 is not triggered [SUB4#6.1].
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label "COMBO ×{n}" and its brief match the combo row of the S3 table word for word: a caps label under 19 characters, then "Coverage gap: chains. The final hit must be link {n} or later of a combo." I checked them against T1–T3 [EDIT92#3], V1 [FLEET#F2], V3 [FLEET#F3], F5 [STORY#S1], F8 [STORY#S3] and R5 [STORY#PB2, STORY#WB2, STORY#MA3]. The figure is a registry placeholder, not a typed value, and the lint found nothing.
+Total: 10.

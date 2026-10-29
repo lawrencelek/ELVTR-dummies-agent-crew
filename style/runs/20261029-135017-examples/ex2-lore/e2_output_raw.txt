@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 against every rule for the cars and found no violation. Tone: the line is polished and faintly amused, which fits the Luxury voice, and it neither apologises nor goes flat (T6, T7, T9, T12; [FLEET#F2], [FLEET#F4], [SUB4#6.1]). Vocabulary: "written off" is the glossary's term, there are no banned words, and the line names the tile's landmark rather than its grid code (V1, V3, V5; [FLEET#F3], [SUB4#6.2]). Format: 40 of 48 characters, plain text, ends in ".", and speech style with priority 3 fits a write-off (F1–F4; [FSG#field-text], [EDIT39#6.6]). Truth: it fires only on `writeoff`, invents nothing beyond the logged fields, and "the monument" is B2's own title, guaranteed by `tile:B2` (R1–R4; [FLEET#F8], [STORY#MB2]).
+Total: 10.

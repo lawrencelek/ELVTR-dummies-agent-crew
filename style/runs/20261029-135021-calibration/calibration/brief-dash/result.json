@@ -1,0 +1,12 @@
+{
+ "id": "brief-dash",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "DASH INTO A CAR Coverage gap: dashes. The final hit must be a dash into a car.",
+ "cost_usd": 0.0185,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the label \"DASH INTO A CAR\" and the brief line against T1–T5 (dry procedural voice, no \"!\", employment framing), V1, V4 and V6, F5 and F8 (a 15-character caps label, then the \"Coverage gap: … The final hit must …\" form), and R5 (the duty matches the dash task). Both strings match the shipped canon word for word. [STORY#S3] [EDIT93#3.3] [STORY#MB1] [EDIT92#3]\nTotal: 10."
+}

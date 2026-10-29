@@ -1,0 +1,12 @@
+{
+ "id": "bark-b012",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "Hit from behind. Story of my life.",
+ "cost_usd": 0.2037,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b012 \"Hit from behind. Story of my life.\" against every car rule. Tone: Consumer resignation in a polite form, which T6, T7 and T9 ask for [FLEET#F4, FLEET#F2]. Vocabulary: no banned term or grid code, and \"life\" is an idiom here, not the game word V3 replaces [FLEET#F2, FLEET#F3]. Format: 34 characters, plain text, ends with \".\", shout style and priority 2 fit an impact [FSG#field-text, EDIT39#6.6]. Truth: the claim zone:rear is guaranteed by zone [\"rear\", \"rearDiagonal\"], and the line invents no speed, damage, fine or motive [FLEET#F8, DESIGN#D9.3]. It matches the shipped line [FLEET#F9.1~2] and the guide's §8 in-voice example.\nTotal: 10."
+}

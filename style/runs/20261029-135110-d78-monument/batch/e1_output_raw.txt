@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- batch · T11 (minor, −1) "Kind regards" Six Budget lines (t104, t112, t124, t128, t132, t136) close on the same short tag, and the limit is two. [SUB4#6.1] Fix: keep it on t104 and t112 and give the other four a different polite tag: t124 "Not outside the neon shops! With respect!", t128 "Not by the cubes, you plank! Respectfully.", t132 "Not in the LED canyon! Thank you SO much!", t136 "Not at the LED gateway! Have a nice day!".
+Total: 10 − 1 = 9.

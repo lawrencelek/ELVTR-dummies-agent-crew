@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the intro against T1–T5 (dry procedural tone, no "!", employment framing, no comment on harm, "you" address), V1–V4, V6 and V8 (no banned terms; the Shenzhen city is the only city; CUSTOMS frame of river, border, ships and papers), and F5 and F9 (no digits; two sentences, within the limit of three). The intro matches the shipped act line word for word. [STORY#S2] [EDIT92#3] [STORY#S1] [EDIT39#4.1.1] [FLEET#F2] [DECISIONS#rows-541-550]
+Total: 10.

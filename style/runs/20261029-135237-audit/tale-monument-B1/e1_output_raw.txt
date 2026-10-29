@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone rules T1–T5 ([EDIT92#3], [STORY#S1], [EDIT39#4.1.1]), its vocabulary and act frame under V1–V8 ([FLEET#F2], [FLEET#F3], [STORY#S2]), the card limits and tale shape under F5–F7 ([EDIT93#3.1/tales-rewritten~2], [STORY#MB1]), and tile and brief truth under R4–R5 ([STORY#MB1], [STORY#S1], [STORY#S3]). The text matches the shipped Edit 93 tale word for word, the lint found nothing, the duty "Dash into a colleague" matches the DASH INTO A CAR brief, and Battery 1 is introduced on the tile that issues it.
+Total: 10.

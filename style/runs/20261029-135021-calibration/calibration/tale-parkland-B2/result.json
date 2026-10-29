@@ -1,0 +1,12 @@
+{
+ "id": "tale-parkland-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefer",
+ "cost_usd": 0.0306,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against T1–T5 for Farsight's tone, V1–V4, V6 and V8 for vocabulary and the Act II frame, F5–F7 for formatting and length, and R4–R5 for tile and duty truth. The source chunks are STORY#PB2 (title, brief COMBO ×{n} and Battery 2 issued here), EDIT92#3 (the board applauds at the B2 turn, quoted exactly), STORY#S1 (introduce, then test), STORY#S3 (the combo brief), EDIT93#3.1/tales-rewritten~1 and EDIT93#3.1/tales-rewritten~2 (shipped text, 223-character cap, no \"!\"), and FLEET#F3 (glossary). The lint found nothing, and judgement found no violation.\nTotal: 10."
+}

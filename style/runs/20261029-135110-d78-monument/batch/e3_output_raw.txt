@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all 36 lines and found no violations. Checks: length, plain text, end marks, style and priority 2 for impact (F1–F4, `EDIT39#6.6`, `FSG#field-text`); "!" only in shout-style Budget barks (T10, `DECISIONS#rows-541-550`); the voice of each tier, including the polite form over Budget rage (T7, T9, `FLEET#F4`); stock endings, with two "Kind regards" and two "Cheers" (T11, `SUB4#6.1`); landmarks only, never grid codes (V5, `SUB4#6.2`); and tile truth against each tile's tale and art. That covers the welcome wall, the podium bridge, the drum lighting bends, the portal tower, the ZERO ACCIDENTS plaque, the neon shopfronts, the leaning cubes, the advertising screens and the gateway's thanks (R4, `STORY#MA1`–`STORY#MC3`, `EDIT92#7`). Also checked: impact lines claim contact but never a write-off (R3, `FLEET#F8`), and the paperwork numbers count as flavour (F5).
+Total: 10.

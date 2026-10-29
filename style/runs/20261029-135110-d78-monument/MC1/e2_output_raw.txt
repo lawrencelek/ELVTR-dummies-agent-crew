@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against Tone T6–T12 [FLEET#F4, FLEET#F2, SUB4#6.1], Vocabulary V1–V8 [FLEET#F2, FLEET#F3, SUB4#6.2], Formatting F1–F5 [EDIT39#6.6, FSG#field-text] and Truth R1–R4 against the impact fields and Monument C1's tale [FLEET#F8, STORY#MC1, EDIT93#3.1/tales-rewritten~1]: each tier's voice holds, t112's "!" is allowed because it is a Budget shout [DECISIONS#rows-541-550], the lines name the drum and not the grid code, and no line claims a drop, damage or motive that wasn't logged.
+Total: 10.

@@ -1,0 +1,12 @@
+{
+ "id": "bark-b045",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "Write-off confirmed.",
+ "cost_usd": 0.1207,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b045 \"Write-off confirmed.\" against every rule for a car. Tone and tier: it is a tier-free line that the guide lists as in voice (§8), and it carries no single tier's signature [FLEET#F4, SUB4#5]. It is the shipped neutral fallback for this event [FLEET#F9.2, EDIT39#6.6, DESIGN#D9.3]. Vocabulary: no banned words, and \"write-off\" is the glossary term [FLEET#F2, FLEET#F3]. Format: 20 characters, plain text, ends with \".\", speech style, priority 3 [EDIT39#6.6, FSG#field-text]. Truth: it fires only on `writeoff` and asserts nothing beyond the event, so it needs no claims [FLEET#F8, EDIT26#6.6]. LINT had no findings.\nTotal: 10."
+}

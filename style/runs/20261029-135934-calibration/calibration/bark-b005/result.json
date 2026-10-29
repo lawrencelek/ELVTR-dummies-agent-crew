@@ -1,0 +1,12 @@
+{
+ "id": "bark-b005",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "Front contact. Incident 4471 opened.",
+ "cost_usd": 0.1905,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b005 against T6, T7, T9, T10 and T12 for tone, V1, V2, V3 and V5 for vocabulary, F1 to F5 for format, and R1 to R3 for truth, and found nothing to deduct: the line is the shipped Corporate front-impact bark [FLEET#F9.1~2], §8 lists it as in voice, Corporate procedure fits tier 02 [FLEET#F4], \"Incident 4471\" is permitted paperwork flavour [STORY#S1, FSG#canon-rules, DESIGN#D9.3], the shout style needs no \"!\" [DECISIONS#rows-541-550], \"Front contact\" claims only zone:front, which its conditions guarantee on an impact event [FLEET#F8, EDIT39#6.6], and lint returned no findings.\nTotal: 10."
+}

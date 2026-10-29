@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I checked b071, "Route committed per policy 6.3.", against the following rules and found no violation:
+  - **Tier voice (T6, T7):** it speaks in Corporate procedure and a policy number, which fits tier 02 [FLEET#F4].
+  - **Bang and stock endings (T10, T11):** it has no "!" and doesn't end on a stock word [DECISIONS#rows-541-550].
+  - **Length and format (F1–F3):** it is 31 characters of plain text and ends with "." [FSG#field-text, FLEET#F2].
+  - **Fields (F4):** mutter at priority 1 fits a commit [FLEET#F9.5].
+  - **Figures (F5):** "policy 6.3" is Corporate paperwork, which the guide treats as flavour, not a statistic [STORY#S1].
+  - **Vocabulary (V1, V3, V5):** it uses no banned word or grid code, and "route" is the right glossary term [FLEET#F3].
+  - **Truth (R1–R3):** "Route committed" asserts only what the commit event logs, and its conditions guarantee the claim cause:body [FLEET#F8, DESIGN#D9.3].
+Total: 10.

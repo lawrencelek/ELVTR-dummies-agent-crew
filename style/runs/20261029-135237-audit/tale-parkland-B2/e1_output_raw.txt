@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tone and employment framing (T1–T5: dry, procedural, no "!", no comment on the harm), the Act II OPENING DAY frame and the fleet glossary (V1–V8), the card length, sentence length and tale shape (F5–F7: place, dry fact, "Battery 2 is fitted", duty in the imperative), and the truth rules (R4–R5). The tale names only Parkland B2's own ring and board, Battery 2 is issued on this tile, and "a chain of three" matches the combo brief. Sources: [EDIT92#3], [STORY#S1], [STORY#S2], [STORY#PB2], [EDIT93#3.1/tales-rewritten~1], [EDIT93#3.1/tales-rewritten~2].
+Total: 10.

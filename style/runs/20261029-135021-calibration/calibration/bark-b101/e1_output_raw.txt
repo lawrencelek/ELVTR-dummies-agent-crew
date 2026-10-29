@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked "Subject has acquired hips." against the following rules. Lint found nothing on length, banned words, "!" or grid codes (F1, V1, T10, V5). The claim `node:hips` is guaranteed by `when.node="hips"` on an `upgrade-seen` event (R1–R3) [FLEET#F8, EDIT39#6.6]. The style and priority suit a chatter line (speech, 1) (F4) [EDIT39#6.6]. "Subject" is the fleet's glossary word for the dummy (V3, V8) [FLEET#F3]. The line fits a worker's voice with no tier's signature, as a tier-free line should (T6, T8) [FLEET#F2, FLEET#F4, SUB4#5]. The deadpan "acquired hips" makes it a joke rather than a flat report (T12) [SUB4#6.1]. It matches the shipped line and its draft source [FLEET#F9.12, EDIT26#3.2].
+Total: 10.

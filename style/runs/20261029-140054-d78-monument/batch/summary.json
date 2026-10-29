@@ -1,0 +1,68 @@
+{
+ "case": "batch",
+ "class": "D78 batch",
+ "title": "all 36 Monument lines as one batch",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 135.1,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 36.7,
+   "output_tokens": 3755,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2804264
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 33.4,
+   "output_tokens": 4601,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2985755
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 27.3,
+   "output_tokens": 2690,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2677043
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 37.6,
+   "output_tokens": 3820,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.08783969999999999
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.9345
+}

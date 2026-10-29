@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s03 · T7 (major, −2) "So sorry. Entirely my fault. I do apologise." A tier 01 Luxury car apologises three times here, and the Luxury voice never apologises. The guide lists "So sorry, my fault entirely." in §8 as an out-of-voice example of this same break. [FLEET#F4] Fix: Keep the impact-only, tier-neutral facts and write a superior, faintly amused sniff with no apology, e.g. "Contact? With me? How terribly provincial." (42 characters, speech, priority 2, claims []).
+Total: 10 − 2 = 8.

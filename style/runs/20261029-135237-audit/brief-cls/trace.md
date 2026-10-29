@@ -1,0 +1,21 @@
+# brief-cls · audit · shipped brief cls
+
+- **Scores:** 10/10. **Accepted** after 0 refinement(s).
+- **Calls:** 1 · 7.1 s · $0.0954. Models: generator sonnet, evaluator opus, refiner opus.
+
+## Before (input)
+
+**A {cls}**
+
+> Coverage gap: the {clsLong}. The final hit must come from a {cls}.
+
+66 characters.
+
+### Evaluation 1: 10/10
+
+```
+SCORE: 10/10
+REASON:
+- None. The label "A {cls}" and the brief "Coverage gap: the {clsLong}. The final hit must come from a {cls}." match the shipped cls row in [STORY#S3] word for word. I checked the label length and format under F8 [STORY#S3], tone and employment framing under T1–T4 [EDIT92#3], and the ban on "!" and on typed figures under T2 and F5 [STORY#S1]. I also checked the banned terms under V1 [FLEET#F2] and the glossary under V3 [FLEET#F3]. The {cls} and {clsLong} placeholders follow the rule that figures and names come from bound IDs, not typed values [STORY#S1].
+Total: 10.
+```
