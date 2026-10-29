@@ -7,7 +7,12 @@
 - **Where:** inside the Project "ELVTR Course - GDD". Its docs and instructions come with it.
 - **First message:** "Read `claude/DUMMIES_Handover_Sound_Design.md` first. Then build the sound designer agent and add the audio."
 - **For code:** use a session with GitHub access. Attach `lawrencelek/ELVTR-dummies-agent-crew` (push).
-- **The audio pack is on your computer.** No session has seen it yet. Bring it one of three ways:
+- **The audio pack is on your computer** (Windows, `legion7`). No session has seen it yet.
+- **Agreed folder:** `Downloads\DUMMIES_audio\` on that computer:
+  - `music\`: the six .ogg tracks, renamed `track1 - <original name>.ogg` to `track6 - <original name>.ogg`.
+  - `sfx\`: the pack's .wav files, names unchanged; subfolders are fine.
+  - `licence\`: the pack's licence text, or a note of its download page.
+- **Bring it one of three ways:**
   1. **Link the chat to your computer.** Open the chat in the Claude desktop app and add the pack's folder. The chat reads the file names and copies what the build needs. *Recommended.*
   2. **Commit it yourself** to `assets/audio/music/` (the .ogg tracks) and `assets/audio/sfx/` (the .wav files). GitHub refuses files over 100 MB and warns over 50 MB.
   3. **Attach a zip** to the first message, if it fits the upload limit.
