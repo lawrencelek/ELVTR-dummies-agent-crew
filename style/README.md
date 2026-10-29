@@ -3,8 +3,9 @@
 ELVTR Multi-Agent Systems, Assignment #6. The write-up is in the submission repository's README
 ([ELVTR-Multiagent-Submission-6](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-6)).
 
-The agent enforces DUMMIES' voice on new text. A generator drafts a bark or a piece of Farsight's copy. An evaluator grades it
-against `STYLE_GUIDE.md` and returns `SCORE: X/10` and `REASON:`. A refiner rewrites it from the REASON. The loop repeats until
+The agent enforces DUMMIES' voice on new text. A generator drafts a bark or a piece of Dummy Corporation's copy. An evaluator
+grades it against the guide and returns `SCORE: X/10` and `REASON:`. Current guide: `STYLE_GUIDE_V2.md` (V2.7, Prototypes 8 to 8.4;
+`--guide v2`). `STYLE_GUIDE.md` (V1, the default) is Prototype 7.13's, when Farsight was the company in the game. A refiner rewrites it from the REASON. The loop repeats until
 a 10/10 is confirmed by a second fresh evaluation, or three refinements. No human step inside.
 
 ```
