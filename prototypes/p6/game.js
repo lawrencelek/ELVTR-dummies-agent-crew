@@ -1302,7 +1302,7 @@
       if (c.det.side) PIX.fillPoly(sp, (x, y) => { if (x % 3 === 0 && y % 3 === 0 && open(x, y)) FB.put(x, y, K.label); });
       PIX.polyline(sp.concat([sp[0]]), (x, y, i) => { if (i % 4 < 2 && open(x, y)) FB.put(x, y, K.label); });
     }
-    if (!blinds.length) return;
+    if (!blinds.length || P['ui.cueKey.simple']) return; // Edit 99 (P8.4): sensor shadows stay clear of hatch, without an outline
     const inSensor = (x, y) => (corA && PIX.inPoly(corA, x + 0.5, y + 0.5)) || sides.some((sp) => PIX.inPoly(sp, x + 0.5, y + 0.5));
     for (const bp of blinds) PIX.polyline(bp.concat([bp[0]]), (x, y, i) => { if (i % 3 === 0 && x >= 0 && y >= 0 && x < AW && y < AH && clip(x, y) && inSensor(x, y)) FB.put(x, y, K.ink); });
   }
@@ -1483,8 +1483,23 @@
     for (const sg of [-1, 1]) add(tx, ty, tx - ca * 5 - sa * sg * 4, ty - sa * 5 + ca * sg * 4);
     for (const [x, y] of pts) FB.put(x, y, K.nose);
   }
+  // Edit 99 (P8.4): a car that has noticed the dummy flashes its headlights (proto.art.noticeFlashHz). Noticed: the dummy in its
+  // caution zone for perception.reactionDelay (c.nearT), the moment the driver starts to plan round it
+  function noticed(s, c) { return !!(c.hz && (c.nearT || 0) >= s.P['perception.reactionDelay'] - 1e-9 && !c.spent); }
+  function flashOn(s, c) { const hz = s.P['proto.art.noticeFlashHz']; return hz > 0 && noticed(s, c) && Math.floor((app.realT + ((parseInt(String(c.id).replace(/\D+/g, ''), 10) || 0) % 7) * 0.05) * hz * 2) % 2 === 0; } // cars out of step
+  // Edit 99: a car that has hit the dummy is spent: grey outline, body dimmed (proto.art.spentGrey)
+  const spentArt = new Map(), SPENT_RIM = PIX.c32('#7C8696'), SPENT_RIM_D = PIX.c32('#3A3F48');
+  function greyCar(S) {
+    if (spentArt.has(S)) return spentArt.get(S);
+    const mix = (c, t) => { const r = c & 255, g = (c >>> 8) & 255, b = (c >>> 16) & 255, g0 = 0x8A, k = t; return (0xFF000000 | (Math.round(b + (g0 - b) * k) << 16) | (Math.round(g + (g0 - g) * k) << 8) | Math.round(r + (g0 - r) * k)) >>> 0; };
+    const d = new Uint32Array(S.d.length);
+    for (let i = 0; i < d.length; i++) { const c = S.d[i]; d[i] = !c ? 0 : c === K.carRim || (!K.carRim && c === K.fleetO) ? SPENT_RIM : c === K.carRimD ? SPENT_RIM_D : mix(c, 0.38); }
+    const G = Object.assign(Object.create(Object.getPrototypeOf(S)), S, { d });
+    spentArt.set(S, G); return G;
+  }
+  const carArt = (s, c) => { const S = carSpr(s, c, c._brk); return c.spent && s.P['proto.art.spentGrey'] ? greyCar(S) : S; };
   function drawCarSprite(s, c) {
-    const S = carSpr(s, c, c._brk), cx = c.x / U, cy = c.y / U;
+    const S = carArt(s, c), cx = c.x / U, cy = c.y / U;
     const pulse = app.realT - (fx.carPulse.has(c.id) ? fx.carPulse.get(c.id) : -9);
     PIX.blit(FB, S, cx, cy, pulse < 0.12 ? K.white : 0);
     c._top = Math.round(cy) + S.top;
@@ -1495,6 +1510,11 @@
     c._lights = null;
     if (blink) { c._lights = []; c._lightsT = app.realT; for (const sd of c.honking ? [-1, 1] : [sig]) for (const e of [1, -1]) for (let j = 0; j < SL; j += 2) { const [x, y] = roof(e * (c.L / 2 - 3 - j * U), sd * (c.W / 2 - 2)); FB.rect(x - 1, y - 1, x, y, K.amber); c._lights.push([x, y]); } }
     if (c.v < -1) for (const sd of [-1, 1]) { const [x, y] = roof(-c.L / 2 + 1, sd * (c.W / 2 - 5)); FB.put(x, y, K.white); }
+    if (flashOn(s, c)) for (const sd of [-1, 1]) { // Edit 99: headlamps, just ahead of the bumper, with a glow on the road
+      const u = c.L / 2 + 3, v = sd * (c.W / 2 - 4), x = Math.round((c.x + u * ca - v * sa) / U), y = Math.round((c.y + u * sa + v * ca) / U) - Math.round(hgt / 2);
+      for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) if (Math.abs(i) + Math.abs(j) <= 3) FB.mix(x + i, y + j, K.beam, 0.55);
+      FB.rect(x - 1, y - 1, x, y, K.white);
+    }
   }
   // Roof marks (4.2.2): state pip and spent slash, drawn after every sprite so nothing occludes them.
   function pip(Bf, cue, cx, cy, loc, f, side) {
@@ -1515,8 +1535,10 @@
   function drawCarMarks(s, c) {
     const P = s.P, hgt = EXT(P['vehicles.' + c.cls + '.height']), ca = Math.cos(c.h), sa = Math.sin(c.h);
     const lf = c._lift || 0, loc = (u, v) => [c.x / U + (u * ca - v * sa) / U, c.y / U - hgt - lf + (u * sa + v * ca) / U];
-    if (c.spent) { const a = loc(-c.L / 2 + 6, c.W / 2 - 3), e = loc(c.L / 2 - 6, -c.W / 2 + 3); PIX.line(a[0], a[1], e[0], e[1], (x, y) => { FB.put(x, y, K.roofInk); FB.put(x, y + 1, K.roofInk); }); }
+    const simple = P['ui.cueKey.simple']; // Edit 99 (P8.4): a spent car is grey (no slash); noticed and slowing read from its lights (no chevron, no triangle)
+    if (c.spent && !simple) { const a = loc(-c.L / 2 + 6, c.W / 2 - 3), e = loc(c.L / 2 - 6, -c.W / 2 + 3); PIX.line(a[0], a[1], e[0], e[1], (x, y) => { FB.put(x, y, K.roofInk); FB.put(x, y + 1, K.roofInk); }); }
     const cue = s.carCue(c);
+    if (simple && (cue === 'intention' || cue === 'caution')) return;
     let f = 1, side = 0;
     if (cue === 'expiring') f = Math.max(0, (c.man.until - s.t) / (P['movement.lungeDuration'] + P['movement.lungeRecovery']));
     if (cue === 'intention') { if (!c.intent) return; side = c.intent.type === 'shift' ? Math.sign(c.intent.d1 - c.intent.d0) : 0; }
@@ -1590,11 +1612,14 @@
       const occ = [];
       if (b.alive && s.meets(c)) occ.push([b.x, b.y, br]);
       for (const o of cars) if (o !== c && Math.hypot(o.x - nx, o.y - ny) < len + o.L) occ.push([o.x, o.y, o.W / 2]);
-      const left = [], right = [];
+      const left = [], right = [], straight = P['proto.art.beamStraight'] > 0; // Edit 99 (P8.4): straight ahead from the nose, as the sensor sees
       for (let k = 0; k <= 8; k++) {
-        const sv = c.s + c.L / 2 + len * k / 8, p = pathAt(c.path, sv), dd = s.plannedD(c, sv), hw = c.W / 2 - 4 + len * 0.2 * k / 8;
+        const hw = c.W / 2 - 4 + len * 0.2 * k / 8;
+        if (straight) { const u = len * k / 8, x = nx + ca * u, y = ny + sa * u; left.push([(x + sa * hw) / U, (y - ca * hw) / U]); right.push([(x - sa * hw) / U, (y + ca * hw) / U]); continue; }
+        const sv = c.s + c.L / 2 + len * k / 8, p = pathAt(c.path, sv), dd = s.plannedD(c, sv);
         left.push([(p.x + p.nx * (dd - hw)) / U, (p.y + p.ny * (dd - hw)) / U]); right.push([(p.x + p.nx * (dd + hw)) / U, (p.y + p.ny * (dd + hw)) / U]);
       }
+      const fl = P['proto.art.noticeFlashHz'] > 0 && noticed(s, c) ? (flashOn(s, c) ? 1.8 : 0.35) : 1; // Edit 99: noticed, the beam flashes
       const R = len / U;
       PIX.fillPoly(left.concat(right.reverse()), (x, y) => {
         const dx = x + 0.5 - nx / U, dy = y + 0.5 - ny / U, dist = Math.hypot(dx, dy), t = dist / R;
@@ -1603,9 +1628,10 @@
           const qx = ox / U - nx / U, qy = oy / U - ny / U, along = (qx * dx + qy * dy) / (dist || 1);
           if (along > 0 && along < dist && Math.abs(qx * dy - qy * dx) / (dist || 1) < orr / U) return;
         }
-        FB.mix(x, y, K.beam, aB * (t < 0.33 ? 1 : t < 0.66 ? 0.6 : 0.3));
+        FB.mix(x, y, K.beam, Math.min(0.9, aB * fl * (t < 0.33 ? 1 : t < 0.66 ? 0.6 : 0.3)));
       });
-      if (c._brk && c.v > 1) {
+      const held = P['proto.art.brakeGlowStopped'] > 0 && (c.state === 'interrupted' || (c.man && c.man.type === 'brake')); // Edit 99: braking for safety shows its brake lights at a standstill too
+      if (c._brk && (c.v > 1 || held)) {
         const bl = P['proto.art.brakeLength'], pts = [[-c.L / 2, -c.W / 2 - 2], [-c.L / 2, c.W / 2 + 2], [-c.L / 2 - bl, c.W / 2 + 8], [-c.L / 2 - bl, -c.W / 2 - 8]].map(([u, v]) => [(c.x + u * ca - v * sa) / U, (c.y + u * sa + v * ca) / U]);
         PIX.fillPoly(pts, (x, y) => { const u = ((x + 0.5) * U - c.x) * ca + ((y + 0.5) * U - c.y) * sa, t = clamp((-c.L / 2 - u) / bl, 0, 1); FB.mix(x, y, K.brakeGlow, aR * (t < 0.4 ? 1 : t < 0.75 ? 0.55 : 0.25)); });
       }
@@ -1838,7 +1864,7 @@
     else if (wh.at === 'rescue') items.push([wh.key, () => drawRescue6(s)]);
     (s.level.checkpoints || []).forEach((cp, i) => { if (!cp.deck && !cp.z) items.push([s.boomPoint(cp).y + 2, () => drawBoom(s, cp, i)]); }); // P6.1: a road leaving the district
     W6.compose(sc, MAIN, DL, {
-      cars, layerOf: (c) => c._layer, items,
+      cars, layerOf: (c) => c._layer, items, extendLayers: !!P['ui.layerEdgeFix'], // Edit 99 (P8.4)
       car: (c, buf, lift) => { into(buf, () => drawCarSprite(s, c)); if (lift) { c._lift = lift; if (c._top != null) c._top -= lift; } },
       under: () => { drawMarks(); if (lvl === 0) { drawLights(s, mine); cues(); } shadows6(s, cars.filter((c) => !elevOf(c)), false); if (wh.at === 'ground') drawBodyGround(s); }, // P6.1: headlights and cues for the dummy's level only
       bodyOn: wh.at === 'layer' ? wh.layer : null, bodyKey: wh.key,
@@ -1849,7 +1875,7 @@
     });
     { const dm = sc.dummyMonument, up = dm && dm.shroud ? shroudLift(s) : null; if (up != null) { PIX.blit(FB, dm.shroud, dm.x, dm.y - up); if (up > 0) drawDrone(s, { x: dm.x * U, y: (dm.y - dm.shroud.oy - up - 2) * U, alt: 0, state: 'lift' }); } } // Edit 94 (P7.13): the circus's monument, shrouded until B2 clears; manual review: a drone lifts the cloth away at the unveiling
     drawStoryFence(s); // Edit 81: a tile in test is fenced
-    for (const c of cars) { ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); relight(c); } // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
+    for (const c of cars) { ghost(carArt(s, c), c.x / U, c.y / U - (c._lift || 0)); relight(c); } // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
     if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
     if (b.alive && b.held) { const p = s.releasePoint(), n = s.carriedCones().length; for (let i = 0; i < n; i++) PIX.blit(FB, PIX.CONE, p.x / U, p.y / U - 4 - 3 * i - bodyLift(s)); } // Edit 78: a stack
     for (const c of mine) drawCarMarks(s, c);
@@ -2978,6 +3004,10 @@
     ['caution', 'Slowing past you'], ['braking', 'Slowing'], ['stoppoint', 'Where it can stop'], ['spent', 'No more points'],
     ['honk', 'Blocked, warning you'], ['blind', 'Cannot sense you'], ['view', 'What you can see'],
   ];
+  const CUE_KEY8 = [ // Edit 99 (P8.4, ui.cueKey.simple): seven rows. Noticed and slowing read from the car's own lights
+    ['notice', 'Has noticed you'], ['committed', 'Route fixed'], ['braking8', 'Slowing'], ['interrupted8', 'Braking for safety'],
+    ['spent8', 'Already hit you'], ['honk', 'Blocked, warning you'], ['view', 'What you can see'],
+  ];
   const cueArt = new Map();
   function cueCanvas(cue) {
     if (cueArt.has(cue)) return cueArt.get(cue);
@@ -2987,6 +3017,15 @@
     const loc = (cx, cy) => (u, v) => [cx + u / U, cy + v / U];
     if (['intention', 'committed', 'expiring', 'interrupted', 'caution'].includes(cue)) { const r = car(false); pip(B, cue, r.cx, r.cy, loc(r.cx, r.cy), cue === 'expiring' ? 0.6 : 1, 0); }
     else if (cue === 'braking') car(true);
+    else if (cue === 'interrupted8' || cue === 'braking8') { // Edit 99: brake lights and their glow on the road behind
+      const S = PIX.car('sedan', 28, 14, EXT(22), 0, true); PIX.blit(B, S, 24, 12);
+      for (let x = 0; x < 10; x++) for (let y = 6; y < 19; y++) B.mix(x, y, K.brakeGlow, x > 5 ? 0.55 : x > 2 ? 0.35 : 0.18);
+      if (cue === 'interrupted8') { const cy = 12 - EXT(22); pip(B, 'interrupted', 24, cy, loc(24, cy), 1, 0); }
+    }
+    else if (cue === 'spent8') { const S = greyCar(PIX.car('sedan', 28, 14, EXT(22), 0, false)); PIX.blit(B, S, 16, 12); }
+    else if (cue === 'notice' || cue === 'notice0') {
+      car(false); if (cue === 'notice') { for (const yy of [8, 14]) B.rect(29, yy, 30, yy + 1, K.white); for (let x = 31; x < 40; x++) for (let y = 6; y <= 16; y++) if (Math.abs(y - 11) <= 3 + (x - 31) * 0.5) B.mix(x, y, K.beam, 0.55); }
+    }
     else if (cue === 'stoppoint') { car(false); PIX.polyline([[33, 4], [36, 4], [36, 18], [33, 18]], (x, y) => B.put(x, y, K.label)); }
     else if (cue === 'spent') { const r = car(false); PIX.line(r.cx - 4, r.cy + 3, r.cx + 4, r.cy - 3, (x, y) => { B.put(x, y, K.roofInk); B.put(x, y + 1, K.roofInk); }); }
     else if (cue === 'honk') { B.rect(15, 1, 24, 18, K.tagBorder); B.rect(16, 2, 23, 17, K.tagFill); PIX.text(B, '!', 19, 4, K.tagInk); }
@@ -3002,10 +3041,11 @@
   function drawCueKey(x, y, w, h) {
     panel(x, y, w, h);
     txt(copy('cueKeyTitle', 'CUE KEY').toUpperCase(), x + 22, y + 40, fLab, FT.accent);
-    const keys = CUE_KEY.filter(([c]) => c !== 'stoppoint' || (app.sim && app.sim.P['proto.stopCue']));
+    const simple = !!(app.sim && app.sim.P['ui.cueKey.simple']), hz = app.sim ? app.sim.P['proto.art.noticeFlashHz'] : 0;
+    const keys = simple ? CUE_KEY8 : CUE_KEY.filter(([c]) => c !== 'stoppoint' || (app.sim && app.sim.P['proto.stopCue']));
     keys.forEach(([cue, meaning], i) => {
-      const yy = y + 58 + i * 44;
-      ctx.imageSmoothingEnabled = false; ctx.drawImage(cueCanvas(cue), x + 20, yy, 80, 40);
+      const yy = y + 58 + i * 44, art = cue === 'notice' && hz > 0 && Math.floor(app.realT * hz * 2) % 2 ? 'notice0' : cue;
+      ctx.imageSmoothingEnabled = false; ctx.drawImage(cueCanvas(art), x + 20, yy, 80, 40);
       txt(meaning, x + 116, yy + 28, fLab, FT.text);
     });
   }
@@ -3578,6 +3618,7 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { faceWords: () => Object.fromEntries(FACE.map((f) => [f[0], faceWord({ id: f[0], w: f[4] }, app.sim).word])), TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
-  window.__dummiesUI = { titleItems, pauseItems, credits: () => !!app.credits, scores: () => hsRead(), scoreTables: () => hsTables().map((t) => t.key), hsLast: () => app.hsLast, saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88. Edit 97 (P8.2): scores, scoreTables, hsLast. Edit 98 (P8.3): saves, hits and slotActs restored (8.2 had commented them out)
+  window.__dummiesUI = { carLook: () => (app.sim ? carsOf(app.sim).filter((c) => !c.ghost).map((c) => ({ id: c.id, noticed: noticed(app.sim, c), flash: flashOn(app.sim, c), spent: !!c.spent, grey: !!(c.spent && app.sim.P['proto.art.spentGrey']), brk: !!c._brk, state: c.state, v: +c.v.toFixed(1) })) : []), // Edit 99 (P8.4)
+    titleItems, pauseItems, credits: () => !!app.credits, scores: () => hsRead(), scoreTables: () => hsTables().map((t) => t.key), hsLast: () => app.hsLast, saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88. Edit 97 (P8.2): scores, scoreTables, hsLast. Edit 98 (P8.3): saves, hits and slotActs restored (8.2 had commented them out)
     controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();

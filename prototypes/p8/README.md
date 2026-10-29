@@ -1,6 +1,16 @@
-# DUMMIES — Prototype 8.3: Dummy Corporation
+# DUMMIES — Prototype 8.4: Dummy Corporation
 
-**Prototype 8.3 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edits 95–98 (`coder/gdd/`), on Prototype 7.13 (Edit 94). Style: `style/STYLE_GUIDE_V2.md` (V2.7). Prototypes 8 to 8.2 stay frozen (`dummies_p8.html`, `dummies_p8_1.html`, `dummies_p8_2.html`); 7 to 7.13 in `../p7/`.
+**Prototype 8.4 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edits 95–99 (`coder/gdd/`), on Prototype 7.13 (Edit 94). Style: `style/STYLE_GUIDE_V2.md` (V2.7). Prototypes 8 to 8.3 stay frozen (`dummies_p8.html` to `dummies_p8_3.html`); 7 to 7.13 in `../p7/`.
+
+Prototype 8.4 (Edit 99): fixes from play. Text unchanged (8.3's).
+- **Cones:** a slow or stopped car at a cone pulls out steeply and steers round it (`proto.driver.coneSteepPass`). No timed drone (`proto.droneConeSeconds` 0).
+  - Headless: a car stopped for the dummy on a cone, the dummy stepping aside: 10 of 11 cars get round (9 into the dummy, a cone-caused hit). 8.3: 7 of 11 waited for the drone.
+- **Lights:** beams straight ahead (`proto.art.beamStraight`). Noticed: headlights flash at 4 Hz (`proto.art.noticeFlashHz`). Braking for safety: brake lights held at a standstill.
+- **Spent cars:** grey outline, body dimmed (`proto.art.spentGrey`).
+- **Cue key:** seven rows (`ui.cueKey.simple`). No chevron, triangle, roof slash, stop bracket or shadow outlines.
+- **Bottom edge:** highway cars enter whole (`ui.layerEdgeFix`). 8.3 smeared the layer's last row over them.
+- **Registry:** `edit99-2026-10-29`, 525 entries. **Open:** D84 (scanner hatch), D83.
+
 
 Prototype 8.3 (Edit 98): less text. An intro screen, a level card, a drone drop.
 - **Intro screen** (`ui.introScreen`): DUMMIES. The dummy steps into the road; a car comes on, front-on. Then START.
@@ -65,23 +75,23 @@ Prototype 8 (Edit 95): the lore refinement. Text only; gameplay is 7.13's.
 python3 style/loop.py --v83                                 # 8.3's text: tales cut, goals, n36 and n37, the batch (user's lines locked)
 python3 style/loop.py --v83-intro style/runs/<id>-v83       # stage 3: the intro line, a hand draft through the loop
 python3 prototypes/p8/make_lore.py style/runs/<id>-v83      # place it: content/story/story_v2.json, prototypes/p8/lore.js
-python3 prototypes/p8/build.py                              # dummies_p8_3.html, p8_3_page.html (Prototypes 8 to 8.2 are frozen)
-cd prototypes/p8 && node test_p83.js docs/p83               # the checks; screenshots and the text inventory in docs/p83/
+python3 prototypes/p8/build.py                              # dummies_p8_4.html, p8_4_page.html (Prototypes 8 to 8.3 are frozen)
+cd prototypes/p8 && node test_p84.js docs/p84               # the checks; screenshots and the text inventory in docs/p84/
 node prototypes/p8/text_audit.js <build.html> <out.json>    # every string a build draws, on a scripted tour
 ```
 
 | File | Role |
 |---|---|
-| `dummies_p8_3.html` | The build. Self-contained; open it in a browser |
-| `p8_3_page.html` | The same, without `<html>` and `<body>`, for a host page |
-| `dummies_p8.html`, `dummies_p8_1.html`, `dummies_p8_2.html` and their pages | Prototypes 8 to 8.2, frozen |
-| `build.py` | Bundles `../jump`, `../p6` (shared code), the fleet, the registry's Prototype 8.3 values (`window.DUMMIES_SIM`), `content/story/story_v2.json`, `lore.js`, `../p7/story.js`, `../controls/pads.js` |
+| `dummies_p8_4.html` | The build. Self-contained; open it in a browser |
+| `p8_4_page.html` | The same, without `<html>` and `<body>`, for a host page |
+| `dummies_p8.html` to `dummies_p8_3.html` and their pages | Prototypes 8 to 8.3, frozen |
+| `build.py` | Bundles `../jump`, `../p6` (shared code), the fleet, the registry's Prototype 8.4 values (`window.DUMMIES_SIM`), `content/story/story_v2.json`, `lore.js`, `../p7/story.js`, `../controls/pads.js` |
 | `make_lore.py` | Writes `story_v2.json` and `lore.js` from a run's `v8_copy.json`. Refuses a run with any piece not accepted |
 | `lore.js` | Generated. `window.DUMMIES_LORE` (notices n01–n37), `window.DUMMIES_CREDITS`, and patches to the bundled content and fleet text |
 | `shell.html` | The page around the scripts |
 | `text_audit.js` | Hooks the canvas's `fillText` on a tour of every screen. Lists strings that name Farsight, and lines over two sentences or 20 words |
-| `test_p83.js` | The checks: the lore layer, the user's lines, the goals, the level card and drone drop (headless and in the page), the intro, the splash, Arcade's grades, the high scores, the frozen builds |
-| `docs/`, `docs/p81/`, `docs/p82/`, `docs/p83/` | Screenshots from the tour; `p8_texts.json`, the strings drawn (8: 291; 8.1: 295; 8.2: 317; 8.3: 321) |
+| `test_p84.js` | The checks: the lore layer, the user's lines, the goals, cones (headless), the level card and drone drop, the intro, the splash, the cue key and car lights, Arcade's grades, the high scores, the frozen builds |
+| `docs/`, `docs/p81/` to `docs/p84/` | Screenshots from the tour; `p8_texts.json`, the strings drawn (8: 291; 8.1: 295; 8.2: 317; 8.3: 321; 8.4: 315) |
 
 - **Gating:** the shared code (`../p6/game.js`, `../p6/world6.js`, `../p7/story.js`) reads the lore layer and `window.DUMMIES_SIM` only when bundled. Without it, every string falls back to 7.13's.
 - **Not drawn, still Farsight:** Prototype 8: CBD and Campus, terminal signage, a fleet model's job, the fleet glossary (D80). 8.1 rewrites CBD and Campus.

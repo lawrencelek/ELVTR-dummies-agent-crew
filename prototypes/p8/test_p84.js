@@ -1,4 +1,10 @@
-// Prototype 8.3 (GDD Edits 95–98) checks. Run from prototypes/p8: node test_p83.js [screenshot folder]
+// Prototype 8.4 (GDD Edits 95–99) checks. Run from prototypes/p8: node test_p84.js [screenshot folder]
+// Edit 99: fixes from play. A slow or stopped car at a cone pulls out steeply and steers round it (proto.driver.coneSteepPass); no
+// drone for a cone a car can pass (proto.droneConeSeconds 0); the drivers' values reach every screen's traffic. Headlight beams run
+// straight ahead (proto.art.beamStraight). A car that has noticed the dummy flashes its headlights (proto.art.noticeFlashHz); braking
+// for safety keeps its brake lights at a standstill (proto.art.brakeGlowStopped); a spent car is grey (proto.art.spentGrey); the
+// cue key has seven rows (ui.cueKey.simple); no stop bracket (proto.stopCue 0); a lifted layer extends past the bottom edge before
+// its cars draw (ui.layerEdgeFix). The text is 8.3's. Prototypes 8 to 8.3 frozen.
 // Edit 98: less text. The intro screen (ui.introScreen): DUMMIES, the dummy steps in front of a car, one line (n36), START. The
 // mode select, STORY first, with the user's two lines (n03, n34). A level card in both modes (ui.levelCard): Story's ACT, tile and
 // level, the tale (15 to 20 words), >>> the goal; Arcade's district, grade, line and goal (n37). After the card a drone drops the
@@ -48,7 +54,7 @@ const RUN = path.join(ROOT, 'style', 'runs', L.run), V8 = JSON.parse(fs.readFile
 const acc = Object.entries(V8.accepted);
 const own = acc.filter(([k]) => !k.includes('/'));
 ok(L.build === 'P8.3' && L.edit === 98 && /-v83$/.test(L.run) && acc.length && acc.every(([, v]) => v) && V8.guide === 'STYLE_GUIDE_V2.md' && V8.base === RUN82 && V8.accepted['intro-line'],
-  `lore.js comes from style run ${L.run} on Style Guide V2.7: ${own.length} pieces of its own (${own.map(([k]) => k).filter((k) => !/^tale-/.test(k)).join(', ')} and ${own.filter(([k]) => /^tale-/.test(k)).length} tales) and ${acc.length - own.length} kept from ${V8.base}, every one accepted at 10/10 and confirmed`);
+  `the text is 8.3's: lore.js comes from style run ${L.run} on Style Guide V2.7: ${own.length} pieces of its own (${own.map(([k]) => k).filter((k) => !/^tale-/.test(k)).join(', ')} and ${own.filter(([k]) => /^tale-/.test(k)).length} tales) and ${acc.length - own.length} kept from ${V8.base}, every one accepted at 10/10 and confirmed`);
 ok(JSON.stringify(N) === JSON.stringify(V8.notices) && JSON.stringify(CR.lines) === JSON.stringify(V8.credits), 'lore.js carries the run\'s notices and credits unchanged');
 
 const S1 = JSON.parse(read('content', 'story', 'story.json')), S2 = JSON.parse(read('content', 'story', 'story_v2.json'));
@@ -107,8 +113,11 @@ ok(JSON.stringify(CR.lines) === JSON.stringify(['DUMMIES', 'A game by Lawrence L
 const REG = JSON.parse(read('content', 'params', 'tuning.parameters.json'));
 const NEW = ['arcade.grades', 'arcade.grade.healthStep', 'arcade.grade.densityStep', 'arcade.grade.max', 'highscore.tableSize'], RB = new Map(REG.entries.map((e) => [e.id, e]));
 const FLAGS = ['ui.introScreen', 'ui.levelCard', 'world.droneDropIn', 'ui.storySplash'], NEW83 = FLAGS.concat(['ui.intro.loopSeconds', 'ui.splash.cycleSeconds']);
-ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && NEW.concat(NEW83).every((k) => RB.has(k)) && ['arcade.grades'].concat(FLAGS).every((k) => RB.get(k).default === 0),
-  `the registry: ${REG.entries.length} entries, ${REG.registryVersion}; new: ${NEW83.map((k) => k + ' ' + RB.get(k).default).join(', ')} (Prototype 8.3 sets the four flags 1). The style limits are IDs in style/style.params.json`);
+const NEW84 = ['proto.driver.coneSteepPass', 'proto.art.beamStraight', 'proto.art.noticeFlashHz', 'proto.art.brakeGlowStopped', 'proto.art.spentGrey', 'ui.cueKey.simple', 'ui.layerEdgeFix'];
+const SET84 = { 'proto.driver.coneSteepPass': 1, 'proto.art.beamStraight': 1, 'proto.art.noticeFlashHz': 4, 'proto.art.brakeGlowStopped': 1, 'proto.art.spentGrey': 1, 'ui.cueKey.simple': 1, 'ui.layerEdgeFix': 1, 'proto.droneConeSeconds': 0, 'proto.stopCue': 0 };
+ok(REG.entries.length === 525 && REG.registryVersion === 'edit99-2026-10-29' && NEW.concat(NEW83, NEW84).every((k) => RB.has(k)) && ['arcade.grades'].concat(FLAGS, NEW84).every((k) => RB.get(k).default === 0)
+  && RB.get('proto.droneConeSeconds').default === 5 && RB.get('proto.stopCue').default === 1,
+  `the registry: ${REG.entries.length} entries, ${REG.registryVersion}; new: ${NEW84.join(', ')} (default 0). Prototype 8.4 sets ${Object.entries(SET84).map(([k, v]) => k + ' ' + v).join(', ')}`);
 
 // Arcade's grades, headless: Prototype 8.2's values from the registry; a write-off every 20 s until the shift's cars run out
 {
@@ -147,23 +156,71 @@ ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && 
     `the level card holds the sim (Arcade and Story); then the drone drop (world.droneDropIn): from x −40, set down at the spawn in ${a.ev && a.ev.seconds} s (Arcade, (${a.to.x}, ${a.to.y})) and ${st.ev && st.ev.seconds} s (Story, Monument A1). Without the flags, Arcade starts in play`);
 }
 
+// Edit 99: cones, headless. The player's flow: a cone at the dummy's feet in a lane; a car stops for the dummy; the dummy steps
+// aside. With Prototype 8.4's driver values the car steers round the cone (or into the dummy, a hit the cone caused); without, it
+// waits for a drone. And the drivers' values reach every screen's traffic
+{
+  const STORY = require('../p7/story.js'), SIM = require('../p6/sim.js');
+  const DRV = { 'proto.driver.coneSteepPass': 1, 'proto.droneConeSeconds': 0 };
+  const t0 = new STORY.StorySim('monument', DRV, STORY.newProgress(), { warm: 0 }), t1 = new STORY.StorySim('monument', {}, STORY.newProgress(), { warm: 0 });
+  const reach = t0.W6.sims.every((x) => x.P['proto.driver.coneSteepPass'] === 1 && x.P['proto.droneConeSeconds'] === 0) && t1.W6.sims.every((x) => x.P['proto.driver.coneSteepPass'] === 0 && x.P['proto.droneConeSeconds'] === 5);
+  ok(reach, `the drivers' values reach all ${t0.W6.sims.length} traffic sims of a district (proto.driver.coneSteepPass, proto.droneConeSeconds); without them, P6's (0, 5)`);
+  const flow = (district, OV, N) => {
+    const D = STORY.districtOf(district), order = D.order, ai = order.indexOf('A2'), st = { n: 0, round: 0, coneHit: 0, drone: 0, otherHit: 0, wait: 0 };
+    const pr = Object.assign(STORY.newProgress(), { done: { [district]: order.slice(0, ai) }, owned: { battery1: true, legs1: true, hands1: true, hands2: true }, gifts: {} });
+    for (const t of order.slice(0, ai + 1)) pr.gifts[district + ':' + t] = true;
+    let seed = 11; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (let trial = 0; trial < N; trial++) {
+      const s = new STORY.StorySim(district, OV, JSON.parse(JSON.stringify(pr)), { warm: 0 }); s.continueBrief(); const rate = s.P['simulation.tickRate'];
+      for (let i = 0; i < rate * (6 + trial); i++) s.step({});
+      let k = 0; while (s.rescue && k++ < 2000) s.step({});
+      const W = s.P['world.width'], H = s.P['world.height'];
+      const cars = s.cars.filter((c) => !c.ghost && c.v > 20 && !c.deck && !(c.layer > 0) && !c.man && c.path.length - c.s > 400 && c.x > 0 && c.x < W && c.y > 0 && c.y < H);
+      if (!cars.length) continue;
+      const c = cars[Math.floor(rnd() * cars.length)], cn = s.cones.find((q) => q.state === 'free'); if (!cn) continue;
+      const q = SIM.pathAt(c.path, c.s + c.L / 2 + 200), cx = q.x + q.nx * c.d, cy = q.y + q.ny * c.d;
+      if (cx < 30 || cx > W - 30 || cy < 30 || cy > H - 30) continue;
+      Object.assign(cn, { x: cx, y: cy, vx: 0, vy: 0, state: 'free' });
+      const b = s.body; Object.assign(b, { x: cx - q.tx * 4, y: cy - q.ty * 4, vx: 0, vy: 0, mode: 'idle', level: 0, floor: null });
+      const id = c.id, find = () => s.W6.sims.flatMap((x) => x.cars).find((o) => o.id === id && !o.ghost);
+      for (let i = 0; i < rate * 8; i++) { s.step({}); const cc = find(); if (!cc || cc.v < 1) break; }
+      Object.assign(b, { x: cx + q.nx * 48, y: cy + q.ny * 48, vx: 0, vy: 0 }); // the dummy steps aside
+      const h0 = b.hits.length; let hit = null, round = false;
+      for (let j = 0; j < rate * 14; j++) {
+        s.step({}); if (b.hits.length > h0) { hit = b.hits[b.hits.length - 1]; break; }
+        const cc = find(); if (!cc) { round = cn.state === 'free'; break; }
+        if (cc.path === c.path && cn.state === 'free' && SIM.pathProject(cc.path, cn.x, cn.y).s < cc.s - cc.L / 2) { round = true; break; }
+        if (cn.state !== 'free' || s.phase !== 'play') break;
+      }
+      st.n++;
+      if (hit) { if (hit.cause === 'cone') st.coneHit++; else st.otherHit++; } else if (round) st.round++; else if (cn.state !== 'free') st.drone++; else st.wait++;
+    }
+    return st;
+  };
+  const N = 8, on = ['monument', 'waterfront'].map((d) => [d, flow(d, DRV, N)]), off = ['monument', 'waterfront'].map((d) => [d, flow(d, {}, N)]);
+  const sum = (L, k) => L.reduce((a, [, x]) => a + x[k], 0), nOn = sum(on, 'n'), nOff = sum(off, 'n');
+  const pass = sum(on, 'round') + sum(on, 'coneHit');
+  ok(nOn >= 8 && pass >= 0.8 * nOn && sum(on, 'drone') <= 0.15 * nOn && sum(off, 'drone') >= 0.5 * nOff,
+    `cones (Monument and Waterfront, ${nOn} cars): the dummy puts a cone down in a lane and stands on it; a car stops for the dummy; the dummy steps 48 units aside. Prototype 8.4: ${sum(on, 'round')} cars steer round the cone, ${sum(on, 'coneHit')} steer round it into the dummy (a hit the cone caused, the Hands 1 goal), ${sum(on, 'drone')} wait for the drone. 8.3's drivers: ${sum(off, 'round')} round, ${sum(off, 'drone')} of ${nOff} wait for the drone`);
+}
+
 // ---------- 2. frozen
 {
   const md5 = (b) => crypto.createHash('md5').update(b).digest('hex');
   const same = (rel) => { try { return md5(execSync('git show HEAD:' + rel, { maxBuffer: 1 << 26, cwd: ROOT })) === md5(fs.readFileSync(path.join(ROOT, rel))); } catch (e) { return false; } };
-  const p6 = ['4', '5', '6', '7', '8', '9', '10'].map((v) => 'prototypes/p6/dummies_p6_' + v + '.html').concat(['prototypes/p8/dummies_p8.html', 'prototypes/p8/p8_page.html', 'prototypes/p8/dummies_p8_1.html', 'prototypes/p8/p8_1_page.html', 'prototypes/p8/dummies_p8_2.html', 'prototypes/p8/p8_2_page.html']);
+  const p6 = ['4', '5', '6', '7', '8', '9', '10'].map((v) => 'prototypes/p6/dummies_p6_' + v + '.html').concat(['prototypes/p8/dummies_p8.html', 'prototypes/p8/p8_page.html', 'prototypes/p8/dummies_p8_1.html', 'prototypes/p8/p8_1_page.html', 'prototypes/p8/dummies_p8_2.html', 'prototypes/p8/p8_2_page.html', 'prototypes/p8/dummies_p8_3.html', 'prototypes/p8/p8_3_page.html']);
   const p7 = ['prototypes/p7/dummies_p7.html'].concat(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'].map((v) => 'prototypes/p7/dummies_p7_' + v + '.html'));
   const frozen = p6.concat(p7).filter(same);
   const b = spawnSync('python3', [path.join(ROOT, 'prototypes', 'p7', 'build.py')], { encoding: 'utf8' });
   ok(frozen.length === p6.length + p7.length && b.status !== 0 && /frozen/.test(b.stderr + b.stdout) && same('prototypes/p7/dummies_p7_13.html'),
-    `dummies_p6_4.html to dummies_p7_13.html, Prototypes 8, 8.1 and 8.2 and their pages (${frozen.length} files) are byte-identical to their commits; prototypes/p7/build.py refuses: "${(b.stderr || b.stdout).trim().slice(0, 60)}…"`);
+    `dummies_p6_4.html to dummies_p7_13.html, Prototypes 8 to 8.3 and their pages (${frozen.length} files) are byte-identical to their commits; prototypes/p7/build.py refuses: "${(b.stderr || b.stdout).trim().slice(0, 60)}…"`);
 }
 
 // ---------- 3. the page
 (async () => {
   let chromium;
   try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP browser checks: playwright not found'); return done(); }
-  const url = 'file://' + path.join(__dirname, 'dummies_p8_3.html');
+  const url = 'file://' + path.join(__dirname, 'dummies_p8_4.html');
   const br = await chromium.launch(), logs = [];
   const ctx = await br.newContext({ viewport: { width: 1300, height: 900 } });
   await ctx.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
@@ -177,18 +234,18 @@ ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && 
   const has = (d, t) => d.join(' ').includes(t); // a wrapped text is drawn line by line
   await pg.goto(url); await pg.waitForTimeout(1500);
   // the intro screen
-  const i0 = await pg.evaluate(() => ({ screen: window.__dummies.screen, drawn: window.__drawn.slice(-40) })); await shot('p83_intro.png');
+  const i0 = await pg.evaluate(() => ({ screen: window.__dummies.screen, drawn: window.__drawn.slice(-40) })); await shot('p84_intro.png');
   ok(i0.screen === 'intro' && i0.drawn.includes('DUMMIES') && has(i0.drawn, N.n36) && i0.drawn.some((t) => /START$/.test(t)),
     `the intro screen first (ui.introScreen): DUMMIES; the dummy steps into the road, a car comes on; "${N.n36}"; START`);
   await clear(); await key('Space', 1, 500);
   const t0 = await pg.evaluate(() => ({ screen: window.__dummies.screen, status: document.getElementById('status').textContent, items: window.__dummiesUI.titleItems(), title: document.title, drawn: window.__drawn.slice(-80) }));
   const sim8 = await pg.evaluate(() => window.DUMMIES_SIM);
-  ok(t0.screen === 'title' && /^P8\.3 /.test(t0.status) && t0.title === 'DUMMIES P8.3' && t0.items.join() === 'STORY,ARCADE,HIGH SCORES,CREDITS'
+  ok(t0.screen === 'title' && /^P8\.4 /.test(t0.status) && t0.title === 'DUMMIES P8.4' && t0.items.join() === 'STORY,ARCADE,HIGH SCORES,CREDITS' && Object.entries(SET84).every(([k, v]) => sim8[k] === v)
     && has(t0.drawn, N.n03) && has(t0.drawn, N.n34) && !has(t0.drawn, N.n01)
     && ['arcade.grades'].concat(FLAGS).every((k) => sim8[k] === 1) && NEW.slice(1).concat(NEW83.slice(4)).every((k) => sim8[k] === RB.get(k).default),
     `START opens the mode select: build ${t0.status.split(' ')[0]}; ${t0.items.join(' · ')}; STORY "${N.n03}"; ARCADE "${N.n34}"; no subtitle line. The page's values are the registry's (${JSON.stringify(sim8)})`);
   const hi = t0.items.indexOf('HIGH SCORES');
-  await key('ArrowRight', hi); await key('Space', 1, 400); await shot('p83_scores_empty.png');
+  await key('ArrowRight', hi); await key('Space', 1, 400); await shot('p84_scores_empty.png');
   const b0 = await pg.evaluate(() => ({ screen: window.__dummies.screen, tables: window.__dummiesUI.scoreTables(), drawn: window.__drawn.slice(-80) }));
   await key('ShiftLeft', 1, 300); const b1 = await pg.evaluate(() => window.__dummies.screen); await key('ArrowLeft', hi);
   ok(b0.screen === 'scores' && b0.tables.join() === 'arcade:parkland,arcade:waterfront,arcade:monument,story' && b0.drawn.includes('HIGH SCORES') && b0.drawn.includes('SAVED IN THIS BROWSER') && b1 === 'title',
@@ -202,19 +259,35 @@ ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && 
   // Arcade: the level card, the drone drop, then a shift in grades
   const sel = await pg.evaluate(() => window.__dummies.titleSel), ai = t0.items.indexOf('ARCADE');
   await key('ArrowRight', (ai - sel + t0.items.length) % t0.items.length); await key('Space', 1, 300); await clear(); await key('Space');
-  await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(800); await shot('p83_arcade_card.png');
+  await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(800); await shot('p84_arcade_card.png');
   const ac = await pg.evaluate(() => { const s = window.__dummies.sim; return { id: s.levelId, name: s.district && s.W6 ? null : null, q: s.quota, tick: s.tick, drawn: window.__drawn.slice(-80) }; });
   await pg.waitForTimeout(400); const tick2 = await pg.evaluate(() => window.__dummies.sim.tick);
   const dname = { monument: 'MONUMENT', parkland: 'PARKLAND', waterfront: 'WATERFRONT' }[ac.id], dline = N[{ monument: 'n24', parkland: 'n25', waterfront: 'n26' }[ac.id]], goal = N.n37.replace('{Q}', ac.q);
   ok(ac.drawn.includes('ARCADE: ' + dname) && ac.drawn.includes('Grade 1 of ' + RB.get('arcade.grade.max').default + '.') && has(ac.drawn, dline) && ac.drawn.includes('>>>') && has(ac.drawn, goal)
     && !ac.drawn.some((t) => /^DISTRICT \d OF 3/.test(t)) && tick2 === ac.tick,
     `Arcade's level card (ui.levelCard): ARCADE: ${dname} · Grade 1 of 5. · "${dline}" · >>> "${goal}". The banner is gone; the shift waits on the card`);
-  await key('Space', 1, 100); await pg.waitForTimeout(500); await shot('p83_arcade_drop.png');
+  await key('Space', 1, 100); await pg.waitForTimeout(500); await shot('p84_arcade_drop.png');
   const d0 = await pg.evaluate(() => { const s = window.__dummies.sim; return { drop: !!(s.rescue && s.rescue.dropIn), phase: s.phase }; });
   await wait(() => window.__dummies.sim.phase === 'play' && !window.__dummies.sim.rescue, 30000);
   const d1 = await pg.evaluate(() => { const s = window.__dummies.sim; return { ev: s.events.filter((e) => e.type === 'drop-in' || e.type === 'dropped-in'), mode: s.body.mode }; });
   const din = d1.ev.find((e) => e.type === 'dropped-in');
   ok(d0.drop && d0.phase === 'play' && din && d1.mode === 'idle' && logs.length === 0, `after the card, a Corporation drone flies the dummy in from the left and sets it down (world.droneDropIn): ${din && din.seconds} s, at (${din && din.x}, ${din && din.y})`);
+  // Edit 99: the cue key, seven rows; a noticed car flashes; a spent car is grey; braking for safety keeps its brake lights
+  await clear(); await key('Escape', 1, 500); const ck = await drawn(); await shot('p84_cue_key.png'); await key('Escape', 1, 300);
+  if (await pg.evaluate(() => window.__dummies.paused)) { await key('Space', 1, 300); } // Resume
+  const ROWS = ['Has noticed you', 'Route fixed', 'Slowing', 'Braking for safety', 'Already hit you', 'Blocked, warning you', 'What you can see'], GONE = ['Slowing past you', 'Commitment ending', 'Where it can stop', 'Cannot sense you', 'No more points'];
+  ok(ROWS.every((t) => ck.includes(t)) && !GONE.some((t) => ck.includes(t)), `the pause screen's cue key: ${ROWS.join(' · ')} (ui.cueKey.simple). Gone: ${GONE.join(', ')}`);
+  const lk = await pg.evaluate(async () => {
+    const s = window.__dummies.sim; s.__step = s.step; s.step = () => {};
+    const cs = s.cars.filter((q) => !q.ghost).slice(0, 3); if (cs.length < 3) return null;
+    cs[0].hz = { kind: 'body', inPath: false, lx: 100, ly: 40 }; cs[0].nearT = 5; cs[1].spent = true; const keep = { state: cs[2].state, v: cs[2].v }; Object.assign(cs[2], { state: 'interrupted', v: 0 });
+    const out = []; for (let i = 0; i < 10; i++) { await new Promise((res) => setTimeout(res, 70)); out.push(window.__dummiesUI.carLook()); }
+    s.step = s.__step; cs[1].spent = false; Object.assign(cs[2], keep); return { ids: cs.map((c) => c.id), out }; // the sim as it was
+  });
+  const lkOf = (k) => (lk ? lk.out.map((L) => L.find((c) => c.id === lk.ids[k])).filter(Boolean) : []);
+  const n0 = lkOf(0), sp1 = lkOf(1), b2 = lkOf(2);
+  ok(lk && n0.every((c) => c.noticed) && n0.some((c) => c.flash) && n0.some((c) => !c.flash) && sp1.every((c) => c.spent && c.grey) && b2.every((c) => c.brk && c.v === 0),
+    `on the road: a car that has noticed the dummy flashes its headlights at ${SET84['proto.art.noticeFlashHz']} Hz (${n0.filter((c) => c.flash).length} of ${n0.length} samples lit); a spent car draws grey; a car braking for safety at a standstill keeps its brake lights`);
   const dd = await pg.evaluate(() => JSON.stringify([window.DUMMIES.DISTRICTS.cbd, window.DUMMIES.DISTRICTS.campus, window.DUMMIES_CONTENT.places.districts.cbd, window.DUMMIES_CONTENT.places.districts.campus, window.FLEET_DB.barks.map((b) => b.text)]));
   ok(!/farsight/i.test(dd) && dd.includes(N.n27), 'in the page: the CBD and Campus districts, their places and every bark name no Farsight');
   // a shift in grades: three write-offs (grade 2 after the quota), then the shift's end; the score, its name, the board
@@ -222,7 +295,7 @@ ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && 
   for (let k = 0; k < 3; k++) {
     await pg.evaluate(() => { const s = window.__dummies.sim, b = s.body; b.hits.push({ kind: 'dash', cls: 'van', combo: 1, assessed: 1200, lost: 30, angle: 90, model: 'VAN-02' }); s.run.points += 1200; b.health = 0; s.writeOff(); s.checkTerminal(); });
     await wait(() => window.__dummies.sim.phase === 'report', 8000); await pg.waitForTimeout(300);
-    if (k === 1) await shot('p83_report_grade.png');
+    if (k === 1) await shot('p84_report_grade.png');
     await key('Space', 1, 400); await key('ShiftLeft', 1, 500); await wait(() => window.__dummies.sim.phase === 'play', 8000);
   }
   await pg.waitForTimeout(300);
@@ -230,12 +303,12 @@ ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && 
   ok(o1.grade === 1 && o2.grade === 2 && o2.hp === Math.round(o1.hp * (1 + RB.get('arcade.grade.healthStep').default)) && /^Grade 1: write off \d+ bodies for grade 2 \(0 of \d+\)\.$/.test(o1.obj) && /^Grade 2:/.test(o2.obj) && o2.toast === N.n35.replace('{G}', '2') && o2.drops === 1,
     `in play: "${o1.obj}" → after the quota, grade 2: "${o2.toast}"; the next chassis ${o1.hp} → ${o2.hp} health; "${o2.obj}". One drone drop a district, not one a write-off`);
   await pg.evaluate(() => { const s = window.__dummies.sim; s.phase = 'play'; s.end('Licensed'); }); await pg.waitForTimeout(800);
-  await shot('p83_ending.png');
+  await shot('p84_ending.png');
   const en = await pg.evaluate(() => ({ last: window.__dummiesUI.hsLast(), sc: window.__dummiesUI.scores(), drawn: window.__drawn.slice(-60) }));
   const row = en.last && (en.sc.tables[en.last.key] || []).find((q) => q.at === en.last.at);
   ok(en.last && en.last.rank === 1 && row && row.name === 'TRAINEE' && row.grade === 2 && row.writeOffs === 3 && en.drawn.includes('HIGH SCORE') && en.drawn.some((t) => /^RANK 1 OF \d+$/.test(t)) && en.drawn.includes('TRAINEE · ' + dname) && en.drawn.includes('Name this score'),
     `the shift's end records the score: ${en.last && en.last.key}, rank ${en.last && en.last.rank}, ${row && row.points} points, grade ${row && row.grade}, as TRAINEE; the ending offers "Name this score"`);
-  await key('Space', 1, 400); await pg.keyboard.type('LEK'); await key('Enter', 1, 500); await shot('p83_scores.png');
+  await key('Space', 1, 400); await pg.keyboard.type('LEK'); await key('Enter', 1, 500); await shot('p84_scores.png');
   const nm = await pg.evaluate(() => ({ screen: window.__dummies.screen, sc: window.__dummiesUI.scores(), drawn: window.__drawn.slice(-80) }));
   await pg.reload(); await pg.waitForTimeout(1200);
   const kept = await pg.evaluate(() => window.__dummiesUI.scores());
@@ -244,18 +317,18 @@ ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && 
     `named on the keyboard: LEK, shown on the board, kept after a reload (this browser): ${JSON.stringify(r1)}`);
   // Story: a new game; the splash; the map; the level card; the drone drop. Then CONTINUE, from where the run left off
   await key('Space', 1, 500); await key('Space', 1, 400); await key('Space', 1, 300); await key('Enter', 1, 600);
-  const sp = await pg.evaluate(() => ({ screen: window.__dummies.screen, drawn: window.__drawn.slice(-30) })); await pg.waitForTimeout(1200); await shot('p83_splash.png');
+  const sp = await pg.evaluate(() => ({ screen: window.__dummies.screen, drawn: window.__drawn.slice(-30) })); await pg.waitForTimeout(1200); await shot('p84_splash.png');
   await clear(); await key('Space', 1, 500);
   const mp = await pg.evaluate(() => ({ screen: window.__dummies.screen, drawn: window.__drawn.slice(-160) }));
   const M = S2.districts.find((d) => d.id === 'monument');
   ok(sp.screen === 'splash' && sp.drawn.includes('STORY') && mp.screen === 'storymap' && has(mp.drawn, M.intro) && !has(mp.drawn, M.tiles.A1.tale),
     `NEW GAME plays the Story splash (ui.storySplash): the dummy's parts fly apart and back; STORY. Then the map, the act line in the tile panel: "${M.intro}"`);
-  await clear(); await key('Space'); await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(800); await shot('p83_card_a1.png');
+  await clear(); await key('Space'); await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(800); await shot('p84_card_a1.png');
   const sc = await pg.evaluate(() => window.__drawn.slice(-80));
   ok(sc.includes('ACT I: MONUMENT') && sc.includes('Tile A1. Level 1 of 27.') && has(sc, M.tiles.A1.tale) && sc.includes('>>>') && has(sc, S2.tasks.any.brief)
     && !sc.includes('TRAINING BRIEF') && !sc.some((t) => /Fenced until cleared/.test(t)) && !sc.includes(M.tiles.A1.title),
     `Story's level card: ACT I: MONUMENT · Tile A1. Level 1 of 27. · "${M.tiles.A1.tale}" · >>> "${S2.tasks.any.brief}". No tile title, TRAINING BRIEF or fence line`);
-  await key('Space', 1, 100); await pg.waitForTimeout(500); await shot('p83_story_drop.png');
+  await key('Space', 1, 100); await pg.waitForTimeout(500); await shot('p84_story_drop.png');
   const s0 = await pg.evaluate(() => { const s = window.__dummies.sim; return !!(s.rescue && s.rescue.dropIn) && s.body.x < 200; });
   await wait(() => window.__dummies.sim.phase === 'play' && !window.__dummies.sim.rescue, 30000);
   const s1 = await pg.evaluate(() => window.__dummies.sim.events.find((e) => e.type === 'dropped-in'));
@@ -268,7 +341,7 @@ ok(REG.entries.length === 518 && REG.registryVersion === 'edit98-2026-10-29' && 
   await br.close();
 
   const tmp = OUT || fs.mkdtempSync(path.join(require('os').tmpdir(), 'p8audit-')), aj = path.join(tmp, 'p8_texts.json');
-  execFileSync('node', [path.join(__dirname, 'text_audit.js'), path.join(__dirname, 'dummies_p8_3.html'), aj].concat(OUT ? [OUT] : []), { stdio: 'pipe', timeout: 600000 });
+  execFileSync('node', [path.join(__dirname, 'text_audit.js'), path.join(__dirname, 'dummies_p8_4.html'), aj].concat(OUT ? [OUT] : []), { stdio: 'pipe', timeout: 600000 });
   const A = JSON.parse(fs.readFileSync(aj, 'utf8'));
   const far = A.texts.filter((t) => /farsight/i.test(t.text)), outside = far.filter((t) => t.where.some((w) => !/\+credits$/.test(w)));
   const reached = ['intro', 'credits (title)', 'high scores (title)', 'arcade card', 'story splash', 'card A1', 'drone drop', 'gift screen (ferry)', 'card B1', 'plaque', 'certified', 'credits (ending)'].filter((x) => A.steps.includes(x));

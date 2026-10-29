@@ -37,6 +37,8 @@
   const apronOf = (st) => { const dir = Math.sign(st.high - st.low); return st.axis === 'y' ? { x: st.x - 8, y: dir < 0 ? st.low : st.low - APRON, w: st.w + 16, h: APRON } : { x: dir < 0 ? st.low : st.low - APRON, y: st.y - 8, w: APRON, h: st.h + 16 }; }; // clear ground beyond a flight's foot
   // P6: solids captured while a screen is built. Every mass, pool and sculpture drawn into the ground records its footprint
   // (16-unit cells, merged into row runs) as a level-0 solid of the screen being built.
+  let TRAFFIC = null; // Edit 99 (P8.4): the drivers' values a player sim passes to every screen's traffic (TRAFFIC_KEYS); null: as before
+  const TRAFFIC_KEYS = ['proto.droneConeSeconds', 'proto.driver.coneSteepPass'];
   let ACCESS = null; // Edit 85 (P7.4): { dropGaps, flightsMin, coneVisible } for a P7 world (world.deckDropGaps, world.deckFlightsMin, props.cone.minVisible); null: 6.x. Edit 91: monument (world.dummyMonument)
   let CAP = null, CAPH = null; // CAPH: the drawn top (art px) of the mass being captured (Edit 75: the jumpable tag)
   function capture(fp, x0, y0, x1, y1, world) { // fp in art px (or world units when world), the box in the same units
@@ -1744,7 +1746,7 @@
       for (const s of sc.sims) {
         Object.assign(s, { admit: NOOP, admitDeck: NOOP });
         if (dki) s.P = Object.assign({}, s.P, { 'world.deckInterval': dki / s.P['traffic.deckGapScale'] });
-        s.P = Object.assign({}, s.P, P6SIM); // Edit 71
+        s.P = Object.assign({}, s.P, P6SIM, TRAFFIC || {}); // Edit 71. Edit 99: the player sim's driver values
         for (const r of recs.filter((q) => q.s === s && q.ends.in)) { // one group per physical inlet: a junction's routes share their approach
           const cls = r.deck != null ? 'deck' + r.elev : s.elev0 && s.lab && s === sc.ringSim ? 'ring' : 'street' + r.elev, key = cls + ':' + r.ends.in.side + Math.round(r.ends.in.off);
           if (!sc.flow.has(cls)) sc.flow.set(cls, { cls, S: cls.startsWith('street') ? SG : SD, groups: new Map(), target: 0, n: 0, rr: 0 });
@@ -1992,6 +1994,7 @@
     PAVN = 0; PAVB = 0;
     opts = opts || {};
     ACCESS = opts.access || null; // Edit 85
+    TRAFFIC = opts.traffic || null; // Edit 99
     const D = DISTRICTS.find((d) => d.id === id);
     if (!D) throw new Error('no P6 district ' + id);
     const scs = [];
@@ -2025,8 +2028,11 @@
   const carKey = (c) => c.y + Math.abs(Math.sin(c.h)) * c.L / 2 + Math.abs(Math.cos(c.h)) * c.W / 2;
   const carSpr = (c) => PIX.car(c.cls, Math.round(c.L / U), Math.round(c.W / U), EXT(P['vehicles.' + c.cls + '.height']), c.h, false);
   // hk: { cars, layerOf(c), car(c, buf, lift), items: [[key, fn]], bodyOn: layer, bodyKey, body(buf, lift), under(), layerUnder(l, buf, cars, me), layerDone(l, cars, me) }
+  let EXTEND = false; // Edit 99 (P8.4): set by a build that extends lifted layers past the bottom edge (render.layerEdgeFix)
+  const rowLit = (L, y) => { if (!EXTEND) return false; for (let x = 0; x < AW; x++) if (L.d[y * AW + x]) return true; return false; };
   function compose(sc, FB, DL, hk) {
     hk = hk || {};
+    if (hk.extendLayers != null) EXTEND = !!hk.extendLayers;
     FB.d.set(sc.B.d);
     if (hk.under) hk.under();
     const items = [], onL = new Map();
@@ -2037,9 +2043,14 @@
     for (const it of hk.items || []) items.push(it);
     for (const p of sc.props) if (!p.podium && !p.tower) items.push([p.key != null ? p.key : p.over ? 1e6 + 1 : p.by, p.draw ? () => p.draw(FB) : () => PIX.blit(FB, p.spr, p.x, p.y)]);
     const drawLayer = (l) => {
-      const Lh = l.L.h || AH, BUF = Lh > DL.h ? (DL._tall && DL._tall.h >= Lh ? DL._tall : (DL._tall = Object.assign(new PIX.Buf(AW, Lh), { layer: DL.layer }))) : DL; // P6.4: a layer that runs past the bottom edge draws its own rows there
+      // Edit 99 (P8.4): a lifted layer whose surface reaches the bottom row continues past the edge by its lift. Its surface row is
+      // extended first, then its cars and props draw into those rows, so a car coming up from the bottom edge is whole. P6.4 to 8.3
+      // smeared the finished bottom row, cars included, down the strip: the streaks and the x-ray checker on cars entering there.
+      const Lh0 = l.L.h || AH, ext = l.lift && Lh0 <= AH && rowLit(l.L, AH - 1) ? l.lift : 0, Lh = Lh0 + ext;
+      const BUF = Lh > DL.h ? (DL._tall && DL._tall.h >= Lh ? DL._tall : (DL._tall = Object.assign(new PIX.Buf(AW, Lh), { layer: DL.layer }))) : DL; // P6.4: a layer that runs past the bottom edge draws its own rows there
       const DLk = DL; DL = BUF; if (BUF !== DLk) BUF.d.fill(0);
       DL.d.set(l.L.d);
+      if (ext) { const row = l.L.d.subarray((AH - 1) * AW, AH * AW); for (let y = AH; y < Lh; y++) DL.d.set(row, y * AW); }
       const cars = onL.get(l) || [], me = hk.bodyOn === l;
       if (hk.layerUnder) hk.layerUnder(l, DL, cars, me);
       const list = cars.map((c) => [carKey(c), () => (hk.car ? hk.car(c, DL, l.lift) : PIX.blit(DL, carSpr(c), c.x / U, c.y / U))]);
@@ -2047,7 +2058,7 @@
       if (me && hk.body) list.push([hk.bodyKey, () => hk.body(DL, l.lift)]);
       list.sort((a, b) => a[0] - b[0]).forEach((it) => it[1]());
       for (let y = 0; y < Lh; y++) { const ty = y - l.lift; if (ty < 0 || ty >= AH) continue; for (let x = 0; x < AW; x++) { const c = DL.d[y * AW + x]; if (c) FB.d[ty * AW + x] = c; } }
-      if (l.lift && Lh <= AH) for (let x = 0; x < AW; x++) { const c = DL.d[(AH - 1) * AW + x]; if (c) for (let ty = AH - l.lift; ty < AH; ty++) FB.d[ty * AW + x] = c; } // a layer running off the bottom edge
+      if (!ext && l.lift && Lh0 <= AH && !EXTEND) for (let x = 0; x < AW; x++) { const c = DL.d[(AH - 1) * AW + x]; if (c) for (let ty = AH - l.lift; ty < AH; ty++) FB.d[ty * AW + x] = c; } // P6.4 to 8.3: a layer running off the bottom edge
       DL = DLk;
       if (hk.layerDone) hk.layerDone(l, cars, me);
     };
@@ -2080,7 +2091,8 @@
       const bud = overrides && overrides['run.appearances.road'] != null ? overrides['run.appearances.road'] : P['run.appearances.road'];
       this.P['run.appearances.road'] = bud;
       const acc = this.P['world.deckDropGaps'] || this.P['world.deckFlightsMin'] || this.P['props.cone.minVisible'] || this.P['world.dummyMonument'] || this.P['world.storyArt'] ? { dropGaps: this.P['world.deckDropGaps'], flightsMin: this.P['world.deckFlightsMin'], coneVisible: this.P['props.cone.minVisible'], monument: this.P['world.dummyMonument'], storyArt: this.P['world.storyArt'] } : null; // Edit 85 (P7.4). Edit 91: the circus's monument. Edit 92: the story's tile art
-      this.W6 = opts.world || buildWorld(id, { budget: bud, warm: opts.warm, access: acc, density: opts.density });
+      const trf = {}; for (const k of TRAFFIC_KEYS) if (overrides && overrides[k] != null) trf[k] = overrides[k]; // Edit 99 (P8.4)
+      this.W6 = opts.world || buildWorld(id, { budget: bud, warm: opts.warm, access: acc, density: opts.density, traffic: Object.keys(trf).length ? trf : null });
       this.reset();
     }
     reset() {

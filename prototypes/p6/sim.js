@@ -151,7 +151,7 @@
     'proto.standoffDistance': 50, 'proto.learn.standoffEnabled': 1, 'proto.learn.standoffStep': 35, 'proto.learn.standoffMax': 190, 'proto.sensorStraight': 1, 'proto.unstick.reverseSpeed': 30, 'proto.unstick.reverseGap': 140, 'proto.unstick.reverseSeconds': 5, 'proto.honkSeconds': 5,
     'proto.scale.unitsPerMetre': 12.2, 'proto.driver.coveredReaction': 0.18, 'proto.driver.cautionZone': 180,
     'proto.driver.cautionSpeed': 82, 'proto.driver.passClearance': 24, 'proto.driver.passSpeed': 55,
-    'proto.driver.patienceSeconds': 8, 'proto.droneSpeed': 240, 'proto.droneLiftSeconds': 0.5,
+    'proto.driver.patienceSeconds': 8, 'proto.driver.coneSteepPass': 0, 'proto.droneSpeed': 240, 'proto.droneLiftSeconds': 0.5,
     'proto.art.shadowScale': 0.3, 'proto.art.crateHeight': 30, 'proto.art.barrierHeight': 14,
     'proto.art.coneHeight': 16, 'proto.art.dummyHeight': 18, 'proto.art.droneHeight': 70,
     'proto.art.extrusion': 0.3, // P3: share of an object's height drawn as screen-up offset (three-quarter view)
@@ -2750,8 +2750,9 @@
       const clear = passing ? P['proto.driver.passClearance'] : 4, ground = lay(c) === 0;
       // on a deck the parapet bounds the swerve: the car's outer side stays on the hard shoulder
       const dMin = -lw, dMax = ground ? P['proto.swerveOuter'] : Math.min(P['proto.swerveOuter'], P['world.deckWidth'] / 2 - P['world.parapetWidth'] - lw / 2 - c.W / 2), need = c.W / 2 + tg.r + clear;
-      // A pass from a close stop pulls out steeply at walking pace.
-      const len = passing ? clamp(tg.lx * 1.1, 40, P['proto.swerveLength']) : P['proto.swerveLength'];
+      // A pass from a close stop pulls out steeply at walking pace. Edit 99 (P8.4): so does a slow car at a cone (proto.driver.coneSteepPass)
+      const steep = passing || (tg.kind === 'cone' && P['proto.driver.coneSteepPass'] > 0 && c.v < P['proto.driver.passSpeed']);
+      const len = steep ? clamp(tg.lx * 1.1, 40, P['proto.swerveLength']) : P['proto.swerveLength'];
       const cones = [];
       for (const cn of ground ? this.cones : []) {
         if (cn.state !== 'free') continue;
