@@ -30,5 +30,5 @@ No API key is stored here. Models: `ANALYST_MODEL`, `CODER_MODEL` (default `opus
 | `writer.py`, `agents/coder.md` | The code-writing step: context, the coder agent, guarded apply, rollback |
 | `verify.py` | Build, smoke, target probes, regression probes, the game's suites |
 | `llm.py` | One headless Claude Code call per agent step, saved; replay |
-| `state/` | `requirements.json` (cached per GDD fingerprint), `ledger.json` (what was built) |
-| `runs/<id>/` | Every input, output, patch, probe result, screenshot; `trace.md` |
+| `state/` | `requirements.json` (cached per GDD fingerprint), `requirements_20261029-104810.json` (what the loop built from), `ledger.json` (what was built or rejected) |
+| `runs/<id>/` | Every input, output, patch, probe result, screenshot; `trace.md`. `20261029-104810` the analyst; `20261029-105801` the loop (five writes); `20261029-122040` after the release (nothing to build); `*-stopped` two runs stopped to fix the agent |
