@@ -20,8 +20,9 @@
 - **Goals:** a brief is the level's goal. Imperative, first. Placeholders kept.
 - **The user's lines:** canon. Monument A1's tale and goal; the STORY and ARCADE card lines (Edit 98 §0).
 - **Cars:** tier voice; at most two sentences.
-- **Guide and loop:** `style/STYLE_GUIDE_V2.md`, 42 rules; text from style run `20261029-205717-v83` (Edit 98 §5).
-- **Ids in `style/style.params.json`:** the `style.*` limits above.
+- **Guide and loop:** `style/STYLE_GUIDE_V2.md` (V2.8), 42 rules; text from style run `20261029-205717-v83`, on V2.7 (Edit 98 §5).
+- **Ids in `style/style.params.json`:** the `style.*` limits above; adjectives `style.v2.tone.maxAdjectives`; slogans `style.v2.slogan.minWords`, `style.v2.slogan.maxTexts`.
+- **Open:** tales cluster at the 20-word cap (D85).
 
 ## 3 Story frame (Narrative A, Certified: Edit 92; restated Edit 95 §3.3)
 
@@ -100,6 +101,6 @@
 ## 11 Builds and records
 
 - **Current build:** `prototypes/p8/dummies_p8_4.html` (Edit 99). Prototypes 8–8.3 and 1–7.13 frozen.
-- **Decisions:** `DECISIONS.md`, rows 1–586; open items in its D table (newest D77–D84).
+- **Decisions:** `DECISIONS.md`, rows 1–590; open items in its D table (newest D77–D85).
 - **Text sources:** `content/story/story_v2.json`, `prototypes/p8/lore.js`. Prototype 7.13 keeps `story.json` and Farsight.
 - **Style Guide Agent:** Assignment 6, `style/` (V1 for 7.13; V2 for 8).

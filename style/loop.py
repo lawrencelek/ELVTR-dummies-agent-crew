@@ -38,6 +38,7 @@ STYLE = ROOT / "style"
 RUNS = STYLE / "runs"
 P = lint.PARAMS
 FLEET, STORY = lint.FLEET, lint.STORY
+STORY_V2 = json.loads((ROOT / "content" / "story" / "story_v2.json").read_text(encoding="utf-8"))   # V2's goals for the slot facts
 TIERS = {t["tier"]: t for t in FLEET["tiers"]}
 DIST = {d["id"]: d for d in STORY["districts"]}
 CODE = {"monument": "M", "parkland": "P", "waterfront": "W"}
@@ -88,10 +89,11 @@ def set_guide(v):
 def tile_facts(district, tile):
     d = DIST[district]
     t = d["tiles"][tile]
-    label, brief = style_kb.task_text(STORY["tasks"], STORY["classes"], t["task"])
+    src = STORY_V2 if VERSION == "v2" else STORY      # V2: the goal as Prototype 8.3 ships it (Edit 98), not 7.13's "Coverage gap" brief
+    label, brief = style_kb.task_text(src["tasks"], src["classes"], t["task"])
     gift = style_kb.node_name(t["gift"]["node"]) if t.get("gift") else "none"
     return (f"{d['name']} {tile} · {t['title']} ({d['act']}; tile {d['order'].index(tile) + 1} of {len(d['order'])}). "
-            f"Brief: {label}. {brief} Equipment issued here: {gift}. Chunk: STORY#{CODE[district]}{tile}.")
+            f"{'Goal' if VERSION == 'v2' else 'Brief'}: {label}. {brief} Equipment issued here: {gift}. Chunk: STORY#{CODE[district]}{tile}.")
 
 
 def slot_text(piece):
@@ -157,7 +159,7 @@ def slot_text(piece):
         out += ["- Kind: credits, Prototype 8's Credits card (title menu; after the CERTIFIED ending). Extra-diegetic: Farsight, the publisher, is named here and only here.",
                 '- Schema: {"kind": "credits", "lines": ["…"]}']
     if VERSION == "v2" and k != "barks":
-        out.append(f"- Every text: at most {P['style.v2.text.maxSentences']} sentences. A tale: {P['style.v2.tale.minWords']} to {P['style.v2.tale.maxWords']} words (GDD Edit 97); any other text: at most {P['style.v2.text.maxWords']} (GDD Edit 95).")
+        out.append(f"- Every text: at most {P['style.v2.text.maxSentences']} sentences. A tale: {P['style.v2.tale.minWords']} to {P['style.v2.tale.maxWords']} words (GDD Edit 98); any other text: at most {P['style.v2.text.maxWords']} (GDD Edit 95).")
     return "\n".join(out)
 
 
@@ -252,6 +254,8 @@ def check_eval(text, findings):
     m = SCORE_RX.search(text)
     if not m:
         return None, ["the first line must be 'SCORE: <X>/10'"]
+    if not text.lstrip().startswith("SCORE:"):
+        probs.append("the first line must be 'SCORE: <X>/10': nothing may come before it")
     score = int(m.group(1))
     if not 1 <= score <= 10:
         probs.append("SCORE must be 1–10")

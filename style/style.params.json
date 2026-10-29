@@ -207,6 +207,42 @@
    "source": "GDD Edit 95 §3.2"
   },
   {
+   "id": "style.v2.tone.maxAdjectives",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Adjectives per sentence (V2)",
+   "description": "Adjectives one sentence of Dummy Corporation's text may carry (T13). Intensifiers are banned outright.",
+   "unit": "adjectives",
+   "type": "number",
+   "default": 1,
+   "status": "proposed (assistant, 30 October): the number in T13 since V2.0",
+   "source": "GDD Edit 95 §3.2 (\"few adjectives\")"
+  },
+  {
+   "id": "style.v2.slogan.minWords",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Slogan length (V2)",
+   "description": "Words in a phrase that counts as a slogan when it recurs across a batch (T14).",
+   "unit": "words",
+   "type": "number",
+   "default": 4,
+   "status": "proposed (assistant, 30 October): the number in T14 since V2.1",
+   "source": "Submission 4 §6.1; Play Station (2017)"
+  },
+  {
+   "id": "style.v2.slogan.maxTexts",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Slogan repeats per batch (V2)",
+   "description": "Texts in one batch that may share a slogan (T14). Was style.bark.maxStockEndings, a bark parameter.",
+   "unit": "texts",
+   "type": "number",
+   "default": 2,
+   "status": "proposed (assistant, 30 October): the number in T14 since V2.1",
+   "source": "Submission 4 §6.1; Play Station (2017)"
+  },
+  {
    "id": "style.v2.tale.minWords",
    "group": "Style",
    "owner": "Narrative",

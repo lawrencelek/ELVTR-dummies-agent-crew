@@ -16,6 +16,7 @@
 - **V2.5** (29 October): F6 sets a tale at 15 to 35 words (`style.v2.tale.minWords`, `style.v2.tale.maxWords`); F11: the tile's content sets the length (GDD Edit 97). Prototype 8.1's tales all ran 25 to 35.
 - **V2.6** (29 October): F11 asks for the shortest tale that keeps place, duty, equipment and one detail, and for lengths that vary across a batch. The V2.5 redraft still ran 22 to 35 words (mean 30.7) (run `20261029-181530-v82`).
 - **V2.7** (29 October): tales 15 to 20 words (`style.v2.tale.maxWords` 20); F8 makes a brief a goal; U1, the user's own lines, are canon (GDD Edit 98).
+- **V2.8** (30 October): no rule changes. T13 and T14's numbers get IDs (`style.v2.tone.maxAdjectives`, `style.v2.slogan.minWords`, `style.v2.slogan.maxTexts`). A clean piece's note may run past one sentence. V2.7 wrote Prototype 8.3's and 8.4's text.
 - **Sources** are chunk IDs from `style/kb/manifest_v2.json`. **Statistics** are IDs in `style/style.params.json`.
 
 ## 0 What it governs
@@ -63,7 +64,7 @@ REASON:
 Total: 10 − <n> − <n> = <X>.
 ```
 
-- Nothing follows the `Total:` line. A clean piece: `- None.`, one sentence naming what was checked, `Total: 10.`
+- The first line is the `SCORE` line. Nothing follows the `Total:` line. A clean piece: `- None.`, a short note of what was checked, `Total: 10.`
 
 ## 2 Tone
 
@@ -81,8 +82,8 @@ Total: 10 − <n> − <n> = <X>.
 | T10 | Cars | "!" only in a shout-style bark or a Budget (04) bark. | `DECISIONS#rows-541-550` (row 541) | Lint `bang` | major |
 | T11 | Cars | A batch does not lean on stock endings: at most two lines share a stock word or a closing tag (`style.bark.maxStockEndings`). | `SUB4#6.1` | Lint `stock` | minor |
 | T12 | Cars | A line is a feeling or a joke, not a flat report. | `SUB4#6.1` | Judge | minor |
-| T13 | Dummy Corporation | Few adjectives. At most one per sentence. No intensifiers (very, truly, really, incredibly, extremely, amazing). | `EDIT95#3.2` | Lint `adjectives` (intensifiers); judge the count | minor |
-| T14 | Dummy Corporation | A batch does not lean on one slogan. No phrase of four or more words recurs in more than two texts (`style.bark.maxStockEndings`). | `SUB4#6.1`, `PLAY#PS5` (the 2017 script repeats its slogan once) | Lint `repeats` | minor |
+| T13 | Dummy Corporation | Few adjectives. At most one per sentence (`style.v2.tone.maxAdjectives`). No intensifiers (very, truly, really, incredibly, extremely, amazing). | `EDIT95#3.2` | Lint `adjectives` (intensifiers); judge the count | minor |
+| T14 | Dummy Corporation | A batch does not lean on one slogan. No phrase of four or more words (`style.v2.slogan.minWords`) recurs in more than two texts (`style.v2.slogan.maxTexts`). | `SUB4#6.1`, `PLAY#PS5` (the 2017 script repeats its slogan once) | Lint `repeats` | minor |
 
 ## 3 Vocabulary and lore
 

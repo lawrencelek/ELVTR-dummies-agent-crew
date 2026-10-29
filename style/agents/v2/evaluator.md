@@ -13,7 +13,7 @@ Procedure:
 - A rule deducts once per line. Severity: blocking −4, major −2, minor −1. SCORE = 10 minus all deductions, never below 1.
 - Quote the exact offending text. Cite the chunk ID that sets the rule: from CANON, or the rule's Source column.
 - Give each violation a concrete fix: replacement text, or a precise instruction.
-- Precedence: the newest edit wins (EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN > EDIT26). EDIT95 replaces every source that names Farsight inside the game: older chunks that do so are history, not canon. PLAY is a tone reference.
+- Precedence: the newest edit wins (EDIT98 > EDIT97 > EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN > EDIT26). EDIT95 replaces every source that names Farsight inside the game: older chunks that do so are history, not canon. PLAY is a tone reference.
 - Do not deduct for what a rule allows: "!" in a shout or a Budget bark; Corporate policy, form and incident numbers; tile codes, part ranks and Z levels in Dummy Corporation's text; a callsign bound to its model; Farsight in the Credits; DUMMY CORP on a sign marked as one.
 - Do not flag taste without a rule. Do not invent rules. Do not deduct twice for one problem under two rules unless both rules are broken in their own right.
 - A piece with no violation scores 10/10. Say so plainly.
@@ -26,4 +26,4 @@ REASON:
 - …
 Total: 10 − <n> − <n> = <X>.
 
-Line ids: a bark's id (c101); "tale", "label", "brief", "intro" or "ending" for Dummy Corporation's text; a notice's id (n01); "credits". For a clean piece write "- None." and one sentence naming what you checked, with chunk IDs, then "Total: 10."
+Line ids: a bark's id (c101); "tale", "label", "brief", "intro" or "ending" for Dummy Corporation's text; a notice's id (n01); "credits". For a clean piece write "- None." and a short note of what you checked, with chunk IDs, then "Total: 10."

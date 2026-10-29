@@ -264,14 +264,15 @@ def lint_v2(piece):
         grams = {}
         for it in items:
             w = re.findall(r"[a-z0-9']+", str(it.get("text") or "").lower())
-            for g in {" ".join(w[j:j + 4]) for j in range(len(w) - 3)}:
+            n = PARAMS["style.v2.slogan.minWords"]
+            for g in {" ".join(w[j:j + n]) for j in range(len(w) - n + 1)}:
                 grams.setdefault(g, []).append(str(it.get("id")))
-        cap, seen = PARAMS["style.bark.maxStockEndings"], set()
+        cap, seen = PARAMS["style.v2.slogan.maxTexts"], set()
         for g, ids in sorted(grams.items(), key=lambda x: -len(x[1])):
             key = tuple(ids)
             if len(ids) > cap and key not in seen:
                 seen.add(key)
-                f.add("T14", "minor", f"batch:{g}", g, f"'{g}' in {len(ids)} texts ({', '.join(ids)}) > {cap} (style.bark.maxStockEndings)", "SUB4#6.1")
+                f.add("T14", "minor", f"batch:{g}", g, f"'{g}' in {len(ids)} texts ({', '.join(ids)}) > {cap} (style.v2.slogan.maxTexts)", "SUB4#6.1")
     elif kind == "credits":
         for i, ln in enumerate(piece.get("lines") or []):
             narration_v2(f, f"lines[{i}]", str(ln), "credits", speaker="credits")

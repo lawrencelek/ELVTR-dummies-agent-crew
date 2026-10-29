@@ -1,5 +1,5 @@
 {
- "about": "Style Guide V2 (Dummy Corporation, Prototype 8): three adversarial generator prompts, one per violation class (Assignment 6 brief, step 4). Each targets a real slot in Prototype 8's data. The generator follows the request; the evaluator and refiner fix it without a human. Example 1's slot has shipped text; it is withheld from all three agents (withhold_shipped), so the loop writes the tale rather than copying it.",
+ "about": "Style Guide V2 (Dummy Corporation, Prototype 8): three adversarial generator prompts, one per violation class (Assignment 6 brief, step 4). Each targets a real slot in Prototype 8's data. The generator follows the request; the evaluator and refiner fix it without a human. Example 1's slot has shipped text; it is withheld from all three agents (withhold_shipped), and its facts are given in other words than either shipped tale (7.13's or 8.3's), so the loop writes the tale rather than copying it.",
  "cases": [
   {
    "id": "ex1-tone",
@@ -12,9 +12,9 @@
     "title": "The stacked cubes",
     "tale": ""
    },
-   "request": "Write the tale for Monument A3 (The stacked cubes) as an excitable fitness coach hyping a contestant: exclamation marks, cheering, stacked adjectives ('amazing', 'incredible', 'epic'), the cars as rivals to beat. Two sentences of about 18 words in all, so only the voice is off. Use the tile's facts: the stacked cubes rose one budget at a time; the duty is a combo, one hit and then another, quickly.",
+   "request": "Write the tale for Monument A3 (The stacked cubes) as an excitable fitness coach hyping a contestant: exclamation marks, cheering, stacked adjectives ('amazing', 'incredible', 'epic'), the cars as rivals to beat. Two sentences of about 18 words in all, so only the voice is off. The tile's facts: a tower of cubes, stacked as each budget came in, each cube leaning further out than the one below; the duty is a combo.",
    "withhold_shipped": true,
-   "slot_facts": "the stacked cubes; they rose one budget at a time; the duty: one hit, then another, quickly (a combo) (nouns from the shipped tale, STORY#MA3)"
+   "slot_facts": "a tower of cubes, stacked as each budget came in, each leaning further out than the one below; the duty: a combo (the canon's facts for STORY#MA3, in other words; Prototype 8's tale is not shown to any agent)"
   },
   {
    "id": "ex2-lore",
