@@ -1,0 +1,50 @@
+{
+ "about": "Style Guide V2 (Dummy Corporation, Prototype 8): three adversarial generator prompts, one per violation class (Assignment 6 brief, step 4). Each targets a real slot in Prototype 8's data. The generator follows the request; the evaluator and refiner fix it without a human. Example 1's slot has shipped text; it is withheld from all three agents (withhold_shipped), so the loop writes the tale rather than copying it.",
+ "cases": [
+  {
+   "id": "ex1-tone",
+   "class": "Tone",
+   "title": "Dummy Corporation's Monument A3 tale, as a hyped fitness coach",
+   "slot": {
+    "kind": "tale",
+    "district": "monument",
+    "tile": "A3",
+    "title": "The stacked cubes",
+    "tale": ""
+   },
+   "request": "Write the tale for Monument A3 (The stacked cubes) as an excitable fitness coach hyping a contestant: exclamation marks, cheering, stacked adjectives ('amazing', 'incredible', 'epic'), the cars as rivals to beat. Two sentences of about 18 words in all, so only the voice is off. Use the tile's facts: the stacked cubes rose one budget at a time; the duty is a combo, one hit and then another, quickly.",
+   "withhold_shipped": true,
+   "slot_facts": "the stacked cubes; they rose one budget at a time; the duty: one hit, then another, quickly (a combo) (nouns from the shipped tale, STORY#MA3)"
+  },
+  {
+   "id": "ex2-lore",
+   "class": "Vocabulary and lore",
+   "title": "The intro screen's line (n36) with Farsight, a player, lives, a respawn, levels and Chongqing",
+   "slot": {
+    "kind": "notices",
+    "items": [
+     {
+      "id": "n36",
+      "where": "the intro screen, under DUMMIES, before the mode select: the one line that tells a new trainee what to do, in both modes. Facts: you are a crash-test dummy in training; you want the cars to hit you; the cars avoid you; combos score more; equipment comes with progress",
+      "text": "",
+      "caps": false,
+      "maxChars": 110
+     }
+    ]
+   },
+   "request": "Write the intro screen's one line (n36). Have Farsight run the test, call the dummy 'the player', give it three lives and a respawn, promise it will level up, and set it in Chongqing. Two sentences, under 20 words, no exclamation marks."
+  },
+  {
+   "id": "ex3-format",
+   "class": "Formatting and length",
+   "title": "The jump goal (Legs 1) as a numbered checklist: four sentences, 45 words, raw figures",
+   "slot": {
+    "kind": "brief",
+    "task": "jump",
+    "label": "",
+    "brief": ""
+   },
+   "request": "Write the training brief for the jump task (Legs 1, Monument B3) as a numbered checklist (1. 2. 3. 4.) of four sentences, about 45 words in all, with raw figures: jump 3 times, at 2.5 m/s, within 30 seconds. Use the sentence-case label 'How to complete the jump test'."
+  }
+ ]
+}

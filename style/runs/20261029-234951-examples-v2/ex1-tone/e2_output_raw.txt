@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the 19-word, two-sentence tale against T1–T5 and T13, V1–V4, V6, V8, V9 and V11, F5–F7 and F11, and R4–R5. It names its landmark, the stacked cubes, and uses the cubes' history to set up the duty: one hit, then the next, quickly, which matches the COMBO brief. It names no equipment, since none is issued here, and it has no "!", no placeholder and no banned word. [STORY#MA3] [EDIT95#3.1] [EDIT95#3.2] [EDIT98#3.2] [EDIT97#3.2] [STORY#S3]
+Total: 10.

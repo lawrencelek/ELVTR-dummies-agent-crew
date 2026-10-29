@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked both sentences of the tale against every rule for Dummy Corporation's text, and nothing breaks one. Tone is T1–T5 and T13: the line is flat and motivating, has no "!", frames the work as training, uses a direct imperative and has no intensifiers [EDIT95#3.2, PLAY#PS2]. Vocabulary is V1–V11: no banned words, it fits the INDUCTION frame, and it turns the stacked cubes landmark toward the duty [EDIT95#3.1, EDIT95#3.3]. Format is F5, F6 and F11: 19 words in two sentences with no figures or placeholders, and a short tale suits this tile's single image [EDIT98#3.2, EDIT97#3.2]. Truth is R4 and R5: it names only the tile's landmark, its duty matches COMBO ×{n} ("one hit, then the next, quickly"), and it names no equipment on a tile that issues none [STORY#MA3, EDIT93#3.1].
+Total: 10.

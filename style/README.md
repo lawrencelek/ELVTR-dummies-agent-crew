@@ -11,6 +11,7 @@ a 10/10 is confirmed by a second fresh evaluation, or three refinements. No huma
 python3 style/lint.py --shipped                    # the lint over every shipped string; no model calls
 python3 style/style_kb.py                          # rebuild the knowledge base; chunk counts
 python3 style/loop.py --examples                   # the three adversarial examples
+python3 style/loop.py --guide v2 --examples        # the same on Style Guide V2 (Dummy Corporation): cases/examples_v2.json
 python3 style/loop.py --calibrate                  # the evaluator alone: shipped strings vs seeded violations
 python3 style/loop.py --d78 monument               # real content: tile barks, per tile, then as one batch
 python3 style/loop.py --audit                      # real content: every shipped tale, brief, act line, the ending
@@ -30,7 +31,7 @@ Models: `STYLE_GEN_MODEL` (default `sonnet`), `STYLE_EVAL_MODEL` and `STYLE_REFI
 | `agents/generator.md`, `evaluator.md`, `refiner.md` | The three agents' system prompts. The evaluator and refiner also get the whole guide |
 | `llm.py` | One fresh headless `claude -p` call per step, no tools, no shared memory; every input and output saved; replay |
 | `loop.py` | The loop, the jobs, the traces |
-| `cases/` | `examples.json` (three adversarial prompts), `calibration.json` (shipped and seeded items) |
+| `cases/` | `examples.json` (three adversarial prompts, V1), `examples_v2.json` (three, V2), `calibration.json` (shipped and seeded items) |
 | `runs/<id>/` | Every input, output, lint result and piece, a `trace.md` per case and per run, and the guide the run read (`STYLE_GUIDE.snapshot.md`) |
 | `publish_submission.sh` | Copies `style/` and the inputs it reads into the submission repository |
 

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label against F8 [EDIT98#3.2]: it is 15 characters, so it fits the 19-character cap. I checked the brief against F8 [STORY#S3]: it starts with an imperative, names the final hit, and drops the "coverage gap" framing. It is 2 sentences and 13 words, within F6 [EDIT95#3.2]. It has no "!", which meets T2 [EDIT95#3.2]. It keeps the training frame of T3 and the glossary of V3 [EDIT95#3.1], and its duty matches the jump task under R5 [STORY#S1].
+Total: 10.

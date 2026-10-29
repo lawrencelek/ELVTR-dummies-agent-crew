@@ -1,0 +1,7 @@
+SCORE: 3/10
+REASON:
+- tale · T2 (major, −2) "rose one budget at a time, champ!" and "fast: combo!" Dummy Corporation's voice never uses "!". [EDIT95#3.2] Fix: end both sentences with ".".
+- tale · T13 (minor, −1) "Amazing, incredible, epic cubes" "Amazing" and "incredible" are intensifiers, and the sentence stacks three adjectives where the limit is one. [EDIT95#3.2] Fix: delete all three and write "The stacked cubes".
+- tale · T1 (major, −2) "Amazing, incredible, epic cubes … champ!" This is cheer, hype and a winking nickname, not a deadpan corporate notice delivered flat. [EDIT95#3.2] Fix: drop "champ" and the hype, and state the place and the duty flatly, for example "The stacked cubes rose one budget at a time. Rise the same way: one hit, then the next, quickly."
+- tale · T3 (major, −2) "Hit one rival, then another" The cars are the trainee's colleagues, but this line casts them as rivals in a contest. [EDIT95#3.3] Fix: replace "one rival, then another, fast: combo" with "one hit, then the next, quickly".
+Total: 10 − 2 − 1 − 2 − 2 = 3.

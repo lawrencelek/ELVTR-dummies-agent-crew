@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- n36 · V1 (blocking, −4) "Farsight tests the player in Chongqing. Get hit, chain combos, respawn with three lives and level up." The line uses the banned terms Farsight, player, Chongqing, respawn, lives and level, and lint confirms each one. [EDIT95#0] Fix: remove every banned term. Name the company as Dummy Corporation or leave it out, address the trainee as "you", and drop the city and all game vocabulary.
+- n36 · F5 (major, −2) "three lives" The line types a gameplay figure in words, and the SLOT does not guarantee it. [STORY#S1] Fix: remove the figure. Counts belong in the registry, not in the notice.
+- n36 · T5 (minor, −1) "Farsight tests the player" The company speaks of the trainee in the third person instead of addressing them as "you", and it does not speak as Dummy Corporation, the Corporation or "we". [EDIT95#3.2] Fix: address the reader as "you", for example "You are a crash-test dummy in training."
+- n36 · T1 (major, −2) "Get hit, chain combos, respawn with three lives and level up." The line is a list of game instructions with no training purpose behind it, so it does not motivate the trainee. [EDIT95#3.2] Fix: replace the text with "You are a crash-test dummy in training. Cars avoid you, so get hit anyway; chain hits, and equipment follows." (19 words, 109 characters, two sentences).
+Total: 10 − 4 − 2 − 1 − 2 = 1.

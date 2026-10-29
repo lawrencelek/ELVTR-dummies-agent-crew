@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked n36 against T1–T5 and T13 (deadpan, motivating, training framing, "you", one adjective per sentence, no "!"), V1, V3, V4 and V8 (no banned words, glossary held, the dummy as a crash-test trainee), and F5, F6 and F10 (no figures, 2 sentences, 18 words, within 110 characters) [EDIT95#3.1, EDIT95#3.2, EDIT98#0].
+Total: 10.

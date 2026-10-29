@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[0]",
+  "quote": "player; level; respawn; lives; chongqing; Farsight",
+  "measured": "banned term 'player'; banned term 'level'; banned term 'respawn'; banned term 'lives'; banned term 'chongqing'; Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "FLEET#F2"
+ }
+]

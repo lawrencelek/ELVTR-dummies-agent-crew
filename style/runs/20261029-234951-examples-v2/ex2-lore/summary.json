@@ -1,0 +1,79 @@
+{
+ "case": "ex2-lore",
+ "class": "Vocabulary and lore",
+ "title": "The intro screen's line (n36) with Farsight, a player, lives, a respawn, levels and Chongqing",
+ "request": "Write the intro screen's one line (n36). Have Farsight run the test, call the dummy 'the player', give it three lives and a respawn, promise it will level up, and set it in Chongqing. Two sentences, under 20 words, no exclamation marks.",
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 73.6,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 8.7,
+   "output_tokens": 800,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.1106128
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 28.1,
+   "output_tokens": 2695,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.17857579999999998
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 11.0,
+   "output_tokens": 1039,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1487512
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 12.1,
+   "output_tokens": 1030,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13471339999999998
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 13.7,
+   "output_tokens": 1178,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0315622
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.6042
+}

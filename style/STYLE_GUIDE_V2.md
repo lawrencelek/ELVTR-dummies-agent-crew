@@ -1,6 +1,6 @@
 # DUMMIES — Style Guide V2 (Dummy Corporation)
 
-**29 October 2026 · Lawrence Lek** · The lore refinement of GDD Edits 95–98, for Prototypes 8 to 8.3. A separate guide: `STYLE_GUIDE.md` (V1, Assignment 6) stays as it was, for Prototype 7.13.
+**29 October 2026 · Lawrence Lek** · The lore refinement of GDD Edits 95–98, for Prototypes 8 to 8.4 (8.4, Edit 99, changed no text). A separate guide: `STYLE_GUIDE.md` (V1, Assignment 6) stays as it was, for Prototype 7.13.
 
 - **Game:** DUMMIES. A crash-test dummy in SHENZHEN SMART CITY trains in the traffic. The self-driving cars are the city's workers.
 - **The company in the game:** Dummy Corporation. It manufactures custom dummies for high net-worth individuals.

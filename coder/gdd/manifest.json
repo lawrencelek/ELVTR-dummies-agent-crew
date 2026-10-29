@@ -1,7 +1,56 @@
 {
- "about": "The GDD the coding agent reads. Newest wins: a higher rank overrides a lower one. Live docs are read from the repo; snapshots were copied from the Claude Project on 29 October 2026 (image links dropped). Edit 94 was added after the agent's run 20261029-105801, with the 7.13 release.",
+ "about": "The GDD the coding agent reads. Newest wins: a higher rank overrides a lower one. Live docs are read from the repo; snapshots were copied from the Claude Project on 29 October 2026 (image links dropped). Edit 94 was added after the agent's run 20261029-105801, with the 7.13 release. Edits 95–99, the Prototype 8 build and the current-state index were added on 29 October 2026 after Prototype 8.4 (the lore refinement: Dummy Corporation).",
  "precedence": "rank, highest first",
  "docs": [
+  {
+   "id": "STATE",
+   "path": "coder/gdd/DUMMIES_GDD_Current_State_Edit99.md",
+   "rank": 99,
+   "kind": "index",
+   "source": "repo: the GDD's current state after Edit 99; an index, no new rule (project: claude/DUMMIES_GDD_Current_State.md)"
+  },
+  {
+   "id": "EDIT99",
+   "path": "coder/gdd/DUMMIES_GDD_Edit99_Prototype_8_4_Cones_Lights_Cue_Key.md",
+   "rank": 99,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit99_Prototype_8_4_Cones_Lights_Cue_Key.md"
+  },
+  {
+   "id": "P8",
+   "path": "prototypes/p8/README.md",
+   "rank": 99,
+   "kind": "build",
+   "source": "live: the current build (Prototype 8.4) (project: claude/DUMMIES_P8_Prototype.md)"
+  },
+  {
+   "id": "EDIT98",
+   "path": "coder/gdd/DUMMIES_GDD_Edit98_Prototype_8_3_Intro_Level_Card_Drone_Drop.md",
+   "rank": 98,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit98_Prototype_8_3_Intro_Level_Card_Drone_Drop.md"
+  },
+  {
+   "id": "EDIT97",
+   "path": "coder/gdd/DUMMIES_GDD_Edit97_Prototype_8_2_Tales_High_Scores_Arcade_Loop.md",
+   "rank": 97,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit97_Prototype_8_2_Tales_High_Scores_Arcade_Loop.md"
+  },
+  {
+   "id": "EDIT96",
+   "path": "coder/gdd/DUMMIES_GDD_Edit96_Prototype_8_1_Tales_CBD_Campus.md",
+   "rank": 96,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit96_Prototype_8_1_Tales_CBD_Campus.md"
+  },
+  {
+   "id": "EDIT95",
+   "path": "coder/gdd/DUMMIES_GDD_Edit95_Prototype_8_Lore_Dummy_Corporation.md",
+   "rank": 95,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit95_Prototype_8_Lore_Dummy_Corporation.md"
+  },
   {
    "id": "EDIT94",
    "path": "coder/gdd/DUMMIES_GDD_Edit94_Prototype_7_13_Finale_Coding_Agent.md",

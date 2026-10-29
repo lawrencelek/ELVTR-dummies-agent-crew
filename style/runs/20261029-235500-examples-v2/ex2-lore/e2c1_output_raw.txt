@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked n36 against every rule for its speaker. T1 [EDIT95#3.2]: the line is flat and deadpan, and it moves the trainee to act with "get hit anyway". T2, T13 and T14 [EDIT95#3.2]: there is no "!", no intensifier, and no repeated slogan. T3 and T5 [EDIT95#3.1]: it uses the training frame, calls parts "equipment", and addresses the trainee as "you". V1, V3, V4 and V8 [EDIT95#3.1, FLEET#F3]: it has no banned word, no game words, no other company name, and the dummy is a crash-test trainee. F5, F6 and F10 [EDIT95#3.2, EDIT95#4.2]: it has no digits, 2 sentences, 18 words, about 104 of 110 characters, and is in lower case as the slot sets. It also matches the SLOT's facts (in training, cars avoid you, get hit, combos, equipment) and the brief for n36 in [EDIT98#0].
+Total: 10.

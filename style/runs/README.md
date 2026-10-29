@@ -6,6 +6,8 @@ Each run folder holds every agent input and output, the lint findings, each vers
 
 | Run | Guide | Job | Result |
 |---|---|---|---|
+| [`20261029-235500-examples-v2`](20261029-235500-examples-v2/trace.md) | V2.7 | The three adversarial examples on V2 (`cases/examples_v2.json`): Tone (a Monument A3 tale as a hyped fitness coach), Vocabulary and lore (the intro line with Farsight, a player, lives, a respawn, levels and Chongqing), Formatting and length (the jump goal as a four-step checklist with figures) | 3 of 3 at 10/10 after one refinement each, confirmed (3 → 10, 1 → 10, 1 → 10). 15 calls, $1.44 |
+| [`20261029-234951-examples-v2`](20261029-234951-examples-v2/trace.md) | V2.7 | The same, first run. Its jump slot named `story.json`, V1's file; rerun after the fix | 3 of 3 at 10/10, confirmed. 15 calls, $1.97 |
 | [`20261029-181530-v82`](20261029-181530-v82/trace.md) | V2.5 → V2.6 | Prototype 8.2's text: 27 tales redrafted by the generator (15 to 35 words), the story batch, Arcade's grade texts (n34, n35), the batch on V2.6 | 30 of 30 at 10/10, confirmed. 155 calls, $18.64. Tales 19–35 words, mean 28.5 |
 | [`20261029-205717-v83`](20261029-205717-v83/trace.md) | V2.7 | Prototype 8.3's text: 26 tales cut to 15 to 20 words, 10 briefs as goals, n36 and n37; the story batch with the user's four lines locked; the intro line (n36) by hand | 39 of 39 at 10/10, confirmed. 172 calls, $22.69. Tales 15–20 words, mean 19.0 |
 | [`20261029-172610-v81`](20261029-172610-v81/trace.md) | V2.3 → V2.4 | Prototype 8.1's text: 7.13's 27 tales on V2.3 (35 words), the CBD and Campus text, then the story and six opening lines as one batch, twice | 30 of 30 at 10/10, confirmed. 132 calls, $16.68. Tales 25–35 words |

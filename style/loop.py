@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """DUMMIES Style Guide Agent (Assignment 6): generator → evaluator → refiner → evaluator, until 10/10 or the round cap.
 
-Three fresh headless agents (style/llm.py), no shared memory. The evaluator grades against style/STYLE_GUIDE.md and
-returns SCORE and REASON; style/lint.py measures what is computable and hands it over as evidence; the refiner reads the
+Three fresh headless agents (style/llm.py), no shared memory. The evaluator grades against the chosen guide
+(style/STYLE_GUIDE_V2.md with --guide v2, the current one; style/STYLE_GUIDE.md, V1, by default) and returns SCORE and REASON; style/lint.py measures what is computable and hands it over as evidence; the refiner reads the
 REASON and rewrites. No human step inside the loop.
 
   python3 style/loop.py --examples                 # the three adversarial examples (style/cases/examples.json)
+  python3 style/loop.py --guide v2 --examples      # the same on Style Guide V2 (style/cases/examples_v2.json)
   python3 style/loop.py --d78 monument             # real content: tile barks for one district (D78 proposal), per tile, then as one batch
   python3 style/loop.py --d78-batch style/runs/<id>   # stage 2 only, on a stage-1 run
   python3 style/loop.py --audit                    # real content: every shipped tale, brief, act line and the ending
@@ -119,14 +120,14 @@ def slot_text(piece):
                  f"- Card: at most {P['style.tale.maxChars']} characters (style.tale.maxChars); sentences of at most {P['style.tale.maxSentenceWords']} words."),
                 f"- Tile: {tile_facts(piece['district'], piece['tile'])}"]
     elif k == "brief":
-        out += ["- Kind: brief, `content/story/story.json` `tasks.<kind>`. Speaker: " + GUIDES[VERSION]["voice"] + ". Label on the tile card and the objective strip.",
+        out += [f"- Kind: brief, `content/story/{STORY_FILE()}` `tasks.<kind>`. Speaker: " + GUIDES[VERSION]["voice"] + (". The goal on the level card; the label on the map and the objective strip." if VERSION == "v2" else ". Label on the tile card and the objective strip."),
                 '- Schema: {"kind": "brief", "task", "label", "brief"}', f"- Task kind: {piece.get('task')}."]
     elif k == "act":
         d = DIST[piece["district"]]
-        out += ["- Kind: act line, `content/story/story.json` `districts[].intro`. Speaker: " + GUIDES[VERSION]["voice"] + ". On the district's first card.",
+        out += [f"- Kind: act line, `content/story/{STORY_FILE()}` `districts[].intro`. Speaker: " + GUIDES[VERSION]["voice"] + (". On the story map." if VERSION == "v2" else ". On the district's first card."),
                 '- Schema: {"kind": "act", "district", "intro"}', f"- District: {d['name']}, {d['act']}."]
     elif k == "ending":
-        out += ["- Kind: the ending, `content/story/story.json` `ending`. Speaker: " + GUIDES[VERSION]["voice"] + ". The CERTIFIED screen.", '- Schema: {"kind": "ending", "ending"}']
+        out += [f"- Kind: the ending, `content/story/{STORY_FILE()}` `ending`. Speaker: " + GUIDES[VERSION]["voice"] + ". The CERTIFIED screen.", '- Schema: {"kind": "ending", "ending"}']
     elif k == "notices":
         out += ["- Kind: notices, Prototype 8's `prototypes/p8/lore.js`. Speaker: Dummy Corporation. Short texts the interface shows: title lines, drone and gift labels, part notes, toasts, a sign.",
                 '- Schema: {"kind": "notices", "items": [{"id", "where", "text", "caps", "placeholders", "sign", "maxChars"}]}. Change only each item\'s "text".',
@@ -523,11 +524,17 @@ def run_trace(run_dir, title, results, note=""):
     (run_dir / "results.json").write_text(json.dumps(results, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def STORY_FILE():
+    return "story_v2.json" if VERSION == "v2" else "story.json"
+
+
 def examples(workers):
-    specs = json.loads((STYLE / "cases" / "examples.json").read_text(encoding="utf-8"))["cases"]
-    run_dir = new_run("examples")
+    """The three adversarial examples: V1 (`cases/examples.json`, Prototype 7.13) or, with --guide v2, V2 (`cases/examples_v2.json`, Prototype 8)."""
+    v2 = VERSION == "v2"
+    specs = json.loads((STYLE / "cases" / ("examples_v2.json" if v2 else "examples.json")).read_text(encoding="utf-8"))["cases"]
+    run_dir = new_run("examples-v2" if v2 else "examples")
     res = run_all(run_dir, [(job_case, (run_dir, s)) for s in specs], workers)
-    run_trace(run_dir, "Style Guide Agent: three adversarial examples", res)
+    run_trace(run_dir, "Style Guide Agent: three adversarial examples" + (" on Style Guide V2 (Dummy Corporation)" if v2 else ""), res)
     return run_dir
 
 
