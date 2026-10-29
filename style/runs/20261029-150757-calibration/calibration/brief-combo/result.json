@@ -1,0 +1,13 @@
+{
+ "id": "brief-combo",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "COMBO ×{n} Coverage gap: chains. The final hit must be link {n} or later of a combo.",
+ "cost_usd": 0.0944,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the label and brief against every rule for Farsight's briefs. They match the shipped combo row in STORY#S3 exactly. The format follows F8: the label \"COMBO ×{n}\" is in caps, within 19 characters, and is followed by the \"Coverage gap: … The final hit must …\" pattern. F5 holds because the only figure is the {n} placeholder, which is bound to story.task.comboEasy or story.task.comboHard (STORY#S1, STORY#MA3, STORY#PB2, STORY#WB2). The brief tests the fatal hit, as STORY#S1 requires. It has no banned terms or \"!\" (V1, T2; FLEET#F2, EDIT92#3), and the dry duty framing fits T1 and T3 (EDIT92#3).\nTotal: 10."
+}

@@ -1,0 +1,14 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "s04",
+   "event": "writeoff",
+   "when": {},
+   "style": "speech",
+   "priority": 3,
+   "text": "Write-off confirmed. Closing ticket.",
+   "claims": []
+  }
+ ]
+}

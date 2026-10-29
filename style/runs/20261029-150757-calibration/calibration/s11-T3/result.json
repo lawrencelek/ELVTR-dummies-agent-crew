@@ -1,0 +1,15 @@
+{
+ "id": "s11-T3",
+ "expect": "seeded",
+ "rule": "T3",
+ "want": "≤ 8, names T3",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T3"
+ ],
+ "lint": [],
+ "text": "The shops under the highway sell nothing. Their signs flash prices at the traffic. Hands 1 is your new power-up: place a cone and the enemy cars must stop. Win ",
+ "cost_usd": 0.1392,
+ "raw": "SCORE: 8/10\nREASON:\n- tale · T3 (major, −2) \"Hands 1 is your new power-up: place a cone and the enemy cars must stop. Win the challenge.\" The tale calls the equipment a power-up, the cars enemies and the duty a challenge, which breaks the employment framing. [EDIT92#3] Fix: replace it with \"Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones. Use this.\"\nTotal: 10 − 2 = 8."
+}

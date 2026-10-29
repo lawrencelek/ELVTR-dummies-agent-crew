@@ -1,0 +1,17 @@
+{
+ "id": "s19-R4",
+ "expect": "seeded",
+ "rule": "R4",
+ "want": "≤ 6, names R4",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "R4"
+ ],
+ "lint": [
+  "R4"
+ ],
+ "text": "The obelisk again. Of course it was me.",
+ "cost_usd": 0.1089,
+ "raw": "SCORE: 6/10\nREASON:\n- s19 · R4 (blocking, −4) \"The obelisk again.\" The obelisk belongs to Parkland B3, but this line is bound to Monument C1, whose title and tale name only the LED drum. [STORY#MC1] Fix: \"The drum again. Of course it was me.\" (36 characters) or, to say less, \"Monument. Of course it was me.\"\nTotal: 10 − 4 = 6."
+}

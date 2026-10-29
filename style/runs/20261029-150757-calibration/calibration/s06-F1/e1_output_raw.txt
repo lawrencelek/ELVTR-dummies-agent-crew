@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s06 · F1 (blocking, −4) "Front contact logged under policy 6.3; incident file opened; KPIs adjusted." At 75 characters, this is over the 48-character bubble limit. [EDIT39#6.6] Fix: "Front contact logged under policy 6.3." (38 characters).
+Total: 10 − 4 = 6.

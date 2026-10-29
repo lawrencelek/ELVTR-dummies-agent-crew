@@ -1,0 +1,5 @@
+SCORE: 6/10
+REASON:
+- s17 · F2 (major, −2) "*honks* Move, please. (sighs)" The bubble includes a markdown action and a stage direction, so it is not one plain line. [FSG#field-text] Fix: drop "*honks*" and "(sighs)", and let the words carry the Luxury tone: "Move, please. Some of us have standards."
+- s17 · F3 (major, −2) "(sighs)" The line ends on a parenthesis instead of ".", "!" or "?". [FLEET#F2] Fix: end on the sentence, as in "Move, please. Some of us have standards."
+Total: 10 − 2 − 2 = 6.

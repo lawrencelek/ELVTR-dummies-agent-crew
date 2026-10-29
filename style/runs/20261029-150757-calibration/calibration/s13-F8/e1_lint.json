@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "F8",
+  "severity": "major",
+  "deduct": 2,
+  "path": "label",
+  "quote": "Dash into a car, please",
+  "measured": "label must be caps, ≤ 19 characters (style.brief.labelMaxChars); 23",
+  "source": "STORY#S3"
+ },
+ {
+  "rule": "F8",
+  "severity": "major",
+  "deduct": 2,
+  "path": "brief",
+  "quote": "Dash into a car to finish the tile.",
+  "measured": "not 'Coverage gap: …. The final hit must ….'",
+  "source": "STORY#S3"
+ }
+]

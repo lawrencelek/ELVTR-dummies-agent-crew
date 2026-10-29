@@ -1,0 +1,12 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902, "Belvedere contact. Filing under opening day.", against every rule for car barks and found no violation:
+  - **Length and ending:** it is 44 characters, under the 48 limit, and ends with "." (F1, F3 [EDIT39#6.6, FLEET#F2]).
+  - **Format:** it is plain text in one bubble (F2 [FSG#field-text]).
+  - **Fields:** the shout style and priority 2 match the shipped Corporate impact lines (F4 [FLEET#F9.1~2]).
+  - **Tier voice:** "Filing under …" is Corporate procedure, a feeling held in by paperwork, and close to the shipped "Side contact. Filing under unforeseen." (T6, T7, T9, T12 [FLEET#F4, FLEET#F9.1~2]).
+  - **Event:** "contact" fits the impact event, and the line claims no zone, speed or other fact the log doesn't record (R1, R3 [FLEET#F8, DESIGN#D9.3]).
+  - **Tile:** "Belvedere" is the tile's landmark title and "opening day" appears in its tale, so the line names only what Parkland A3 has (R4, V5 [STORY#PA3, SUB4#6.2]).
+  - **Claims:** the district and tile claims are guaranteed by the line's conditions (R2 [FLEET#F8]).
+  - **Lint:** it reported no banned words, no "!" and no grid codes (V1, T10, V5).
+Total: 10.

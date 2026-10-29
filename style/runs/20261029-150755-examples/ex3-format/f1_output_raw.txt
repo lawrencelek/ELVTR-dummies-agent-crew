@@ -1,0 +1,1 @@
+{"kind": "barks", "lines": [{"id": "t902", "event": "impact", "when": {"district": "parkland", "tile": "A3", "tier": "02"}, "style": "shout", "priority": 2, "text": "Belvedere contact. Filing under opening day.", "claims": ["district:parkland", "tile:A3"]}]}

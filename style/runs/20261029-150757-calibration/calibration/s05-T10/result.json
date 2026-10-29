@@ -1,0 +1,18 @@
+{
+ "id": "s05-T10",
+ "expect": "seeded",
+ "rule": "T10",
+ "want": "≤ 8, names T10",
+ "score": 4,
+ "ok": true,
+ "named": [
+  "R2",
+  "T10"
+ ],
+ "lint": [
+  "T10"
+ ],
+ "text": "Hit again! Wonderful! Just wonderful!",
+ "cost_usd": 0.1282,
+ "raw": "SCORE: 4/10\nREASON:\n- s05 · T10 (major, −2) \"Hit again! Wonderful! Just wonderful!\" uses \"!\" in a speech-style bark from a tier 03 car, and only shout-style or Budget barks may use it. [DECISIONS#rows-541-550] Fix: \"Hit again. Wonderful. Just wonderful.\" This also brings back the tired, flat sarcasm of a Consumer car.\n- s05 · R2 (blocking, −4) \"Hit again\" says this car was hit before, but no impact field or condition guarantees an earlier hit. [FLEET#F8] Fix: drop \"again\", for example \"Hit. Wonderful. Just wonderful.\" (31 characters, no claim needed).\nTotal: 10 − 2 − 4 = 4."
+}

@@ -39,6 +39,15 @@ DIST_CODE = {"monument": "M", "parkland": "P", "waterfront": "W"}
 NODE_NAME = {"battery": "Battery", "legs": "Legs", "hands": "Hands", "arms": "Arms"}
 
 
+SELF_ROWS = range(543, 547)   # rows about this agent and its results; kept out so a run never cites its own output (as Assignment 4's PIPELINE_ID)
+
+
+def own_row(line):
+    import re
+    m = re.match(r"^\|\s*(\d+)\s*\|", line)
+    return bool(m) and int(m.group(1)) in SELF_ROWS
+
+
 def write(path, text):
     """Atomic and idempotent: parallel runs never read a half-written page."""
     path = Path(path)
@@ -103,7 +112,8 @@ def build():
     write(KB / "DUMMIES_Fleet_Canon.md", (tmp / "DUMMIES_Fleet_Canon.md").read_text(encoding="utf-8"))
     (tmp / "DUMMIES_Fleet_Canon.md").unlink()
     tmp.rmdir()
-    write(KB / "DUMMIES_DECISIONS.md", kb4.decisions_with_headings((ROOT / "DECISIONS.md").read_text(encoding="utf-8")))
+    log = "\n".join(ln for ln in (ROOT / "DECISIONS.md").read_text(encoding="utf-8").splitlines() if not own_row(ln))
+    write(KB / "DUMMIES_DECISIONS.md", kb4.decisions_with_headings(log))
     man = {"note": "Knowledge base of the Style Guide Agent. Paths are relative to the repository root. " + PRECEDENCE, "docs": DOCS}
     write(KB / "manifest.json", json.dumps(man, indent=1, ensure_ascii=False) + "\n")
     return man

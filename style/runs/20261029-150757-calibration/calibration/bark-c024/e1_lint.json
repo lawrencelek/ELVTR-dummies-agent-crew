@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "V4",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "lines[0]",
+  "quote": "FARSIGHT",
+  "measured": "write Farsight in a sentence-case string (decision 539)",
+  "source": "DECISIONS#rows-531-540~2"
+ }
+]

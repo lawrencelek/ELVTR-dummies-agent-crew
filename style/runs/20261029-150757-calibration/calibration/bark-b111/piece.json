@@ -1,0 +1,18 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b111",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "kineticCharge"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "It recharges when it hits us?!",
+   "claims": [
+    "node:kineticCharge"
+   ]
+  }
+ ]
+}

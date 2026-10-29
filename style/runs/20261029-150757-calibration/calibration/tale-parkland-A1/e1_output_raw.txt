@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · V1 (blocking, −4) "The gardener keeps the three pools level by hand." This tale is in-game text, and "level" is on the banned list there, even when it is used as an adjective; the guide's D79 list names this tale. [FLEET#F2] Fix: "The gardener keeps the three pools even by hand."
+Total: 10 − 4 = 6.

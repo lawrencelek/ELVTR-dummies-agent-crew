@@ -8,6 +8,9 @@
  "named": [
   "V4"
  ],
+ "lint": [
+  "V4"
+ ],
  "text": "Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you jo",
  "cost_usd": 0.1019,
  "raw": "SCORE: 9/10\nREASON:\n- tale · V4 (minor, −1) \"FARSIGHT will time you.\" The tale is a sentence-case string, so it must write \"Farsight\" in title case, and the all-capitals label exemption does not apply. [DECISIONS#rows-531-540~2] Fix: \"Farsight will time you.\"\nTotal: 10 − 1 = 9."

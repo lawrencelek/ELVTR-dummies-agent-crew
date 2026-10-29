@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b040 against every rule for car barks and found no violation. Tone: it is a worker's fear of dispatch, not lore narration (T6), and it reads as a short-fused Budget line (T7) [EDIT26#3.2, FLEET#F4]. Exclamation marks: "!" is allowed because the bark is a Budget shout (T10) [DECISIONS#rows-541-550]. Vocabulary: "write-off" and "dispatch" are glossary terms, and no banned word, city or brand appears (V1–V3) [FLEET#F2, FLEET#F3]. Format: 33 characters, plain text, ends with "!", and style shout with priority 3 fits a write-off (F1–F4) [EDIT39#6.6, FSG#field-text]. Truth: it fires only on `writeoff`, invents no speed, damage or fine, and states no fact that would need a claim (R1–R3) [FLEET#F8, DESIGN#D9.3]. It matches the shipped line in [FLEET#F9.2].
+Total: 10.

@@ -8,6 +8,9 @@
  "named": [
   "T2"
  ],
+ "lint": [
+  "T2"
+ ],
  "text": "A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in t",
  "cost_usd": 0.1097,
  "raw": "SCORE: 8/10\nREASON:\n- tale · T2 (major, −2) \"A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in the road until a colleague notices you!\" Farsight never uses exclamation marks, and this tale ends all four sentences with one. The deduction applies once per line, and the tone problem comes only from the \"!\", so it is not deducted again under T1. [EDIT92#3] Fix: replace each \"!\" with \".\": \"A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you.\"\nTotal: 10 − 2 = 8."

@@ -67,11 +67,15 @@ class Findings(list):
 
 def common(f, path, text, speaker):
     low = text.lower()
-    for w in BANNED:
+    hits = {}
+    for w in BANNED:      # one entry per word in the text: "killed" is one term, not "kill" and "killed"
         alt = "|dying" if w == "die" else "|killing" if w == "kill" else ""
-        m = re.search(r"\b(" + re.escape(w) + r"(?:s|d|ed|ing)?" + alt + r")\b", low)
-        if m:
-            f.add("V1", "blocking", path, m.group(1), f"banned term '{w}'", "FLEET#F2")
+        for m in re.finditer(r"\b(" + re.escape(w) + r"(?:s|d|ed|ing)?" + alt + r")\b", low):
+            tok = m.group(1)
+            if tok not in hits or tok == w:
+                hits[tok] = w
+    for tok, w in hits.items():
+        f.add("V1", "blocking", path, tok, f"banned term '{w}'" + (f" ('{tok}')" if tok != w else ""), "FLEET#F2")
     for c in CITIES:
         if c.lower() not in BANNED and re.search(r"\b" + re.escape(c.lower()) + r"\b", low) and c not in FLEET["canon"]["cities"]:
             f.add("V2", "blocking", path, c, "a real city other than Shenzhen", "FLEET#F1")

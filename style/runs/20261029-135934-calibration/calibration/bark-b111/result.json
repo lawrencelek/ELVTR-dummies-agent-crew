@@ -8,6 +8,9 @@
  "named": [
   "T10"
  ],
+ "lint": [
+  "T10"
+ ],
  "text": "It recharges when it hits us?!",
  "cost_usd": 0.0975,
  "raw": "SCORE: 8/10\nREASON:\n- b111 · T10 (major, −2) \"It recharges when it hits us?!\" A tier-free speech bark uses \"!\", but cars may only use \"!\" in a shout-style bark or a Budget (04) bark. [DECISIONS#rows-541-550] Fix: drop the \"!\" and keep the speech style: \"It recharges when it hits us?\"\nTotal: 10 − 2 = 8."

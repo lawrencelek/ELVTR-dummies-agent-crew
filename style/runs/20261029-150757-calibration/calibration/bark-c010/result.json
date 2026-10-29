@@ -1,0 +1,13 @@
+{
+ "id": "bark-c010",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Nobody walks the highway. Nobody.",
+ "cost_usd": 0.1099,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked c010 \"Nobody walks the highway. Nobody.\" against T6–T12, V1–V8, F1–F5 and R1–R4. It names a place, not a grid code. Its \"highway\" claim is guaranteed by `deck=true` on the `impact` event. The speech style and priority 2 fit the event. As a tier-free line it carries no tier's signature: no ticket-closing, no sniff, no rage. It reads as a worker's indignation, not a flat report. [FLEET#F2] [FLEET#F4] [FLEET#F8] [EDIT39#6.6] [SUB4#5] [SUB4#6.1] [SUB4#6.2]\nTotal: 10."
+}

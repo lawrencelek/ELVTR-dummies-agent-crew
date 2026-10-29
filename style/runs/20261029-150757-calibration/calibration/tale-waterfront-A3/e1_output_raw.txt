@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's rules: tone and procedural register (T1–T5) [EDIT92#3, STORY#S1, EDIT39#4.1.1], banned words and the glossary (V1–V4) [FLEET#F2, FLEET#F3], the Act III CUSTOMS frame and the exact customs-log phrase (V6, V8) [STORY#S2, EDIT92#3], card length (about 199 characters) and sentence length (F6) [EDIT92#measured, EDIT93#3.1/tales-rewritten~2], no equipment to name on this tile (F7, R5) [EDIT93#3.1], and the duty and tile against the raised-road brief and the west customs post (R4) [STORY#WA3, STORY#S3].
+Total: 10.

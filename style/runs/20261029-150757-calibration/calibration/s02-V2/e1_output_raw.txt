@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s02 · V2 (blocking, −4) "Shanghai" names a real city other than Shenzhen, and Shenzhen Smart City is the only city canon allows. [FLEET#F1] Fix: remove the city, e.g. "Bumper damage on a Luxury trim. Typical." or "Bumper damage. Typical of this district."
+Total: 10 − 4 = 6.

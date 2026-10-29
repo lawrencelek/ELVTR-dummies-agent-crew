@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- c024 · V4 (minor, −1) "FARSIGHT Campus. Test centre. How apt." The brand name is in capitals in a sentence-case bark, and the ruling now requires "Farsight" everywhere; the lint flagged it, and the guide lists this line as known shipped text under this rule (D79). [DECISIONS#rows-531-540~2] Fix: "Farsight Campus. Test centre. How apt."
+Total: 10 − 1 = 9.

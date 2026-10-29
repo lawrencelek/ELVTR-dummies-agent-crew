@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I found no rule broken after checking the tale against these sources:
+  - **Length (F6):** about 214 characters, within 223, in one paragraph, and no sentence is over 19 words [EDIT93#3.1/tales-rewritten~2].
+  - **Lint (T2, V1, V4, F5):** no exclamation marks, no banned words, "Farsight" casing is not at issue, and there are no digits.
+  - **Tone (T1, T3, T4):** dry and procedural; the cars are colleagues the board applauds, and Battery 2 is presented as equipment [EDIT92#3, STORY#S1, EDIT39#4.1.1].
+  - **Act II frame (V6):** the board, inspection day and the B2 turning point quoted exactly: "The public prefers the product to the test." [EDIT92#3, STORY#S2].
+  - **Equipment (F7, R5):** the tale names Battery 2, which this tile issues [STORY#S1, DECISIONS#rows-531-540~2].
+  - **Duty (R5):** "Give it a chain of three" matches the COMBO brief [STORY#S3].
+  - **Tile truth (R4):** the text matches the tale shipped for Parkland B2, the ring over the pools [STORY#PB2].
+Total: 10.

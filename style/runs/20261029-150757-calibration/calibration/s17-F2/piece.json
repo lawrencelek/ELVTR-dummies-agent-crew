@@ -1,0 +1,19 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "s17",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "*honks* Move, please. (sighs)",
+   "claims": [
+    "at:body"
+   ]
+  }
+ ]
+}

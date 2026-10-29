@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all the rules that apply to Farsight: tone T1–T5 [EDIT92#3, STORY#S1, EDIT39#4.1.1, STORY#MA1]; vocabulary V1–V4, V6 and V8 [FLEET#F2, FLEET#F3, DECISIONS#rows-531-540~2, STORY#S2]; format F5–F7 [EDIT92#measured, EDIT93#3.1/tales-rewritten~2]; and truth R4–R5. The tale is the shipped STORY#MA1 text word for word. It fits the card's character and sentence-length limits, keeps the INDUCTION frame (colleague, first duty), names no equipment on a tile that issues none, and its duty fits ANY WRITE-OFF. The tower screen with the face and WELCOME matches the A1 art [EDIT92#7].
+Total: 10.

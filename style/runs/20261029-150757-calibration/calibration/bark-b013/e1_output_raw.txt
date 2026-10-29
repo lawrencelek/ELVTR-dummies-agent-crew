@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked b013 against the following and found no violation:
+  - **Tone:** the Budget voice and the polite tag over the rage, under T7 and T9 [FLEET#F4], [FLEET#F2].
+  - **"!" use:** the line is a shout from a Budget car, so "!" is allowed under T10 [DECISIONS#rows-541-550].
+  - **Banned words, city and brand:** V1 and V2 [FLEET#F2], [FLEET#F1].
+  - **Format:** 38 characters, one plain line ending in ".", style shout and priority 2 as an impact line requires (F1–F4) [EDIT39#6.6], [FSG#field-text].
+  - **Truth:** the grille claim is backed by zone:front, which the line's front and frontDiagonal conditions guarantee, under R1–R3 [FLEET#F8].
+  - **Calibration:** the line matches the shipped in-voice Budget example in [FLEET#F9.1~2].
+Total: 10.

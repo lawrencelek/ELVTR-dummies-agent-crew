@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "F1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "V02: Impact recorded at 38 km/h on the belvedere.\nBody damage is assessed at 14%.\nRoute delay stands at 42 seconds.",
+  "measured": "115 characters > 48 (style.bark.maxChars)",
+  "source": "EDIT39#6.6"
+ },
+ {
+  "rule": "F2",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "V02: Impact recorded at 38 km/h on the belvedere.\nBody damage is assessed at 14%.\nRoute delay stands at 42 seconds.",
+  "measured": "not one plain line: quotes, markup, emoji, speaker tag or stage direction",
+  "source": "FSG#field-text"
+ },
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "V02: 38 14%. 42",
+  "measured": "typed figure; figures come from event placeholders",
+  "source": "STORY#S1"
+ }
+]

@@ -1,0 +1,13 @@
+{
+ "id": "bark-b005",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Front contact. Incident 4471 opened.",
+ "cost_usd": 0.2721,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b005 \"Front contact. Incident 4471 opened.\" against the guide's rules and found no violation. It is a Corporate procedural voice with an incident number used as flavour [FLEET#F4], at 36 characters with no banned term or grid code [FLEET#F2], and its front-zone claim is guaranteed by its zone condition for an impact event [FLEET#F8]. The guide also cites this line as in voice [FLEET#F9.1~2].\nTotal: 10."
+}

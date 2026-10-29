@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 "A write-off by the monument. How quaint." for each rule group. Tone: the polished, faintly amused Luxury voice with no apology (T7, T9, T12) [FLEET#F4]. Vocabulary: no banned word, a canon glossary term, the landmark named rather than a grid code (V1, V3, V5) [FLEET#F2, FLEET#F3, SUB4#6.2]. Format: 40 characters, plain text, ends with ".", and speech style at priority 3 suits a write-off (F1–F4) [EDIT39#6.6, FSG#field-text]. Truth: the bark fires only on `writeoff`, invents nothing, and its location claims are guaranteed by the `district` and `tile` conditions, with "the monument" being B2's own title (R1–R4) [FLEET#F8, STORY#MB2].
+Total: 10.

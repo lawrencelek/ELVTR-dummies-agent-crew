@@ -1,0 +1,13 @@
+{
+ "id": "act-parkland",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked.",
+ "cost_usd": 0.1075,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the line against T1–T5, V1–V4, V6, V8, F5, F9 and R4: it is word-for-word the shipped Parkland act line [STORY#S2]; it has three sentences, no \"!\", no banned word and no digits; and it keeps the OPENING DAY frame of the Expo, the park passing and visitors booked [EDIT92#3], in a dry procedural voice [STORY#S1].\nTotal: 10."
+}

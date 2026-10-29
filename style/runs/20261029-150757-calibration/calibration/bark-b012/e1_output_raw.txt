@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked b012 "Hit from behind. Story of my life." against the rules for a car's line. It is shipped and matches FLEET#F9.1~2 exactly, and it is the guide's in-voice example for Consumer. Tone and tier: tired and resigned, a worker's feeling and not a world explanation (T6, T7, T9, T12; FLEET#F4, FLEET#F2). It uses no banned or game words and names no grid code (V1, V3, V5; FLEET#F2, FLEET#F3). It is 34 characters, plain text, ends with ".", and is a shout at priority 2 with no "!" (F1–F4, T10; EDIT39#6.6, FSG#field-text). Truth: "from behind" is the claim zone:rear, which the when.zone rear and rearDiagonal condition guarantees. It invents no extra fact and claims no write-off (R1–R3; FLEET#F8, DESIGN#D9.3).
+Total: 10.

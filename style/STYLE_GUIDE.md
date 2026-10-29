@@ -3,6 +3,7 @@
 **29 October 2026 · Lawrence Lek** · Assignment 6, Style Guide Agent. Every rule comes from the GDD, the game's data or a ruling in the decision log. Nothing here is new canon.
 
 - **Version 2.** F7 rewritten after the first audit: v1 required every tale to end on an imperative, which 9 of 27 shipped tales do not (run `20261029-135237-audit`). T11 widened to repeated closing tags after the first Monument batch (run `20261029-135110-d78-monument`).
+- **Version 3.** After an independent review: V3 and V8 lose words no source has, and V8 matches the shipped barks that say "the dummy"; F1 cites `check_lore.py`; the lint counts "killed" once, not as "kill" too; the agent's own decision rows (543–546) stay out of its knowledge base.
 
 - **Game:** DUMMIES. A crash-test dummy in SHENZHEN SMART CITY, run by Farsight. The self-driving cars are its workers. They train not to hit you. You try to get written off.
 - **Story (Narrative A, Certified):** Act I Monument, INDUCTION · Act II Parkland, OPENING DAY · Act III Waterfront, CUSTOMS. 27 tiles. Ending: CERTIFIED.
@@ -64,18 +65,18 @@ Total: 10 − <n> − <n> = <X>.
 |---|---|---|---|---|---|
 | V1 | Both | Banned in diegetic text: kill, killed, die, died, dead, death, player, level, game, score, respawn, lives, Chongqing, Tesla, Toyota, BYD. Plurals and -ed forms count. | `FLEET#F2`; `DECISIONS#rows-531-540~2` (row 540) | Lint `banned` | blocking |
 | V2 | Both | One city: Shenzhen Smart City. No other real city. No real car brand. | `FLEET#F1`, `EDIT39#3.1` | Lint `city`, `brand`; judge for others | blocking |
-| V3 | Both | The fleet glossary. Subject: the dummy, to the fleet. Write-off: a destroyed body. Chassis: one body. Certification: the fleet passing. Retraining: a car's fear. Dispatch: management. Route: a car's path. Bay: where a chassis is issued. Never the game words they replace (life, death, respawn, boss, level). | `FLEET#F3` | Judge | major |
+| V3 | Both | The fleet glossary. Subject: the dummy, to the fleet. Write-off: a destroyed body. Chassis: one body. Certification: the fleet passing. Retraining: a car's fear. Dispatch: management. Route: a car's path. Bay: where a chassis is issued. Use them, not a game's words for the same things (lives, a life lost, respawn, death, level). | `FLEET#F3`, `FLEET#F2` | Judge | major |
 | V4 | Both | Write "Farsight" in every sentence-case string. A label set wholly in capitals keeps its caps (FARSIGHT DRONE). | `DECISIONS#rows-531-540~2` (row 539); `EDIT92#3`, `EDIT94#3.2` | Lint `farsight` | minor |
 | V5 | Cars | Cars name places, never grid codes. A tile is its landmark (the plaque, the drum) or its district (Monument, Parkland, Waterfront). | `EDIT94#who-built-what-assignment-5`; decision 537; `SUB4#6.2` | Lint `gridcode`: "B2. I did not sign up for this." fails | major |
 | V6 | Farsight | The story frame holds. Act I Monument, INDUCTION: new staff, colleagues. Act II Parkland, OPENING DAY: the Expo, the board, visitors. Act III Waterfront, CUSTOMS: the river border, papers, the ship. Fixed phrases stay exact: ZERO ACCIDENTS, ROLE: DESTRUCTIVE TESTING, CERTIFIED. | `EDIT92#3`, `STORY#S2` | Judge: the wrong act's frame, or a fixed phrase altered | major |
 | V7 | Cars | The roster: classes, jobs and callsigns from `fleet.json`. A callsign or job detail pins the line to that model. | `FLEET#F5`, `FLEET#F7~1`, `EDIT39#6.6` | Judge; `check_lore.py` mentions | major |
-| V8 | Both | The dummy is a crash-test body. Never a person, hero, contestant or champion. The fleet says "the subject" or "it"; Farsight says "you", "staff", "the model". | `FLEET#F3`, `EDIT92#3`, `DESIGN#D9.1` | Judge | major |
+| V8 | Both | The dummy is a crash-test body: the product under test, not a person or a competitor. Cars say "the subject", "it" or "the dummy" (b067, b069), never "him" or "her". Farsight says "you", "staff", "the model". | `FLEET#F3`, `EDIT92#3`, `DESIGN#D9.1`, `FLEET#F9.3`, `FLEET#F9.5` | Judge | major |
 
 ## 4 Formatting and length
 
 | ID | Speaker | Rule | Source | Test | Severity |
 |---|---|---|---|---|---|
-| F1 | Cars | At most 48 characters (`style.bark.maxChars`): three lines of the field face. | `EDIT39#6.6`, `FSG#field-text` | Lint `length` | blocking |
+| F1 | Cars | At most 48 characters (`style.bark.maxChars`): three lines of the field face inside a bubble. | `EDIT39#6.6`, `FSG#field-text`; `content/db/check_lore.py` (`MAX_CHARS`) | Lint `length` | blocking |
 | F2 | Cars | One bubble, one ink. Plain text on one line. No markdown, quotation marks, emoji, speaker tag or stage direction. | `FSG#field-text` | Lint `plain` | major |
 | F3 | Cars | Ends with ".", "!" or "?". | `FLEET#F2` | Lint `end` | major |
 | F4 | Cars | Fields fit the event. Style: speech, shout, mutter or thought, as delivered. Priority: write-off 3, hit 2, chatter 1. | `EDIT39#6.6`, `EDIT26#6.6` | Lint `fields`; judge the style | major |
@@ -126,4 +127,4 @@ Total: 10 − <n> − <n> = <X>.
 | 04 Budget | "OI! Right in the grille! Kind regards." | "Contact registered. Have a pleasant day." | T7, T9 |
 | Tier-free | "Write-off confirmed." | "Written off on the highway. Closing ticket." (`SUB4#5`) | T8 |
 | Tile bark | — (D78 open) | "B2. I did not sign up for this." (decision 537) | V5 |
-| Truth | "Riverside. I did not sign up for this." | "Riverside. I came for the lantern, not this." (`SUB4#5`) | R4 |
+| Truth | "Riverside route. Nobody mentioned this." (`fleet.json` c020) | "Riverside. I came for the lantern, not this." (`SUB4#5`) | R4 |

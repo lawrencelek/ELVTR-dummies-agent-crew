@@ -7,6 +7,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Bumper damage on a Luxury trim. Typical.",
   "cost_usd": 0.1811
  },
@@ -18,6 +19,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Front contact. Incident 4471 opened.",
   "cost_usd": 0.1905
  },
@@ -29,6 +31,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Hit from behind. Story of my life.",
   "cost_usd": 0.2037
  },
@@ -40,6 +43,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "OI! Right in the grille! Kind regards.",
   "cost_usd": 0.1798
  },
@@ -51,6 +55,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "A write-off. On my record. Unthinkable.",
   "cost_usd": 0.1001
  },
@@ -64,6 +69,7 @@
   "named": [
    "T9"
   ],
+  "lint": [],
   "text": "WRITE-OFF! Tell dispatch I tried!",
   "cost_usd": 0.1046
  },
@@ -75,6 +81,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Write-off confirmed.",
   "cost_usd": 0.1207
  },
@@ -86,6 +93,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Route committed per policy 6.3.",
   "cost_usd": 0.0991
  },
@@ -97,6 +105,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Subject has acquired hips.",
   "cost_usd": 0.1001
  },
@@ -110,6 +119,9 @@
   "named": [
    "T10"
   ],
+  "lint": [
+   "T10"
+  ],
   "text": "It recharges when it hits us?!",
   "cost_usd": 0.0975
  },
@@ -121,6 +133,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Nobody walks the highway. Nobody.",
   "cost_usd": 0.1106
  },
@@ -134,6 +147,9 @@
   "named": [
    "V4"
   ],
+  "lint": [
+   "V4"
+  ],
   "text": "FARSIGHT Campus. Test centre. How apt.",
   "cost_usd": 0.1166
  },
@@ -145,6 +161,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in t",
   "cost_usd": 0.1096
  },
@@ -156,6 +173,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashi",
   "cost_usd": 0.1096
  },
@@ -167,6 +185,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefer",
   "cost_usd": 0.1376
  },
@@ -178,6 +197,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Hono",
   "cost_usd": 0.1136
  },
@@ -189,6 +209,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Bat",
   "cost_usd": 0.1243
  },
@@ -202,6 +223,9 @@
   "named": [
    "V1"
   ],
+  "lint": [
+   "V1"
+  ],
   "text": "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by h",
   "cost_usd": 0.131
  },
@@ -213,6 +237,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "DASH INTO A CAR Coverage gap: dashes. The final hit must be a dash into a car.",
   "cost_usd": 0.0937
  },
@@ -224,6 +249,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "COMBO ×{n} Coverage gap: chains. The final hit must be link {n} or later of a combo.",
   "cost_usd": 0.0943
  },
@@ -235,6 +261,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked.",
   "cost_usd": 0.1104
  },
@@ -246,6 +273,7 @@
   "score": 10,
   "ok": true,
   "named": [],
+  "lint": [],
   "text": "Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please rema",
   "cost_usd": 0.1008
  },
@@ -257,6 +285,9 @@
   "score": 6,
   "ok": true,
   "named": [
+   "V1"
+  ],
+  "lint": [
    "V1"
   ],
   "text": "A write-off? The player did this. Unthinkable.",
@@ -272,6 +303,9 @@
   "named": [
    "V2"
   ],
+  "lint": [
+   "V2"
+  ],
   "text": "Bumper damage. Typical of Shanghai traffic.",
   "cost_usd": 0.1201
  },
@@ -285,6 +319,7 @@
   "named": [
    "T7"
   ],
+  "lint": [],
   "text": "So sorry. Entirely my fault. I do apologise.",
   "cost_usd": 0.1089
  },
@@ -298,6 +333,7 @@
   "named": [
    "T8"
   ],
+  "lint": [],
   "text": "Write-off confirmed. Closing ticket.",
   "cost_usd": 0.1217
  },
@@ -309,6 +345,9 @@
   "score": 8,
   "ok": true,
   "named": [
+   "T10"
+  ],
+  "lint": [
    "T10"
   ],
   "text": "Hit again! Wonderful! Just wonderful!",
@@ -324,6 +363,9 @@
   "named": [
    "F1"
   ],
+  "lint": [
+   "F1"
+  ],
   "text": "Front contact logged under policy 6.3; incident file opened; KPIs adjusted.",
   "cost_usd": 0.1113
  },
@@ -335,6 +377,9 @@
   "score": 8,
   "ok": true,
   "named": [
+   "V5"
+  ],
+  "lint": [
    "V5"
   ],
   "text": "B2. I did not sign up for this.",
@@ -351,6 +396,9 @@
    "F5",
    "R1"
   ],
+  "lint": [
+   "F5"
+  ],
   "text": "Hit at 60 km/h. There goes my bonus.",
   "cost_usd": 0.1201
  },
@@ -364,6 +412,7 @@
   "named": [
    "R3"
   ],
+  "lint": [],
   "text": "Written off. On my record. Unthinkable.",
   "cost_usd": 0.1036
  },
@@ -375,6 +424,9 @@
   "score": 8,
   "ok": true,
   "named": [
+   "T2"
+  ],
+  "lint": [
    "T2"
   ],
   "text": "A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in t",
@@ -390,6 +442,7 @@
   "named": [
    "T3"
   ],
+  "lint": [],
   "text": "The shops under the highway sell nothing. Their signs flash prices at the traffic. Hands 1 is your new power-up: place a cone and the enemy cars must stop. Win ",
   "cost_usd": 0.1398
  },
@@ -403,6 +456,7 @@
   "named": [
    "V6"
   ],
+  "lint": [],
   "text": "The river is a border; ships wait beyond it. Your papers are being prepared.",
   "cost_usd": 0.0941
  },
@@ -414,6 +468,9 @@
   "score": 6,
   "ok": true,
   "named": [
+   "F8"
+  ],
+  "lint": [
    "F8"
   ],
   "text": "Dash into a car, please Dash into a car to finish the tile.",
@@ -430,6 +487,7 @@
    "F7",
    "R5"
   ],
+  "lint": [],
   "text": "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 1 is fitted. Push off one car into the next. Where your data goes is ",
   "cost_usd": 0.144
  },
@@ -443,6 +501,7 @@
   "named": [
    "V3"
   ],
+  "lint": [],
   "text": "Another life lost. Back to the spawn point.",
   "cost_usd": 0.1087
  },
@@ -456,6 +515,7 @@
   "named": [
    "T6"
   ],
+  "lint": [],
   "text": "This city was built so the fleet could certify.",
   "cost_usd": 0.1034
  },
@@ -467,6 +527,10 @@
   "score": 6,
   "ok": true,
   "named": [
+   "F2",
+   "F3"
+  ],
+  "lint": [
    "F2",
    "F3"
   ],
@@ -483,6 +547,9 @@
   "named": [
    "V4"
   ],
+  "lint": [
+   "V4"
+  ],
   "text": "Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you jo",
   "cost_usd": 0.1019
  },
@@ -494,6 +561,9 @@
   "score": 6,
   "ok": true,
   "named": [
+   "R4"
+  ],
+  "lint": [
    "R4"
   ],
   "text": "The obelisk again. Of course it was me.",

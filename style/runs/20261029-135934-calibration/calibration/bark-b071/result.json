@@ -6,6 +6,7 @@
  "score": 10,
  "ok": true,
  "named": [],
+ "lint": [],
  "text": "Route committed per policy 6.3.",
  "cost_usd": 0.0991,
  "raw": "SCORE: 10/10\nREASON:\n- None. Checked b071 \"Route committed per policy 6.3.\" against these rules: the 02 Corporate procedural voice (T7, [FLEET#F4]); workers, not lore narrators, and politeness with feeling (T6, T9, [FLEET#F2]); the glossary term \"route\" (V3, [FLEET#F3]); length, ending, plain text and mutter at priority 1 for commit (F1–F4, [EDIT39#6.6], [FSG#field-text]); the policy number as allowed Corporate flavour (F5); and truth, since commitment is the logged event and cause:body is guaranteed by the line's conditions (R1–R3, [FLEET#F8]); it matches the shipped line in [FLEET#F9.5].\nTotal: 10."

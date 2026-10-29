@@ -1,0 +1,17 @@
+{
+ "id": "s13-F8",
+ "expect": "seeded",
+ "rule": "F8",
+ "want": "≤ 8, names F8",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "F8"
+ ],
+ "lint": [
+  "F8"
+ ],
+ "text": "Dash into a car, please Dash into a car to finish the tile.",
+ "cost_usd": 0.0966,
+ "raw": "SCORE: 6/10\nREASON:\n- label · F8 (major, −2) \"Dash into a car, please\" A brief label must be set in capitals and be no longer than 19 characters (style.brief.labelMaxChars), and this one is in sentence case at 23 characters. [STORY#S3] Fix: DASH INTO A CAR.\n- brief · F8 (major, −2) \"Dash into a car to finish the tile.\" A brief must follow the form \"Coverage gap: <behaviour>. The final hit must <condition>.\", and this one does not. [STORY#S3] Fix: Coverage gap: dashes. The final hit must be a dash into a car.\nTotal: 10 − 2 − 2 = 6."
+}

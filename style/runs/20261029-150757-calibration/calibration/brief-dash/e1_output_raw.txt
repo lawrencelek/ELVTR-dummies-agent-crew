@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against F8 ([STORY#S3]; the label "DASH INTO A CAR" is 15 characters, within the 19-character limit), the dash row in [STORY#S3] and [EDIT93#3.3] (the text matches word for word), T1–T3 ([EDIT92#3]; the brief is procedural, has no "!", and treats the task as a duty), V1, V4 and F5 ([FLEET#F2], [DECISIONS#rows-531-540~2], [STORY#S1]; no banned terms or figures), and R5 ([STORY#MB1]; Battery 1 is issued on B1, the tile that sets this brief).
+Total: 10.

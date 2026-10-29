@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · R5 (blocking, −4) "Push off one car into the next." The duty is the push brief, but Waterfront B1's brief is JUMP INTO A CAR: "The final hit must be a jump into a car." [STORY#WB1] Fix: replace it with "Jump into a car."
+- tale · F7 (major, −2) "Legs 1 is fitted." This tile issues Legs 3, and the tale does not name it. Legs 1 was issued earlier, at Monument B3, so the line points to the wrong equipment. [STORY#WB1] Fix: replace it with "Legs 3 is fitted: the longest flight." The full tale then reads "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Jump into a car. Where your data goes is not within your role." It stays under 223 characters, and no sentence is over 19 words.
+Total: 10 − 4 − 2 = 4.

@@ -1,0 +1,13 @@
+{
+ "id": "ending",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please rema",
+ "cost_usd": 0.0964,
+ "raw": "SCORE: 10/10\nREASON:\n- None. This matches the shipped CERTIFIED text in STORY#S5 and EDIT92#3.2 word for word. I checked it for:\n  - dry procedural tone and how the harm is treated [EDIT92#3, EDIT39#4.1.1]\n  - no exclamation marks [EDIT93#3.1/tales-rewritten~2]\n  - employment framing, \"you\" and \"your model\", and \"Farsight\" in title case [STORY#S2, DECISIONS#rows-531-540~2 row 539]\n  - banned terms and typed figures [FLEET#F2, STORY#S1]\n  - truth against the finale as built: the Farsight drone, the river and the container ship [EDIT94#3.2]\nTotal: 10."
+}

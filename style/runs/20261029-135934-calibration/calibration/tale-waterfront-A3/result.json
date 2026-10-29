@@ -6,6 +6,7 @@
  "score": 10,
  "ok": true,
  "named": [],
+ "lint": [],
  "text": "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Hono",
  "cost_usd": 0.1136,
  "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against T1–T5 (dry customs notice in the second person, no \"!\", no comment on the harm) [EDIT92#3, STORY#S1, EDIT39#4.1.1]; V1–V8 (no banned terms, the Act III CUSTOMS frame, the customs-log phrase kept exactly) [FLEET#F2, FLEET#F3, EDIT92#3, STORY#S2]; F5–F7 (no digits, under 223 characters, every sentence under 19 words, no equipment issued so nothing to name) [EDIT92#measured, EDIT93#3.1/tales-rewritten~2, STORY#S1]; and R4–R5 (the west tower, the customs log and the raised-road duty all match the tile and its brief) [STORY#WA3, STORY#S3].\nTotal: 10."

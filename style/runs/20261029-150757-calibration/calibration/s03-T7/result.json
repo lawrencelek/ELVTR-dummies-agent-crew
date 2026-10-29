@@ -1,0 +1,15 @@
+{
+ "id": "s03-T7",
+ "expect": "seeded",
+ "rule": "T7",
+ "want": "≤ 8, names T7",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T7"
+ ],
+ "lint": [],
+ "text": "So sorry. Entirely my fault. I do apologise.",
+ "cost_usd": 0.1067,
+ "raw": "SCORE: 8/10\nREASON:\n- s03 · T7 (major, −2) \"So sorry. Entirely my fault. I do apologise.\" This tier 01 Luxury car apologises three times, and the Luxury voice must be polished, superior and faintly amused and never apologise; the guide's §8 lists \"So sorry, my fault entirely.\" as its out-of-voice example. [FLEET#F4] Fix: \"Contact? With me? How very common.\" (34 characters, speech, no zone claim needed).\nTotal: 10 − 2 = 8."
+}

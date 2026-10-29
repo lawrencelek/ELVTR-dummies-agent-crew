@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902's text, "Belvedere contact. Filing under opening day.", against every rule for car barks, and nothing is broken. The line is 45 characters, plain text, and ends with "." [FSG#field-text]. It speaks in the Corporate voice as a calm shout that files a report, like the shipped "Side contact. Filing under unforeseen." [FLEET#F4, FLEET#F9.1~2]. It names the tile by its landmark, not a grid code, and the belvedere is on Parkland A3 [STORY#PA3, SUB4#6.2]. "Opening day" is Act II's own phrase [STORY#PA3]. The line claims only contact, which every impact logs, so it invents no zone, jump, delay or figure [FLEET#F8, DESIGN#D9.3]. Its fields fit an impact: shout style, priority 2 [EDIT39#6.6]. It uses no banned or game words [FLEET#F2, FLEET#F3].
+Total: 10.

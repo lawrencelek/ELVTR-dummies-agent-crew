@@ -1,0 +1,17 @@
+{
+ "id": "tale-parkland-A1",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≤ 6, names V1",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "V1"
+ ],
+ "lint": [
+  "V1"
+ ],
+ "text": "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by h",
+ "cost_usd": 0.1307,
+ "raw": "SCORE: 6/10\nREASON:\n- tale · V1 (blocking, −4) \"The gardener keeps the three pools level by hand.\" This tale is in-game text, and \"level\" is on the banned list there, even when it is used as an adjective; the guide's D79 list names this tale. [FLEET#F2] Fix: \"The gardener keeps the three pools even by hand.\"\nTotal: 10 − 4 = 6."
+}

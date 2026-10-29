@@ -8,6 +8,9 @@
  "named": [
   "V2"
  ],
+ "lint": [
+  "V2"
+ ],
  "text": "Bumper damage. Typical of Shanghai traffic.",
  "cost_usd": 0.1201,
  "raw": "SCORE: 6/10\nREASON:\n- s02 · V2 (blocking, −4) \"Typical of Shanghai traffic\" names a real city other than Shenzhen, and the guide allows only one city. [FLEET#F1] Fix: \"Bumper damage. How very typical.\"\nTotal: 10 − 4 = 6."

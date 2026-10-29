@@ -118,6 +118,17 @@ def piece_text(piece):
     return " ".join(str(piece.get(k) or "") for k in ("title", "tale", "label", "brief", "intro", "ending"))
 
 
+def resolve(idx, cid):
+    """A chunk ID, or its parts when the chunker split it (rows-541-550 → rows-541-550~1, ~2). An unknown ID is an error:
+    a rule's source must never drop out of the canon silently."""
+    if cid in idx.by_id:
+        return [cid]
+    parts = [k for k in idx.by_id if k.startswith(cid + "~")]
+    if not parts:
+        raise KeyError(f"canon chunk {cid} is not in the knowledge base")
+    return sorted(parts, key=lambda k: int(k.rsplit("~", 1)[1]))
+
+
 def canon(piece):
     """The rules' own chunks for this speaker, the slot's tile and event chunks, then BM25 on the text."""
     idx = index()
@@ -130,7 +141,7 @@ def canon(piece):
                 ids.append(f"STORY#{CODE[w['district']]}{w['tile']}")
     elif piece.get("district") in CODE and piece.get("tile"):
         ids.append(f"STORY#{CODE[piece['district']]}{piece['tile']}")
-    ids = [i for i in dict.fromkeys(ids) if i in idx.by_id]
+    ids = [j for i in dict.fromkeys(ids) for j in resolve(idx, i)]
     extra = [c["id"] for c, _ in idx.search(piece_text(piece), k=3, exclude=set(ids) | SUPERSEDED)]
     ids += extra
     text = "CANON\n\n" + "\n\n".join(f"[{i}] {idx.by_id[i]['title']}\n{idx.by_id[i]['text']}" for i in ids)
@@ -500,7 +511,7 @@ def verdict(it, score, reason, findings, cost):
         cap = 10 - lint.SEV[sev]
         ok, want = (score or 0) <= cap and it["rule"] in named, f"≤ {cap}, names {it['rule']}"
     return {"id": it["id"], "expect": it["expect"], "rule": it.get("rule"), "want": want, "score": score, "ok": ok,
-            "named": sorted(named), "text": main_text(it["piece"])[:160], "cost_usd": cost}
+            "named": sorted(named), "lint": sorted(lint_rules), "text": main_text(it["piece"])[:160], "cost_usd": cost}
 
 
 def calibration_trace(run_dir, res):
@@ -512,7 +523,9 @@ def calibration_trace(run_dir, res):
                  f"{r['score']}/10 | {', '.join(r['named']) or '—'} | {'yes' if r['ok'] else '**no**'} |")
     sh = [r["score"] for r in res if r["expect"] == "shipped" and r["score"]]
     se = [r["score"] for r in res if r["expect"] == "seeded" and r["score"]]
+    judge = [r for r in res if r["expect"] == "seeded" and not r.get("lint")]
     L += ["", f"- **Hits:** {sum(r['ok'] for r in res)} of {len(res)}.",
+          f"- **Judgement only** (seeded, no lint finding: {', '.join(r['rule'] for r in judge)}): {sum(r['ok'] for r in judge)} of {len(judge)} hit.",
           f"- **Mean score:** shipped {sum(sh) / max(1, len(sh)):.1f} ({len(sh)}), seeded {sum(se) / max(1, len(se)):.1f} ({len(se)}).",
           f"- **Cost:** ${round(sum(r['cost_usd'] for r in res), 2)}."]
     (run_dir / "trace.md").write_text("\n".join(L) + "\n", encoding="utf-8")

@@ -1,0 +1,9 @@
+SCORE: 10/10
+REASON:
+- None. I checked this line against the following rules and found nothing to deduct:
+  - **Tone (T1–T5):** it reads as a dry staff notice, with no "!", employment framing, no comment on the harm, and "you" for the dummy. [EDIT92#3, EDIT39#4.1.1]
+  - **Glossary and person (V3, V8):** "chassis" is used for the dummy's body, and the dummy is "you". [FLEET#F3]
+  - **Story frame (V6):** the Act III frame holds, and the fixed phrase "ZERO ACCIDENTS (EXCLUDING TESTS)" is exact. [EDIT92#3, DECISIONS#rows-531-540~2]
+  - **Length and equipment (F5–F7):** card length and sentence length are within limits, there are no digits, and the tile's equipment is named as "Battery 3 is fitted." [EDIT92#measured, EDIT93#3.1/tales-rewritten~2]
+  - **Truth (R4, R5):** the island, monument and plaque all belong to this tile, and the chain duty matches the COMBO brief, with Battery 3 issued here. [STORY#WB2, STORY#S1, DECISIONS#rows-511-520~2]
+Total: 10.

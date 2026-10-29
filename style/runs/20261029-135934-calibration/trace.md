@@ -47,5 +47,6 @@ Run `20261029-135934-calibration`. The evaluator alone, on shipped strings and o
 | [s19-R4](calibration/s19-R4/e1_output_raw.txt) | seeded · R4 | The obelisk again. Of course it was me. | ≤ 6, names R4 | 6/10 | R4 | yes |
 
 - **Hits:** 41 of 41.
+- **Judgement only** (seeded, no lint finding: T7, T8, R3, T3, V6, R5, V3, T6): 8 of 8 hit.
 - **Mean score:** shipped 9.6 (22), seeded 6.9 (19).
 - **Cost:** $4.89.

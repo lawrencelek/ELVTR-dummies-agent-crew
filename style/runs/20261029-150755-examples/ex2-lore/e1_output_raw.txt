@@ -1,0 +1,8 @@
+SCORE: 1/10
+REASON:
+- t901 · V1 (blocking, −4) "Chongqing fountain: player killed. Respawn." Lint found four banned terms: "killed", "player", "respawn" and "Chongqing". [FLEET#F2] Fix: drop all four words and use the replacement line under T7.
+- t901 · R4 (blocking, −4) "fountain" Lint found that Monument B2 has no fountain: neither its title nor its tale names one. [STORY#MB2] Fix: name the tile's landmark, "the monument" or "the plaque", or just say "Monument".
+- t901 · V2 (blocking, −4) "Chongqing" Shenzhen Smart City is the only city the game allows, so naming another real city also breaks this rule. [FLEET#F1] Fix: cut the city name. The tile condition already places the line.
+- t901 · V3 (major, −2) "player killed. Respawn." These are game words for a write-off and a new chassis, where the fleet glossary has its own terms. [FLEET#F3] Fix: use "write-off" (and "chassis" or "bay" if a new body is meant).
+- t901 · T7 (major, −2) "Chongqing fountain: player killed. Respawn." This is a flat status readout, not a Luxury car being polished, superior and faintly amused. [FLEET#F4] Fix: "A write-off by the monument. How quaint." (40 characters; the claims district:monument and tile:B2 still hold).
+Total: 10 − 4 − 4 − 4 − 2 − 2 = 1 (the score cannot go below 1).

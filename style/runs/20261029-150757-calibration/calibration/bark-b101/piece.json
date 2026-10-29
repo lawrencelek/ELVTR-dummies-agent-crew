@@ -1,0 +1,18 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b101",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "hips"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Subject has acquired hips.",
+   "claims": [
+    "node:hips"
+   ]
+  }
+ ]
+}

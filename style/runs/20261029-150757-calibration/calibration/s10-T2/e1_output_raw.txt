@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · T2 (major, −2) "A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in the road until a colleague notices you!" Farsight never uses exclamation marks, and this tale ends all four sentences with one. [EDIT92#3] Fix: replace each "!" with ".": "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you."
+Total: 10 − 2 = 8.
