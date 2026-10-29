@@ -15,7 +15,7 @@ Prototype 8.2 (Edit 97): tales redrafted; Arcade in grades; HIGH SCORES.
 - **HIGH SCORES:** a pill under ARCADE and STORY, beside CREDITS.
   - Tables: PARKLAND · WATERFRONT · MONUMENT · STORY. Top 10 each (`highscore.tableSize`). Kept in this browser.
   - Arcade: a new score takes the last name used (TRAINEE at first); the ending offers "Name this score".
-  - Story: recorded at CERTIFIED under the save slot's name.
+  - Story: finished runs only, recorded at CERTIFIED under the save slot's name (row 567).
 - **Registry:** `edit97-2026-10-29`; `build.py` writes the five new IDs into the page (`window.DUMMIES_SIM`).
 - **Text:** style run `style/runs/20261029-181530-v82`.
 - **Open:** D81 (faster cars), D82 (a shared online board), D80.

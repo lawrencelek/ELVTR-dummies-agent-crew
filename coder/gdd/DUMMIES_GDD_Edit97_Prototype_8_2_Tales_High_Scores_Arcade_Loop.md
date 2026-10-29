@@ -58,7 +58,7 @@
   - Arcade row: rank, name, points, grade, write-offs, time, date. Story row: rank, name, points, chassis, time, date.
   - Saved in this browser (localStorage; this visit only if storage is off).
 - **Arcade name:** a new score takes the last name used (TRAINEE at first). "Name this score" opens the name keyboard (Edit 88).
-- **Story score:** recorded at CERTIFIED under the save slot's name.
+- **Story score:** finished runs only (user-decided, row 567). Recorded at CERTIFIED under the save slot's name. CERTIFIED ends Story for that slot; runs in progress are not logged.
 
 ## 5 Text pipeline
 

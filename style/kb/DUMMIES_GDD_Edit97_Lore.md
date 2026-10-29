@@ -52,13 +52,13 @@
 | Objective: Write off 2 bodies (0 of 2). | Grade 1: write off 2 bodies for grade 2 (0 of 2). Top grade: "write off all you can." |
 | — | Grade up: toast and report header, n35 "GRADE {G} · TOUGHER CHASSIS · DENSER TRAFFIC" |
 | Ending stats: TIME · WRITE-OFFS · POINTS · BEST HIT | Arcade: BEST HIT → GRADE |
-| — | Ending: HIGH SCORE · RANK n OF 10 · NAME; items Name this score, High scores |
+| — | Ending, beside the menu: HIGH SCORE · RANK n OF 10 · name and table; items Name this score (Arcade), High scores |
 
 - **HIGH SCORES board:** tabs PARKLAND · WATERFRONT · MONUMENT · STORY. Top highscore.tableSize each.
   - Arcade row: rank, name, points, grade, write-offs, time, date. Story row: rank, name, points, chassis, time, date.
   - Saved in this browser (localStorage; this visit only if storage is off).
 - **Arcade name:** a new score takes the last name used (TRAINEE at first). "Name this score" opens the name keyboard (Edit 88).
-- **Story score:** recorded at CERTIFIED under the save slot's name.
+- **Story score:** finished runs only (user-decided, row 567). Recorded at CERTIFIED under the save slot's name. CERTIFIED ends Story for that slot; runs in progress are not logged.
 
 ## Registry
 
