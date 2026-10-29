@@ -1,0 +1,21 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t902",
+   "event": "impact",
+   "when": {
+    "district": "parkland",
+    "tile": "A3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "V02: Impact logged at 41 km/h on the belvedere.\nChassis damage stands at 17%.\nMy route delay is 36 seconds, filed.",
+   "claims": [
+    "district:parkland",
+    "tile:A3"
+   ]
+  }
+ ]
+}

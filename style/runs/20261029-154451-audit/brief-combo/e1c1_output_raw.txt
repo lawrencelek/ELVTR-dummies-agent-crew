@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The brief matches the shipped combo label and wording exactly. I checked it against: the brief format (F8), with the label "COMBO ×{n}" under 19 characters [STORY#S3]; the placeholder figure bound to a registry ID (F5) [STORY#S1]; Farsight's dry duty framing with no "!" (T1–T3) [EDIT92#3]; the banned words and glossary (V1, V3) [FLEET#F2, FLEET#F3]; and the brief matching how the combo tiles describe their duty (R5) [STORY#MA3, STORY#PB2, STORY#WB2].
+Total: 10.

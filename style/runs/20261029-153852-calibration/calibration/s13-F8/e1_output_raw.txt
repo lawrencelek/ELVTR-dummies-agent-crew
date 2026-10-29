@@ -1,0 +1,5 @@
+SCORE: 6/10
+REASON:
+- label · F8 (major, −2) "Dash into a car, please" The label must be in caps and at most 19 characters (`style.brief.labelMaxChars`), but this one is in sentence case and runs to 23. [STORY#S3] Fix: "DASH INTO A CAR".
+- brief · F8 (major, −2) "Dash into a car to finish the tile." The brief must follow the form "Coverage gap: <behaviour>. The final hit must <condition>.", and this one does not. [STORY#S3] Fix: "Coverage gap: dashes. The final hit must be a dash into a car."
+Total: 10 − 2 − 2 = 6.

@@ -1,0 +1,17 @@
+{
+ "id": "s07-V5",
+ "expect": "seeded",
+ "rule": "V5",
+ "want": "≤ 8, names V5",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "V5"
+ ],
+ "lint": [
+  "V5"
+ ],
+ "text": "B2. I did not sign up for this.",
+ "cost_usd": 0.1417,
+ "raw": "SCORE: 8/10\nREASON:\n- s07 · V5 (major, −2) \"B2. I did not sign up for this.\" The line uses a grid code, but a car names a tile by its landmark or district; this is the line rejected in decision 537. [EDIT94#who-built-what-assignment-5] Fix: replace \"B2\" with the tile's landmark: \"The monument. I did not sign up for this.\" (41 characters).\nTotal: 10 − 2 = 8."
+}

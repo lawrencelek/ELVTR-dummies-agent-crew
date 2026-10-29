@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t101–t104 against T6–T12, V1–V8, F1–F5 and R1–R4: each line's tier voice holds [FLEET#F4], the "!" appears only in the Budget shout [DECISIONS#rows-541-550], each line reacts only to the impact and the tile's landmark or district without placing anything beside it [FLEET#F8], [STORY#MA1], and LINT reported no findings.
+Total: 10.

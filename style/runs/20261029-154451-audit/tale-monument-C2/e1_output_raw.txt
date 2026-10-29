@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 for dry, procedural voice with no "!" and "you" address [EDIT92#3, STORY#S1]. It also passes V1–V8 for banned terms, the glossary and the INDUCTION frame [FLEET#F2, FLEET#F3, STORY#S2], and F5–F7: no digits, within 223 characters, no sentence over 19 words, and no equipment named on a tile that issues none [EDIT93#3.1/tales-rewritten~2, STORY#MC2]. Under R4–R5, the portal tower and its high road belong to this tile, and "your duty is on the road itself, at height" matches the ON A RAISED ROAD brief [STORY#MC2, STORY#S3].
+Total: 10.

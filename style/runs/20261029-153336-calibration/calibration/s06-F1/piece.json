@@ -1,0 +1,22 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "s06",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "02"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Front contact logged under policy 6.3; incident file opened; KPIs adjusted.",
+   "claims": [
+    "zone:front"
+   ]
+  }
+ ]
+}

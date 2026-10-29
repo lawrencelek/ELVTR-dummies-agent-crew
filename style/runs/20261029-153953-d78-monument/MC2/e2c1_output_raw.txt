@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked all four lines for tier voice (Luxury sniffs and doesn't apologise, Corporate logs and KPIs, Consumer is resigned, Budget's "!" comes with a polite form) [FLEET#F4], [FLEET#F9.1~2], [DECISIONS#rows-541-550]. I checked that each event is an impact with no write-off or invented claim, that each fits a 48-character plain bubble with style and priority set correctly, and that each names the landmark as the place and never a spot relative to it [FLEET#F2], [FLEET#F8], [EDIT39#6.6], [STORY#MC2], [SUB4#5]. Lint reported no findings.
+Total: 10.

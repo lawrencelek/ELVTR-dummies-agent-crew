@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules. Tone (T1–T5): it reads as a dry, procedural staff notice, has no "!", names Farsight in the third person, and has no hype, menace or comment on harm [EDIT92#3, EDIT39#4.1.1]. Vocabulary (V1–V8): it has no banned word or real city, writes "Farsight" in title case, and keeps the Act III frame, since the circus ceremony is the Waterfront B2 unveiling [STORY#S2, DECISIONS#rows-531-540~2]. Formatting (F5–F7): it is one paragraph of about 216 characters, its longest sentence is 17 words, it has no digits, and the tile issues no equipment [EDIT93#3.1/tales-rewritten~2, STORY#S1]. Truth (R4–R5): the cliff, the avenue and the beach belong to the west beach terrace, and "Place a cone." matches CONE-BAITED CAR. The cone ability came with Hands 1 earlier in the run, so the tile introduces nothing it does not issue [STORY#WA2, DECISIONS#rows-311-320~2, STORY#S3].
+Total: 10.

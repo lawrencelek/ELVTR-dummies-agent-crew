@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's rules and found no breaks. Tone (T1–T5): the line reads as a dry staff notice, the cars are colleagues, and there is no "!" [EDIT92#3]. Vocabulary (V1–V8): the Act II OPENING DAY frame holds, with the board and the public, and there are no banned terms [STORY#S2, FLEET#F2]. Format (F5–F7): the tale is within 223 characters, no sentence exceeds 19 words, and it names "Battery 2" as the equipment this tile issues [EDIT93#3.1/tales-rewritten~2, DECISIONS#rows-531-540~2]. Truth (R4–R5): it names only the tile's landmark, the ring, and "a chain of three" matches the COMBO ×{n} brief [STORY#PB2, STORY#S1, STORY#S3].
+Total: 10.

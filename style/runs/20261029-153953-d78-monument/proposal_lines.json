@@ -1,0 +1,588 @@
+{
+ "district": "monument",
+ "decision": "D78 (open); decision 542",
+ "batch_scores": [
+  8,
+  10,
+  10
+ ],
+ "accepted": true,
+ "lines": [
+  {
+   "id": "t101",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A1",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "The welcome wall did not mention contact.",
+   "claims": [
+    "district:monument",
+    "tile:A1"
+   ]
+  },
+  {
+   "id": "t102",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A1",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Welcome wall contact logged. Incident opened.",
+   "claims": [
+    "district:monument",
+    "tile:A1"
+   ]
+  },
+  {
+   "id": "t103",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A1",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Welcome, it said. Then this. Monument, huh.",
+   "claims": [
+    "district:monument",
+    "tile:A1"
+   ]
+  },
+  {
+   "id": "t104",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A1",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Not at the welcome wall! Kind regards!",
+   "claims": [
+    "district:monument",
+    "tile:A1"
+   ]
+  },
+  {
+   "id": "t105",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B1",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Struck at the podium bridge. How gauche.",
+   "claims": [
+    "district:monument",
+    "tile:B1"
+   ]
+  },
+  {
+   "id": "t106",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B1",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Podium bridge contact logged. KPIs adjusted.",
+   "claims": [
+    "district:monument",
+    "tile:B1"
+   ]
+  },
+  {
+   "id": "t107",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B1",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Hit at the podium bridge. Of course.",
+   "claims": [
+    "district:monument",
+    "tile:B1"
+   ]
+  },
+  {
+   "id": "t108",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B1",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Podium bridge, you plank! With respect.",
+   "claims": [
+    "district:monument",
+    "tile:B1"
+   ]
+  },
+  {
+   "id": "t109",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "The drum lights every bend. You arrived anyway.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  },
+  {
+   "id": "t110",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Monument impact logged. Drum lighting nominal.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  },
+  {
+   "id": "t111",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "The drum warns me of bends. Never of you.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  },
+  {
+   "id": "t112",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "OI! Not at the LED drum! Cheers ever so.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  },
+  {
+   "id": "t113",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C2",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Struck at the portal tower. How undignified.",
+   "claims": [
+    "district:monument",
+    "tile:C2"
+   ]
+  },
+  {
+   "id": "t114",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C2",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Portal tower contact logged. KPIs adjusted.",
+   "claims": [
+    "district:monument",
+    "tile:C2"
+   ]
+  },
+  {
+   "id": "t115",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C2",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "The portal tower, of all places. Of course.",
+   "claims": [
+    "district:monument",
+    "tile:C2"
+   ]
+  },
+  {
+   "id": "t116",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C2",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "At the portal tower! Kindly desist!",
+   "claims": [
+    "district:monument",
+    "tile:C2"
+   ]
+  },
+  {
+   "id": "t117",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "At the monument, of all places. Charming.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t118",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact at the monument. Incident form 3 filed.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t119",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "At the monument. Of course it was me.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t120",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "At the monument?! Thanks ever so much!",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t121",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Monument prices, and you still scuff my paint.",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  },
+  {
+   "id": "t122",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Neon shops contact. Policy 6.3 disagrees.",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  },
+  {
+   "id": "t123",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "03"
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "The neon shops. Of course it happens here...",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  },
+  {
+   "id": "t124",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Not at the neon shops! Much obliged!",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  },
+  {
+   "id": "t125",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A3",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Struck at the stacked cubes. Quaint.",
+   "claims": [
+    "district:monument",
+    "tile:A3"
+   ]
+  },
+  {
+   "id": "t126",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Stacked cubes contact. Policy 4.1 applies.",
+   "claims": [
+    "district:monument",
+    "tile:A3"
+   ]
+  },
+  {
+   "id": "t127",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A3",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Hit at the stacked cubes. Naturally.",
+   "claims": [
+    "district:monument",
+    "tile:A3"
+   ]
+  },
+  {
+   "id": "t128",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A3",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Watch the stacked cubes, you plank! Kindly.",
+   "claims": [
+    "district:monument",
+    "tile:A3"
+   ]
+  },
+  {
+   "id": "t129",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B3",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Struck in the LED canyon. Utterly unflattering.",
+   "claims": [
+    "district:monument",
+    "tile:B3"
+   ]
+  },
+  {
+   "id": "t130",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "LED canyon contact. Form 9, in triplicate.",
+   "claims": [
+    "district:monument",
+    "tile:B3"
+   ]
+  },
+  {
+   "id": "t131",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B3",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "The LED canyon, of all places. Fine.",
+   "claims": [
+    "district:monument",
+    "tile:B3"
+   ]
+  },
+  {
+   "id": "t132",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B3",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Not in the LED canyon, you plank! Kindly stop!",
+   "claims": [
+    "district:monument",
+    "tile:B3"
+   ]
+  },
+  {
+   "id": "t133",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact at the LED gateway. Gauche.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t134",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact at the LED gateway. Irony on file.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t135",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "03"
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "Hit at the LED gateway. Figures...",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t136",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Right at the LED gateway! Kind regards.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  }
+ ]
+}

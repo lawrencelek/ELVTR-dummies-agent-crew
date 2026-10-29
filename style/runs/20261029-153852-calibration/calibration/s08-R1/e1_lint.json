@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "60",
+  "measured": "typed figure; figures come from event placeholders",
+  "source": "STORY#S1"
+ }
+]

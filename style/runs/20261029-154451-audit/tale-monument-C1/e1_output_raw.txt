@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's rules and found no violations. Tone (T1–T5) passes: the dry close "Gravity is company policy" fits [EDIT92#3] and [EDIT39#4.1.1]. Vocabulary (V1–V8) passes: cars are called "colleague", and the INDUCTION frame matches [STORY#S2]. Format (F5–F7) passes: lint reports no length, sentence or digit finding, and the tile issues no equipment, so the tale needn't name any [STORY#MC1]. Truth (R4–R5) passes: "Step off it onto a car" matches the DROP ONTO A CAR brief, and the drum, high road and rail all belong to Monument C1 [STORY#MC1], [STORY#S3], [EDIT93#3.1/tales-rewritten~1].
+Total: 10.

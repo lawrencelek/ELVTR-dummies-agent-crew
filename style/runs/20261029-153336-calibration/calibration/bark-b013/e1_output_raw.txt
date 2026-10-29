@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b013 against every car rule and found nothing to deduct. It is a Budget (04) front-impact shout: "!" is allowed in a shout or Budget bark (T10, [DECISIONS#rows-541-550]). The rage sits under a polite tag ("Kind regards."), which matches the Budget voice (T7, T9, [FLEET#F4]). It is 38 characters, plain text and ends correctly (F1–F3, [FSG#field-text], [FLEET#F2]). Its fields fit an impact: shout style, priority 2 (F4, [EDIT39#6.6]). "Right in the grille" asserts only front contact, which `zone:front` and the zone condition guarantee (R1–R3, [FLEET#F8]). It uses no banned word, city, brand or grid code (V1, V2, V5, [FLEET#F2]). It also matches the shipped line in [FLEET#F9.1~2] word for word.
+Total: 10.

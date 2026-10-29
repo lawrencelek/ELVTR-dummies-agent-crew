@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902 against T6, T7, T9 and T12 (Corporate procedure with a dry joke under it, per [FLEET#F4], [FLEET#F2], [SUB4#6.1]), V1–V8 (no banned word or grid code, and the belvedere is named as the landmark, per [FLEET#F2], [SUB4#6.2]), F1–F5 (48 characters, plain text, ends with ".", speech style and priority 2 fit `impact`, per [EDIT39#6.6], [FSG#field-text]) and R1–R4 (the line claims only contact on the impact event, and "belvedere" and "wedding" both come from the A3 title and tale, per [FLEET#F8], [STORY#PA3]).
+Total: 10.

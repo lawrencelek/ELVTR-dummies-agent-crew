@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- t901 · V1 (blocking, −4) "Chongqing fountain. Player killed. Respawn." The line uses four banned terms: 'Chongqing', 'player', 'killed' and 'respawn'. [FLEET#F2] Fix: cut all four. Use the fleet's words instead ("a write-off", "the subject", "the bay"), for example "The monument. A write-off. How very provincial."
+- t901 · R4 (blocking, −4) "fountain" Monument B2's title and tale have no fountain, so the line names a landmark the tile lacks. [STORY#MB2] Fix: name the tile's own landmark instead, "the monument" or "the plaque".
+- t901 · T7 (major, −2) "Player killed. Respawn." A Luxury car should sound polished, superior and faintly amused, but this is a clipped report with no airs. [FLEET#F4] Fix: give it a Luxury sniff, for example "The monument. A write-off. How very provincial." (47 characters).
+Total: 10 − 4 − 4 − 2 = 0, floored at 1.

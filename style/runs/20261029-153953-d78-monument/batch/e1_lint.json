@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "T11",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:kind regards",
+  "quote": "kind regards",
+  "measured": "5 lines close on 'kind regards' (t104, t108, t112, t124, t136) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ },
+ {
+  "rule": "T11",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:kpis adjusted",
+  "quote": "kpis adjusted",
+  "measured": "3 lines close on 'kpis adjusted' (t106, t114, t126) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ }
+]

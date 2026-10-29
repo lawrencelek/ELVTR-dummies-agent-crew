@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the ending against T1–T5 (dry, procedural, no "!", "you" and third-person "Farsight" [EDIT92#3], [EDIT39#4.1.1]), V1–V8 (no banned terms, "Farsight" in title case, "model" for the dummy [DECISIONS#rows-531-540~2], [FLEET#F3]), F5 (no digits [STORY#S1]) and R4–R5 (Act III frame: river, container ship, drone voyage [STORY#S2], [EDIT94#3.2]). It matches the shipped text in [STORY#S5] and [EDIT92#3.2] word for word.
+Total: 10.

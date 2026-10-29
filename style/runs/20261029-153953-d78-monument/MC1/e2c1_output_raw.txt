@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked each line against the speaker, tier and truth rules and found no breaks:
+  - **Tone:** worker voice (T6), tier voice and politeness (T7, T9, T12) [FLEET#F2, FLEET#F4]. The repeated "Kind regards." close appears only once, so T11 is not triggered [SUB4#6.1].
+  - **Exclamation marks:** they appear only in t112, which is both a shout and a Budget bark, so T10 allows them [DECISIONS#rows-541-550].
+  - **Vocabulary:** the glossary and how the dummy is addressed (V3, V8) [FLEET#F3].
+  - **Places:** the lines name the drum and Monument, never the grid code, so V5 is met [SUB4#6.2].
+  - **Format:** fields, style and length (F1–F4) [EDIT39#6.6].
+  - **Truth:** every line reacts only to the impact event's logged fields, and C1's place is always the drum, never a spot beside it (R1–R4) [FLEET#F8, STORY#MC1].
+Total: 10.

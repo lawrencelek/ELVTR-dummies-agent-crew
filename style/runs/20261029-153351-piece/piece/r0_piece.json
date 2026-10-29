@@ -1,0 +1,18 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b031",
+   "event": "impact",
+   "when": {
+    "class": "sedan"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Meter is still running, you know.",
+   "claims": [
+    "class:sedan"
+   ]
+  }
+ ]
+}

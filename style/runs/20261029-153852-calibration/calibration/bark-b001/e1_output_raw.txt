@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b001 against tone T7, T9 and T12 (Luxury: superior and sniffy, with no apology), V1–V8, F1–F5 (41 characters, shout style, priority 2 on an impact, no "!") and truth R1–R3 (the front-zone claim is guaranteed by `zone: front/frontDiagonal`, and a bumper is the front part a frontal hit strikes). It matches the shipped line in [FLEET#F9.1~2] and the in-voice Luxury example in [FLEET#F4].
+Total: 10.

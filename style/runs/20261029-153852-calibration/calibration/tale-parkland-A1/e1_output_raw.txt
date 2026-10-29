@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · V1 (blocking, −4) "The gardener keeps the three pools level by hand." The word "level" is on the banned list for diegetic text, and lint flags it as a fact; the guide lists this tale as shipped text the lint flags, so the deduction stands. [FLEET#F2; DECISIONS#rows-531-540~2 (row 540)] Fix: "The gardener keeps the three pools even by hand."
+Total: 10 − 4 = 6.

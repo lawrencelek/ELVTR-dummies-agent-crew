@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against every bark rule. Tone and tier voice (T6–T12, [FLEET#F4], [FLEET#F2]):
+  - t113 is a superior Luxury sniff with no apology.
+  - t114 is Corporate procedure in KPIs.
+  - t115 is Consumer resignation. "Of all places" suits a line bound to a tier ([SUB4#5]).
+  - t116 is a Budget shout, where "!" is allowed ([DECISIONS#rows-541-550] row 541), with a polite form over the shout.
+
+  Vocabulary (V1–V8, [FLEET#F3]): no banned words, grid codes, other cities or brands, and no callsigns. Format (F1–F4, [FSG#field-text], [EDIT39#6.6]): every line is under 48 characters, plain text, correctly punctuated, and its style and priority 2 fit `impact`. Truth (R1–R4, [FLEET#F8], [STORY#MC2]): each line names the portal tower as the place, not a spot near it, and uses only the guaranteed `district:monument` and `tile:C2` claims. No line asserts height, a raised road, a write-off or anything else that wasn't logged.
+Total: 10.

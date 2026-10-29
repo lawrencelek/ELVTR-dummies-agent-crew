@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1–T5 [EDIT92#3, EDIT39#4.1.1], Vocabulary V1–V8 [FLEET#F2, FLEET#F3, STORY#S2], Formatting F5–F7 [EDIT92#measured, EDIT93#3.1/tales-rewritten~2] and Truth R4–R5 [STORY#WC3, EDIT92#7, STORY#S3]. The tale has 172 characters, and its longest sentence has 16 words. It holds the Act III customs frame, keeps "Farsight" out of it with no "!" and names only the pier tower and customs post, which the tile has. Its duty, "Be thrown into a car.", matches the THROWN INTO A CAR brief. The tile issues no equipment, so the tale names none.
+Total: 10.

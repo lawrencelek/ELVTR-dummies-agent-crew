@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s01 · V1 (blocking, −4) "The player did this." Lint found the banned term "player", which breaks the fiction in diegetic text. The bark also calls the dummy a game's player rather than the fleet's subject, but that is the same problem, so it is deducted once. [FLEET#F2] Fix: replace with "The subject did this." The full line becomes "A write-off? The subject did this. Unthinkable." (47 characters).
+Total: 10 − 4 = 6.

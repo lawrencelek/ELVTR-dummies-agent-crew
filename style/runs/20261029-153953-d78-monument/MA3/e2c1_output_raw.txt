@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against their tier voices (FLEET#F4), the cars' voice and "!" rules (FLEET#F2, DECISIONS#rows-541-550), the length limit and fields for an impact event (EDIT39#6.6, FSG#field-text), the event's logged fields (FLEET#F8, DESIGN#D9.3) and the tile truth for Monument A3 (STORY#MA3, SUB4#5). Each line names the cubes or the district as the place, and the only "!" is in t128's Budget shout.
+Total: 10.

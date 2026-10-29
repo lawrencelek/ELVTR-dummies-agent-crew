@@ -1,0 +1,13 @@
+{
+ "id": "tale-monument-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashi",
+ "cost_usd": 0.1079,
+ "raw": "SCORE: 10/10\nREASON:\n- None. This is the shipped Monument B2 tale, word for word. It breaks no rule: lint reports no findings; it reads as a dry staff notice that calls the cars colleagues and never comments on the harm (T1, T3, T4 [EDIT92#3], [EDIT39#4.1.1]); ZERO ACCIDENTS is exact and fits the INDUCTION frame (V6 [STORY#S2]); it names no equipment on a tile that issues none (F7, R5 [STORY#S1]); \"stand… walking is permitted… dashing would spoil the data\" matches the STRUCK, NOT DASHING brief (R5 [STORY#S3]); and the plaque belongs to this tile (R4 [STORY#MB2]).\nTotal: 10."
+}

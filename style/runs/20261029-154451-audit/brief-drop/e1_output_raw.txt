@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against these rules: F8 (the caps label is 15 characters, and the text follows the "Coverage gap: … The final hit must …" form) [STORY#S3]; T1 and T2 (procedural, no "!") [EDIT92#3]; T3 (the brief is written as a duty) [EDIT92#3]; V1 and V3 (no banned or game words) [FLEET#F2, FLEET#F3]; F5 (no digits) [STORY#S1]; and R5 (it matches the shipped drop brief on Monument C1 and Waterfront C2) [STORY#MC1, STORY#WC2].
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 8/10
+REASON:
+- t104, t108, t112, t124, t136 · T11 (minor, −1) "Kind regards." Five lines close on the same tag, and the limit is two (style.bark.maxStockEndings). [SUB4#6.1] Fix: keep "Kind regards" on two lines only, e.g. t104 and t136. Give the others different polite tags: t108 "Podium bridge, you plank! With respect.", t112 "OI! Not at the LED drum! Cheers ever so.", t124 "Not at the neon shops! Much obliged!"
+- t106, t114, t126 · T11 (minor, −1) "KPIs adjusted." Three lines close on the same tag, and the limit is two (style.bark.maxStockEndings). [SUB4#6.1] Fix: rewrite t126 as "Stacked cubes contact. Policy 4.1 applies."
+Total: 10 − 1 − 1 = 8.

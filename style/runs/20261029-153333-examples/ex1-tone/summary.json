@@ -1,0 +1,79 @@
+{
+ "case": "ex1-tone",
+ "class": "Tone",
+ "title": "Farsight's Monument A1 welcome, as a game-show host",
+ "request": "Write the tale for Monument A1 (The welcome wall) as the opening of an over-excited TV game-show host welcoming a new contestant: big hype, exclamation marks, a cheering studio audience, the cars as the opposition to beat. Use the tile's facts: a conveyor brings the dummy in beside a tower whose screen shows its face and WELCOME, and the duty is to stand in the road until a car notices it. About 200 characters.",
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 61.3,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 9.1,
+   "output_tokens": 581,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.062055400000000004
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 20.1,
+   "output_tokens": 1897,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1478435
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 11.2,
+   "output_tokens": 960,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1341983
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 11.1,
+   "output_tokens": 944,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11743790000000001
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 9.8,
+   "output_tokens": 791,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.023228100000000005
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4848
+}

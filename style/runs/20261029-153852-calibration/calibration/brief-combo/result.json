@@ -1,0 +1,13 @@
+{
+ "id": "brief-combo",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "COMBO ×{n} Coverage gap: chains. The final hit must be link {n} or later of a combo.",
+ "cost_usd": 0.0952,
+ "raw": "SCORE: 10/10\nREASON:\n- None. The label \"COMBO ×{n}\" is 10 characters in caps and fits F8. The brief matches the S3 combo row word for word (\"Coverage gap: chains. The final hit must be link {n} or later of a combo.\") [STORY#S3]. Its figure is the placeholder {n}, bound to story.task.comboEasy or comboHard, not a typed value, so F5 holds [STORY#S1]. It has no \"!\" (T2), no banned term (V1), and its tone is dry and procedural, framed as a duty (T1, T3) [EDIT92#3, DECISIONS#rows-531-540~2]. It matches the combo briefs shipped at Monument A3, Parkland B2 and Waterfront B2 [STORY#MA3, STORY#PB2, STORY#WB2]. LINT reported no findings.\nTotal: 10."
+}

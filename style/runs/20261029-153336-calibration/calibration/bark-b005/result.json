@@ -1,0 +1,13 @@
+{
+ "id": "bark-b005",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Front contact. Incident 4471 opened.",
+ "cost_usd": 0.1964,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked \"Front contact. Incident 4471 opened.\" against all four rule groups. Tone: a calm, procedural Corporate voice that logs and cites an incident number, with no \"!\" (T7, T9, T10 [FLEET#F4], [DECISIONS#rows-541-550]). Vocabulary: no banned words and no grid code (V1, V5 [FLEET#F2]). Formatting: 36 characters, plain text, ends with \".\" and shout at priority 2 fits an impact (F1–F4 [EDIT39#6.6], [FSG#field-text]). Figures: \"4471\" is a Corporate incident number, which counts as flavour (F5 [FLEET#F9.1~2]). Truth: the line asserts only front contact, and its zone condition guarantees the claim zone:front (R1–R3 [FLEET#F8], [DESIGN#D9.3]).\nTotal: 10."
+}

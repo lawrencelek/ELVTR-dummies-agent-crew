@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against T6–T12, V1–V8, F1–F5 and R1–R4, and none breaks a rule. Each car keeps its tier's voice [FLEET#F4]: Luxury sniffs "Quaint.", Corporate logs KPIs, Consumer says "Naturally." and Budget shouts "you plank!" before "Kindly.", which is allowed [DECISIONS#rows-541-550]. Each line reacts only to the logged impact [FLEET#F8]. The landmark lines name "the stacked cubes" as the place, not a spot near it [STORY#MA3]. No stock ending or closing tag repeats [SUB4#6.1], and the lint found nothing.
+Total: 10.

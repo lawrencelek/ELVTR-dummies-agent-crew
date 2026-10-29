@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the ending against T1–T5 and found it dry and procedural, with no "!", "you" as the address and Farsight in the third person ([EDIT92#3], [STORY#S1]). On vocabulary, V1–V4, V6 and V8 hold: no banned terms, title-case "Farsight", "your model" for the dummy, and the CUSTOMS frame of river and ship ([FLEET#F2], [DECISIONS#rows-531-540~2], [STORY#S2]). F5 holds, with no digits. On truth, R4 holds against the finale: the drone carries the dummy over the river to the ship at B3 ([EDIT94#3.2]). The text matches the shipped string word for word ([STORY#S5], [EDIT92#3.2]).
+Total: 10.

@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. I checked the ending against these rules and found nothing to deduct:
+  - T1–T5 (dry, procedural, no "!", employment framing, no comment on harm, "you" with Farsight in third person) [EDIT92#3, EDIT39#4.1.1]
+  - V1, V2, V4, V6 and V8 (no banned terms, no real city, "Farsight" in title case, the Act III river-and-ship frame, "you" and "model" for the dummy) [FLEET#F2, DECISIONS#rows-531-540~2, STORY#S2]
+  - F5 (no figures)
+  - R4 against the voyage and the built ending text, which this matches word for word [STORY#S5, EDIT92#3.2, EDIT94#3.2]
+Total: 10.

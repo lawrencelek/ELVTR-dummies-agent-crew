@@ -1,0 +1,22 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b012",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "rear",
+     "rearDiagonal"
+    ],
+    "tier": "03"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Hit from behind. Story of my life.",
+   "claims": [
+    "zone:rear"
+   ]
+  }
+ ]
+}

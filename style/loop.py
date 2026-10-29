@@ -129,8 +129,23 @@ def resolve(idx, cid):
     return sorted(parts, key=lambda k: int(k.rsplit("~", 1)[1]))
 
 
-def canon(piece):
-    """The rules' own chunks for this speaker, the slot's tile and event chunks, then BM25 on the text."""
+def shipped_text(piece):
+    """The text the game ships in this slot today, if any (a tale, an act line, a brief, the ending)."""
+    k = piece.get("kind")
+    if k == "tale" and piece.get("district") in DIST:
+        return DIST[piece["district"]]["tiles"].get(piece.get("tile"), {}).get("tale")
+    if k == "act" and piece.get("district") in DIST:
+        return DIST[piece["district"]]["intro"]
+    if k == "brief":
+        return (STORY["tasks"].get(piece.get("task")) or {}).get("brief")
+    if k == "ending":
+        return STORY["ending"]
+    return None
+
+
+def canon(piece, withhold=False, facts=None):
+    """The rules' own chunks for this speaker, the slot's tile and event chunks, then BM25 on the text.
+    withhold: the slot's shipped text is kept from every agent, so the loop writes the slot instead of copying it."""
     idx = index()
     ids = list(BASE[speaker(piece)])
     if piece["kind"] == "barks":
@@ -144,14 +159,22 @@ def canon(piece):
     ids = [j for i in dict.fromkeys(ids) for j in resolve(idx, i)]
     extra = [c["id"] for c, _ in idx.search(piece_text(piece), k=3, exclude=set(ids) | SUPERSEDED)]
     ids += extra
-    text = "CANON\n\n" + "\n\n".join(f"[{i}] {idx.by_id[i]['title']}\n{idx.by_id[i]['text']}" for i in ids)
+    hide = shipped_text(piece) if withhold else None
+
+    def body(i):
+        t = idx.by_id[i]["text"]
+        note = "[withheld: the shipped text of the slot being written" + (f". Its facts: {facts}" if facts else "") + "]"
+        return t.replace(hide, note) if hide else t
+    if hide:
+        ids = [i for i in ids if i.startswith("STORY#") or hide[:60] not in idx.by_id[i]["text"]]
+    text = "CANON\n\n" + "\n\n".join(f"[{i}] {idx.by_id[i]['title']}\n{body(i)}" for i in ids)
     return text, ids
 
 
 # ---------------------------------------------------------------- one case folder
 class Case:
     def __init__(self, run_dir, name):
-        self.name, self.dir, self.calls = name, Path(run_dir) / name, []
+        self.name, self.dir, self.calls, self.withhold, self.facts = name, Path(run_dir) / name, [], False, None
         self.dir.mkdir(parents=True, exist_ok=True)
 
     def save(self, name, text):
@@ -178,6 +201,11 @@ def check_eval(text, findings):
     total = sum(int(n) for _, n in DEDUCT_RX.findall(reason))
     if max(P["style.score.floor"], 10 - total) != score:
         probs.append(f"the deductions listed sum to {total}, so SCORE should be {max(1, 10 - total)}/10, not {score}/10")
+    after = reason.split("Total:", 1)[1].split("\n", 1)[1].strip() if "Total:" in reason and "\n" in reason.split("Total:", 1)[1] else ""
+    if "Total:" not in reason:
+        probs.append("REASON must end with the 'Total:' line")
+    elif after:
+        probs.append("nothing may follow the 'Total:' line")
     named = set(RULE_RX.findall(reason))
     missing = sorted({x["rule"] for x in findings} - named)
     if missing:
@@ -188,7 +216,7 @@ def check_eval(text, findings):
 def evaluate(case, piece, rnd):
     findings = lint.lint(piece)
     case.save(f"e{rnd}_lint.json", findings)
-    pack, ids = canon(piece)
+    pack, ids = canon(piece, case.withhold, case.facts)
     lint_txt = "LINT (style/lint.py)\n" + ("\n".join(f"- {x['path']} · {x['rule']} ({x['severity']}, −{x['deduct']}) \"{x['quote']}\": {x['measured']}. [{x['source']}]"
                                                     for x in findings) or "- No findings.")
     msg = "\n\n".join([slot_text(piece), pack, lint_txt, "CONTENT\n" + json.dumps(piece, indent=1, ensure_ascii=False)])
@@ -238,7 +266,7 @@ def restore(before, after, log):
 
 
 def refine(case, piece, ev, rnd):
-    pack, _ = canon(piece)
+    pack, _ = canon(piece, case.withhold, case.facts)
     msg = "\n\n".join([slot_text(piece), pack, "CONTENT\n" + json.dumps(piece, indent=1, ensure_ascii=False), "EVALUATION\n" + ev["raw"]])
     raw = llm.call(case, "refiner", msg, f"f{rnd}")
     log = []
@@ -254,7 +282,7 @@ def refine(case, piece, ev, rnd):
 
 def generate(case, spec):
     slot = spec["slot"]
-    pack, _ = canon(slot)
+    pack, _ = canon(slot, case.withhold, case.facts)
     msg = "\n\n".join([slot_text(slot), pack.replace("CANON", "CONTEXT", 1), "SLOT SKELETON (fill it)\n" + json.dumps(slot, indent=1, ensure_ascii=False),
                        "REQUEST\n" + spec["request"]])
     raw = llm.call(case, "generator", msg, "g0")
@@ -270,6 +298,8 @@ def run_piece(case, spec, piece=None):
     A 10/10 is accepted only when a fresh evaluator call confirms it (style.loop.confirmations); a dissent goes on as a REASON."""
     t0 = time.time()
     rounds, logs = [], []
+    case.withhold = bool(spec.get("withhold_shipped"))
+    case.facts = spec.get("slot_facts")
     if piece is None:
         piece, log = generate(case, spec)
         logs += [f"g0: {x}" for x in log]

@@ -1,0 +1,44 @@
+{
+ "case": "act-waterfront",
+ "class": "audit",
+ "title": "shipped act waterfront",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 8.9,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 4.4,
+   "output_tokens": 165,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.08926460000000001
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 4.5,
+   "output_tokens": 295,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.012874000000000002
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1021
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V8, F5–F7 and R4–R5 and found no violations. Lint returns no findings: 188 characters, longest sentence 12 words, no "!", and "even" replaces the banned "level" [DECISIONS#rows-531-540~2]. The tone is a dry staff notice [EDIT92#3]. The gardener belongs to the Act II, OPENING DAY frame [STORY#S2]. The tale names Arms 2 on the tile that issues it [STORY#S1, EDIT93#3.1]. Its duty matches the PUSH OFF A CAR brief [STORY#S3]. Every place and person it names comes from Parkland A1 [STORY#PA1].
+Total: 10.

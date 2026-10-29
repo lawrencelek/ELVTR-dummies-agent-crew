@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V8, F5–F7 and R4–R5, and nothing breaks them. The tone is dry staff procedure with no "!" and Farsight never mentioned by name [EDIT92#3]. It is set in Act I's INDUCTION frame and calls the dummy "you" [STORY#S2]. It runs about 212 characters (the limit is 223), and its longest sentence is 15 words (the limit is 19) [EDIT93#3.1/tales-rewritten~2]. It names the tile's equipment with "Legs 1 is fitted." [DECISIONS#rows-531-540~2]. The duty "Jump into a car" matches the JUMP INTO A CAR brief [STORY#S3]. The screens and skybridge are this tile's landmarks [STORY#MB3]. Lint found nothing.
+Total: 10.

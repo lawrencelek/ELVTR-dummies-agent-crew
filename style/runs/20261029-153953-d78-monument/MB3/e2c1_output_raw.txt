@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against their tiers (T7, T9, T10, T12), the stock-ending cap (T11), the vocabulary and glossary (V1–V5, V8), format and fields (F1–F5, with Form 9 counted as Corporate paperwork) and truth (R1–R4). Each line uses only the facts of the `impact` event and names "the LED canyon" as the place, which is the tile's own landmark, never a spot relative to it. [FLEET#F4] [FLEET#F2] [FLEET#F8] [FLEET#F9.1~2] [STORY#MB3] [SUB4#5] [SUB4#6.2] [DECISIONS#rows-541-550]
+Total: 10.

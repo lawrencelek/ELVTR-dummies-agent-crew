@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against these rules: F8 for the brief format, which matches the shipped `cls` row in [STORY#S3] word for word and resolves to "A VAN" in [STORY#PC2]; T1–T3 and V4 for Farsight's voice [EDIT92#3]; V1 and V3 for banned words and the glossary [FLEET#F2] [FLEET#F3]; F5 for registry placeholders, not typed figures [STORY#S1]; and R5 for truth.
+Total: 10.

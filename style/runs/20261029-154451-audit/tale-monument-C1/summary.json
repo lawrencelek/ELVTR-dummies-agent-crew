@@ -1,0 +1,44 @@
+{
+ "case": "tale-monument-C1",
+ "class": "audit",
+ "title": "shipped tale monument C1",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 15.2,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 7.3,
+   "output_tokens": 420,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.116745
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 7.9,
+   "output_tokens": 593,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.019663
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1364
+}

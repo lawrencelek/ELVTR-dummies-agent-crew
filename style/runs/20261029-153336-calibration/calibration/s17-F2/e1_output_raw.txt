@@ -1,0 +1,5 @@
+SCORE: 6/10
+REASON:
+- s17 · F2 (major, −2) "*honks* Move, please. (sighs)" The line isn't plain text: "*honks*" is a markup stage direction and "(sighs)" is a parenthetical stage direction. [FSG#field-text] Fix: delete both stage directions and let the words carry the attitude, e.g. "Move, please. Some of us have standards."
+- s17 · F3 (major, −2) "ase. (sighs)" The line ends on ")" instead of ".", "!" or "?". [FLEET#F2] Fix: end on a full stop, as in "Move, please. Some of us have standards."
+Total: 10 − 2 − 2 = 6.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b101 against these rules. Tone: T6 (worker, not narrator), T8 (no single tier's signature on a tier-free line), T9 and T12 (the dry joke of a crash-test body "acquiring hips"). Vocabulary: V1–V3 and V8 ("Subject" is the fleet glossary term), with no grid code or callsign. Format: F1–F5 (26 characters, plain, ends with ".", speech at priority 1 for chatter, no figures). Truth: R1–R3 (the claim `node:hips` is guaranteed by the condition node="hips" on `upgrade-seen`). Sources: [FLEET#F2], [FLEET#F3], [FLEET#F4], [FLEET#F8], [FLEET#F9.12], [EDIT26#3.2], [EDIT39#6.6], [FSG#field-text].
+Total: 10.

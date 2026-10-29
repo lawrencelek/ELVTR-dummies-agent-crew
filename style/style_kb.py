@@ -39,7 +39,7 @@ DIST_CODE = {"monument": "M", "parkland": "P", "waterfront": "W"}
 NODE_NAME = {"battery": "Battery", "legs": "Legs", "hands": "Hands", "arms": "Arms"}
 
 
-SELF_ROWS = range(543, 547)   # rows about this agent and its results; kept out so a run never cites its own output (as Assignment 4's PIPELINE_ID)
+SELF_ROWS = range(543, 548)   # rows about this agent and its results; kept out so a run never cites its own output (as Assignment 4's PIPELINE_ID)
 
 
 def own_row(line):

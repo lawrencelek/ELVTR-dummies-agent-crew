@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The brief matches the shipped dash brief word for word. The label "DASH INTO A CAR" is 15 characters, in capitals and inside the 19-character limit, and the brief takes the "Coverage gap: … The final hit must …" form [STORY#S3, EDIT93#3.3]. Tone holds: no "!", no figures, no banned words, and the brief reads as a duty [EDIT92#3, STORY#S1, FLEET#F2].
+Total: 10.

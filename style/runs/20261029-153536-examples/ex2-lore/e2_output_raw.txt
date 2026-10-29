@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 against every car rule and found no violations. Truth: it is a write-off line on the `writeoff` event, and "The monument" is B2's own landmark, covered by its `tile:B2` claim [FLEET#F8, STORY#MB2]. Tone: "How very provincial." is a superior, faintly amused Luxury sniff with no apology [FLEET#F4]. Vocabulary: it uses a place name, not a grid code, has no banned word and no "!" [SUB4#6.2, FLEET#F2]. Format: 47 characters, speech style, priority 3 [EDIT39#6.6, FLEET#F9.2].
+Total: 10.

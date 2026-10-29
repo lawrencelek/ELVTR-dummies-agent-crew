@@ -1,0 +1,69 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t133",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact beneath the LED gateway. Gauche.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t134",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Impact logged at the LED gateway. Noted.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t135",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "03"
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "Hit at the LED gateway. Figures...",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  },
+  {
+   "id": "t136",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C3",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Right at the LED gateway! Kind regards.",
+   "claims": [
+    "district:monument",
+    "tile:C3"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tale's tone, its Act II OPENING DAY frame and the board's turn, and its quoted line "The public prefers the product to the test." [EDIT92#3, STORY#S2]. It says "you" and treats the cars as colleagues, which T1–T5 and V8 require. It has no "!" and no banned words, and its digit "2" is the part rank Battery 2, which F5 allows. It fits the card at under 223 characters, with no sentence over 19 words [EDIT93#3.1/tales-rewritten~2]. It names Battery 2 on the tile that issues it, as F7 and R5 require [STORY#S1, STORY#PB2]. Its closing duty, a chain, matches the COMBO brief [STORY#S3]. It names only the tile's own landmarks: the ring and the board [STORY#PB2].
+Total: 10.

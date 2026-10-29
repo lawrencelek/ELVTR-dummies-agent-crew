@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone rules and found no break: it is dry and procedural, addresses the dummy as "you", names Farsight in the third person, uses no "!" and calls the car a "colleague" [EDIT92#3, STORY#S1, STORY#S2, EDIT39#4.1.1]. It uses no banned terms and keeps the Act I INDUCTION frame ("new staff") [FLEET#F2, STORY#S2]. It has 198 characters, all sentences under 19 words, one paragraph and no figures [EDIT93#3.1/tales-rewritten~2, EDIT92#measured]. It names only what the tile has: the tower, the screen, your face and WELCOME [STORY#MA1, EDIT92#7]. Its duty matches the ANY WRITE-OFF brief, and it names no equipment because the tile issues none [STORY#S3, STORY#MA1].
+Total: 10.

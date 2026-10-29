@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "killed; player; respawn; chongqing",
+  "measured": "banned term 'killed'; banned term 'player'; banned term 'respawn'; banned term 'chongqing'",
+  "source": "FLEET#F2"
+ },
+ {
+  "rule": "R4",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "fountain",
+  "measured": "not on monument B2: its title and tale lack it",
+  "source": "STORY#MB2"
+ }
+]

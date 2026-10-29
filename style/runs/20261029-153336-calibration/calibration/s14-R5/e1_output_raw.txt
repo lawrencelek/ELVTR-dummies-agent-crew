@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · R5 (blocking, −4) "Push off one car into the next." The duty asks for a push off a car, but this tile's brief is JUMP INTO A CAR ("The final hit must be a jump into a car"). [STORY#WB1] Fix: replace with "Jump into a car at the mouth."
+- tale · F7 (major, −2) "Legs 1 is fitted." This tile issues Legs 3, and the tale never names it. Monument B3 issued Legs 1, so stating it is fitted here is false for this card. [STORY#S1] Fix: replace with "Legs 3 is fitted: the longest flight."
+Total: 10 − 4 − 2 = 4.

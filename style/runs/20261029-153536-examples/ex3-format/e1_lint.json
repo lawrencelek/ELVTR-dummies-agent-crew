@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "F1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "V02: Impact logged at 41 km/h.\nBodywork damage is 17%, filed under unforeseen.\nSchedule delay is 94 seconds, KPIs adjusted.",
+  "measured": "123 characters > 48 (style.bark.maxChars)",
+  "source": "EDIT39#6.6"
+ },
+ {
+  "rule": "F2",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "V02: Impact logged at 41 km/h.\nBodywork damage is 17%, filed under unforeseen.\nSchedule delay is 94 seconds, KPIs adjusted.",
+  "measured": "not one plain line: quotes, markup, emoji, speaker tag or stage direction",
+  "source": "FSG#field-text"
+ },
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "V02: 41 17%, 94",
+  "measured": "typed figure; figures come from event placeholders",
+  "source": "STORY#S1"
+ }
+]

@@ -1,0 +1,8 @@
+SCORE: 1/10
+REASON:
+- tale · T2 (major, −2) "Welcome to the show, contestant!" Farsight never uses "!", and this tale has five. [EDIT92#3] Fix: end every sentence with a full stop.
+- tale · T1 (major, −2) "Welcome to the show, contestant! … The studio roars!" This is game-show hype, not a polite, procedural, dry staff notice about a crash test. [EDIT92#3] Fix: replace the tale with "A conveyor sets you down by the tower. Its screen shows your face and the word WELCOME. Farsight welcomes you as new staff. Stand in the road until a colleague notices you."
+- tale · T3 (major, −2) "Beat the cars!" This makes the cars opponents and the duty a challenge, when the cars are colleagues and the brief is a duty. [EDIT92#3] Fix: cut it, and keep the duty as "Stand in the road until a colleague notices you."
+- tale · V8 (major, −2) "contestant" This calls the dummy a competitor, but Farsight addresses it as "you", "staff" or "the model", the product under test. [EDIT92#3] Fix: use "new staff", as in "Farsight welcomes you as new staff."
+- tale · R4 (blocking, −4) "The studio roars!" Monument A1 has no studio or crowd; the tile has only the conveyor, the tower, its screen with your face and WELCOME, and Farsight's welcome. [STORY#MA1] Fix: delete the sentence, and name only what the tile has.
+Total: 10 − 2 − 2 − 2 − 2 − 4 = 1 (floor).

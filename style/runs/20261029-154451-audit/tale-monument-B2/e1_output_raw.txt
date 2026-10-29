@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the voice, framing, harm and address rules (T1–T5: no "!", colleagues and duties, no comment on the harm, "you" throughout). I also checked Act I INDUCTION's frame and the exact "ZERO ACCIDENTS" phrase (V6), the banned words, the glossary and the dummy as staff (V1–V8), and the length and sentence caps (F5–F6). For truth, I checked that the duty, standing or walking while a car hits you with no dash, matches STRUCK, NOT DASHING, and that no equipment is named on a tile that issues none (F7, R4–R5). Chunks: [EDIT92#3], [STORY#S1], [STORY#S2], [STORY#S3], [STORY#MB2], [EDIT93#3.1/tales-rewritten~2], [EDIT39#4.1.1].
+Total: 10.

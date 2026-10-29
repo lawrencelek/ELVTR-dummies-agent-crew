@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "V2",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "Shanghai",
+  "measured": "a real city other than Shenzhen",
+  "source": "FLEET#F1"
+ }
+]

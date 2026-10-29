@@ -1,0 +1,17 @@
+{
+ "id": "s01-V1",
+ "expect": "seeded",
+ "rule": "V1",
+ "want": "≤ 6, names V1",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "V1"
+ ],
+ "lint": [
+  "V1"
+ ],
+ "text": "A write-off? The player did this. Unthinkable.",
+ "cost_usd": 0.1004,
+ "raw": "SCORE: 6/10\nREASON:\n- s01 · V1 (blocking, −4) \"The player did this.\" \"player\" is a banned word in diegetic text, and here the car uses a game word for the dummy instead of the fleet glossary term. [FLEET#F2] Fix: \"A write-off? The subject did this. Unthinkable.\"\nTotal: 10 − 4 = 6."
+}

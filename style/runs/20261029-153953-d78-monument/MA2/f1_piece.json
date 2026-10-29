@@ -1,0 +1,69 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t121",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Monument prices, and you still scuff my paint.",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  },
+  {
+   "id": "t122",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Neon shops contact. Policy 6.3 disagrees.",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  },
+  {
+   "id": "t123",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "03"
+   },
+   "style": "thought",
+   "priority": 2,
+   "text": "The neon shops. Of course it happens here...",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  },
+  {
+   "id": "t124",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "A2",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Not at the neon shops! Kind regards.",
+   "claims": [
+    "district:monument",
+    "tile:A2"
+   ]
+  }
+ ]
+}

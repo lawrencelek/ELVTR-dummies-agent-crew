@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label "A {cls}" and the brief match the shipped `cls` row word for word, follow F8's caps-label and "Coverage gap: … The final hit must …" form, and use only registry placeholders, never values (F5). The text has no "!" (T2), no banned or game words (V1, V3), stays dry and procedural with duty framing (T1, T3), and makes no claim beyond the task's condition (R5). [STORY#S3] [STORY#S1] [EDIT92#3] [FLEET#F2] [FLEET#F3] [STORY#PC2]
+Total: 10.

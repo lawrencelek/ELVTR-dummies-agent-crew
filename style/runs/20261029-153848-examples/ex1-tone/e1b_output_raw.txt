@@ -1,0 +1,7 @@
+SCORE: 2/10
+REASON:
+- tale · T2 (major, −2) "a new contestant!" Farsight never uses "!", and this tale uses it five times. [EDIT92#3] Fix: end every sentence with "." and remove all five "!".
+- tale · T1 (major, −2) "Ladies and gentlemen, a new contestant! … Hear the studio roar!" This is game-show hype, not a dry staff notice about a crash test. [EDIT92#3] Fix: replace the whole tale with "The conveyor brings you in beside the tower. Its screen shows your face and the word WELCOME. Farsight welcomes you as new staff. Your duty is the road, until a colleague notices you." (179 characters, no sentence over 11 words).
+- tale · T3 (major, −2) "Beat the cars!" It makes the cars opponents and the duty a challenge, but the cars are colleagues and the brief is a duty. [EDIT92#3] Fix: "Your duty is the road, until a colleague notices you."
+- tale · V8 (major, −2) "a new contestant" It casts the dummy as a competitor, but Farsight calls the dummy staff and the product under test. [EDIT92#3] Fix: replace "contestant" with "staff": "Farsight welcomes you as new staff."
+Total: 10 − 2 − 2 − 2 − 2 = 2.

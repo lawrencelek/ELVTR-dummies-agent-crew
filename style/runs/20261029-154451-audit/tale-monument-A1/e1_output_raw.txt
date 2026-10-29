@@ -1,0 +1,13 @@
+SCORE: 10/10
+REASON:
+- None. I checked the shipped Monument A1 tale against every rule for its speaker and found nothing to deduct:
+  - **Lint:** no findings.
+  - **Length and sentences (F6):** 199 characters; the longest sentence has 14 words.
+  - **Voice (T1–T5, V4):** no "!"; it addresses the dummy as "you" and names Farsight in the third person.
+  - **Induction frame (T3, V6, V8):** new staff, with the cars as colleagues.
+  - **Equipment (F7, R5):** the tile issues none and the tale names none.
+  - **Duty (R5):** standing in the road until a colleague notices you fits the ANY WRITE-OFF brief.
+  - **Tile truth (R4):** the tower, its screen and WELCOME all match the welcome wall's own tale.
+  - **Chunks:** [STORY#MA1], [EDIT92#3], [EDIT92#7], [STORY#S2], [STORY#S3], [EDIT39#4.1.1].
+
+Total: 10.

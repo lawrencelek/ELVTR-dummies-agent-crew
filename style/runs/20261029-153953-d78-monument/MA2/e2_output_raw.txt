@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t121–t124) against tier voice and polite form (T6–T9, `FLEET#F4`, `FLEET#F2`), "!" limited to a shout or Budget bark (t124 is both; T10, `DECISIONS#rows-541-550`) and stock endings (T11, one "Kind regards."; `SUB4#6.1`), and glossary and grid codes (V1–V8; t121 names the district Monument, the others the landmark, never A2; `FLEET#F3`, `SUB4#6.2`). I also checked length and endings (F1–F5; Policy 6.3 is Corporate flavour, t123's trailing dots fit thought style; `EDIT39#6.6`, `FSG#field-text`), and impact-only truth with places named as the neon shops or Monument, not a spot relative to them (R1–R4, `FLEET#F8`, `STORY#MA2`).
+Total: 10.

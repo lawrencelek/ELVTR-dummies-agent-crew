@@ -1,0 +1,23 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "c024",
+   "event": "impact",
+   "when": {
+    "district": "campus"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "FARSIGHT Campus. Test centre. How apt.",
+   "claims": [
+    "district:campus"
+   ],
+   "sources": [
+    "EDIT41#7.2",
+    "EDIT41#7.3"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  }
+ ]
+}

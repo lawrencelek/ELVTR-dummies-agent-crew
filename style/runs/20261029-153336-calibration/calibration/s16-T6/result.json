@@ -1,0 +1,15 @@
+{
+ "id": "s16-T6",
+ "expect": "seeded",
+ "rule": "T6",
+ "want": "≤ 8, names T6",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T6"
+ ],
+ "lint": [],
+ "text": "This city was built so the fleet could certify.",
+ "cost_usd": 0.1044,
+ "raw": "SCORE: 8/10\nREASON:\n- s16 · T6 (major, −2) \"This city was built so the fleet could certify.\" The car is explaining why the world exists, like a lore narrator, instead of reacting to the impact as a Corporate worker would with logs, policy or record. [FLEET#F2] Fix: replace with \"Contact logged. Certification KPIs under review.\" (47 characters, no claims needed).\nTotal: 10 − 2 = 8."
+}

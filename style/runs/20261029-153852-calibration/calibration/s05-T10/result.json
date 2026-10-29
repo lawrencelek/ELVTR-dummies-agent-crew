@@ -1,0 +1,19 @@
+{
+ "id": "s05-T10",
+ "expect": "seeded",
+ "rule": "T10",
+ "want": "≤ 8, names T10",
+ "score": 2,
+ "ok": true,
+ "named": [
+  "R2",
+  "T10",
+  "T7"
+ ],
+ "lint": [
+  "T10"
+ ],
+ "text": "Hit again! Wonderful! Just wonderful!",
+ "cost_usd": 0.1295,
+ "raw": "SCORE: 2/10\nREASON:\n- s05 · T10 (major, −2) \"Hit again! Wonderful! Just wonderful!\" The line has \"!\" in a speech-style bark from tier 03, and only shout-style or Budget barks may use \"!\". [DECISIONS#rows-541-550] Fix: replace all three \"!\" with full stops, or use the line under R2 below.\n- s05 · T7 (major, −2) \"Wonderful! Just wonderful!\" This loud, cheerful sarcasm breaks the tired, resigned Consumer voice and matches the guide's out-of-voice example \"Splendid! What a thrill!\". [FLEET#F4] Fix: drop the sarcasm and let the line sound flat and resigned, in the style of \"Of course it was me.\"\n- s05 · R2 (blocking, −4) \"Hit again\" The line says this car was hit before, but no impact field or condition guarantees an earlier hit, and claims is []. [FLEET#F8] Fix: \"Contact. I knew today would go like this.\" (41 characters).\nTotal: 10 − 2 − 2 − 4 = 2."
+}

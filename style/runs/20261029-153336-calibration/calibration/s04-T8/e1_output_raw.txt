@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s04 · T8 (major, −2) "Closing ticket." This line has no `when.tier`, so it fires for all four tiers, but closing a ticket is Corporate procedure and a Luxury, Consumer or Budget car would not say it. [SUB4#5] Fix: "Write-off confirmed. On my record."
+Total: 10 − 2 = 8.

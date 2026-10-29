@@ -1,0 +1,22 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "s02",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "01"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Bumper damage. Typical of Shanghai traffic.",
+   "claims": [
+    "zone:front"
+   ]
+  }
+ ]
+}

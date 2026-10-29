@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 ("A write-off beside the plaque. How droll.", 41 characters, speech, priority 3, ending in a full stop) against every rule for the cars. Lint has no findings. Tone (T6, T7, T9, T12): it has the polished, faintly amused Luxury voice and does not apologise [FLEET#F4]. Vocabulary: it uses "write-off" from the glossary [FLEET#F3], and it names the tile by its landmark, not a grid code [EDIT94#who-built-what-assignment-5, SUB4#6.2]. Format: it fits the event's fields [EDIT39#6.6, FSG#field-text]. Truth (R1–R4): a write-off line fires on `writeoff` [FLEET#F8, DESIGN#D9.3], and the plaque belongs to Monument B2's tale, which the `tile:B2` claim guarantees [STORY#MB2].
+Total: 10.

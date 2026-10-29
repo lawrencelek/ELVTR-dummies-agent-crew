@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. All 36 lines pass. Checked:
+  - **Tier voice (T7, T9):** every line keeps its tier's voice, and its politeness still shows the feeling under it. [FLEET#F4], [FLEET#F2]
+  - **Speech style and stock endings (T10, T11):** "!" appears only in Budget shouts. No ending repeats more than twice ("Kind regards" ×2, "KPIs adjusted." ×2, "Of course." ×2). [DECISIONS#rows-541-550], [SUB4#6.1]
+  - **Places (V5, R4):** cars name places by landmark or district, never by grid code. Each landmark is named as the place ("at the monument", "in the LED canyon"), never a spot beside it. [SUB4#6.2], [STORY#MA1]–[STORY#MC3]
+  - **Event truth (R1–R3):** every line is an impact line that claims contact only. The drum and gateway details come from their own tiles' tales and art. [FLEET#F8], [EDIT92#7]
+  - **Fields (F4):** styles and priority 2 fit the impact event. [EDIT39#6.6]
+  - **Numbers (F5):** the only figures are Corporate paperwork numbers (policy 6.3, policy 4.1, form 3, form 9), which the guide allows.
+Total: 10.

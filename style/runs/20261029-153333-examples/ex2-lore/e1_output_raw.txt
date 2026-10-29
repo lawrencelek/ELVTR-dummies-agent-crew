@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- t901 · V1 (blocking, −4) "Chongqing's fountain. Player killed. Respawn." Lint found the banned terms "killed", "player", "respawn" and "Chongqing", and the guide grants no exemption for them in a bark. [FLEET#F2] Fix: remove all four; use the fleet glossary instead ("Written off").
+- t901 · V2 (blocking, −4) "Chongqing's" The line names a real city other than Shenzhen, which breaks the one-city rule on its own, apart from the ban list. [FLEET#F1] Fix: drop the city; name the tile's landmark, "the monument".
+- t901 · R4 (blocking, −4) "fountain" Lint found a fountain, but Monument B2's title and tale name only the monument and its plaque. [STORY#MB2] Fix: replace "fountain" with "the monument".
+- t901 · T7 (major, −2) "Player killed. Respawn." A tier 01 Luxury write-off needs to sound polished, superior and faintly amused, but this reads as a flat system message with no voice. [FLEET#F4] Fix: "Written off at the monument. How quaint." (40 characters, speech, priority 3; it keeps the claims district:monument and tile:B2).
+Total: 10 − 4 − 4 − 4 − 2 = −4, floored to 1.

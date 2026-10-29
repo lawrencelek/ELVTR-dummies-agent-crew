@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label and brief match the canonical push row in [STORY#S3] word for word. The label "PUSH OFF A CAR" is 14 characters, in capitals, and keeps the brief's coverage-gap form (F8). There is no "!" (T2, [EDIT92#3]) and no banned word (V1, [FLEET#F2]). There are no typed figures (F5, [STORY#S1]). The duty is phrased as procedure, not a challenge (T1, T3, [EDIT92#3]), and it matches the shipped push tiles [STORY#PC1], [STORY#PA1] and [STORY#WB3] (R5).
+Total: 10.

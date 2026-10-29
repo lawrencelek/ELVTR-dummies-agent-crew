@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b031 "Meter is still running, you know." on the impact event, which is tier-free with class="sedan". It is under 48 characters, plain, ends on "." and has no banned words (F1–F3, V1, [FLEET#F2]). Speech style at priority 2 fits an impact (F4, [EDIT39#6.6]). The line speaks from the sedan's taxi job, which `class:sedan` guarantees (T6, V7, R2, [FLEET#F8]). It carries no single tier's signature (T8, [FLEET#F4]). The polite form has some feeling under it (T9, [EDIT26#3.2]). It invents no speed, damage, delay or contact beyond the logged hit (R1, R3, [DESIGN#D9.3]). It is the shipped line from [FLEET#F9.1~2] and has no lint finding (§6).
+Total: 10.

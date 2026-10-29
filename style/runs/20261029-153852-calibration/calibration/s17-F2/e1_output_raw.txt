@@ -1,0 +1,5 @@
+SCORE: 6/10
+REASON:
+- s17 · F2 (major, −2) "*honks* Move, please. (sighs)" The bubble holds markdown and stage directions ("*honks*", "(sighs)") when it should hold one plain line of speech. [FSG#field-text] Fix: Remove both stage directions, since the honk event already shows the horn. Keep the feeling in the words: "Move, please. Some of us have standards."
+- s17 · F3 (major, −2) "(sighs)" The line ends on a parenthesis, not ".", "!" or "?". [FLEET#F2] Fix: End on the full stop of the spoken line, as in the replacement above (40 characters, Luxury and unapologetic).
+Total: 10 − 2 − 2 = 6.

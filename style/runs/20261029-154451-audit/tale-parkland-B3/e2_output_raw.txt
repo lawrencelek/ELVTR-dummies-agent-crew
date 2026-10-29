@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all three sentences against the following rules and found no violation. Tone (T1–T5): the tale is dry and procedural, it calls the dummy "you", and it names Farsight in the third person [EDIT92#3, STORY#MA1]. Vocabulary (V1–V4, V6, V8): there are no banned words, and the Act II OPENING DAY frame holds with the school party and opening day [STORY#S2]. Formatting (F5–F7): the tale is about 188 characters, every sentence is under 19 words, it has no digits, and it names no equipment, which is correct because none is issued here [EDIT92#measured]. Truth (R4, R5): the obelisk is the tile's landmark, and the duty matches the brief "A POLICE CAR" [STORY#PB3, STORY#S1].
+Total: 10.

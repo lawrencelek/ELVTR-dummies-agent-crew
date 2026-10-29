@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against F8, V1, V3, V6, F5, T1–T3 and R5. Both match the shipped dash brief word for word: [STORY#S3] and [EDIT93#3.3]. The label is 15 characters, in caps, with no banned terms and no "!". Its duty is the one Monument B1 sets, the tile that issues Battery 1 [STORY#MB1], [STORY#S1].
+Total: 10.

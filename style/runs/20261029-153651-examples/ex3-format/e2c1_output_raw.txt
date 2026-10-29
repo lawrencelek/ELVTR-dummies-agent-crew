@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902 against every rule for its speaker and found no break: Corporate procedure in "Logged" with a dry joke under it (T7, T9, T12, [FLEET#F4], [SUB4#6.1]); a 48-character speech bubble that fits an impact at priority 2 (F1, F4, [EDIT39#6.6], [FSG#field-text]); "Belvedere" and "the wedding" both come from the tile's own title and tale, and the claim tile:A3 covers them (R4, R2, [STORY#PA3], [FLEET#F8]); no invented speed, damage, KPI or write-off (R1, R3, [DESIGN#D9.3]); and no banned term, grid code or "!" (V1, V5, T10, [FLEET#F2], [SUB4#6.2]).
+Total: 10.

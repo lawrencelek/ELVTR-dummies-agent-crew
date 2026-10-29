@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violation. The line "Meter is still running, you know." (33 characters, speech, priority 2, on `impact`) speaks from the sedan's taxi job and invents no logged fact beyond its `class:sedan` claim. Its mild peevishness has no single tier's signature, so it suits all four tiers. It uses no banned word, grid code or "!", and it matches the shipped line it reproduces. I checked tone, vocabulary, format and truth against [FLEET#F2], [FLEET#F4], [FLEET#F5], [FLEET#F8], [FLEET#F9.1~2], [EDIT39#6.6] and [FSG#field-text].
+Total: 10.

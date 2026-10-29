@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- t117 · R4 (blocking, −4) "you ruin its record" The tile's tale says the plaque is not a record ("New staff ask whether this is a record. It is a target."), so this line claims a fact that the tile contradicts. [STORY#MB2] Fix: "At the monument, of all places. Charming."
+- t118 · R4 (blocking, −4) "Record reset." The tile has no record to reset, because the plaque is a target, and no logged impact field resets anything. [STORY#MB2] Fix: "Contact at the monument. Incident form 3 filed."
+- t120 · R4 (blocking, −4) "You wrecked the record!" This makes the same false record claim as t117. Tests are also excluded from ZERO ACCIDENTS, so a test hit cannot break it. [STORY#MB2, STORY#WB2] Fix: "At the monument?! Thanks ever so much!"
+Total: 10 − 4 − 4 − 4 = 1 (floor 1).

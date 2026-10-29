@@ -1,0 +1,9 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following and found no violations:
+  - **Tone:** T1–T5. It is procedural and dry, with no "!". The cars are colleagues and the brand does not comment on the harm. It addresses the dummy as "you" and names Farsight in the third person. [EDIT92#3, STORY#S1, EDIT39#4.1.1]
+  - **Glossary:** V1–V4, V8. There are no banned terms, write-off is used correctly, Farsight is in sentence case and the dummy is staff. [FLEET#F2, FLEET#F3, DECISIONS#rows-531-540~2]
+  - **Story frame:** V6. It fits INDUCTION (new staff, colleagues). [STORY#S2]
+  - **Length and equipment:** F5–F7. It is within the length limits, has no digits, and correctly names no equipment because the tile issues none. [EDIT92#measured, EDIT93#3.1/tales-rewritten~2]
+  - **Tile truth:** R4 and R5. The conveyor, tower, screen, face, WELCOME and the road-until-a-colleague-notices duty are all facts of the tile. The closing line matches the ANY WRITE-OFF brief. [STORY#MA1, STORY#S3]
+Total: 10.

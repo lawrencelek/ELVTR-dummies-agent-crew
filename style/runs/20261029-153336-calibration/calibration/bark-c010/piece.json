@@ -1,0 +1,24 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "c010",
+   "event": "impact",
+   "when": {
+    "deck": true
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Nobody walks the highway. Nobody.",
+   "claims": [
+    "deck",
+    "highway"
+   ],
+   "sources": [
+    "EDIT42#6.3",
+    "EDIT44#6.2"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  }
+ ]
+}

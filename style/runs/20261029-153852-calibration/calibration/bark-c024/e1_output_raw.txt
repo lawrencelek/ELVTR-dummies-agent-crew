@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- c024 · V4 (minor, −1) "FARSIGHT" In a sentence-case bark, the company name must be written "Farsight"; decision 539 replaced the fleet canon's capitals, and §6 lists c024 as a shipped line the lint flags. [DECISIONS#rows-531-540~2] Fix: "Farsight Campus. Test centre. How apt."
+Total: 10 − 1 = 9.

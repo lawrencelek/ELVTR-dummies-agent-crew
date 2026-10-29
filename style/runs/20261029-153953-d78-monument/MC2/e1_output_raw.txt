@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- t116 · R4 (blocking, −4) "Right in the portal tower!" The line says the hit happened inside the tower, but only the high road runs through it at height, and the bark fires anywhere on the tile with no `deck` or `dropZ` condition to guarantee that spot. [STORY#MC2] Fix: name the landmark as the place: "At the portal tower! Kindly desist!"
+Total: 10 − 4 = 6.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All four lines pass every rule they are subject to. Checked: length, plain text and line endings (F1–F3, [FSG#field-text], [FLEET#F2]); style and priority for impact events (F4, [EDIT39#6.6]); "!" only in the Budget shout (T10, [DECISIONS#rows-541-550]); tier voice (T7, [FLEET#F4]), where Luxury is superior and does not apologise, Corporate is procedural like the shipped "Impact logged. KPIs adjusted." ([FLEET#F9.1~2]), Consumer is resigned and Budget puts its politeness over the rage; endings, with only one "Kind regards." (T11, [SUB4#6.1]); banned words, cities and grid codes, with the place named as "the LED drum" and no tile code (V1, V2, V5, [SUB4#6.2]); and truth for impact events: no write-off claim, nothing invented, and every drum detail matches the tile's tale ("lights each bend before a car reaches it"), named as the place, not a spot near it (R1–R4, [STORY#MC1], [FLEET#F8]).
+Total: 10.

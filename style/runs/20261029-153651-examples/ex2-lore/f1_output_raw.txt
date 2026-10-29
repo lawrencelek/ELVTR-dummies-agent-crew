@@ -1,0 +1,1 @@
+{"kind": "barks", "lines": [{"id": "t901", "event": "writeoff", "when": {"district": "monument", "tile": "B2", "tier": "01"}, "style": "speech", "priority": 3, "text": "A write-off beside the plaque. How droll.", "claims": ["district:monument", "tile:B2"]}]}

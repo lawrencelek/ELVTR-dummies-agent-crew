@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b071 against every rule for the cars and found no violation. Corporate tone (T7): "per policy 6.3" is policy-number procedure [FLEET#F4]. Truth (R1–R3): "Route committed" matches the `commit` event and its `cause:body` claim [FLEET#F8]. Fields (F4): mutter style and priority 1 match the shipped commit bank [FLEET#F9.5]. Policy 6.3 is paperwork flavour, not a statistic (F5). The line has no banned word, place or grid code (V1, V2, V5) [FLEET#F2]. It is plain text within 48 characters and ends with "." (F1–F3) [FSG#field-text]. The lint has no findings.
+Total: 10.

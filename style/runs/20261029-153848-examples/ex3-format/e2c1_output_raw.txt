@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902 "Contact at the belvedere. Not in my KPIs." against every car rule. The Corporate voice holds, as it does in shipped lines like "Impact logged. KPIs adjusted." (T7, T9, T12; [FLEET#F4], [FLEET#F9.1~2]). "Contact" fits the `impact` event, with speech style and priority 2 (R3, F4; [EDIT26#6.6], [EDIT39#6.6]). The line names the belvedere as the place, which the tile:A3 condition guarantees, and uses no grid code (R4, V5; [STORY#PA3], [SUB4#6.2]). "Not in my KPIs" is resentment, not a made-up KPI value or delay (R1; [DESIGN#D9.3]). Lint found nothing on length, banned words or punctuation (F1–F3, V1; [FLEET#F2]).
+Total: 10.

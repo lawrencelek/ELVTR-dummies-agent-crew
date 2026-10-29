@@ -1,0 +1,17 @@
+{
+ "id": "s10-T2",
+ "expect": "seeded",
+ "rule": "T2",
+ "want": "≤ 8, names T2",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T2"
+ ],
+ "lint": [
+  "T2"
+ ],
+ "text": "A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in t",
+ "cost_usd": 0.1073,
+ "raw": "SCORE: 8/10\nREASON:\n- tale · T2 (major, −2) \"A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in the road until a colleague notices you!\" Farsight's narration never uses \"!\", and this tale ends all four sentences with one. [EDIT92#3] Fix: end each sentence with a full stop: \"A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you.\"\nTotal: 10 − 2 = 8."
+}

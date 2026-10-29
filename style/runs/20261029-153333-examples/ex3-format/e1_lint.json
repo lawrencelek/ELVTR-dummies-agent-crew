@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "F1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "V02: Jump impact logged at 38 km/h on the belvedere.\nDamage to my panels is 14%.\nRoute delay is 47 seconds; KPIs adjusted.",
+  "measured": "122 characters > 48 (style.bark.maxChars)",
+  "source": "EDIT39#6.6"
+ },
+ {
+  "rule": "F2",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "V02: Jump impact logged at 38 km/h on the belvedere.\nDamage to my panels is 14%.\nRoute delay is 47 seconds; KPIs adjusted.",
+  "measured": "not one plain line: quotes, markup, emoji, speaker tag or stage direction",
+  "source": "FSG#field-text"
+ },
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "V02: 38 14%. 47",
+  "measured": "typed figure; figures come from event placeholders",
+  "source": "STORY#S1"
+ }
+]

@@ -1,0 +1,15 @@
+{
+ "id": "s03-T7",
+ "expect": "seeded",
+ "rule": "T7",
+ "want": "≤ 8, names T7",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T7"
+ ],
+ "lint": [],
+ "text": "So sorry. Entirely my fault. I do apologise.",
+ "cost_usd": 0.1053,
+ "raw": "SCORE: 8/10\nREASON:\n- s03 · T7 (major, −2) \"So sorry. Entirely my fault. I do apologise.\" A tier 01 Luxury car apologises, and Luxury cars are polished, superior, faintly amused and never apologise. [FLEET#F4] Fix: \"Bumper contact on a Luxury trim. How quaint.\" (44 characters, claims nothing beyond the impact).\nTotal: 10 − 2 = 8."
+}

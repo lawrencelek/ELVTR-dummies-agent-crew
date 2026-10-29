@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines, t105–t108, against the impact event and its logged fields (FLEET#F8) and the tier voices in FLEET#F4: Luxury sneers, Corporate logs, Consumer mutters, Budget shouts with "!" and adds a polite tag (DECISIONS#rows-541-550, FLEET#F9.1~2). Each line names B1 by its landmark, the podium bridge, and never by a spot beside it (STORY#MB1, R4). No line uses a grid code (SUB4#6.2), and no closing tag repeats (SUB4#6.1). Lint found nothing on length, banned words, endings or fields (EDIT39#6.6).
+Total: 10.

@@ -1,0 +1,8 @@
+SCORE: 1/10
+REASON:
+- tale · T2 (major, −2) "Welcome, contestant!" Farsight's narration uses "!" three times; the lint flags it and the rule deducts once per line. [EDIT92#3] Fix: end every sentence with "." and remove all three "!".
+- tale · T1 (major, −2) "Welcome, contestant! … Hear that crowd?" This is game-show hype, not a polite, procedural staff notice about a crash test. [EDIT92#3] Fix: replace the opening with a dry induction notice, e.g. "Farsight welcomes you as new staff."
+- tale · T3 (major, −2) "Beat the opposition!" It turns the cars into enemies and the duty into a contest; cars are colleagues and briefs are duties. [STORY#S2] Fix: delete the sentence and change "until a car notices you" to "until a colleague notices you".
+- tale · V8 (major, −2) "contestant" It makes the dummy a competitor, not staff and the product under test. [FLEET#F3] Fix: replace "contestant" with "new staff", or address the dummy only as "you".
+- tale · R4 (blocking, −4) "Hear that crowd?" Monument A1 has no crowd; its facts are a conveyor, the tower, its screen with your face and WELCOME, Farsight's welcome, and the road. [STORY#MA1] Fix: delete the sentence; full replacement: "The conveyor delivers you beside the tower. Its screen shows your face and the word WELCOME; Farsight is glad to have you. Stand in the road until a colleague notices you."
+Total: 10 − 2 − 2 − 2 − 2 − 4 = 1 (floor 1).

@@ -1,0 +1,5 @@
+SCORE: 5/10
+REASON:
+- t123 · R4 (blocking, −4) "Under the neon shops." The line can fire anywhere on Monument A2, so "under" places the car at a spot near the landmark that no condition guarantees; the guide names "under the shops" as a failing example. [STORY#MA2] Fix: "The neon shops. Of course it happens here..."
+- t122 · T12 (minor, −1) "Neon shops zone. Contact logged. Form filed." Place, log and filing in a row make a flat report with no feeling or joke, like the guide's failing "Riverside. Low-rise streets. Hit logged." [SUB4#6.1] Fix: "Contact at the neon shops. Not in my KPIs."
+Total: 10 − 4 − 1 = 5.

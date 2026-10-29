@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t133–t136 against T6–T12, V1–V3, V5, V7 and V8, F1–F5 and R1–R4. All four lines stay in tier voice [FLEET#F4]. Each says only that contact happened, which the `impact` event logs [FLEET#F8]. Each names the LED gateway as the place, not a spot next to it [STORY#MC3]. Only the Budget shout uses "!" [DECISIONS#rows-541-550]. "Kind regards." closes one line only [SUB4#6.1]. All four fit within 48 characters [FSG#field-text].
+Total: 10.

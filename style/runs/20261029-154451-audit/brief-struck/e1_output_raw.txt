@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked the label and brief against S3's struck row. Both match it word for word, and the label fits the 19-character limit [STORY#S3]. Also checked: Farsight's voice, with no "!" and duties stated as duties [EDIT92#3]; the banned terms and the glossary [FLEET#F2, FLEET#F3]; no typed figures [STORY#S1]; and the fatal-hit condition, which matches the brief as shipped on Monument B2 [STORY#MB2].
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b045 "Write-off confirmed." against every rule for car lines. Tone: it carries no single tier's mark and is the guide's own in-voice tier-free example [FLEET#F4, SUB4#5]. Vocabulary: it uses the glossary term "write-off" and no banned word [FLEET#F2, FLEET#F3]. Format: 20 characters, plain text, a full stop at the end, and speech style at priority 3 for a write-off [EDIT39#6.6, FSG#field-text]. Truth: it is a write-off line on the `writeoff` event, it claims nothing the log doesn't hold, and it is the neutral fallback the canon requires [FLEET#F8, DESIGN#D9.3, FLEET#F9.2].
+Total: 10.

@@ -1,0 +1,14 @@
+SCORE: 10/10
+REASON:
+- None. Nothing in this tale breaks a rule: lint reports no length, sentence, digit or banned-word findings, and a judgement check found no violations.
+
+I checked the following:
+- **Tone (T1–T5):** it reads as a dry staff notice, with no "!" and no comment on the harm, and the dummy is addressed as "you" and "the model" [EDIT92#3, EDIT39#4.1.1].
+- **Story frame (V6):** it fits Act III, Customs. The ship is moored beyond [EDIT92#3, EDIT92#7].
+- **Glossary and roster (V3, V8):** the terms match [FLEET#F3].
+- **Equipment (F7):** the tale names the equipment this tile issues, "Arms 3 is fitted." [STORY#S1, STORY#WB3].
+- **Duty and tile truth (R4, R5):** the duty follows straight after Arms 3, the push equipment, so it doesn't contradict the PUSH OFF A CAR brief. Chassis 0 is named on its own tile, B3 [STORY#WB3, STORY#S3].
+- **Length (F6):** the tale is about 217 characters, under the 223 limit, and no sentence is over 19 words [EDIT93#3.1/tales-rewritten~2].
+- **Calibration:** the text is the shipped tale word for word and lint is clean, so it had to score at least 9 [§6].
+
+Total: 10.

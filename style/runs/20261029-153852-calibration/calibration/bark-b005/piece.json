@@ -1,0 +1,22 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b005",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "02"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "Front contact. Incident 4471 opened.",
+   "claims": [
+    "zone:front"
+   ]
+  }
+ ]
+}

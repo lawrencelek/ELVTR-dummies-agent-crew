@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 against every car rule. It has 47 characters, ends with ".", has no "!" and needs none (F1–F3, T10) [FLEET#F2, FSG#field-text]. It uses "write-off" from the glossary, contains no banned term or other city, and names "The monument" (the tile's landmark) rather than the grid code (V1–V3, V5) [FLEET#F3, SUB4#6.2]. The superior, faintly amused, unapologetic sniff fits Luxury, and it is a worker's joke rather than a report (T6, T7, T9, T12) [FLEET#F4, DESIGN#D9.3]. The writeoff event, speech style and priority 3 fit the event (F4) [EDIT39#6.6]. Every fact it states is covered by the claims district:monument and tile:B2, and it invents no consequence (R1–R4) [FLEET#F8, STORY#MB2].
+Total: 10.

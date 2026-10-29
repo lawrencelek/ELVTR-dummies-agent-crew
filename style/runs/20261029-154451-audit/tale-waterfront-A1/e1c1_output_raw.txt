@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the Waterfront A1 tale against T1–T5, V1–V8, F5–F7 and R4–R5. It is the shipped tale, word for word, and lint found nothing. It is 198 characters long, and its longest sentence has 14 words. The tone is dry and procedural, the harm is understated, and there is no "!". It fits Act III's frame of the river border. It names only the west portal tile's own content, the bus and the river. It issues no equipment, which matches this tile. Its duty, the bus fleet's data, matches the brief A BUS. [EDIT92#3] [STORY#S2] [STORY#WA1] [EDIT93#3.1/tales-rewritten~1] [EDIT93#3.1]
+Total: 10.

@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "A1", "title": "The welcome wall", "tale": "The conveyor brings you in beside the tower. Its screen shows your face and the word WELCOME. Farsight welcomes you as new staff. Your duty is the road, until a colleague notices you."}

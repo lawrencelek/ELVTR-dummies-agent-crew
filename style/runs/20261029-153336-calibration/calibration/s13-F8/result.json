@@ -1,0 +1,17 @@
+{
+ "id": "s13-F8",
+ "expect": "seeded",
+ "rule": "F8",
+ "want": "≤ 8, names F8",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "F8"
+ ],
+ "lint": [
+  "F8"
+ ],
+ "text": "Dash into a car, please Dash into a car to finish the tile.",
+ "cost_usd": 0.098,
+ "raw": "SCORE: 6/10\nREASON:\n- label · F8 (major, −2) \"Dash into a car, please\" The label is in sentence case, not capitals, and has 23 characters, over the 19-character limit (`style.brief.labelMaxChars`). [STORY#S3] Fix: \"DASH INTO A CAR\".\n- brief · F8 (major, −2) \"Dash into a car to finish the tile.\" The brief does not follow the required \"Coverage gap: …. The final hit must ….\" pattern, and it drops the coverage gap and the fatal-hit condition that EDIT93#3.3 sets for the dash brief. [STORY#S3] Fix: \"Coverage gap: dashes. The final hit must be a dash into a car.\"\nTotal: 10 − 2 − 2 = 6."
+}

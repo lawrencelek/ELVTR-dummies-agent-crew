@@ -1,0 +1,18 @@
+{
+ "id": "s05-T10",
+ "expect": "seeded",
+ "rule": "T10",
+ "want": "≤ 8, names T10",
+ "score": 4,
+ "ok": true,
+ "named": [
+  "R2",
+  "T10"
+ ],
+ "lint": [
+  "T10"
+ ],
+ "text": "Hit again! Wonderful! Just wonderful!",
+ "cost_usd": 0.1301,
+ "raw": "SCORE: 4/10\nREASON:\n- s05 · T10 (major, −2) \"Hit again! Wonderful! Just wonderful!\" Lint finds \"!\" in a speech-style bark from tier 03, and \"!\" is allowed only in a shout or a Budget bark. [DECISIONS#rows-541-550] Fix: replace each \"!\" with \".\" to keep the speech style, or change the style to shout.\n- s05 · R2 (blocking, −4) \"Hit again\" The line says this car has been hit before, but the impact event logs no earlier hits and claims [] guarantees no history. [FLEET#F8] Fix: drop \"again\" and keep the resigned joke: \"Hit. Wonderful. Just wonderful.\"\nTotal: 10 − 2 − 4 = 4."
+}

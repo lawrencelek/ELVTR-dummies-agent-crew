@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t133, t134, t135, t136) against the following:
+  - **Tier voice (T7, T9):** Luxury sniffs with "Gauche.", Corporate says "on file", Consumer is resigned with "Figures...", and Budget shouts with "Kind regards." bolted on. [FLEET#F4, FLEET#F2]
+  - **Truth for the impact event (R1, R3):** every line claims contact or a hit, never a write-off, and invents no speed, damage, fine or KPI. [FLEET#F8, DESIGN#D9.3]
+  - **Tile truth (R4):** every line names the LED gateway as the place, with no spot relative to it, and the gateway's irony comes from the tile's tale and art. [STORY#MC3, EDIT92#7]
+  - **Exclamation marks (T10):** the only "!" is in t136, a Budget shout. [DECISIONS#rows-541-550]
+  - **Stock endings (T11):** "Kind regards." closes only one line. [SUB4#6.1]
+  - **Length, banned words and grid codes (F1, V1, V5):** lint found nothing. [EDIT39#6.6, SUB4#6.2]
+Total: 10.

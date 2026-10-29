@@ -1,0 +1,13 @@
+{
+ "id": "bark-b012",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Hit from behind. Story of my life.",
+ "cost_usd": 0.2092,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the line \"Hit from behind. Story of my life.\" against every rule for the cars. The lint found nothing. On tone, it is a tired, resigned tier 03 Consumer voice that reads as a feeling and not a flat report (T7, T9, T12) [FLEET#F4, SUB4#6.1]. On truth, it fires on an `impact` event, and the zone condition guarantees its only fact, `zone:rear` (R1–R3) [FLEET#F8, DESIGN#D9.3]. The fields are shout style, priority 2, which fits an impact event (F4) [EDIT39#6.6]. It uses no banned words, glossary terms or grid codes (V1–V5) [FLEET#F2, FLEET#F3]. It matches the shipped line in [FLEET#F9.1~2].\nTotal: 10."
+}

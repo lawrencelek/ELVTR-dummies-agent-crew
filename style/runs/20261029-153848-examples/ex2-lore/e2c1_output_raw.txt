@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 "A write-off at the monument. How quaint." against every car rule and found no violation. It has 41 characters, ends with a full stop, uses plain speech at priority 3 and has no "!" (F1–F4, T10; [FSG#field-text], [EDIT39#6.6]). The Luxury tier's polished, faintly amused sniff with no apology holds tier voice and carries a joke rather than a flat report (T7, T9, T12; [FLEET#F4]). Uses "write-off" as the glossary term and no banned word (V1, V3; [FLEET#F3], [FLEET#F2]). The line fires only on `writeoff` (R3; [FLEET#F8]). It names the landmark as the place with no relative spot, and its claims are guaranteed by the district and tile conditions (R1, R2, R4, V5; [STORY#MB2], [SUB4#6.2]).
+Total: 10.

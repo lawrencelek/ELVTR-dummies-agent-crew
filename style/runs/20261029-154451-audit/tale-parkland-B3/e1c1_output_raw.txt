@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · T5 (minor, −1) "Farsight would like to know how the police fleet handles a dummy first." The tale calls the dummy "a dummy" in the third person instead of addressing it as "you". [STORY#MA1] Fix: "Farsight would like to know how the police fleet handles you first."
+Total: 10 − 1 = 9.

@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- b111 · T10 (major, −2) "It recharges when it hits us?!" uses "!" in a speech-style bark with no tier, which is neither a shout nor a Budget (04) bark. [DECISIONS#rows-541-550] Fix: "It recharges when it hits us?"
+Total: 10 − 2 = 8.

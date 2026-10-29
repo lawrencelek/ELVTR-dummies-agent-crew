@@ -1,0 +1,13 @@
+{
+ "id": "bark-c010",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Nobody walks the highway. Nobody.",
+ "cost_usd": 0.1089,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I found no violations in c010 \"Nobody walks the highway. Nobody.\":\n  - **Rules checked:** the tone, vocabulary, formatting and truth rules for barks (T6–T12, V1–V8, F1–F5, R1–R4).\n  - **Length and form:** it is 34 characters, plain text on one line, and ends with \".\". The speech style and priority 2 fit an impact.\n  - **Wording:** it uses no banned term, city, brand, grid code or \"!\".\n  - **Tier:** it carries no single tier's signature, so it can fire for all four tiers.\n  - **Truth:** its only fact, the highway, is guaranteed by deck=true. It does not say \"written off\".\n  - **Joke:** it is a feeling rather than a flat report. SUB4#6.1 cites it as the in-voice fix for that problem.\n  - **Chunks:** [FLEET#F2] [FLEET#F4] [FLEET#F8] [EDIT26#6.6] [SUB4#6.1].\nTotal: 10."
+}

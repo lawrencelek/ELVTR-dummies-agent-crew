@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- t125 · R4 (blocking, −4) "Struck beside the stacked cubes." This tile line fires anywhere on Monument A3, but it places the hit next to the landmark, and no condition guarantees that spot. [STORY#MA3] Fix: "Struck at the stacked cubes. Quaint."
+- t127 · R4 (blocking, −4) "Hit beside the stacked cubes." This line also fires anywhere on the tile, but it places the hit next to the landmark, and no condition guarantees that spot. [STORY#MA3] Fix: "Hit at the stacked cubes. Naturally."
+Total: 10 − 4 − 4 = 2.

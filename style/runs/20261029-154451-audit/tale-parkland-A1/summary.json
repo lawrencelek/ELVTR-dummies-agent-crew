@@ -1,0 +1,68 @@
+{
+ "case": "tale-parkland-A1",
+ "class": "audit",
+ "title": "shipped tale parkland A1",
+ "request": null,
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 35.2,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 9.2,
+   "output_tokens": 716,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0293773
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 5.9,
+   "output_tokens": 483,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1297482
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 10.3,
+   "output_tokens": 812,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1352545
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 9.8,
+   "output_tokens": 774,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0236799
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3181
+}

@@ -1,0 +1,69 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t117",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "A monument, and you ruin its record. Charming.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t118",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Monument zone. Contact logged. Record reset.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t119",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Zero accidents, it says. Not anymore.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t120",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "The monument! You wrecked the record! Cheers!",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  }
+ ]
+}

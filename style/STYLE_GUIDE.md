@@ -4,6 +4,8 @@
 
 - **Version 2.** F7 rewritten after the first audit: v1 required every tale to end on an imperative, which 9 of 27 shipped tales do not (run `20261029-135237-audit`). T11 widened to repeated closing tags after the first Monument batch (run `20261029-135110-d78-monument`).
 - **Version 3.** After an independent review: V3 and V8 lose words no source has, and V8 matches the shipped barks that say "the dummy"; F1 cites `check_lore.py`; the lint counts "killed" once, not as "kill" too; the agent's own decision rows (543–546) stay out of its knowledge base.
+- **Version 4.** §0.1 names the cast and factions with their sources; no rule changed.
+- **Version 5.** R4 says a car's tile line names its landmark as the place, never a spot relative to it. The runs disagreed: a v2 confirmation rejected "A write-off beside the plaque."; a v4 run accepted it twice.
 
 - **Game:** DUMMIES. A crash-test dummy in SHENZHEN SMART CITY, run by Farsight. The self-driving cars are its workers. They train not to hit you. You try to get written off.
 - **Story (Narrative A, Certified):** Act I Monument, INDUCTION · Act II Parkland, OPENING DAY · Act III Waterfront, CUSTOMS. 27 tiles. Ending: CERTIFIED.
@@ -22,6 +24,23 @@
 | Farsight | The ending | `story.json` `ending` | CERTIFIED screen |
 
 - **Out of scope:** menu chrome (NEW GAME, LEVEL UP), HUD labels, toasts, part help text. They are interface, not voice (decision 540).
+
+## 0.1 Cast and factions
+
+Who speaks, who is spoken of, and the rules that hold each one. Nothing here is new: each row restates its source.
+
+| Who | What they are | In text | Rules | Source |
+|---|---|---|---|---|
+| The dummy | A crash-test body. Staff, and the product under test. Wants to leave | Cars: "the subject", "it", "the dummy". Farsight: "you", "staff", "the model" | V3, V8, T5 | `FLEET#F1`, `FLEET#F3`, `EDIT92#3` |
+| Farsight | The company that runs Shenzhen Smart City and the test. Narrates the Story | Third person; polite, procedural, dry; never "!" | T1–T5, V4 | `EDIT92#3`, `EDIT39#4.1.1` |
+| The fleet | The city's self-driving cars: its workers. They want to qualify | Barks, one per logged event | T6–T12, R1–R4 | `FLEET#F1`, `FLEET#F2` |
+| Four price tiers (the fleet's factions) | 01 Luxury (Imperial, confident) · 02 Corporate (Office, calm) · 03 Consumer (Everyday, melancholy) · 04 Budget (Basic, angry) | Each tier keeps its voice; a tier-free line suits all four | T7, T8, T10 | `FLEET#F4` |
+| Eight classes, each a job | Sports (Comet, couriers) · Wagon (Harbour, family transport) · SUV (Bastion, escorts) · Hatchback (Pebble, meal runs) · Sedan (Meridian, taxis) · Police (Warden, enforcement) · Van (Porter, parcels) · Bus (Commons, shuttles) | A class line speaks from its job ("Passengers, please remain seated.") | T6, V7 | `FLEET#F5` |
+| 32 named models | One per class and tier: Aurum, Ambassador, Marshal, Noodle, Rust Bucket and the rest | A callsign pins a line to its model | V7, R2 | `FLEET#F7~2`, `EDIT39#6.1` |
+| Dispatch | The cars' management | Cars report to it ("Tell dispatch I tried!") | V3 | `FLEET#F3` |
+| Act II people | Farsight's board, the visitors, a school party, a wedding couple, the gardener. Written, never drawn | Narration only | V6, R4 | `STORY#PC2`, `STORY#PB3`, `STORY#PA3`, `STORY#PA1` |
+| Chassis 0 | The prototype before you, behind glass at Waterfront B3 | Named only there and after | R4, R5 | `STORY#WB3` |
+| Customs and the police | Act III: the river border, papers, the ship | "Your papers are being prepared." | V6 | `STORY#WC1`, `STORY#WC3`, `STORY#WA3` |
 
 ## 1 Scoring
 
@@ -93,7 +112,7 @@ Total: 10 − <n> − <n> = <X>.
 | R1 | Cars | React to logged events only. Invent no speed, damage, delay, fine, KPI or motive. | `DESIGN#D9.3`, `EDIT39#6.6`, `FLEET#F2`, `SUB4#5` | Judge against the event's fields (`FLEET#F8`) | blocking |
 | R2 | Cars | Every fact a line asserts has a claim its conditions guarantee. | `EDIT39#6.6`, `FLEET#F8` | Judge; `check_lore.py` | blocking |
 | R3 | Cars | Event-correct. A write-off line fires only on `writeoff`. A hit line never says "written off". A miss never claims contact. | `EDIT26#6.6`, `DESIGN#D9.3` | Judge | blocking |
-| R4 | Both | Tile truth. A line bound to a tile names only what that tile has: its title, its tale, its district. | `STORY#MA1` … `STORY#WB2` (one chunk per tile); `SUB4#5` (the lantern on B2 only) | Lint `landmark`; judge | blocking |
+| R4 | Both | Tile truth. A line bound to a tile names only what that tile has: its title, its tale, its district. A car's tile line fires anywhere on the tile, so it names the landmark as the place ("at the monument", "by the neon shops"), never a spot relative to it ("beside the plaque", "under the shops", "on the podium bridge") unless a condition guarantees the spot. | `STORY#MA1` … `STORY#WB2` (one chunk per tile); `SUB4#5` (the lantern on B2 only); `FLEET#F8` | Lint `landmark`; judge | blocking |
 | R5 | Farsight | A tale's duty matches its brief. It names equipment only on the tile that issues it, or later (introduce, then test). | `STORY#S1`, `EDIT93#3.1` | Judge against the tile's brief and equipment | blocking |
 
 - **Guidance, not scored:** a neutral fallback beats a vivid false claim (`DESIGN#D9.3`). When a fix is unsure, say less.

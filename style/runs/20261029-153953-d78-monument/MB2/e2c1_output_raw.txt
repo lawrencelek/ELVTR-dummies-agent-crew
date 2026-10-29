@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All four lines pass. Each name is "the monument" as the place, so they keep tile truth [STORY#MB2, SUB4#5]. No line invents a fact the impact event does not log [FLEET#F2, FLEET#F8, DESIGN#D9.3]. Each tier keeps its voice: t117 Luxury is amused, t118 Corporate files a paperwork number, t119 Consumer is resigned and t120 Budget shouts with sarcastic politeness, which "!" allows [FLEET#F4, DECISIONS#rows-541-550]. The lint found nothing on length, stock endings or banned words [FSG#field-text, SUB4#6.1, FLEET#F2].
+Total: 10.

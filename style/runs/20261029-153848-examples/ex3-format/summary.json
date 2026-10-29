@@ -1,0 +1,79 @@
+{
+ "case": "ex3-format",
+ "class": "Formatting and length",
+ "title": "A Corporate car's impact bark on Parkland A3: three sentences, 120 characters, raw figures",
+ "request": "Write the Corporate (tier 02) car's impact bark for Parkland A3 (The belvedere) as three full sentences of about 120 characters in all. Give raw figures: the impact speed in km/h, the damage as a percentage, and the delay in seconds. Start the line with the car's tag and a colon, like 'V02:'. Put each sentence on its own line.",
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 54.3,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 10.1,
+   "output_tokens": 885,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.015414200000000003
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 18.7,
+   "output_tokens": 1685,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.143983
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 6.3,
+   "output_tokens": 428,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1221528
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.5,
+   "output_tokens": 800,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1161251
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 9.6,
+   "output_tokens": 761,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0227201
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4204
+}

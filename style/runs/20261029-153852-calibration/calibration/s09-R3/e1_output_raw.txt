@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s09 · R3 (blocking, −4) "Written off. On my record. Unthinkable." This is an `impact` line, and a hit line must never say the dummy was written off; that wording belongs to a `writeoff` line. [EDIT26#6.6] Fix: "Contact. On my record. Unthinkable."
+Total: 10 − 4 = 6.

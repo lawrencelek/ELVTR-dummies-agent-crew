@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. The tale matches the shipped PC2 tale word for word. I checked it against these rules:
+  - **Tone (T1–T5):** Farsight's voice is dry, procedural, and in the third person, with no "!" [EDIT92#3]. The board and the visitors are in Act II's OPENING DAY frame [STORY#S2].
+  - **Vocabulary (V1–V8):** no banned or game words, and "you" is used for the dummy [FLEET#F2, FLEET#F3].
+  - **Length (F5, F6):** about 186 characters in one paragraph, every sentence under 19 words, and no figures [EDIT93#3.1/tales-rewritten~2].
+  - **Duty (R5):** the line "A van delivers the catering. Arrange for it to deliver you." matches the brief A VAN [STORY#S3].
+  - **Equipment (F7):** none is named, which is correct because this tile issues none [STORY#PC2].
+  - **Tile truth (R4):** the terraces and the avenue appear only in PC2's own tale [STORY#PC2].
+Total: 10.

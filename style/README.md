@@ -23,7 +23,7 @@ Models: `STYLE_GEN_MODEL` (default `sonnet`), `STYLE_EVAL_MODEL` and `STYLE_REFI
 
 | File | Role |
 |---|---|
-| `STYLE_GUIDE.md` | The guide: 34 rules in four types (tone, vocabulary and lore, formatting and length, truth), each with its GDD chunk, its test and its severity |
+| `STYLE_GUIDE.md` | The guide: the cast and factions, then 34 rules in four types (tone, vocabulary and lore, formatting and length, truth), each with its GDD chunk, its test and its severity |
 | `style.params.json` | The guide's statistics as IDs (`style.bark.maxChars`, `style.loop.maxRounds`…), in the registry's entry schema (decision 543) |
 | `style_kb.py`, `kb/` | The knowledge base: Edits 92–94, 39, 26, V29 Design, the FARSIGHT Style Guide, Submission 4's precedents, the decision log, and pages generated from `fleet.json` and `story.json`. BM25 retrieval and chunk IDs from `content/rag.py` |
 | `lint.py` | Deterministic evidence: length, banned terms, "!", casing, digits, grid codes, landmarks, fields, shape. Not a grade |

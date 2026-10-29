@@ -1,0 +1,13 @@
+{
+ "id": "tale-waterfront-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Bat",
+ "cost_usd": 0.1284,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked every rule for this tale. Tone and framing pass T1–T5 [EDIT92#3, STORY#S1, EDIT39#4.1.1]: no \"!\", the dummy is \"you\", and \"every chassis you lost\" reports the harm without commenting on it. Vocabulary passes V1–V8: \"chassis\" is the glossary word [FLEET#F3] and the fixed plaque text ZERO ACCIDENTS (EXCLUDING TESTS) is exact [DECISIONS#rows-531-540~2, row 531]. Format passes F5–F7: the tale names Battery 3, the equipment this tile issues, and lint finds no length or sentence problem [EDIT92#measured, EDIT93#3.1/tales-rewritten~2]. Truth passes R4–R5: the island, the monument and the plaque all belong to this tile, and \"a chain of three\" matches the COMBO brief [STORY#WB2, STORY#S3].\nTotal: 10."
+}

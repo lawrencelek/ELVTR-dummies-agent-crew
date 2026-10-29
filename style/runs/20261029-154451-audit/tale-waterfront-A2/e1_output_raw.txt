@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 for Farsight's voice: it is dry and procedural, has no "!" and says nothing about harm [EDIT92#3, EDIT39#4.1.1]. I checked it against V1–V8: no banned words, Act III frame, "Farsight" written in title case [STORY#S2, DECISIONS#rows-531-540~2]. I checked F5–F7: 217 characters in one paragraph, no sentence over 19 words, and no equipment named, as the tile issues none [EDIT93#3.1/tales-rewritten~2]. I checked R4–R5: the circus, the beach and the cliff match the tile and its district, "Place a cone." matches the CONE-BAITED CAR brief, and Hands 1 is already issued at Monument A2 [STORY#WA2, STORY#S3, STORY#S1].
+Total: 10.

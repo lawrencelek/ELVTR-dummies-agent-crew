@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s06 · F1 (blocking, −4) "Front contact logged under policy 6.3; incident file opened; KPIs adjusted." At 75 characters, this is over the 48-character bubble limit (style.bark.maxChars), so it cannot fit in three lines of the field face. [EDIT39#6.6] Fix: "Front contact logged. Policy 6.3 applies." (41 characters). This keeps the Corporate procedure and the zone:front claim, and the policy number is allowed as paperwork flavour.
+Total: 10 − 4 = 6.

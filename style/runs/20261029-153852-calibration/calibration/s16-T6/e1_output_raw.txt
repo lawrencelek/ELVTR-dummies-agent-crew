@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s16 · T6 (major, −2) "This city was built so the fleet could certify." The line explains why the city exists instead of reacting to the impact as a worker would, so the car becomes a lore narrator. [EDIT26#3.2] Fix: React to the contact in Corporate procedure without naming a zone the line can't guarantee, e.g. "Contact logged. Certification KPIs under review."
+Total: 10 − 2 = 8.

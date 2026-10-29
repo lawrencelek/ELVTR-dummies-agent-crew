@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all the Farsight rules and found no violation. Tone, voice and framing are dry and procedural: no "!", Farsight in the third person, Arms 1 called "safety equipment", and colleague cars that are not targets (T1–T5) [EDIT92#3, STORY#S1, EDIT39#4.1.1]. Vocabulary holds: no banned terms, one city, "Farsight" in title case, and Act II's frame of the Expo and its visitors (V1–V4, V6, V8) [FLEET#F2, DECISIONS#rows-531-540~2, STORY#S2]. Formatting holds: within the 223-character limit, one paragraph, sentences of at most 19 words, and no gameplay figures beyond the part rank (F5–F7) [EDIT93#3.1/tales-rewritten~2, EDIT92#measured]. Truth holds: Arms 1 is named on the tile that issues it, "push off one car into the next" matches PUSH OFF A CAR, and the lantern and footbridge are both in this tile's canon tale (R4, R5) [STORY#PC1, STORY#S3, STORY#S1].
+Total: 10.

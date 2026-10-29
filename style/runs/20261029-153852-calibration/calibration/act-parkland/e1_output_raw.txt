@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the Parkland act line against T1–T5, V1–V8, F5 and F9, and R4, using these sources: it matches the shipped intro word for word [STORY#S2]. It holds the OPENING DAY frame (the Expo, visitors) [EDIT92#3]. It has three sentences and no "!" [EDIT92#3, STORY#S2]. It contains no banned terms and no typed figures [FLEET#F2, STORY#S1]. Lint found nothing.
+Total: 10.

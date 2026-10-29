@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · V1 (blocking, −4) "The gardener keeps the three pools level by hand." Lint flags "level" as a banned term in diegetic text, and §7 row 540 exempts only menu chrome, not tales. [FLEET#F2] [DECISIONS#rows-531-540~2] Fix: "The gardener keeps the three pools full by hand."
+Total: 10 − 4 = 6.

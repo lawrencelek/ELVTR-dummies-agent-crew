@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (dry, procedural, addresses the dummy as "you", no "!") [EDIT92#3], V1–V8 (no banned terms, one city, the CUSTOMS frame of police and papers) [STORY#S2], F5–F7 (about 201 characters, sentences under 19 words, no digits, no equipment on this tile) [EDIT93#3.1/tales-rewritten~2], and R4–R5 (the east portal, its twin and the police fit the tile and its police-car brief) [STORY#WC1].
+Total: 10.

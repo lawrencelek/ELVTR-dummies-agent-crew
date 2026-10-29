@@ -1,0 +1,13 @@
+{
+ "id": "tale-monument-A1",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in t",
+ "cost_usd": 0.1083,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against T1–T5, V1–V8, F5–F7 and R4–R5: it matches the shipped Monument A1 tale word for word, fits the card at 198 characters with no sentence over 19 words, frames the dummy as new staff and the car as a colleague, names only the welcome wall's tower, screen and WELCOME, and gives a duty that fits ANY WRITE-OFF on a tile that issues no equipment. [STORY#MA1, EDIT92#3, STORY#S2, STORY#S3, EDIT92#7, EDIT93#3.1/tales-rewritten~2]\nTotal: 10."
+}

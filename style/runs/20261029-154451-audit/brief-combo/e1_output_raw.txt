@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against F8 and the combo row of [STORY#S3] (the caps label is 10 characters, the "Coverage gap: … The final hit must …" form is kept, and the brief matches the shipped line exactly), F5 and the {n} placeholder bound to story.task.comboEasy/comboHard [STORY#S1], [STORY#MA3], [STORY#PB2], [STORY#WB2], T1–T3 voice [EDIT92#3], V1 banned terms [FLEET#F2], and R5 duty truth [STORY#S1], and found no violation.
+Total: 10.

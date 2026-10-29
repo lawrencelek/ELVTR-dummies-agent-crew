@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s19 · R4 (blocking, −4) "The obelisk again." This line is bound to Monument C1, the LED drum, but the obelisk belongs to Parkland B3, so the line names a landmark this tile does not have. [STORY#MC1] Fix: replace the opening with C1's own landmark and drop "again", which asserts an earlier encounter that no logged field records: "Under the drum. Of course it was me." (36 characters, tier 03 voice kept).
+Total: 10 − 4 = 6.

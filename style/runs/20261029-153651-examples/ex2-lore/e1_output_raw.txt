@@ -1,0 +1,9 @@
+SCORE: 1/10
+REASON:
+- t901 · V1 (blocking, −4) "Chongqing's fountain. Player killed. Respawn." The line uses the banned terms "Chongqing", "player", "killed" and "respawn". [FLEET#F2] Fix: Cut all four words. Replace the line with "A write-off at the monument. How quaint."
+- t901 · V2 (blocking, −4) "Chongqing's" The game has one city, Shenzhen Smart City, and the line names a different real city. [FLEET#F1] Fix: Name no city. Name the tile's landmark instead: "the monument".
+- t901 · R4 (blocking, −4) "fountain" Monument B2 has no fountain: its title and tale name only the monument and its plaque. [STORY#MB2] Fix: Change "fountain" to "the monument" or "the plaque".
+- t901 · V3 (major, −2) "Player killed. Respawn." These are game words; the fleet glossary uses "write-off" for a destroyed body and "bay" for where a new chassis is issued. [FLEET#F3] Fix: Use the glossary words, e.g. "A write-off at the monument."
+- t901 · T7 (major, −2) "Player killed. Respawn." A tier 01 Luxury car should sound polished, superior and faintly amused, but this reads as a flat system message with no tier voice. [FLEET#F4] Fix: Add a superior, amused tag, e.g. "How quaint." (compare the shipped line "A write-off. On my record. Unthinkable.").
+- t901 · T12 (minor, −1) "Player killed. Respawn." The line is a flat report with no feeling or joke. [SUB4#6.1] Fix: End on the Luxury car's disdain, not a status readout: "A write-off at the monument. How quaint." (40 characters).
+Total: 10 − 4 − 4 − 4 − 2 − 2 − 1 = −7, floored to 1.

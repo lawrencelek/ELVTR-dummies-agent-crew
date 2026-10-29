@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale matches the shipped canon tale word for word. I checked it against T1–T5, V1–V8, F5–F7 and R4–R5. The voice is dry, procedural and has no "!" [EDIT92#3]. It keeps the Act III CUSTOMS frame and gives the customs log entry exactly as written [EDIT92#3, STORY#S2]. At about 198 characters it is under the 223 limit, and no sentence is over 19 words [EDIT93#3.1/tales-rewritten~2]. The duty is the raised-road brief [STORY#WA3]. The tile issues no equipment and the tale names none [EDIT93#3.1, STORY#S1]. The lint found nothing.
+Total: 10.

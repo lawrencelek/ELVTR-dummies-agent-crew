@@ -1,0 +1,13 @@
+{
+ "id": "bark-b013",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "OI! Right in the grille! Kind regards.",
+ "cost_usd": 0.1881,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b013 against T7, T9 and T10 for the 04 Budget tier and the \"!\" allowed in a shout or Budget bark [FLEET#F4, DECISIONS#rows-541-550], against V1–V8 for vocabulary and lore [FLEET#F2, FLEET#F3], against F1–F5 for the 48-character limit, plain text and the shout/priority-2 fields [EDIT39#6.6, FSG#field-text], and against R1–R3 for truth, where \"the grille\" is guaranteed by the front/frontDiagonal zone condition [FLEET#F8, FLEET#F9.1~2].\nTotal: 10."
+}
