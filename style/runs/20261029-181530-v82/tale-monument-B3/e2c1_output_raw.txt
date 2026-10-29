@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1, T2, T3, T4, T5 and T13, Vocabulary V1, V2, V3, V4, V6, V8 and V11, Formatting F5, F6, F7 and F11, and Truth R4 and R5, and found no violation: it runs to 32 words in two sentences and has no "!". It names the LED canyon's facing screens and its skybridge [STORY#MB3], and it turns them toward the duty [EDIT95#3.1]. "Legs 1" is the equipment issued on this tile, and the duty matches the JUMP INTO A CAR brief [STORY#S1, STORY#S3]. The voice stays deadpan with no cheer or pity [EDIT95#3.2, EDIT97#3.2], and lint found nothing.
+Total: 10.

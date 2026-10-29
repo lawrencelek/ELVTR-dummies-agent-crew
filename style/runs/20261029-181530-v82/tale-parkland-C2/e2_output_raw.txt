@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale's tone, temperament and address (T1, T3, T4, T5, T13 per [EDIT95#3.2], [EDIT95#3.1]), the story frame, place, board and glossary (V3, V6, V8, V9, V11 per [EDIT95#3.3], [STORY#PC2]), its length of two sentences and 30 words with no placeholder (F5, F6, F11 per [EDIT97#3.2]), and truth: the terraces, avenue and catering van come from the tile, the van duty matches the brief A VAN, and no equipment is named on a tile that issues none (R4, R5 per [STORY#PC2], [STORY#S1]).
+Total: 10.

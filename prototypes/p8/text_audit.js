@@ -36,6 +36,12 @@ const sentences = (s) => s.split(/(?<=[.?!])\s+/).filter((x) => /[A-Za-z]/.test(
     await key('ArrowRight', Math.max(0, n)); await key('Space'); await pg.waitForTimeout(400); mark('credits (title)'); await shot('audit_credits.png');
     await key('Space'); await pg.waitForTimeout(300); await key('ArrowLeft', Math.max(0, n));
   }
+  const hsi = await pg.evaluate(() => (window.__dummiesUI.titleItems ? window.__dummiesUI.titleItems() : []).indexOf('HIGH SCORES'));
+  if (hsi >= 0) { // Edit 97 (P8.2): the high scores board, from the title menu
+    await key('ArrowRight', hsi); await key('Space', 1, 400); mark('high scores (title)'); await shot('audit_scores.png');
+    for (let i = 0; i < 4; i++) await key('ArrowRight', 1, 200);
+    await key('ShiftLeft', 1, 300); await key('ArrowLeft', hsi);
+  }
   // ---------- Arcade
   await key('Space', 1, 300); mark('arcade select'); await key('ArrowDown'); await key('Space');
   await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'play', 30000); await pg.waitForTimeout(800); mark('arcade play');
@@ -78,10 +84,11 @@ const sentences = (s) => s.split(/(?<=[.?!])\s+/).filter((x) => /[A-Za-z]/.test(
   await sim(() => { const s = window.__dummies.sim; s.phase = 'play'; s.end('Certified'); }); await pg.waitForTimeout(800); mark('certified'); await shot('audit_certified.png');
   if (credits) { await key('Space', 1, 600); mark('credits (ending)'); await shot('audit_credits_end.png'); }
 
+  const scores = await pg.evaluate(() => (window.__dummiesUI && window.__dummiesUI.scores ? window.__dummiesUI.scores() : null));
   const texts = await pg.evaluate(() => [...window.__texts].map(([k, v]) => ({ text: k, where: [...v] })));
   await br.close();
   const far = texts.filter((t) => /farsight/i.test(t.text)), long = texts.filter((t) => words(t.text) > 20 || sentences(t.text) > 2);
-  const out = { html: path.basename(HTML), steps: step, errors, count: texts.length, farsight: far, long, texts };
+  const out = { html: path.basename(HTML), steps: step, errors, count: texts.length, farsight: far, long, scores, texts };
   fs.writeFileSync(OUTJ, JSON.stringify(out, null, 1));
   console.log(`${texts.length} strings drawn over ${step.length} steps · ${far.length} name Farsight · ${long.length} over two sentences or 20 words · ${errors.length} page errors`);
   for (const t of far) console.log('FARSIGHT  [' + t.where.join(', ') + '] ' + t.text);

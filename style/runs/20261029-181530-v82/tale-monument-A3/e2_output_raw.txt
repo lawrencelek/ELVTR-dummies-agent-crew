@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3–T5 and T13 [EDIT95#3.2, PLAY#PS2]; V1, V3, V4, V6, V8 and V11 [EDIT95#3.1, EDIT95#3.3]; F5, F6, F7 and F11 [EDIT97#3.2, STORY#S1]; and R4 and R5 [STORY#MA3, EDIT93#3.1, EDIT92#7]: it is 27 words in two sentences, names the stacked cubes and ties their history to the combo duty, names no equipment on a tile that issues none, and has no Farsight, no "!" and no wink.
+Total: 10.

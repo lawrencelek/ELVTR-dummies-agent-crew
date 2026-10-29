@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Clients will watch opening day from these terraces, facing the avenue. Every crossing is a performance, and the catering van is the only act booked. Let it deliver you." The tale has three sentences, and the limit is two (style.v2.text.maxSentences). Its 29 words are within the limit. [EDIT97#3.2] Fix: "Clients will watch opening day from these terraces, facing the avenue, where every crossing is a performance. The catering van is the only act booked; let it deliver you."
+Total: 10 − 4 = 6.

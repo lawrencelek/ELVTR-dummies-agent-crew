@@ -1,0 +1,92 @@
+{
+ "case": "tale-parkland-A3",
+ "class": "V8.2 tale",
+ "title": "Parkland A3: The belvedere, redrafted",
+ "request": "Redraft the tale for Parkland A3 (The belvedere). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): A wedding is booked on the belvedere for opening day. The couple asked for a view of the traffic. Legs 2 is fitted: longer in the air. Land on a car here, so that no guest ever does.\n- Prototype 8.1 (Dummy Corporation): A wedding is booked on the belvedere for opening day, facing the traffic. Legs 2 is fitted: jump into a car here, so that no guest ever does.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  10,
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 72.5,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 11.3,
+   "output_tokens": 97,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.06722560000000001
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 16.0,
+   "output_tokens": 1329,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1322351
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 15.0,
+   "output_tokens": 1432,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0362491
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 6.8,
+   "output_tokens": 544,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1180488
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 11.6,
+   "output_tokens": 976,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1251832
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 11.9,
+   "output_tokens": 1008,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.027769400000000003
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5067
+}

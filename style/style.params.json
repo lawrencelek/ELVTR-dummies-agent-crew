@@ -207,6 +207,18 @@
    "source": "GDD Edit 95 §3.2"
   },
   {
+   "id": "style.v2.tale.minWords",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Least words per tale (V2.5)",
+   "description": "Words a tale needs at least. Between this and style.v2.tale.maxWords, the tile's content sets the length.",
+   "unit": "words",
+   "type": "number",
+   "default": 15,
+   "status": "user-decided (29 October)",
+   "source": "GDD Edit 97 §3.2: \"They can be longer or shorter based on what is better. 15 to 35 words.\""
+  },
+  {
    "id": "style.v2.tale.maxWords",
    "group": "Style",
    "owner": "Narrative",
@@ -216,7 +228,7 @@
    "type": "number",
    "default": 35,
    "status": "user-decided (29 October)",
-   "source": "GDD Edit 96 §3.2: \"The tales can be slightly longer up to 35 words if needed\""
+   "source": "GDD Edit 96 §3.2; Edit 97 §3.2: \"15 to 35 words\""
   }
  ]
 }

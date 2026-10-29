@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked this tale against the tone rules T1, T3, T4, T5 and T13 [EDIT95#3.2, EDIT95#3.1]: it is flat, uses no "!", calls the cars colleagues, and states harm plainly with no pity. I checked the fixed phrase ROLE: DESTRUCTIVE TESTING, which is exact, and the INDUCTION frame (V6) [EDIT95#3.3, STORY#S2]. I checked the glossary and the banned words (V1, V3) [FLEET#F3], and the landmark, which the tale names and turns toward the duty (V11) [STORY#MC3]. I checked the length: two sentences and 30 words, within 15 to 35, with no padding (F6, F11) [EDIT97#3.2]. I checked that it has no placeholder (F5) [STORY#S1]. I checked tile truth: the gateway's THANK YOU · DRIVE SAFE beam really is there (R4) [EDIT92#7]. Finally, the duty matches the THROWN INTO A CAR brief, and no equipment is named on a tile that issues none (R5) [STORY#S3, STORY#MC3].
+Total: 10.

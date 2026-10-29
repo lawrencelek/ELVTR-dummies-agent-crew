@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13, V1–V4, V6, V8–V11, F5–F7 and F11, and R4–R5: 27 words in two sentences, it names its landmark, the ring over the pools, and uses it for the training duty [EDIT97#3.2, EDIT95#3.1], it issues Battery 2 on the tile that issues it [STORY#S1, STORY#PB2], its chain duty matches the COMBO brief [STORY#S3], and the board and the clean laps come from the tile's canon [STORY#PB2].
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- n34 · V1 (blocking, −4) "The score is the run." The lint found the banned term "score", and V1 bans it in every in-game text. Only the Credits are exempt, so this card is not. [FLEET#F2] Fix: replace the whole text with "One district, until the shift's cars run out. Every few write-offs, the grade rises." (2 sentences, 14 words, 84 characters). This also drops "write off its quota", which the SLOT's facts contradict: an Arcade run ends when the shift's cars run out, not at a quota.
+Total: 10 − 4 = 6.

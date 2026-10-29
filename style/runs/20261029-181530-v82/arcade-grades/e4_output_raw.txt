@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: n34 and n35 against T1, T2, T3, T5 and T13 (EDIT95#3.2, PLAY#PS0); V1 and V4 (EDIT95#0, EDIT95#3.1; neither text uses "score" or "level"); F5, F6 and F10 (EDIT96#3.2, EDIT95#4.2; n34 has 2 sentences and 15 words, n35 stays in caps and keeps {G} within 46 characters; n35's "·" label form matches EDIT95#4.2); and truth against the SLOT's facts (one district, one shift of cars, the grade rises every few write-offs, a tougher chassis, denser traffic).
+Total: 10.

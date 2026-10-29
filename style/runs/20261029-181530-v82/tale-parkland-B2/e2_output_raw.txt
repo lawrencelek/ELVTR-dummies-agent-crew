@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against every rule for its speaker and found no violation. Lint found nothing. The tale has 27 words in two sentences, and "Battery 2" is a part rank, which is allowed (F5, F6) [EDIT97#3.2, STORY#S1]. The tone is flat and has no "!" (T1, T2) [EDIT95#3.2, PLAY#PS0]. It frames the task as training and addresses the trainee as "your" (T3, T5) [EDIT95#3.1]. Neither sentence has more than one adjective (T13) [EDIT95#3.2]. It names the tile's landmark, "the ring over the pools", and turns it toward the duty (V11) [STORY#PB2, EDIT95#3.1]. It names Battery 2 on the tile that issues it (F7, R5) [STORY#S1, STORY#PB2]. The duty to chain hits matches the COMBO brief, and the tale uses no placeholder (R5, F5) [STORY#S3]. The board, the ring, the pools and the cars all appear in the tile's canon (R4, V6) [STORY#PB2, DECISIONS#rows-231-240~2, EDIT95#3.3].
+Total: 10.

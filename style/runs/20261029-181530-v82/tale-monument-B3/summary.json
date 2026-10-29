@@ -1,0 +1,79 @@
+{
+ "case": "tale-monument-B3",
+ "class": "V8.2 tale",
+ "title": "Monument B3: The LED canyon, redrafted",
+ "request": "Redraft the tale for Monument B3 (The LED canyon). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Two screens face each other across the road and advertise to each other all night. The skybridge was added so that someone would watch. You are now someone. Legs 1 is fitted. Jump into a car between the screens.\n- Prototype 8.1 (Dummy Corporation): Legs 1 is fitted. In the LED canyon, two screens advertise across the road all night; jump into a car between them, for our clients.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 51.3,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 7.4,
+   "output_tokens": 92,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.1070149
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 15.2,
+   "output_tokens": 1329,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.22991110000000003
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.1,
+   "output_tokens": 772,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1452414
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.5,
+   "output_tokens": 703,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1422981
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 9.1,
+   "output_tokens": 755,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.023545700000000003
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.648
+}

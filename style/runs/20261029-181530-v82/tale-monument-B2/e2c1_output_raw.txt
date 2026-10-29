@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against the T, V, F and R rules for Dummy Corporation. The tale has 2 sentences and 32 words (F6, [EDIT97#3.2]), and LINT found nothing. The tone is deadpan and in a training frame, and the cars are called colleagues ([EDIT95#3.2], [EDIT95#3.1]). ZERO ACCIDENTS is quoted exactly and "new staff" fits INDUCTION ([EDIT95#3.3], [STORY#S2]). The tale names the monument's plaque as its place and points it at the duty ([STORY#MB2], [EDIT95#3.1]). The duty matches the brief, a car hitting you while you stand or walk, and no equipment is named on a tile that issues none ([STORY#S3], [STORY#S1]).
+Total: 10.

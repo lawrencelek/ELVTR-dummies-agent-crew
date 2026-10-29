@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked tone, the training frame, glossary, story frame, length (34 words in 2 sentences), landmark, brief and equipment truth against [EDIT95#3.2], [EDIT95#3.1], [EDIT95#3.3], [EDIT97#3.2], [STORY#WC1], [STORY#S3] and [EDIT93#3.1], and found no violation.
+Total: 10.

@@ -199,6 +199,8 @@ def cap_v2(f, path, text, speaker="company", kind=None):
     cap, cid = (PARAMS["style.v2.tale.maxWords"], "style.v2.tale.maxWords") if kind == "tale" else (PARAMS["style.v2.text.maxWords"], "style.v2.text.maxWords")
     if nw > cap:
         f.add(rule, "blocking" if rule == "F6" else "major", path, t[:60] + ("…" if len(t) > 60 else ""), f"{nw} words > {cap} ({cid})", "EDIT96#3.2" if kind == "tale" else "EDIT95#3.2")
+    if kind == "tale" and nw < PARAMS["style.v2.tale.minWords"]:   # Edit 97
+        f.add(rule, "blocking", path, t[:60], f"{nw} words < {PARAMS['style.v2.tale.minWords']} (style.v2.tale.minWords)", "EDIT97#3.2")
     if ns > PARAMS["style.v2.text.maxSentences"]:
         f.add(rule, "blocking" if rule == "F6" else "major", path, t[:60] + ("…" if len(t) > 60 else ""), f"{ns} sentences > {PARAMS['style.v2.text.maxSentences']} (style.v2.text.maxSentences)", "EDIT95#3.2")
 

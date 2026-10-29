@@ -1,0 +1,55 @@
+{
+ "case": "tale-parkland-C1",
+ "class": "V8.2 tale",
+ "title": "Parkland C1: The lantern pavilion, redrafted",
+ "request": "Redraft the tale for Parkland C1 (The lantern pavilion). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The paper lantern was the Expo's first exhibit, and it is lit again for the visitors. Arms 1 is fitted; Farsight calls it safety equipment. Under the footbridge, push off one car into the next.\n- Prototype 8.1 (Dummy Corporation): The paper lantern, the Expo's first exhibit, is lit again for our clients. Arms 1 is fitted: under the footbridge, push off one car into the next, and the Expo opens safer.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 45.9,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 17.2,
+   "output_tokens": 105,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0650163
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 12.9,
+   "output_tokens": 1187,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1328381
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 15.8,
+   "output_tokens": 1323,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0341971
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.2321
+}

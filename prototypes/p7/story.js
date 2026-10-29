@@ -385,11 +385,40 @@
 
   // ---------- Edit 84: Arcade. One district a run (Sim6 single); P7SIM's ricochet. Edit 91: every part for credits, no drone
   // gifts; the chassis ships with Battery 1 (the dash)
+  // Edit 97 (P8.2): with arcade.grades, the shift runs in grades. No end at the quota: every world.district.<id>.quota write-offs the
+  // grade rises (to arcade.grade.max). Each grade past 1 adds arcade.grade.healthStep of the base chassis health and
+  // arcade.grade.densityStep of the district's traffic density. The run ends when the shift's cars run out: Licensed after one full
+  // grade, else Failed test; or on a refusal. SIM8: Prototype 8.2's values (prototypes/p8/build.py, from the registry); absent in 7.x
+  const SIM8 = (!NODE && root.DUMMIES_SIM) || {};
   class ArcadeSim extends W6.Sim6 {
     constructor(id, overrides, carry, opts) {
       const cy = Object.assign({}, carry || {}); cy.owned = Object.assign({ battery1: true }, cy.owned);
-      super(id, Object.assign({}, P7SIM, overrides || {}), cy, Object.assign({ single: true }, opts || {}));
+      super(id, Object.assign({}, P7SIM, SIM8, overrides || {}), cy, Object.assign({ single: true }, opts || {}));
+      if (this.P['arcade.grades']) { this.health0 = this.P['damage.bodyHealth']; this.grade = 1; }
     }
+    gradeOf(n) { return Math.min(this.P['arcade.grade.max'], 1 + Math.floor(n / Math.max(1, this.quota))); }
+    setGrade(g) {
+      const P = this.P, k = 1 + P['arcade.grade.densityStep'] * (g - 1);
+      this.grade = g;
+      P['damage.bodyHealth'] = Math.round(this.health0 * (1 + P['arcade.grade.healthStep'] * (g - 1))); // the next chassis
+      this.W6.densityOf = k === 1 ? null : () => k; // every tile of the district, from now
+    }
+    checkTerminal() {
+      const P = this.P, r = this.run;
+      if (!P['arcade.grades']) return super.checkTerminal();
+      if (r.ending) return;
+      this.slot = this.W6.admitted;
+      if (this.slot >= this.schedule.length && this.allCars().every((c) => c.spent || c.deck)) return this.end(r.writeOffs >= this.quota ? 'Licensed' : 'Failed test'); // the shift's cars are spent
+      if (!this.body.alive) {
+        r.credits += P['economy.creditsPerWriteOff'];
+        const b = this.body, g = this.gradeOf(r.writeOffs), up = g > this.grade;
+        if (up) { this.setGrade(g); this.emit('grade', { grade: g, health: P['damage.bodyHealth'] }); this.mile('grade' + g); }
+        this.report = { chassis: b.chassis, hits: b.hits.slice(), points: Math.round(r.points - b.points0), credits: r.credits, roadCleared: false, nextRoad: null, grade: this.grade, gradeUp: up };
+        this.emit('credit', { credits: r.credits });
+        this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
+      }
+    }
+    end(kind) { super.end(kind); if (this.grade) this.run.ending.grade = this.grade; }
   }
 
   const api = { P7SIM, VERBS, giftsCleared, nextGift, partsOwned, VERB_AT, ArcadeSim, trafficOf, storyDensity, hasRing, DATA, DIST, TOTAL, newProgress, districtOf, doneIn, activeTile, clearedCount, tileNumber, nextDistrict, tileState, tileOf, needOf, taskText, meets, nameOf, cellOf, StorySim };

@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · F6 (blocking, −4) "The cascade steps the reservoir down beside the highway, pool by pool, to drown out the traffic. The traffic won. Climb to the highway and finish your training where it is loudest." Lint counts 3 sentences, and a tale may have at most 2 (style.v2.text.maxSentences). [EDIT97#3.2] Fix: merge the first two sentences: "The cascade steps the reservoir down beside the highway, pool by pool, to drown out the traffic, and the traffic won."
+- tale · R5 (blocking, −4) "finish your training where it is loudest" The tale's duty does not match the brief, which asks for a final hit at Z1 or above, and it wrongly says training ends here on tile 8 of 9 in Act II, before CUSTOMS and CERTIFIED. [STORY#PB1] Fix: "Climb to the highway and take your final hit where it is loudest."
+Total: 10 − 4 − 4 = 2.

@@ -50,7 +50,7 @@ EVENT_LINES = {"impact": ["FLEET#F9.1~2"], "writeoff": ["FLEET#F9.2"], "near-mis
                "honk": ["FLEET#F9.6"], "upgrade-seen": ["FLEET#F9.12"], "part-seen": ["FLEET#F9.13"]}
 BASE_V2 = {
     "car": BASE["car"] + ["EDIT95#3.2"],
-    "company": ["EDIT96#0", "EDIT96#3.2", "EDIT95#0", "EDIT95#3.1", "EDIT95#3.2", "EDIT95#3.3", "EDIT95#4.2", "PLAY#PS0", "PLAY#PS2", "PLAY#PS5", "STORY#S1", "STORY#S2", "STORY#S3",
+    "company": ["EDIT97#0", "EDIT97#3.2", "EDIT96#0", "EDIT96#3.2", "EDIT95#0", "EDIT95#3.1", "EDIT95#3.2", "EDIT95#3.3", "EDIT95#4.2", "PLAY#PS0", "PLAY#PS2", "PLAY#PS5", "STORY#S1", "STORY#S2", "STORY#S3",
                 "FLEET#F2", "FLEET#F3", "DECISIONS#rows-541-550"],
 }
 GUIDES = {   # the guide a run reads: its file, its agents' prompts, its knowledge base, its lint mode, its canon
@@ -115,7 +115,7 @@ def slot_text(piece):
     elif k == "tale":
         out += [f"- Kind: tale, `content/story/story{'_v2' if VERSION == 'v2' else ''}.json` `districts[].tiles.<tile>.tale`. Speaker: {GUIDES[VERSION]['voice']}. Shown on the tile card.",
                 '- Schema: {"kind": "tale", "district", "tile", "title", "tale"}',
-                (f"- Length: at most {P['style.v2.text.maxSentences']} sentences and {P['style.v2.tale.maxWords']} words (style.v2.text.maxSentences, style.v2.tale.maxWords). The words past {P['style.v2.text.maxWords']} name the place; a tale may stay short." if VERSION == "v2" else
+                (f"- Length: at most {P['style.v2.text.maxSentences']} sentences; {P['style.v2.tale.minWords']} to {P['style.v2.tale.maxWords']} words (style.v2.tale.minWords, style.v2.tale.maxWords). The tile's content sets the length: short for one image, longer for a place with a history." if VERSION == "v2" else
                  f"- Card: at most {P['style.tale.maxChars']} characters (style.tale.maxChars); sentences of at most {P['style.tale.maxSentenceWords']} words."),
                 f"- Tile: {tile_facts(piece['district'], piece['tile'])}"]
     elif k == "brief":
@@ -151,7 +151,7 @@ def slot_text(piece):
         out += ["- Kind: credits, Prototype 8's Credits card (title menu; after the CERTIFIED ending). Extra-diegetic: Farsight, the publisher, is named here and only here.",
                 '- Schema: {"kind": "credits", "lines": ["…"]}']
     if VERSION == "v2" and k != "barks":
-        out.append(f"- Every text: at most {P['style.v2.text.maxSentences']} sentences. A tale: at most {P['style.v2.tale.maxWords']} words (GDD Edit 96); any other text: at most {P['style.v2.text.maxWords']} (GDD Edit 95).")
+        out.append(f"- Every text: at most {P['style.v2.text.maxSentences']} sentences. A tale: {P['style.v2.tale.minWords']} to {P['style.v2.tale.maxWords']} words (GDD Edit 97); any other text: at most {P['style.v2.text.maxWords']} (GDD Edit 95).")
     return "\n".join(out)
 
 
@@ -690,7 +690,7 @@ def v8_review(run_dir, spec_dir=None, note=None, name="review"):
         items.append({"id": f"act-{d['id']}", "kind": "act", "district": d["id"], "text": c["acts"][d["id"]]})
         items += [{"id": f"{CODE[d['id']]}{t}", "kind": "tale", "district": d["id"], "tile": t, "text": c["tales"][d["id"]][t]} for t in d["order"]]
     items.append({"id": "ending", "kind": "ending", "text": c["ending"]})
-    s = job_piece(run_dir, name, {"kind": "batch", "items": items}, {"id": name, "class": "V8 batch", "title": "The story's 31 texts and six opening lines, on " + ("V2.4" if name == "review-2" else "V2.3" if note else "V2.2")})
+    s = job_piece(run_dir, name, {"kind": "batch", "items": items}, {"id": name, "class": "V8 batch", "title": "The story's 31 texts and six opening lines, on " + (("V2.6" if name == "review-2" else "V2.5") if note == V82_NOTE else "V2.4" if name == "review-2" else "V2.3" if note else "V2.2")})
     if "error" in s:
         raise RuntimeError(s["error"])
     fin = json.loads((run_dir / name / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
@@ -706,7 +706,7 @@ def v8_review(run_dir, spec_dir=None, note=None, name="review"):
     c["accepted"][name] = s["accepted"]
     (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != name] + [s]
-    run_trace(run_dir, "Prototype 8.1's text on Style Guide V2.3" if note else "Prototype 8's text on Style Guide V2", res, note or V8_NOTE)
+    run_trace(run_dir, "Prototype 8.2's tales on Style Guide V2.5" if note == V82_NOTE else "Prototype 8.1's text on Style Guide V2.3" if note else "Prototype 8's text on Style Guide V2", res, note or V8_NOTE)
     return run_dir
 
 
@@ -747,6 +747,67 @@ def v81(workers):
     (run_dir / "v8_copy.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     v8_review(run_dir, spec_dir=RUNS / V8_RUN, note=V81_NOTE)
     v8_review(run_dir, spec_dir=RUNS / V8_RUN, note=V81_NOTE, name="review-2")
+    return run_dir
+
+
+V81_RUN = "20261029-172610-v81"   # Prototype 8.1's run: the base of Prototype 8.2's text
+V82_NOTE = ("Prototype 8.2 (GDD Edit 97). Stage 1: each tale redrafted by the generator from Prototype 7.13's and 8.1's versions, at the length the tile needs "
+            "(15 to 35 words), then evaluated and refined on V2.5. Stage 2 (`review`): the story with the act lines, ending and six opening lines, as one batch. "
+            "Stage 3 (`arcade-grades`): the two texts Arcade's grades add (n34, n35). Stage 4 (`review-2`): the batch again on V2.6 (F11: the shortest tale that keeps the tile). "
+            "Everything else is Prototype 8.1's text (run `" + V81_RUN + "`).")
+
+
+def v82(workers):
+    """Prototype 8.2's tales (GDD Edit 97): redrafted, 15 to 35 words, the length the tile needs."""
+    run_dir = new_run("v82")
+    base = json.loads((RUNS / V81_RUN / "v8_copy.json").read_text(encoding="utf-8"))
+    jobs = []
+    for d in STORY["districts"]:
+        for t in d["order"]:
+            tile = d["tiles"][t]
+            spec = {"id": f"tale-{d['id']}-{t}", "class": "V8.2 tale", "title": f"{d['name']} {t}: {tile['title']}, redrafted",
+                    "slot": {"kind": "tale", "district": d["id"], "tile": t, "title": tile["title"], "tale": ""},
+                    "request": (f"Redraft the tale for {d['name']} {t} ({tile['title']}). Two earlier versions are source material: use any of their facts and jokes, "
+                                f"copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): {tile['tale']}\n"
+                                f"- Prototype 8.1 (Dummy Corporation): {base['tales'][d['id']][t]}\n"
+                                "Choose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. "
+                                "Name the place, keep the duty and any equipment the tile issues, and point the place at the training.")}
+            jobs.append((job_case, (run_dir, spec)))
+    res = run_all(run_dir, jobs, workers)
+    run_trace(run_dir, "Prototype 8.2's tales on Style Guide V2.5", res, V82_NOTE)
+    new = v8_collect(run_dir, res)
+    out = dict(base, run=run_dir.name, base=V81_RUN, guide=GUIDES[VERSION]["file"],
+               accepted=dict({(k if "/" in k else f"{V81_RUN}/{k}"): v for k, v in base["accepted"].items() if not k.startswith("tale-")}, **new["accepted"]))
+    out["tales"] = {d: dict(base["tales"][d], **new["tales"].get(d, {})) for d in base["tales"]}
+    (run_dir / "v8_copy.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    v8_review(run_dir, spec_dir=RUNS / V8_RUN, note=V82_NOTE)
+    v82_notices(run_dir)
+    v8_review(run_dir, spec_dir=RUNS / V8_RUN, note=V82_NOTE, name="review-2")
+    return run_dir
+
+
+V82_NOTICES = [   # GDD Edit 97: Arcade's grades (arcade.grades). (id, where, Prototype 8.1's text or a placeholder draft, caps, placeholders, width)
+    ("n34", "the title's ARCADE card, under the word ARCADE: what an Arcade run is. Facts: one district; every few write-offs the grade rises, with a tougher chassis and denser traffic; the run ends when the shift's cars run out; the score is the points. Three lines of about 30 characters",
+     "Pick one district and write off its quota. The score is the run.", False, [], 90),
+    ("n35", "Arcade: the toast, and the write-off report's header, when the grade rises. A caps label; {G} is the new grade. Facts: the next chassis is tougher (more health); traffic is denser",
+     "GRADE {G} · TOUGHER CHASSIS · DENSER TRAFFIC", True, ["{G}"], 46),
+]
+
+
+def v82_notices(run_dir):
+    """Stage 3 of --v82: the two texts Arcade's grades add (n34 the title card, n35 the grade label)."""
+    run_dir = Path(run_dir)
+    c = json.loads((run_dir / "v8_copy.json").read_text(encoding="utf-8"))
+    piece = {"kind": "notices", "items": [dict({"id": i, "where": w, "text": t, "caps": cp, "maxChars": m}, **({"placeholders": ph} if ph else {})) for i, w, t, cp, ph, m in V82_NOTICES]}
+    s = job_piece(run_dir, "arcade-grades", piece, {"id": "arcade-grades", "class": "V8.2 notices", "title": "Arcade's grades: the title card and the grade label"})
+    if "error" in s:
+        raise RuntimeError(s["error"])
+    fin = json.loads((run_dir / "arcade-grades" / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+    c["notices"].update({it["id"]: it["text"] for it in fin["items"]})
+    c["accepted"]["arcade-grades"] = s["accepted"]
+    (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != "arcade-grades"] + [s]
+    run_trace(run_dir, "Prototype 8.2's tales on Style Guide V2.5", res, V82_NOTE)
     return run_dir
 
 
@@ -932,10 +993,13 @@ def main():
     ap.add_argument("--v8-review", metavar="RUN")
     ap.add_argument("--v81", action="store_true")
     ap.add_argument("--v81-review2", metavar="RUN")
+    ap.add_argument("--v82", action="store_true")
+    ap.add_argument("--v82-notices", metavar="RUN")
+    ap.add_argument("--v82-review2", metavar="RUN")
     ap.add_argument("--guide", choices=sorted(GUIDES), default=None, help="v1: STYLE_GUIDE.md (default); v2: STYLE_GUIDE_V2.md (--v8 implies v2)")
     ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args()
-    set_guide(a.guide or ("v2" if a.v8 or a.v8_batch or a.v8_banners or a.v8_review or a.v81 or a.v81_review2 else "v1"))
+    set_guide(a.guide or ("v2" if a.v8 or a.v8_batch or a.v8_banners or a.v8_review or a.v81 or a.v81_review2 or a.v82 or a.v82_notices or a.v82_review2 else "v1"))
     index()
     if a.examples:
         print(examples(a.workers))
@@ -959,6 +1023,12 @@ def main():
         print(v8_review(a.v8_review))
     if a.v81:
         print(v81(a.workers))
+    if a.v82:
+        print(v82(a.workers))
+    if a.v82_notices:
+        print(v82_notices(a.v82_notices))
+    if a.v82_review2:
+        print(v8_review(a.v82_review2, spec_dir=RUNS / V8_RUN, note=V82_NOTE, name="review-2"))
     if a.v81_review2:
         print(v8_review(a.v81_review2, spec_dir=RUNS / V8_RUN, note=V81_NOTE, name="review-2"))
     if a.piece:
@@ -967,7 +1037,7 @@ def main():
         s = run_piece(Case(run_dir, "piece"), {"id": "piece", "title": Path(a.piece).name}, piece=piece)
         run_trace(run_dir, "One piece", [s])
         print(run_dir, s["scores"])
-    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece, a.v8, a.v8_batch, a.v8_banners, a.v8_review, a.v81, a.v81_review2]):
+    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece, a.v8, a.v8_batch, a.v8_banners, a.v8_review, a.v81, a.v81_review2, a.v82, a.v82_notices, a.v82_review2]):
         ap.print_help()
 
 

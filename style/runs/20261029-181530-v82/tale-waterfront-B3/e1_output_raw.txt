@@ -1,0 +1,5 @@
+SCORE: 5/10
+REASON:
+- tale · F6 (blocking, −4) "The stilt houses stand older than the city, kept as heritage. Behind glass in one waits Chassis 0, the prototype before you. Arms 3 is fitted: push off one car, then meet the next." The tale has 33 words, which is within the 15 to 35 limit, but it has 3 sentences and the limit is 2 (lint finding). [EDIT97#3.2] Fix: join the first two sentences with a semicolon: "The stilt houses are older than the city; behind glass in one waits Chassis 0, the prototype before you."
+- tale · F11 (minor, −1) "push off one car, then meet the next" This clause repeats the brief ("Push off one car; the final hit must be the next car") instead of linking the duty to the place. [EDIT97#3.2] Fix: replace the last sentence with "Arms 3 is fitted: show Chassis 0 how far the model has come." This keeps the tale at 2 sentences and 32 words.
+Total: 10 − 4 − 1 = 5.

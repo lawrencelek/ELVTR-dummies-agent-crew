@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3–T5 and T13 (it is flat, motivating and in the training frame, uses "you" and has one adjective, "older"). I checked V1–V4, V6, V8 and V11 (the stilt houses are named and turned toward the training through Chassis 0). I checked F5–F7 and F11 (two sentences and 35 words, with Arms 3 named as a part rank and no placeholder). I checked R4 and R5 (Chassis 0 belongs to this tile's narration, and the push matches the brief). Chunks: [EDIT95#3.1], [EDIT95#3.2], [EDIT97#3.2], [STORY#WB3], [STORY#S3], [EDIT93#3.1].
+Total: 10.

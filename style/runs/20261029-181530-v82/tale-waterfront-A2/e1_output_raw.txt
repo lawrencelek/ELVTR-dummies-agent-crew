@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · V6 (major, −2) "let the car that reacts to it complete your training" This is tile 8 of 9 in CUSTOMS, so this tile's write-off cannot complete the training, which ends only at the CERTIFIED ending after Waterfront B2. [EDIT95#3.3] Fix: replace the second sentence with "Place a cone on the terrace, and let the car that reacts to it advance your training." (16 words; the tale becomes 33 words in 2 sentences.)
+Total: 10 − 2 = 8.

@@ -1,0 +1,103 @@
+{
+ "case": "tale-parkland-A2",
+ "class": "V8.2 tale",
+ "title": "Parkland A2: The dome by the canal, redrafted",
+ "request": "Redraft the tale for Parkland A2 (The dome by the canal). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The dome is the Expo's showroom. The canal beside it cools the highway's footings; the ducks are registered volunteers. Hands 2 is fitted: two cones. Lay them where the visitors will walk, and see who stops.\n- Prototype 8.1 (Dummy Corporation): The dome by the canal is the Expo's showroom, readied for our clients. Hands 2 is fitted: lay a cone, and let the car that answers it write you off.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  6,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 71.7,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 3.9,
+   "output_tokens": 111,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0588233
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 17.7,
+   "output_tokens": 1631,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1586395
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.0,
+   "output_tokens": 575,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1386353
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 16.3,
+   "output_tokens": 1459,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1543571
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 7.4,
+   "output_tokens": 579,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13830420000000002
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 9.9,
+   "output_tokens": 776,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1406647
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 9.5,
+   "output_tokens": 738,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0230919
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.8125
+}

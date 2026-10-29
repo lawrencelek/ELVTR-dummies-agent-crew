@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has 32 words in two sentences and a semicolon, with no "!" (F6, T2), and passes lint. It names the belvedere and turns it toward the duty (V11, R4; [STORY#PA3], [EDIT95#3.1]). It names Legs 2 on the tile that issues it (F7; [DECISIONS#rows-531-540~2]). Its jump matches the brief (R5; [STORY#S1]). It fits OPENING DAY (V6; [EDIT95#3.3]). The tone is deadpan and inspirational, with one adjective or fewer per sentence (T1, T4, T13; [EDIT95#3.2]). It uses no banned word or glossary term wrongly (V1, V3; [EDIT95#0], [EDIT95#3.1]). Its length suits a single image (F11; [EDIT97#3.2]).
+Total: 10.

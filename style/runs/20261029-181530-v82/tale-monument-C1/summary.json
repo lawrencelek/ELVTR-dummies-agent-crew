@@ -1,0 +1,79 @@
+{
+ "case": "tale-monument-C1",
+ "class": "V8.2 tale",
+ "title": "Monument C1: The LED drum, redrafted",
+ "request": "Redraft the tale for Monument C1 (The LED drum). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The drum lights each bend before a car reaches it, so no colleague is ever surprised. Today one will be. The high road breaks its rail over the street below. Step off it onto a car. Gravity is company policy.\n- Prototype 8.1 (Dummy Corporation): The LED drum lights each bend so no colleague is surprised. Where the high road breaks its rail over the street, step off onto a car below: gravity is company policy.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 55.9,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 11.6,
+   "output_tokens": 94,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.10705840000000001
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.5,
+   "output_tokens": 947,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1250322
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.0,
+   "output_tokens": 546,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1182414
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 13.6,
+   "output_tokens": 1124,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.12801230000000002
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 11.2,
+   "output_tokens": 956,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.026723300000000002
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5051
+}

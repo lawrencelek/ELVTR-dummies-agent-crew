@@ -1,10 +1,10 @@
 {
  "meta": {
   "name": "DUMMIES story: the Test City, tile by tile",
-  "version": "edit96-2026-10-29",
-  "status": "Narrative A, Certified, under the lore refinement of GDD Edit 95 (user-decided, 29 October): Dummy Corporation narrates; Farsight, the publisher, is named only in the Credits. Edit 96: tales up to 35 words. Text from style run 20261029-172610-v81 on Style Guide V2; gameplay fields as story.json (edit93)",
+  "version": "edit97-2026-10-29",
+  "status": "Narrative A, Certified, under the lore refinement of GDD Edit 95 (user-decided, 29 October): Dummy Corporation narrates; Farsight, the publisher, is named only in the Credits. Edit 97: tales 15 to 35 words. Text from style run 20261029-181530-v82 on Style Guide V2; gameplay fields as story.json (edit93)",
   "consumers": [
-   "prototypes/p8 (story.js, game.js): Prototype 8.1"
+   "prototypes/p8 (story.js, game.js): Prototype 8.2"
   ],
   "sources": [
    "GDD Edit 26 §3 Setting",
@@ -15,7 +15,7 @@
    "GDD Edit 92: Narrative A, Certified",
    "GDD Edit 93: introduce, then test",
    "GDD Edit 95: lore refinement, Dummy Corporation",
-   "style/STYLE_GUIDE_V2.md; style run 20261029-172610-v81"
+   "style/STYLE_GUIDE_V2.md; style run 20261029-181530-v82"
   ],
   "rules": [
    "Numbers live in the registry: tasks and gifts name parameter IDs, never values.",
@@ -27,7 +27,7 @@
    "Each tile's traffic is story.traffic.<district>.<tile> in the registry, on the tile and its neighbours (Edit 85).",
    "Edit 92: Narrative A, Certified. Act I Monument (Induction), Act II Parkland (Opening Day), Act III Waterfront (Customs).",
    "Edit 95: Dummy Corporation narrates: deadpan and inspirational, few adjectives, no exclamation marks. Every text at most two sentences and 20 words (style.v2.text.maxSentences, style.v2.text.maxWords). Farsight is named only in the Credits.",
-   "Edit 96: a tale may run to 35 words (style.v2.tale.maxWords); the extra words name the place."
+   "Edit 97: a tale runs 15 to 35 words (style.v2.tale.minWords, style.v2.tale.maxWords); the tile's content sets the length."
   ]
  },
  "ending": "Your model has passed and will be manufactured for our clients. A Corporation drone carries you to the ship.",
@@ -123,7 +123,7 @@
       "kind": "any"
      },
      "gift": null,
-     "tale": "A conveyor sets you down at the welcome wall, where a screen shows your face and the word WELCOME. Your first duty toward Certification: stand in the road until a colleague notices you."
+     "tale": "A conveyor sets you down at the welcome wall, where a tower screen shows your face and the word WELCOME. Your first duty toward Certification: stand in the road until a colleague notices you."
     },
     "B1": {
      "title": "The podium bridge",
@@ -133,7 +133,7 @@
      "gift": {
       "node": "battery1"
      },
-     "tale": "Battery 1 is fitted, for the dash. Shoppers never came to the podium bridge; staff now watch from it as you dash into a colleague, toward Certification."
+     "tale": "Battery 1 is fitted, for the dash. The skybridge was built for shoppers who never came; staff watch from it as you dash into a colleague."
     },
     "C1": {
      "title": "The LED drum",
@@ -141,7 +141,7 @@
       "kind": "drop"
      },
      "gift": null,
-     "tale": "The LED drum lights each bend so no colleague is surprised. Where the high road breaks its rail over the street, step off onto a car below: gravity is company policy."
+     "tale": "The LED drum lights each bend before a car arrives, so no colleague is surprised. Where the high road breaks its rail, step off onto a car below: gravity is company policy."
     },
     "C2": {
      "title": "The portal tower",
@@ -149,7 +149,7 @@
       "kind": "level"
      },
      "gift": null,
-     "tale": "The raised road passes through the portal tower, above its tenants. Your write-off belongs on that road, at height; Certification does not include the view."
+     "tale": "The road runs through the portal tower at the sixth floor. Take your write-off up there; ignore the view."
     },
     "B2": {
      "title": "The monument",
@@ -157,7 +157,7 @@
       "kind": "struck"
      },
      "gift": null,
-     "tale": "The monument's plaque reads ZERO ACCIDENTS, a target rather than a record. Stand or walk beside it and let a colleague find you; dashing would spoil the data."
+     "tale": "The plaque reads ZERO ACCIDENTS: a target, not a record. Stand or walk near it until a colleague finds you."
     },
     "A2": {
      "title": "The neon shops",
@@ -167,7 +167,7 @@
      "gift": {
       "node": "hands1"
      },
-     "tale": "The neon shops under the highway sell nothing, yet the traffic reads every sign. Hands 1 is fitted: place a cone, and let a colleague who reads it write you off."
+     "tale": "The neon shops sell nothing, but the traffic reads them. Hands 1 is fitted: bait a colleague with a cone."
     },
     "A3": {
      "title": "The stacked cubes",
@@ -176,7 +176,7 @@
       "param": "story.task.comboEasy"
      },
      "gift": null,
-     "tale": "Each stacked cube was added as the budget arrived, one on the last; we call this growth. Your duty grows the same way: one hit, then another before the first is forgotten."
+     "tale": "The stacked cubes rose one budget at a time. Grow the same way: one hit, then another before the first is forgotten."
     },
     "B3": {
      "title": "The LED canyon",
@@ -186,7 +186,7 @@
      "gift": {
       "node": "legs1"
      },
-     "tale": "Legs 1 is fitted. In the LED canyon, two screens advertise across the road all night; jump into a car between them, for our clients."
+     "tale": "Two screens face each other across the road and advertise to each other all night. Legs 1 is fitted: jump into a car between them, and give the skybridge something to watch."
     },
     "C3": {
      "title": "The LED gateway",
@@ -194,7 +194,7 @@
       "kind": "bounce"
      },
      "gift": null,
-     "tale": "The LED gateway thanks every car for driving safely, even the one that wrote you off. Your file reads ROLE: DESTRUCTIVE TESTING; let one colleague throw you into the next."
+     "tale": "The LED gateway thanks every car for driving safely, including the one that wrote you off. Your file reads ROLE: DESTRUCTIVE TESTING; let one colleague throw you into the next."
     }
    }
   },
@@ -223,7 +223,7 @@
      "gift": {
       "node": "arms1"
      },
-     "tale": "The paper lantern, the Expo's first exhibit, is lit again for our clients. Arms 1 is fitted: under the footbridge, push off one car into the next, and the Expo opens safer."
+     "tale": "The paper lantern, the Expo's first exhibit, is lit again for our clients. Arms 1 is fitted; under the footbridge, push off one car into the next."
     },
     "C2": {
      "title": "The amphitheatre",
@@ -232,7 +232,7 @@
       "cls": "van"
      },
      "gift": null,
-     "tale": "Our board will watch from these terraces on opening day, and every crossing of the avenue is a performance. A van delivers the catering; arrange for it to deliver you."
+     "tale": "Our board will watch opening day from these terraces, which face the avenue, so every crossing is a performance. A van delivers the catering; arrange for it to deliver you."
     },
     "C3": {
      "title": "The arch and the roundabout",
@@ -241,7 +241,7 @@
       "param": "story.task.comboEasy"
      },
      "gift": null,
-     "tale": "The arch is the Expo's gate; visitors will circle the roundabout once before they enter. Go round faster, and chain your hits before the first is forgotten."
+     "tale": "The arch is the Expo's gate, and visitors will circle the roundabout once before they enter. You circle faster: chain your hits, each landing before the last is forgotten."
     },
     "B3": {
      "title": "The obelisk court",
@@ -250,7 +250,7 @@
       "cls": "police"
      },
      "gift": null,
-     "tale": "The obelisk marks the surveyors' first stake; on opening day the police fleet escorts a school party here. Your final hit must come from a police car: the escort is tested on you first."
+     "tale": "The obelisk marks the surveyors' first stake. On opening day the police fleet escorts a school party here, so Dummy Corporation tests the escort on you first."
     },
     "A3": {
      "title": "The belvedere",
@@ -260,7 +260,7 @@
      "gift": {
       "node": "legs2"
      },
-     "tale": "A wedding is booked on the belvedere for opening day, facing the traffic. Legs 2 is fitted: jump into a car here, so that no guest ever does."
+     "tale": "A wedding is booked on the belvedere for opening day; the couple asked for a view of the traffic. Legs 2 is fitted: land on a car here, so no guest does."
     },
     "A2": {
      "title": "The dome by the canal",
@@ -270,7 +270,7 @@
      "gift": {
       "node": "hands2"
      },
-     "tale": "The dome by the canal is the Expo's showroom, readied for our clients. Hands 2 is fitted: lay a cone, and let the car that answers it write you off."
+     "tale": "The dome is the Expo's showroom, and you are what it will show. Hands 2 is fitted: lay a cone by the canal, and let the car that answers it write you off."
     },
     "A1": {
      "title": "The reservoir terraces",
@@ -280,7 +280,7 @@
      "gift": {
       "node": "arms2"
      },
-     "tale": "At the reservoir terraces, the gardener tends three pools by hand; she asks that cars stop before the water. Arms 2 is fitted; teach them with a ricochet, one car to the next."
+     "tale": "The gardener tends the three terraced pools by hand and asks that cars stop before the water. Arms 2 is fitted: teach them by pushing off one car into the next."
     },
     "B1": {
      "title": "The cascade",
@@ -288,7 +288,7 @@
       "kind": "level"
      },
      "gift": null,
-     "tale": "The cascade steps the reservoir's water down beside the highway, pool by pool, to drown out the traffic. Go up to the highway and take your write-off where the traffic is loudest."
+     "tale": "The cascade steps the reservoir down beside the highway, pool by pool, to drown out the traffic; the traffic got louder. Climb to the highway and take your final hit above the noise."
     },
     "B2": {
      "title": "The ring over the pools",
@@ -299,7 +299,7 @@
      "gift": {
       "node": "battery2"
      },
-     "tale": "Battery 2 is fitted: a second charge. The board watches the ring over the pools; carry the chain your brief asks for, and the Expo opens to clients."
+     "tale": "The board watches the ring over the pools, where the cars come round clean. Battery 2 is fitted, a second charge; chain your hits round the ring."
     }
    }
   },
@@ -327,7 +327,7 @@
       "cls": "bus"
      },
      "gift": null,
-     "tale": "Before you cross the river to our clients, we require the bus fleet's data. At the west portal, the bus carries engineers from the upper town to the bridge; stand in its path."
+     "tale": "At the west portal, the bus carries the upper town's engineers to the bridge. Dummy Corporation requires the bus fleet's data before you cross the river to our clients."
     },
     "B1": {
      "title": "The tunnel portal",
@@ -337,7 +337,7 @@
      "gift": {
       "node": "legs3"
      },
-     "tale": "Legs 3 is fitted for the longest flight. At the tunnel portal, cars go in under the hill and data comes back; jump into one, and your data serves our clients."
+     "tale": "The tunnel runs north under the hill: cars go in, and data comes back. Legs 3 is fitted: the longest flight; jump into a car, and your data serves our clients."
     },
     "C1": {
      "title": "The east portal",
@@ -346,7 +346,7 @@
       "cls": "police"
      },
      "gift": null,
-     "tale": "The east bridge was built to correct the west; its portal block faces the other way. The police here check papers, and a police car's final hit moves yours forward."
+     "tale": "The east bridge was built a year after the west, to correct its mistakes; its portal block faces the other way. The police here check papers, and your Certification needs their fleet on record."
     },
     "C2": {
      "title": "The east beach terrace",
@@ -354,7 +354,7 @@
       "kind": "drop"
      },
      "gift": null,
-     "tale": "From the rail of the east beach terrace, you can see the ships that carry Certified dummies to clients. Drop onto a car below; the ships will wait."
+     "tale": "The east beach terrace was built for tourists, then joggers, then sensors. From its rail you see the ships bound for our clients; drop onto a car below."
     },
     "C3": {
      "title": "The east customs post",
@@ -362,7 +362,7 @@
       "kind": "bounce"
      },
      "gift": null,
-     "tale": "The east pier tower is a customs post; it logs every Certified dummy that crosses the river to our clients. Be thrown into a car while a hit still throws you, and earn your entry."
+     "tale": "The pier tower logs everything that crosses the river: containers, ducks and, so far, one dummy. Be thrown into a car, and earn your entry."
     },
     "B3": {
      "title": "The stilt houses",
@@ -372,7 +372,7 @@
      "gift": {
       "node": "arms3"
      },
-     "tale": "Arms 3 is fitted; push off one car into the next. Behind glass in the stilt houses stands Chassis 0, the prototype before you; show it how far the model has come."
+     "tale": "The stilt houses are older than the city; behind glass in one stands Chassis 0, the prototype before you. Arms 3 is fitted for the push; show Chassis 0 how far the model has come."
     },
     "A3": {
      "title": "The west customs post",
@@ -380,7 +380,7 @@
       "kind": "level"
      },
      "gift": null,
-     "tale": "At the west customs post, the log lists every dummy bound for clients across the river. Your entry reads PURPOSE DESTRUCTION; honour it on the raised road."
+     "tale": "The west tower keeps the customs log. Your entry reads PURPOSE DESTRUCTION: honour it on the raised road, and complete your training."
     },
     "A2": {
      "title": "The west beach terrace",
@@ -388,7 +388,7 @@
       "kind": "cone"
      },
      "gift": null,
-     "tale": "The west beach terrace was laid with sand from three provinces, for clients you will one day serve. Place a cone and meet the car that reacts to it; every write-off here serves them."
+     "tale": "The valley began here: a cliff, an avenue, and a beach of sand brought from three provinces. Place a cone on the beach terrace: one more clean reading before the ceremony."
     },
     "B2": {
      "title": "The circus",
@@ -399,7 +399,7 @@
      "gift": {
       "node": "battery3"
      },
-     "tale": "Battery 3 is fitted: complete the chain your brief sets, and you are Certified for our clients. The circus island's monument, cast from every write-off, reads ZERO ACCIDENTS (EXCLUDING TESTS)."
+     "tale": "Everything in the valley meets at the circus, where a monument cast from every chassis written off reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits toward Certification."
     }
    }
   }

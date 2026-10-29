@@ -1,0 +1,14 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I checked the tale against every rule for Dummy Corporation and found no violations, citing [EDIT97#3.2], [EDIT95#3.1], [EDIT95#3.2], [EDIT95#3.3], [EDIT92#3], [EDIT92#7], [STORY#S3] and [STORY#MC3]:
+- **Length (F6, F11):** the tale is 30 words in two sentences, with no padding and no repeated act line.
+- **Tone (T1–T5):** it is deadpan and has no "!".
+- **Story frame (V6):** "ROLE: DESTRUCTIVE TESTING" is written exactly as canon fixes it.
+- **Glossary (V3):** "colleague" and "wrote you off" are glossary terms.
+- **Place (V11, R4):** it names the LED gateway and its drawn THANK YOU · DRIVE SAFE beam, and turns that beam toward the duty.
+- **Duty (R5):** "let one colleague throw you into the next" matches the brief, THROWN INTO A CAR.
+- **Equipment (F7, R5):** the tale names no equipment, and none is issued on this tile.
+
+Total: 10.

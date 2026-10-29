@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F11 (minor, −1) "let a colleague's respect for it deliver the final hit" This clause repeats the brief ("The final hit must come from a car reacting to a cone"), and the brief already appears on the same tile card. [EDIT97#3.2] Fix: "Hands 1 is fitted: place a cone where they read it, and let a colleague's respect for it find you." This keeps the cone duty, ties it to the traffic reading the signs, and leaves the tale at 32 words.
+Total: 10 − 1 = 9.

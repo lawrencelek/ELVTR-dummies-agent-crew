@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- n34 · T1 (major, −2) "One district, until the shift's cars run out. Every few write-offs, you rise a grade." The notice only lists the rules flatly and gives the trainee no reason to train, and T1 fails a notice that does not motivate. [EDIT95#3.2] Fix: "One district, one shift of cars. Every few write-offs, you earn a tougher grade." (2 sentences, 15 words, 79 characters; it keeps the one district, the shift's cars and the rising grade, and the tougher grade covers the tougher chassis and denser traffic.)
+Total: 10 − 2 = 8.

@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F11 (minor, −1) "Be thrown into a car while a hit still throws you" The clause repeats the brief's wording ("The final hit must come while a hit is still throwing you"), and the brief appears on the same card. [EDIT97#3.2] Fix: keep the duty in the label's words and drop the repeated clause: "Be thrown into a car, and earn your entry."
+Total: 10 − 1 = 9.

@@ -1,0 +1,1 @@
+{"kind":"tale","district":"monument","tile":"A3","title":"The stacked cubes","tale":"Each cube was added as the budget arrived, one quarter at a time, each leaning further than the last. Dummy Corporation calls this growth; your duty grows the same way: one hit, then another before the first is forgotten."}

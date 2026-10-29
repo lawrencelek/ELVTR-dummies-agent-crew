@@ -1,0 +1,2433 @@
+[
+ {
+  "case": "tale-monument-A1",
+  "class": "V8.2 tale",
+  "title": "Monument A1: The welcome wall, redrafted",
+  "request": "Redraft the tale for Monument A1 (The welcome wall). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you.\n- Prototype 8.1 (Dummy Corporation): A conveyor sets you down at the welcome wall, where a screen shows your face and the word WELCOME. Your first duty toward Certification: stand in the road until a colleague notices you.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 38.1,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.4,
+    "output_tokens": 100,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.10451440000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.5,
+    "output_tokens": 992,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1285723
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 16.2,
+    "output_tokens": 1306,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0338423
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.2669
+ },
+ {
+  "case": "tale-monument-B1",
+  "class": "V8.2 tale",
+  "title": "Monument B1: The podium bridge, redrafted",
+  "request": "Redraft the tale for Monument B1 (The podium bridge). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you join the road. Dash into a colleague. Farsight will time you.\n- Prototype 8.1 (Dummy Corporation): Battery 1 is fitted, for the dash. Shoppers never came to the podium bridge; staff now watch from it as you dash into a colleague, toward Certification.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 43.2,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 9.7,
+    "output_tokens": 90,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.11898890000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.9,
+    "output_tokens": 854,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1332329
+   },
+   {
+    "label": "e1b",
+    "role": "evaluator",
+    "seconds": 9.1,
+    "output_tokens": 717,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13297050000000002
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 12.5,
+    "output_tokens": 1085,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0296981
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4149
+ },
+ {
+  "case": "tale-monument-C1",
+  "class": "V8.2 tale",
+  "title": "Monument C1: The LED drum, redrafted",
+  "request": "Redraft the tale for Monument C1 (The LED drum). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The drum lights each bend before a car reaches it, so no colleague is ever surprised. Today one will be. The high road breaks its rail over the street below. Step off it onto a car. Gravity is company policy.\n- Prototype 8.1 (Dummy Corporation): The LED drum lights each bend so no colleague is surprised. Where the high road breaks its rail over the street, step off onto a car below: gravity is company policy.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 55.9,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 11.6,
+    "output_tokens": 94,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.10705840000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.5,
+    "output_tokens": 947,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1250322
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.0,
+    "output_tokens": 546,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1182414
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 13.6,
+    "output_tokens": 1124,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12801230000000002
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.2,
+    "output_tokens": 956,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.026723300000000002
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5051
+ },
+ {
+  "case": "tale-monument-C2",
+  "class": "V8.2 tale",
+  "title": "Monument C2: The portal tower, redrafted",
+  "request": "Redraft the tale for Monument C2 (The portal tower). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The high road runs through this tower at the sixth floor. The tenants say the traffic is good company. Today your duty is on the road itself, at height. The view is not part of the job.\n- Prototype 8.1 (Dummy Corporation): The raised road passes through the portal tower, above its tenants. Your write-off belongs on that road, at height; Certification does not include the view.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   9,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 58.1,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 7.3,
+    "output_tokens": 94,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.1150068
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 14.6,
+    "output_tokens": 1226,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.2235338
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.0,
+    "output_tokens": 562,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1368912
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 14.0,
+    "output_tokens": 1255,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1495387
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 13.2,
+    "output_tokens": 1148,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0312645
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6562
+ },
+ {
+  "case": "tale-monument-B2",
+  "class": "V8.2 tale",
+  "title": "Monument B2: The monument, redrafted",
+  "request": "Redraft the tale for Monument B2 (The monument). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashing would spoil the data.\n- Prototype 8.1 (Dummy Corporation): The monument's plaque reads ZERO ACCIDENTS, a target rather than a record. Stand or walk beside it and let a colleague find you; dashing would spoil the data.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 47.1,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.1,
+    "output_tokens": 99,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.10284549999999999
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.5,
+    "output_tokens": 875,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.126653
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.8,
+    "output_tokens": 460,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1916589
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.9,
+    "output_tokens": 955,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12763539999999998
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.8,
+    "output_tokens": 973,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0271726
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.576
+ },
+ {
+  "case": "tale-monument-A2",
+  "class": "V8.2 tale",
+  "title": "Monument A2: The neon shops, redrafted",
+  "request": "Redraft the tale for Monument A2 (The neon shops). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The shops under the highway sell nothing. Their signs flash prices at the traffic, which reads every word. Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones. Use this.\n- Prototype 8.1 (Dummy Corporation): The neon shops under the highway sell nothing, yet the traffic reads every sign. Hands 1 is fitted: place a cone, and let a colleague who reads it write you off.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   9,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 2,
+  "accepted": true,
+  "final_version": 2,
+  "seconds": 76.6,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.7,
+    "output_tokens": 102,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.1049234
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 17.4,
+    "output_tokens": 1419,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1481207
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.1,
+    "output_tokens": 642,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1338514
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 14.4,
+    "output_tokens": 1281,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1453759
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 7.0,
+    "output_tokens": 552,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1322134
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 11.2,
+    "output_tokens": 901,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1377769
+   },
+   {
+    "label": "e3c1",
+    "role": "evaluator",
+    "seconds": 9.6,
+    "output_tokens": 777,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.023671099999999997
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.8259
+ },
+ {
+  "case": "tale-monument-A3",
+  "class": "V8.2 tale",
+  "title": "Monument A3: The stacked cubes, redrafted",
+  "request": "Redraft the tale for Monument A3 (The stacked cubes). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Each cube was added as the budget arrived, one quarter at a time, each leaning further than the last. Farsight calls this growth. Today's duty is the same: one hit, then another before the first is forgotten.\n- Prototype 8.1 (Dummy Corporation): Each stacked cube was added as the budget arrived, one on the last; we call this growth. Your duty grows the same way: one hit, then another before the first is forgotten.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   4,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 55.3,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 7.6,
+    "output_tokens": 109,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.1174461
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.1,
+    "output_tokens": 1191,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1337769
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.0,
+    "output_tokens": 690,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1262821
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.3,
+    "output_tokens": 892,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1351831
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.2,
+    "output_tokens": 922,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.026482699999999998
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5392
+ },
+ {
+  "case": "tale-monument-B3",
+  "class": "V8.2 tale",
+  "title": "Monument B3: The LED canyon, redrafted",
+  "request": "Redraft the tale for Monument B3 (The LED canyon). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Two screens face each other across the road and advertise to each other all night. The skybridge was added so that someone would watch. You are now someone. Legs 1 is fitted. Jump into a car between the screens.\n- Prototype 8.1 (Dummy Corporation): Legs 1 is fitted. In the LED canyon, two screens advertise across the road all night; jump into a car between them, for our clients.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 51.3,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 7.4,
+    "output_tokens": 92,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.1070149
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.2,
+    "output_tokens": 1329,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.22991110000000003
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.1,
+    "output_tokens": 772,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1452414
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.5,
+    "output_tokens": 703,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1422981
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 9.1,
+    "output_tokens": 755,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.023545700000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.648
+ },
+ {
+  "case": "tale-monument-C3",
+  "class": "V8.2 tale",
+  "title": "Monument C3: The LED gateway, redrafted",
+  "request": "Redraft the tale for Monument C3 (The LED gateway). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The gateway thanks every car for driving safely. It thanked the last one seconds after that car wrote you off. Your file is updated: ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next.\n- Prototype 8.1 (Dummy Corporation): The LED gateway thanks every car for driving safely, even the one that wrote you off. Your file reads ROLE: DESTRUCTIVE TESTING; let one colleague throw you into the next.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 31.4,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 5.5,
+    "output_tokens": 103,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0576678
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.3,
+    "output_tokens": 1184,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1350377
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 12.6,
+    "output_tokens": 1105,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.029920500000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.2226
+ },
+ {
+  "case": "tale-parkland-C1",
+  "class": "V8.2 tale",
+  "title": "Parkland C1: The lantern pavilion, redrafted",
+  "request": "Redraft the tale for Parkland C1 (The lantern pavilion). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The paper lantern was the Expo's first exhibit, and it is lit again for the visitors. Arms 1 is fitted; Farsight calls it safety equipment. Under the footbridge, push off one car into the next.\n- Prototype 8.1 (Dummy Corporation): The paper lantern, the Expo's first exhibit, is lit again for our clients. Arms 1 is fitted: under the footbridge, push off one car into the next, and the Expo opens safer.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 45.9,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 17.2,
+    "output_tokens": 105,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0650163
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.9,
+    "output_tokens": 1187,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1328381
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 15.8,
+    "output_tokens": 1323,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0341971
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.2321
+ },
+ {
+  "case": "tale-parkland-C2",
+  "class": "V8.2 tale",
+  "title": "Parkland C2: The amphitheatre, redrafted",
+  "request": "Redraft the tale for Parkland C2 (The amphitheatre). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Farsight's board will watch from these terraces on opening day. The seats face the avenue, so every crossing is a performance. A van delivers the catering. Arrange for it to deliver you.\n- Prototype 8.1 (Dummy Corporation): Our board will watch from these terraces on opening day, and every crossing of the avenue is a performance. A van delivers the catering; arrange for it to deliver you.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 43.9,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 3.3,
+    "output_tokens": 93,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.06751360000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.2,
+    "output_tokens": 880,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12051830000000001
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.5,
+    "output_tokens": 716,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1182174
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.6,
+    "output_tokens": 926,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12279
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.3,
+    "output_tokens": 948,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0265178
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4556
+ },
+ {
+  "case": "tale-parkland-C3",
+  "class": "V8.2 tale",
+  "title": "Parkland C3: The arch and the roundabout, redrafted",
+  "request": "Redraft the tale for Parkland C3 (The arch and the roundabout). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The arch is the Expo's gate. Visitors will circle the roundabout once before they enter, which gives the cars time to learn them. You go round faster. Two hits, the second before the first is forgotten.\n- Prototype 8.1 (Dummy Corporation): The arch is the Expo's gate; visitors will circle the roundabout once before they enter. Go round faster, and chain your hits before the first is forgotten.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   7,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 45.0,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 3.7,
+    "output_tokens": 99,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.06747370000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.8,
+    "output_tokens": 1058,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1463331
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.4,
+    "output_tokens": 561,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1380895
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.3,
+    "output_tokens": 893,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1548854
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.7,
+    "output_tokens": 961,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.02799
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5348
+ },
+ {
+  "case": "tale-parkland-B3",
+  "class": "V8.2 tale",
+  "title": "Parkland B3: The obelisk court, redrafted",
+  "request": "Redraft the tale for Parkland B3 (The obelisk court). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The obelisk marks the surveyors' first stake. A school party will visit it on opening day, escorted by the police fleet. Farsight would like to know how the police fleet handles a dummy first.\n- Prototype 8.1 (Dummy Corporation): The obelisk marks the surveyors' first stake; on opening day the police fleet escorts a school party here. Your final hit must come from a police car: the escort is tested on you first.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   5,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 47.9,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.6,
+    "output_tokens": 101,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0642885
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.2,
+    "output_tokens": 1177,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1330502
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.9,
+    "output_tokens": 443,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.120378
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.9,
+    "output_tokens": 760,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1268243
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.2,
+    "output_tokens": 798,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0237897
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4683
+ },
+ {
+  "case": "tale-parkland-A3",
+  "class": "V8.2 tale",
+  "title": "Parkland A3: The belvedere, redrafted",
+  "request": "Redraft the tale for Parkland A3 (The belvedere). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): A wedding is booked on the belvedere for opening day. The couple asked for a view of the traffic. Legs 2 is fitted: longer in the air. Land on a car here, so that no guest ever does.\n- Prototype 8.1 (Dummy Corporation): A wedding is booked on the belvedere for opening day, facing the traffic. Legs 2 is fitted: jump into a car here, so that no guest ever does.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   10,
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 72.5,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 11.3,
+    "output_tokens": 97,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.06722560000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.0,
+    "output_tokens": 1329,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1322351
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 15.0,
+    "output_tokens": 1432,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0362491
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 6.8,
+    "output_tokens": 544,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1180488
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.6,
+    "output_tokens": 976,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1251832
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.9,
+    "output_tokens": 1008,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.027769400000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5067
+ },
+ {
+  "case": "tale-parkland-A2",
+  "class": "V8.2 tale",
+  "title": "Parkland A2: The dome by the canal, redrafted",
+  "request": "Redraft the tale for Parkland A2 (The dome by the canal). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The dome is the Expo's showroom. The canal beside it cools the highway's footings; the ducks are registered volunteers. Hands 2 is fitted: two cones. Lay them where the visitors will walk, and see who stops.\n- Prototype 8.1 (Dummy Corporation): The dome by the canal is the Expo's showroom, readied for our clients. Hands 2 is fitted: lay a cone, and let the car that answers it write you off.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 2,
+  "accepted": true,
+  "final_version": 2,
+  "seconds": 71.7,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 3.9,
+    "output_tokens": 111,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0588233
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 17.7,
+    "output_tokens": 1631,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1586395
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.0,
+    "output_tokens": 575,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1386353
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 16.3,
+    "output_tokens": 1459,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1543571
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 7.4,
+    "output_tokens": 579,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13830420000000002
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 9.9,
+    "output_tokens": 776,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1406647
+   },
+   {
+    "label": "e3c1",
+    "role": "evaluator",
+    "seconds": 9.5,
+    "output_tokens": 738,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0230919
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.8125
+ },
+ {
+  "case": "tale-parkland-A1",
+  "class": "V8.2 tale",
+  "title": "Parkland A1: The reservoir terraces, redrafted",
+  "request": "Redraft the tale for Parkland A1 (The reservoir terraces). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by hitting one car into the next.\n- Prototype 8.1 (Dummy Corporation): At the reservoir terraces, the gardener tends three pools by hand; she asks that cars stop before the water. Arms 2 is fitted; teach them with a ricochet, one car to the next.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   4,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 2,
+  "accepted": true,
+  "final_version": 2,
+  "seconds": 100.2,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 3.7,
+    "output_tokens": 101,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.056167999999999996
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.1,
+    "output_tokens": 1385,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14829199999999998
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.6,
+    "output_tokens": 606,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13330989999999998
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 25.3,
+    "output_tokens": 2319,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1667047
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 7.5,
+    "output_tokens": 575,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13384010000000002
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 16.8,
+    "output_tokens": 1512,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14454740000000002
+   },
+   {
+    "label": "e3c1",
+    "role": "evaluator",
+    "seconds": 24.2,
+    "output_tokens": 2079,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.049511000000000006
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.8324
+ },
+ {
+  "case": "tale-parkland-B1",
+  "class": "V8.2 tale",
+  "title": "Parkland B1: The cascade, redrafted",
+  "request": "Redraft the tale for Parkland B1 (The cascade). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest.\n- Prototype 8.1 (Dummy Corporation): The cascade steps the reservoir's water down beside the highway, pool by pool, to drown out the traffic. Go up to the highway and take your write-off where the traffic is loudest.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   2,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 59.0,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 5.0,
+    "output_tokens": 96,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.06031380000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 19.8,
+    "output_tokens": 1905,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.16355
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.5,
+    "output_tokens": 911,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14575980000000002
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.4,
+    "output_tokens": 1013,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1375776
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 12.3,
+    "output_tokens": 1115,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0303396
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5375
+ },
+ {
+  "case": "tale-parkland-B2",
+  "class": "V8.2 tale",
+  "title": "Parkland B2: The ring over the pools, redrafted",
+  "request": "Redraft the tale for Parkland B2 (The ring over the pools). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefers the product to the test. Give it a chain of three.\n- Prototype 8.1 (Dummy Corporation): Battery 2 is fitted: a second charge. The board watches the ring over the pools; carry the chain your brief asks for, and the Expo opens to clients.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   3,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 56.3,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 3.1,
+    "output_tokens": 90,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0720398
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.6,
+    "output_tokens": 1482,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1643832
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.2,
+    "output_tokens": 813,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1539172
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 15.8,
+    "output_tokens": 1446,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.16480530000000002
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.6,
+    "output_tokens": 960,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.027929700000000002
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5831
+ },
+ {
+  "case": "tale-waterfront-A1",
+  "class": "V8.2 tale",
+  "title": "Waterfront A1: The west portal, redrafted",
+  "request": "Redraft the tale for Waterfront A1 (The west portal). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The upper town houses the engineers, and the bus carries them to the bridge. Farsight requires the bus fleet's data before anyone crosses the river. The bus is slow and very large. It will not miss.\n- Prototype 8.1 (Dummy Corporation): Before you cross the river to our clients, we require the bus fleet's data. At the west portal, the bus carries engineers from the upper town to the bridge; stand in its path.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   5,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 55.8,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 6.4,
+    "output_tokens": 98,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0558431
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 18.0,
+    "output_tokens": 1717,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1489282
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.0,
+    "output_tokens": 681,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12960190000000002
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.2,
+    "output_tokens": 1131,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1363253
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.1,
+    "output_tokens": 915,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.026206100000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4969
+ },
+ {
+  "case": "tale-waterfront-B1",
+  "class": "V8.2 tale",
+  "title": "Waterfront B1: The tunnel portal, redrafted",
+  "request": "Redraft the tale for Waterfront B1 (The tunnel portal). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Where your data goes after the tunnel is not within your role.\n- Prototype 8.1 (Dummy Corporation): Legs 3 is fitted for the longest flight. At the tunnel portal, cars go in under the hill and data comes back; jump into one, and your data serves our clients.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 49.5,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 4.2,
+    "output_tokens": 97,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0641207
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.6,
+    "output_tokens": 1059,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1564814
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.4,
+    "output_tokens": 722,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1508511
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 13.0,
+    "output_tokens": 1144,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15763059999999998
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 12.3,
+    "output_tokens": 1109,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.030867
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.56
+ },
+ {
+  "case": "tale-waterfront-C1",
+  "class": "V8.2 tale",
+  "title": "Waterfront C1: The east portal, redrafted",
+  "request": "Redraft the tale for Waterfront C1 (The east portal). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The east bridge was built a year after the west, to correct its mistakes. Its portal block faces the other way and pretends not to know its twin. The police here check papers. Yours are being prepared.\n- Prototype 8.1 (Dummy Corporation): The east bridge was built to correct the west; its portal block faces the other way. The police here check papers, and a police car's final hit moves yours forward.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 56.9,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 3.4,
+    "output_tokens": 92,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0557395
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.4,
+    "output_tokens": 1213,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13294330000000001
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.2,
+    "output_tokens": 846,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12672109999999998
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.9,
+    "output_tokens": 1107,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.146351
+   },
+   {
+    "label": "e2b",
+    "role": "evaluator",
+    "seconds": 6.4,
+    "output_tokens": 493,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1371895
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.6,
+    "output_tokens": 947,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.027235200000000005
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6262
+ },
+ {
+  "case": "tale-waterfront-C2",
+  "class": "V8.2 tale",
+  "title": "Waterfront C2: The east beach terrace, redrafted",
+  "request": "Redraft the tale for Waterfront C2 (The east beach terrace). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The terrace was built for tourists, then joggers, then sensors. From its rail you can see the ships in the estuary and the cranes that load them. Drop onto a car below. The ships will wait.\n- Prototype 8.1 (Dummy Corporation): From the rail of the east beach terrace, you can see the ships that carry Certified dummies to clients. Drop onto a car below; the ships will wait.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   4,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 65.5,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 4.8,
+    "output_tokens": 102,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.064202
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.3,
+    "output_tokens": 1420,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1536245
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.2,
+    "output_tokens": 727,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1423975
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.5,
+    "output_tokens": 1134,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1473056
+   },
+   {
+    "label": "e2b",
+    "role": "evaluator",
+    "seconds": 8.1,
+    "output_tokens": 691,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1411875
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 15.5,
+    "output_tokens": 1417,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.036652000000000004
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6854
+ },
+ {
+  "case": "tale-waterfront-C3",
+  "class": "V8.2 tale",
+  "title": "Waterfront C3: The east customs post, redrafted",
+  "request": "Redraft the tale for Waterfront C3 (The east customs post). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The pier tower is a customs post. It logs everything that floats on the river: containers, ducks and, so far, one dummy, inbound. Be thrown into a car. Customs is watching.\n- Prototype 8.1 (Dummy Corporation): The east pier tower is a customs post; it logs every Certified dummy that crosses the river to our clients. Be thrown into a car while a hit still throws you, and earn your entry.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   9,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 52.7,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 9.5,
+    "output_tokens": 100,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0560122
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.5,
+    "output_tokens": 1251,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12448550000000001
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 6.1,
+    "output_tokens": 461,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1098114
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.6,
+    "output_tokens": 1056,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13016830000000001
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.0,
+    "output_tokens": 912,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.025973600000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4465
+ },
+ {
+  "case": "tale-waterfront-B3",
+  "class": "V8.2 tale",
+  "title": "Waterfront B3: The stilt houses, redrafted",
+  "request": "Redraft the tale for Waterfront B3 (The stilt houses). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The stilt houses are older than the city, kept as heritage. Behind glass in one of them stands Chassis 0, the prototype before you. A ship is moored beyond. Arms 3 is fitted. Show Chassis 0 how far the model has come.\n- Prototype 8.1 (Dummy Corporation): Arms 3 is fitted; push off one car into the next. Behind glass in the stilt houses stands Chassis 0, the prototype before you; show it how far the model has come.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   5,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 53.1,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 3.8,
+    "output_tokens": 106,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0682764
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.3,
+    "output_tokens": 1516,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1370603
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.5,
+    "output_tokens": 669,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12235689999999999
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 14.0,
+    "output_tokens": 1267,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1427966
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.5,
+    "output_tokens": 1013,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.028306
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4988
+ },
+ {
+  "case": "tale-waterfront-A3",
+  "class": "V8.2 tale",
+  "title": "Waterfront A3: The west customs post, redrafted",
+  "request": "Redraft the tale for Waterfront A3 (The west customs post). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Honour the declaration on the raised road.\n- Prototype 8.1 (Dummy Corporation): At the west customs post, the log lists every dummy bound for clients across the river. Your entry reads PURPOSE DESTRUCTION; honour it on the raised road.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 52.0,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 5.0,
+    "output_tokens": 102,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0561347
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.4,
+    "output_tokens": 996,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1289759
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.9,
+    "output_tokens": 674,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1236213
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.1,
+    "output_tokens": 1076,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.130017
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 15.5,
+    "output_tokens": 1377,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0352547
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.474
+ },
+ {
+  "case": "tale-waterfront-A2",
+  "class": "V8.2 tale",
+  "title": "Waterfront A2: The west beach terrace, redrafted",
+  "request": "Redraft the tale for Waterfront A2 (The west beach terrace). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The valley began here: a cliff, an avenue, and a beach of sand brought from three provinces. The ceremony is being prepared in the circus. Place a cone. Farsight would like one more clean reading before the speeches.\n- Prototype 8.1 (Dummy Corporation): The west beach terrace was laid with sand from three provinces, for clients you will one day serve. Place a cone and meet the car that reacts to it; every write-off here serves them.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 62.6,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 4.6,
+    "output_tokens": 94,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.06419470000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 20.5,
+    "output_tokens": 1861,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1682284
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.4,
+    "output_tokens": 367,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1397568
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 14.4,
+    "output_tokens": 1264,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1563289
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 17.7,
+    "output_tokens": 1646,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0414699
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.57
+ },
+ {
+  "case": "tale-waterfront-B2",
+  "class": "V8.2 tale",
+  "title": "Waterfront B2: The circus, redrafted",
+  "request": "Redraft the tale for Waterfront B2 (The circus). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted. A chain of three certifies the city. And you.\n- Prototype 8.1 (Dummy Corporation): Battery 3 is fitted: complete the chain your brief sets, and you are Certified for our clients. The circus island's monument, cast from every write-off, reads ZERO ACCIDENTS (EXCLUDING TESTS).\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 53.6,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 5.7,
+    "output_tokens": 117,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.06799430000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.9,
+    "output_tokens": 1084,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1338944
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.6,
+    "output_tokens": 655,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.126659
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 13.6,
+    "output_tokens": 1266,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1369836
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 14.7,
+    "output_tokens": 1445,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.036730000000000006
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5023
+ },
+ {
+  "case": "review",
+  "class": "V8 batch",
+  "title": "The story's 31 texts and six opening lines, on V2.5",
+  "request": null,
+  "scores": [
+   4,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 212.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 69.1,
+    "output_tokens": 7404,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.37639400000000006
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 40.9,
+    "output_tokens": 5213,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.33709379999999994
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 53.3,
+    "output_tokens": 5803,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.34286739999999993
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 49.3,
+    "output_tokens": 5589,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1238768
+   }
+  ],
+  "restored": [],
+  "cost_usd": 1.1802
+ },
+ {
+  "case": "arcade-grades",
+  "class": "V8.2 notices",
+  "title": "Arcade's grades: the title card and the grade label",
+  "request": null,
+  "scores": [
+   6,
+   8,
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 3,
+  "accepted": true,
+  "final_version": 3,
+  "seconds": 102.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 20.6,
+    "output_tokens": 1798,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.2162789
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.9,
+    "output_tokens": 664,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1923616
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 13.8,
+    "output_tokens": 1226,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1531807
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 7.5,
+    "output_tokens": 686,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1436969
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 17.7,
+    "output_tokens": 1666,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1619888
+   },
+   {
+    "label": "f3",
+    "role": "refiner",
+    "seconds": 7.9,
+    "output_tokens": 728,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1448726
+   },
+   {
+    "label": "e4",
+    "role": "evaluator",
+    "seconds": 12.1,
+    "output_tokens": 995,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.136111
+   },
+   {
+    "label": "e4c1",
+    "role": "evaluator",
+    "seconds": 14.8,
+    "output_tokens": 1275,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0335328
+   }
+  ],
+  "restored": [],
+  "cost_usd": 1.182
+ },
+ {
+  "case": "review-2",
+  "class": "V8 batch",
+  "title": "The story's 31 texts and six opening lines, on V2.6",
+  "request": null,
+  "scores": [
+   7,
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 2,
+  "accepted": true,
+  "final_version": 2,
+  "seconds": 284.9,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 82.9,
+    "output_tokens": 9126,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.4093948
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 30.0,
+    "output_tokens": 4145,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.313963
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 53.1,
+    "output_tokens": 5708,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3409295
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 40.9,
+    "output_tokens": 5298,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3364955
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 46.1,
+    "output_tokens": 4685,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.319862
+   },
+   {
+    "label": "e3c1",
+    "role": "evaluator",
+    "seconds": 31.6,
+    "output_tokens": 3367,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0794466
+   }
+  ],
+  "restored": [],
+  "cost_usd": 1.8001
+ }
+]

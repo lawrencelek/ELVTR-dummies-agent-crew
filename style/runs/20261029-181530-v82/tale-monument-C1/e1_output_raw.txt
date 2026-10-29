@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The LED drum lights each bend before a car arrives, so no colleague is surprised. Where the high road breaks its rail, step off onto a car below. Gravity is company policy." The tale has three sentences, and the limit is two (style.v2.text.maxSentences); at 32 words it is within the 15 to 35 word range. [EDIT97#3.2] Fix: join the last two sentences and keep the same 32 words: "The LED drum lights each bend before a car arrives, so no colleague is surprised. Where the high road breaks its rail, step off onto a car below: gravity is company policy."
+Total: 10 − 4 = 6.

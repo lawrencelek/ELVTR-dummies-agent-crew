@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · R5 (blocking, −4) "ricochet one car into the next" This makes the car the thing being thrown, but the brief has the dummy push off one car so that its final hit is the next car. [STORY#S3] Fix: replace with "push off one car into the next".
+- tale · V6 (major, −2) "and join the Certified" This says one ricochet on Act II's seventh tile makes the trainee Certified, but in the story frame Certification comes only at the CERTIFIED ending, after CUSTOMS. [EDIT95#3.3] Fix: replace the second sentence with "Arms 2 is fitted: push off one car into the next, one step closer to Certification." (the tale comes to 33 words).
+Total: 10 − 4 − 2 = 4.

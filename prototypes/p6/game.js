@@ -98,6 +98,7 @@
   // text is the fallback given here, as before.
   const LORE = window.DUMMIES_LORE || null, CREDITS = window.DUMMIES_CREDITS || null;
   const LT = (id, fallback, vars) => fillIn(LORE && LORE.notices && LORE.notices[id] != null ? LORE.notices[id] : fallback, vars);
+  const SIM8 = window.DUMMIES_SIM || null, HS = SIM8 && SIM8['highscore.tableSize'] ? SIM8['highscore.tableSize'] : 0; // Edit 97 (P8.2): Prototype 8.2's values; the high scores
   // Fleet database (content/db/fleet.json, decision 117): model names, tags and the bark bank, separate from other text.
   const FLEET = window.FLEET_DB || null;
   const FMODEL = new Map(); // sim model id → database model
@@ -185,7 +186,7 @@
 
   function startStory() { app.mode = 'story'; if (!app.story) app.story = STORY.newProgress(); saveStory(); startLevel(LEVEL_LIST.indexOf(app.story.district)); } // Edit 81
   function toStoryMap() { saveStory(); app.screen = 'storymap'; app.sim = null; app.paused = false; app.mapSel = null; clearEdges(); }
-  function titleItems() { return STORY ? ['ARCADE', 'STORY'].concat(CREDITS ? ['CREDITS'] : []) : []; } // Edit 88: a new story starts from the save screen. Edit 95 (P8): the Credits
+  function titleItems() { return STORY ? ['ARCADE', 'STORY'].concat(HS ? ['HIGH SCORES'] : [], CREDITS ? ['CREDITS'] : []) : []; } // Edit 88: a new story starts from the save screen. Edit 95 (P8): the Credits
   // Edit 88: the save screen. NEW GAME, then the slots. A slot: CONTINUE, RENAME, ERASE (A twice). NEW GAME takes the first empty
   // slot; with none empty, the player picks one to overwrite (A twice). A new game and RENAME open the name entry
   function toSaves() {
@@ -211,7 +212,9 @@
   function nameType(ch) { const ne = app.nameEntry; if (!ne) return; if (ne.fresh) { ne.text = ''; ne.fresh = false; } if (ne.text.length < nameMax()) ne.text += ch; nameInput.value = ne.text; }
   function nameDel() { const ne = app.nameEntry; if (!ne) return; if (ne.fresh) { ne.text = ''; ne.fresh = false; } else ne.text = ne.text.slice(0, -1); nameInput.value = ne.text; }
   function nameDone() {
-    const ne = app.nameEntry; if (!ne) return; const name = cleanName(ne.text).trim() || defaultName(ne.slot); app.nameEntry = null; nameInput.blur();
+    const ne = app.nameEntry; if (!ne) return;
+    if (ne.kind === 'score') { const nm = cleanName(ne.text).trim() || HS_DEFAULT; app.nameEntry = null; nameInput.blur(); hsRename(app.hsLast, nm); hsSetName(nm); toast('Saved: ' + nm); return; } // Edit 97 (P8.2)
+    const name = cleanName(ne.text).trim() || defaultName(ne.slot); app.nameEntry = null; nameInput.blur();
     if (ne.kind === 'rename') { const cur = readSlot(ne.slot); if (cur) { cur.name = name; writeSlot(ne.slot, cur); } toast('Renamed: ' + name); return; } // a rename keeps the time stamp
     app.slot = ne.slot; app.story = STORY.newProgress(); app.mode = 'story';
     writeSlot(ne.slot, { v: 1, name, saved: Date.now(), progress: app.story }); toStoryMap();
@@ -246,7 +249,7 @@
   }
   // a keyboard types the name directly: letters, digits, space, - . '; Backspace deletes; Enter finishes; Esc cancels
   window.addEventListener('keydown', (e) => {
-    const ne = app.nameEntry; if (!ne || app.screen !== 'saves' || e.ctrlKey || e.metaKey || e.altKey || e.target === nameInput) return; // the hidden field types for itself
+    const ne = app.nameEntry; if (!ne || (app.screen !== 'saves' && app.screen !== 'scores') || e.ctrlKey || e.metaKey || e.altKey || e.target === nameInput) return; // the hidden field types for itself
     let used = true;
     if (e.key && e.key.length === 1 && /[A-Za-z0-9 .'\-]/.test(e.key)) nameType(e.key.toUpperCase());
     else if (e.key === 'Backspace') nameDel();
@@ -945,7 +948,8 @@
         case 'unveil': fx.unveil = null; if (app.mode === 'story') saveStory(); break; // Edit 94 (P7.13): the CERTIFIED save; the chime plays as the cloth lifts (drawUnveil)
         case 'story-ferried': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
         case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + STORY.needOf(s.levelId, e.tile, s.P) + ')'); break;
-        case 'ending': if (e.kind === 'Licensed' || e.kind === 'Certified') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
+        case 'ending': if (e.kind === 'Licensed' || e.kind === 'Certified') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); if (HS) hsRecord(s, e.kind); break; // Edit 97 (P8.2): the high scores
+        case 'grade': toast(LT('n35', 'GRADE {G} · TOUGHER CHASSIS · DENSER TRAFFIC', { G: e.grade })); [440, 660, 880].forEach((f, j) => Snd.tone(f, f, 0.1, 'square', 0.05, j * 0.08)); break; // Edit 97 (P8.2)
         default: break;
       }
     }
@@ -997,10 +1001,11 @@
         const items = titleItems();
         if (m === 'up' || m === 'left') app.titleSel = (app.titleSel + items.length - 1) % items.length;
         else if (m === 'down' || m === 'right') app.titleSel = (app.titleSel + 1) % items.length;
-        else if (m === 'ok') { const it = items[app.titleSel] || 'ARCADE'; if (it === 'CREDITS') app.credits = true; else if (it === 'ARCADE') { app.mode = 'arcade'; app.screen = 'arcade'; } else toSaves(); }
+        else if (m === 'ok') { const it = items[app.titleSel] || 'ARCADE'; if (it === 'CREDITS') app.credits = true; else if (it === 'HIGH SCORES') openScores('title', 0); else if (it === 'ARCADE') { app.mode = 'arcade'; app.screen = 'arcade'; } else toSaves(); } // Edit 97 (P8.2): the high scores
         continue;
       }
       if (app.screen === 'saves') { if (app.nameEntry) nameMenu(m); else savesMenu(m); if (app.screen !== 'saves') return; continue; } // Edit 88
+      if (app.screen === 'scores') { if (app.nameEntry) nameMenu(m); else scoresMenu(m); if (app.screen !== 'scores') return; continue; } // Edit 97 (P8.2)
       if (app.screen === 'storymap') { // Edit 81: the Test City; the cursor reads any tile's tale; A deploys to the tile in test
         const cur = app.mapSel || storyCursor(), pr = app.story;
         if (m === 'back') { toSaves(); continue; } // Edit 88: back to the save screen
@@ -1081,6 +1086,8 @@
           if (it === 'Retry this district') { const rs = app.roads.slice(); startLevel(app.level, app.roadCarry); app.roads = rs; return; }
           if (it === 'Play this district again') { startLevel(app.level); return; } // Edit 81: Arcade, one district a run
           if (it === 'Credits') { app.credits = true; return; } // Edit 95 (P8)
+          if (it === 'High scores') { openScores('game', hsTabOf(app.hsLast ? app.hsLast.key : app.mode === 'story' ? 'story' : 'arcade:' + s.levelId)); return; } // Edit 97 (P8.2)
+          if (it === 'Name this score') { openScores('game', hsTabOf(app.hsLast.key)); nameStartScore(); return; }
           if (it === 'Story map') { toStoryMap(); return; }
           if (it === 'Quit to title') { app.screen = 'title'; app.sim = null; return; }
           if (it === 'Play again from district 1') { startLevel(0); return; }
@@ -1932,7 +1939,7 @@
         : (intro ? fillIn(intro[0], iv) : 'Road ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. Write-offs required: ' + iv.quota + '.') +
         (s.district ? ' ' + s.district.cols * s.district.rows + ' screens: walk off a marked edge to explore.' : '');
       const nid = LORE && s.isCity ? ({ monument: 'n24', parkland: 'n25', waterfront: 'n26' })[s.levelId] : null; // Edit 95: a label, then the district's line
-      const lines = nid ? ['DISTRICT ' + iv.road + ' OF ' + iv.roads + ' · ' + iv.roadName.toUpperCase() + ' · ' + iv.quota + ' WRITE-OFF' + (iv.quota === 1 ? '' : 'S')].concat(wrapLines(LT(nid, INFO(s.levelId).blurb), FW - 88, fLab)) : wrapLines(msg, FW - 88, fLab), h = 22 + lines.length * 30;
+      const lines = nid ? ['DISTRICT ' + iv.road + ' OF ' + iv.roads + ' · ' + iv.roadName.toUpperCase() + ' · ' + (s.grade ? 'A GRADE EVERY ' : '') + iv.quota + ' WRITE-OFF' + (iv.quota === 1 ? '' : 'S')].concat(wrapLines(LT(nid, INFO(s.levelId).blurb), FW - 88, fLab)) : wrapLines(msg, FW - 88, fLab), h = 22 + lines.length * 30;
       ctx.globalAlpha = Math.min(1, (4 - since) / 0.6);
       rr(FX + 20, FY + 16, FW - 40, h, 12); ctx.fillStyle = FT.banner; ctx.fill(); ctx.strokeStyle = FT.edge; ctx.lineWidth = 1.5; ctx.stroke();
       lines.forEach((l, i) => txt(l, FX + FW / 2, FY + 16 + 38 + i * 30, fLab, nid && !i ? FT.accent : FT.text, 'center'));
@@ -2002,6 +2009,8 @@
     if (s.isCity && s.quota) {
       const rs = s.rescue; if (rs && (rs.gift || rs.given)) return [LT('n06', 'FARSIGHT DRONE'), 'Delivering ' + NODE(rs.gift || rs.given).name + '.']; // Edit 84
       let line = 'Write off ' + s.quota + ' bodies (' + s.run.writeOffs + ' of ' + s.quota + ').';
+      if (s.grade) line = s.grade >= s.P['arcade.grade.max'] ? 'Grade ' + s.grade + ', the top grade: write off all you can.' // Edit 97 (P8.2): the grades
+        : 'Grade ' + s.grade + ': write off ' + s.quota + ' bodies for grade ' + (s.grade + 1) + ' (' + (s.run.writeOffs - (s.grade - 1) * s.quota) + ' of ' + s.quota + ').';
       return ['OBJECTIVE · ' + INFO(s.levelId).name.toUpperCase(), line];
     }
     return null;
@@ -2075,7 +2084,7 @@
     if (brand && FT.neon) ctx.restore();
     const s = app.sim;
     if (STORY && app.screen === 'game' && s) { /* Edit 87: the objective and toasts own the top strip (drawMessages); facts sit in the side boxes */ }
-    else if (app.screen === 'title' || !s) txt(app.screen === 'loading' ? 'BUILDING DISTRICT' : app.screen === 'storymap' ? 'STORY · THE TEST CITY' : app.screen === 'saves' ? 'STORY · SAVE GAMES' : app.screen === 'arcade' ? 'ARCADE · SELECT A DISTRICT' : STORY ? 'SELECT A MODE' : 'SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
+    else if (app.screen === 'title' || app.screen === 'scores' || !s) txt(app.screen === 'loading' ? 'BUILDING DISTRICT' : app.screen === 'storymap' ? 'STORY · THE TEST CITY' : app.screen === 'saves' ? 'STORY · SAVE GAMES' : app.screen === 'scores' ? 'HIGH SCORES' : app.screen === 'arcade' ? 'ARCADE · SELECT A DISTRICT' : STORY ? 'SELECT A MODE' : 'SELECT A DISTRICT', FX + FW / 2, TOPY - 3, fLab, FT.dim, 'center');
     else drawTopBar(s);
     ctx.save(); ctx.shadowColor = 'rgba(16,40,56,0.22)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
     rr(FX - 6, FY - 6, FW + 12, FH + 12, 10); ctx.fillStyle = FT.bezel; ctx.fill(); ctx.restore();
@@ -2128,7 +2137,7 @@
   function fitNumR(t, x, y, w, size, color) { let z = size; while (z > 14) { ctx.font = '700 ' + z + 'px ' + F_MONO; if (ctx.measureText(t).width <= w) break; z--; } txt(t, x, y, '700 ' + z + 'px ' + F_MONO, color, 'right'); } // Edit 89: a number that keeps clear of its label
   function fitText(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color); }
   function drawScore(s) { // Edit 91: top right, small, on the strip above the boxes: POINTS (Arcade: and CARS LEFT, its clock)
-    const R = VW - 16, X = FX + FW + 16, W = R - X, r = s.run, rows = s.storyMode ? [['POINTS', num(r.points)]] : [['POINTS', num(r.points)], ['CARS LEFT', String(s.carsLeft ? s.carsLeft() : 0)]];
+    const R = VW - 16, X = FX + FW + 16, W = R - X, r = s.run, rows = s.storyMode ? [['POINTS', num(r.points)]] : [['POINTS', num(r.points)], ['CARS LEFT', String(s.carsLeft ? s.carsLeft() : 0)]]; // Edit 97 (P8.2): the grade is on the objective strip
     const one = rows.length === 1, fL = '700 ' + (one ? 14 : 12) + 'px ' + F_UI, nz = one ? 20 : 15;
     rows.forEach(([k, v], i) => {
       const y = one ? TOPY - 4 : 14 + i * 16; ctx.font = fL; const kw = ctx.measureText(k).width;
@@ -2365,9 +2374,10 @@
   }
   function difficultyHealth(i) { const k = 'proto.health.' + DIFFICULTIES[i].key; return app.tune[k] != null ? app.tune[k] : PROTO[k]; }
   function endItems(s) {
-    if (app.mode === 'story') return (CREDITS && s.run.ending && s.run.ending.kind === 'Certified' ? ['Credits'] : []).concat(['Story map', 'Quit to title', 'Show trace']); // Edit 81. Edit 95 (P8): after CERTIFIED, the Credits first
+    const hs = HS ? ['High scores'] : [], ranked = HS && app.hsLast && app.hsLast.rank && app.hsLast.key !== 'story' ? ['Name this score'] : []; // Edit 97 (P8.2)
+    if (app.mode === 'story') return (CREDITS && s.run.ending && s.run.ending.kind === 'Certified' ? ['Credits'] : []).concat(['Story map'], hs, ['Quit to title', 'Show trace']); // Edit 81. Edit 95 (P8): after CERTIFIED, the Credits first
     const won = !(s.run.ending && s.run.ending.kind !== 'Licensed');
-    if (STORY) return [won ? 'Play this district again' : 'Retry this district', 'Choose a district', 'Show trace']; // Edit 81: Arcade, one district a run
+    if (STORY) return ranked.concat([won ? 'Play this district again' : 'Retry this district', 'Choose a district'], hs, ['Show trace']); // Edit 81: Arcade, one district a run
     return won ? END_ITEMS : ['Retry this district', ...END_ITEMS];
   }
   function quotaOf(id) { const k = W6 || DISTRICTS[id] ? 'world.district.' + id + '.quota' : 'proto.quota.' + id; return app.tune[k] != null ? app.tune[k] : REG[k] != null ? REG[k] : PROTO[k]; }
@@ -2420,7 +2430,7 @@
     wrapText(LT('n01', 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.'), x + 32, y + 116, w - 64, 30, fTxt, FT.dim, 2);
     const items = titleItems(), S = allSlots(), last = S.filter(Boolean).sort((a, b) => b.saved - a.saved)[0], pr = last && last.progress; // Edit 88: the latest save
     const sub = !last ? slotCount() + ' save slots · a new game begins in Monument A1' : last.name + ' · ' + (pr.complete ? 'certified' : INFO(pr.district).name + ' ' + STORY.activeTile(pr, pr.district) + ' · ' + STORY.clearedCount(pr) + ' of ' + STORY.TOTAL);
-    const cards = [['ARCADE', 'Pick one district and write off its quota. The score is the run.', 'Parkland · Waterfront · Monument'],
+    const cards = [['ARCADE', LT('n34', 'Pick one district and write off its quota. The score is the run.'), 'Parkland · Waterfront · Monument'], // Edit 97 (P8.2): n34, the grades
       ['STORY', LT('n03', 'The Test City, tile by tile. Each tile wants its write-offs to Farsight\'s brief.'), sub]];
     const cw = (w - 56 - 20) / 2, top = y + 162, chh = 206;
     cards.forEach(([name, line, foot], i) => {
@@ -2431,12 +2441,13 @@
       wrapText(line, cx + 22, top + 88, cw - 44, 27, '400 19px ' + F_UI, on ? FT.selText : FT.text, 3);
       fitText(foot, cx + 22, top + chh - 22, cw - 44, 17, 12, on ? FT.selText : FT.dim); // Edit 89: shrink to fit, never cut
     });
-    if (items.includes('CREDITS')) { // Edit 95 (P8): the Credits, a third choice under the two modes
-      const i = items.indexOf('CREDITS'), on = (app.titleSel % items.length) === i, bw = 220, bx = x + w / 2 - bw / 2, by = top + chh + 18;
-      hitbox(bx, by, bw, 42, 'title:CREDITS', () => { app.titleSel = i; menuQ.push('ok'); });
+    const extra = items.filter((it) => it === 'HIGH SCORES' || it === 'CREDITS'); // Edit 95 (P8): the Credits; Edit 97 (P8.2): the high scores. Pills under the two modes
+    extra.forEach((it, k) => {
+      const i = items.indexOf(it), on = (app.titleSel % items.length) === i, bw = 220, gap = 20, by = top + chh + 18, bx = x + w / 2 - (extra.length * bw + (extra.length - 1) * gap) / 2 + k * (bw + gap);
+      hitbox(bx, by, bw, 42, 'title:' + it, () => { app.titleSel = i; menuQ.push('ok'); });
       rr(bx, by, bw, 42, 21); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
-      txt('CREDITS', x + w / 2, by + 28, fLab, on ? FT.selText : FT.text, 'center');
-    }
+      txt(it, bx + bw / 2, by + 28, fLab, on ? FT.selText : FT.text, 'center');
+    });
     const pd = TOUCH.on || app.device === 'pad';
     txt(TOUCH.on ? 'TAP A MODE' : pd ? 'STICK CHOOSE · A SELECT' : 'ARROWS CHOOSE · SPACE SELECT', x + w / 2, y + h - 22, fLab, FT.accent, 'center');
   }
@@ -2500,7 +2511,7 @@
   }
   function drawNameEntry(x, y, w, h) {
     const ne = app.nameEntry, M = nameMax();
-    txt((ne.kind === 'rename' ? 'RENAME SLOT ' : 'NEW GAME · SLOT ') + ne.slot, x + 24, y + 40, fLab, FT.accent);
+    txt(ne.kind === 'score' ? 'HIGH SCORE · RANK ' + (app.hsLast ? app.hsLast.rank : '') + ' · ' + (app.hsLast ? hsTableName(app.hsLast.key) : '') : (ne.kind === 'rename' ? 'RENAME SLOT ' : 'NEW GAME · SLOT ') + ne.slot, x + 24, y + 40, fLab, FT.accent); // Edit 97 (P8.2): a high score's name
     txt(ne.text.length + ' / ' + M, x + w - 24, y + 40, '700 15px ' + F_UI, FT.dim, 'right');
     const cw = 44, fx0 = x + (w - M * cw) / 2, fy = y + 78, blink = Math.floor(app.realT * 2.5) % 2 === 0;
     hitbox(fx0 - 10, fy - 10, M * cw + 20, 76, 'name', () => { if (app.nameEntry) { nameInput.value = app.nameEntry.fresh ? '' : app.nameEntry.text; app.focusName = true; nameFocus(); } }); // touch: the phone's own keyboard
@@ -2733,13 +2744,14 @@
     panel(x, y, w, h); hitbox(x, y, w, h, 'report', () => menuQ.push('ok')); // Edit 89: a tap continues
     const sr = rp.story; // Edit 81: the story's count and the brief. Edit 82: a credit a body
     txt(sr ? (sr.districtDone ? INFO(s.levelId).name.toUpperCase() + ' CLEARED · NEXT ' + INFO(rp.nextRoad).name.toUpperCase() : sr.cleared ? 'TILE ' + sr.tile + ' CLEARED' : 'WRITE-OFF REPORT · ' + sr.tile)
-      : rp.roadCleared ? roadLabel(s.level.id) + ' CLEARED' : copy('report.eyebrow', 'WRITE-OFF REPORT').toUpperCase(), x + 30, y + 44, fLab, FT.accent);
+      : rp.gradeUp ? LT('n35', 'GRADE {G} · TOUGHER CHASSIS · DENSER TRAFFIC', { G: rp.grade }) : rp.roadCleared ? roadLabel(s.level.id) + ' CLEARED' : copy('report.eyebrow', 'WRITE-OFF REPORT').toUpperCase(), x + 30, y + 44, fLab, FT.accent);
     const chs = String(rp.chassis).padStart(2, '0');
     txt(copy('report.title', 'Chassis {chassis} written off.', { chassis: chs }), x + 30, y + 92, '900 36px ' + F_BRAND, FT.text);
     if (sr) {
       const task = STORY.tileOf(s.levelId, sr.tile), lab = task ? STORY.taskText(task.task, s.P).label : '';
       txt((sr.counted ? 'Counted for ' + sr.tile + ': ' + sr.n + ' of ' + sr.need : sr.why === 'task' ? 'Not counted: the brief wants ' + lab.toLowerCase() : sr.why === 'cleared' ? 'Not counted: ' + sr.tile + ' is already cleared' : 'Not counted: ' + sr.tile + ' is not in test') + ' · points this body ' + num(rp.points), x + 30, y + 132, fTxt, sr.counted ? FT.text : C.warning);
-    } else txt('Write-off ' + s.run.writeOffs + ' of ' + s.quota + ' · points this body ' + num(rp.points), x + 30, y + 132, fTxt, FT.dim);
+    } else if (s.grade) txt('Grade ' + rp.grade + ' · write-off ' + s.run.writeOffs + ' · points this body ' + num(rp.points), x + 30, y + 132, fTxt, FT.dim); // Edit 97 (P8.2)
+    else txt('Write-off ' + s.run.writeOffs + ' of ' + s.quota + ' · points this body ' + num(rp.points), x + 30, y + 132, fTxt, FT.dim);
     const cols = [['CAR', 0], ['ANGLE', 130], ['POINTS', 290], ['HEALTH LOST', 470]];
     cols.forEach(([c, dx]) => txt(c, x + 30 + dx, y + 190, fLab, FT.dim));
     rp.hits.slice(-3).forEach((hh, j) => {
@@ -3069,11 +3081,17 @@
     txt(title, x + 26, y + 104, '900 54px ' + F_BRAND, e.kind === 'Licensed' ? FT.text : e.kind === 'Failed test' ? C.warning : FT.dim);
     wrapText(e.kind === 'Certified' ? (STORY.DATA.ending || 'All ' + STORY.TOTAL + ' tiles of the Test City are tested and certified complete.') : copy('endings.' + e.kind, ''), x + 28, y + 146, w - 56, 28, fTxt, FT.dim, e.kind === 'Certified' ? 3 : 2); // Edit 92: Narrative A's ending
     const imp = s.events.filter((v) => v.type === 'impact');
-    const stats = [['TIME', fmtT(e.t)], ['WRITE-OFFS', String(e.writeOffs)], ['POINTS', num(e.points)], ['BEST HIT', imp.length ? num(Math.max(...imp.map((v) => v.assessed))) : '—']];
+    const stats = [['TIME', fmtT(e.t)], ['WRITE-OFFS', String(e.writeOffs)], ['POINTS', num(e.points)], e.grade ? ['GRADE', String(e.grade)] : ['BEST HIT', imp.length ? num(Math.max(...imp.map((v) => v.assessed))) : '—']]; // Edit 97 (P8.2): the grade reached
     const cw = (w - 56) / stats.length;
     const sy = e.kind === 'Certified' ? 30 : 0; // Edit 92: the ending's third line
     stats.forEach(([k, v], i) => { txt(k, x + 28 + i * cw, y + 222 + sy, fLab, FT.dim); txt(v, x + 28 + i * cw, y + 262 + sy, fNum, FT.text); });
-    const items = endItems(s);
+    const items = endItems(s), hl = HS && app.hsLast; // Edit 97 (P8.2): the score's place in its table, beside the menu
+    if (hl) {
+      const bx = x + 28 + 460 + 28, by = y + h - 20 - items.length * 54 + 10, bw = x + w - 28 - bx;
+      txt(hl.rank ? 'HIGH SCORE' : 'NOT IN THE TOP ' + HS, bx, by + 18, fLab, hl.rank ? C.dummy : FT.dim);
+      if (hl.rank) { txt('RANK ' + hl.rank + ' OF ' + HS, bx, by + 58, fNum, FT.text); fitText(hsEntry(hl).name + ' · ' + hsTableName(hl.key), bx, by + 90, bw, 18, 12, FT.dim); }
+      else fitText(hsTableName(hl.key), bx, by + 46, bw, 18, 12, FT.dim);
+    }
     menuList(items, app.endSel, x + 28, y + h - 20 - items.length * 54, 460, null, 0, (i) => { app.endSel = i; });
   }
 
@@ -3119,6 +3137,7 @@
     if (app.screen === 'arcade') { drawTitle(); return; } // Edit 81
     if (app.screen === 'storymap') { drawStoryMap(); return; }
     if (app.screen === 'saves') { drawSaves(); return; } // Edit 88
+    if (app.screen === 'scores') { drawScores(); return; } // Edit 97 (P8.2)
     if (app.screen === 'loading') { drawLoading(); return; }
     const s = app.sim;
     drawField(s);
@@ -3133,6 +3152,77 @@
     else if (s.phase === 'ending') drawEnding(s);
     if (app.credits) drawCredits(); // Edit 95 (P8): after CERTIFIED
     drawPadSetup();
+  }
+  // Edit 97 (P8.2): the high scores, kept in this browser. A table per Arcade district (points; grade, write-offs, time beside) and
+  // one for Story's Certified runs (points; chassis spent, time). highscore.tableSize rows each. A new Arcade score takes the last
+  // name used (TRAINEE at first); the ending offers to name it. A Story score takes the save slot's name
+  const HS_KEY = 'dummies.p8.highscores.v1', HS_NAME_KEY = 'dummies.p8.highscoreName', HS_DEFAULT = 'TRAINEE';
+  let hsMem = null, hsNameMem = null;
+  function hsRead() { let v = hsMem; try { const raw = localStorage.getItem(HS_KEY); if (raw != null) v = JSON.parse(raw); } catch (e) { /* storage off */ } return v && v.v === 1 && v.tables ? v : { v: 1, tables: {} }; }
+  function hsWrite(v) { hsMem = v; try { localStorage.setItem(HS_KEY, JSON.stringify(v)); } catch (e) { /* storage off: this visit only */ } }
+  function hsName() { let n = hsNameMem; try { n = localStorage.getItem(HS_NAME_KEY) || n; } catch (e) { /* storage off */ } return n || HS_DEFAULT; }
+  function hsSetName(n) { hsNameMem = n; try { localStorage.setItem(HS_NAME_KEY, n); } catch (e) { /* storage off */ } }
+  function hsTables() { return LEVEL_LIST.map((id) => ({ key: 'arcade:' + id, name: INFO(id).name.toUpperCase(), arcade: true })).concat(STORY ? [{ key: 'story', name: 'STORY', arcade: false }] : []); }
+  function hsTabOf(key) { return Math.max(0, hsTables().findIndex((t) => t.key === key)); }
+  function hsTableName(key) { const t = hsTables().find((q) => q.key === key); return t ? t.name : ''; }
+  function hsEntry(L) { const t = (hsRead().tables[L.key] || []); return t.find((q) => q.at === L.at) || { name: '' }; }
+  function hsAdd(key, entry) { // the entry's rank, 1 to highscore.tableSize; 0 when it misses the table
+    const v = hsRead(), t = (v.tables[key] || []).concat([entry]).sort((a, b) => b.points - a.points || a.at - b.at).slice(0, HS);
+    v.tables[key] = t; hsWrite(v); return t.indexOf(entry) + 1;
+  }
+  function hsRename(L, name) { if (!L || !L.rank) return; const v = hsRead(), q = (v.tables[L.key] || []).find((e) => e.at === L.at); if (q) { q.name = name; hsWrite(v); } }
+  function hsRecord(s, kind) {
+    if (s.hsDone) return; s.hsDone = true; app.hsLast = null;
+    const en = s.run.ending; if (!en || !(en.points > 0)) return;
+    if (s.storyMode) {
+      if (kind !== 'Certified') return;
+      const sv = app.slot && allSlots()[app.slot - 1], e = { name: sv ? sv.name : hsName(), points: en.points, chassis: (s.story && s.story.chassis) || 0, t: en.t, at: Date.now() };
+      app.hsLast = { key: 'story', at: e.at, rank: hsAdd('story', e) }; return;
+    }
+    const key = 'arcade:' + s.levelId, e = { name: hsName(), points: en.points, grade: en.grade || 0, writeOffs: en.writeOffs, t: en.t, at: Date.now() };
+    app.hsLast = { key, at: e.at, rank: hsAdd(key, e) };
+  }
+  function openScores(from, tab) { app.scoresFrom = from; app.scoreTab = tab || 0; app.screen = 'scores'; }
+  function nameStartScore() { if (!app.hsLast || !app.hsLast.rank) return; app.nameEntry = { kind: 'score', slot: 0, text: hsEntry(app.hsLast).name || hsName(), fresh: true, r: 3, c: 10 }; nameInput.value = ''; }
+  function scoresMenu(m) {
+    const n = hsTables().length;
+    if (m === 'left' || m === 'up') app.scoreTab = (app.scoreTab + n - 1) % n;
+    else if (m === 'right' || m === 'down') app.scoreTab = (app.scoreTab + 1) % n;
+    else if (m === 'ok' || m === 'back' || m === 'pause') app.screen = app.scoresFrom === 'game' && app.sim ? 'game' : 'title';
+  }
+  function drawScores() {
+    drawField(preview(Math.max(0, LEVEL_LIST.indexOf('monument'))), true);
+    veil();
+    const x = FX + 16, y = FY + 14, w = FW - 32, h = FH - 28, T = hsTables(), ti = app.scoreTab % T.length, tab = T[ti];
+    panel(x, y, w, h);
+    if (app.nameEntry) { drawNameEntry(x, y, w, h); return; }
+    txt('HIGH SCORES', x + 24, y + 40, fLab, FT.accent);
+    txt('SAVED IN THIS BROWSER', x + w - 24, y + 40, '700 15px ' + F_UI, FT.dim, 'right');
+    const tw = (w - 48 - (T.length - 1) * 10) / T.length;
+    T.forEach((t, i) => {
+      const tx = x + 24 + i * (tw + 10), on = i === ti;
+      rr(tx, y + 56, tw, 40, 10); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
+      txt(t.name, tx + tw / 2, y + 83, fLab, on ? FT.selText : FT.text, 'center');
+      hitbox(tx, y + 56, tw, 40, 'scores:' + t.key, () => { app.scoreTab = i; });
+    });
+    const rows = hsRead().tables[tab.key] || [], L = app.hsLast;
+    const cols = tab.arcade ? [['#', 0, 'left'], ['NAME', 36, 'left'], ['POINTS', 330, 'right'], ['GRADE', 410, 'right'], ['WRITE-OFFS', 530, 'right'], ['TIME', 610, 'right']]
+      : [['#', 0, 'left'], ['NAME', 36, 'left'], ['POINTS', 330, 'right'], ['CHASSIS', 450, 'right'], ['TIME', 560, 'right']];
+    const cx = x + 40, hy = y + 132, rh = Math.min(42, Math.floor((h - 132 - 70) / HS)), day = (ms) => { const d = new Date(ms); return d.getDate() + ' ' + MON[d.getMonth()]; };
+    cols.forEach(([k, dx, al]) => txt(k, cx + dx, hy, '700 15px ' + F_UI, FT.dim, al));
+    txt('DATE', x + w - 40, hy, '700 15px ' + F_UI, FT.dim, 'right');
+    if (!rows.length) wrapText(tab.arcade ? 'No scores yet. Play a shift in ' + INFO(tab.key.slice(7)).name + '.' : 'No scores yet. A Certified story run sets the first.', cx, hy + 48, w - 80, 26, fTxt, FT.dim, 2);
+    rows.forEach((q, i) => {
+      const yy = hy + 16 + i * rh, me = L && L.key === tab.key && L.at === q.at;
+      if (me) { rr(x + 28, yy, w - 56, rh - 4, 8); ctx.fillStyle = FT.credit; ctx.fill(); ctx.strokeStyle = C.dummy; ctx.lineWidth = 1.5; ctx.stroke(); }
+      const by = yy + rh / 2 + 6, col = me ? FT.text : i ? FT.text : C.dummy;
+      const vals = tab.arcade ? [String(i + 1), q.name, num(q.points), q.grade ? String(q.grade) : '—', String(q.writeOffs), fmtT(q.t)] : [String(i + 1), q.name, num(q.points), String(q.chassis), fmtT(q.t)];
+      vals.forEach((v, j) => txt(v, cx + cols[j][1], by, '700 20px ' + F_MONO, col, cols[j][2]));
+      txt(day(q.at), x + w - 40, by, '700 15px ' + F_UI, FT.dim, 'right');
+    });
+    const pd = TOUCH.on || app.device === 'pad';
+    hitbox(x, y + h - 40, w, 40, 'scores:back', () => menuQ.push('back'));
+    txt(TOUCH.on ? 'TAP A TABLE · TAP HERE TO GO BACK' : pd ? 'STICK A TABLE · A OR B BACK' : 'ARROWS A TABLE · SPACE OR SHIFT BACK', x + w / 2, y + h - 12, '700 15px ' + F_UI, FT.dim, 'center');
   }
   // Edit 95 (P8): the Credits card. Extra-diegetic: the only text that names the publisher (prototypes/p8/lore.js)
   function drawCredits() {
@@ -3342,6 +3432,6 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { faceWords: () => Object.fromEntries(FACE.map((f) => [f[0], faceWord({ id: f[0], w: f[4] }, app.sim).word])), TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
-  window.__dummiesUI = { titleItems, pauseItems, credits: () => !!app.credits, saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88
+  window.__dummiesUI = { titleItems, pauseItems, credits: () => !!app.credits, scores: () => hsRead(), scoreTables: () => hsTables().map((t) => t.key), hsLast: () => app.hsLast, // Edit 97 (P8.2) saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88
     controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();

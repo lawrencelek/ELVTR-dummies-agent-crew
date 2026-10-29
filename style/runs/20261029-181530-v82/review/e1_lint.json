@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:is fitted for the",
+  "quote": "is fitted for the",
+  "measured": "'is fitted for the' in 3 texts (MB1, WB1, WB3) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ },
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:jump into a car",
+  "quote": "jump into a car",
+  "measured": "'jump into a car' in 3 texts (MB3, PA3, WB1) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ }
+]

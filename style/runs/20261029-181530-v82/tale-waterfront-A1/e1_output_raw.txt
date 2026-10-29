@@ -1,0 +1,5 @@
+SCORE: 5/10
+REASON:
+- tale · F6 (blocking, −4) "The bus carries the upper town's engineers to the bridge, slow and very large. Dummy Corporation requires its fleet data before you cross to our clients. Be the bus's final hit." The tale has three sentences, and every in-game text may have at most two. [EDIT97#3.2] Fix: "The bus carries the upper town's engineers to the bridge, and Dummy Corporation requires its fleet data before you cross to our clients. Be the bus's final hit." (2 sentences, 29 words).
+- tale · T13 (minor, −1) "slow and very large" "very" is an intensifier, and the sentence also has two adjectives where one is allowed. [EDIT95#3.2] Fix: delete "slow and very large", or keep only "large".
+Total: 10 − 4 − 1 = 5.

@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[0]",
+  "quote": "score",
+  "measured": "banned term 'score'",
+  "source": "FLEET#F2"
+ }
+]

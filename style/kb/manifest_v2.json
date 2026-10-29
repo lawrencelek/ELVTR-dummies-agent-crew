@@ -1,6 +1,11 @@
 {
- "note": "Knowledge base of the Style Guide Agent, V2 (GDD Edit 95). Paths are relative to the repository root. Newest wins: EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 and EDIT96 replace every source that names Farsight inside the game. PLAY is a tone reference, not canon.",
+ "note": "Knowledge base of the Style Guide Agent, V2 (GDD Edit 95). Paths are relative to the repository root. Newest wins: EDIT97 > EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 to EDIT97 replace every source that names Farsight inside the game. PLAY is a tone reference, not canon.",
  "docs": [
+  {
+   "id": "EDIT97",
+   "path": "style/kb/DUMMIES_GDD_Edit97_Lore.md",
+   "title": "GDD Edit 97: Prototype 8.2; tales redrafted, 15 to 35 words; high scores; the Arcade loop"
+  },
   {
    "id": "EDIT96",
    "path": "style/kb/DUMMIES_GDD_Edit96_Lore.md",

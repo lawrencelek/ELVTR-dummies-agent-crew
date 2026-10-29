@@ -1,0 +1,79 @@
+{
+ "case": "tale-monument-A3",
+ "class": "V8.2 tale",
+ "title": "Monument A3: The stacked cubes, redrafted",
+ "request": "Redraft the tale for Monument A3 (The stacked cubes). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Each cube was added as the budget arrived, one quarter at a time, each leaning further than the last. Farsight calls this growth. Today's duty is the same: one hit, then another before the first is forgotten.\n- Prototype 8.1 (Dummy Corporation): Each stacked cube was added as the budget arrived, one on the last; we call this growth. Your duty grows the same way: one hit, then another before the first is forgotten.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  4,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 55.3,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 7.6,
+   "output_tokens": 109,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.1174461
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 15.1,
+   "output_tokens": 1191,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1337769
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.0,
+   "output_tokens": 690,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1262821
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 11.3,
+   "output_tokens": 892,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1351831
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 11.2,
+   "output_tokens": 922,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.026482699999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5392
+}

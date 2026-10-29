@@ -1,0 +1,79 @@
+{
+ "case": "tale-parkland-C3",
+ "class": "V8.2 tale",
+ "title": "Parkland C3: The arch and the roundabout, redrafted",
+ "request": "Redraft the tale for Parkland C3 (The arch and the roundabout). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The arch is the Expo's gate. Visitors will circle the roundabout once before they enter, which gives the cars time to learn them. You go round faster. Two hits, the second before the first is forgotten.\n- Prototype 8.1 (Dummy Corporation): The arch is the Expo's gate; visitors will circle the roundabout once before they enter. Go round faster, and chain your hits before the first is forgotten.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  7,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 45.0,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 3.7,
+   "output_tokens": 99,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.06747370000000001
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 12.8,
+   "output_tokens": 1058,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1463331
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.4,
+   "output_tokens": 561,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1380895
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 10.3,
+   "output_tokens": 893,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1548854
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 10.7,
+   "output_tokens": 961,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.02799
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5348
+}

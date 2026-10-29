@@ -1,0 +1,6 @@
+SCORE: 10/10
+REASON:
+- None.
+Total: 10.
+
+I found no violations; the tale is 2 sentences and 31 words (F6, [EDIT97#3.2]). It names Battery 1 on the tile that issues it (F7, R5, [STORY#S1]) and names the skybridge as the tile's landmark (V11, R4, [STORY#MB1], [DECISIONS#rows-341-350~2] row 346). It turns that place toward the trainee's duty in a flat, motivating voice with no "!", no Farsight and no banned words (T1–T5, T13, V1, V4, [EDIT95#3.2], [EDIT95#3.1]). It does not repeat the brief or act line (F11).

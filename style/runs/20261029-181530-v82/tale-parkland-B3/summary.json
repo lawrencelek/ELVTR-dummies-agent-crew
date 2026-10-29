@@ -1,0 +1,79 @@
+{
+ "case": "tale-parkland-B3",
+ "class": "V8.2 tale",
+ "title": "Parkland B3: The obelisk court, redrafted",
+ "request": "Redraft the tale for Parkland B3 (The obelisk court). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The obelisk marks the surveyors' first stake. A school party will visit it on opening day, escorted by the police fleet. Farsight would like to know how the police fleet handles a dummy first.\n- Prototype 8.1 (Dummy Corporation): The obelisk marks the surveyors' first stake; on opening day the police fleet escorts a school party here. Your final hit must come from a police car: the escort is tested on you first.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  5,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 47.9,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 8.6,
+   "output_tokens": 101,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0642885
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 13.2,
+   "output_tokens": 1177,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1330502
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 5.9,
+   "output_tokens": 443,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.120378
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.9,
+   "output_tokens": 760,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1268243
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 10.2,
+   "output_tokens": 798,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0237897
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4683
+}

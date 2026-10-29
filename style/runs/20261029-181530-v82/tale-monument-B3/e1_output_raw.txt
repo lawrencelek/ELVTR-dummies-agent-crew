@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Two screens face each other across the road and advertise to each other all night. A skybridge was added so someone would watch. Legs 1 is fitted: jump into a car between them." The tale has three sentences, and the limit is two. [EDIT97#3.2] Fix: join the first two sentences with a semicolon: "Two screens face each other across the road and advertise to each other all night; a skybridge was added so someone would watch. Legs 1 is fitted: jump into a car between them." (two sentences, 33 words).
+Total: 10 − 4 = 6.

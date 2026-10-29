@@ -1,0 +1,13 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I checked the tale against these rules:
+- **Tone:** T1 deadpan and motivating, T2 no "!", T3 training framing, T4 no pity, T5 speaks to "you", T13 one adjective ("good"), T14 no repeated slogan.
+- **Vocabulary and lore:** V1 to V4, V6, V8 and V9; the glossary terms are write-off and Certification; V11 names the portal tower and ties it to the duty.
+- **Formatting and length:** F5 no digits or placeholders; F6 two sentences, 33 words; F7 does not apply, as no equipment is issued; F11 the tenants' line is place history, not padding.
+- **Truth:** R4 names only what STORY#MC2 places on the tile; R5 "on that road, at height" matches the brief's Z1 or above.
+
+Chunks used: EDIT97#3.2, EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, STORY#S3, STORY#MC2, EDIT93#3.1.
+
+Total: 10.

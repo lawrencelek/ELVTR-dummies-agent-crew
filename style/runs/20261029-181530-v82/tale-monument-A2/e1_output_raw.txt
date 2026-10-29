@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · R5 (blocking, −4) "let a colleague's respect for it complete your training" The brief asks for a final hit from a car reacting to a cone, which clears this tile only, but the tale says it completes the training on tile 6 of 9 in INDUCTION and never mentions a hit. [STORY#MA2] Fix: "Hands 1 is fitted: place a cone, and let a colleague's respect for it deliver the final hit."
+Total: 10 − 4 = 6.

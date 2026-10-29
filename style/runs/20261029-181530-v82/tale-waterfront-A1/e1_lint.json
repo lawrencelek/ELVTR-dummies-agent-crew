@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "T13",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "tale",
+  "quote": "very",
+  "measured": "an intensifier",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The bus carries the upper town's engineers to the bridge, sl…",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

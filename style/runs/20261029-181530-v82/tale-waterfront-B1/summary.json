@@ -1,0 +1,79 @@
+{
+ "case": "tale-waterfront-B1",
+ "class": "V8.2 tale",
+ "title": "Waterfront B1: The tunnel portal, redrafted",
+ "request": "Redraft the tale for Waterfront B1 (The tunnel portal). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Where your data goes after the tunnel is not within your role.\n- Prototype 8.1 (Dummy Corporation): Legs 3 is fitted for the longest flight. At the tunnel portal, cars go in under the hill and data comes back; jump into one, and your data serves our clients.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 49.5,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 4.2,
+   "output_tokens": 97,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0641207
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.6,
+   "output_tokens": 1059,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1564814
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.4,
+   "output_tokens": 722,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1508511
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 13.0,
+   "output_tokens": 1144,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15763059999999998
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 12.3,
+   "output_tokens": 1109,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.030867
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.56
+}

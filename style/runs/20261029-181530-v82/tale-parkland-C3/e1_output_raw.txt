@@ -1,0 +1,5 @@
+SCORE: 7/10
+REASON:
+- tale · F5 (major, −2) "chain two hits" states the combo length as a typed figure, but the brief takes that value from the registry (story.task.comboEasy) and a tale may not carry it or a placeholder. [STORY#S1] Fix: "You circle faster: chain your hits, each landing before the last is forgotten."
+- tale · T5 (minor, −1) "Trainees circle faster" speaks about trainees in the third person instead of addressing the trainee as "you". [EDIT95#3.2] Fix: replace "Trainees circle faster" with "You circle faster".
+Total: 10 − 2 − 1 = 7.

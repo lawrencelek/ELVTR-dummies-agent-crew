@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations in n34 or n35. Checked: tone and training framing (T1–T5, T13, T14: [EDIT95#3.1], [EDIT95#3.2], [PLAY#PS0]), banned words, glossary and company name (V1, V3, V4, V8: [EDIT95#0], [FLEET#F2], [FLEET#F3], [EDIT95#4.2]), length, sentence count, figures, caps and the {G} placeholder (F5, F6, F10: [EDIT96#3.2], [EDIT95#3.2], [STORY#S1], [EDIT95#4.2]), and the slot's Arcade facts (one district, the shift's cars, rising grade, tougher chassis, denser traffic).
+Total: 10.

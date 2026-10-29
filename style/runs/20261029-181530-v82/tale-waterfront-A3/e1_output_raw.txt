@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The west tower keeps the customs log of every dummy bound for clients across the river. Your entry reads PURPOSE DESTRUCTION. Honour it on the raised road, and complete your training." The tale has three sentences, and the limit is two. [EDIT97#3.2] Fix: join the last two sentences: "The west tower keeps the customs log of every dummy bound for clients across the river. Your entry reads PURPOSE DESTRUCTION: honour it on the raised road, and complete your training." This keeps it at 31 words.
+Total: 10 − 4 = 6.

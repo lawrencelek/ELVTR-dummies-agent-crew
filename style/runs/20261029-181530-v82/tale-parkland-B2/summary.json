@@ -1,0 +1,79 @@
+{
+ "case": "tale-parkland-B2",
+ "class": "V8.2 tale",
+ "title": "Parkland B2: The ring over the pools, redrafted",
+ "request": "Redraft the tale for Parkland B2 (The ring over the pools). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefers the product to the test. Give it a chain of three.\n- Prototype 8.1 (Dummy Corporation): Battery 2 is fitted: a second charge. The board watches the ring over the pools; carry the chain your brief asks for, and the Expo opens to clients.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  3,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 56.3,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 3.1,
+   "output_tokens": 90,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0720398
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 15.6,
+   "output_tokens": 1482,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1643832
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.2,
+   "output_tokens": 813,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1539172
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 15.8,
+   "output_tokens": 1446,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.16480530000000002
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 11.6,
+   "output_tokens": 960,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.027929700000000002
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5831
+}

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · V1 (blocking, −4) "The gardener levels the three pools by hand" uses "levels", a form of the banned word "level", which the guide bans in all in-game text. [FLEET#F2] Fix: "The gardener tends the three pools by hand and asks that cars stop before the water."
+Total: 10 − 4 = 6.

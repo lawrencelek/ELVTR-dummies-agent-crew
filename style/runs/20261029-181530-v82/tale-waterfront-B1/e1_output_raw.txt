@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The tunnel runs north under the hill. Cars go in and data comes back. Legs 3 is fitted for the longest flight; jump into one, and your data serves our clients." The tale has 3 sentences, and the limit is 2. Its 31 words are within the 15 to 35 limit. [EDIT97#3.2] Fix: "The tunnel runs north under the hill: cars go in, and data comes back. Legs 3 is fitted for the longest flight; jump into a car, and your data serves our clients." (2 sentences, 32 words.)
+Total: 10 − 4 = 6.

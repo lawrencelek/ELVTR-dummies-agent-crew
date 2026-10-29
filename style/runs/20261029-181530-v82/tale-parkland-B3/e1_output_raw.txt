@@ -1,0 +1,5 @@
+SCORE: 5/10
+REASON:
+- tale · F6 (blocking, −4) "The obelisk marks the surveyors' first stake. On opening day the police fleet escorts a school party here, so Dummy Corporation tests the escort on you first. Be struck by a police car." The tale has 3 sentences, and the limit is 2 (lint finding). [EDIT97#3.2] Fix: delete the third sentence and use "The obelisk marks the surveyors' first stake. On opening day the police fleet escorts a school party here, so Dummy Corporation tests the escort on you first." (27 words, 2 sentences).
+- tale · F11 (minor, −1) "Be struck by a police car." This clause repeats the brief, A POLICE CAR, which already appears on the tile card, and a tale must not restate its brief. [EDIT97#3.2] Fix: delete the sentence and let the escort clause carry the duty; the fix under F6 does this.
+Total: 10 − 4 − 1 = 5.

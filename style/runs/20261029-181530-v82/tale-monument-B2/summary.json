@@ -1,0 +1,79 @@
+{
+ "case": "tale-monument-B2",
+ "class": "V8.2 tale",
+ "title": "Monument B2: The monument, redrafted",
+ "request": "Redraft the tale for Monument B2 (The monument). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashing would spoil the data.\n- Prototype 8.1 (Dummy Corporation): The monument's plaque reads ZERO ACCIDENTS, a target rather than a record. Stand or walk beside it and let a colleague find you; dashing would spoil the data.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 47.1,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 8.1,
+   "output_tokens": 99,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.10284549999999999
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.5,
+   "output_tokens": 875,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.126653
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 5.8,
+   "output_tokens": 460,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1916589
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 10.9,
+   "output_tokens": 955,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.12763539999999998
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 10.8,
+   "output_tokens": 973,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0271726
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.576
+}

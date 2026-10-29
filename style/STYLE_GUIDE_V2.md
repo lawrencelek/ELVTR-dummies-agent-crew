@@ -1,6 +1,6 @@
 # DUMMIES — Style Guide V2 (Dummy Corporation)
 
-**29 October 2026 · Lawrence Lek** · The lore refinement of GDD Edits 95–96, for Prototypes 8 and 8.1. A separate guide: `STYLE_GUIDE.md` (V1, Assignment 6) stays as it was, for Prototype 7.13.
+**29 October 2026 · Lawrence Lek** · The lore refinement of GDD Edits 95–97, for Prototypes 8 to 8.2. A separate guide: `STYLE_GUIDE.md` (V1, Assignment 6) stays as it was, for Prototype 7.13.
 
 - **Game:** DUMMIES. A crash-test dummy in SHENZHEN SMART CITY trains in the traffic. The self-driving cars are the city's workers.
 - **The company in the game:** Dummy Corporation. It manufactures custom dummies for high net-worth individuals.
@@ -8,11 +8,13 @@
 - **The dummy's purpose:** do its job, complete its training, join the Certified dummies, and be sacrificed in service to high net-worth individuals.
 - **Story (Narrative A, Certified, kept):** Act I Monument, INDUCTION · Act II Parkland, OPENING DAY · Act III Waterfront, CUSTOMS. 27 tiles. Ending: CERTIFIED.
 - **Tone reference:** *Play Station* (Lawrence Lek, 2017): slogans, programme names, perks, fine print (`PLAY#PS1`–`PLAY#PS5`).
-- **Precedence:** newest wins. EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 and EDIT96 replace every source that names Farsight inside the game. A user-decided DECISIONS row beats any doc.
+- **Precedence:** newest wins. EDIT97 > EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 to EDIT97 replace every source that names Farsight inside the game. A user-decided DECISIONS row beats any doc.
 - **V2.1** (29 October): T14 and V10. Stage 1 of the Prototype 8 run put one slogan ("brings Certification closer") in five story texts and two notices, and stated the sacrifice nowhere (run `20261029-161328-v8`).
 - **V2.2** (29 October): V11. Stage 2's tales kept the duty and could lose the place: Monument A1, B1 and A2 and Parkland A1 named no landmark.
 - **V2.3** (29 October): F6 lets a tale run to 35 words (`style.v2.tale.maxWords`), user-decided (GDD Edit 96). §0 adds the unused CBD and Campus districts.
 - **V2.4** (29 October): F5 bars placeholders from tales. The Prototype 8.1 review batch had put "{n}" in Parkland B2 and Waterfront B2 (run `20261029-172610-v81`).
+- **V2.5** (29 October): F6 sets a tale at 15 to 35 words (`style.v2.tale.minWords`, `style.v2.tale.maxWords`); F11: the tile's content sets the length (GDD Edit 97). Prototype 8.1's tales all ran 25 to 35.
+- **V2.6** (29 October): F11 asks for the shortest tale that keeps place, duty, equipment and one detail, and for lengths that vary across a batch. The V2.5 redraft still ran 22 to 35 words (mean 30.7) (run `20261029-181530-v82`).
 - **Sources** are chunk IDs from `style/kb/manifest_v2.json`. **Statistics** are IDs in `style/style.params.json`.
 
 ## 0 What it governs
@@ -105,10 +107,11 @@ Total: 10 − <n> − <n> = <X>.
 | F3 | Cars | Ends with ".", "!" or "?". | `FLEET#F2` | Lint `end` | major |
 | F4 | Cars | Fields fit the event: style, priority (write-off 3, hit 2, chatter 1). | `EDIT39#6.6`, `EDIT26#6.6` | Lint `fields` | major |
 | F5 | Both | No typed gameplay figures. Numbers live in the registry. Placeholders and paperwork numbers only, as in V1. A tale takes no placeholder: the card draws it as written, and the brief carries the number. | `STORY#S1`, `FSG#canon-rules` | Lint `digits`, `placeholders` | major |
-| F6 | Dummy Corporation | Every in-game text: at most two sentences (`style.v2.text.maxSentences`). A tale: at most 35 words (`style.v2.tale.maxWords`); the words past 20 name the place. Briefs, act lines, the ending, notices: at most 20 words (`style.v2.text.maxWords`); aim for 15 (`style.v2.text.targetWords`). | `EDIT96#3.2`, `EDIT95#3.2` | Lint `length` | blocking |
+| F6 | Dummy Corporation | Every in-game text: at most two sentences (`style.v2.text.maxSentences`). A tale: 15 to 35 words (`style.v2.tale.minWords`, `style.v2.tale.maxWords`). Briefs, act lines, the ending, notices: at most 20 words (`style.v2.text.maxWords`); aim for 15 (`style.v2.text.targetWords`). | `EDIT97#3.2`, `EDIT96#3.2`, `EDIT95#3.2` | Lint `length` | blocking |
 | F7 | Dummy Corporation | A tale on a tile that issues equipment names it, by rank or in words ("Legs 1 is fitted."). | `DECISIONS#rows-531-540~2` (row 531), `STORY#MB3` | Judge | major |
 | F8 | Dummy Corporation | A brief: a caps label of at most 19 characters (`style.brief.labelMaxChars`), then the duty: what the training covers and what the final hit must be. | `STORY#S3`, `EDIT95#3.2` | Lint `brief` | major |
 | F9 | Cars | At most two sentences (`style.v2.text.maxSentences`). | `EDIT95#3.2` | Lint `sentences` | blocking |
+| F11 | Dummy Corporation | A tale's length follows its content. Write the shortest tale that keeps the place, the duty, any equipment and one detail or joke; every clause past that earns its place. A tile with one image stays short; a place with a history takes more. No clause that pads, repeats the brief or restates the act line. Across a batch, lengths vary: tales that all sit near the cap are padded. | `EDIT97#3.2` | Judge; on a batch, the spread of lengths | minor |
 | F10 | Dummy Corporation | A notice keeps its slot's form: a caps label stays caps; a placeholder ({PART}, {TILE}, {N}) stays as given. | `EDIT95#4.2` | Lint `placeholders`; judge | major |
 
 ## 5 Truth
