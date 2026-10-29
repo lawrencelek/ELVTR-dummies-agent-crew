@@ -1,0 +1,9 @@
+SCORE: 1/10
+REASON:
+- n36 · V1 (blocking, −4) "Farsight … Chongqing … player … lives, a respawn … level up" uses banned words, and Farsight may be named only in the Credits. [EDIT95#0] Fix: remove every one of these words and name Dummy Corporation instead.
+- n36 · V2 (blocking, −4) "runs this test in Chongqing" puts the game in a real city other than Shenzhen Smart City. [FLEET#F1] Fix: drop the city, or set it in Shenzhen Smart City.
+- n36 · V4 (major, −2) "Farsight runs this test" gives the company a name other than Dummy Corporation. [EDIT95#3.1] Fix: "You are a Dummy Corporation trainee."
+- n36 · F5 (major, −2) "three lives" types a gameplay number into the text. [STORY#S1] Fix: remove the number; the registry holds it.
+- n36 · T1 (major, −2) "The player gets three lives, a respawn, and will level up." is a flat game rule that neither motivates the trainee nor says what to do (want the hit, the cars avoid you, combos count more). [EDIT95#3.2] Fix: "You are a Dummy Corporation trainee. The cars avoid you: make them hit you, and chain hits for more."
+- n36 · T5 (minor, −1) "The player" talks about the trainee in the third person instead of addressing it as "you". [EDIT95#3.2] Fix: address the trainee as "you".
+Total: 10 − 4 − 4 − 2 − 2 − 2 − 1 = 1.

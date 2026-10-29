@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Label "JUMP INTO A CAR" is caps, 15 characters and matches the jump task. The brief has 17 words in two sentences. It opens in the imperative and then states the final hit, with no "coverage gap" framing and no placeholders to keep [EDIT98#3.2, STORY#S3]. The tone is deadpan and motivating, with no "!", no adjectives and no intensifiers. The training frame holds, and clients are served, not seen [EDIT95#3.1, EDIT95#3.2]. No banned words, company name, city or brand appear [EDIT95#0]. The duty is true to the jump task's final-hit condition [STORY#S1].
+Total: 10.

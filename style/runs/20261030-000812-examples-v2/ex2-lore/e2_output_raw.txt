@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- n36 · T1 (major, −2) "Cars avoid you; get hit anyway, chain hits for more, earn equipment." The second sentence is a list of instructions joined by commas, so it reads like controls help rather than a deadpan corporate notice; "for more" also names no reward, so the line does not motivate the trainee and lacks the light humour EDIT98#0 asks of n36. [EDIT95#3.2, EDIT98#0] Fix: "You are a Dummy Corporation trainee. Cars avoid you; be hit anyway, chains count for more, equipment follows." (18 words, 109 characters).
+Total: 10 − 2 = 8.

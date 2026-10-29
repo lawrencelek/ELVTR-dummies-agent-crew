@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. The label, "JUMP INTO A CAR", is in caps and runs 15 characters, under the 19-character cap. The brief is a goal: it gives the action first, in the imperative ("Jump into the traffic for our clients."), then says what the final hit must be. It runs 17 words in two sentences and keeps the jump task's final-hit condition from the canon. It drops the "Coverage gap" framing, as the guide requires [EDIT98#3.2, STORY#S3]. The voice is flat and motivating, with no "!", no adjectives and no intensifiers [EDIT95#3.2, PLAY#PS2]. "Our clients" is served and never named or mocked, and the line names no company and no banned word [EDIT95#3.1]. The text has no typed figures, and the jump task has no placeholders to keep [STORY#S1]. Lint returned no findings.
+Total: 10.

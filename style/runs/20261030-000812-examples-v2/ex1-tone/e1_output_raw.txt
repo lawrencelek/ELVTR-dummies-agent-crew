@@ -1,0 +1,9 @@
+SCORE: 1/10
+REASON:
+- tale · F6 (blocking, −4) "Look at these amazing, incredible, epic cubes, champ! Each one leans further out, so chain those hits and beat every car!" At 21 words, the tale is over the 20-word cap (lint). [EDIT98#3.2] Fix: cut to 15–20 words, e.g. "Each cube was stacked as its budget came in, leaning further out. Chain your hits the same way." (18 words).
+- tale · T2 (major, −2) "champ!" The Corporation's voice uses "!", which it never may (lint; the "!" after "car" falls under this same deduction). [EDIT95#3.2] Fix: end both sentences with ".".
+- tale · T1 (major, −2) "Look at these amazing, incredible, epic cubes, champ!" This is cheer and hype, not a deadpan corporate notice. [EDIT95#3.2] Fix: drop the opening and state the place flatly: "Each cube was stacked as its budget came in, leaning further out."
+- tale · T3 (major, −2) "beat every car" This makes the training a contest and the cars enemies, but they are colleagues and the job is a combo. [EDIT95#3.3] Fix: replace with "Chain your hits the same way."
+- tale · T13 (minor, −1) "amazing, incredible, epic" "amazing" is an intensifier (lint), and the sentence stacks three adjectives where at most one is allowed. [EDIT95#3.2] Fix: delete all three adjectives.
+- tale · T5 (minor, −1) "champ" The tale calls the trainee by a nickname and never says "you". [EDIT95#3.2] Fix: delete "champ" and address the trainee as "you"/"your", as in "Chain your hits".
+Total: 10 − 4 − 2 − 2 − 2 − 1 − 1 = 1 (floor; raw −2).

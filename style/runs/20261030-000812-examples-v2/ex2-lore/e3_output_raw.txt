@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked n36 against every rule for Dummy Corporation's notices. Lint found nothing. The text has 17 words in two sentences and stays within the slot's 110 characters. There is no "!", no number and no placeholder, and caps is false, so it keeps its slot's form (F6, F5, F10, T2; [EDIT98#3.2], [EDIT95#3.2], [EDIT95#4.2]). The tone is deadpan and quirky but obvious, and it motivates without cheer or a wink. "preferably" is dry, not sarcastic, and "crash-test" is the sentence's only modifier (T1, T13; [EDIT98#0], [EDIT95#3.2], [PLAY#PS0]). The training framing holds: "trainee", "equipment", and being hit as the job. It addresses "you", and the cars are not cast as enemies (T3, T5, V8; [EDIT95#3.1]). There are no banned words, no other company and no other city (V1, V2, V4; [EDIT95#0]). "chains" matches the briefs' own word for combos ([STORY#S3]). Every fact the slot guarantees appears and nothing is invented: a crash-test dummy in training, the cars avoid you, you want them to hit you, combos are worth more, equipment comes with progress. "follows" is true of both Story gifts and Arcade purchases (R4, R5; [STORY#S1]).
+Total: 10.

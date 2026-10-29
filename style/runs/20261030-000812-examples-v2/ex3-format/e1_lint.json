@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "brief",
+  "quote": "1. 3 2. 2.5 3. 3 30 4.",
+  "measured": "typed figure; numbers live in the registry",
+  "source": "STORY#S1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "brief",
+  "quote": "1. Walk to the road and jump into a moving car 3 times.\n2. R…",
+  "measured": "45 words > 20 (style.v2.text.maxWords); 4 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F8",
+  "severity": "major",
+  "deduct": 2,
+  "path": "label",
+  "quote": "How to complete the jump test",
+  "measured": "label must be caps, ≤ 19 characters (style.brief.labelMaxChars); 29",
+  "source": "STORY#S3"
+ }
+]
