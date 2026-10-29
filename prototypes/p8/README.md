@@ -65,7 +65,7 @@ node prototypes/p8/text_audit.js <build.html> <out.json>    # every string a bui
 | `shell.html` | The page around the scripts |
 | `text_audit.js` | Hooks the canvas's `fillText` on a tour of every screen. Lists strings that name Farsight, and lines over two sentences or 20 words |
 | `test_p82.js` | The checks: the lore layer, Arcade's grades (headless and in the page), the high scores, the frozen builds, the page |
-| `docs/`, `docs/p81/`, `docs/p82/` | Screenshots from the tour; `p8_texts.json`, the strings drawn (8: 291; 8.1: 295; 8.2: 314) |
+| `docs/`, `docs/p81/`, `docs/p82/` | Screenshots from the tour; `p8_texts.json`, the strings drawn (8: 291; 8.1: 295; 8.2: 317) |
 
 - **Gating:** the shared code (`../p6/game.js`, `../p6/world6.js`, `../p7/story.js`) reads the lore layer and `window.DUMMIES_SIM` only when bundled. Without it, every string falls back to 7.13's.
 - **Not drawn, still Farsight:** Prototype 8: CBD and Campus, terminal signage, a fleet model's job, the fleet glossary (D80). 8.1 rewrites CBD and Campus.

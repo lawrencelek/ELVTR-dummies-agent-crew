@@ -77,7 +77,7 @@
 - **`prototypes/p8/test_p82.js`:** 29 of 29.
   - Grades headless and in the page; Prototype 7's rule without arcade.grades.
   - High scores: recorded at the end, named on the keyboard, kept after a reload. Story's CERTIFIED run recorded.
-  - Farsight drawn only on the Credits card. 314 strings on a 28-step tour. No page errors.
+  - Farsight drawn only on the Credits card. 317 strings on a 28-step tour. No page errors.
   - Prototypes 6.4 to 7.13, 8 and 8.1 byte-identical to their commits.
 
 ## Registry
