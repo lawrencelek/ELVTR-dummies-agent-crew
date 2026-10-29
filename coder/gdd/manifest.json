@@ -1,12 +1,49 @@
 {
- "about": "The GDD the coding agent reads. Newest wins: a higher rank overrides a lower one. Live docs are read from the repo; snapshots were copied from the Claude Project on 29 October 2026 (image links dropped).",
+ "about": "The GDD the coding agent reads. Newest wins: a higher rank overrides a lower one. Live docs are read from the repo; snapshots were copied from the Claude Project on 29 October 2026 (image links dropped). Edit 94 was added after the agent's run 20261029-105801, with the 7.13 release.",
  "precedence": "rank, highest first",
  "docs": [
-  {"id": "EDIT93", "path": "coder/gdd/DUMMIES_GDD_Edit93_Prototype_7_12_Introduce_Then_Test.md", "rank": 93, "kind": "edit", "source": "project: claude/DUMMIES_GDD_Edit93_Prototype_7_12_Introduce_Then_Test.md"},
-  {"id": "P7", "path": "prototypes/p7/README.md", "rank": 93, "kind": "build", "source": "live: the current build's rules and its Known gaps (project: claude/DUMMIES_P712_Prototype.md)"},
-  {"id": "EDIT92", "path": "coder/gdd/DUMMIES_GDD_Edit92_Prototype_7_11_Narrative_A_Certified_Tile_Art.md", "rank": 92, "kind": "edit", "source": "project: claude/DUMMIES_GDD_Edit92_Prototype_7_11_Narrative_A_Certified_Tile_Art.md"},
-  {"id": "DESIGN", "path": "content/kb/DUMMIES_V29_Design.md", "rank": 29, "kind": "gdd", "source": "repo: V29 Design, the GDD of record"},
-  {"id": "ENG", "path": "content/kb/DUMMIES_V29_Engineering_Spec.md", "rank": 29, "kind": "gdd", "source": "repo: V29 Engineering Spec"}
+  {
+   "id": "EDIT94",
+   "path": "coder/gdd/DUMMIES_GDD_Edit94_Prototype_7_13_Finale_Coding_Agent.md",
+   "rank": 94,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit94_Prototype_7_13_Finale_Coding_Agent.md (written with the 7.13 release)"
+  },
+  {
+   "id": "EDIT93",
+   "path": "coder/gdd/DUMMIES_GDD_Edit93_Prototype_7_12_Introduce_Then_Test.md",
+   "rank": 93,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit93_Prototype_7_12_Introduce_Then_Test.md"
+  },
+  {
+   "id": "P7",
+   "path": "prototypes/p7/README.md",
+   "rank": 94,
+   "kind": "build",
+   "source": "live: the current build's rules and its Known gaps (project: claude/DUMMIES_P713_Prototype.md)"
+  },
+  {
+   "id": "EDIT92",
+   "path": "coder/gdd/DUMMIES_GDD_Edit92_Prototype_7_11_Narrative_A_Certified_Tile_Art.md",
+   "rank": 92,
+   "kind": "edit",
+   "source": "project: claude/DUMMIES_GDD_Edit92_Prototype_7_11_Narrative_A_Certified_Tile_Art.md"
+  },
+  {
+   "id": "DESIGN",
+   "path": "content/kb/DUMMIES_V29_Design.md",
+   "rank": 29,
+   "kind": "gdd",
+   "source": "repo: V29 Design, the GDD of record"
+  },
+  {
+   "id": "ENG",
+   "path": "content/kb/DUMMIES_V29_Engineering_Spec.md",
+   "rank": 29,
+   "kind": "gdd",
+   "source": "repo: V29 Engineering Spec"
+  }
  ],
  "decisions": "DECISIONS.md",
  "registry": "content/params/tuning.parameters.json",

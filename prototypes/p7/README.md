@@ -1,6 +1,17 @@
-# DUMMIES — Prototype 7.12: Arcade and Story
+# DUMMIES — Prototype 7.13: Arcade and Story
 
-**Prototype 7.12 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–93 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.11 stay frozen as `dummies_p7.html` to `dummies_p7_11.html`; 6.4–6.10 in `../p6/`.
+**Prototype 7.13 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edits 81–94 (proposed), on Prototype 6.10 (Edit 80). Prototypes 7 to 7.12 stay frozen as `dummies_p7.html` to `dummies_p7_12.html`; 6.4–6.10 in `../p6/`.
+
+Prototype 7.13 (Edit 94): the finale, the unveiling and the ship (D76, row 533). Story only. Built by the coding agent (`../../coder/`, Assignment #5), reviewed by hand.
+- **The shroud:** the circus's monument is shrouded in Story until Waterfront B2 clears (`world.monumentShroud`). Arcade's stands uncovered.
+- **The unveiling:** the last write-off plays under the cloth. A Farsight drone lifts the cloth away (`ui.finale.unveilSeconds`, 1.2 s). The world holds.
+- **The plaque:** THE DUMMY MONUMENT · UNVEILED. ZERO ACCIDENTS (EXCLUDING TESTS). Chassis spent, points, best combo, time.
+  - Best combo: the story's largest, kept in the save (`bestCombo`). Older saves load without it.
+  - A, or a tap, once the cloth is off: ON TO THE SHIP.
+- **The voyage:** a drone lifts the dummy from B2, carries it south into B3 and sets it on the container ship. Every crate carries its face.
+  - Top strip: FARSIGHT DRONE · Carrying the certified model to the ship at B3. Map: · DRONE.
+- **Then CERTIFIED,** the ending screen. The save is stamped CERTIFIED at the clear.
+- **Open:** credits over the voyage and Second Market (D77); barks that name the tile (D78).
 
 Prototype 7.12 (Edit 93): introduce, then test. Story only.
 - **The rule:** a part arrives on the tile whose brief first needs it. No brief needs a part not yet issued.
@@ -128,9 +139,10 @@ The title has two modes.
 
 ## Files
 
-- **`dummies_p7_12.html`:** the game. Open in a browser; no server.
-- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-11/` (Prototype 7.11), `/p7-10/` (Prototype 7.10), `/p7-9/` (Prototype 7.9), `/p7-8/` (Prototype 7.8), `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
-- **`p7_12_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_13.html`:** the game. Open in a browser; no server.
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (game), `/jump/`, `/controls/`, `/p7-12/` (Prototype 7.12), `/p7-11/` (Prototype 7.11), `/p7-10/` (Prototype 7.10), `/p7-9/` (Prototype 7.9), `/p7-8/` (Prototype 7.8), `/p7-7/` (Prototype 7.7), `/p7-6/` (Prototype 7.6), `/p7-5/` (Prototype 7.5), `/p7-4/` (Prototype 7.4), `/p7-3/` (Prototype 7.3), `/p7-2/` (Prototype 7.2), `/p7-1/` (Prototype 7.1), `/p7/` (Prototype 7), `/p6-10/` (Prototype 6.10).
+- **`p7_13_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p7_12.html`:** Prototype 7.12 (Edit 93). Frozen.
 - **`dummies_p7_11.html`:** Prototype 7.11 (Edit 92). Frozen.
 - **`dummies_p7_10.html`:** Prototype 7.10 (Edit 91). Frozen.
 - **`dummies_p7_9.html`:** Prototype 7.9 (Edit 90). Frozen.
@@ -148,7 +160,8 @@ The title has two modes.
 - **`../../content/story/narratives_proposal.md`:** the three proposals and the tile audit (Edit 91); A chosen.
 - **`../p6/game.js`, `../p6/world6.js`, `../p6/sim.js`:** the shared game code: the title, the story map, the tile card, fences, the gift screen, the story's HUD.
 - **`build.py`:** `python3 build.py` → both pages. `../p6/build.py` refuses: 6.10 is frozen.
-- **`test_p712.js`:** `node test_p712.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`test_p713.js`:** `node test_p713.js [screenshot folder]` → the checks; screenshots into the folder.
+- **`../../coder/`:** the coding agent that built Edit 94's finale (Assignment #5): `python3 coder/coder.py --plan` from the repository root.
 
 ## Title
 
@@ -212,7 +225,7 @@ The title has two modes.
 - **The map:** uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength. The cursor reads any revealed tile's tale.
 - **Saved** into the slot in play after every count, clear, gift and purchase. A reload: STORY, CONTINUE resumes the tile in test.
 - **The acts** (Edit 92): Monument ACT I · INDUCTION, Parkland ACT II · OPENING DAY, Waterfront ACT III · CUSTOMS. The act line opens each district's first card.
-- **The end:** clearing Waterfront B2, the circus, certifies the Test City. The DUMMY MONUMENT stands on its island (Edit 91). The ending (Edit 92): the model passes, to be manufactured; a drone carries it to a ship for a market far away.
+- **The end:** clearing Waterfront B2, the circus, certifies the Test City. The finale (Edit 94): the write-off, the cloth lifted off the DUMMY MONUMENT, its plaque, the drone to the ship at B3, then the ending (Edit 92): the model passes, to be manufactured; a market far away.
 
 ### The 27 tiles
 
@@ -263,6 +276,29 @@ The title has two modes.
   - The chassis ships with Battery 1 (the dash). The workshop opens after the report, on the first part the credits buy.
 - **Top strip:** the quota, e.g. "Write off 3 bodies (0 of 3)."
 
+## The finale (Edit 94)
+
+- **Shroud:** Story only, from Waterfront's first tile until B2 clears: a cloth over the statue's own outline, pleated, a darker hem, an aqua cord. Cosmetic.
+- **The last write-off** plays as any other (`feedback.writeOffSeconds`), under the cloth. The story is saved complete: the slot reads CERTIFIED.
+- **The unveiling** (phase `unveil`): the world holds. A drone lifts the cloth up and away over `ui.finale.unveilSeconds` (1.2 s); a rising chime.
+- **The plaque** fades in over the field's foot: THE DUMMY MONUMENT · UNVEILED; ZERO ACCIDENTS (EXCLUDING TESTS); CHASSIS SPENT, POINTS, BEST COMBO, TIME.
+  - Its numbers come from the save: `chassis`, `points`, `bestCombo` (every hit's combo, the largest kept), `t`.
+- **A** (SPACE, A, or a tap on the plaque) once the cloth is off: ON TO THE SHIP. Presses before that do nothing.
+- **The voyage** (phase `voyage`): a drone flies in, lifts the dummy and carries it over B2's south edge into B3. It sets it down on the container ship (`sc.ship`).
+  - The ship's 24 crates each carry the dummy's face: two eyes and a smile (`world.storyArt`).
+- **Then the ending screen,** CERTIFIED, on B3. **Reduced motion:** no lift; the plaque shows at once.
+- **Arcade:** no shroud, no finale. 6.10's rules: no monument, no ship.
+
+![P7.13: the circus's monument, shrouded until B2 clears](docs/p713_shroud.png)
+
+![P7.13: the cloth lifts](docs/p713_unveil_lift.png)
+
+![P7.13: the plaque](docs/p713_unveil.png)
+
+![P7.13: the drone carries the certified model to the ship](docs/p713_voyage.png)
+
+![P7.13: set down on the ship, every crate with its face](docs/p713_ship.png)
+
 ## The gift screen (Edit 84)
 
 - **In the field:** the drone flies high with an aqua case under it, pulsing. A chime as it comes in. It hovers and lowers the case onto the dummy.
@@ -281,7 +317,7 @@ The title has two modes.
 - **Right column** (Edit 91): the chassis, each part reddened by its damage, its number beside it (head and torso on the part, arms and legs in the margins); LAST HIT on one row. No rows of effects. Desktop: the key panel at the foot; DASH there once Battery 1 is fitted.
 - **DASH box:** NOT FITTED until Battery 1. **Toast** on a miss of the brief: "Not the brief: chassis held at 1".
 - **District map:** titled [MAP] · [TILE] and the level off the ground. Uncleared tiles greyed out; the live tile ringed in yellow; cleared tiles at full strength.
-- **Top strip** (Edit 87): the objective, e.g. "OBJECTIVE · C1 · Write off a body. Last hit: drop onto a car (0 of 1)." A toast takes it while it lives. With a drone: "Bringing Battery 1, then on to B1." Arcade: the quota and the next verb.
+- **Top strip** (Edit 87): the objective, e.g. "OBJECTIVE · C1 · Write off a body. Last hit: drop onto a car (0 of 1)." A toast takes it while it lives. With a drone: "Bringing Battery 1, then on to B1." The voyage: "Carrying the certified model to the ship at B3." Arcade: the quota and the next verb.
 - **Touch** (Edit 87): ❚❚ PAUSE and ⤢ FULL small, top left. The stick under the map; the Y X B A diamond under the chassis.
   - Pause › Controls › Adjust layout: drag either anywhere, the side margins of a wide phone included; − SIZE / + SIZE (0.6–1.6×); RESET; DONE. Saved in this browser.
 - **Speech bubbles:** car barks sit on the cars again, legible in the frame layer. Speech solid, shout doubled, mutter dashed, thought dotted.
@@ -292,7 +328,7 @@ The title has two modes.
   - Options: Sound · Palette (reloads; the story saves first) · Full screen · Tuning panel · Gamepad setup · Back.
   - Controls: the device in hand. Keyboard: WASD/arrows, Space/K, L/Shift, J/E, I/Q, Esc/P, T, G. Gamepad: stick, A, B, X, Y, Start, hold Start. Touch: stick, A, B, X, Y, ❚❚, ⤢; Adjust layout · Reset layout · Back. A verb not yet fitted reads ??? (Edit 90), the dash included (Edit 91).
 - **Touch buttons** (Edit 90): menus: A OK, B BACK. Play: the verb once fitted (A DASH, B JUMP, X GRAB or DROP, Y PUSH); unfitted: the letter alone, dimmed.
-- **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.missFloor`, `damage.bodyHealthOnFoot`, `abilities.battery.dashCharges`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
+- **Tuning (T):** `proto.recoilScale`, `proto.bounce.maxThrow`, `story.ferryDepth`, `economy.creditsPerWriteOff`, `story.missFloor`, `damage.bodyHealthOnFoot`, `abilities.battery.dashCharges`, `ui.gift.fallSeconds`, `ui.gift.holdSeconds`, `ui.finale.unveilSeconds`, `story.task.comboEasy`, `story.task.comboHard`, the 27 `story.writeOffs.<district>.<tile>`, the 27 `story.traffic.<district>.<tile>`. From the next deploy.
 
 ![P7.12: B1's card: DASH INTO A CAR, the part just fitted](docs/p712_brief_b1.png)
 
@@ -392,7 +428,12 @@ The title has two modes.
 
 ## Evidence
 
-- `node test_p712.js docs` → 94/94.
+- `node test_p713.js docs` → 103/103.
+  - Edit 94, content: `world.monumentShroud` (registry 0, P7SIM 1); `ui.finale.unveilSeconds` 1.2 s, the gift screen's hold. Registry `edit94` (507 entries).
+  - Edit 94, headless: Waterfront A1 and B2 in test shrouded; Arcade uncovered; 6.10 no monument. The B2 clear: `writeoff` › `unveil`, the save complete, one `unveil` event; the plaque from the save (chassis 34, points, ×5 beating a saved ×4, time). The unveiling holds the world. A: the voyage, inbound › lift › carry › in › drop, set down on the ship at (400, 574) in 6.3 s; then Certified on B3. 24 crates, each with the face; 6.10 no ship. Arcade: no unveiling, no voyage.
+  - Edit 94, page: B2 in test, shrouded; the last write-off plays; the cloth lifts (SPACE too early does nothing); the plaque; the save CERTIFIED; SPACE: FARSIGHT DRONE · Carrying the certified model to the ship at B3; the ship; CERTIFIED. Phone: a tap on the plaque goes on to the ship.
+  - The coding agent's own probes (`coder/state/requirements.json`): 11 requirements; 6 met, 5 blocked (D77 twice, D70, no spec twice: the tile grade, and R-BARK-TILE, rejected in review, D78).
+- Prototype 7.12's checks, carried over:
   - Edit 93, content: all 11 parts by drone, each once, a track in order: Battery 1 Monument B1 #2, Hands 1 A2 #6, Legs 1 B3 #8, Arms 1 Parkland C1 #10, Legs 2 A3 #14, Hands 2 A2 #15, Arms 2 A1 #16, Battery 2 B2 #18, Legs 3 Waterfront B1 #20, Arms 3 B3 #24, Battery 3 B2 #27. No brief needs a part not yet issued; each verb's first brief is its drone's tile. 34 bodies.
   - Edit 93, headless: struck in B1 (it wants a dash) holds at 1, losing 29 of 30; a dash into a parked sedan clears B1; the drone to C1 brings nothing; C1 asks for a drop. Monument C3 resumes with Legs 1 and Hands 1, no push: THROWN INTO A CAR. Parkland C1 brings Arms 1 and asks for a push. Waterfront B2 brings Battery 3 and certifies with all 11.
   - Edit 93, page: the drone to B1 brings Battery 1 (the gift screen, A held); B1's card: DASH INTO A CAR; a dash clears B1; C1's card: DROP ONTO A CAR, no part; a reload: 1 / 11 PARTS.
@@ -417,9 +458,9 @@ The title has two modes.
 - At 1 health after a miss, any hit to the brief ends the chassis; the floor makes a tile in test a long life.
 - Three slots, in this browser only: no cloud save, no export. A 7.7 save's credits are ignored; a 7.8–7.9 save keeps the upgrades it bought.
 - A slot's time stamp is the browser's local time.
-- Barks still name the district, not the tile.
+- Barks still name the district, not the tile. Naming it needs written lines in the fleet database (D78); the agent's word swap was rejected (Edit 94).
 - Short Arcade districts buy few parts: Parkland's 2 write-offs, 2 credits.
-- The finale is words on the ending screen: no unveiling, no flight to the ship yet (D76). The monument stands from the start.
+- No credits over the voyage, no Second Market (D77).
 - Parkland's visitors and Chassis 0 live in the tales, not on screen.
 - Parkland B1: no road under its highway, a street empty 67% of the time (D70). Its brief is now a raised road (Edit 93).
 - Battery 3 fits on the last tile: the faster recharge serves one tile, the circus.
@@ -429,4 +470,4 @@ The title has two modes.
 
 ## Build
 
-`python3 build.py` → `dummies_p7_12.html` and `p7_12_page.html`.
+`python3 build.py` → `dummies_p7_13.html` and `p7_13_page.html`.

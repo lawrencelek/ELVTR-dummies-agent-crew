@@ -1,0 +1,18 @@
+{
+ "round": 1,
+ "validation": [
+  "R-SHROUD: source row 533 is neither a candidate nor a chunk",
+  "R-UNVEIL: source row 533 is neither a candidate nor a chunk",
+  "R-PLAQUE: source row 533 is neither a candidate nor a chunk",
+  "R-SHIP-FLIGHT: source row 533 is neither a candidate nor a chunk",
+  "R-SHIP-FLIGHT: registry_uses proto.droneSpeed is not in the registry (new IDs go in registry_new)",
+  "R-SHIP-FLIGHT: registry_uses proto.droneLiftSeconds is not in the registry (new IDs go in registry_new)",
+  "R-CRATE-FACES: source row 533 is neither a candidate nor a chunk",
+  "R-VOYAGE-CREDITS: source row 533 is neither a candidate nor a chunk",
+  "R-SECOND-MARKET: source row 533 is neither a candidate nor a chunk",
+  "R-SECOND-MARKET: registry_uses proto.learningEnabled is not in the registry (new IDs go in registry_new)",
+  "R-SECOND-MARKET: registry_uses learning.playerHitCap is not in the registry (new IDs go in registry_new)",
+  "R-SECOND-MARKET: registry_uses learning.playerHitStep is not in the registry (new IDs go in registry_new)"
+ ],
+ "calibration": []
+}

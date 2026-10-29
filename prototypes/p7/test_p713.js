@@ -1,4 +1,8 @@
 // Prototype 7.13 (GDD Edits 81–94) checks. Run from prototypes/p7: node test_p713.js [screenshot folder]
+// Edit 94: the finale (D76), built by the coding agent (coder/) and reviewed by hand. The circus's monument is shrouded in Story until
+// Waterfront B2 clears (world.monumentShroud); the last write-off plays, a drone lifts the cloth (ui.finale.unveilSeconds) and the plaque shows
+// the run (chassis, points, best combo, time); A, or a tap, sends a drone that carries the dummy to the container ship at B3, every crate
+// with its face; then the Certified ending. Arcade has no finale.
 // Edit 93: introduce, then test. Each part arrives on the tile whose brief first needs it: Battery 1 at Monument B1 (DASH INTO A CAR),
 // Hands 1 A2, Legs 1 B3; Arms 1 Parkland C1, Legs 2 A3, Hands 2 A2, Arms 2 A1, Battery 2 B2 (combo); Legs 3 Waterfront B1, Arms 3 B3,
 // Battery 3 B2 (combo). No brief needs a part not yet issued. Monument C1 is the drop; C3 the rebound (1 write-off); 34 bodies.
@@ -65,7 +69,7 @@ const D = STORY.DIST;
   const regFile = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'content', 'params', 'tuning.parameters.json'), 'utf8')), inFile = new Set(regFile.entries.map((e) => e.id));
   const tiles = D.flatMap((d) => d.order.map((t) => 'story.writeOffs.' + d.id + '.' + t)), trafficIds = D.flatMap((d) => d.order.map((t) => 'story.traffic.' + d.id + '.' + t)), retired = ['story.tileWriteOffs', 'story.clearPowerUps', 'story.pointsPerPowerUp', 'story.giftPowerUps', 'story.giftCredits'];
   const byId = new Map(regFile.entries.map((e) => [e.id, e]));
-  ok(ids.concat(tiles, trafficIds).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 8[23]\)/.test(byId.get(k).status)) && [1, 2, 3].every((L) => /^retired \(Edit 89\)/.test(byId.get('story.price.ability.level' + L).status)) && ['story.level.firstPoints', 'story.level.stepPoints', 'story.level.max', 'story.level.upgrades', 'arcade.giftEvery'].every((k) => /^retired \(Edit 91\)/.test(byId.get(k).status)) && byId.get('proto.recoilScale').default === REG['proto.recoilScale'] && byId.get('proto.bounce.maxThrow').default === REG['proto.bounce.maxThrow'] && regFile.registryVersion.startsWith('edit93'),
+  ok(ids.concat(tiles, trafficIds).every((k) => REG[k] != null && inFile.has(k)) && retired.every((k) => /^retired \(Edit 8[23]\)/.test(byId.get(k).status)) && [1, 2, 3].every((L) => /^retired \(Edit 89\)/.test(byId.get('story.price.ability.level' + L).status)) && ['story.level.firstPoints', 'story.level.stepPoints', 'story.level.max', 'story.level.upgrades', 'arcade.giftEvery'].every((k) => /^retired \(Edit 91\)/.test(byId.get(k).status)) && byId.get('proto.recoilScale').default === REG['proto.recoilScale'] && byId.get('proto.bounce.maxThrow').default === REG['proto.bounce.maxThrow'] && regFile.registryVersion.startsWith('edit94'),
     'the story\'s values are registry IDs (' + ids.map((k) => k + ' ' + REG[k]).join(', ') + '); 27 tile counts; 27 tile traffic scales; ' + retired.length + ' P7 IDs retired; story.price.ability.level1–3 retired (Edit 89: no credits in Story); story.level.* and arcade.giftEvery retired (Edit 91); registry ' + regFile.registryVersion);
   const per = D.map((d) => d.name + ' ' + d.order.map((t) => REG['story.writeOffs.' + d.id + '.' + t]).join('')), sum = tiles.reduce((a, k) => a + REG[k], 0);
   ok(tiles.every((k) => REG[k] >= 1 && REG[k] <= 2) && sum === 34 && REG['story.writeOffs.monument.C3'] === 1 && REG['story.traffic.monument.C3'] === 1.5, 'write-offs per tile: ' + per.join(' · ') + ' (in story order); ' + sum + ' bodies (Edit 93: Monument C3, the rebound, 1 at story.traffic 1.5; 7.1: 62)');
@@ -263,9 +267,36 @@ function num(v) { return Math.round(v).toLocaleString('en-GB'); }
   const p3 = STORY.newProgress(); p3.district = 'waterfront'; p3.done = { monument: D[0].order.slice(), parkland: D[1].order.slice(), waterfront: ['A1', 'B1', 'C1', 'C2', 'C3', 'B3', 'A3', 'A2'] }; p3.tileWO = REG['story.writeOffs.waterfront.B2'] - 1;
   const s3 = story('waterfront', p3), mon = s3.W6.at(1, 1).dummyMonument, prop = s3.W6.at(1, 1).props.find((q) => q.bldg === 'dummy monument'), g3 = s3.rescue && s3.rescue.gift;
   runTo(s3, (q) => q.phase === 'gift'); s3.continueGift(); runTo(s3, (q) => q.phase === 'brief'); s3.continueBrief(); kill(s3, { combo: 5 });
-  ok(s3.screenName() === 'B2' && s3.run.ending && s3.run.ending.kind === 'Certified' && p3.complete && STORY.clearedCount(p3) === 27 && STORY.partsOwned(p3.owned) === 11 && g3 === 'battery3', 'the last tile, Waterfront B2 (the circus): its drone brings Battery 3; the Test City is certified (27 of 27); all 11 parts on the body');
+  const fin = s3.phase; s3.continueUnveil(); runTo(s3, (q) => q.phase === 'ending', 4800); // Edit 94: the unveiling, then the voyage, then the ending
+  ok(fin === 'unveil' && s3.screenName() === 'B3' && s3.run.ending && s3.run.ending.kind === 'Certified' && p3.complete && STORY.clearedCount(p3) === 27 && STORY.partsOwned(p3.owned) === 11 && g3 === 'battery3', 'the last tile, Waterfront B2 (the circus): its drone brings Battery 3; the Test City is certified (27 of 27) after the unveiling and the voyage to B3; all 11 parts on the body');
   const six = new W6.Sim6('waterfront', {}, null, { warm: 0 }).W6.at(1, 1);
   ok(mon && mon.cx === 400 && mon.cy === 320 && prop && prop.spr.h > 80 && !six.dummyMonument, `the DUMMY MONUMENT stands on the circus's island (world.dummyMonument): at ${mon ? mon.cx + ', ' + mon.cy : '—'}, ${prop ? prop.spr.w + ' × ' + prop.spr.h : '—'} art px; 6.x worlds have none`);
+}
+{ // Edit 94: the finale (D76, row 533), built by the coding agent (coder/, run 20261029-105801), reviewed by hand
+  const regFile = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'content', 'params', 'tuning.parameters.json'), 'utf8')), byId = new Map(regFile.entries.map((e) => [e.id, e]));
+  ok(STORY.P7SIM['world.monumentShroud'] === 1 && byId.get('world.monumentShroud').default === 0 && REG['ui.finale.unveilSeconds'] === byId.get('ui.finale.unveilSeconds').default && REG['ui.finale.unveilSeconds'] === REG['ui.gift.holdSeconds'],
+    `the finale's IDs: world.monumentShroud (registry 0, P7SIM 1); ui.finale.unveilSeconds ${REG['ui.finale.unveilSeconds']} s, the gift screen's hold`);
+  const at = (t) => story('waterfront', Object.assign(STORY.newProgress(), { district: 'waterfront', done: { monument: D[0].order.slice(), parkland: D[1].order.slice(), waterfront: D[2].order.slice(0, D[2].order.indexOf(t)) } }));
+  const a1 = at('A1'), b2 = at('B2'), ar = new STORY.ArcadeSim('waterfront', {}, null, { warm: 0 }), sx = new W6.Sim6('waterfront', {}, null, { warm: 0 });
+  ok(a1.monumentShrouded() && b2.monumentShrouded() && !(ar.monumentShrouded && ar.monumentShrouded()) && !sx.W6.at(1, 1).dummyMonument && b2.W6.at(1, 1).dummyMonument.shroud && b2.W6.at(1, 1).dummyMonument.shroud.h === b2.W6.at(1, 1).props.find((q) => q.bldg === 'dummy monument').spr.h,
+    'the monument is shrouded in Story from Waterfront A1 until B2 clears (the cloth on the statue\'s own outline); Arcade\'s stands uncovered; 6.10 has none');
+  const pr = Object.assign(STORY.newProgress(), { district: 'waterfront', done: { monument: D[0].order.slice(), parkland: D[1].order.slice(), waterfront: D[2].order.slice(0, 8) }, tileWO: REG['story.writeOffs.waterfront.B2'] - 1, points: 412350, chassis: 33, t: 5420, bestCombo: 4 });
+  const s = story('waterfront', pr); runTo(s, (q) => q.phase === 'gift'); s.continueGift(); runTo(s, (q) => q.phase === 'brief'); s.continueBrief();
+  const b = s.body; b.hits.push({ kind: 'dash', cls: 'sedan', combo: 5, cause: null }); b.health = 0; s.writeOff(); s.checkTerminal();
+  const wo = s.phase + '>' + s.pendingPhase, saved = pr.complete; settle(s);
+  const pl = s.unveil && s.unveil.plaque, ue = ev(s, 'unveil');
+  ok(wo === 'writeoff>unveil' && saved && s.phase === 'unveil' && ue.length === 1 && pl && pl.chassis === pr.chassis && pl.points === pr.points && pl.bestCombo === 5 && pr.bestCombo === 5 && pl.t === pr.t && !s.monumentShrouded(),
+    `the B2 clear: the write-off plays (${wo}), the story is saved complete (the CERTIFIED stamp), then phase unveil; the plaque: chassis ${pl && pl.chassis}, points ${pl && pl.points}, best combo ×${pl && pl.bestCombo} (the last hit beat the saved ×4), time ${pl && pl.t} s`);
+  const t0 = s.t; for (let i = 0; i < 120; i++) s.step({});
+  ok(s.phase === 'unveil' && s.t === t0, 'the unveiling holds the world, as the gift screen does, until A');
+  s.continueUnveil(); const v0 = s.phase, rv = s.rescue && s.rescue.voyage, ve = ev(s, 'voyage')[0];
+  const seen = []; runTo(s, (q) => { const ph = q.rescue && q.rescue.phase; if (ph && seen[seen.length - 1] !== ph) seen.push(ph); return q.phase === 'ending'; }, 4800);
+  const end = ev(s, 'voyage-end')[0], ship = s.W6.at(1, 2).containerShip;
+  ok(v0 === 'voyage' && rv && ve && ve.from === 'B2' && ve.to === 'B3' && seen.join('>') === 'inbound>lift>carry>in>drop' && end && end.tile === 'B3' && s.screenName() === 'B3' && Math.abs(s.body.x - ship.x) < 1 && Math.abs(s.body.y - ship.y) < 1 && s.run.ending.kind === 'Certified',
+    `A on the plaque: a Farsight drone lifts the dummy from B2 (${seen.join(' › ')}), carries it over the edge to Waterfront B3 and sets it down on the container ship (${Math.round(s.body.x)}, ${Math.round(s.body.y)}) in ${end ? end.seconds : '—'} s; then the Certified ending`);
+  ok(ship && ship.face && ship.crates === 24 && !sx.W6.at(1, 2).containerShip, `every crate on the ship carries the dummy's face (${ship && ship.crates} crates, world.storyArt); 6.10's river has no ship`);
+  const a = new STORY.ArcadeSim('waterfront', {}, null, { warm: 0 }); for (let i = 0; i < 300; i++) a.step({});
+  ok(!ev(a, 'unveil').length && !ev(a, 'voyage').length && a.phase !== 'unveil' && a.phase !== 'voyage', 'Arcade has no finale: no unveiling, no voyage');
 }
 { // Edit 91: Arcade sells every part for credits; no drone brings anything
   const a = new STORY.ArcadeSim('monument', {}, null, { warm: 0 }), bought = [];
@@ -513,6 +544,38 @@ const NO_ROAD = { 'parkland:B1': 'no Z0 road passes under it (D70)' }; // a high
     `a reload: the save screen offers the latest slot first: "${rs0.s.name}", ${rs0.s.stamp}; "${rs0.s.lines[0]}"; "${rs0.s.lines[1]}"; CONTINUE · RENAME · ERASE`);
   ok(re.screen === 'storymap' && re.wo === 0 && re.done === 'A1,B1', 'CONTINUE resumes the story: A1 and B1 cleared, C1 in test');
   await pg2.close();
+  { // Edit 94: the finale in the page. A save at Waterfront B2, one write-off from certified: the cloth, the write-off, the lift, the plaque, the voyage, the ending
+    const pr = Object.assign(STORY.newProgress(), { district: 'waterfront', done: { monument: D[0].order.slice(), parkland: D[1].order.slice(), waterfront: D[2].order.slice(0, 8) }, tileWO: REG['story.writeOffs.waterfront.B2'] - 1, points: 412350, chassis: 33, t: 5420, bestCombo: 4, owned: {} });
+    const seed = async (p) => { await p.evaluate((o) => { localStorage.clear(); localStorage.setItem('dummies.p7.saveMoved', '1'); localStorage.setItem('dummies.p7.save1', JSON.stringify({ v: 1, name: 'CERTIFY', saved: Date.now(), progress: o })); }, pr); await p.reload(); await p.waitForTimeout(900);
+      await p.keyboard.press('ArrowRight'); await p.keyboard.press('Space'); await p.waitForTimeout(250); await p.keyboard.press('Space'); await p.waitForTimeout(250); await p.keyboard.press('Space');
+      await wait(p, () => window.__dummies.sim && window.__dummies.sim.phase === 'gift', 30000); await p.waitForTimeout(1500); await p.keyboard.press('Space');
+      await wait(p, () => window.__dummies.sim.phase === 'brief', 20000); await p.waitForTimeout(200); await p.keyboard.press('Space'); await wait(p, () => window.__dummies.sim.phase === 'play', 5000); };
+    const last = (p) => p.evaluate(() => { const s = window.__dummies.sim, b = s.body; Object.assign(b, { x: 540, y: 470 }); b.hits.push({ kind: 'dash', cls: 'sedan', combo: 5, cause: null, assessed: 410, lost: 30, angle: 90, model: 'SED-01' }); b.health = 0; s.writeOff(); s.checkTerminal(); });
+    const pf = await ctx.newPage(); watch(pf); await pf.goto(url); await pf.waitForTimeout(600); await seed(pf);
+    const sh = await pf.evaluate(() => ({ tile: window.__dummies.sim.screenName(), shrouded: window.__dummies.sim.monumentShrouded() })); await shot(pf, 'p713_shroud.png');
+    await last(pf); await pf.waitForTimeout(450); await shot(pf, 'p713_finale_writeoff.png');
+    const u0 = await wait(pf, () => window.__dummies.sim.phase === 'unveil', 8000); await pf.waitForTimeout(400); await shot(pf, 'p713_unveil_lift.png');
+    await pf.keyboard.press('Space'); await pf.waitForTimeout(100); const early = await pf.evaluate(() => window.__dummies.sim.phase);
+    await pf.waitForTimeout(1400); await shot(pf, 'p713_unveil.png');
+    const saved = await pf.evaluate(() => JSON.parse(localStorage.getItem('dummies.p7.save1')).progress.complete);
+    await pf.keyboard.press('Space'); const v = await wait(pf, () => window.__dummies.sim.phase === 'voyage', 3000); await pf.waitForTimeout(1600);
+    const vo = await pf.evaluate(() => ({ ob: window.__dummiesUI.objective(window.__dummies.sim) })); await shot(pf, 'p713_voyage.png');
+    await wait(pf, () => window.__dummies.sim.screenName() === 'B3' && window.__dummies.sim.rescue && window.__dummies.sim.rescue.phase === 'drop', 20000); await shot(pf, 'p713_ship.png');
+    const e = await wait(pf, () => window.__dummies.sim.phase === 'ending', 10000); await pf.waitForTimeout(600); await shot(pf, 'p713_certified.png');
+    const fin = await pf.evaluate(() => ({ kind: window.__dummies.sim.run.ending && window.__dummies.sim.run.ending.kind, tile: window.__dummies.sim.screenName() }));
+    ok(sh.tile === 'B2' && sh.shrouded && u0 && early === 'unveil' && saved && v && vo.ob[0] === 'FARSIGHT DRONE' && /ship at B3/.test(vo.ob[1]) && e && fin.kind === 'Certified' && fin.tile === 'B3',
+      `Edit 94, page: B2 in test, the monument shrouded; the last write-off plays, then the cloth lifts (SPACE too early does nothing); the plaque; the save is CERTIFIED; SPACE: "${vo.ob.join(' · ')}"; set down on the ship in B3; CERTIFIED`);
+    await pf.close();
+    const pc = await br.newContext({ viewport: { width: 892, height: 412 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3.5 }), pt = await pc.newPage(); watch(pt); await pt.goto(url); await pt.waitForTimeout(600); await seed(pt);
+    await pt.evaluate(() => window.dispatchEvent(new PointerEvent('pointerdown', { pointerType: 'touch', clientX: 5, clientY: 5, bubbles: true }))); await pt.waitForTimeout(150);
+    await last(pt); await wait(pt, () => window.__dummies.sim.phase === 'unveil', 8000); await pt.waitForTimeout(1600);
+    const at = await pt.evaluate(() => { const h = window.__dummiesUI.hits().find((q) => q.tag === 'unveil'), L = window.__dummiesInput.touchLayout(), r = document.getElementById('game').getBoundingClientRect(), k = r.width / L.Wc; return h && { x: r.left + (h.x + h.w / 2 + L.gx) * k, y: r.top + (h.y + h.h / 2 + L.gy) * k }; });
+    await shot(pt, 'p713_phone_unveil.png');
+    for (const t of ['pointerdown', 'pointerup']) await pt.evaluate(([ty, x, y]) => document.getElementById('game').dispatchEvent(new PointerEvent(ty, { pointerType: 'touch', clientX: x, clientY: y, pointerId: 77, bubbles: true, cancelable: true })), [t, at.x, at.y]);
+    const tv = await wait(pt, () => window.__dummies.sim.phase === 'voyage', 3000);
+    ok(!!at && tv, 'Edit 94, phone: a tap on the plaque goes on to the ship');
+    await pc.close();
+  }
   // phones held sideways. Edit 87: the HUD in the 16:9 centre; the stick and the diamond default under the side panels; a wide phone's
   // margins are free; Pause › Controls › Adjust layout moves and sizes both, saved in this browser
   const story = async (p) => { await p.evaluate(() => { window.__dummies.titleSel = 1; }); // STORY; the save screen (NEW GAME, its name kept, or CONTINUE); the map; deploy

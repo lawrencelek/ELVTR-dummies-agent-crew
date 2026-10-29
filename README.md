@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 7.12](prototypes/p7/README.md)** (29 October 2026). Open `prototypes/p7/dummies_p7_12.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–93.
+> **Current prototype: [Prototype 7.13](prototypes/p7/README.md)** (29 October 2026). Open `prototypes/p7/dummies_p7_13.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–94.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 7.12 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_12.html` | Current (Edit 93). Introduce, then test: each part on the tile whose brief first needs it. B1 tests the dash; C1 the drop; parts paced 3 · 5 · 3 by act, Battery 3 on the last tile; 34 bodies |
+> | 7.13 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_13.html` | Current (Edit 94). The finale, built by the coding agent ([`coder/`](coder/README.md), Assignment #5): the circus's monument shrouded until B2 clears; the cloth lifted, the plaque with the run (chassis, points, best combo, time); a drone carries the dummy to the ship at B3, every crate with its face; then CERTIFIED |
+> | 7.12 | `prototypes/p7/` | `dummies_p7_12.html` | Frozen (Edit 93). Introduce, then test: each part on the tile whose brief first needs it. B1 tests the dash; C1 the drop; parts paced 3 · 5 · 3 by act, Battery 3 on the last tile; 34 bodies |
 > | 7.11 | `prototypes/p7/` | `dummies_p7_11.html` | Frozen (Edit 92). Narrative A, Certified: three acts (Induction, Opening Day, Customs), 27 tales, the ending; five tiles renamed; the story's tile art, cosmetic only (the welcome wall, neon shops, the gateway's THANK YOU, a lantern, the cascade, customs posts, the ship) |
 > | 7.10 | `prototypes/p7/` | `dummies_p7_10.html` | Frozen (Edit 91). Story: every part by drone on a fixed tile, no levels; Arcade: parts for credits; Battery 1 the dash; on foot at A1 (500); a miss of the brief holds at 1; POINTS small top right; damage in red on the chassis; the circus's DUMMY MONUMENT |
 > | 7.9 | `prototypes/p7/` | `dummies_p7_9.html` | Frozen (Edit 90). The dash's jump is free; X taps a cone down; buttons named only once fitted, OK and BACK in menus |
@@ -35,6 +36,8 @@
 > | 3 | [`prototypes/p3/`](prototypes/p3/README.md) | `dummies_p3.html` | Frozen at P3.4 |
 > | 2, 1 | `prototypes/p2/`, `prototypes/p1/` | | Frozen at P2.2, P1.9 |
 
+> **Assignment #5 (Goal-Oriented Coding Agent)** lives in [`coder/`](coder/README.md). It reads the GDD, scans the code, scores the gaps, writes the top one, verifies it and re-scans. It built Prototype 7.13's finale. Write-up: [ELVTR-Multiagent-Submission-5](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-5).
+>
 > **Assignment #4 (Dynamic Content Pipeline)** lives in [`content/`](content/README.md). It generates juice, interface and graphics content from the GDD. The playable result is [`prototypes/p3/`](prototypes/p3/README.md) (pixel art, 640 × 360). [`prototypes/p2/`](prototypes/p2/README.md) stays at P2.2; [`prototypes/p1/`](prototypes/p1/README.md) stays frozen at P1.9.
 
 **Capstone game:** DUMMIES, by Lawrence Lek.
