@@ -1,6 +1,6 @@
 # DUMMIES — Controls prototype (Phaser)
 
-**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 73 and 74 (proposed). The title shows the build ("CONTROL TEST · EDIT92"). DIRECT went into the game in Prototype 6.5 (Edit 75). The jump has its own yard, `../jump/` (Edit 76), on this folder's `core.js` and `pads.js`. A small test yard, separate from the game. Prototype 6.4 is unchanged.
+**27 October 2026 · Lawrence Lek** · Spec: GDD Edits 73 and 74 (proposed). The title shows the build ("CONTROL TEST · EDIT93"). DIRECT went into the game in Prototype 6.5 (Edit 75). The jump has its own yard, `../jump/` (Edit 76), on this folder's `core.js` and `pads.js`. A small test yard, separate from the game. Prototype 6.4 is unchanged.
 
 One dummy, three ways to play it, three ways for it to turn. Traffic to lunge at, cones to grab, a slalom to turn through.
 

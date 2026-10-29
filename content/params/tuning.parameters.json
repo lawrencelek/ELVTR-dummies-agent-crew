@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit92-2026-10-28",
+ "registryVersion": "edit93-2026-10-29",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -9298,7 +9298,7 @@
    "group": "Story",
    "owner": "Progression",
    "label": "Monument A1 write-offs",
-   "description": "Counted write-offs that clear Monument A1 (The LED wall; brief: any).",
+   "description": "Counted write-offs that clear Monument A1 (The welcome wall; brief: any).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9313,14 +9313,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.B1",
    "group": "Story",
    "owner": "Progression",
    "label": "Monument B1 write-offs",
-   "description": "Counted write-offs that clear Monument B1 (The podium bridge; brief: drop).",
+   "description": "Counted write-offs that clear Monument B1 (The podium bridge; brief: dash).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9335,14 +9335,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.C1",
    "group": "Story",
    "owner": "Progression",
    "label": "Monument C1 write-offs",
-   "description": "Counted write-offs that clear Monument C1 (The LED drum; brief: jump).",
+   "description": "Counted write-offs that clear Monument C1 (The LED drum; brief: drop).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9357,7 +9357,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.C2",
@@ -9379,14 +9379,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.B2",
    "group": "Story",
    "owner": "Progression",
    "label": "Monument B2 write-offs",
-   "description": "Counted write-offs that clear Monument B2 (The monument; brief: cone).",
+   "description": "Counted write-offs that clear Monument B2 (The monument; brief: struck).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9401,14 +9401,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.A2",
    "group": "Story",
    "owner": "Progression",
    "label": "Monument A2 write-offs",
-   "description": "Counted write-offs that clear Monument A2 (The neon arcade; brief: push).",
+   "description": "Counted write-offs that clear Monument A2 (The neon shops; brief: cone).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9423,7 +9423,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.A3",
@@ -9445,14 +9445,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.B3",
    "group": "Story",
    "owner": "Progression",
    "label": "Monument B3 write-offs",
-   "description": "Counted write-offs that clear Monument B3 (The LED canyon; brief: struck).",
+   "description": "Counted write-offs that clear Monument B3 (The LED canyon; brief: jump).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9467,19 +9467,19 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.monument.C3",
    "group": "Story",
    "owner": "Progression",
    "label": "Monument C3 write-offs",
-   "description": "Counted write-offs that clear Monument C3 (The LED gateway; brief: combo comboHard).",
+   "description": "Counted write-offs that clear Monument C3 (The LED gateway; brief: bounce).",
    "unit": "write-offs",
    "type": "number",
-   "default": 2,
+   "default": 1,
    "status": "proposed",
-   "source": "Edit 82 (28 October): Prototype 7.1; Edit 83 (28 October): Prototype 7.2",
+   "source": "Edit 82 (28 October): Prototype 7.1; Edit 83 (28 October): Prototype 7.2; Edit 93 (29 October): 1, its brief now THROWN INTO A CAR",
    "editable": true,
    "protectedReason": null,
    "applyAt": "next-run",
@@ -9489,14 +9489,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.C1",
    "group": "Story",
    "owner": "Progression",
    "label": "Parkland C1 write-offs",
-   "description": "Counted write-offs that clear Parkland C1 (The lantern pavilion; brief: drop).",
+   "description": "Counted write-offs that clear Parkland C1 (The lantern pavilion; brief: push).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9511,7 +9511,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.C2",
@@ -9533,14 +9533,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.C3",
    "group": "Story",
    "owner": "Progression",
    "label": "Parkland C3 write-offs",
-   "description": "Counted write-offs that clear Parkland C3 (The arch and the roundabout; brief: bounce).",
+   "description": "Counted write-offs that clear Parkland C3 (The arch and the roundabout; brief: combo comboEasy).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9555,7 +9555,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.B3",
@@ -9577,7 +9577,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.A3",
@@ -9599,14 +9599,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.A2",
    "group": "Story",
    "owner": "Progression",
    "label": "Parkland A2 write-offs",
-   "description": "Counted write-offs that clear Parkland A2 (The canal; brief: level).",
+   "description": "Counted write-offs that clear Parkland A2 (The dome by the canal; brief: cone).",
    "unit": "write-offs",
    "type": "number",
    "default": 2,
@@ -9621,7 +9621,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.A1",
@@ -9643,14 +9643,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.B1",
    "group": "Story",
    "owner": "Progression",
    "label": "Parkland B1 write-offs",
-   "description": "Counted write-offs that clear Parkland B1 (The cascade; brief: cone).",
+   "description": "Counted write-offs that clear Parkland B1 (The cascade; brief: level).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9665,7 +9665,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.parkland.B2",
@@ -9687,7 +9687,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.A1",
@@ -9709,7 +9709,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.B1",
@@ -9731,7 +9731,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.C1",
@@ -9753,7 +9753,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.C2",
@@ -9775,14 +9775,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.C3",
    "group": "Story",
    "owner": "Progression",
    "label": "Waterfront C3 write-offs",
-   "description": "Counted write-offs that clear Waterfront C3 (The east pier tower; brief: bounce).",
+   "description": "Counted write-offs that clear Waterfront C3 (The east customs post; brief: bounce).",
    "unit": "write-offs",
    "type": "number",
    "default": 1,
@@ -9797,7 +9797,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.B3",
@@ -9819,14 +9819,14 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.A3",
    "group": "Story",
    "owner": "Progression",
    "label": "Waterfront A3 write-offs",
-   "description": "Counted write-offs that clear Waterfront A3 (The west pier tower; brief: level).",
+   "description": "Counted write-offs that clear Waterfront A3 (The west customs post; brief: level).",
    "unit": "write-offs",
    "type": "number",
    "default": 2,
@@ -9841,7 +9841,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.A2",
@@ -9863,7 +9863,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "story.writeOffs.waterfront.B2",
@@ -9885,7 +9885,7 @@
    },
    "integrationStatus": "prototype-p7.1",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "purpose": "Tuned so the upgrade tracks fill only at the end of Waterfront (Edit 83): 35 bodies in all; P7.1 had 62"
+   "purpose": "A count per tile (Edit 82); 34 bodies in all since Edit 93 (P7.1 had 62)"
   },
   {
    "id": "proto.bounce.maxThrow",
@@ -10140,7 +10140,7 @@
    "group": "Story",
    "owner": "Traffic",
    "label": "Monument A1 traffic",
-   "description": "Story: while Monument A1 (The LED wall) is in test, it and its four neighbours run this many times the district's traffic density (world.district.monument.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
+   "description": "Story: while Monument A1 (The welcome wall) is in test, it and its four neighbours run this many times the district's traffic density (world.district.monument.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
    "unit": "× density",
    "type": "number",
    "default": 1.5,
@@ -10250,7 +10250,7 @@
    "group": "Story",
    "owner": "Traffic",
    "label": "Monument A2 traffic",
-   "description": "Story: while Monument A2 (The neon arcade) is in test, it and its four neighbours run this many times the district's traffic density (world.district.monument.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
+   "description": "Story: while Monument A2 (The neon shops) is in test, it and its four neighbours run this many times the district's traffic density (world.district.monument.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
    "unit": "× density",
    "type": "number",
    "default": 1,
@@ -10307,7 +10307,7 @@
   },
   {
    "status": "proposed",
-   "source": "Edit 85 (28 October): Prototype 7.4",
+   "source": "Edit 85 (28 October): Prototype 7.4; Edit 93 (29 October): 1.5, for the rebound brief",
    "editable": true,
    "protectedReason": null,
    "integrationStatus": "prototype-p7.4",
@@ -10319,7 +10319,7 @@
    "description": "Story: while Monument C3 (The LED gateway) is in test, it and its four neighbours run this many times the district's traffic density (world.district.monument.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
    "unit": "× density",
    "type": "number",
-   "default": 1,
+   "default": 1.5,
    "applyAt": "next-run",
    "validation": {
     "min": 0.5,
@@ -10448,7 +10448,7 @@
    "group": "Story",
    "owner": "Traffic",
    "label": "Parkland A2 traffic",
-   "description": "Story: while Parkland A2 (The canal) is in test, it and its four neighbours run this many times the district's traffic density (world.district.parkland.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
+   "description": "Story: while Parkland A2 (The dome by the canal) is in test, it and its four neighbours run this many times the district's traffic density (world.district.parkland.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
    "unit": "× density",
    "type": "number",
    "default": 1.5,
@@ -10624,7 +10624,7 @@
    "group": "Story",
    "owner": "Traffic",
    "label": "Waterfront C3 traffic",
-   "description": "Story: while Waterfront C3 (The east pier tower) is in test, it and its four neighbours run this many times the district's traffic density (world.district.waterfront.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
+   "description": "Story: while Waterfront C3 (The east customs post) is in test, it and its four neighbours run this many times the district's traffic density (world.district.waterfront.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
    "unit": "× density",
    "type": "number",
    "default": 1,
@@ -10668,7 +10668,7 @@
    "group": "Story",
    "owner": "Traffic",
    "label": "Waterfront A3 traffic",
-   "description": "Story: while Waterfront A3 (The west pier tower) is in test, it and its four neighbours run this many times the district's traffic density (world.district.waterfront.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
+   "description": "Story: while Waterfront A3 (The west customs post) is in test, it and its four neighbours run this many times the district's traffic density (world.district.waterfront.interval). 1: the district's. Cars still enter the view only across its edges, out of sight.",
    "unit": "× density",
    "type": "number",
    "default": 1,

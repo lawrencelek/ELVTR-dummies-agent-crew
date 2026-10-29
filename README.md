@@ -1,10 +1,11 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
-> **Current prototype: [Prototype 7.11](prototypes/p7/README.md)** (28 October 2026). Open `prototypes/p7/dummies_p7_11.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–92.
+> **Current prototype: [Prototype 7.12](prototypes/p7/README.md)** (29 October 2026). Open `prototypes/p7/dummies_p7_12.html` in a browser, or play it live: https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/ (jump test: `/jump/`). Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–93.
 >
 > | Prototype | Folder | Build | Status |
 > |---|---|---|---|
-> | 7.11 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_11.html` | Current (Edit 92). Narrative A, Certified: three acts (Induction, Opening Day, Customs), 27 tales, the ending; five tiles renamed; the story's tile art, cosmetic only (the welcome wall, neon shops, the gateway's THANK YOU, a lantern, the cascade, customs posts, the ship) |
+> | 7.12 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_12.html` | Current (Edit 93). Introduce, then test: each part on the tile whose brief first needs it. B1 tests the dash; C1 the drop; parts paced 3 · 5 · 3 by act, Battery 3 on the last tile; 34 bodies |
+> | 7.11 | `prototypes/p7/` | `dummies_p7_11.html` | Frozen (Edit 92). Narrative A, Certified: three acts (Induction, Opening Day, Customs), 27 tales, the ending; five tiles renamed; the story's tile art, cosmetic only (the welcome wall, neon shops, the gateway's THANK YOU, a lantern, the cascade, customs posts, the ship) |
 > | 7.10 | `prototypes/p7/` | `dummies_p7_10.html` | Frozen (Edit 91). Story: every part by drone on a fixed tile, no levels; Arcade: parts for credits; Battery 1 the dash; on foot at A1 (500); a miss of the brief holds at 1; POINTS small top right; damage in red on the chassis; the circus's DUMMY MONUMENT |
 > | 7.9 | `prototypes/p7/` | `dummies_p7_9.html` | Frozen (Edit 90). The dash's jump is free; X taps a cone down; buttons named only once fitted, OK and BACK in menus |
 > | 7.8 | `prototypes/p7/` | `dummies_p7_8.html` | Frozen (Edit 89). Every menu tappable; touch on at the first touch (S Pen phones); Story levels from points, an upgrade a level, no credits; the workshop, the chassis as its interface; LEVEL UP in play |
