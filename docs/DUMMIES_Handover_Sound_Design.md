@@ -60,7 +60,7 @@
 
 | # | Question | Proposed reading |
 |---|---|---|
-| Q1 | "Splash Screen": the intro screen (DUMMIES, START) or the Story splash (NEW GAME, CONTINUE)? | The intro screen. The Story splash comes after the mode select, inside Track 2's span |
+| Q1 | "Splash Screen": the intro screen (DUMMIES, START) or the Story splash (NEW GAME, CONTINUE)? | The intro screen, behind a "press any key" gate: the first press only unlocks audio (§6.3). The Story splash comes after the mode select, inside Track 2's span |
 | Q2 | Where does Track 2 end: before the level card, or before the drone drop? | Track 2 plays through the level card. The level's track starts with the drone drop |
 | Q3 | "Alternate between different levels and maps": how? | Story: tile *n* in story order plays Track 3 + ((*n* − 1) mod 4), so neighbouring tiles differ. Arcade: one track per run, rotating each new run |
 | Q4 | Screens the request does not place: pause, gift screen, level report, Failed test, the finale, Credits, high-score entry | Pause ducks the music. The gift screen and level report keep the level track. The finale and Credits play Track 1 again |
@@ -72,8 +72,9 @@
 ## 4 Constraints
 
 - **Autoplay.** Browsers block audio until the first user gesture.
-  - Track 1 cannot start on page load. It starts on the first key, click or tap (§6.3).
-  - Unlock the AudioContext on that gesture.
+  - Track 1 cannot start on page load. It starts on the first key, click or tap.
+  - On the intro screen, that first press is usually START, which leaves the screen (§6.3).
+  - `Snd.init()` already unlocks the AudioContext on most gestures; two input paths miss it (§6.3).
 - **Single-file build.** Inlining audio as base64 adds a third to its size. Options:
   - (a) Audio files beside the HTML (`audio/`), loaded by URL. Works on GitHub Pages and a local server. On `file://`, `fetch` fails, but `<audio src>` still plays.
   - (b) Inline the SFX (small), stream the music by URL. *Proposed;* measure first.
@@ -82,7 +83,7 @@
   - Music stays OGG, as supplied. Check Safari and iOS support for Ogg on the target devices; transcode a fallback with `ffmpeg` if needed.
   - SFX arrive as WAV. Keep the originals; a compressed copy may ship.
 - **Loudness.** Measure every file (`ffmpeg -af ebur128`, or `loudnorm` in measure mode). Record LUFS and peak in the asset manifest. Normalise to one target per bus.
-- **Frequency.** Some events fire often: near-misses, braking, headlight flashes, combo links. Give each cue a cooldown and cap the voices.
+- **Frequency.** Some events fire often: `knock` and `touch-spent` on every contact frame, near-misses, braking, headlight flashes, combo links. Give each cue a cooldown and cap the voices. Per-frame states sound on the edge only (§6.6).
 - **Registry first.** Every audio statistic gets an ID before it is used (house rule). Registry `edit99-2026-10-29`, 525 entries → `edit100`. Proposed family:
   - `audio.enabled` (flag, default 0; the new build sets 1).
   - `audio.music.volume`, `audio.sfx.volume`, `audio.ui.volume`.
@@ -90,7 +91,7 @@
   - `audio.sfx.maxVoices`, `audio.sfx.cooldown.<cue>`.
   - `audio.music.track.<screen>`, `audio.music.levelRotation`.
   - Values are for the new chat to propose and Lawrence to confirm.
-- **Options.** Add MUSIC and SOUND volume, and mute, to the pause menu's options (Edit 86). Store them next to the touch layout in the browser (§6.4).
+- **Options.** Options already has a Sound on/off item that is not saved (§6.1). Replace it with MUSIC and SOUND volume, and mute, and save them in the browser (§6.4).
 - **Frozen builds.** Prototype 8.4 and every earlier build stay byte-identical. Audio ships in the next build (Prototype 9, or 8.5), behind `audio.enabled` in the shared code.
 - **Licence.** Record each file's source, licence and required credit in the asset manifest.
   - If the pack needs a credit, the Credits card gains a line. Style Guide V2's C1 limits the card to the game, its maker and its publisher, so C1 changes first (user-decided).
@@ -102,6 +103,7 @@ Same pattern as Assignments 4–6: deterministic evidence, a designer, a reviewe
 
 1. **Inventory** (no model). `audio/inventory.py` lists each file: name, folder, duration, channels, sample rate, LUFS, peak. Output `content/audio/inventory.json`.
 2. **Event catalogue** (no model). Every trigger point in §6, with an ID (`sfx.<event>`, `music.<state>`), its frequency class (once, per action, per frame) and its GDD source. Output `content/audio/events.json`.
+   - Generate it from the code where possible: the `emit(` sites, the `processEvents` switch and the screen names. Then it cannot drift from the build.
 3. **Designer agent.** Reads the inventory (file names, durations), the catalogue and the GDD's tone. Proposes the cue map:
    - SFX: event → file or variation pool, bus, volume ID, cooldown ID; or a stated silence.
    - Music: the state machine, screen → track, loops and crossfades.
@@ -126,7 +128,113 @@ Same pattern as Assignments 4–6: deterministic evidence, a designer, a reviewe
 
 ## 6 Where sound can trigger (code survey, Prototype 8.4)
 
-<!--SURVEY-->
+Survey of the shared code at `a0e3515`. Line numbers move with edits; search by the names given.
+- **G** = `prototypes/p6/game.js` · **S** = `p6/sim.js` · **W** = `p6/world6.js` · **T** = `p7/story.js` · **H** = `p8/shell.html` · **B** = `p8/build.py`.
+
+### 6.1 Audio that already exists
+
+- **A procedural synth, `Snd`** (G:558–578). No files, no music.
+  - `init()` creates and resumes the AudioContext. `tone()` is an oscillator; `noise()` is band-passed noise.
+  - Every voice connects straight to the destination. There is no master gain and no bus.
+- **Who calls it:**
+  - The event switch in `processEvents` (G:869–955).
+  - Data-driven `hitJuice()` (G:731–735), which reads `layer.sound` from `content.js`: 11 hit layers and 5 drop layers.
+  - `giftChime` G:965, `giftFanfare` G:966, `horn` G:976, menu confirms G:1071–1072, the unveil chime G:3166.
+- **On/off:** `app.sound` (G:50, default on). It is toggled from Options "Sound" (G:3057, 3063) and a hidden button (H:76, G:3572). The setting is not saved.
+- **Decision for the new chat:** WAV cues replace the synth tones where a file fits. Either keep the synth as a fallback for events without a file, or silence those events. Add buses (music, SFX, UI) as gain nodes.
+
+### 6.2 Screens and music
+
+`app.screen` (G:49) is one of intro, title, arcade, saves, splash, storymap, scores, loading, game. Overlays are flags: `app.credits`, `app.paused`, `app.pausePage`, `app.nameEntry`. In play, `app.sim.phase` says what shows.
+
+| Screen | Detect | Enter | Proposed music |
+|---|---|---|---|
+| Intro (DUMMIES, START) | `app.screen === 'intro'` | G:103 | Track 1 (Q1) |
+| Mode select | `'title'` | G:1003 | Track 2 |
+| Save slots, name entry | `'saves'`; `app.nameEntry` | G:195 | Track 2 |
+| Story splash | `'splash'` | G:191 | Track 2 (or Track 1: Q1) |
+| Story map | `'storymap'` | G:190 | Track 2 |
+| Arcade district select | `'arcade'` | G:1010 | Track 2 |
+| High scores, Credits | `'scores'`; `app.credits` | G:3371; G:1010 | Track 2 |
+| Loading | `'loading'` | G:159 | Track 2 |
+| Level card | phase `'brief'` | T:177, 245, 425 | Track 2 (Q2) |
+| Drone drop-in | `rescue.dropIn`; event `drop-in` | T:133, 139 | Level track starts (Q2, Q3) |
+| Play, write-off hold, screen flip, ferry | phase; `'writeoff'`, `'scroll'`; `rescue.ferry` | S:3294, 3396; T:248 | Level track |
+| Pause, options | `app.paused`, `app.pausePage` | G:995; window blur G:310 | Level track, ducked |
+| Gift screen | phase `'gift'` | T:121 | Level track (Q4) |
+| Report | phase `'report'` | S:3330 | Level track (Q4) |
+| Workshop (Arcade) | phase `'shop'` | S:3621 | Level track or Track 2 |
+| Ending: Licensed, Failed test, Non-compliant | phase `'ending'`, `run.ending.kind` | S:3288–3302, 3654; T:442 | Q4 |
+| Finale: unveil, voyage, CERTIFIED | phase `'unveil'`, `'voyage'`; Certified | T:390, 198–232 | Track 1 again (Q4) |
+
+### 6.3 The first gesture (autoplay)
+
+- `Snd.init()` already runs on keydown (G:292), canvas pointerdown (G:311), touch (G:422) and gamepad A (G:339).
+  - The gamepad call runs inside the animation frame, not a DOM event. Browsers may not count it as a gesture.
+- **Gaps:** the name-entry keydown (G:254) stops the event, so typing a name never unlocks audio. The touch-on listener (G:555) does not call `init` either.
+- **The catch for Track 1:** on the intro screen, OK or pause is START (G:1003), and the START button is a tap target. A player's first press is usually START, which leaves the intro at once. Track 1 there needs one of these:
+  - a "press any key" gate before START, so the first press only unlocks audio;
+  - Track 1 carried into the mode select;
+  - Track 1 on the Story splash instead (Q1).
+
+### 6.4 Options and storage
+
+- Pause items: G:981 (Arcade), G:982 (Story). Options list: `optionItems` (G:3056): Sound, Palette, Full screen, Tuning panel, Gamepad setup, Back. `optionDo` applies them (G:3062).
+- Browser storage keys:
+  - Saves: `dummies.p7.save<N>`, `dummies.p7.story`, `dummies.p7.saveMoved` (G:64).
+  - Touch layout: `dummies.p7.touch` (G:393).
+  - High scores: `dummies.p8.highscores.v1`, `dummies.p8.highscoreName` (G:3345).
+  - Gamepad: `dummies.pad.p610.<id>`.
+  - Sound has no key. A new key, such as `dummies.p9.audio`, holds the volumes and mute.
+
+### 6.5 Gameplay events (SFX candidates)
+
+- **Mechanism:** `emit()` (S:1640) pushes `{t, type, …}` to `sim.events`. StorySim wraps it (T:238).
+- **The hook point:** `processEvents()` (G:834), once per frame (G:3607). Events from another screen carry `away` and are skipped (G:842).
+- **Order per event:** `hitJuice` (G:849), then `barkLine` (G:868), then the switch.
+- **Derived events** go through `present()` (G:644): near-miss (G:669) and miss (G:679), checked every frame; learned, upgrade-seen, part-seen.
+
+| Group | Events (emitted at) | Synth sound now |
+|---|---|---|
+| Dummy moves | `lunge` (dash) S:1684 · `jump` S:1960 · `jump-land` S:1969 · `land` S:2243 · `deck-drop` S:2227 · `rail-jump` W:2217 · `stair` S:2150 · `level` S:2169 · `slip` S:1715 | yes, except `level` (toast) and `slip` |
+| Abilities | `push` S:1879 · `hitch` S:1904 · `sling` S:1925 · `denied` (no battery) S:1675 | yes |
+| Hits and damage | `impact` (`part`, `lost`, `health`, `mult`) S:3268 · `held` S:3269 · `knock` S:2106 · `touch-spent` S:3233 · `writeoff` S:3284 · `chassis` S:1666 | yes, except `chassis`. `knock` and `touch-spent` fire every contact frame, deduped at 0.25 s (G:709) |
+| Near-misses | `near-miss`, `miss` (derived, G:669, 679) | yes |
+| Cones | `pickup` S:1611 · `drop` S:2004 · `throw` S:2013 · `punt` S:2119 · `cone-hit` S:2264 · `cone-struck`, `cone-stop`, `cone-rest`, `cone-release` | first five yes; the rest no |
+| Combos | `combo` S:3249 · `combo-end` S:1934 | yes |
+| World | `splash` (river) W:2267 · `rescued` W:2299 · `screen` (flip) S:3397 | yes |
+| Cars | `honk` S:2971 (once per blocked spell) · `skid` S:3141 · `unstick` S:2989 · `learn-standoff` S:3259 · `commit`, `interrupt`, `resume`, `ring`, `gridlock`, `exit` | first four yes; the rest no |
+| Drones | `drone-dispatch` S:2896 · `drone-pickup` S:2927 · `drone-drop` S:2938 · `drop-in`, `dropped-in` T:139, 152 | first three yes |
+| Story beats | `story-enter` T:187 · `story-count`, `story-miss` T:362 · `story-clear` T:380 · `story-gift`, `story-deliver` · `story-ferry` T:260 · `story-ferried` T:296 · `story-fence` T:339 · `gift` T:192 · `delivered` T:126 · `unveil` T:390 · `voyage`, `voyage-end` T:204, 231 | most yes; `voyage` no |
+| Arcade | `purchase` S:3643 · `purchase-denied` S:3641 · `shop-open` S:3621 · `credit` S:3309 · `road-cleared` S:3308 · `grade` T:446 · `ending` S:3291 · `milestone` S:1641 | purchase, denied, ending, grade yes |
+| Barks | `barkLine` (G:755), cooldowns G:768–776, new bubble G:781 | no sound per bubble |
+| UI | menu queue `menuQ` (G:277–285): ok, back, pause, four directions; `handleMenus` G:991–1108 | confirms only (G:1071–1072) |
+
+- `arcade-deliver` has a case (G:948), but nothing emits it.
+
+### 6.6 Moments with no event
+
+Each of these needs a new event, or a state check in the frame loop.
+
+- **Battery:**
+  - It recharges every tick (S:1691).
+  - Charge is spent at S:1680, 1921 and 1955.
+  - "Empty" shows only as `denied`. "Recharged to full" has no event.
+- **Combo cap:** `combo.mult === scoring.comboMax` (clamped at S:1941).
+- **A part breaks:** `fx.partWatch` is set (G:866). Cracked and broken levels come from G:2315.
+- **Low health:** smoke, sparks and the vignette are judged every frame (G:1745–1748, 1910). Use a threshold crossing, not the frame.
+- **Points:** awarded at S:2263 (cone), S:3248 (hit), S:3282 (write-off).
+- **Car braking:** `c._brk` is set every frame (G:1850). Only an edge (off → on) should sound.
+- **Headlight flash ("has noticed you"):** `noticed()` G:1488 and `flashOn()` G:1489, every frame. Use the edge.
+- **Horn repeat:** G:1567 replays the horn every 1.4 s while a car honks at the dummy.
+- **Hit-stop:** S:3359.
+- **Toasts:** `toast()` G:978.
+
+### 6.7 Loop, pause, build
+
+- **Loop:** `frame()` (G:3594) on `requestAnimationFrame`. Each frame runs `pollPad`, then `handleMenus`, then fixed 1/60 s sim steps (G:3600), then `processEvents` (G:3607), then `render`.
+- **Pause:** the sim stops (G:3600); `app.realT` keeps running. The sim also holds during brief, gift and unveil (T:240, 428).
+- **Build:** B inlines every script into `dummies_p8_4.html`, with no `fetch`, XHR or image loads. Only the Google Fonts stylesheet loads by URL (H:8–10). Audio is the first real asset (§4).
 
 ## 7 Repositories
 
