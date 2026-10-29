@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- n37 · V3 (major, −2) "Earn points until the vehicles run out." "Points" is a game's word, and the glossary frames the work as training and write-offs, not scoring. [EDIT95#3.1] Fix: "Write off bodies; every {Q} write-offs, the grade rises. Keep training until the vehicles run out."
+Total: 10 − 2 = 8.

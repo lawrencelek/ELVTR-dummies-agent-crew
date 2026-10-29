@@ -1,0 +1,9 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against these rules and found no violation:
+  - F8 (`EDIT98#3.2`, `STORY#S3`): the caps label "A {cls}" is under 19 characters. The imperative goal comes first, then the final hit. The {cls} and {clsLong} placeholders are kept, and there is no "coverage gap" framing.
+  - F6 (`EDIT95#3.2`): two sentences, 14 words.
+  - T1–T5 (`EDIT95#3.2`, `EDIT95#3.1`, `PLAY#PS2`): the voice is flat, with no "!", and the job is framed as training.
+  - V1, V3 and V4 (`EDIT95#3.1`): the vocabulary and company-name rules hold.
+  - R5 (`STORY#S3`): the duty matches the cls task.
+Total: 10.

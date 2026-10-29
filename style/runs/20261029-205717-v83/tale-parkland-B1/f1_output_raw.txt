@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "B1", "title": "The cascade", "tale": "The cascade was built to drown out the traffic. The traffic got louder; take your hit up on the highway."}

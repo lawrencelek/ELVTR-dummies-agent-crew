@@ -1,0 +1,68 @@
+{
+ "case": "brief-push",
+ "class": "V8.3 goal",
+ "title": "the push brief, as a goal",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 22.7,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 6.6,
+   "output_tokens": 458,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11454480000000002
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 3.3,
+   "output_tokens": 55,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.10748540000000001
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 5.9,
+   "output_tokens": 385,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1129856
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 6.9,
+   "output_tokens": 417,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0160179
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.351
+}

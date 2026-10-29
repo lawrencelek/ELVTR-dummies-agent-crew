@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "PUSH OFF A CAR" (14 characters, caps) and the goal (2 sentences, 12 words) against F8, F5, F6, T1–T5, T13, V1, V3 and V4. The goal leads with the imperative, then states the final hit, keeps the push task's meaning and drops the "coverage gap" framing, with no "!", digits, intensifiers or company name. [EDIT98#3.2] [EDIT95#3.2] [STORY#S3] [EDIT95#3.1]
+Total: 10.

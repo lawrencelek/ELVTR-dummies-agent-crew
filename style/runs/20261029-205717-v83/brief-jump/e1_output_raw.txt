@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: jumps. The final hit must be a jump into a car." The brief opens with the barred "coverage gap" framing instead of an imperative goal stating what to do first. [EDIT98#3.2] Fix: "Jump into a car. The jump must be the final hit."
+Total: 10 − 2 = 8.

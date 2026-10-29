@@ -50,7 +50,7 @@ EVENT_LINES = {"impact": ["FLEET#F9.1~2"], "writeoff": ["FLEET#F9.2"], "near-mis
                "honk": ["FLEET#F9.6"], "upgrade-seen": ["FLEET#F9.12"], "part-seen": ["FLEET#F9.13"]}
 BASE_V2 = {
     "car": BASE["car"] + ["EDIT95#3.2"],
-    "company": ["EDIT97#0", "EDIT97#3.2", "EDIT96#0", "EDIT96#3.2", "EDIT95#0", "EDIT95#3.1", "EDIT95#3.2", "EDIT95#3.3", "EDIT95#4.2", "PLAY#PS0", "PLAY#PS2", "PLAY#PS5", "STORY#S1", "STORY#S2", "STORY#S3",
+    "company": ["EDIT98#0", "EDIT98#3.2", "EDIT97#0", "EDIT97#3.2", "EDIT96#0", "EDIT96#3.2", "EDIT95#0", "EDIT95#3.1", "EDIT95#3.2", "EDIT95#3.3", "EDIT95#4.2", "PLAY#PS0", "PLAY#PS2", "PLAY#PS5", "STORY#S1", "STORY#S2", "STORY#S3",
                 "FLEET#F2", "FLEET#F3", "DECISIONS#rows-541-550"],
 }
 GUIDES = {   # the guide a run reads: its file, its agents' prompts, its knowledge base, its lint mode, its canon
@@ -137,7 +137,12 @@ def slot_text(piece):
         out += ["- Kind: a batch of the company's texts: the story's (Prototype 8's `content/story/story_v2.json`) and, where listed, notices (`prototypes/p8/lore.js`). Speaker: Dummy Corporation. Each item is one text: a tale, an act line, the ending or a notice.",
                 '- Schema: {"kind": "batch", "items": [{"id", "kind", "district", "tile", "text"}]}. Change only each item\'s "text"; change only the items the REASON names.',
                 "- The batch is judged as a whole as well: T14 (no slogan in more than two texts) and V10 (the purpose stated plainly at least once)."]
+        if any(it.get("locked") for it in piece.get("items") or []):
+            out.append("- Items marked locked are the user's own lines (U1): never rewrite them, never deduct for them. They count for T14.")
         for it in piece.get("items") or []:
+            if it.get("locked"):
+                out.append(f"- {it['id']}: locked, the user's own line.")
+                continue
             if it.get("kind") == "tale":
                 out.append(f"- {it['id']}: tale. {tile_facts(it['district'], it['tile'])}")
             elif it.get("kind") == "act":
@@ -315,7 +320,9 @@ def restore(before, after, log):
         after["lines"] = fixed
     elif before["kind"] == "batch":
         new = {it.get("id"): it for it in after.get("items") or []}
-        after["items"] = [dict(it, text=(new.get(it["id"]) or it).get("text", it["text"])) for it in before.get("items") or []]
+        after["items"] = [dict(it, text=it["text"] if it.get("locked") else (new.get(it["id"]) or it).get("text", it["text"])) for it in before.get("items") or []]
+        if any(it.get("locked") and (new.get(it["id"]) or it).get("text") != it["text"] for it in before.get("items") or []):
+            log.append("a locked line (U1) restored")
     elif before["kind"] == "notices":
         old, new = before.get("items") or [], {it.get("id"): it for it in after.get("items") or []}
         fixed = []
@@ -811,6 +818,115 @@ def v82_notices(run_dir):
     return run_dir
 
 
+V82_RUN = "20261029-181530-v82"   # Prototype 8.2's run: the base of Prototype 8.3's text
+V83_USER = {   # GDD Edit 98 §0: the user's own lines (U1), "!" dropped (ruling: deadpan)
+    "tale:monument:A1": "Fresh off the factory floor, you're ready to do some damage to yourself. Make your engineers proud.",
+    "brief:any": "Walk into the path of the incoming vehicles. Time your approach, and choose your angle carefully. Bonus points for combinations and lethal hits.",
+    "n03": "Get your Dummy Certification in Shenzhen Smart City and learn about the Corporation.",
+    "n34": "Get hit in fun, creative, and destructive ways before the vehicles run out.",
+}
+V83_NOTICES = [   # (id, where, width): the generator writes them
+    ("n36", "the intro screen, under DUMMIES, before the mode select: the one line that tells a new player what to do, in both modes. Quirky but obvious. Facts: you are a crash-test dummy; you want the cars to hit you; the cars avoid you; combos score more; upgrades come with progress", 110),
+    ("n37", "Arcade's level card, the goal line under the district's line, in bold after '>>>': what to do in an Arcade shift. Facts: write off bodies; every {Q} write-offs the grade rises (tougher chassis, denser traffic); the run ends when the shift's vehicles run out; the score is the points. {Q} is the district's quota, a placeholder the game fills", 110),
+]
+V83_NOTE = ("Prototype 8.3 (GDD Edit 98). Stage 1 on V2.7: 26 tales cut to 15 to 20 words from Prototype 8.2's; 10 briefs rewritten as goals; n36 and n37 written by the generator. "
+            "The user's own lines (U1: Monument A1's tale, the any goal, n03, n34) are placed as written. Stage 2 (`review`): the story with the opening lines as one batch, the user's lines locked. "
+            "Stage 3 (`intro-line`): n36 redrafted by hand for humour, then evaluated and refined. "
+            "Everything else is Prototype 8.2's text (run `" + V82_RUN + "`).")
+
+
+def v83(workers):
+    """Prototype 8.3's text (GDD Edit 98): tales of 15 to 20 words, goals, the intro line and Arcade's goal; the user's lines kept."""
+    run_dir = new_run("v83")
+    base = json.loads((RUNS / V82_RUN / "v8_copy.json").read_text(encoding="utf-8"))
+    jobs = []
+    for d in STORY["districts"]:
+        for t in d["order"]:
+            if f"tale:{d['id']}:{t}" in V83_USER:
+                continue
+            piece = {"kind": "tale", "district": d["id"], "tile": t, "title": d["tiles"][t]["title"], "tale": base["tales"][d["id"]][t]}
+            jobs.append((job_piece, (run_dir, f"tale-{d['id']}-{t}", piece, {"id": f"tale-{d['id']}-{t}", "class": "V8.3 tale", "title": f"{d['name']} {t}, cut to 15 to 20 words"})))
+    for k, b in base["briefs"].items():
+        if f"brief:{k}" in V83_USER:
+            continue
+        piece = {"kind": "brief", "task": k, "label": b["label"], "brief": b["brief"]}
+        jobs.append((job_piece, (run_dir, f"brief-{k}", piece, {"id": f"brief-{k}", "class": "V8.3 goal", "title": f"the {k} brief, as a goal"})))
+    spec = {"id": "notices-83", "class": "V8.3 notices", "title": "The intro line (n36) and Arcade's goal (n37)",
+            "slot": {"kind": "notices", "items": [{"id": i, "where": w, "text": "", "caps": False, "maxChars": m} for i, w, m in V83_NOTICES]},
+            "request": ("Write n36 and n37. n36: one line for the intro screen that tells a new player what to do. The user's draft, to make funnier while keeping it obvious: "
+                        "'Find new ways to make the cars hit you. Combo bonuses and upgrades await. Make Dummy Corporation proud.' "
+                        "n37: Arcade's goal, simple and direct, with {Q} for the write-offs per grade.")}
+    jobs.append((job_case, (run_dir, spec)))
+    res = run_all(run_dir, jobs, workers)
+    run_trace(run_dir, "Prototype 8.3's text on Style Guide V2.7", res, V83_NOTE)
+    new = v8_collect(run_dir, res)
+    out = dict(base, run=run_dir.name, base=V82_RUN, guide=GUIDES[VERSION]["file"], user=V83_USER,
+               accepted=dict({(k if "/" in k else f"{V82_RUN}/{k}"): v for k, v in base["accepted"].items() if not k.startswith(("tale-", "brief-", "review"))}, **new["accepted"]))
+    out["tales"] = {d: dict(base["tales"][d], **new["tales"].get(d, {})) for d in base["tales"]}
+    out["tales"]["monument"]["A1"] = V83_USER["tale:monument:A1"]
+    out["briefs"] = dict(base["briefs"], **new["briefs"]); out["briefs"]["any"] = dict(base["briefs"]["any"], brief=V83_USER["brief:any"])
+    out["notices"] = dict(base["notices"], **new["notices"], n03=V83_USER["n03"], n34=V83_USER["n34"])
+    (run_dir / "v8_copy.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    v83_review(run_dir)
+    return run_dir
+
+
+V83_INTRO = ("Self-driving cars are designed never to hit anyone. Prove the design wrong, in combos, and earn upgrades.")
+
+
+def v83_intro(run_dir):
+    """Stage 3 of --v83: the intro line (n36), redrafted by hand for the humour the generator's draft lacked, then evaluated and refined."""
+    run_dir = Path(run_dir)
+    c = json.loads((run_dir / "v8_copy.json").read_text(encoding="utf-8"))
+    piece = {"kind": "notices", "items": [{"id": "n36", "where": [w for i, w, m in V83_NOTICES if i == "n36"][0], "text": V83_INTRO, "caps": False, "maxChars": 110}]}
+    s = job_piece(run_dir, "intro-line", piece, {"id": "intro-line", "class": "V8.3 notices", "title": "The intro line (n36), a hand draft through the loop"})
+    if "error" in s:
+        raise RuntimeError(s["error"])
+    fin = json.loads((run_dir / "intro-line" / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+    c["notices"]["n36"] = fin["items"][0]["text"]; c["accepted"]["intro-line"] = s["accepted"]
+    (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != "intro-line"] + [s]
+    run_trace(run_dir, "Prototype 8.3's text on Style Guide V2.7", res, V83_NOTE)
+    return run_dir
+
+
+def v83_review(run_dir):
+    """Stage 2 of --v83: the story and the opening lines as one batch; the user's lines locked (U1)."""
+    run_dir = Path(run_dir)
+    c = json.loads((run_dir / "v8_copy.json").read_text(encoding="utf-8"))
+    widths = {i: m for i, w, m in V83_NOTICES}
+    for name in ("notices", "arcade-banners"):
+        for it in json.loads((RUNS / V8_RUN / name / "r0_piece.json").read_text(encoding="utf-8"))["items"]:
+            widths[it["id"]] = it["maxChars"]
+    where = {"n36": "the intro screen's line", "n02": "Arcade's district screen", "n03": "the STORY card", "n34": "the ARCADE card",
+             "n24": "Monument's line on Arcade's level card", "n25": "Parkland's line on Arcade's level card", "n26": "Waterfront's line on Arcade's level card", "n37": "Arcade's goal"}
+    items = [dict({"id": i, "kind": "notice", "where": where[i], "maxChars": widths.get(i, 110), "text": c["notices"][i]}, **({"locked": True} if i in V83_USER else {})) for i in where]
+    for d in STORY["districts"]:
+        items.append({"id": f"act-{d['id']}", "kind": "act", "district": d["id"], "text": c["acts"][d["id"]]})
+        items += [dict({"id": f"{CODE[d['id']]}{t}", "kind": "tale", "district": d["id"], "tile": t, "text": c["tales"][d["id"]][t]}, **({"locked": True} if f"tale:{d['id']}:{t}" in V83_USER else {})) for t in d["order"]]
+    items.append({"id": "ending", "kind": "ending", "text": c["ending"]})
+    s = job_piece(run_dir, "review", {"kind": "batch", "items": items}, {"id": "review", "class": "V8 batch", "title": "The story and the opening lines, on V2.7; the user's lines locked"})
+    if "error" in s:
+        raise RuntimeError(s["error"])
+    fin = json.loads((run_dir / "review" / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+    for it in fin["items"]:
+        if it.get("locked"):
+            continue
+        if it["kind"] == "act":
+            c["acts"][it["district"]] = it["text"]
+        elif it["kind"] == "tale":
+            c["tales"][it["district"]][it["tile"]] = it["text"]
+        elif it["kind"] == "notice":
+            c["notices"][it["id"]] = it["text"]
+        else:
+            c["ending"] = it["text"]
+    c["accepted"]["review"] = s["accepted"]
+    (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != "review"] + [s]
+    run_trace(run_dir, "Prototype 8.3's text on Style Guide V2.7", res, V83_NOTE)
+    return run_dir
+
+
 V8_NOTE = ("Each piece starts as Prototype 7.13 shipped it. The evaluator grades it on V2; the refiner rewrites it; the accepted text goes to Prototype 8. "
            "Stage 1 (45 pieces) ran on V2.0. Stage 2 (`story-batch`) runs the story's 31 texts together, on V2.1 (T14, V10). "
            "Stage 3 (`arcade-banners`) runs Arcade's district banners, found by the text audit. "
@@ -996,10 +1112,13 @@ def main():
     ap.add_argument("--v82", action="store_true")
     ap.add_argument("--v82-notices", metavar="RUN")
     ap.add_argument("--v82-review2", metavar="RUN")
+    ap.add_argument("--v83", action="store_true")
+    ap.add_argument("--v83-review", metavar="RUN")
+    ap.add_argument("--v83-intro", metavar="RUN")
     ap.add_argument("--guide", choices=sorted(GUIDES), default=None, help="v1: STYLE_GUIDE.md (default); v2: STYLE_GUIDE_V2.md (--v8 implies v2)")
     ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args()
-    set_guide(a.guide or ("v2" if a.v8 or a.v8_batch or a.v8_banners or a.v8_review or a.v81 or a.v81_review2 or a.v82 or a.v82_notices or a.v82_review2 else "v1"))
+    set_guide(a.guide or ("v2" if a.v8 or a.v8_batch or a.v8_banners or a.v8_review or a.v81 or a.v81_review2 or a.v82 or a.v82_notices or a.v82_review2 or a.v83 or a.v83_review or a.v83_intro else "v1"))
     index()
     if a.examples:
         print(examples(a.workers))
@@ -1025,6 +1144,12 @@ def main():
         print(v81(a.workers))
     if a.v82:
         print(v82(a.workers))
+    if a.v83:
+        print(v83(a.workers))
+    if a.v83_review:
+        print(v83_review(a.v83_review))
+    if a.v83_intro:
+        print(v83_intro(a.v83_intro))
     if a.v82_notices:
         print(v82_notices(a.v82_notices))
     if a.v82_review2:
@@ -1037,7 +1162,7 @@ def main():
         s = run_piece(Case(run_dir, "piece"), {"id": "piece", "title": Path(a.piece).name}, piece=piece)
         run_trace(run_dir, "One piece", [s])
         print(run_dir, s["scores"])
-    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece, a.v8, a.v8_batch, a.v8_banners, a.v8_review, a.v81, a.v81_review2, a.v82, a.v82_notices, a.v82_review2]):
+    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece, a.v8, a.v8_batch, a.v8_banners, a.v8_review, a.v81, a.v81_review2, a.v82, a.v82_notices, a.v82_review2, a.v83, a.v83_review, a.v83_intro]):
         ap.print_help()
 
 

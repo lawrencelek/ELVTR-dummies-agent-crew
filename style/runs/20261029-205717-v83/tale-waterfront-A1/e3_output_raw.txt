@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tale against these rules:
+  - **Length (F6, F11):** 20 words in two sentences, which is within the 15 to 20 word range [EDIT98#3.2].
+  - **Place (V11, R4):** it names the west portal and its bus of engineers going to the bridge [STORY#WA1], [DECISIONS#rows-311-320~2].
+  - **Duty (R5):** "Take its hit" matches the bus brief [STORY#S3].
+  - **Equipment (F7):** it names no equipment, which is correct because this tile issues none [EDIT93#3.1].
+  - **Story frame (V6, V9):** it keeps the CUSTOMS frame, with Certified dummies crossing to clients who are served but not seen [EDIT95#3.3], [EDIT95#3.1].
+  - **Tone and voice (T1–T5, T13):** it is deadpan, motivating and uses "our" for the company, with at most one adjective per sentence and no "!" [EDIT95#3.2].
+  - **Vocabulary (V1–V4):** it uses no banned words and does not name Farsight [EDIT95#0].
+Total: 10.

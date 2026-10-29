@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "COMBO ×{n}" and the goal against these rules:
+  - F8: the label is caps and 10 characters. The goal opens with an imperative, then states the final hit, in two short sentences. It keeps {n} and drops the "coverage gap" framing. [EDIT98#3.2] [STORY#S3]
+  - F6 and F5: two sentences and 15 words. The only figure is the placeholder {n}. [EDIT95#3.2]
+  - T2: no "!". [EDIT95#3.2]
+  - T1, T3 and T13: deadpan, framed as training, with no intensifiers. [EDIT95#3.2] [EDIT95#3.1]
+  - V1 and V4: no banned word and no company name. [EDIT95#0]
+  - R5: the duty matches the combo task on every combo tile. [STORY#PC3] [STORY#PB2] [STORY#WB2]
+Total: 10.

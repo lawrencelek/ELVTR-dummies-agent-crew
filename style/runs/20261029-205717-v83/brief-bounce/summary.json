@@ -1,0 +1,68 @@
+{
+ "case": "brief-bounce",
+ "class": "V8.3 goal",
+ "title": "the bounce brief, as a goal",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 30.0,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 8.0,
+   "output_tokens": 467,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.114611
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 5.5,
+   "output_tokens": 328,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1128584
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 7.6,
+   "output_tokens": 600,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11635770000000001
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 8.8,
+   "output_tokens": 692,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.021485499999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3653
+}

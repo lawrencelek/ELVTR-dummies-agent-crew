@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. Lint returned no findings. I checked the tale against T1, T3, T4 and T13 [EDIT95#3.2, EDIT95#3.1] and V6 and V11, including the exact ZERO ACCIDENTS (EXCLUDING TESTS) plaque and the circus landmark [EDIT95#3.3, STORY#WB2, EDIT92#3]. I also checked F6, F7 and F11: 20 words and two sentences, Battery 3 fitted on its issuing tile, and no placeholder [EDIT98#3.2, EDIT97#3.2, STORY#S1]. Finally I checked R4 and R5: the chain duty matches the COMBO ×{n} brief, and the chassis-cast monument matches canon [STORY#WB2, STORY#S3].
+Total: 10.

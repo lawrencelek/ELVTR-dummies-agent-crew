@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: the tale names its landmark and the Chassis 0 detail and turns them toward the duty [STORY#WB3, EDIT95#3.1]. Arms 3 is named on the tile that issues it [STORY#S1]. The duty matches the PUSH OFF A CAR brief [STORY#S3]. The 20 words in two sentences meet F6 [EDIT98#3.2]. The tone is deadpan and inspirational, with no "!", one adjective at most and training framing [EDIT95#3.2, EDIT95#3.3]. The glossary holds and no banned words appear [EDIT95#3.1, FLEET#F3]. "0" and "3" are a canon name and a part rank, which F5 allows [STORY#S1].
+Total: 10.

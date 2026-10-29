@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Battery 1 is fitted, for the dash. The skybridge was built for shoppers who never came; staff watch from it as you dash into a colleague." At 26 words, the tale is over the 20-word cap for a tale (style.v2.tale.maxWords; the lint finding). [EDIT98#3.2] Fix: "Battery 1 is fitted. Shoppers never came to the skybridge; staff watch from it as you dash into a colleague." (20 words, 2 sentences).
+Total: 10 − 4 = 6.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against each rule that applies to it. It runs 20 words in two sentences and has no lint findings (F6, F5, T2, V1, V4) [EDIT98#3.2]. It names the belvedere and its wedding and turns them toward the duty (V11, R4) [STORY#PA3, EDIT95#3.1]. It fits Legs 2 on the tile that issues it (F7, R5) [STORY#S1]. Its duty matches JUMP INTO A CAR (R5) [STORY#S3]. It stays deadpan and frames the trainee's harm as service to the guests (T1, T3, T4) [EDIT95#3.2]. It fits OPENING DAY without naming or mocking a client (V6, V9) [EDIT95#3.3].
+Total: 10.

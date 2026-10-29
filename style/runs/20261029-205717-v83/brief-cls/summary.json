@@ -1,0 +1,68 @@
+{
+ "case": "brief-cls",
+ "class": "V8.3 goal",
+ "title": "the cls brief, as a goal",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 31.8,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 9.4,
+   "output_tokens": 640,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1176748
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 6.8,
+   "output_tokens": 514,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1162445
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 8.2,
+   "output_tokens": 693,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1316938
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 7.4,
+   "output_tokens": 581,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.019764399999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3854
+}

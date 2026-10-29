@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked n36 and n37 against all the notice rules and found no violation. Both are deadpan, use no "!" and frame the job as training [EDIT95#3.2, EDIT95#3.1]. Neither uses a banned word or names a company, city or brand [EDIT95#0, FLEET#F2]. Both meet the length and placeholder rules: n36 has 17 words and n37 has 16, each in two sentences, and n37 keeps {Q} [EDIT95#3.2, EDIT95#4.2]. Both match the slot's facts, using the grade, quota, points and end condition as written [EDIT97#7, EDIT26#9.1].
+Total: 10.

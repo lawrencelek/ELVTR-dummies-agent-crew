@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against F8 (the label is 16 characters, under the 19 limit; the brief opens with the goal as an imperative, then states what the final hit must be; there is no "coverage gap" framing), F6 (2 sentences, 16 words), F5 (no figures typed in), T1, T2, T5 and T13 (deadpan, no "!", one adjective per sentence) and V1, V3 and V4 (no banned words, no game terms, no company name), with LINT clean. Its truth matches the level brief's "land at Z1 or above". [EDIT98#3.2] [EDIT98#0] [EDIT95#3.2] [STORY#S3] [STORY#S1]
+Total: 10.

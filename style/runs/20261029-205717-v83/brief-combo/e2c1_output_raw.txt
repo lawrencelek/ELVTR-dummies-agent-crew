@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the label and brief against F8 (caps label of 10 characters, imperative goal first, then the final hit, {n} kept, no "coverage gap" framing) [EDIT98#3.2] [STORY#S3]; F6 and F5 (two sentences, 15 words, placeholder only) [EDIT95#3.2]; T1–T5 and T13 (flat voice, no "!", training framing) [EDIT95#3.2] [EDIT95#3.1]; V1–V4 [EDIT95#0]; and R5 (the combo duty matches the canon brief) [STORY#PC3] [STORY#PB2] [STORY#WB2].
+Total: 10.

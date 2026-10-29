@@ -1,0 +1,1 @@
+{"kind": "brief", "task": "dash", "label": "DASH INTO A CAR", "brief": "Dash into a car. The final hit must be the dash."}

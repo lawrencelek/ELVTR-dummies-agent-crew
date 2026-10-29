@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: cones. The final hit must come from a car reacting to a cone." The brief opens with the "coverage gap" framing, which the rule bars, and it never gives the goal as an imperative first. [EDIT98#3.2] Fix: "Place a cone in a car's path. The final hit must come from a car reacting to the cone."
+Total: 10 − 2 = 8.

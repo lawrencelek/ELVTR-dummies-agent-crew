@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The stilt houses are older than the city; behind glass in one stands Chassis 0, the prototype before you. Arms 3 is fitted for the push; show Chassis 0 how far the model has come." The tale is 35 words, over the 20-word tale cap (lint finding). [EDIT98#3.2] Fix: "Behind glass in the stilt houses stands Chassis 0. Arms 3 is fitted for the push; show it progress." (19 words, two sentences; it keeps the landmark, Chassis 0, Arms 3 and the push duty).
+Total: 10 − 4 = 6.

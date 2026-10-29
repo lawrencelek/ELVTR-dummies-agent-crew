@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13, V1–V4, V6, V8, V9, V11, F5–F7, F11, R4 and R5, and found no violation: it is 20 words in two sentences, names the LED drum and its high road, and gives the drop onto a car. Its duty matches the brief, it names no equipment because none is issued here, and it keeps cars as colleagues in a deadpan voice. [STORY#MC1] [EDIT98#3.2] [EDIT95#3.1] [EDIT95#3.2] [EDIT93#3.1]
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale's 18 words in two sentences against F6 and F11 [EDIT98#3.2] and found the length right for its content. "The west tower keeps the customs log" names the tile's landmark detail from canon and links it to the duty, so it meets V11 and R4 [STORY#WA3]. "on the raised road" matches the ON A RAISED ROAD brief, and the tale names no equipment, which is correct for a tile that issues none (R5, F7) [STORY#S3, EDIT93#3.1]. The tone is flat and motivating with no "!", and it addresses the trainee as "you" (T1, T2, T4, T5) [EDIT95#3.2]. The customs log fits the CUSTOMS frame (V6) [EDIT95#3.3]. The tale has no banned words, no other company name, no figures and no placeholders (V1, V4, F5) [EDIT95#3.1, STORY#S1].
+Total: 10.

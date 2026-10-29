@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: ricochets. Push off one car; the final hit must be the next car." The brief opens with "coverage gap" framing, which the rule bars, so the goal does not lead with the imperative. [EDIT98#3.2] Fix: "Push off one car. The final hit must be the next car."
+Total: 10 − 2 = 8.

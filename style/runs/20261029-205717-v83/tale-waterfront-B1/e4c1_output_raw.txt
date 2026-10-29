@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against every Dummy Corporation rule and found no violation. Lint reported nothing, and "3" is a part rank, which the rules allow. It has 19 words in two sentences (F6, [EDIT98#3.2]). It names the landmark and its hill, and turns the tunnel's traffic toward the duty (V11, [EDIT95#3.1], [STORY#WB1], [DECISIONS#rows-311-320~2] rows 313 and 317). It names Legs 3 on the tile that issues it (F7, R5, [STORY#S1], [EDIT93#3.1]). Its duty matches the JUMP INTO A CAR brief, in the in-voice form the guide gives (R5, [STORY#S3]). Every fact comes from WB1's canon (R4, [STORY#WB1]). The tone is deadpan and uses no adjectives, no "!" and no banned or game words (T1–T5, T13, V1, V3, [EDIT95#3.2], [PLAY#PS0]).
+Total: 10.

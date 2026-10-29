@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The arch is the Expo's gate, and visitors will circle the roundabout once before they enter. You circle faster: chain your hits, each landing before the last is forgotten." The tale runs 29 words, over the 20-word cap for tales. [EDIT98#3.2] Fix: "The arch is the Expo's gate. Visitors circle the roundabout once; you go faster, chaining hits before each is forgotten." (20 words, two sentences.)
+Total: 10 − 4 = 6.

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The board watches the ring over the pools, where the cars come round clean. Battery 2 is fitted, a second charge; chain your hits round the ring." The tale runs 27 words, which is over the 20-word cap for a tale (lint measurement). [EDIT98#3.2] Fix: cut the extra words: drop "the" before "cars", the gloss "a second charge" and the repeated "round the ring". The tale becomes "The board watches the ring over the pools, where cars come round clean. Battery 2 is fitted; chain your hits." (20 words).
+Total: 10 − 4 = 6.

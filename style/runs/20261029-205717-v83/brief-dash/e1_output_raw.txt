@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: dashes. The final hit must be a dash into a car." The brief opens with the "coverage gap" framing, which the rule bars, so it does not lead with the goal in the imperative. [EDIT98#3.2] Fix: "Dash into a car. The final hit must be the dash."
+Total: 10 − 2 = 8.

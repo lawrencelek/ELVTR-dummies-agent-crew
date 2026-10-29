@@ -1,0 +1,116 @@
+{
+ "case": "tale-parkland-A1",
+ "class": "V8.3 tale",
+ "title": "Parkland A1, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  6,
+  2,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 3,
+ "accepted": true,
+ "final_version": 3,
+ "seconds": 114.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 15.2,
+   "output_tokens": 1241,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14845260000000002
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.1,
+   "output_tokens": 859,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14189670000000001
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 17.3,
+   "output_tokens": 1192,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1474002
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 7.1,
+   "output_tokens": 524,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13577989999999998
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 20.3,
+   "output_tokens": 1757,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.149855
+  },
+  {
+   "label": "f3",
+   "role": "refiner",
+   "seconds": 20.6,
+   "output_tokens": 2220,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1606942
+  },
+  {
+   "label": "e4",
+   "role": "evaluator",
+   "seconds": 11.7,
+   "output_tokens": 856,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14006860000000002
+  },
+  {
+   "label": "e4c1",
+   "role": "evaluator",
+   "seconds": 11.9,
+   "output_tokens": 1009,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.028515399999999996
+  }
+ ],
+ "restored": [],
+ "cost_usd": 1.0527
+}

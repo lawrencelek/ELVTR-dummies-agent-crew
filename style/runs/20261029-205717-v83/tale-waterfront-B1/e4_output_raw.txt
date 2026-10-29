@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and T13 [EDIT95#3.2, PLAY#PS2]. It names the tunnel portal and the hill, turns them toward the jump [V11, EDIT95#3.1], and fits ACT III · CUSTOMS [V6, EDIT95#3.3]. It fits F6 and F11 at 19 words and 2 sentences [EDIT98#3.2, EDIT97#3.2]. It names Legs 3, which this tile issues [F7, STORY#WB1], and its duty matches the brief [R5, STORY#S3, EDIT93#3.1]. It uses no banned or glossary-breaking words and no placeholders [V1, V3, F5, FLEET#F2].
+Total: 10.

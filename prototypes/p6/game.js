@@ -99,6 +99,8 @@
   const LORE = window.DUMMIES_LORE || null, CREDITS = window.DUMMIES_CREDITS || null;
   const LT = (id, fallback, vars) => fillIn(LORE && LORE.notices && LORE.notices[id] != null ? LORE.notices[id] : fallback, vars);
   const SIM8 = window.DUMMIES_SIM || null, HS = SIM8 && SIM8['highscore.tableSize'] ? SIM8['highscore.tableSize'] : 0; // Edit 97 (P8.2): Prototype 8.2's values; the high scores
+  const INTRO = !!(SIM8 && SIM8['ui.introScreen']), CARD = !!(SIM8 && SIM8['ui.levelCard']), SPLASH = !!(SIM8 && SIM8['ui.storySplash']); // Edit 98 (P8.3)
+  if (INTRO) { app.screen = 'intro'; app.introT0 = 0; }
   // Fleet database (content/db/fleet.json, decision 117): model names, tags and the bark bank, separate from other text.
   const FLEET = window.FLEET_DB || null;
   const FMODEL = new Map(); // sim model id → database model
@@ -186,7 +188,8 @@
 
   function startStory() { app.mode = 'story'; if (!app.story) app.story = STORY.newProgress(); saveStory(); startLevel(LEVEL_LIST.indexOf(app.story.district)); } // Edit 81
   function toStoryMap() { saveStory(); app.screen = 'storymap'; app.sim = null; app.paused = false; app.mapSel = null; clearEdges(); }
-  function titleItems() { return STORY ? ['ARCADE', 'STORY'].concat(HS ? ['HIGH SCORES'] : [], CREDITS ? ['CREDITS'] : []) : []; } // Edit 88: a new story starts from the save screen. Edit 95 (P8): the Credits
+  function toStoryStart() { if (!SPLASH) return toStoryMap(); saveStory(); app.screen = 'splash'; app.splashT0 = app.realT; app.sim = null; app.paused = false; clearEdges(); } // Edit 98 (P8.3): the parts fly, then the map
+  function titleItems() { return STORY ? (INTRO ? ['STORY', 'ARCADE'] : ['ARCADE', 'STORY']).concat(HS ? ['HIGH SCORES'] : [], CREDITS ? ['CREDITS'] : []) : []; } // Edit 98 (P8.3): STORY first // Edit 88: a new story starts from the save screen. Edit 95 (P8): the Credits
   // Edit 88: the save screen. NEW GAME, then the slots. A slot: CONTINUE, RENAME, ERASE (A twice). NEW GAME takes the first empty
   // slot; with none empty, the player picks one to overwrite (A twice). A new game and RENAME open the name entry
   function toSaves() {
@@ -217,7 +220,7 @@
     const name = cleanName(ne.text).trim() || defaultName(ne.slot); app.nameEntry = null; nameInput.blur();
     if (ne.kind === 'rename') { const cur = readSlot(ne.slot); if (cur) { cur.name = name; writeSlot(ne.slot, cur); } toast('Renamed: ' + name); return; } // a rename keeps the time stamp
     app.slot = ne.slot; app.story = STORY.newProgress(); app.mode = 'story';
-    writeSlot(ne.slot, { v: 1, name, saved: Date.now(), progress: app.story }); toStoryMap();
+    writeSlot(ne.slot, { v: 1, name, saved: Date.now(), progress: app.story }); toStoryStart();
   }
   function nameOk() { const ne = app.nameEntry; if (!ne) return; if (ne.r < 3) nameType(NAME_ROWS[ne.r][ne.c]); else { const k = NAME_KEYS[nameKeyOf(ne.c)]; if (k === 'SPACE') nameType(' '); else if (k === 'DEL') nameDel(); else nameDone(); } }
   function nameMenu(m) { // stick, pad or arrows: the grid; A presses; B deletes (on an empty name, cancels); START finishes
@@ -237,7 +240,7 @@
     if (m !== 'ok') return;
     if (!sel) { const free = S.findIndex((v) => !v); if (free >= 0) nameStart(free + 1, 'new'); else { app.saveMode = 'overwrite'; app.saveSel = 1; app.slotAct = 0; toast('All ' + n + ' slots in use: choose one to overwrite'); } return; }
     const act = acts[Math.min(app.slotAct, acts.length - 1)];
-    if (act === 'CONTINUE') { if (loadSlot(sel)) toStoryMap(); }
+    if (act === 'CONTINUE') { if (loadSlot(sel)) toStoryStart(); }
     else if (act === 'NEW GAME') nameStart(sel, 'new');
     else if (act === 'RENAME') nameStart(sel, 'rename');
     else if (act === 'ERASE' || act === 'OVERWRITE') {
@@ -997,8 +1000,11 @@
     while (menuQ.length) {
       const m = menuQ.shift();
       if (app.credits) { if (m === 'ok' || m === 'back' || m === 'pause') app.credits = false; continue; } // Edit 95 (P8): the Credits card closes on A, B or Start
+      if (app.screen === 'intro') { if (m === 'ok' || m === 'pause') { app.screen = 'title'; app.titleSel = 0; } continue; } // Edit 98 (P8.3): START
+      if (app.screen === 'splash') { if ((m === 'ok' || m === 'pause' || m === 'back') && app.realT - app.splashT0 > 0.4) { toStoryMap(); return; } continue; } // Edit 98 (P8.3)
       if (app.screen === 'title' && STORY) { // Edit 81: ARCADE or STORY. Edit 88: STORY opens the save screen
         const items = titleItems();
+        if (m === 'back' && INTRO) { app.screen = 'intro'; continue; } // Edit 98 (P8.3): back to the intro screen
         if (m === 'up' || m === 'left') app.titleSel = (app.titleSel + items.length - 1) % items.length;
         else if (m === 'down' || m === 'right') app.titleSel = (app.titleSel + 1) % items.length;
         else if (m === 'ok') { const it = items[app.titleSel] || 'ARCADE'; if (it === 'CREDITS') app.credits = true; else if (it === 'HIGH SCORES') openScores('title', 0); else if (it === 'ARCADE') { app.mode = 'arcade'; app.screen = 'arcade'; } else toSaves(); } // Edit 97 (P8.2): the high scores
@@ -1932,7 +1938,7 @@
     const P = s.P;
     drawBubblesHD(s); // Edit 83: barks are speech bubbles on the cars again
     const since = s.t - (s.tStart || 0);
-    if (since < 4 && s.phase === 'play' && !s.storyMode) { // Edit 81: the story's tile card replaces the banner
+    if (since < 4 && s.phase === 'play' && !s.storyMode && !CARD) { // Edit 81: the story's tile card replaces the banner. Edit 98: the level card replaces it in Arcade too
       const iv = { road: s.roadIndex + 1, roads: s.list.length, roadName: INFO(s.levelId).name, quota: s.quota, difficulty: s.difficulty, health: P['damage.bodyHealth'] };
       const intro = CI && CI.copy && CI.copy.intro;
       const msg = s.isCity ? 'District ' + iv.road + ' of ' + iv.roads + ': ' + iv.roadName + '. ' + (place('districts.' + s.levelId + '.intro') || INFO(s.levelId).blurb) + ' Write-offs required: ' + iv.quota + '.'
@@ -2131,7 +2137,7 @@
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function whereOf(s) { // the body's level, as the top bar named it (Edit 44, P6 floors)
     const b = s.body, f = bodyFloor(s);
-    return b.mode === 'rescue' ? (s.rescue && (s.rescue.ferry || s.rescue.voyage) ? ' · DRONE' : ' · RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level;
+    return b.mode === 'rescue' ? (s.rescue && (s.rescue.ferry || s.rescue.voyage || s.rescue.dropIn) ? ' · DRONE' : ' · RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level;
   }
   function fitTextR(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color, 'right'); }
   function fitNumR(t, x, y, w, size, color) { let z = size; while (z > 14) { ctx.font = '700 ' + z + 'px ' + F_MONO; if (ctx.measureText(t).width <= w) break; z--; } txt(t, x, y, '700 ' + z + 'px ' + F_MONO, color, 'right'); } // Edit 89: a number that keeps clear of its label
@@ -2148,7 +2154,7 @@
   }
   function drawTopBar(s) {
     const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
-    const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? (s.rescue && (s.rescue.ferry || s.rescue.voyage) ? ' · DRONE' : ' · RIVER RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
+    const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? (s.rescue && (s.rescue.ferry || s.rescue.voyage || s.rescue.dropIn) ? ' · DRONE' : ' · RIVER RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
     const items = s.storyMode ? [[null, INFO(s.levelId).name.toUpperCase() + ' · ' + s.screenName() + where], ['TILE', s.story.tileWO + ' / ' + STORY.needOf(s.levelId, STORY.activeTile(s.story, s.levelId) || s.screenName(), s.P)], ['POINTS', num(r.points)], ['CREDITS', String(r.credits)]] // Edit 81
       : [[null, roadLabel(s.p6 ? s.levelId : s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
@@ -2426,15 +2432,15 @@
     veil();
     const x = FX + 30, y = FY + 22, w = FW - 60, h = FH - 44;
     panel(x, y, w, h);
-    txt('DUMMIES', x + 30, y + 76, '900 64px ' + F_BRAND, FT.text);
-    wrapText(LT('n01', 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.'), x + 32, y + 116, w - 64, 30, fTxt, FT.dim, 2);
+    if (!INTRO) { txt('DUMMIES', x + 30, y + 76, '900 64px ' + F_BRAND, FT.text); wrapText(LT('n01', 'You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.'), x + 32, y + 116, w - 64, 30, fTxt, FT.dim, 2); } // Edit 98 (P8.3): the intro screen carries the line
     const items = titleItems(), S = allSlots(), last = S.filter(Boolean).sort((a, b) => b.saved - a.saved)[0], pr = last && last.progress; // Edit 88: the latest save
     const sub = !last ? slotCount() + ' save slots · a new game begins in Monument A1' : last.name + ' · ' + (pr.complete ? 'certified' : INFO(pr.district).name + ' ' + STORY.activeTile(pr, pr.district) + ' · ' + STORY.clearedCount(pr) + ' of ' + STORY.TOTAL);
-    const cards = [['ARCADE', LT('n34', 'Pick one district and write off its quota. The score is the run.'), 'Parkland · Waterfront · Monument'], // Edit 97 (P8.2): n34, the grades
-      ['STORY', LT('n03', 'The Test City, tile by tile. Each tile wants its write-offs to Farsight\'s brief.'), sub]];
-    const cw = (w - 56 - 20) / 2, top = y + 162, chh = 206;
-    cards.forEach(([name, line, foot], i) => {
-      const cx = x + 28 + i * (cw + 20), on = (app.titleSel % items.length) === i;
+    const cardOf = { ARCADE: ['ARCADE', LT('n34', 'Pick one district and write off its quota. The score is the run.'), 'Parkland · Waterfront · Monument'], // Edit 97 (P8.2): n34, the grades
+      STORY: ['STORY', LT('n03', 'The Test City, tile by tile. Each tile wants its write-offs to Farsight\'s brief.'), sub] };
+    const cards = items.filter((it) => cardOf[it]).map((it) => cardOf[it]); // Edit 98 (P8.3): in the menu's order, STORY first
+    const cw = (w - 56 - 20) / 2, chh = INTRO ? 250 : 206, top = INTRO ? Math.round(y + (h - 40 - (chh + 18 + 42)) / 2) : y + 162;
+    cards.forEach(([name, line, foot], k) => {
+      const i = items.indexOf(name), cx = x + 28 + k * (cw + 20), on = (app.titleSel % items.length) === i;
       hitbox(cx, top, cw, chh, 'title:' + name, () => { app.titleSel = i; menuQ.push('ok'); }); // Edit 89
       rr(cx, top, cw, chh, 14); ctx.fillStyle = on ? FT.sel : FT.item; ctx.fill(); ctx.strokeStyle = on ? FT.accent : FT.itemEdge; ctx.lineWidth = on ? 3 : 1.5; ctx.stroke();
       txt(name, cx + 22, top + 50, '900 34px ' + F_BRAND, on ? FT.selText : FT.text);
@@ -2576,7 +2582,7 @@
       wrapText('Clear the tiles before it. The map opens one tile at a time.', ix + 18, iy + 104, iw - 36, 26, '400 19px ' + F_UI, FT.dim, 2);
     } else {
       txt(tile.title, ix + 18, iy + 68, '900 26px ' + F_BRAND, FT.text);
-      const n = wrapText(tile.tale, ix + 18, iy + 100, iw - 36, 24, '400 18px ' + F_UI, FT.text, 4);
+      const n = wrapText(CARD ? d.intro : tile.tale, ix + 18, iy + 100, iw - 36, 24, '400 18px ' + F_UI, CARD ? FT.dim : FT.text, 4); // Edit 98 (P8.3): the tale is on the level card; the act line here
       const tx = STORY.taskText(tile.task, null), gt = giftText(tile.gift);
       wrapText(LT('n05', 'FARSIGHT BRIEF · {LABEL}', { LABEL: tx.label }) + (gt ? ' · GIFT: ' + gt.split(':')[0] : ''), ix + 18, iy + 100 + n * 24 + 12, iw - 36, 24, '700 17px ' + F_UI, FT.accent, 2);
     }
@@ -3132,6 +3138,8 @@
   }
   function renderScreen() {
     HITS.length = 0; // Edit 89: this frame's tap targets
+    if (app.screen === 'intro') { drawIntro(); return; } // Edit 98 (P8.3)
+    if (app.screen === 'splash') { drawSplash(); return; }
     drawFrame();
     if (app.screen === 'title') { if (STORY) drawModeTitle(); else drawTitle(); if (app.credits) drawCredits(); return; } // Edit 95 (P8)
     if (app.screen === 'arcade') { drawTitle(); return; } // Edit 81
@@ -3144,7 +3152,7 @@
     drawHUD(s);
     drawComboMeter(s);
     if (app.paused) { if (!app.touchEdit) drawPause(s); } // Edit 87: placing the touch controls shows the game, dimmed, not the menu
-    else if (s.phase === 'brief') drawBrief(s); // Edit 81: the tile card
+    else if (s.phase === 'brief') { if (CARD) drawLevelCard(s); else drawBrief(s); } // Edit 81: the tile card. Edit 98 (P8.3): the level card, both modes
     else if (s.phase === 'gift') drawGiftPopup(s); // Edit 84
     else if (s.phase === 'unveil') drawUnveil(s); // Edit 94 (P7.13): the plaque
     else if (s.phase === 'report') drawReport(s);
@@ -3152,6 +3160,144 @@
     else if (s.phase === 'ending') drawEnding(s);
     if (app.credits) drawCredits(); // Edit 95 (P8): after CERTIFIED
     drawPadSetup();
+  }
+  // Edit 98 (P8.3): three full-screen pieces in the gift screen's front-on style. The intro: the dummy steps into the road and a car
+  // comes on, front-on, then the hit (ui.intro.loopSeconds). The level card, both modes: ACT I: MONUMENT. Tile A1. Level 1 of 27; the
+  // tale; >>> the goal. The Story splash: the dummy's parts fly apart and back (ui.splash.cycleSeconds)
+  const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u)), clampU = (u) => Math.max(0, Math.min(1, u));
+  let dollArt8 = null;
+  function dollBase() { if (!dollArt8) { const S = PIX.doll({}, null, []); dollArt8 = { S, cv: sprCanvas(S) }; } return dollArt8; }
+  function startPrompt(verb) { const pd = TOUCH.on || app.device === 'pad'; return TOUCH.on ? 'TAP TO ' + verb : (pd ? 'A  ' : 'SPACE  ') + verb; }
+  const introCv = document.createElement('canvas'); introCv.width = 320; introCv.height = 180;
+  const introCtx = introCv.getContext('2d');
+  function introCity(c) { // the skyline at the horizon, windows lit at fixed places
+    for (let i = 0, x = 0; x < 320; i++) {
+      const w = 10 + ((i * 37) % 17), h = 18 + ((i * 53) % 34); c.fillStyle = i % 3 ? '#141B33' : '#1A2342'; c.fillRect(x, 80 - h, w, h);
+      for (let wy = 80 - h + 3; wy < 78; wy += 4) for (let wx = x + 2; wx < x + w - 2; wx += 3) if (((wx * 7 + wy * 13 + i) % 5) === 0) { c.fillStyle = (wx + wy) % 2 ? '#3FD0FF' : '#FF5FD2'; c.fillRect(wx, wy, 1, 1); }
+      x += w + 1;
+    }
+  }
+  function introCar(c, cx, by, k) { // front-on: roof, windscreen, body, grille, headlights, wheels; k scales it
+    const W = Math.round(96 * k), H = Math.round(44 * k), x0 = Math.round(cx - W / 2), y0 = Math.round(by - H);
+    c.fillStyle = 'rgba(0,0,0,0.45)'; c.fillRect(x0 - 2, by - 2, W + 4, Math.max(2, Math.round(5 * k)));
+    c.fillStyle = '#141820'; c.fillRect(x0 + Math.round(4 * k), by - Math.round(9 * k), Math.round(14 * k), Math.round(10 * k)); c.fillRect(x0 + W - Math.round(18 * k), by - Math.round(9 * k), Math.round(14 * k), Math.round(10 * k));
+    c.fillStyle = '#DDE6EE'; c.fillRect(x0 + Math.round(14 * k), y0, W - Math.round(28 * k), Math.round(18 * k));
+    c.fillStyle = '#0E3A4F'; c.fillRect(x0 + Math.round(18 * k), y0 + Math.round(3 * k), W - Math.round(36 * k), Math.round(12 * k));
+    c.fillStyle = '#6FE4FF'; c.fillRect(x0 + Math.round(20 * k), y0 + Math.round(4 * k), Math.max(1, Math.round(10 * k)), Math.max(1, Math.round(2 * k)));
+    c.fillStyle = '#C9D3DA'; c.fillRect(x0, y0 + Math.round(17 * k), W, H - Math.round(25 * k));
+    c.fillStyle = '#F4F8FA'; c.fillRect(x0 + Math.round(2 * k), y0 + Math.round(17 * k), W - Math.round(4 * k), Math.max(1, Math.round(3 * k)));
+    c.fillStyle = '#262B36'; c.fillRect(x0 + Math.round(30 * k), y0 + Math.round(26 * k), W - Math.round(60 * k), Math.round(8 * k));
+    c.fillStyle = '#F4F8FA'; c.fillRect(Math.round(cx - 7 * k), y0 + Math.round(36 * k), Math.max(2, Math.round(14 * k)), Math.max(1, Math.round(4 * k)));
+    for (const sx of [-1, 1]) { const hx = Math.round(cx + sx * 34 * k - 6 * k), hy = y0 + Math.round(23 * k); c.fillStyle = '#FFF6DC'; c.fillRect(hx, hy, Math.max(2, Math.round(12 * k)), Math.max(1, Math.round(6 * k))); }
+  }
+  function drawIntro() {
+    if (!app.introT0) app.introT0 = app.realT;
+    const L = Math.max(2, (SIM8 && SIM8['ui.intro.loopSeconds']) || 6.5), t = (app.realT - app.introT0) % L, u = RM ? 0.62 : t / L, c = introCtx;
+    c.imageSmoothingEnabled = false;
+    const sky = c.createLinearGradient(0, 0, 0, 90); sky.addColorStop(0, '#05070F'); sky.addColorStop(1, '#2A1440'); c.fillStyle = sky; c.fillRect(0, 0, 320, 180);
+    introCity(c);
+    c.fillStyle = '#10141D'; c.fillRect(0, 80, 320, 100);
+    c.fillStyle = '#1E222C'; c.beginPath(); c.moveTo(150, 80); c.lineTo(170, 80); c.lineTo(300, 180); c.lineTo(20, 180); c.closePath(); c.fill();
+    c.fillStyle = '#E6F4FF'; for (const sx of [-1, 1]) { c.beginPath(); c.moveTo(160 + sx * 10, 80); c.lineTo(160 + sx * 11, 80); c.lineTo(160 + sx * 141, 180); c.lineTo(160 + sx * 138, 180); c.closePath(); c.fill(); }
+    for (let i = 0; i < 7; i++) { const z = ((i / 7) + (RM ? 0 : app.realT * 0.35)) % 1, y = 80 + 100 * z * z, h = Math.max(1, 6 * z * z), w = Math.max(1, 3 * z); c.fillStyle = '#E6F4FF'; c.fillRect(Math.round(160 - w / 2), Math.round(y), Math.round(w), Math.round(h)); }
+    const hit = 0.66, carK = 0.12 + 1.15 * ease(clampU(u / hit)), carY = 82 + 76 * ease(clampU(u / hit)); // the car, from the horizon to the dummy
+    const lit = c.createRadialGradient(160, carY - 10 * carK, 2, 160, carY - 10 * carK, 60 * carK + 6); lit.addColorStop(0, 'rgba(255,246,220,0.35)'); lit.addColorStop(1, 'rgba(255,246,220,0)'); c.fillStyle = lit; c.fillRect(0, 60, 320, 120);
+    const D = dollBase(), dk = 0.92, dw = D.S.w * dk, dh = D.S.h * dk;
+    const walk = clampU((u - 0.05) / 0.3), dx = 330 - (330 - 160) * ease(walk), bob = walk > 0 && walk < 1 && !RM ? Math.abs(Math.sin(walk * 18)) * 3 : 0;
+    if (u < hit) { introCar(c, 160, carY, carK); c.drawImage(D.cv, Math.round(dx - dw / 2), Math.round(176 - dh - bob), Math.round(dw), Math.round(dh)); }
+    else { // the hit: the dummy flies at us, turning; the car behind it
+      const f = clampU((u - hit) / 0.2); introCar(c, 160, carY, carK);
+      c.save(); c.globalAlpha = 1 - clampU((u - hit - 0.12) / 0.12); c.translate(160 + 40 * f, 176 - dh / 2 - 60 * f); c.rotate(2.4 * f); const g = 1 + 2.2 * f; c.drawImage(D.cv, -dw * g / 2, -dh * g / 2, dw * g, dh * g); c.restore();
+    }
+    const flash = u >= hit ? 1 - clampU((u - hit) / 0.08) : 0, fade = clampU((u - 0.9) / 0.1);
+    ctx.save(); ctx.imageSmoothingEnabled = false;
+    const sh = !RM && u >= hit && u < hit + 0.06 ? 10 * (1 - (u - hit) / 0.06) : 0;
+    const OY = -130; // the scene sits high; the line and START on a band of road below the dummy's feet
+    ctx.drawImage(introCv, Math.round(sh * Math.sin(app.realT * 90)), OY, VW, VH);
+    ctx.fillStyle = '#0B0E16'; ctx.fillRect(0, VH + OY, VW, -OY); ctx.fillStyle = C.dummy; ctx.fillRect(0, VH + OY, VW, 3);
+    if (flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + flash + ')'; ctx.fillRect(0, 0, VW, VH); }
+    if (fade > 0) { ctx.fillStyle = 'rgba(5,7,15,' + fade + ')'; ctx.fillRect(0, 0, VW, VH); }
+    ctx.restore();
+    const g2 = ctx.createLinearGradient(0, 0, 0, 220); g2.addColorStop(0, 'rgba(5,7,15,0.85)'); g2.addColorStop(1, 'rgba(5,7,15,0)'); ctx.fillStyle = g2; ctx.fillRect(0, 0, VW, 220);
+    ctx.save(); ctx.shadowColor = C.dummy; ctx.shadowBlur = 24; txt('DUMMIES', VW / 2, 128, '900 112px ' + F_BRAND, C.dummy, 'center'); ctx.restore();
+    wrapText(LT('n36', 'Find new ways to make the cars hit you. Combo bonuses and upgrades await. Make Dummy Corporation proud.'), VW / 2, VH - 94, 900, 34, '700 26px ' + F_UI, '#FFFFFF', 2, 'center');
+    if (RM || Math.floor(app.realT * 2) % 2 === 0) txt(startPrompt('START'), VW / 2, VH - 24, '900 26px ' + F_BRAND, C.dummy, 'center');
+    hitbox(0, 0, VW, VH, 'intro:start', () => menuQ.push('ok'));
+  }
+  let partArt = null;
+  function dollParts() { // the doll cut into its six parts along pixel.js's blobs: head, torso, two arms, two legs
+    if (partArt) return partArt;
+    const D = dollBase(), W = D.S.w, H = D.S.h, src = D.cv.getContext('2d').getImageData(0, 0, W, H);
+    const which = (x, y) => (y < 39 ? 'head' : (x < 20 || x > 43) && y < 82 ? (x < 32 ? 'armR' : 'armL') : y >= 72 ? (x < 32 ? 'legR' : 'legL') : 'torso');
+    const dir = { head: [0, -1.1], torso: [0, 0.15], armR: [-1.1, -0.35], armL: [1.1, -0.35], legR: [-0.7, 0.95], legL: [0.7, 0.95] }, spin = { head: 0.9, torso: 0, armR: -1.6, armL: 1.6, legR: -1.1, legL: 1.1 };
+    partArt = Object.keys(dir).map((k) => {
+      const cv2 = document.createElement('canvas'); cv2.width = W; cv2.height = H; const c2 = cv2.getContext('2d'), out = c2.createImageData(W, H);
+      let sx = 0, sy = 0, n = 0;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (!src.data[i + 3] || which(x, y) !== k) continue; for (let j = 0; j < 4; j++) out.data[i + j] = src.data[i + j]; sx += x; sy += y; n++; }
+      c2.putImageData(out, 0, 0);
+      return { k, cv: cv2, cx: n ? sx / n : W / 2, cy: n ? sy / n : H / 2, dir: dir[k], spin: spin[k] };
+    });
+    return partArt;
+  }
+  function drawSplash() {
+    const T = Math.max(1, (SIM8 && SIM8['ui.splash.cycleSeconds']) || 3.6), t = app.realT - app.splashT0, u = RM ? 0 : (t % T) / T;
+    const bg = ctx.createLinearGradient(0, 0, 0, VH); bg.addColorStop(0, '#05070F'); bg.addColorStop(1, '#141B33'); ctx.fillStyle = bg; ctx.fillRect(0, 0, VW, VH);
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, VW, VH); ctx.clip();
+    const mx = VW / 2, my = 280, rot = RM ? 0.3 : app.realT * 0.4, N = 16, R = 760, gr = ctx.createRadialGradient(mx, my, 10, mx, my, R);
+    gr.addColorStop(0, 'rgba(245,197,66,0.55)'); gr.addColorStop(1, 'rgba(245,197,66,0)'); ctx.fillStyle = gr; ctx.beginPath();
+    for (let i = 0; i < N; i++) { const a0 = rot + i * TAU / N; ctx.moveTo(mx, my); ctx.arc(mx, my, R, a0, a0 + TAU / N * 0.42); ctx.closePath(); }
+    ctx.fill();
+    const out = u < 0.12 ? 0 : u < 0.42 ? ease((u - 0.12) / 0.3) : u < 0.62 ? 1 : 1 - ease((u - 0.62) / 0.33), wob = u >= 0.42 && u < 0.62 ? Math.sin((u - 0.42) * 30) * 0.04 : 0;
+    const SC = 3.2, D = dollBase(), x0 = mx - D.S.w * SC / 2, y0 = my - D.S.h * SC / 2;
+    ctx.save(); ctx.imageSmoothingEnabled = false;
+    for (const pt of dollParts()) {
+      const ox = pt.dir[0] * 180 * out, oy = pt.dir[1] * (pt.k === 'head' ? 70 : 110) * out, a = (pt.spin + wob) * out, px = x0 + pt.cx * SC, py = y0 + pt.cy * SC;
+      ctx.save(); ctx.translate(px + ox, py + oy); ctx.rotate(a); ctx.drawImage(pt.cv, -pt.cx * SC, -pt.cy * SC, D.S.w * SC, D.S.h * SC); ctx.restore();
+    }
+    ctx.restore();
+    const fl = u >= 0.12 && u < 0.17 ? 1 - (u - 0.12) / 0.05 : 0;
+    if (fl > 0) { ctx.fillStyle = 'rgba(255,255,255,' + (0.7 * fl) + ')'; ctx.fillRect(0, 0, VW, VH); }
+    ctx.save(); ctx.shadowColor = C.dummy; ctx.shadowBlur = 20; txt('STORY', VW / 2, VH - 112, '900 72px ' + F_BRAND, C.dummy, 'center'); ctx.restore();
+    txt('SHENZHEN SMART CITY', VW / 2, VH - 74, '900 24px ' + F_BRAND, FT.accent, 'center');
+    if (RM || Math.floor(app.realT * 2) % 2 === 0) txt(startPrompt('CONTINUE'), VW / 2, VH - 30, '900 22px ' + F_BRAND, C.dummy, 'center');
+    ctx.restore();
+    hitbox(0, 0, VW, VH, 'splash:continue', () => menuQ.push('ok'));
+  }
+  function hazard(y, h) { ctx.save(); ctx.beginPath(); ctx.rect(0, y, VW, h); ctx.clip(); ctx.fillStyle = '#111317'; ctx.fillRect(0, y, VW, h); ctx.fillStyle = C.dummy; for (let x = -h * 2; x < VW + h; x += 2 * h) { ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x + h, y); ctx.lineTo(x + 2 * h, y); ctx.lineTo(x + h, y + h); ctx.closePath(); ctx.fill(); } ctx.restore(); }
+  function drawLevelCard(s) {
+    const key = s.levelId + ':' + s.screenName() + ':' + (s.storyMode ? STORY.activeTile(s.story, s.levelId) : 'arcade');
+    if (fx.cardKey !== key) { fx.cardKey = key; fx.cardT0 = app.realT; }
+    const t = app.realT - fx.cardT0, inK = RM ? 1 : ease(clampU(t / 0.35)), P = s.P;
+    ctx.fillStyle = 'rgba(5,7,15,0.95)'; ctx.fillRect(0, 0, VW, VH);
+    hazard(0, 22); hazard(VH - 22, 22);
+    const D = dollBase(), SC = 3, dw = D.S.w * SC, dh = D.S.h * SC, ddx = VW - 120 - dw, ddy = (VH - dh) / 2 + 10, rx = ddx + dw / 2, ry = ddy + dh * 0.42;
+    { const rot = RM ? 0.3 : app.realT * 0.4, gr = ctx.createRadialGradient(rx, ry, 8, rx, ry, 360); gr.addColorStop(0, 'rgba(245,197,66,0.38)'); gr.addColorStop(1, 'rgba(245,197,66,0)'); ctx.fillStyle = gr; ctx.beginPath(); for (let i = 0; i < 14; i++) { const a0 = rot + i * TAU / 14; ctx.moveTo(rx, ry); ctx.arc(rx, ry, 360, a0, a0 + TAU / 14 * 0.42); ctx.closePath(); } ctx.fill(); }
+    ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = inK; ctx.drawImage(D.cv, ddx, ddy + (RM ? 0 : Math.sin(app.realT * 2.4) * 6), dw, dh); ctx.restore();
+    let head, sub, story, goal, extra = '';
+    if (s.storyMode) {
+      const d = STORY.districtOf(s.levelId), tn = STORY.activeTile(s.story, s.levelId) || s.screenName(), tile = d.tiles[tn], need = STORY.needOf(d.id, tn, P);
+      head = (d.act ? d.act.split(' · ')[0] : 'ACT') + ': ' + d.name.toUpperCase();
+      sub = 'Tile ' + tn + '. Level ' + STORY.tileNumber(d.id, tn) + ' of ' + STORY.TOTAL + '.';
+      story = tile.tale; goal = STORY.taskText(tile.task, P).brief;
+      if (need > 1) extra = need + ' WRITE-OFFS TO CLEAR';
+    } else {
+      const nid = ({ monument: 'n24', parkland: 'n25', waterfront: 'n26' })[s.levelId];
+      head = 'ARCADE: ' + INFO(s.levelId).name.toUpperCase();
+      sub = s.grade ? 'Grade ' + s.grade + ' of ' + P['arcade.grade.max'] + '.' : '';
+      story = nid ? LT(nid, INFO(s.levelId).blurb) : INFO(s.levelId).blurb;
+      goal = LT('n37', 'Write off {Q} bodies to raise the grade. The shift ends when the vehicles run out.', { Q: s.quota });
+    }
+    const x = 96 - 60 * (1 - inK), w = Math.min(760, ddx - 40 - 96);
+    ctx.save(); ctx.globalAlpha = inK;
+    txt(head, x, 150, '900 64px ' + F_BRAND, C.dummy);
+    txt(sub, x + 2, 196, '700 28px ' + F_UI, FT.accent);
+    let yy = 270; yy += 42 * wrapText(story, x, yy, w, 42, '400 31px ' + F_UI, '#FFFFFF', 3) + 26;
+    txt('>>>', x, yy, '900 31px ' + F_BRAND, C.dummy);
+    yy += 42 * wrapText(goal, x + 74, yy, w - 74, 42, '700 31px ' + F_UI, '#FFFFFF', 4);
+    if (extra) txt(extra, x + 74, yy + 6, '700 20px ' + F_UI, FT.dim);
+    ctx.restore();
+    if (t > 0.35 && (RM || Math.floor(app.realT * 2) % 2 === 0)) txt(startPrompt('START'), VW - 60, VH - 48, '900 28px ' + F_BRAND, C.dummy, 'right');
+    hitbox(0, 0, VW, VH, 'card:start', () => menuQ.push('ok'));
   }
   // Edit 97 (P8.2): the high scores, kept in this browser. A table per Arcade district (points; grade, write-offs, time beside) and
   // one for Story's Certified runs (points; chassis spent, time). highscore.tableSize rows each. A new Arcade score takes the last
@@ -3432,6 +3578,6 @@
   window.__dummies = app;
   window.__dummiesScale = () => ({ kpx, scale, ox, oy, width: cv.width, height: cv.height });
   window.__dummiesInput = { faceWords: () => Object.fromEntries(FACE.map((f) => [f[0], faceWord({ id: f[0], w: f[4] }, app.sim).word])), TOUCH, pad, touchLayout, touchLayoutCss, FOUR, touchEditStart, touchEditEnd, touchEditSize, editBar, saveTouchCfg }; // Edit 75–76: for the tests
-  window.__dummiesUI = { titleItems, pauseItems, credits: () => !!app.credits, scores: () => hsRead(), scoreTables: () => hsTables().map((t) => t.key), hsLast: () => app.hsLast, // Edit 97 (P8.2) saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88
+  window.__dummiesUI = { titleItems, pauseItems, credits: () => !!app.credits, scores: () => hsRead(), scoreTables: () => hsTables().map((t) => t.key), hsLast: () => app.hsLast, saves: () => allSlots().map((v, i) => v && { n: i + 1, name: v.name, saved: v.saved, stamp: stamp(v.saved), lines: slotLines(v), progress: JSON.parse(JSON.stringify(v.progress)) }), hits: () => HITS.map((q2) => ({ x: q2.x, y: q2.y, w: q2.w, h: q2.h, tag: q2.tag })), slotActs, // Edit 88. Edit 97 (P8.2): scores, scoreTables, hsLast. Edit 98 (P8.3): saves, hits and slotActs restored (8.2 had commented them out)
     controlItems: () => controlItems(), hud: () => app.hud && JSON.parse(JSON.stringify(Object.assign({ field: { x: FX - 6, y: FY - 6, w: FW + 12, h: FH + 12 } }, app.hud))), objective, optionItems, controlRows: () => app.sim && controlRows(app.sim), deviceOf, giftReady, gift: () => fx.gift && { node: fx.gift.node, age: app.realT - fx.gift.t0 }, pinGift: (a) => { if (fx.gift) fx.gift.pin = a; } }; // Edit 83–84: for the tests
 })();

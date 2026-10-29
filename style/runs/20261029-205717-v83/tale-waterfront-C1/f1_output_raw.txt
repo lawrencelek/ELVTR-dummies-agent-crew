@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "C1", "title": "The east portal", "tale": "The east portal faces away from its twin. Police here check papers; your Certification needs their fleet on record."}

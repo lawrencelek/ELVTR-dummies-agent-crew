@@ -1,0 +1,68 @@
+{
+ "case": "tale-parkland-B3",
+ "class": "V8.3 tale",
+ "title": "Parkland B3, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 56.5,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 13.4,
+   "output_tokens": 1195,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1448297
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.6,
+   "output_tokens": 857,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1389898
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 15.7,
+   "output_tokens": 1274,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14275659999999998
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 16.8,
+   "output_tokens": 1221,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0325434
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4591
+}

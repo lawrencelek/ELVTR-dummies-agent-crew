@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit97-2026-10-29",
+ "registryVersion": "edit98-2026-10-29",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -11074,6 +11074,138 @@
    },
    "description": "Scores kept per table, in this browser: one table per Arcade district, one for Story's Certified runs",
    "purpose": "Edit 97: HIGH SCORES under the two modes (user-decided: this browser)"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p8.3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 98 (P8.3): user-decided, 29 October (the intro screen, the level card, the drone drop, the Story animation); values proposed",
+   "status": "proposed",
+   "applyAt": "next-run",
+   "id": "ui.introScreen",
+   "group": "Interface",
+   "owner": "UI",
+   "label": "Intro screen",
+   "unit": "flag",
+   "type": "number",
+   "default": 0,
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "description": "1: the game opens on a full-screen intro: DUMMIES, the front-on animation (the dummy steps into the road, a car comes on), one line (n36) and START; then the mode select, STORY first. 0: the mode select first. Prototype 8.3 sets 1",
+   "purpose": "\"Create a NEW Introduction Screen - Dummies (full screen) + Start\""
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p8.3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 98 (P8.3): user-decided, 29 October (the intro screen, the level card, the drone drop, the Story animation); values proposed",
+   "status": "proposed",
+   "applyAt": "next-run",
+   "id": "ui.levelCard",
+   "group": "Interface",
+   "owner": "UI",
+   "label": "Level card",
+   "unit": "flag",
+   "type": "number",
+   "default": 0,
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "description": "1: a level starts on a full-screen card in both modes: ACT I: MONUMENT. Tile A1. Level 1 of 27. The tale. >>> The goal. Arcade: ARCADE: PARKLAND. Grade 1 of 5. The district's line. >>> The goal (n37). Prototype 8.3 sets 1",
+   "purpose": "\"An Exciting Screen that tells you very simply what the goal of the level is\""
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p8.3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 98 (P8.3): user-decided, 29 October (the intro screen, the level card, the drone drop, the Story animation); values proposed",
+   "status": "proposed",
+   "applyAt": "next-run",
+   "id": "world.droneDropIn",
+   "group": "World",
+   "owner": "Level design",
+   "label": "Drone drop",
+   "unit": "flag",
+   "type": "number",
+   "default": 0,
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "description": "1: after the level card, a drone carries the dummy in from the screen's left edge and sets it down where it would have stood (proto.droneSpeed, proto.droneLiftSeconds). A Story tile deployed from the map; an Arcade district. Prototype 8.3 sets 1",
+   "purpose": "\"You are dropped off from the left side of a screen by a DRONE\""
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p8.3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 98 (P8.3): user-decided, 29 October (the intro screen, the level card, the drone drop, the Story animation); values proposed",
+   "status": "proposed",
+   "applyAt": "next-run",
+   "id": "ui.storySplash",
+   "group": "Interface",
+   "owner": "UI",
+   "label": "Story splash",
+   "unit": "flag",
+   "type": "number",
+   "default": 0,
+   "validation": {
+    "min": 0,
+    "max": 1
+   },
+   "description": "1: NEW GAME or CONTINUE plays a full-screen animation before the map: the dummy's six parts fly apart and back, in the gift screen's style. Prototype 8.3 sets 1",
+   "purpose": "\"An animation showing the different body parts flying\""
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p8.3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 98 (P8.3): user-decided, 29 October (the intro screen, the level card, the drone drop, the Story animation); values proposed",
+   "status": "proposed",
+   "applyAt": "next-run",
+   "id": "ui.intro.loopSeconds",
+   "group": "Interface",
+   "owner": "UI",
+   "label": "Intro loop",
+   "unit": "s",
+   "type": "number",
+   "default": 6.5,
+   "validation": {
+    "min": 2,
+    "max": 20
+   },
+   "description": "One loop of the intro animation: the dummy steps out, the car comes on, the hit, the fade",
+   "purpose": "Long enough to read the line twice"
+  },
+  {
+   "editable": true,
+   "protectedReason": null,
+   "integrationStatus": "prototype-p8.3",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "source": "Edit 98 (P8.3): user-decided, 29 October (the intro screen, the level card, the drone drop, the Story animation); values proposed",
+   "status": "proposed",
+   "applyAt": "next-run",
+   "id": "ui.splash.cycleSeconds",
+   "group": "Interface",
+   "owner": "UI",
+   "label": "Story splash cycle",
+   "unit": "s",
+   "type": "number",
+   "default": 3.6,
+   "validation": {
+    "min": 1,
+    "max": 10
+   },
+   "description": "One cycle of the Story splash: assembled, the parts fly out, hold, fly back",
+   "purpose": "The gift screen's pace"
   }
  ],
  "tables": {

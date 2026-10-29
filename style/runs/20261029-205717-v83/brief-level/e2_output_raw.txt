@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- brief · V1 (blocking, −4) "not at ground level" uses the banned word "level", which no in-game text may contain. [FLEET#F2] Fix: "Climb to a raised road. The final hit must land up there, not on the street."
+Total: 10 − 4 = 6.

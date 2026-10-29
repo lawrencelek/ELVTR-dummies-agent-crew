@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · V6 (major, −2) "Stand in its path, then cross to our clients." The CUSTOMS frame says only Certified dummies cross the river to clients, but this line has a trainee on tile 1 of 9 cross straight after one bus hit, which skips Certification. [EDIT95#3.3] Fix: "The bus carries engineers through the west portal to the bridge. Stand in its path; Certified, you cross to our clients." (20 words, two sentences)
+Total: 10 − 2 = 8.

@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "A2", "title": "The dome by the canal", "tale": "The dome is the Expo's showroom; you are the exhibit. Hands 2 is fitted: bait a car with a cone."}

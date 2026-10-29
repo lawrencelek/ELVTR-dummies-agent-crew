@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The east bridge was built a year after the west, to correct its mistakes; its portal block faces the other way. The police here check papers, and your Certification needs their fleet on record." The tale is 34 words, over the 20-word cap for a tale (lint finding). [EDIT98#3.2] Fix: "The east portal faces away from its twin. Police here check papers; your Certification needs their fleet on record." (19 words, two sentences; keeps the landmark, the police and the duty from the brief.)
+Total: 10 − 4 = 6.

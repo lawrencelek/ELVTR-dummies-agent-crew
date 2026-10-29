@@ -1,0 +1,281 @@
+{
+ "run": "20261029-205717-v83",
+ "guide": "STYLE_GUIDE_V2.md",
+ "accepted": {
+  "20261029-161328-v8/act-monument": true,
+  "20261029-161328-v8/tale-monument-A1": true,
+  "20261029-161328-v8/tale-monument-B1": true,
+  "20261029-161328-v8/tale-monument-C1": true,
+  "20261029-161328-v8/tale-monument-C2": true,
+  "20261029-161328-v8/tale-monument-B2": true,
+  "20261029-161328-v8/tale-monument-A2": true,
+  "20261029-161328-v8/tale-monument-A3": true,
+  "20261029-161328-v8/tale-monument-B3": true,
+  "20261029-161328-v8/tale-monument-C3": true,
+  "20261029-161328-v8/act-parkland": true,
+  "20261029-161328-v8/tale-parkland-C1": true,
+  "20261029-161328-v8/tale-parkland-C2": true,
+  "20261029-161328-v8/tale-parkland-C3": true,
+  "20261029-161328-v8/tale-parkland-B3": true,
+  "20261029-161328-v8/tale-parkland-A3": true,
+  "20261029-161328-v8/tale-parkland-A2": true,
+  "20261029-161328-v8/tale-parkland-A1": true,
+  "20261029-161328-v8/tale-parkland-B1": true,
+  "20261029-161328-v8/tale-parkland-B2": true,
+  "20261029-161328-v8/act-waterfront": true,
+  "20261029-161328-v8/tale-waterfront-A1": true,
+  "20261029-161328-v8/tale-waterfront-B1": true,
+  "20261029-161328-v8/tale-waterfront-C1": true,
+  "20261029-161328-v8/tale-waterfront-C2": true,
+  "20261029-161328-v8/tale-waterfront-C3": true,
+  "20261029-161328-v8/tale-waterfront-B3": true,
+  "20261029-161328-v8/tale-waterfront-A3": true,
+  "20261029-161328-v8/tale-waterfront-A2": true,
+  "20261029-161328-v8/tale-waterfront-B2": true,
+  "20261029-161328-v8/brief-any": true,
+  "20261029-161328-v8/brief-dash": true,
+  "20261029-161328-v8/brief-drop": true,
+  "20261029-161328-v8/brief-jump": true,
+  "20261029-161328-v8/brief-level": true,
+  "20261029-161328-v8/brief-cone": true,
+  "20261029-161328-v8/brief-push": true,
+  "20261029-161328-v8/brief-bounce": true,
+  "20261029-161328-v8/brief-struck": true,
+  "20261029-161328-v8/brief-combo": true,
+  "20261029-161328-v8/brief-cls": true,
+  "20261029-161328-v8/ending": true,
+  "20261029-161328-v8/notices": true,
+  "20261029-161328-v8/barks": true,
+  "20261029-161328-v8/credits": true,
+  "20261029-161328-v8/story-batch": true,
+  "20261029-161328-v8/arcade-banners": true,
+  "20261029-161328-v8/review": true,
+  "20261029-172610-v81/districts": true,
+  "20261029-172610-v81/review": true,
+  "20261029-172610-v81/review-2": true,
+  "20261029-181530-v82/arcade-grades": true,
+  "tale-monument-B1": true,
+  "tale-monument-C1": true,
+  "tale-monument-C2": true,
+  "tale-monument-B2": true,
+  "tale-monument-A2": true,
+  "tale-monument-A3": true,
+  "tale-monument-B3": true,
+  "tale-monument-C3": true,
+  "tale-parkland-C1": true,
+  "tale-parkland-C2": true,
+  "tale-parkland-C3": true,
+  "tale-parkland-B3": true,
+  "tale-parkland-A3": true,
+  "tale-parkland-A2": true,
+  "tale-parkland-A1": true,
+  "tale-parkland-B1": true,
+  "tale-parkland-B2": true,
+  "tale-waterfront-A1": true,
+  "tale-waterfront-B1": true,
+  "tale-waterfront-C1": true,
+  "tale-waterfront-C2": true,
+  "tale-waterfront-C3": true,
+  "tale-waterfront-B3": true,
+  "tale-waterfront-A3": true,
+  "tale-waterfront-A2": true,
+  "tale-waterfront-B2": true,
+  "brief-dash": true,
+  "brief-drop": true,
+  "brief-jump": true,
+  "brief-level": true,
+  "brief-cone": true,
+  "brief-push": true,
+  "brief-bounce": true,
+  "brief-struck": true,
+  "brief-combo": true,
+  "brief-cls": true,
+  "notices-83": true,
+  "review": true,
+  "intro-line": true
+ },
+ "tales": {
+  "monument": {
+   "A1": "Fresh off the factory floor, you're ready to do some damage to yourself. Make your engineers proud.",
+   "B1": "Battery 1 is fitted. The skybridge was built for shoppers who never came; staff watch you dash into a colleague.",
+   "C1": "The LED drum lights each bend. Step off the high road onto a car: gravity is company policy.",
+   "C2": "The road runs through the portal tower at the sixth floor. Take your write-off up there; ignore the view.",
+   "B2": "The plaque reads ZERO ACCIDENTS: a target, not a record. Stand near it until a colleague finds you.",
+   "A2": "The neon shops sell nothing, but the traffic reads them. Hands 1 is fitted: bait a colleague with a cone.",
+   "A3": "The stacked cubes rose one budget at a time. Build the same way: one hit, then another, quickly.",
+   "B3": "Two screens advertise to each other all night. Legs 1 is fitted: jump into a car between them.",
+   "C3": "The gateway thanked the car that wrote you off for driving safely. Let one colleague throw you into the next."
+  },
+  "parkland": {
+   "C1": "The lantern, the Expo's first exhibit, is lit for clients. With Arms 1, push off one car into the next.",
+   "C2": "Our board watches opening day from these terraces. A van delivers the catering; arrange for it to deliver you.",
+   "C3": "The arch is the Expo's gate; visitors circle the roundabout once. You go faster: chain hits before each is forgotten.",
+   "B3": "The obelisk marks the surveyors' first stake. Police escort a school party here on opening day; test them first.",
+   "A3": "A wedding faces the traffic from the belvedere. Legs 2 is fitted: jump into a car, so no guest does.",
+   "A2": "The dome is the Expo's showroom; you are the exhibit. Hands 2 is fitted: bait a car with a cone.",
+   "A1": "The gardener's pools need cars that stop. Teach them with Arms 2: push off one car into the next.",
+   "B1": "The cascade was built to drown out the traffic. The traffic got louder; take your hit up on the highway.",
+   "B2": "The board watches the ring over the pools. Battery 2 is fitted: chain your hits."
+  },
+  "waterfront": {
+   "A1": "The bus carries engineers through the west portal to the bridge. It never misses; take its hit.",
+   "B1": "Cars go into the tunnel under the hill, and data comes back. Legs 3 is fitted: leap into one.",
+   "C1": "The east portal faces away from its twin. Police here check papers; your Certification needs their fleet on record.",
+   "C2": "The east beach terrace served tourists, then sensors. Drop from its rail onto a car; ships wait for the Certified.",
+   "C3": "The pier tower logs all that floats: containers, ducks, one dummy. Be thrown into a car to earn your entry.",
+   "B3": "The stilt houses keep Chassis 0 behind glass. Arms 3 is fitted; push off a car and show it progress.",
+   "A3": "The west tower keeps the customs log. Your entry reads PURPOSE DESTRUCTION: honour it on the raised road.",
+   "A2": "Sand from three provinces lies under the west beach terrace. Place a cone; one more clean reading before the ceremony.",
+   "B2": "The circus monument, cast from your written-off chassis, reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits."
+  }
+ },
+ "acts": {
+  "monument": "Dummy Corporation welcomes you off the factory floor. The cars are your colleagues; Certification is your goal.",
+  "parkland": "The Expo opens to clients when this park passes. Your training keeps them safe.",
+  "waterfront": "Certified dummies ship across the river, to be sacrificed in service to our clients. Your papers are being prepared."
+ },
+ "briefs": {
+  "any": {
+   "label": "ANY WRITE-OFF",
+   "brief": "Walk into the path of the incoming vehicles. Time your approach, and choose your angle carefully. Bonus points for combinations and lethal hits."
+  },
+  "dash": {
+   "label": "DASH INTO A CAR",
+   "brief": "Dash into a car. The final hit must be the dash."
+  },
+  "drop": {
+   "label": "DROP ONTO A CAR",
+   "brief": "Drop onto a car from above. The final hit must be that drop."
+  },
+  "jump": {
+   "label": "JUMP INTO A CAR",
+   "brief": "Jump into a car. The jump must be the final hit."
+  },
+  "level": {
+   "label": "ON A RAISED ROAD",
+   "brief": "Climb to a raised road. The final hit must land up there, not on the street."
+  },
+  "cone": {
+   "label": "CONE-BAITED CAR",
+   "brief": "Place a cone. The final hit must come from a car reacting to it."
+  },
+  "push": {
+   "label": "PUSH OFF A CAR",
+   "brief": "Push off one car. The final hit must be the next car."
+  },
+  "bounce": {
+   "label": "THROWN INTO A CAR",
+   "brief": "Let one car throw you into another. Take the final hit while a hit is still throwing you."
+  },
+  "struck": {
+   "label": "STRUCK, NOT DASHING",
+   "brief": "Walk or stand in the traffic. A car must deliver the final hit while you are not dashing."
+  },
+  "combo": {
+   "label": "COMBO ×{n}",
+   "brief": "Chain your hits into a combo. The final hit must be link {n} or later."
+  },
+  "cls": {
+   "label": "A {cls}",
+   "brief": "Step in front of the {clsLong}. The final hit must come from a {cls}."
+  }
+ },
+ "ending": "Your model has passed and will be manufactured for our clients. A Corporation drone carries you to the ship.",
+ "notices": {
+  "n01": "You are a Dummy Corporation trainee. Every write-off brings Certification closer.",
+  "n02": "Welcome, trainee. Every write-off brings Certification closer.",
+  "n03": "Get your Dummy Certification in Shenzhen Smart City and learn about the Corporation.",
+  "n04": "TRAINING BRIEF",
+  "n05": "TRAINING BRIEF · {LABEL}",
+  "n06": "CORPORATION DRONE",
+  "n07": "CORPORATION DRONE · DELIVERING {PART}",
+  "n08": "CORPORATION DRONE · {PART} ON BOARD · THEN {TILE}",
+  "n09": "CORPORATION DRONE · CARRYING YOU TO {TILE}",
+  "n10": "CORPORATION DRONE · INCOMING",
+  "n11": "CORPORATION GIFT · +{N} CREDITS",
+  "n12": "NEXT FROM THE CORPORATION",
+  "n13": "A Corporation drone brings this part.",
+  "n14": "A Corporation drone brings this part. Keep training.",
+  "n15": "A Corporation drone brings that part",
+  "n16": "A Corporation drone brings it",
+  "n17": "Corporation drone dispatched: chassis in the river",
+  "n18": "Corporation drone dispatched. Obstruction will be relocated.",
+  "n19": "Corporation drone: chassis recovered from the river",
+  "n20": "Training complete. The Corporation thanks you for your service.",
+  "n21": "Traffic exhausted. Training incomplete; report to the bay.",
+  "n22": "DUMMY CORPORATION",
+  "n23": "DUMMY CORP",
+  "n24": "Neon shops, LED walls; one road splits round the monument under the walkway ring. Your training begins here.",
+  "n25": "Water and concrete; a boulevard passes under the raised ring. Your write-offs open the Expo to clients.",
+  "n26": "A hill walled by towers; bridges cross the drive and the river. Certified dummies ship across it to clients.",
+  "n27": "Calibration Campus",
+  "n28": "Towers and barriers. Corporation Tower stands over your training.",
+  "n29": "The test centre the city was modelled on. Hits on its impact plates count for more.",
+  "n30": "Two flyovers cross it, one above the other. Corporation Tower stands at the centre; towers shade your training.",
+  "n31": "Impact plates mark the road at the centre. A write-off on a plate counts for more.",
+  "n32": "Corporation Tower Plaza",
+  "n33": "Corporation Tower",
+  "n34": "Get hit in fun, creative, and destructive ways before the vehicles run out.",
+  "n35": "GRADE {G} · TOUGHER CHASSIS · DENSER TRAFFIC",
+  "n36": "Self-driving cars are designed never to hit anyone. Your training: get hit, in combos, and earn your parts.",
+  "n37": "Write off bodies; every {Q} write-offs, the grade rises. Keep training until the vehicles run out."
+ },
+ "barks": {
+  "b013": {
+   "text": "OI! Right in the grille, kind regards.",
+   "style": "shout"
+  },
+  "b034": {
+   "text": "A write-off on my record. Unthinkable.",
+   "style": "speech"
+  },
+  "b041": {
+   "text": "Done, done! You happy now?!",
+   "style": "shout"
+  },
+  "b052": {
+   "text": "Too slow, ha! Have a nice day!",
+   "style": "mutter"
+  },
+  "b058": {
+   "text": "Dash detected, no contact. Noted.",
+   "style": "mutter"
+  },
+  "b061": {
+   "text": "It lunged and nothing happened. Same.",
+   "style": "mutter"
+  },
+  "b062": {
+   "text": "Missed, rubbish! Regards!",
+   "style": "mutter"
+  },
+  "b081": {
+   "text": "Move. I have a schedule, and standards.",
+   "style": "speech"
+  },
+  "b083": {
+   "text": "MOVE IT, thank you! MOVE!",
+   "style": "shout"
+  },
+  "b110": {
+   "text": "Bigger battery, more dashes. Wonderful.",
+   "style": "speech"
+  },
+  "c024": {
+   "text": "Hit on campus. That goes on my record.",
+   "style": "mutter"
+  }
+ },
+ "credits": [
+  "DUMMIES",
+  "A game by Lawrence Lek",
+  "Published by Farsight"
+ ],
+ "base": "20261029-181530-v82",
+ "user": {
+  "tale:monument:A1": "Fresh off the factory floor, you're ready to do some damage to yourself. Make your engineers proud.",
+  "brief:any": "Walk into the path of the incoming vehicles. Time your approach, and choose your angle carefully. Bonus points for combinations and lethal hits.",
+  "n03": "Get your Dummy Certification in Shenzhen Smart City and learn about the Corporation.",
+  "n34": "Get hit in fun, creative, and destructive ways before the vehicles run out."
+ }
+}

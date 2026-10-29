@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The LED drum lights each bend before a car arrives, so no colleague is surprised. Where the high road breaks its rail, step off onto a car below: gravity is company policy." At 32 words, the tale is over the tale cap of 20 words (style.v2.tale.maxWords), though it keeps to two sentences. [EDIT98#3.2] Fix: "The LED drum warns colleagues of each bend. Step off the broken rail onto a car: gravity is company policy." (20 words).
+Total: 10 − 4 = 6.

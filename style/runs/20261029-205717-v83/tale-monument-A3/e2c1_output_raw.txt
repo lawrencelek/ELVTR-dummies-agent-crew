@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tale against these rules:
+  - **Length (F6, F11):** 18 words in two sentences, within the 15–20 word tale range [EDIT98#3.2] [EDIT97#3.2].
+  - **Tone (T1–T5, T13):** flat and motivating. It speaks to the trainee in the imperative, has one adjective and no "!" [EDIT95#3.2] [PLAY#PS2].
+  - **Banned words, company name and placeholders (V1, V4, F5):** none present [EDIT95#0] [STORY#S1].
+  - **Place (V11, R4):** it names the stacked cubes and ties the way they were built to the duty [EDIT95#3.1] [STORY#MA3] [EDIT92#7].
+  - **Act and duty (V6, R5):** it fits the INDUCTION frame, and "one hit, then another" matches the COMBO ×{n} brief [EDIT95#3.3] [STORY#S3].
+  - **Equipment (F7, R5):** this tile issues none, and the tale names none [EDIT93#3.1].
+Total: 10.

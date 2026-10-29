@@ -128,11 +128,37 @@
     return false;
   }
 
+  // Edit 98 (P8.3): the drone drop. At a level's start (after the level card) a drone carries the dummy in from the screen's left edge
+  // and sets it down where it would have stood (world.droneDropIn). In → drop → away. The world runs; the dummy is carried
+  function startDropIn(sim) {
+    const b = sim.body; if (!b || !b.alive) return;
+    const to = { x: b.x, y: b.y, level: b.level || 0, floor: b.floor != null ? b.floor : null };
+    sim.rescue = droneTo(sim, -40, to.y, { dropIn: true, to });
+    const rs = sim.rescue; rs.phase = 'in'; rs.up = 14; rs.drone.state = 'in';
+    Object.assign(b, { x: -40, y: to.y, px: -40, py: to.y, level: 0, floor: null });
+    sim.emit('drop-in', { x: +to.x.toFixed(1), y: +to.y.toFixed(1) });
+  }
+  function stepDropIn(sim, dt) {
+    const rs = sim.rescue; sim.rescue = null; W6.Sim6.prototype.stepRescue.call(sim, dt); sim.rescue = rs; // the drones already leaving fly on
+    rs.t += dt; rs.k += dt;
+    const b = sim.body, d = rs.drone, fly = (x, y) => { const dx = x - d.x, dy = y - d.y, l = Math.hypot(dx, dy), st = rs.v * dt; if (l <= st) { d.x = x; d.y = y; return true; } d.x += dx / l * st; d.y += dy / l * st; return false; };
+    if (rs.phase === 'in') { const arrived = fly(rs.to.x, rs.to.y); b.x = d.x; b.y = d.y; b.px = b.x; b.py = b.y; if (arrived) { rs.phase = 'drop'; rs.k = 0; d.state = 'drop'; } }
+    else if (rs.phase === 'drop') {
+      const f = Math.min(1, rs.k / rs.lift); rs.up = 14 * (1 - f);
+      if (f >= 1) {
+        Object.assign(b, { x: rs.to.x, y: rs.to.y, px: rs.to.x, py: rs.to.y, level: rs.to.level, floor: rs.to.floor, mode: 'idle', vx: 0, vy: 0 });
+        d.hx = -40; d.hy = d.y - 60; d.state = 'outbound'; (sim.leaving = sim.leaving || []).push(d); // back the way it came
+        sim.rescue = null;
+        sim.emit('dropped-in', { x: +b.x.toFixed(1), y: +b.y.toFixed(1), seconds: +rs.t.toFixed(2) });
+      }
+    }
+  }
+
   // ---------- the story's player sim: a Sim6 that starts on the district's tile in test, fences it, and counts the brief
   class StorySim extends W6.Sim6 {
     // progress: newProgress() or a saved one, its district = this district. opts: Sim6's (world, warm)
     constructor(id, overrides, progress, opts) {
-      const pr = progress, ov = Object.assign({}, P7SIM, overrides || {}), P0 = Object.assign({}, BASE, ov);
+      const pr = progress, ov = Object.assign({}, P7SIM, SIM8, overrides || {}), P0 = Object.assign({}, BASE, ov); // Edit 98 (P8.3): Prototype 8's values reach the story too
       for (const n of giftsCleared(pr)) pr.owned[n] = true; // Edit 91: a cleared tile's part is on the body
       ov['run.appearances.road'] = P0['story.shiftCars']; // the story has no shift clock: a district's traffic runs for story.shiftCars cars
       for (const L of [1, 2, 3]) ov['economy.price.ability.level' + L] = P0['story.price.ability.level' + L]; // Edit 82: the story's prices, 3, 4, 5
@@ -148,7 +174,7 @@
       this.entered = t === activeTile(this.story, this.levelId);
       if (this.entered) this.arrive(t);
       if (this.rescue) { this.pendingBrief = true; this.phase = 'play'; } // a gift still owed: the drone brings it first (Edit 84)
-      else this.phase = 'brief'; // the tile card: its tale and Farsight's brief (continueBrief)
+      else { this.phase = 'brief'; this.dropPending = !!this.P['world.droneDropIn']; } // the tile card (continueBrief). Edit 98: then the drone drop
     }
     giftOf(t) { const tile = tileOf(this.levelId, t), g = tile && tile.gift; return g && g.node && !this.story.gifts[this.levelId + ':' + t] ? g.node : null; }
     arrive(t) { // the dummy is in the tile in test. A verb not yet delivered comes by drone (Edit 84)
@@ -165,7 +191,7 @@
       this.run.owned[node] = true; if (b && b.alive) b.health = Math.min(this.maxHealth(), b.health + this.maxHealth() - m0); this.story.gifts[this.levelId + ':' + t] = true; this.syncProgress();
       this.emit('gift', { node, tile: t }); this.emit('story-gift', { tile: t, node });
     }
-    continueBrief() { if (this.phase === 'brief') this.phase = 'play'; }
+    continueBrief() { if (this.phase !== 'brief') return; this.phase = 'play'; if (this.dropPending) { this.dropPending = false; startDropIn(this); } } // Edit 98 (P8.3)
     continueGift() { if (this.phase === 'gift') this.phase = 'play'; } // Edit 84: after the gift screen
     continueUnveil() { if (this.phase !== 'unveil') return; if (this.unveil) this.unveil.done = true; this.startVoyage(); } // Edit 94 (P7.13): the plaque read, the voyage, then the ending
     // Edit 94 (P7.13): the voyage. A Farsight drone lifts the dummy over the river to the container ship at Waterfront B3 (D76)
@@ -244,6 +270,7 @@
     }
     stepRescue(dt) {
       const rs = this.rescue;
+      if (rs && rs.dropIn) return stepDropIn(this, dt); // Edit 98 (P8.3): the drone drop
       if (rs && rs.voyage) return this.stepVoyage(dt); // Edit 94 (P7.13): the flight to the ship
       if (!rs || !(rs.ferry || rs.gift || rs.given !== undefined)) return super.stepRescue(dt);
       if (stepDelivery(this, dt) || !this.rescue) return;
@@ -395,7 +422,11 @@
       const cy = Object.assign({}, carry || {}); cy.owned = Object.assign({ battery1: true }, cy.owned);
       super(id, Object.assign({}, P7SIM, SIM8, overrides || {}), cy, Object.assign({ single: true }, opts || {}));
       if (this.P['arcade.grades']) { this.health0 = this.P['damage.bodyHealth']; this.grade = 1; }
+      if (this.P['ui.levelCard']) this.phase = 'brief'; // Edit 98 (P8.3): the level card first; then the drone drop
     }
+    continueBrief() { if (this.phase !== 'brief') return; this.phase = 'play'; if (this.P['world.droneDropIn']) startDropIn(this); }
+    step(cmd) { if (this.phase === 'brief') return; super.step(cmd); }
+    stepRescue(dt) { if (this.rescue && this.rescue.dropIn) return stepDropIn(this, dt); return super.stepRescue(dt); }
     gradeOf(n) { return Math.min(this.P['arcade.grade.max'], 1 + Math.floor(n / Math.max(1, this.quota))); }
     setGrade(g) {
       const P = this.P, k = 1 + P['arcade.grade.densityStep'] * (g - 1);

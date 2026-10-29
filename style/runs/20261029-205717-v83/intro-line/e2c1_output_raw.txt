@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked n36 against tone (T1 deadpan and motivating, T2, T3 training framing, T4, T5 "you", T13 one adjective per sentence) [EDIT95#3.2, EDIT95#3.1, PLAY#PS2]; vocabulary (V1 banned words, V2, V3 glossary, V4 no company name needed, V8 dummy as trainee, not competitor) [EDIT95#0, FLEET#F3]; format (F5 no figures, F6 two sentences and 18 words, F10 no placeholders to keep, within the slot's 110 characters) [EDIT95#4.2, EDIT96#3.2]; and truth against the SLOT's facts (cars avoid you, you want to be hit, combos, progress brings upgrades) [EDIT98#0].
+Total: 10.

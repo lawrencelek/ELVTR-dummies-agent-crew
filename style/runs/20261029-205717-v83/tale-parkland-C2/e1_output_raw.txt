@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Our board will watch opening day from these terraces, which face the avenue, so every crossing is a performance. A van delivers the catering; arrange for it to deliver you." At 30 words, the tale is over the 20-word cap for tales (lint `length`). [EDIT98#3.2] Fix: drop the avenue clause and keep the place, the duty and the catering detail: "Our board watches opening day from these terraces. A van delivers the catering; arrange for it to deliver you." (19 words).
+Total: 10 − 4 = 6.

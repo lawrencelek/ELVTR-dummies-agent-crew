@@ -256,6 +256,8 @@ def lint_v2(piece):
     elif kind == "batch":   # V2: many of the company's texts at once (the story's tales, act lines and ending)
         items = piece.get("items") or []
         for i, it in enumerate(items):
+            if it.get("locked"):   # U1: the user's own line; counted for T14 below, never checked
+                continue
             narration_v2(f, f"items[{i}]", str(it.get("text") or ""), it.get("kind") or "notice", it.get("district"), it.get("tile"))
             if it.get("maxChars") and len(str(it.get("text") or "")) > it["maxChars"]:
                 f.add("F10", "major", f"items[{i}]", str(it.get("text"))[:40], f"{len(str(it.get('text')))} characters > {it['maxChars']}: the slot's width", "EDIT95#4.2")

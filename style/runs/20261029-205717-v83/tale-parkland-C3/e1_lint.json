@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The arch is the Expo's gate, and visitors will circle the ro…",
+  "measured": "29 words > 20 (style.v2.tale.maxWords)",
+  "source": "EDIT96#3.2"
+ }
+]

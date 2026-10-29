@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against F8 (label 19 characters, imperative goal first, then the final hit, no "coverage gap" framing, placeholders not required for `struck`), F6 (two sentences, 18 words), F5, T1–T5, T13, V1, V3, V4, V8 and R5 (the duty matches the struck task), per [EDIT98#3.2], [EDIT95#3.2], [EDIT95#3.1], [STORY#S3] and [STORY#MB2].
+Total: 10.

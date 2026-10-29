@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label (17 caps characters, within F8's 19), the brief (two sentences, 18 words, an imperative goal before the final-hit condition, no "coverage gap" framing), T1–T5 and T13 for deadpan training framing and adjective count, V1–V4 and V8 for banned words and the glossary, F5–F6 for digits, placeholders and length, and R5 for agreement with the bounce task, against [EDIT98#3.2], [EDIT95#3.2], [EDIT95#3.1], [STORY#S3] and [STORY#MC3].
+Total: 10.

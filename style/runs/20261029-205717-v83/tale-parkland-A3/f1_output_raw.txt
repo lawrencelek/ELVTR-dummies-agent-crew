@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "A3", "title": "The belvedere", "tale": "A wedding faces the traffic from the belvedere. Legs 2 is fitted: jump into a car, so no guest does."}

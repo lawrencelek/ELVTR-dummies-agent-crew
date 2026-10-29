@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all 39 items against the Dummy Corporation rules. That covered tone and the absence of "!" (T1–T5, T13), the training frame and the act frames ([EDIT95#3.1], [EDIT95#3.3]) and the glossary and company name ([EDIT95#4.2], [FLEET#F3]). I also checked tale length of 15 to 20 words in at most two sentences ([EDIT98#3.2]). Each tale names its landmark and turns it to the duty, and each duty and part matches its brief and issuing tile ([STORY#S1], [EDIT93#3.1]). Act-waterfront states the sacrifice plainly, which satisfies V10. No four-word phrase appears in more than two texts, so T14 holds.
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The LED gateway thanks every car for driving safely, including the one that wrote you off. Your file reads ROLE: DESTRUCTIVE TESTING; let one colleague throw you into the next." The tale runs to 30 words, and the cap is 20. [EDIT98#3.2] Fix: "The gateway thanked the car that wrote you off for driving safely. ROLE: DESTRUCTIVE TESTING: be thrown into the next." (20 words, two sentences; it keeps the landmark, the fixed phrase and the rebound duty.)
+Total: 10 − 4 = 6.

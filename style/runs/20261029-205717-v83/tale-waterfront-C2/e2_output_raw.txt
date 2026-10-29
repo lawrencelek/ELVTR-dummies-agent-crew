@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations: the 20-word, two-sentence tale names the east beach terrace and its rail (V11, R4 [STORY#WC2]); its drop duty matches the brief and it names no equipment (R5, F7 [STORY#S3], [EDIT93#3.1]); its waiting ships hold the CUSTOMS frame (V6 [EDIT95#3.3]); and it stays deadpan, motivating, without "!", in the trainee's training frame (T1–T5, T13, V1–V4, V8, V9, F5, F6, F11 [EDIT95#3.1], [EDIT95#3.2], [EDIT98#3.2]).
+Total: 10.

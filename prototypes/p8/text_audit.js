@@ -29,7 +29,16 @@ const sentences = (s) => s.split(/(?<=[.?!])\s+/).filter((x) => /[A-Za-z]/.test(
   const sim = (fn, arg) => pg.evaluate(fn, arg).catch((e) => errors.push('tour: ' + e.message));
   const step = []; const mark = (s) => step.push(s);
 
-  await pg.goto('file://' + path.resolve(HTML)); await pg.waitForTimeout(1500); mark('title'); await shot('audit_title.png');
+  await pg.goto('file://' + path.resolve(HTML)); await pg.waitForTimeout(1500);
+  if (await pg.evaluate(() => window.__dummies.screen === 'intro')) { await pg.waitForTimeout(1500); mark('intro'); await shot('audit_intro.png'); await key('Space', 1, 400); } // Edit 98 (P8.3): the intro screen
+  mark('title'); await shot('audit_title.png');
+  const itemAt = (name) => pg.evaluate((n) => (window.__dummiesUI.titleItems ? window.__dummiesUI.titleItems() : []).indexOf(n), name);
+  const goTo = async (name) => { // the title menu's cursor onto a mode, from wherever it is
+    await pg.waitForTimeout(300);
+    const [i, cur, n] = await pg.evaluate((nm) => { const it = window.__dummiesUI.titleItems(); return [it.indexOf(nm), window.__dummies.titleSel % it.length, it.length]; }, name);
+    const k = (i - cur + n) % n; if (k) await key('ArrowRight', k); // key(…, 0) would press once
+  };
+  const live = () => wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'play' && !window.__dummies.sim.rescue, 30000); // Edit 98: after the card and the drone drop
   const credits = await pg.evaluate(() => !!window.DUMMIES_CREDITS);
   if (credits) { // Edit 95: the Credits card, from the title menu
     const n = await pg.evaluate(() => (window.__dummiesUI.titleItems ? window.__dummiesUI.titleItems() : []).indexOf('CREDITS'));
@@ -43,7 +52,8 @@ const sentences = (s) => s.split(/(?<=[.?!])\s+/).filter((x) => /[A-Za-z]/.test(
     await key('ShiftLeft', 1, 300); await key('ArrowLeft', hsi);
   }
   // ---------- Arcade
-  await key('Space', 1, 300); mark('arcade select'); await key('ArrowDown'); await key('Space');
+  await goTo('ARCADE'); await key('Space', 1, 300); mark('arcade select'); await key('ArrowDown'); await key('Space');
+  if (await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000)) { await pg.waitForTimeout(600); mark('arcade card'); await shot('audit_arcade_card.png'); await key('Space', 1, 300); await live(); } // Edit 98 (P8.3): the level card, then the drone
   await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'play', 30000); await pg.waitForTimeout(800); mark('arcade play');
   await sim(() => { const s = window.__dummies.sim; s.emit('drone-dispatch', { rescue: true }); s.emit('drone-dispatch', {}); s.emit('rescued', {}); s.emit('touch-spent', {}); s.emit('story-gift', { credits: 2 }); });
   await pg.waitForTimeout(600); mark('arcade toasts');
@@ -58,11 +68,13 @@ const sentences = (s) => s.split(/(?<=[.?!])\s+/).filter((x) => /[A-Za-z]/.test(
   await key('Escape', 1, 300);
   for (const kind of ['Licensed', 'Failed test', 'Non-compliant']) { await sim((k) => { const s = window.__dummies.sim; s.phase = 'play'; s.end(k); }, kind); await pg.waitForTimeout(500); mark('arcade ending ' + kind); }
   await shot('audit_arcade_ending.png');
-  await pg.evaluate(() => { window.__dummies.screen = 'title'; window.__dummies.sim = null; }); await pg.waitForTimeout(400);
+  await pg.evaluate(() => { window.__dummies.screen = 'title'; window.__dummies.sim = null; window.__dummies.titleSel = 0; }); await pg.waitForTimeout(400);
   // ---------- Story
-  await key('ArrowRight'); await key('Space', 1, 400); mark('saves'); await key('Space', 1, 300); mark('name'); await key('Enter', 1, 500); mark('map'); await shot('audit_map.png');
-  await key('Space'); await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(500); mark('card A1'); await shot('audit_card.png');
-  await key('Space', 1, 500); mark('story play');
+  await goTo('STORY'); await key('Space', 1, 400); mark('saves'); await key('Space', 1, 300); mark('name'); await key('Enter', 1, 500);
+  if (await pg.evaluate(() => window.__dummies.screen === 'splash')) { await pg.waitForTimeout(1500); mark('story splash'); await shot('audit_splash.png'); await key('Space', 1, 500); } // Edit 98 (P8.3)
+  mark('map'); await shot('audit_map.png');
+  await key('Space'); await wait(() => window.__dummies.sim && window.__dummies.sim.phase === 'brief', 30000); await pg.waitForTimeout(600); mark('card A1'); await shot('audit_card.png');
+  await key('Space', 1, 500); if (await pg.evaluate(() => !!(window.__dummies.sim.rescue && window.__dummies.sim.rescue.dropIn))) { await pg.waitForTimeout(600); mark('drone drop'); await shot('audit_drop.png'); } await live(); mark('story play');
   await sim(() => { const s = window.__dummies.sim; s.emit('story-deliver', { tile: 'B1', node: 'battery1' }); s.emit('story-ferry', { gift: 'legs1', to: 'B3' }); s.emit('story-ferry', { to: 'C1' }); s.emit('story-count', { tile: 'A1', n: 1, need: 1 }); s.emit('story-clear', { tile: 'A1', next: 'B1' }); s.emit('story-miss', { why: 'cleared', tile: 'A1' }); s.emit('story-miss', { why: 'other', tile: 'C3' }); });
   await pg.waitForTimeout(700); mark('story toasts'); await shot('audit_story_toasts.png');
   const obj = await pg.evaluate(() => { const s = window.__dummies.sim, out = [], keep = s.rescue; for (const r of [{ gift: 'legs1', tile: 'B3' }, { given: 'legs1' }, { ferry: true, tile: 'C1' }, { voyage: true, tile: 'B3' }]) { s.rescue = r; out.push(window.__dummiesUI.objective(s)); } s.rescue = keep; return out; }).catch(() => []);

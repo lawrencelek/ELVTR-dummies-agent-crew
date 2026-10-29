@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "A1", "title": "The reservoir terraces", "tale": "The gardener asks that cars stop before her pools. Arms 2 is fitted; push off one car into the next."}

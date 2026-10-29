@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I found no violation. I checked the tale against every rule for Dummy Corporation's tales:
+  - **Tone (T1–T5, T13):** it is flat and deadpan, has no "!", uses one adjective ("first") and speaks to "you" through the imperative. [EDIT95#3.2]
+  - **Training frame (T3) and Act II (V6, V9):** "is lit for clients" fits OPENING DAY, where the Expo opens to clients, and the clients are only served, never seen. [EDIT95#3.3, EDIT95#3.1]
+  - **Place (V11, R4):** it names the tile's landmark, the lantern and its history as the Expo's first exhibit, and turns it toward service. [STORY#PC1, EDIT92#7]
+  - **Length (F6, F11):** 20 words in two sentences, with no padding. [EDIT98#3.2, EDIT97#3.2]
+  - **Equipment (F7, R5):** Arms 1 is issued on this tile and named here, and the duty matches the PUSH OFF A CAR brief. [STORY#S1, STORY#S3]
+  - **Banned words, company name and placeholders (V1, V4, F5):** none of these appear, and "Arms 1" is an allowed part rank. [EDIT95#0]
+Total: 10.

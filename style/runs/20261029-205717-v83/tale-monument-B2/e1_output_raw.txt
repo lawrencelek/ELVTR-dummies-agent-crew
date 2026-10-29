@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violation. The tale is 20 words in two sentences (F6, [EDIT98#3.2]), with no "!" and no intensifiers. It names the monument's plaque and keeps ZERO ACCIDENTS exact ([STORY#MB2], [EDIT95#3.3]). It turns that place toward the training and calls the cars colleagues ([EDIT95#3.1]). Its duty, standing or walking until a car hits you, matches STRUCK, NOT DASHING, and it names no equipment on a tile that issues none ([STORY#S1], [STORY#S3]). It uses no banned word, real city or other company name ([EDIT95#0]).
+Total: 10.

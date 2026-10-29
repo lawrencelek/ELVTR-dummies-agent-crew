@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The east beach terrace was built for tourists, then joggers, then sensors. From its rail you see the ships bound for our clients; drop onto a car below." At 28 words, the tale is over the 20-word cap for tales. [EDIT98#3.2] Fix: "The east beach terrace served tourists, then joggers, then sensors. From its rail, drop onto a car for our clients." (20 words, 2 sentences)
+Total: 10 − 4 = 6.

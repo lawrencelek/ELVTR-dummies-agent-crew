@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The lantern, the Expo's first exhibit, is lit for clients. A…",
+  "measured": "21 words > 20 (style.v2.tale.maxWords)",
+  "source": "EDIT96#3.2"
+ }
+]

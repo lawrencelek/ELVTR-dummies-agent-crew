@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The tunnel runs north under the hill: cars go in, and data comes back. Legs 3 is fitted: the longest flight; jump into a car, and your data serves our clients." This tale runs 31 words, but the cap is 20 (style.v2.tale.maxWords). Edit 98 withdrew the 35-word cap from Edit 97. [EDIT98#3.2] Fix: "Cars enter the tunnel under the hill; data returns. Legs 3 is fitted: jump into a car, for our clients." (20 words, two sentences, keeps the landmark, Legs 3, the jump and the clients).
+Total: 10 − 4 = 6.

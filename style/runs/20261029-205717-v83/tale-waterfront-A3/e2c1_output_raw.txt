@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13, V1–V4, V6, V8–V9, V11, F5–F7, F11, R4 and R5. It runs 18 words in two sentences, inside the tale range in [EDIT98#3.2], and has no "!". It names its landmark through the west tower and its customs log, as in [STORY#WA3]. It fits the CUSTOMS frame in [EDIT95#3.3] and states the destructive purpose plainly as an honour, as [EDIT95#3.1] asks. Its duty matches the ON A RAISED ROAD brief, and it names no equipment because the tile issues none, as [STORY#WA3] and [STORY#S1] require.
+Total: 10.

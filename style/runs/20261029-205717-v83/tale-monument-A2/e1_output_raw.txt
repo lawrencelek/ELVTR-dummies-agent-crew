@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale's 20 words in two sentences against the 15-to-20-word and two-sentence caps (F6, F11), and the "1" in Hands 1 as an allowed part rank (F5); the place, The neon shops, is turned toward the duty, and Hands 1 is named on the tile that issues it (V11, F7, R4, R5) [EDIT98#3.2, STORY#MA2, STORY#S1, EDIT92#7]. "Bait a colleague with a cone" matches the CONE-BAITED CAR brief, and the voice is deadpan training talk that calls the cars colleagues, with no "!", no banned word and no other company name (T1–T5, T13, V1–V4, V8) [STORY#S3, EDIT95#3.1, EDIT95#3.2, FLEET#F2].
+Total: 10.

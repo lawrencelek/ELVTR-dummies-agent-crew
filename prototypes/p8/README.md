@@ -1,6 +1,21 @@
-# DUMMIES — Prototype 8.2: Dummy Corporation
+# DUMMIES — Prototype 8.3: Dummy Corporation
 
-**Prototype 8.2 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edits 95–97 (`coder/gdd/`), on Prototype 7.13 (Edit 94). Style: `style/STYLE_GUIDE_V2.md` (V2.6). Prototypes 8 and 8.1 stay frozen (`dummies_p8.html`, `dummies_p8_1.html`); 7 to 7.13 in `../p7/`.
+**Prototype 8.3 · 29 October 2026 · Lawrence Lek** · Spec: GDD Edits 95–98 (`coder/gdd/`), on Prototype 7.13 (Edit 94). Style: `style/STYLE_GUIDE_V2.md` (V2.7). Prototypes 8 to 8.2 stay frozen (`dummies_p8.html`, `dummies_p8_1.html`, `dummies_p8_2.html`); 7 to 7.13 in `../p7/`.
+
+Prototype 8.3 (Edit 98): less text. An intro screen, a level card, a drone drop.
+- **Intro screen** (`ui.introScreen`): DUMMIES. The dummy steps into the road; a car comes on, front-on. Then START.
+  - n36: "Self-driving cars are designed never to hit anyone. Your training: get hit, in combos, and earn your parts."
+- **Mode select:** STORY first, then ARCADE, HIGH SCORES, CREDITS. The user's lines on the cards (n03, n34).
+- **Level card** (`ui.levelCard`), both modes, full screen:
+  - Story: ACT I: MONUMENT · Tile A1. Level 1 of 27. · the tale · >>> the goal.
+  - Arcade: ARCADE: PARKLAND · Grade 1 of 5. · the district's line · >>> n37.
+- **Drone drop** (`world.droneDropIn`): after the card, a drone flies the dummy in from the left. Each Story tile and Arcade district. About 2.5 s.
+- **Story splash** (`ui.storySplash`): NEW GAME and CONTINUE. The dummy's parts fly apart and back. Then the map.
+- **Text:** tales 15 to 20 words (mean 19.0; 8.2: 28.5). Briefs become goals. The user's four lines placed as typed, without "!".
+  - Style run `style/runs/20261029-205717-v83`.
+- **Registry:** `edit98-2026-10-29`, 518 entries. The four flags default 0; `build.py` sets them 1.
+- **Open:** D83 (text left on the map and objective strip), D81, D82, D80.
+
 
 Prototype 8.2 (Edit 97): tales redrafted; Arcade in grades; HIGH SCORES.
 - **Tales:** 15 to 35 words (`style.v2.tale.minWords`, `style.v2.tale.maxWords`), two sentences. The tile sets the length.
@@ -47,25 +62,26 @@ Prototype 8 (Edit 95): the lore refinement. Text only; gameplay is 7.13's.
 - **The text:** 27 tales, 3 act lines, the ending, 11 briefs, 26 notices, 11 barks. All from one run of the style loop on Style Guide V2 (`style/runs/20261029-161328-v8`).
 
 ```
-python3 style/loop.py --v82                                 # 8.2's text: the tales redrafted, the batch, Arcade's grade texts, the batch again
-python3 prototypes/p8/make_lore.py style/runs/<id>-v82      # place it: content/story/story_v2.json, prototypes/p8/lore.js
-python3 prototypes/p8/build.py                              # dummies_p8_2.html, p8_2_page.html (Prototypes 8 and 8.1 are frozen)
-cd prototypes/p8 && node test_p82.js docs/p82               # the checks; screenshots and the text inventory in docs/p82/
+python3 style/loop.py --v83                                 # 8.3's text: tales cut, goals, n36 and n37, the batch (user's lines locked)
+python3 style/loop.py --v83-intro style/runs/<id>-v83       # stage 3: the intro line, a hand draft through the loop
+python3 prototypes/p8/make_lore.py style/runs/<id>-v83      # place it: content/story/story_v2.json, prototypes/p8/lore.js
+python3 prototypes/p8/build.py                              # dummies_p8_3.html, p8_3_page.html (Prototypes 8 to 8.2 are frozen)
+cd prototypes/p8 && node test_p83.js docs/p83               # the checks; screenshots and the text inventory in docs/p83/
 node prototypes/p8/text_audit.js <build.html> <out.json>    # every string a build draws, on a scripted tour
 ```
 
 | File | Role |
 |---|---|
-| `dummies_p8_2.html` | The build. Self-contained; open it in a browser |
-| `p8_2_page.html` | The same, without `<html>` and `<body>`, for a host page |
-| `dummies_p8.html`, `dummies_p8_1.html` and their pages | Prototypes 8 and 8.1, frozen |
-| `build.py` | Bundles `../jump`, `../p6` (shared code), the fleet, the registry's Prototype 8.2 values (`window.DUMMIES_SIM`), `content/story/story_v2.json`, `lore.js`, `../p7/story.js`, `../controls/pads.js` |
+| `dummies_p8_3.html` | The build. Self-contained; open it in a browser |
+| `p8_3_page.html` | The same, without `<html>` and `<body>`, for a host page |
+| `dummies_p8.html`, `dummies_p8_1.html`, `dummies_p8_2.html` and their pages | Prototypes 8 to 8.2, frozen |
+| `build.py` | Bundles `../jump`, `../p6` (shared code), the fleet, the registry's Prototype 8.3 values (`window.DUMMIES_SIM`), `content/story/story_v2.json`, `lore.js`, `../p7/story.js`, `../controls/pads.js` |
 | `make_lore.py` | Writes `story_v2.json` and `lore.js` from a run's `v8_copy.json`. Refuses a run with any piece not accepted |
-| `lore.js` | Generated. `window.DUMMIES_LORE` (notices n01–n35), `window.DUMMIES_CREDITS`, and patches to the bundled content and fleet text |
+| `lore.js` | Generated. `window.DUMMIES_LORE` (notices n01–n37), `window.DUMMIES_CREDITS`, and patches to the bundled content and fleet text |
 | `shell.html` | The page around the scripts |
 | `text_audit.js` | Hooks the canvas's `fillText` on a tour of every screen. Lists strings that name Farsight, and lines over two sentences or 20 words |
-| `test_p82.js` | The checks: the lore layer, Arcade's grades (headless and in the page), the high scores, the frozen builds, the page |
-| `docs/`, `docs/p81/`, `docs/p82/` | Screenshots from the tour; `p8_texts.json`, the strings drawn (8: 291; 8.1: 295; 8.2: 317) |
+| `test_p83.js` | The checks: the lore layer, the user's lines, the goals, the level card and drone drop (headless and in the page), the intro, the splash, Arcade's grades, the high scores, the frozen builds |
+| `docs/`, `docs/p81/`, `docs/p82/`, `docs/p83/` | Screenshots from the tour; `p8_texts.json`, the strings drawn (8: 291; 8.1: 295; 8.2: 317; 8.3: 321) |
 
 - **Gating:** the shared code (`../p6/game.js`, `../p6/world6.js`, `../p7/story.js`) reads the lore layer and `window.DUMMIES_SIM` only when bundled. Without it, every string falls back to 7.13's.
 - **Not drawn, still Farsight:** Prototype 8: CBD and Campus, terminal signage, a fleet model's job, the fleet glossary (D80). 8.1 rewrites CBD and Campus.

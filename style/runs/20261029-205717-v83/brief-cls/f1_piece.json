@@ -1,0 +1,6 @@
+{
+ "kind": "brief",
+ "task": "cls",
+ "label": "A {cls}",
+ "brief": "Step in front of the {clsLong}. The final hit must come from a {cls}."
+}

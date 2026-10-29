@@ -7,6 +7,7 @@ Each run folder holds every agent input and output, the lint findings, each vers
 | Run | Guide | Job | Result |
 |---|---|---|---|
 | [`20261029-181530-v82`](20261029-181530-v82/trace.md) | V2.5 → V2.6 | Prototype 8.2's text: 27 tales redrafted by the generator (15 to 35 words), the story batch, Arcade's grade texts (n34, n35), the batch on V2.6 | 30 of 30 at 10/10, confirmed. 155 calls, $18.64. Tales 19–35 words, mean 28.5 |
+| [`20261029-205717-v83`](20261029-205717-v83/trace.md) | V2.7 | Prototype 8.3's text: 26 tales cut to 15 to 20 words, 10 briefs as goals, n36 and n37; the story batch with the user's four lines locked; the intro line (n36) by hand | 39 of 39 at 10/10, confirmed. 172 calls, $22.69. Tales 15–20 words, mean 19.0 |
 | [`20261029-172610-v81`](20261029-172610-v81/trace.md) | V2.3 → V2.4 | Prototype 8.1's text: 7.13's 27 tales on V2.3 (35 words), the CBD and Campus text, then the story and six opening lines as one batch, twice | 30 of 30 at 10/10, confirmed. 132 calls, $16.68. Tales 25–35 words |
 | [`20261029-161328-v8`](20261029-161328-v8/trace.md) | V2.0 → V2.2 | Prototype 8's text, four stages: 45 pieces one by one (V2.0); the story as one batch (V2.1); Arcade's banners (V2.1); the story and six opening lines as one batch (V2.2) | 48 of 48 at 10/10, confirmed. 183 calls, $19.88. The text: `v8_copy.json`, placed by `prototypes/p8/make_lore.py` |
 

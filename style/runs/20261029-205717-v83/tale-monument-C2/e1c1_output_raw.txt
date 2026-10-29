@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and T13 (deadpan delivery, training framing, "you" address, no "!" and no intensifiers), against V1–V4, V6, V8, V9 and V11 (the glossary, INDUCTION, and the portal tower turned toward the duty), against F5, F6 and F11 (19 words in two sentences, no figures or placeholders), and against R4 and R5 (the sixth-floor road is in [STORY#MC2], the write-off "up there" matches the raised-road brief, and no equipment is named on a tile that issues none). Sources: [EDIT95#3.1], [EDIT95#3.2], [EDIT95#3.3], [EDIT97#3.2], [EDIT98#3.2], [STORY#MC2], [STORY#S3], [EDIT93#3.1].
+Total: 10.

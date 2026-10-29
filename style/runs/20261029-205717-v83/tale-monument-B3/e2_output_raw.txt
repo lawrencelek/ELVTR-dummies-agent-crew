@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and T13 (the voice is deadpan, addresses the dummy as "you", and uses no adjectives); V1, V3, V4, V8, V9 and V11 (the LED screens of the canyon are named and turned toward the jump duty); F5, F6, F7 and F11 (18 words in two sentences, Legs 1 named by rank, one image kept short); and R4 and R5 (the jump duty and Legs 1 match this tile). The chunks used were [STORY#MB3], [EDIT95#3.1], [EDIT95#3.2], [EDIT98#3.2], [EDIT97#3.2], [EDIT93#3.1] and [STORY#S1].
+Total: 10.

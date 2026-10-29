@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The stacked cubes rose one budget at a time. Grow the same way: one hit, then another before the first is forgotten." The tale runs 22 words, which is over the tale cap of 20 words (style.v2.tale.maxWords). [EDIT98#3.2] Fix: "The stacked cubes rose one budget at a time. Grow likewise: one hit, then another before the first is forgotten." (20 words)
+Total: 10 − 4 = 6.

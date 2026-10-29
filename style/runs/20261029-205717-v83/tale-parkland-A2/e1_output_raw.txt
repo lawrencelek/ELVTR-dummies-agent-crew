@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The dome is the Expo's showroom, and you are what it will show. Hands 2 is fitted: lay a cone by the canal, and let the car that answers it write you off." At 33 words, the tale is over the 20-word cap for tales (lint finding). [EDIT98#3.2] Fix: "The dome is the Expo's showroom; you are the exhibit. Hands 2 is fitted: let a cone-baited car take you." (19 words, two sentences; keeps the dome, the duty, Hands 2 and the showroom detail).
+Total: 10 − 4 = 6.

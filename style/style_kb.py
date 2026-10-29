@@ -35,21 +35,23 @@ DOCS = [
     {"id": "DECISIONS", "path": "style/kb/DUMMIES_DECISIONS.md", "title": "Decision log (live DECISIONS.md, headings every ten rows)"},
 ]
 DOCS_V2 = [
+    {"id": "EDIT98", "path": "style/kb/DUMMIES_GDD_Edit98_Lore.md", "title": "GDD Edit 98: Prototype 8.3; intro screen, level card, drone drop; tales 15 to 20 words; goals; the user's own lines"},
     {"id": "EDIT97", "path": "style/kb/DUMMIES_GDD_Edit97_Lore.md", "title": "GDD Edit 97: Prototype 8.2; tales redrafted, 15 to 35 words; high scores; the Arcade loop"},
     {"id": "EDIT96", "path": "style/kb/DUMMIES_GDD_Edit96_Lore.md", "title": "GDD Edit 96: Prototype 8.1; tales up to 35 words; the CBD and Campus districts in the lore"},
     {"id": "EDIT95", "path": "style/kb/DUMMIES_GDD_Edit95_Lore.md", "title": "GDD Edit 95: Prototype 8; lore refinement: Dummy Corporation; Farsight in the Credits only"},
     {"id": "PLAY", "path": "style/kb/DUMMIES_Play_Station_Script_2017.md", "title": "Play Station (Lawrence Lek, 2017): the tone reference"},
 ] + DOCS
-PRECEDENCE_V2 = "Newest wins: EDIT97 > EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 to EDIT97 replace every source that names Farsight inside the game. PLAY is a tone reference, not canon."
+PRECEDENCE_V2 = "Newest wins: EDIT98 > EDIT97 > EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 to EDIT98 replace every source that names Farsight inside the game. PLAY is a tone reference, not canon."
 PRECEDENCE = "Newest wins: EDIT94 > EDIT93 > EDIT92 > STORY (story.json, Edit 93) > FLEET (fleet.json) > EDIT39 > DESIGN (V29) > EDIT26. DECISIONS rows record rulings; a user-decided row beats any doc."
 DIST_CODE = {"monument": "M", "parkland": "P", "waterfront": "W"}
 NODE_NAME = {"battery": "Battery", "legs": "Legs", "hands": "Hands", "arms": "Arms"}
 
 
-SELF_ROWS = set(range(543, 548)) | {552, 553, 557, 558, 563, 564}   # rows about this agent and its results; kept out so a run never cites its own output (as Assignment 4's PIPELINE_ID)
+SELF_ROWS = set(range(543, 548)) | {552, 553, 557, 558, 563, 564, 574, 575}   # rows about this agent and its results; kept out so a run never cites its own output (as Assignment 4's PIPELINE_ID)
 EDIT95_SRC = ROOT / "coder" / "gdd" / "DUMMIES_GDD_Edit95_Prototype_8_Lore_Dummy_Corporation.md"
 EDIT96_SRC = ROOT / "coder" / "gdd" / "DUMMIES_GDD_Edit96_Prototype_8_1_Tales_CBD_Campus.md"
 EDIT97_SRC = ROOT / "coder" / "gdd" / "DUMMIES_GDD_Edit97_Prototype_8_2_Tales_High_Scores_Arcade_Loop.md"
+EDIT98_SRC = ROOT / "coder" / "gdd" / "DUMMIES_GDD_Edit98_Prototype_8_3_Intro_Level_Card_Drone_Drop.md"
 EDIT95_OWN = ("## 5 ", "## Measured")   # Edit 95's sections on this agent's pipeline and results: kept out, as SELF_ROWS
 
 
@@ -123,7 +125,7 @@ def build():
     write(KB / "DUMMIES_Fleet_Canon.md", (tmp / "DUMMIES_Fleet_Canon.md").read_text(encoding="utf-8"))
     (tmp / "DUMMIES_Fleet_Canon.md").unlink()
     tmp.rmdir()
-    for src, page in ((EDIT95_SRC, "DUMMIES_GDD_Edit95_Lore.md"), (EDIT96_SRC, "DUMMIES_GDD_Edit96_Lore.md"), (EDIT97_SRC, "DUMMIES_GDD_Edit97_Lore.md")):
+    for src, page in ((EDIT95_SRC, "DUMMIES_GDD_Edit95_Lore.md"), (EDIT96_SRC, "DUMMIES_GDD_Edit96_Lore.md"), (EDIT97_SRC, "DUMMIES_GDD_Edit97_Lore.md"), (EDIT98_SRC, "DUMMIES_GDD_Edit98_Lore.md")):
         keep, out = True, []
         for ln in src.read_text(encoding="utf-8").splitlines():
             if ln.startswith("## "):

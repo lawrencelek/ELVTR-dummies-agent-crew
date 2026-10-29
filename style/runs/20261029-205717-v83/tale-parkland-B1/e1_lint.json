@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The cascade steps the reservoir down beside the highway, poo…",
+  "measured": "33 words > 20 (style.v2.tale.maxWords)",
+  "source": "EDIT96#3.2"
+ }
+]

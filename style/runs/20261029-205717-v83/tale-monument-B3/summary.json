@@ -1,0 +1,68 @@
+{
+ "case": "tale-monument-B3",
+ "class": "V8.3 tale",
+ "title": "Monument B3, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 46.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 17.9,
+   "output_tokens": 1287,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3269222
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.6,
+   "output_tokens": 738,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15350560000000002
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 8.8,
+   "output_tokens": 641,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1353218
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 10.9,
+   "output_tokens": 899,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0262976
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.642
+}

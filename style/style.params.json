@@ -222,13 +222,13 @@
    "id": "style.v2.tale.maxWords",
    "group": "Style",
    "owner": "Narrative",
-   "label": "Words per tale (V2.3)",
-   "description": "Words in a tale on the tile card. The extra words over style.v2.text.maxWords name the place. Still at most style.v2.text.maxSentences sentences.",
+   "label": "Words per tale (V2.7)",
+   "description": "Words in a tale on the level card. At most style.v2.text.maxSentences sentences.",
    "unit": "words",
    "type": "number",
-   "default": 35,
+   "default": 20,
    "status": "user-decided (29 October)",
-   "source": "GDD Edit 96 §3.2; Edit 97 §3.2: \"15 to 35 words\""
+   "source": "GDD Edit 98 §3.2: \"Story text. 15-20 words.\" (Edit 96: 35; Edit 97: 15 to 35)"
   }
  ]
 }

@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against the tone rules T1, T3, T4, T5 and T13: the line is deadpan and frames the dummy as the Expo's product, with no adjectives. The duty matches the CONE-BAITED CAR brief and Hands 2 is fitted on the tile that issues it (V8, F7, R5). It names the dome, a landmark the tile has (V11, R4). It is 20 words in two sentences, with "2" allowed as a part rank (F5, F6, F11). [EDIT95#3.1, EDIT95#3.2, EDIT98#3.2, STORY#PA2, STORY#S1]
+Total: 10.

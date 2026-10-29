@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:is fitted jump into",
+  "quote": "is fitted jump into",
+  "measured": "'is fitted jump into' in 3 texts (MB3, PA3, WB1) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ }
+]

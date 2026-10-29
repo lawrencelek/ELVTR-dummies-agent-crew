@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: raised roads." The brief opens with the banned "coverage gap" framing instead of an imperative telling the trainee what to do. [EDIT98#3.2] Fix: "Climb to a raised road. The final hit must land at Z1 or above."
+Total: 10 − 2 = 8.

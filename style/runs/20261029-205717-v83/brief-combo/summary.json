@@ -1,0 +1,68 @@
+{
+ "case": "brief-combo",
+ "class": "V8.3 goal",
+ "title": "the combo brief, as a goal",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 27.4,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 8.3,
+   "output_tokens": 463,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11511389999999999
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 4.7,
+   "output_tokens": 157,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11010740000000001
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 7.7,
+   "output_tokens": 580,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1175015
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 6.6,
+   "output_tokens": 469,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0170805
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3598
+}

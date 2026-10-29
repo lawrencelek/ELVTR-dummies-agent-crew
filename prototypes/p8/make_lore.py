@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 RUN = Path(sys.argv[1]).resolve()
 V8 = json.loads((RUN / "v8_copy.json").read_text(encoding="utf-8"))
-BUILD, EDIT = {"-v82": ("P8.2", 97), "-v81": ("P8.1", 96)}.get(RUN.name[-4:], ("P8", 95))
+BUILD, EDIT = {"-v83": ("P8.3", 98), "-v82": ("P8.2", 97), "-v81": ("P8.1", 96)}.get(RUN.name[-4:], ("P8", 95))
 STORY = json.loads((ROOT / "content" / "story" / "story.json").read_text(encoding="utf-8"))
 
 not_accepted = [k for k, v in V8["accepted"].items() if not v]
@@ -30,14 +30,15 @@ if not_accepted:
 s = copy.deepcopy(STORY)
 s["meta"]["version"] = f"edit{EDIT}-2026-10-29"
 s["meta"]["status"] = ("Narrative A, Certified, under the lore refinement of GDD Edit 95 (user-decided, 29 October): Dummy Corporation narrates; "
-                       "Farsight, the publisher, is named only in the Credits. " + ("Edit 96: tales up to 35 words. " if EDIT == 96 else "Edit 97: tales 15 to 35 words. " if EDIT >= 97 else "") + "Text from style run " + RUN.name + " on Style Guide V2; gameplay fields as story.json (edit93)")
+                       "Farsight, the publisher, is named only in the Credits. " + ("Edit 96: tales up to 35 words. " if EDIT == 96 else "Edit 97: tales 15 to 35 words. " if EDIT == 97 else "Edit 98: tales 15 to 20 words; goals. " if EDIT >= 98 else "") + "Text from style run " + RUN.name + " on Style Guide V2; gameplay fields as story.json (edit93)")
 s["meta"]["consumers"] = [f"prototypes/p8 (story.js, game.js): Prototype {BUILD[1:]}"]
 s["meta"]["sources"] = s["meta"]["sources"] + ["GDD Edit 95: lore refinement, Dummy Corporation", "style/STYLE_GUIDE_V2.md; style run " + RUN.name]
 s["meta"]["rules"] = [r for r in s["meta"]["rules"] if not r.startswith("Edit 92:")] + [
     "Edit 92: Narrative A, Certified. Act I Monument (Induction), Act II Parkland (Opening Day), Act III Waterfront (Customs).",
     "Edit 95: Dummy Corporation narrates: deadpan and inspirational, few adjectives, no exclamation marks. Every text at most two sentences and 20 words (style.v2.text.maxSentences, style.v2.text.maxWords). Farsight is named only in the Credits.",
 ] + (["Edit 96: a tale may run to 35 words (style.v2.tale.maxWords); the extra words name the place."] if EDIT == 96 else []) + (
-    ["Edit 97: a tale runs 15 to 35 words (style.v2.tale.minWords, style.v2.tale.maxWords); the tile's content sets the length."] if EDIT >= 97 else [])
+    ["Edit 97: a tale runs 15 to 35 words (style.v2.tale.minWords, style.v2.tale.maxWords); the tile's content sets the length."] if EDIT == 97 else []) + (
+    ["Edit 98: a tale runs 15 to 20 words; a brief is the level's goal, imperative; the user's own lines (A1's tale, the any goal) are canon."] if EDIT >= 98 else [])
 for d in s["districts"]:
     d["intro"] = V8["acts"][d["id"]]
     for t, tile in d["tiles"].items():

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The 20-word, two-sentence tale (F6, [EDIT98#3.2]) names the pier tower customs post (V11, R4, [STORY#WC3], [EDIT92#7]), states the THROWN INTO A CAR duty with no equipment (R5, [STORY#S3], [EDIT93#3.1]), and keeps the deadpan, motivating customs frame in the trainee's "your" (T1–T5, T13, V3, V6, V8, [EDIT95#3.2], [EDIT95#3.3], [EDIT95#3.1]); lint found nothing (T2, V1, V4, F5).
+Total: 10.

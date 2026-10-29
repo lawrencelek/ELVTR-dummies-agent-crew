@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and goal against F8 (15-character caps label; imperative goal first, then the final hit; no "coverage gap" framing) [EDIT98#3.2], F6 (two sentences, 11 words) [EDIT95#3.2], T1, T2 and T13 (flat tone, no "!", no intensifiers) [EDIT95#3.2], V1, V3 and V4 (no banned words, glossary held, no company name) [EDIT95#3.1], and R5 (the dash duty matches the B1 brief, which needs the fatal hit to land while dashing) [EDIT93#3.3].
+Total: 10.
