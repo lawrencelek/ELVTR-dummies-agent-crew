@@ -1,6 +1,6 @@
 {
  "schemaVersion": 3,
- "registryVersion": "edit93-2026-10-29",
+ "registryVersion": "edit94-2026-10-29",
  "purpose": "Starter parameter catalog, not a runtime-connected configuration",
  "baselineSource": "GDD_Edit_V26 + Edits 37–44, 48 (20–21 October 2026); Edit 49 proposals (49–49.3) tried in P4; Edit 50 in P5; Edit 53 (district-wide traffic) in P5 and the district mock-up; Edit 53.1 (bus routes for P6, a wider Parkland ring); Edit 54 (roundabout lanes by exit, Parkland highway feed, the Chongqing portal, a set piece on every tile); Edit 55 (45° crossing options example, planting and sculpture in three sizes, nothing below ground); Edit 55.1 (crossing rules: A the rule, C centre tile only, D named designs only, B not used); Edit 55.2 (junctions square and central, Parkland ring centred and smaller, walkway joins the highway); Edit 56 (four-way junctions take roundabouts; street and highway ring radii; MUTCD junction markings; a ring orbit cap); Edit 57 (yield-line teeth square to the last straight; Circus layout options); Edit 62 (P6: Waterfront replaces Circus; the game runs Parkland, Waterfront, Monument); Edit 63 (P6.1: managed traffic, edge barriers, rescue sink); Edit 64 (P6.2: one walkway opening per road); Edit 65 (P6.3: stair aprons and screen margins, plans solid, walkway joints)",
  "entries": [
@@ -10130,6 +10130,28 @@
    "purpose": "\"JUICE and SATISFACTION\""
   },
   {
+   "id": "ui.finale.unveilSeconds",
+   "group": "UI",
+   "owner": "UI",
+   "label": "Unveiling",
+   "description": "Story, the finale: a Farsight drone lifts the cloth off the circus's monument over this time; then the plaque fades in and A goes on to the ship. Reduced motion: no lift.",
+   "unit": "s",
+   "type": "number",
+   "default": 1.2,
+   "status": "proposed",
+   "source": "Edit 94 (P7.13): added in manual review of the coding agent's R-UNVEIL (D76)",
+   "editable": true,
+   "protectedReason": null,
+   "applyAt": "immediate",
+   "validation": {
+    "min": 0.1,
+    "max": 5
+   },
+   "integrationStatus": "prototype-p7.13",
+   "boundaryStatus": "proposed-adapter-contract-not-implemented",
+   "purpose": "The unveiling is seen: the cloth leaves before the plaque reads. 1.2 s, the gift screen's hold (ui.gift.holdSeconds)"
+  },
+  {
    "status": "proposed",
    "source": "Edit 85 (28 October): Prototype 7.4",
    "editable": true,
@@ -10926,10 +10948,10 @@
    "protectedReason": null,
    "integrationStatus": "prototype-p7.13",
    "boundaryStatus": "proposed-adapter-contract-not-implemented",
-   "source": "Edit 94 (P7.13): written by the coding agent (coder/, run 20261029-105801)",
+   "source": "Edit 94 (P7.13): written by the coding agent (coder/, run 20261029-105801); group and owner aligned in manual review",
    "status": "proposed",
-   "group": "world",
-   "owner": "systems",
+   "group": "World",
+   "owner": "Level design",
    "label": "Monument shroud",
    "applyAt": "next-run",
    "validation": {

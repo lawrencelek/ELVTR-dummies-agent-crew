@@ -43,7 +43,7 @@
   "registry": []
  },
  "R-BARK-TILE": {
-  "status": "built",
+  "status": "rejected",
   "attempts": 0,
   "run": "20261029-105801",
   "iteration": 4,
@@ -52,7 +52,8 @@
   "files": [
    "prototypes/p6/game.js"
   ],
-  "registry": []
+  "registry": [],
+  "review": "reverted in manual review: a word swap met the probe but not the voice; the requirement is now spec none"
  },
  "R-CRATE-FACES": {
   "status": "built",

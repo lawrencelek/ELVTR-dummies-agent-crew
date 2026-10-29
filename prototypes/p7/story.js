@@ -359,8 +359,9 @@
       if (storyDone) { // Edit 94 (P7.13): the circus clears; the monument is unveiled with the run's plaque, then the ending (D76)
         pr.complete = true; this.syncProgress();
         const plaque = { chassis: pr.chassis, points: pr.points, bestCombo: pr.bestCombo || 0, t: pr.t };
-        this.unveil = { plaque, done: false }; this.phase = 'unveil';
-        this.emit('unveil', plaque); return;
+        this.unveil = { plaque, done: false };
+        this.emit('unveil', plaque);
+        this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'unveil'; return; // Edit 94 (manual review): the write-off plays first, then the unveiling
       }
       this.phase = 'writeoff'; this.phaseT = P['feedback.writeOffSeconds']; this.pendingPhase = 'report';
     }

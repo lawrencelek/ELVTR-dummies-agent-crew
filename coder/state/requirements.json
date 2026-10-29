@@ -424,8 +424,8 @@
    ],
    "gdd_status": "gap",
    "decision": null,
-   "spec": "partial",
-   "spec_gap": "The GDD does not say whether barks use the tile's code (B2) or its title (The circus), or which bark lines change.",
+   "spec": "none",
+   "spec_gap": "Manual review (29 October): the GDD names the gap but not the lines. Naming a tile means new bark lines in the fleet database, in each tier's voice, with the lore check (Assignment 4's pipeline), not a word swap in game.js. Run 20261029-105801's write replaced the district's name with the tile code ('B2. I did not sign up for this.'); it met its one probe and was reverted.",
    "impact": "feedback",
    "depends_on": [],
    "touches": [
@@ -446,7 +446,13 @@
      "expr": "await G.openStory(await G.certifyProgress({}));\nconst w = await G.eval(() => { const f = window.__dummiesUI?.barkPlace; return f ? String(f(window.__dummies.sim)) : null; });\nconst ok = !!w && (/\\bB2\\b/.test(w) || /circus/i.test(w)) && !/^waterfront$/i.test(w.trim());\nreturn { ok, detail: 'place ' + w };"
     }
    ],
-   "calibration": []
+   "calibration": [],
+   "review": {
+    "by": "manual review (Claude, in the Assignment 5 session)",
+    "date": "2026-10-29",
+    "verdict": "rejected",
+    "write": "coder/runs/20261029-105801/it4_R-BARK-TILE_coder_1.diff"
+   }
   },
   {
    "id": "R-PARKLAND-B1-STREET",

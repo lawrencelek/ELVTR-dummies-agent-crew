@@ -99,7 +99,7 @@
   if (FLEET) for (const m of FLEET.models) for (const sid of m.simIds) FMODEL.set(sid, m);
   const CPARAM = {};
   for (const part of [CJ, CI, CG, CB, CH, CTM, CP, CD]) if (part && part.params) for (const p of part.params) CPARAM[p.id] = p.value;
-  const BUILD = STORY ? 'P7.13' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.12 (GDD Edit 93: introduce, then test: each Story part arrives on the tile whose brief first needs it; B1 a dash, C1 a drop; the briefs and parts paced later); 7.11 (GDD Edit 92: Narrative A, Certified: tile names, tales, act lines, the ending; the story's tile art, cosmetic only); 7.10 (GDD Edit 91: every Story part by drone on its tile, Arcade parts for credits; Battery 1 the dash; a miss holds the chassis at 1; on foot, a lighter chassis; points small, top right; damage in red on the chassis, its numbers beside each part; the circus's monument); 7.9 (GDD Edit 90: the dash's jump paid by the dash; X taps a cone down; buttons named only when fitted, OK and BACK in menus); 7.8 (GDD Edit 89: touch on every menu; Story levels from points and upgrades, not credits; the workshop, around the chassis); 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
+  const BUILD = STORY ? 'P7.13' : W6 ? 'P6.10' : 'P5.3'; // Prototype 7.13 (GDD Edit 94: the finale, built by the coding agent (coder/, Assignment #5) and reviewed: the circus's monument shrouded until B2 clears, the cloth lifted, the plaque with the run, a drone to the ship at B3); 7.12 (GDD Edit 93: introduce, then test: each Story part arrives on the tile whose brief first needs it; B1 a dash, C1 a drop; the briefs and parts paced later); 7.11 (GDD Edit 92: Narrative A, Certified: tile names, tales, act lines, the ending; the story's tile art, cosmetic only); 7.10 (GDD Edit 91: every Story part by drone on its tile, Arcade parts for credits; Battery 1 the dash; a miss holds the chassis at 1; on foot, a lighter chassis; points small, top right; damage in red on the chassis, its numbers beside each part; the circus's monument); 7.9 (GDD Edit 90: the dash's jump paid by the dash; X taps a cone down; buttons named only when fitted, OK and BACK in menus); 7.8 (GDD Edit 89: touch on every menu; Story levels from points and upgrades, not credits; the workshop, around the chassis); 7.7 (GDD Edit 88: three named save slots with time stamps; the save screen; the name entry); 7.6 (GDD Edit 87: the HUD on one top edge, the objective on top, a stats box; touch controls placed and sized by the player); 7.5 (GDD Edit 86: a clean screen: options in the pause menu, controls per device, a compact BODY panel); 7.4 (GDD Edit 85: Story traffic per tile; every highway a flight and a drop gap; cones in view); 7.3 (GDD Edit 84: verbs issued by drone, the gift screen, Arcade's verbs); 7.2 (GDD Edit 83: the ricochet tamed, the drone ferry, the map, bubbles, the objective line); 7.1 (GDD Edit 82: a credit a body, story prices 3–5, write-offs per tile); 7 (Edit 81: ARCADE and STORY) // Prototype 6.10 (GDD Edit 80: Hands carry cones, two levels; Arms push off cars, the ricochet); 6.9 (GDD Edit 79: three tracks of three levels, hold X to throw, the hitch, combo variety and air time); 6.8 (GDD Edit 78: four levels with linear steps, cone stacks, Newtonian bounce); 6.7 (GDD Edit 77: ability tracks by level, wear shields, run to clear); 6.6 (GDD Edit 76: fit to screen, glass touch controls on phones and tablets, the Link's Awakening jump, the stair fix); 6.5 (GDD Edit 75: DIRECT turning, four buttons, jump, combo, ricochet, touch, any gamepad); 6.4 (GDD Edit 72: ring capacity, steady signals); 6.3 (Edit 71: driving); 6.2 (Edit 70); 6.1 (Edit 69) was the P6 release with Edits 63–68 and the release tests
   function pv(id) {
     if (id == null) return null;
     if (app.tune[id] != null) return app.tune[id];
@@ -164,7 +164,7 @@
     app.tuned = Object.keys(app.tune).length > 0;
     app.screen = 'game'; app.paused = false; app.lastEv = 0; app.shopCol = 0; app.shopRow = 0; app.endSel = 0;
     app.confirmRefuse = false; clearEdges();
-    fx.marks = []; fx.fit = null; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
+    fx.marks = []; fx.fit = null; fx.unveil = null; fx.barks.clear(); fx.barked.clear(); fx.partWatch = null; fx.partsSeen.clear(); fx.learnWatch.clear(); fx.pendingLearned = null;
     fx.rings = []; fx.streaks = []; fx.bubbles.clear(); fx.carBarkT.clear(); fx.cars.clear(); fx.nm.clear(); fx.nmDone.clear();
     fx.lungeWatch = null; fx.lastImpact = null; fx.upgradeWatch = null; if (!carry) fx.pendingNodes = [];
     app.present = [];
@@ -741,21 +741,6 @@
   }
   // Barks from the fleet database: highest priority wins, then the most specific line; seeded pick among equals.
   // Write-offs always speak; hits outrank chatter; chatter waits out the global and per-car cooldowns (proto.barks.*).
-  // Edit 94 (P7.13): the place a bark names. Story: the tile on screen (B2). Arcade: the district, as before
-  function barkPlace(s) {
-    if (!s) return null;
-    const dn = INFO(s.levelId) ? INFO(s.levelId).name : String(s.levelId || '');
-    if (!s.storyMode || typeof s.screenName !== 'function') return dn;
-    return s.screenName() || dn;
-  }
-  function barkPlaceText(text, s) { // Edit 94 (P7.13): the district's name in a Story bark becomes the tile's code, in the line's own case
-    if (!s || !s.storyMode || !INFO(s.levelId)) return text;
-    const dn = INFO(s.levelId).name, pl = barkPlace(s);
-    if (!dn || !pl || pl === dn) return text;
-    return String(text).replace(new RegExp(dn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), (m) => (m === m.toUpperCase() ? pl.toUpperCase() : pl));
-  }
-  function exposeBarkPlace() { const ui = window.__dummiesUI = window.__dummiesUI || {}; if (ui.barkPlace !== barkPlace) ui.barkPlace = barkPlace; } // Edit 94 (P7.13): the test hook
-  exposeBarkPlace();
   function barkLine(e, s) {
     if (!FLEET || !e.car) return;
     const info = fx.cars.get(e.car);
@@ -781,7 +766,7 @@
     const onScreen = new Set([...fx.bubbles.values()].filter((bk) => now - bk.t0 < dur).map((bk) => bk.id));
     const fresh = top.filter((ln) => !onScreen.has(ln.id) && ln.id !== fx.lastLine), use = fresh.length ? fresh : top; // no line twice at once
     const pick = use[(Math.round(e.t * 60) + info.slot * 7 + fx.barkN++) % use.length];
-    const text = barkPlaceText(fillIn(pick.text, e), s); fx.lastLine = pick.id; // Edit 94 (P7.13): barks name the tile in Story
+    const text = fillIn(pick.text, e); fx.lastLine = pick.id;
     fx.bubbles.set(e.car, { text, style: pick.style || 'speech', priority: pr, t0: now, car: e.car, id: pick.id });
     fx.barkT = now; fx.carBarkT.set(e.car, { t: now, pr });
     app.present.push({ t: +s.t.toFixed(4), type: 'bark', car: e.car, event: e.type, line: pick.id, text });
@@ -952,7 +937,7 @@
         case 'story-deliver': case 'arcade-deliver': Snd.tone(150, 210, 0.6, 'sawtooth', 0.025); giftChime(); toast('FARSIGHT DRONE · DELIVERING ' + NODE(e.node).name.toUpperCase()); break; // Edit 84
         case 'gift': fx.gift = { node: e.node, t0: app.realT }; giftFanfare(Math.max(0.1, pv('ui.gift.fallSeconds'))); break; // Edit 84: the gift screen
         case 'delivered': Snd.tone(320, 480, 0.12, 'triangle', 0.05); break;
-        case 'unveil': [392, 523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.2, 'triangle', 0.06, j * 0.14)); if (app.mode === 'story') saveStory(); break; // Edit 94 (P7.13): the unveiling; the CERTIFIED save
+        case 'unveil': fx.unveil = null; if (app.mode === 'story') saveStory(); break; // Edit 94 (P7.13): the CERTIFIED save; the chime plays as the cloth lifts (drawUnveil)
         case 'story-ferried': Snd.tone(240, 150, 0.1, 'square', 0.05); break;
         case 'story-fence': Snd.tone(140, 120, 0.08, 'square', 0.05); toast(e.cleared ? 'Fence: ' + e.to + ' is not yet surveyed' : 'Fence: clear ' + e.tile + ' first (' + s.story.tileWO + ' / ' + STORY.needOf(s.levelId, e.tile, s.P) + ')'); break;
         case 'ending': if (e.kind === 'Licensed' || e.kind === 'Certified') [523, 659, 784, 1046].forEach((f, j) => Snd.tone(f, f, 0.16, 'triangle', 0.07, 1.1 + j * 0.09)); break;
@@ -1066,7 +1051,7 @@
       }
       if (!s) continue;
       if (s.phase === 'brief' && m === 'ok') { s.continueBrief(); clearEdges(); return; } // Edit 81: the tile card
-      if (s.phase === 'unveil') { if (m === 'ok') { s.continueUnveil(); app.endSel = 0; clearEdges(); return; } continue; } // Edit 94 (P7.13): A continues to the ending
+      if (s.phase === 'unveil') { if (m === 'ok' && unveilReady()) { s.continueUnveil(); fx.unveil = null; app.endSel = 0; clearEdges(); Snd.tone(660, 990, 0.1, 'triangle', 0.05); return; } continue; } // Edit 94 (P7.13): A goes on to the ship; manual review: once the cloth is off
       if (s.phase === 'gift') { if (m === 'ok' && giftReady()) { s.continueGift(); fx.gift = null; clearEdges(); Snd.tone(660, 990, 0.1, 'triangle', 0.05); return; } continue; } // Edit 84: the gift screen
       if (s.phase === 'report' && m === 'ok') s.continueReport();
       else if (s.phase === 'shop') {
@@ -1842,7 +1827,7 @@
         (s.level.checkpoints || []).forEach((cp, i) => { if ((cp.deck && l.dk && l.dk.off === cp.off && l.z === cp.z) || (cp.hill && l.hill)) drawBoom(s, cp, i); }); // a highway or hill street leaving the district
         if (l === cueLayer) drawLights(s, lcars.filter((c) => elevOf(c) === lvl)); shadows6(s, lcars, me ? true : 'no'); if (l === cueLayer) cues(); }),
     });
-    { const dm = sc.dummyMonument; if (dm && dm.shroud && s.monumentShrouded?.()) PIX.blit(FB, dm.shroud, dm.x, dm.y); } // Edit 94 (P7.13): the circus's monument, shrouded until B2 clears
+    { const dm = sc.dummyMonument, up = dm && dm.shroud ? shroudLift(s) : null; if (up != null) { PIX.blit(FB, dm.shroud, dm.x, dm.y - up); if (up > 0) drawDrone(s, { x: dm.x * U, y: (dm.y - dm.shroud.oy - up - 2) * U, alt: 0, state: 'lift' }); } } // Edit 94 (P7.13): the circus's monument, shrouded until B2 clears; manual review: a drone lifts the cloth away at the unveiling
     drawStoryFence(s); // Edit 81: a tile in test is fenced
     for (const c of cars) { ghost(carSpr(s, c, c._brk), c.x / U, c.y / U - (c._lift || 0)); relight(c); } // x-ray: a checker of each actor's own pixels, so an occluded car or dummy still reads
     if (b.alive && b._spr) ghost(b._spr, b._sx, b._sy);
@@ -1931,7 +1916,6 @@
   // Frame-layer messages over the field: road intro and toasts, at ui.typeSecondary.
   function drawFieldHD(s) {
     const P = s.P;
-    exposeBarkPlace(); // Edit 94 (P7.13)
     drawBubblesHD(s); // Edit 83: barks are speech bubbles on the cars again
     const since = s.t - (s.tStart || 0);
     if (since < 4 && s.phase === 'play' && !s.storyMode) { // Edit 81: the story's tile card replaces the banner
@@ -1993,7 +1977,6 @@
   // Edit 83 (P7.2): the bottom line carries the objective: the story's brief for the tile in test, or the Arcade district's quota.
   // A toast takes the line while it lives.
   function objective(s) {
-    exposeBarkPlace(); // Edit 94 (P7.13)
     if (!s) return null;
     if (s.storyMode) {
       const pr = s.story, id = s.levelId, act = STORY.activeTile(pr, id), here = s.screenName();
@@ -2001,6 +1984,7 @@
       if (rs && gn && !rs.ferry) return ['FARSIGHT DRONE', 'Delivering ' + NODE(gn).name + '.']; // Edit 84
       if (rs && rs.gift) return ['FARSIGHT DRONE', 'Bringing ' + NODE(rs.gift).name + ', then on to ' + rs.tile + '.'];
       if (rs && rs.ferry) return ['FARSIGHT DRONE', 'Carrying the chassis to ' + rs.tile + '.'];
+      if (rs && rs.voyage) return ['FARSIGHT DRONE', 'Carrying the certified model to the ship at ' + rs.tile + '.']; // Edit 94 (manual review): the voyage
       if (!act) return ['STORY', INFO(id).name + ' is cleared.'];
       const task = STORY.tileOf(id, act).task, need = STORY.needOf(id, act, s.P), lab = STORY.taskText(task, s.P).label.toLowerCase(), cnt = ' (' + pr.tileWO + ' of ' + need + ')';
       const what = (need === 1 ? 'Write off a body' : 'Write off ' + need + ' bodies') + (task.kind === 'any' ? '' : '. Last hit: ' + lab);
@@ -2127,7 +2111,7 @@
   // Top bar: where you are and how the shift stands. Cars left is the shift's clock.
   function whereOf(s) { // the body's level, as the top bar named it (Edit 44, P6 floors)
     const b = s.body, f = bodyFloor(s);
-    return b.mode === 'rescue' ? (s.rescue && s.rescue.ferry ? ' · DRONE' : ' · RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level;
+    return b.mode === 'rescue' ? (s.rescue && (s.rescue.ferry || s.rescue.voyage) ? ' · DRONE' : ' · RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level;
   }
   function fitTextR(t, x, y, w, size, min, color) { while (size > min) { ctx.font = '700 ' + size + 'px ' + F_UI; if (ctx.measureText(t).width <= w) break; size--; } txt(t, x, y, '700 ' + size + 'px ' + F_UI, color, 'right'); }
   function fitNumR(t, x, y, w, size, color) { let z = size; while (z > 14) { ctx.font = '700 ' + z + 'px ' + F_MONO; if (ctx.measureText(t).width <= w) break; z--; } txt(t, x, y, '700 ' + z + 'px ' + F_MONO, color, 'right'); } // Edit 89: a number that keeps clear of its label
@@ -2144,7 +2128,7 @@
   }
   function drawTopBar(s) {
     const r = s.run, left = s.carsLeft ? s.carsLeft() : Math.max(0, s.schedule.length - (r.admitted - (s.allCars ? s.allCars() : s.cars).filter((c) => !c.deck).length)); // P6.1: shift cars still to appear // deck traffic is off the shift's clock; P5.3: every car still in the district
-    const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? (s.rescue && s.rescue.ferry ? ' · DRONE' : ' · RIVER RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
+    const b = s.body, f = bodyFloor(s), where = b.mode === 'rescue' ? (s.rescue && (s.rescue.ferry || s.rescue.voyage) ? ' · DRONE' : ' · RIVER RESCUE') : !b.alive || b.level === 0 && !b.stair ? '' : b.stair ? ' · STAIRS' : b.mode === 'drop' ? ' · FALLING' : ' · Z' + b.level + ' ' + (f && WHERE6[f.kind] ? WHERE6[f.kind] : f && f.kind === 'roof' ? 'ROOF' : f && f.kind === 'bridge' ? 'BRIDGE' : 'HIGHWAY'); // Edit 44; P6 floors
     const items = s.storyMode ? [[null, INFO(s.levelId).name.toUpperCase() + ' · ' + s.screenName() + where], ['TILE', s.story.tileWO + ' / ' + STORY.needOf(s.levelId, STORY.activeTile(s.story, s.levelId) || s.screenName(), s.P)], ['POINTS', num(r.points)], ['CREDITS', String(r.credits)]] // Edit 81
       : [[null, roadLabel(s.p6 ? s.levelId : s.level.id) + (s.district ? ' · ' + s.screenName() : '') + where], ['WRITE-OFFS', r.writeOffs + ' / ' + s.quota], ['POINTS', num(r.points)], ['CARS LEFT', String(left)]];
     const w = items.map(([k, v]) => { ctx.font = fLab; const kw = k ? ctx.measureText(k).width + 10 : 0; ctx.font = k ? fNum : fLab; return kw + ctx.measureText(v).width; });
@@ -3081,22 +3065,32 @@
     renderScreen();
     if (TOUCH.on) { ctx.setTransform(scale, 0, 0, scale, 0, 0); drawTouch(); }
   }
-  // Edit 94 (P7.13): the unveiling. The monument stands uncovered in the field; its plaque shows the run
-  function unveilTime(t) { t = Math.max(0, Math.round(t || 0)); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, sec = t % 60; return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(sec).padStart(2, '0'); }
+  // Edit 94 (P7.13): the unveiling (D76). The circus's monument stands uncovered; its plaque shows the run.
+  // Manual review: a drone lifts the cloth away over ui.finale.unveilSeconds, then the plaque fades in. It uses the game's panel and
+  // type inside the field, the device's own prompt and a tap target (the agent's version drew its own text below the field)
+  function unveilK() { const u = fx.unveil; return u ? Math.min(1, (app.realT - u.t0) / Math.max(0.1, pv('ui.finale.unveilSeconds'))) : 0; }
+  function unveilReady() { return !!fx.unveil && unveilK() >= 1; }
+  function shroudLift(s) { // art px the cloth has risen: 0 while it covers the monument; null once it is gone
+    if (s.monumentShrouded && s.monumentShrouded()) return 0;
+    if (!s.unveil || s.unveil.done) return null;
+    if (s.phase === 'writeoff' && s.pendingPhase === 'unveil') return 0; // the last write-off plays under the cloth
+    if (s.phase !== 'unveil' || RM) return null;
+    const k = unveilK(); return k >= 1 ? null : Math.round(180 * k * k);
+  }
   function drawUnveil(s) {
-    const p = s.unveil && s.unveil.plaque, cv = document.querySelector('canvas'), g = cv && cv.getContext('2d');
-    if (!p || !g) return;
-    const W = cv.width, H = cv.height, k = Math.max(1, Math.round(Math.min(W, H) / 300)), pw = 160 * k, ph = 96 * k, x = Math.round((W - pw) / 2), y = Math.round(H - ph - 24 * k);
-    g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false;
-    g.fillStyle = 'rgba(12,18,24,0.9)'; g.fillRect(x, y, pw, ph);
-    g.strokeStyle = '#4fe3e0'; g.lineWidth = k; g.strokeRect(x + k / 2, y + k / 2, pw - k, ph - k);
-    g.textBaseline = 'top'; g.textAlign = 'center';
-    g.fillStyle = '#4fe3e0'; g.font = 7 * k + 'px monospace'; g.fillText('THE DUMMY MONUMENT · UNVEILED', W / 2, y + 6 * k);
-    g.fillStyle = '#d8dee4'; g.font = 6 * k + 'px monospace'; g.fillText('ZERO ACCIDENTS (EXCLUDING TESTS)', W / 2, y + 17 * k);
-    const rows = [['CHASSIS SPENT', String(p.chassis || 0)], ['POINTS', num(Math.round(p.points || 0))], ['BEST COMBO', '×' + (p.bestCombo || 0)], ['TIME', unveilTime(p.t)]];
-    rows.forEach(([a, b], i) => { const ry = y + (31 + i * 11) * k; g.textAlign = 'left'; g.fillStyle = '#9aa6b2'; g.fillText(a, x + 12 * k, ry); g.textAlign = 'right'; g.fillStyle = '#ffffff'; g.fillText(b, x + pw - 12 * k, ry); });
-    g.textAlign = 'center'; g.fillStyle = '#4fe3e0'; g.fillText('A · CONTINUE', W / 2, y + ph - 12 * k);
-    g.restore();
+    const p = s.unveil && s.unveil.plaque; if (!p) return;
+    if (!fx.unveil) { fx.unveil = { t0: app.realT }; [392, 523, 659, 784].forEach((f, j) => Snd.tone(f, f, 0.2, 'triangle', 0.06, 0.3 + j * 0.14)); } // the chime as the cloth lifts
+    const a = RM ? 1 : Math.max(0, Math.min(1, (unveilK() - 0.55) / 0.45)); if (a <= 0) return;
+    const w = FW - 72, h = 214, x = FX + 36, y = FY + FH - h - 16, pd = TOUCH.on || app.device === 'pad';
+    ctx.save(); ctx.globalAlpha = a;
+    panel(x, y, w, h);
+    txt('THE DUMMY MONUMENT · UNVEILED', x + 26, y + 38, fLab, FT.accent);
+    txt('ZERO ACCIDENTS (EXCLUDING TESTS)', x + 24, y + 80, '900 30px ' + F_BRAND, FT.text);
+    const stats = [['CHASSIS SPENT', num(p.chassis || 0)], ['POINTS', num(p.points || 0)], ['BEST COMBO', '×' + (p.bestCombo || 0)], ['TIME', fmtT(p.t || 0)]], cw = (w - 52) / stats.length;
+    stats.forEach(([k, v], i) => { txt(k, x + 26 + i * cw, y + 122, '700 17px ' + F_UI, FT.dim); txt(v, x + 26 + i * cw, y + 160, fNum, FT.text); });
+    ctx.restore();
+    hitbox(x, y, w, h, 'unveil', () => menuQ.push('ok')); // a tap goes on to the ship, once the cloth is off
+    if (unveilReady() && Math.floor(app.realT * 2.5) % 3) txt((TOUCH.on ? 'TAP · ' : pd ? 'A  ' : 'SPACE  ') + 'ON TO THE SHIP', x + w - 26, y + h - 20, fLab, FT.accent, 'right');
   }
   function renderScreen() {
     HITS.length = 0; // Edit 89: this frame's tap targets
@@ -3188,7 +3182,7 @@
     for (let i = TUNE.length - 1; i >= 0; i--) if (gone.has(TUNE[i][0])) TUNE.splice(i, 1);
   }
   if (STORY) { // Edit 81–82: the story (from the next deploy): a credit a body, its prices, the gift, the brief's combos, each tile's write-offs
-    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.missFloor', 0, 50, 1], ['damage.bodyHealthOnFoot', 100, 2000, 50], ['abilities.battery.dashCharges', 1, 3, 1], ['ui.gift.fallSeconds', 0.1, 3, 0.05], ['ui.gift.holdSeconds', 0, 5, 0.1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
+    TUNE.push(['proto.bounce.maxThrow', 0, 200, 4], ['story.ferryDepth', 40, 400, 10], ['economy.creditsPerWriteOff', 0, 3, 1], ['story.missFloor', 0, 50, 1], ['damage.bodyHealthOnFoot', 100, 2000, 50], ['abilities.battery.dashCharges', 1, 3, 1], ['ui.gift.fallSeconds', 0.1, 3, 0.05], ['ui.gift.holdSeconds', 0, 5, 0.1], ['ui.finale.unveilSeconds', 0.1, 5, 0.1], ['story.task.comboEasy', 2, 5, 1], ['story.task.comboHard', 2, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.writeOffs.' + d.id + '.' + t, 1, 6, 1]);
     for (const d of STORY.DIST) for (const t of d.order) TUNE.push(['story.traffic.' + d.id + '.' + t, 0.5, 3, 0.25]); // Edit 85: each tile's traffic
   }

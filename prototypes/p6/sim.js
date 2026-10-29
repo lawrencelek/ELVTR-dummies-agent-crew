@@ -116,6 +116,7 @@
     'story.tileWriteOffs': 3, 'story.clearPowerUps': 1, 'story.pointsPerPowerUp': 15000, 'story.giftPowerUps': 1, 'story.task.comboEasy': 2, 'story.task.comboHard': 3, 'story.shiftCars': 5000,
     // Edit 82 (P7.1): a credit a body (Arcade and Story); story prices 3, 4, 5; a credit gift; write-offs per tile, in the story's order
     'arcade.giftEvery': 1, 'ui.gift.fallSeconds': 0.7, 'ui.gift.holdSeconds': 1.2, // Edit 84 (P7.3): Arcade issues a verb per write-off; the gift screen's fall and hold
+    'ui.finale.unveilSeconds': 1.2, // Edit 94 (P7.13): the finale's unveiling, the cloth lifted off the monument (manual review of R-UNVEIL)
     'world.deckDropGaps': 0, 'world.deckFlightsMin': 0, 'props.cone.minVisible': 0, // Edit 85 (P7.4): level rules, off for 6.x (P7SIM turns them on)
     'story.traffic.monument.A1': 1.5, 'story.traffic.monument.B1': 1.75, 'story.traffic.monument.C1': 1, 'story.traffic.monument.C2': 1, 'story.traffic.monument.B2': 1, 'story.traffic.monument.A2': 1, 'story.traffic.monument.A3': 1, 'story.traffic.monument.B3': 1, 'story.traffic.monument.C3': 1.5,
     'story.traffic.parkland.C1': 1.75, 'story.traffic.parkland.C2': 1.75, 'story.traffic.parkland.C3': 1, 'story.traffic.parkland.B3': 1.25, 'story.traffic.parkland.A3': 2, 'story.traffic.parkland.A2': 1.5, 'story.traffic.parkland.A1': 1, 'story.traffic.parkland.B1': 2, 'story.traffic.parkland.B2': 1.25,
