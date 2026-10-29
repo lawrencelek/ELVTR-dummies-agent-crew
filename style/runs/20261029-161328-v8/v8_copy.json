@@ -1,0 +1,220 @@
+{
+ "run": "20261029-161328-v8",
+ "guide": "STYLE_GUIDE_V2.md",
+ "accepted": {
+  "act-monument": true,
+  "tale-monument-A1": true,
+  "tale-monument-B1": true,
+  "tale-monument-C1": true,
+  "tale-monument-C2": true,
+  "tale-monument-B2": true,
+  "tale-monument-A2": true,
+  "tale-monument-A3": true,
+  "tale-monument-B3": true,
+  "tale-monument-C3": true,
+  "act-parkland": true,
+  "tale-parkland-C1": true,
+  "tale-parkland-C2": true,
+  "tale-parkland-C3": true,
+  "tale-parkland-B3": true,
+  "tale-parkland-A3": true,
+  "tale-parkland-A2": true,
+  "tale-parkland-A1": true,
+  "tale-parkland-B1": true,
+  "tale-parkland-B2": true,
+  "act-waterfront": true,
+  "tale-waterfront-A1": true,
+  "tale-waterfront-B1": true,
+  "tale-waterfront-C1": true,
+  "tale-waterfront-C2": true,
+  "tale-waterfront-C3": true,
+  "tale-waterfront-B3": true,
+  "tale-waterfront-A3": true,
+  "tale-waterfront-A2": true,
+  "tale-waterfront-B2": true,
+  "brief-any": true,
+  "brief-dash": true,
+  "brief-drop": true,
+  "brief-jump": true,
+  "brief-level": true,
+  "brief-cone": true,
+  "brief-push": true,
+  "brief-bounce": true,
+  "brief-struck": true,
+  "brief-combo": true,
+  "brief-cls": true,
+  "ending": true,
+  "notices": true,
+  "barks": true,
+  "credits": true,
+  "story-batch": true,
+  "arcade-banners": true,
+  "review": true
+ },
+ "tales": {
+  "monument": {
+   "A1": "The welcome wall shows your face and the word WELCOME. Stand in the road until a colleague notices you.",
+   "B1": "Battery 1 is fitted. Staff watch from the podium bridge; you join the road and dash into a colleague.",
+   "C1": "The drum warns every colleague of each bend. Step off the high road onto a car; gravity is company policy.",
+   "C2": "The raised road runs through this tower. Take the final hit up there, and Certification comes closer.",
+   "B2": "The plaque reads ZERO ACCIDENTS, a target. Walk or stand beside it until a colleague finds you.",
+   "A2": "The neon shops flash prices at the traffic. Hands 1 is fitted: place a cone, and let a colleague react.",
+   "A3": "Each cube rests on the one before. Chain your hits the same way; the last link writes you off.",
+   "B3": "Legs 1 is fitted. The screens advertise to each other; jump into a car between them.",
+   "C3": "Under the gateway, your file reads ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next."
+  },
+  "parkland": {
+   "C1": "The lantern is lit for the Expo's clients. Arms 1 is fitted: push off one car into the next.",
+   "C2": "On opening day, our board will watch from these terraces. A van delivers the catering; let it deliver you.",
+   "C3": "The arch is the Expo's gate. Clients enter when the park passes; chain each hit to the last.",
+   "B3": "On opening day, police escort a school party to the obelisk. Take a police car's hit first.",
+   "A3": "A wedding is booked on the belvedere. Legs 2 is fitted: jump into a car, so no guest does.",
+   "A2": "The dome awaits clients. Hands 2 is fitted: lay a cone, and let the car that reacts write you off.",
+   "A1": "Arms 2 is fitted. Teach the cars to stop before the reservoir: push off one, into the next.",
+   "B1": "The cascade steps down beside the highway. Climb to the raised road; a write-off there serves our clients.",
+   "B2": "Battery 2 is fitted. The board watches the ring; end a long chain on a car for our clients."
+  },
+  "waterfront": {
+   "A1": "At the west portal, buses carry engineers to the bridge. We need the bus fleet's data; meet the bus.",
+   "B1": "Legs 3 is fitted: the longest flight. Jump at a car by the tunnel portal; your data serves our clients.",
+   "C1": "The police check papers at the east portal. Take your final hit from a police car; your papers follow.",
+   "C2": "Beyond the rail, ships wait to carry Certified dummies to clients. Drop onto a car below.",
+   "C3": "The customs post logs every dummy shipped to our clients. Be thrown into a car, and earn your entry.",
+   "B3": "Show Chassis 0 how far the model has come. Arms 3 is fitted: push off one car into the next.",
+   "A3": "Your customs entry reads DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. Honour the declaration on the raised road.",
+   "A2": "Sand on the west beach terrace came from three provinces. Place a cone; the car that reacts writes you off.",
+   "B2": "The monument is cast from every write-off. Battery 3 is fitted: finish the chain and ship Certified."
+  }
+ },
+ "acts": {
+  "monument": "Dummy Corporation welcomes you off the factory floor. The cars are your colleagues; Certification is your goal.",
+  "parkland": "The Expo opens to clients when this park passes. Your training keeps them safe.",
+  "waterfront": "Certified dummies ship across the river, to be sacrificed in service to our clients. Your papers are being prepared."
+ },
+ "briefs": {
+  "any": {
+   "label": "ANY WRITE-OFF",
+   "brief": "General coverage. Any write-off in this tile counts."
+  },
+  "dash": {
+   "label": "DASH INTO A CAR",
+   "brief": "Coverage gap: dashes. The final hit must be a dash into a car."
+  },
+  "drop": {
+   "label": "DROP ONTO A CAR",
+   "brief": "Coverage gap: falls. The final hit must be a drop onto a car from above."
+  },
+  "jump": {
+   "label": "JUMP INTO A CAR",
+   "brief": "Coverage gap: jumps. The final hit must be a jump into a car."
+  },
+  "level": {
+   "label": "ON A RAISED ROAD",
+   "brief": "Coverage gap: raised roads. The final hit must land at Z1 or above."
+  },
+  "cone": {
+   "label": "CONE-BAITED CAR",
+   "brief": "Coverage gap: cones. The final hit must come from a car reacting to a cone."
+  },
+  "push": {
+   "label": "PUSH OFF A CAR",
+   "brief": "Coverage gap: ricochets. Push off one car; the final hit must be the next car."
+  },
+  "bounce": {
+   "label": "THROWN INTO A CAR",
+   "brief": "Coverage gap: rebounds. The final hit must come while a hit is still throwing you."
+  },
+  "struck": {
+   "label": "STRUCK, NOT DASHING",
+   "brief": "Coverage gap: pedestrians. The final hit must be a car hitting you while you walk or stand."
+  },
+  "combo": {
+   "label": "COMBO ×{n}",
+   "brief": "Coverage gap: chains. The final hit must be link {n} or later of a combo."
+  },
+  "cls": {
+   "label": "A {cls}",
+   "brief": "Coverage gap: the {clsLong}. The final hit must come from a {cls}."
+  }
+ },
+ "ending": "Your model has passed and will be manufactured for our clients. A Corporation drone carries you to the ship.",
+ "notices": {
+  "n01": "You are a Dummy Corporation trainee. Every write-off brings Certification closer.",
+  "n02": "Welcome, trainee. Every write-off brings Certification closer.",
+  "n03": "Shenzhen Smart City, tile by tile. Each tile trains you to its brief.",
+  "n04": "TRAINING BRIEF",
+  "n05": "TRAINING BRIEF · {LABEL}",
+  "n06": "CORPORATION DRONE",
+  "n07": "CORPORATION DRONE · DELIVERING {PART}",
+  "n08": "CORPORATION DRONE · {PART} ON BOARD · THEN {TILE}",
+  "n09": "CORPORATION DRONE · CARRYING YOU TO {TILE}",
+  "n10": "CORPORATION DRONE · INCOMING",
+  "n11": "CORPORATION GIFT · +{N} CREDITS",
+  "n12": "NEXT FROM THE CORPORATION",
+  "n13": "A Corporation drone brings this part.",
+  "n14": "A Corporation drone brings this part. Keep training.",
+  "n15": "A Corporation drone brings that part",
+  "n16": "A Corporation drone brings it",
+  "n17": "Corporation drone dispatched: chassis in the river",
+  "n18": "Corporation drone dispatched. Obstruction will be relocated.",
+  "n19": "Corporation drone: chassis recovered from the river",
+  "n20": "Training complete. The Corporation thanks you for your service.",
+  "n21": "Traffic exhausted. Training incomplete; report to the bay.",
+  "n22": "DUMMY CORPORATION",
+  "n23": "DUMMY CORP",
+  "n24": "Neon shops, LED walls; one road splits round the monument under the walkway ring. Your training begins here.",
+  "n25": "Water and concrete; a boulevard passes under the raised ring. Your write-offs open the Expo to clients.",
+  "n26": "A hill walled by towers; bridges cross the drive and the river. Certified dummies ship across it to clients."
+ },
+ "barks": {
+  "b013": {
+   "text": "OI! Right in the grille, kind regards.",
+   "style": "shout"
+  },
+  "b034": {
+   "text": "A write-off on my record. Unthinkable.",
+   "style": "speech"
+  },
+  "b041": {
+   "text": "Done, done! You happy now?!",
+   "style": "shout"
+  },
+  "b052": {
+   "text": "Too slow, ha! Have a nice day!",
+   "style": "mutter"
+  },
+  "b058": {
+   "text": "Dash detected, no contact. Noted.",
+   "style": "mutter"
+  },
+  "b061": {
+   "text": "It lunged and nothing happened. Same.",
+   "style": "mutter"
+  },
+  "b062": {
+   "text": "Missed, rubbish! Regards!",
+   "style": "mutter"
+  },
+  "b081": {
+   "text": "Move. I have a schedule, and standards.",
+   "style": "speech"
+  },
+  "b083": {
+   "text": "MOVE IT, thank you! MOVE!",
+   "style": "shout"
+  },
+  "b110": {
+   "text": "Bigger battery, more dashes. Wonderful.",
+   "style": "speech"
+  },
+  "c024": {
+   "text": "Hit on campus. That goes on my record.",
+   "style": "mutter"
+  }
+ },
+ "credits": [
+  "DUMMIES",
+  "A game by Lawrence Lek",
+  "Published by Farsight"
+ ]
+}

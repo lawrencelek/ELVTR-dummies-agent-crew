@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight's board will watch from these terraces on opening day." Farsight is the publisher and may be named only in the Credits; inside the game the company is Dummy Corporation. [EDIT95#0] Fix: replace "Farsight's board" with "Our board" so the Corporation speaks as "we".
+- tale · F6 (blocking, −4) "Farsight's board will watch from these terraces on opening day. The seats face the avenue, so every crossing is a performance. A van delivers the catering. Arrange for it to deliver you." The tale has 32 words in 4 sentences, over the limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: cut it to two sentences and at most 20 words, for example "Our board watches from these terraces on opening day. A van delivers the catering; arrange for it to deliver you." (20 words).
+Total: 10 − 4 − 4 = 2.

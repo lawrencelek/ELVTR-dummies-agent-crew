@@ -1,0 +1,47 @@
+[
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "items[1]",
+  "quote": "45°",
+  "measured": "typed figure; numbers live in the registry",
+  "source": "STORY#S1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[1]",
+  "quote": "Calm, water, concrete and planting. Two Z1 highways meet at …",
+  "measured": "21 words > 20 (style.v2.text.maxWords)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F10",
+  "severity": "major",
+  "deduct": 2,
+  "path": "items[1]",
+  "quote": "Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath.",
+  "measured": "123 characters > 110: the slot's width",
+  "source": "EDIT95#4.2"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[2]",
+  "quote": "A hill walled by towers; a river below. The valley avenue me…",
+  "measured": "30 words > 20 (style.v2.text.maxWords)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F10",
+  "severity": "major",
+  "deduct": 2,
+  "path": "items[2]",
+  "quote": "A hill walled by towers; a river below. The valley avenue meets the tunnel and the beach road at the circus; the hill's bridges cross the drive and the river.",
+  "measured": "158 characters > 110: the slot's width",
+  "source": "EDIT95#4.2"
+ }
+]

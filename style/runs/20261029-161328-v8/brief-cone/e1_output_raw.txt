@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "CONE-BAITED CAR" and the duty line against T1–T5, T13, V1, V3, V4, V6, V8, V9, F5, F6 and F8. The label is in caps and 15 characters long, within the 19 allowed. The duty has two sentences and 16 words, uses the training frame, has no "!" and names no company. It matches the canon cone brief exactly. [STORY#S3] [EDIT95#3.2] [EDIT95#3.1]
+Total: 10.

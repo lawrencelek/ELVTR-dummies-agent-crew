@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against Tone T1–T5 and T13, Vocabulary V1, V3, V4, V6 and V8, Formatting F5, F6 and F8, and Truth R5, using [EDIT95#3.1], [EDIT95#3.2], [EDIT95#3.3], [STORY#S1], [STORY#S3], [STORY#WC2] and [STORY#MC1]: the label "DROP ONTO A CAR" is caps and 15 characters, and the brief is two sentences, 15 words, no exclamation mark, no banned word, and matches the drop row of [STORY#S3] exactly.
+Total: 10.

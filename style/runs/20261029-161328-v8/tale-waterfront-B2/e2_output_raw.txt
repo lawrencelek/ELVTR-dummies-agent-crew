@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations: the tale is two sentences and 17 words, has no exclamation mark and no banned words, and names Dummy Corporation's equipment as Battery 3 on the tile that issues it. It puts the monument on the circus tile and asks for a final hit that ends a chain, which matches the COMBO brief. "Ship Certified" fits the CUSTOMS frame, and the tone is flat and motivating, without pity [EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, STORY#WB2, STORY#S1, STORY#S3, PLAY#PS0].
+Total: 10.

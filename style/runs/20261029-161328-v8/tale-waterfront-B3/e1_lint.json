@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The stilt houses are older than the city, kept as heritage. …",
+  "measured": "42 words > 20 (style.v2.text.maxWords); 5 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

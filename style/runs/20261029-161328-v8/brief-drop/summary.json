@@ -1,0 +1,44 @@
+{
+ "case": "brief-drop",
+ "class": "V8 brief",
+ "title": "Prototype 7.13 brief drop, for Prototype 8",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 14.7,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 7.8,
+   "output_tokens": 421,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1012975
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 6.9,
+   "output_tokens": 454,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0160211
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1173
+}

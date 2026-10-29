@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The arch is the Expo's gate. Visitors will circle the roundabout once before they enter, which gives the cars time to learn them. You go round faster. Two hits, the second before the first is forgotten." At 36 words and 4 sentences, the tale is over the limit of 20 words and 2 sentences (lint finding). [EDIT95#3.2] Fix: "The arch is the Expo's gate. Circle faster than the visitors; chain hits before the first is forgotten." (18 words, 2 sentences).
+- tale · F5 (major, −2) "Two hits" This writes the value of story.task.comboEasy into the text, and numbers belong in the registry; the brief binds the count only as {n}. [STORY#S1] Fix: drop the count and say "chain hits", as in the F6 fix above.
+Total: 10 − 4 − 2 = 4.

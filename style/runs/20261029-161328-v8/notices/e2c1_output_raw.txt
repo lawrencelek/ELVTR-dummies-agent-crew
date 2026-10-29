@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked all 23 notices against T1–T5 and T13 for tone, V1, V3, V4, V6 and V9 for vocabulary and lore, F5, F6 and F10 for formatting and length, and R4 and R5 for truth; every text is in Dummy Corporation's deadpan training voice and within its slot's width and the two-sentence, 20-word cap. The drone, gift, brief and wordmark labels and the DUMMY CORP sign match the Prototype 8 replacements exactly, and every placeholder is kept as given [EDIT95#0, EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, EDIT95#4.2, FLEET#F3, PLAY#PS0].
+Total: 10.

@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight requires the bus fleet's data" Farsight is the publisher, and only the Credits may name it; inside the game the company is Dummy Corporation. [EDIT95#0] Fix: replace "Farsight requires" with "We need".
+- tale · T13 (minor, −1) "The bus is slow and very large." "very" is an intensifier, and this sentence has two adjectives when the limit is one. [EDIT95#3.2] Fix: delete the sentence, or cut it to "The bus is large."
+- tale · F6 (blocking, −4) "The upper town houses the engineers, and the bus carries them to the bridge. Farsight requires the bus fleet's data before anyone crosses the river. The bus is slow and very large. It will not miss." At 36 words and 4 sentences, the tale is over the limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: "We need the bus fleet's data before Certified dummies cross the river. Meet the bus; it will not miss." (19 words, 2 sentences)
+Total: 10 − 4 − 1 − 4 = 1.

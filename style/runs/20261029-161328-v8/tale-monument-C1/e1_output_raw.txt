@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The drum lights each bend before a car reaches it, so no colleague is ever surprised. Today one will be. The high road breaks its rail over the street below. Step off it onto a car. Gravity is company policy." The tale has 40 words and 5 sentences, but every in-game text may have at most 20 words and 2 sentences. [EDIT95#3.2] Fix: "The drum warns every colleague of each bend. Step off the broken high road onto one." (16 words, 2 sentences; the duty still matches the DROP ONTO A CAR brief.)
+Total: 10 − 4 = 6.

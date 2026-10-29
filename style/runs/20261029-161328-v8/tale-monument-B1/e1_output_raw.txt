@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight will time you." Farsight is the publisher and may be named only in the Credits, and this sentence makes it the narrator of the tale. [EDIT95#0] Fix: delete the sentence; if the tale needs a speaker, use "The Corporation" or "we", but stay within F6.
+- tale · F6 (blocking, −4) "Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you join the road. Dash into a colleague. Farsight will time you." The tale has 40 words and 5 sentences, but the limit is 20 words and 2 sentences. [EDIT95#3.2] Fix: replace the whole tale with "Battery 1 is fitted, for the dash. Today you join the road: dash into a colleague." (16 words, 2 sentences, keeps the equipment line F7 needs and the duty R5 needs).
+Total: 10 − 4 − 4 = 2.

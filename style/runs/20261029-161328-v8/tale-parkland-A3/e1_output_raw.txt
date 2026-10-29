@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "A wedding is booked on the belvedere for opening day. The couple asked for a view of the traffic. Legs 2 is fitted: longer in the air. Land on a car here, so that no guest ever does." The tale has 38 words in 4 sentences, over the limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: "Legs 2 is fitted. Jump onto a car here, so no wedding guest on the belvedere ever does." (2 sentences, 17 words; it names the equipment and keeps the jump duty and the landmark.)
+Total: 10 − 4 = 6.

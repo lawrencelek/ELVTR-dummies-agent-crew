@@ -1,0 +1,92 @@
+{
+ "case": "tale-parkland-B3",
+ "class": "V8 tale",
+ "title": "Prototype 7.13 tale parkland B3, for Prototype 8",
+ "request": null,
+ "scores": [
+  1,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 80.1,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 16.8,
+   "output_tokens": 1444,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1245304
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.8,
+   "output_tokens": 561,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1096753
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 15.1,
+   "output_tokens": 1171,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1155793
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 8.6,
+   "output_tokens": 640,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1059549
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 15.6,
+   "output_tokens": 1194,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1164904
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 16.1,
+   "output_tokens": 1223,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0313874
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.6036
+}

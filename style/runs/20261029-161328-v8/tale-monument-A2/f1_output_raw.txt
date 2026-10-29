@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "A2", "title": "The neon shops", "tale": "Hands 1 is fitted. Place a cone; the colleague that reacts writes you off, and you progress."}

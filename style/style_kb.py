@@ -34,12 +34,19 @@ DOCS = [
     {"id": "SUB4", "path": "style/kb/DUMMIES_Submission4_Precedents.md", "title": "Submission 4 precedents: off-brand lines and fixes"},
     {"id": "DECISIONS", "path": "style/kb/DUMMIES_DECISIONS.md", "title": "Decision log (live DECISIONS.md, headings every ten rows)"},
 ]
+DOCS_V2 = [
+    {"id": "EDIT95", "path": "style/kb/DUMMIES_GDD_Edit95_Lore.md", "title": "GDD Edit 95: Prototype 8; lore refinement: Dummy Corporation; Farsight in the Credits only"},
+    {"id": "PLAY", "path": "style/kb/DUMMIES_Play_Station_Script_2017.md", "title": "Play Station (Lawrence Lek, 2017): the tone reference"},
+] + DOCS
+PRECEDENCE_V2 = "Newest wins: EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 replaces every source that names Farsight inside the game. PLAY is a tone reference, not canon."
 PRECEDENCE = "Newest wins: EDIT94 > EDIT93 > EDIT92 > STORY (story.json, Edit 93) > FLEET (fleet.json) > EDIT39 > DESIGN (V29) > EDIT26. DECISIONS rows record rulings; a user-decided row beats any doc."
 DIST_CODE = {"monument": "M", "parkland": "P", "waterfront": "W"}
 NODE_NAME = {"battery": "Battery", "legs": "Legs", "hands": "Hands", "arms": "Arms"}
 
 
-SELF_ROWS = range(543, 548)   # rows about this agent and its results; kept out so a run never cites its own output (as Assignment 4's PIPELINE_ID)
+SELF_ROWS = set(range(543, 548)) | {552, 553}   # rows about this agent and its results; kept out so a run never cites its own output (as Assignment 4's PIPELINE_ID)
+EDIT95_SRC = ROOT / "coder" / "gdd" / "DUMMIES_GDD_Edit95_Prototype_8_Lore_Dummy_Corporation.md"
+EDIT95_OWN = ("## 5 ", "## Measured")   # Edit 95's sections on this agent's pipeline and results: kept out, as SELF_ROWS
 
 
 def own_row(line):
@@ -112,16 +119,27 @@ def build():
     write(KB / "DUMMIES_Fleet_Canon.md", (tmp / "DUMMIES_Fleet_Canon.md").read_text(encoding="utf-8"))
     (tmp / "DUMMIES_Fleet_Canon.md").unlink()
     tmp.rmdir()
+    keep, out = True, []
+    for ln in EDIT95_SRC.read_text(encoding="utf-8").splitlines():
+        if ln.startswith("## "):
+            keep = not ln.startswith(EDIT95_OWN)
+        if keep:
+            out.append(ln)
+    write(KB / "DUMMIES_GDD_Edit95_Lore.md", "\n".join(out).rstrip("\n") + "\n")
     log = "\n".join(ln for ln in (ROOT / "DECISIONS.md").read_text(encoding="utf-8").splitlines() if not own_row(ln))
     write(KB / "DUMMIES_DECISIONS.md", kb4.decisions_with_headings(log))
     man = {"note": "Knowledge base of the Style Guide Agent. Paths are relative to the repository root. " + PRECEDENCE, "docs": DOCS}
     write(KB / "manifest.json", json.dumps(man, indent=1, ensure_ascii=False) + "\n")
+    man2 = {"note": "Knowledge base of the Style Guide Agent, V2 (GDD Edit 95). Paths are relative to the repository root. " + PRECEDENCE_V2, "docs": DOCS_V2}
+    write(KB / "manifest_v2.json", json.dumps(man2, indent=1, ensure_ascii=False) + "\n")
     return man
 
 
 if __name__ == "__main__":
     man = build()
-    _, chunks = rag.load_kb(ROOT, KB / "manifest.json")
+    if "--v2" in sys.argv:
+        man = json.loads((KB / "manifest_v2.json").read_text(encoding="utf-8"))
+    _, chunks = rag.load_kb(ROOT, KB / ("manifest_v2.json" if "--v2" in sys.argv else "manifest.json"))
     for d in man["docs"]:
         print(f"{d['id']:10} {sum(1 for c in chunks if c['doc'] == d['id']):4} chunks  {d['path']}")
     print(f"{len(chunks)} chunks")

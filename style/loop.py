@@ -12,6 +12,8 @@ REASON and rewrites. No human step inside the loop.
   python3 style/loop.py --calibrate                # evaluator only: shipped strings vs seeded violations
   python3 style/loop.py --retrace-calibration style/runs/<id>   # recompute its verdicts from the saved replies
   python3 style/loop.py --piece draft.json         # one piece from the content pipeline: evaluate, refine, evaluate
+  python3 style/loop.py --v8                       # Prototype 8's text: every 7.13 text that breaks Style Guide V2, rewritten on V2
+  python3 style/loop.py --guide v2 --piece x.json  # any job on Style Guide V2 (Dummy Corporation, GDD Edit 95)
   STYLE_REPLAY=style/runs/<id> python3 style/loop.py --examples   # reuse that run's saved model outputs
 """
 import argparse
@@ -46,6 +48,16 @@ BASE = {
 }
 EVENT_LINES = {"impact": ["FLEET#F9.1~2"], "writeoff": ["FLEET#F9.2"], "near-miss": ["FLEET#F9.3"], "miss": ["FLEET#F9.4"], "commit": ["FLEET#F9.5"],
                "honk": ["FLEET#F9.6"], "upgrade-seen": ["FLEET#F9.12"], "part-seen": ["FLEET#F9.13"]}
+BASE_V2 = {
+    "car": BASE["car"] + ["EDIT95#3.2"],
+    "company": ["EDIT95#0", "EDIT95#3.1", "EDIT95#3.2", "EDIT95#3.3", "EDIT95#4.2", "PLAY#PS0", "PLAY#PS2", "PLAY#PS5", "STORY#S1", "STORY#S2", "STORY#S3",
+                "FLEET#F2", "FLEET#F3", "DECISIONS#rows-541-550"],
+}
+GUIDES = {   # the guide a run reads: its file, its agents' prompts, its knowledge base, its lint mode, its canon
+    "v1": {"file": "STYLE_GUIDE.md", "agents": "agents", "manifest": "manifest.json", "base": BASE, "voice": "Farsight"},
+    "v2": {"file": "STYLE_GUIDE_V2.md", "agents": "agents/v2", "manifest": "manifest_v2.json", "base": BASE_V2, "voice": "Dummy Corporation"},
+}
+VERSION = "v1"
 SUPERSEDED = {"EDIT92#3.1~1", "EDIT92#3.1~2", "EDIT92#3.1~3"}   # Edit 92's tile table: briefs, parts and tales replaced by Edit 93 and story.json
 INDEX = None
 LOCK = threading.Lock()
@@ -57,9 +69,18 @@ def index():
     with LOCK:
         if INDEX is None:
             style_kb.build()
-            _, chunks = rag.load_kb(ROOT, STYLE / "kb" / "manifest.json")
+            _, chunks = rag.load_kb(ROOT, STYLE / "kb" / GUIDES[VERSION]["manifest"])
             INDEX = rag.Index(chunks)
     return INDEX
+
+
+def set_guide(v):
+    """Choose the guide before anything reads the index: V1 (Prototype 7.13) or V2 (Dummy Corporation, Prototype 8)."""
+    global VERSION, INDEX, RULES
+    VERSION, INDEX = v, None
+    llm.GUIDE = {"agents": GUIDES[v]["agents"], "file": GUIDES[v]["file"]}
+    lint.MODE = v
+    RULES = guide_rules()
 
 
 # ---------------------------------------------------------------- the slot: what the content is for, and what it may say
@@ -92,29 +113,59 @@ def slot_text(piece):
         for d, t in sorted(tiles):
             out.append(f"- Tile (proposed `tile` condition, D78): {tile_facts(d, t)}")
     elif k == "tale":
-        out += ["- Kind: tale, `content/story/story.json` `districts[].tiles.<tile>.tale`. Speaker: Farsight. Shown on the tile card.",
+        out += [f"- Kind: tale, `content/story/story{'_v2' if VERSION == 'v2' else ''}.json` `districts[].tiles.<tile>.tale`. Speaker: {GUIDES[VERSION]['voice']}. Shown on the tile card.",
                 '- Schema: {"kind": "tale", "district", "tile", "title", "tale"}',
-                f"- Card: at most {P['style.tale.maxChars']} characters (style.tale.maxChars); sentences of at most {P['style.tale.maxSentenceWords']} words.",
+                (f"- Length: at most {P['style.v2.text.maxSentences']} sentences and {P['style.v2.text.maxWords']} words (style.v2.text.*); aim for {P['style.v2.text.targetWords']}." if VERSION == "v2" else
+                 f"- Card: at most {P['style.tale.maxChars']} characters (style.tale.maxChars); sentences of at most {P['style.tale.maxSentenceWords']} words."),
                 f"- Tile: {tile_facts(piece['district'], piece['tile'])}"]
     elif k == "brief":
-        out += ["- Kind: brief, `content/story/story.json` `tasks.<kind>`. Speaker: Farsight. Label on the tile card and the objective strip.",
+        out += ["- Kind: brief, `content/story/story.json` `tasks.<kind>`. Speaker: " + GUIDES[VERSION]["voice"] + ". Label on the tile card and the objective strip.",
                 '- Schema: {"kind": "brief", "task", "label", "brief"}', f"- Task kind: {piece.get('task')}."]
     elif k == "act":
         d = DIST[piece["district"]]
-        out += ["- Kind: act line, `content/story/story.json` `districts[].intro`. Speaker: Farsight. On the district's first card.",
+        out += ["- Kind: act line, `content/story/story.json` `districts[].intro`. Speaker: " + GUIDES[VERSION]["voice"] + ". On the district's first card.",
                 '- Schema: {"kind": "act", "district", "intro"}', f"- District: {d['name']}, {d['act']}."]
     elif k == "ending":
-        out += ["- Kind: the ending, `content/story/story.json` `ending`. Speaker: Farsight. The CERTIFIED screen.", '- Schema: {"kind": "ending", "ending"}']
+        out += ["- Kind: the ending, `content/story/story.json` `ending`. Speaker: " + GUIDES[VERSION]["voice"] + ". The CERTIFIED screen.", '- Schema: {"kind": "ending", "ending"}']
+    elif k == "notices":
+        out += ["- Kind: notices, Prototype 8's `prototypes/p8/lore.js`. Speaker: Dummy Corporation. Short texts the interface shows: title lines, drone and gift labels, part notes, toasts, a sign.",
+                '- Schema: {"kind": "notices", "items": [{"id", "where", "text", "caps", "placeholders", "sign", "maxChars"}]}. Change only each item\'s "text".',
+                "- caps: true keeps the text in capitals. placeholders ({PART}, {TILE}, {N}) stay exactly as given. maxChars is the slot's width. sign: true is pixel signage."]
+        for it in piece.get("items") or []:
+            out.append(f"- {it.get('id')} · {it.get('where')}" + (f" · at most {it['maxChars']} characters" if it.get("maxChars") else "") + (f" · keep {', '.join(it['placeholders'])}" if it.get("placeholders") else ""))
+    elif k == "batch":
+        out += ["- Kind: a batch of the company's texts: the story's (Prototype 8's `content/story/story_v2.json`) and, where listed, notices (`prototypes/p8/lore.js`). Speaker: Dummy Corporation. Each item is one text: a tale, an act line, the ending or a notice.",
+                '- Schema: {"kind": "batch", "items": [{"id", "kind", "district", "tile", "text"}]}. Change only each item\'s "text"; change only the items the REASON names.',
+                "- The batch is judged as a whole as well: T14 (no slogan in more than two texts) and V10 (the purpose stated plainly at least once)."]
+        for it in piece.get("items") or []:
+            if it.get("kind") == "tale":
+                out.append(f"- {it['id']}: tale. {tile_facts(it['district'], it['tile'])}")
+            elif it.get("kind") == "act":
+                d = DIST[it["district"]]
+                out.append(f"- {it['id']}: act line, {d['name']}, {d['act']}.")
+            elif it.get("kind") == "notice":
+                out.append(f"- {it['id']}: notice. Where: {it['where']}. At most {it['maxChars']} characters.")
+            else:
+                out.append(f"- {it['id']}: the ending, the CERTIFIED screen.")
+    elif k == "credits":
+        out += ["- Kind: credits, Prototype 8's Credits card (title menu; after the CERTIFIED ending). Extra-diegetic: Farsight, the publisher, is named here and only here.",
+                '- Schema: {"kind": "credits", "lines": ["…"]}']
+    if VERSION == "v2" and k != "barks":
+        out.append(f"- Every text: at most {P['style.v2.text.maxSentences']} sentences and {P['style.v2.text.maxWords']} words (GDD Edit 95).")
     return "\n".join(out)
 
 
 def speaker(piece):
-    return "car" if piece["kind"] == "barks" else "farsight"
+    return "car" if piece["kind"] == "barks" else "company" if VERSION == "v2" else "farsight"
 
 
 def piece_text(piece):
     if piece["kind"] == "barks":
         return " ".join(str(b.get("text") or "") for b in piece.get("lines") or [])
+    if piece["kind"] in ("notices", "batch"):
+        return " ".join(str(it.get("text") or "") for it in piece.get("items") or [])
+    if piece["kind"] == "credits":
+        return " ".join(str(x) for x in piece.get("lines") or [])
     return " ".join(str(piece.get(k) or "") for k in ("title", "tale", "label", "brief", "intro", "ending"))
 
 
@@ -147,17 +198,20 @@ def canon(piece, withhold=False, facts=None):
     """The rules' own chunks for this speaker, the slot's tile and event chunks, then BM25 on the text.
     withhold: the slot's shipped text is kept from every agent, so the loop writes the slot instead of copying it."""
     idx = index()
-    ids = list(BASE[speaker(piece)])
+    ids = list(GUIDES[VERSION]["base"][speaker(piece)])
     if piece["kind"] == "barks":
         for b in piece.get("lines") or []:
             ids += EVENT_LINES.get(b.get("event"), [])
             w = b.get("when") or {}
             if w.get("tile") and w.get("district") in CODE:
                 ids.append(f"STORY#{CODE[w['district']]}{w['tile']}")
+    elif piece["kind"] == "batch":
+        ids += [f"STORY#{CODE[it['district']]}{it['tile']}" for it in piece.get("items") or [] if it.get("kind") == "tale"]
     elif piece.get("district") in CODE and piece.get("tile"):
         ids.append(f"STORY#{CODE[piece['district']]}{piece['tile']}")
     ids = [j for i in dict.fromkeys(ids) for j in resolve(idx, i)]
-    extra = [c["id"] for c, _ in idx.search(piece_text(piece), k=3, exclude=set(ids) | SUPERSEDED)]
+    old = SUPERSEDED | ({"DECISIONS#rows-531-540~2"} if VERSION == "v2" else set())   # V2: row 539 (Farsight's casing) is superseded by Edit 95
+    extra = [c["id"] for c, _ in idx.search(piece_text(piece), k=3, exclude=set(ids) | old)]
     ids += extra
     hide = shipped_text(piece) if withhold else None
 
@@ -183,7 +237,7 @@ class Case:
 
 SCORE_RX = re.compile(r"^\s*SCORE:\s*\[?(\d{1,2})\s*/\s*10\]?\s*$", re.M)
 DEDUCT_RX = re.compile(r"\((blocking|major|minor),\s*[−\-–]\s*(\d)\)")
-RULE_RX = re.compile(r"\b([TVFR]\d{1,2})\b")
+RULE_RX = re.compile(r"\b([TVFRC]\d{1,2})\b")
 
 
 def check_eval(text, findings):
@@ -235,7 +289,9 @@ def evaluate(case, piece, rnd):
             "cited": cited, "uncited": [c for c in cited if c not in ids and c not in index().by_id], "format_retry": retried, "format_problems": probs}
 
 
-LOCKED = {"barks": ("id", "event", "when", "claims"), "tale": ("district", "tile", "title"), "brief": ("task",), "act": ("district",), "ending": ()}
+LOCKED = {"barks": ("id", "event", "when", "claims"), "tale": ("district", "tile", "title"), "brief": ("task",), "act": ("district",), "ending": (),
+          "notices": (), "credits": (), "batch": ()}
+ITEM_LOCKED = ("id", "where", "caps", "placeholders", "sign", "maxChars")
 
 
 def restore(before, after, log):
@@ -257,6 +313,21 @@ def restore(before, after, log):
                     n[k] = b.get(k)
             fixed.append({k: n.get(k) for k in ("id", "event", "when", "style", "priority", "text", "claims")})
         after["lines"] = fixed
+    elif before["kind"] == "batch":
+        new = {it.get("id"): it for it in after.get("items") or []}
+        after["items"] = [dict(it, text=(new.get(it["id"]) or it).get("text", it["text"])) for it in before.get("items") or []]
+    elif before["kind"] == "notices":
+        old, new = before.get("items") or [], {it.get("id"): it for it in after.get("items") or []}
+        fixed = []
+        for it in old:
+            n = dict(new.get(it.get("id"), it))
+            for k in ITEM_LOCKED:
+                if n.get(k) != it.get(k):
+                    if k in n:
+                        log.append(f"{it.get('id')}.{k} restored")
+                    n[k] = it.get(k)
+            fixed.append({k: n.get(k) for k in ("id", "where", "text") + ITEM_LOCKED[2:] if n.get(k) is not None or k == "text"})
+        after["items"] = fixed
     else:
         for k in LOCKED[before["kind"]]:
             if after.get(k) != before.get(k):
@@ -348,6 +419,16 @@ def show(piece):
             w = b.get("when") or {}
             rows.append(f"| {b.get('id')} | {b.get('event')} | {w.get('tier', '—')} | {b.get('style')} | {str(b.get('text')).replace('|', '/').replace(chr(10), ' ⏎ ')} | {len(str(b.get('text') or ''))} |")
         return "\n".join(rows)
+    if piece["kind"] == "batch":
+        rows = ["| Item | Text | Words |", "|---|---|---|"]
+        rows += [f"| {it['id']} | {str(it.get('text')).replace('|', '/')} | {len(str(it.get('text') or '').split())} |" for it in piece.get("items") or []]
+        return "\n".join(rows)
+    if piece["kind"] == "notices":
+        rows = ["| Notice | Where | Text | Words |", "|---|---|---|---|"]
+        rows += [f"| {it.get('id')} | {it.get('where')} | {str(it.get('text')).replace('|', '/')} | {len(str(it.get('text') or '').split())} |" for it in piece.get("items") or []]
+        return "\n".join(rows)
+    if piece["kind"] == "credits":
+        return "\n".join("> " + str(x) for x in piece.get("lines") or [])
     k = {"tale": "tale", "brief": "brief", "act": "intro", "ending": "ending"}[piece["kind"]]
     head = f"**{piece.get('label')}**\n\n" if piece["kind"] == "brief" else ""
     txt = str(piece.get(k) or "")
@@ -384,7 +465,7 @@ def new_run(tag):
     rid = time.strftime("%Y%m%d-%H%M%S") + "-" + tag
     d = RUNS / rid
     d.mkdir(parents=True, exist_ok=True)
-    (d / "STYLE_GUIDE.snapshot.md").write_text((STYLE / "STYLE_GUIDE.md").read_text(encoding="utf-8"), encoding="utf-8")   # the guide this run read
+    (d / "STYLE_GUIDE.snapshot.md").write_text((STYLE / GUIDES[VERSION]["file"]).read_text(encoding="utf-8"), encoding="utf-8")   # the guide this run read
     return d
 
 
@@ -408,6 +489,8 @@ def job_case(run_dir, spec):
 
 
 def job_piece(run_dir, name, piece, spec):
+    (Path(run_dir) / name).mkdir(parents=True, exist_ok=True)   # the guide this piece read: a later stage may run on a later guide
+    (Path(run_dir) / name / "STYLE_GUIDE.snapshot.md").write_text((STYLE / GUIDES[VERSION]["file"]).read_text(encoding="utf-8"), encoding="utf-8")
     try:
         return run_piece(Case(run_dir, name), spec, piece=piece)
     except Exception as e:
@@ -416,7 +499,7 @@ def job_piece(run_dir, name, piece, spec):
 
 def run_trace(run_dir, title, results, note=""):
     L = [f"# {title}", "", f"Run `{run_dir.name}`. Loop: generate → evaluate → refine → evaluate, until {P['style.loop.targetScore']}/10 or {P['style.loop.maxRounds']} refinements "
-         f"(`style.loop.targetScore`, `style.loop.maxRounds`). Guide: `style/STYLE_GUIDE.md`.", ""]
+         f"(`style.loop.targetScore`, `style.loop.maxRounds`). Guide: `style/{llm.GUIDE['file']}`.", ""]
     if note:
         L += [note, ""]
     L += ["Scores in order; ✓ marks a fresh evaluator call confirming a 10/10 (`style.loop.confirmations`).", "",
@@ -506,12 +589,187 @@ def audit(workers):
     return run_dir
 
 
-DEDUCTED_RX = re.compile(r"\b([TVFR]\d{1,2})\s*\((?:blocking|major|minor)")
+V8_NOTICES = [   # Prototype 7.13's interface texts that name Farsight or run past two sentences: the slots Prototype 8 rewrites (GDD Edit 95)
+    ("n01", "title screen, under DUMMIES", "You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.", False, [], 110),
+    ("n02", "Arcade's district screen, under DUMMIES", "Welcome, test subject. The fleet will avoid you. Kindly be struck, in the accidents FARSIGHT says cannot happen.", False, [], 120),
+    ("n03", "the title's STORY card", "The Test City, tile by tile. Each tile wants its write-offs to Farsight's brief.", False, [], 100),
+    ("n04", "the tile card's header", "FARSIGHT BRIEF", True, [], 18),
+    ("n05", "the story map's side panel", "FARSIGHT BRIEF · {LABEL}", True, ["{LABEL}"], 40),
+    ("n06", "the objective strip's label while a drone flies", "FARSIGHT DRONE", True, [], 18),
+    ("n07", "a toast", "FARSIGHT DRONE · DELIVERING {PART}", True, ["{PART}"], 44),
+    ("n08", "a toast", "FARSIGHT DRONE · {PART} ON BOARD · THEN {TILE}", True, ["{PART}", "{TILE}"], 54),
+    ("n09", "a toast", "FARSIGHT DRONE · CARRYING YOU TO {TILE}", True, ["{TILE}"], 46),
+    ("n10", "the gift screen, before the part lands", "FARSIGHT DRONE · INCOMING", True, [], 28),
+    ("n11", "a toast", "FARSIGHT GIFT · +{N} CREDITS", True, ["{N}"], 32),
+    ("n12", "the gift screen, the next part", "NEXT FROM FARSIGHT", True, [], 26),
+    ("n13", "the workshop, a part not yet issued", "A Farsight drone brings this part.", False, [], 44),
+    ("n14", "the workshop's note, a part not yet issued", "A Farsight drone brings this part. Keep testing.", False, [], 56),
+    ("n15", "a toast, a part not yet issued", "A Farsight drone brings that part", False, [], 44),
+    ("n16", "the Controls list, a verb not yet issued", "A Farsight drone brings it", False, [], 34),
+    ("n17", "a toast, the chassis in the river", "FARSIGHT drone dispatched: chassis in the river", False, [], 56),
+    ("n18", "a toast, a cone in the way", "FARSIGHT drone dispatched. Obstruction will be relocated.", False, [], 64),
+    ("n19", "a toast, the chassis recovered", "FARSIGHT drone: chassis recovered from the river", False, [], 56),
+    ("n20", "Arcade's ending, LICENSED", "Contract complete. FARSIGHT thanks you for your cooperation.", False, [], 80),
+    ("n21", "Arcade's ending, FAILED TEST", "Traffic exhausted. Contract incomplete. Please retry.", False, [], 70),
+    ("n22", "the frame's wordmark, title and menus", "FARSIGHT", True, [], 20),
+    ("n23", "Monument A1's LED wall, third line under WELCOME and NEW STAFF (pixel signage)", "FARSIGHT", True, [], 10),
+]
+V8_BARKS = ["b013", "b034", "b041", "b052", "b058", "b061", "b062", "b081", "b083", "b110", "c024"]   # over two sentences, or naming Farsight
+V8_CREDITS = ["DUMMIES", "A game by Lawrence Lek", "Published by Farsight"]
+
+
+def v8(workers):
+    """Prototype 8's text (GDD Edit 95): every Prototype 7.13 text that breaks Style Guide V2, through the loop on V2."""
+    run_dir = new_run("v8")
+    jobs = []
+    for name, piece in lint.shipped():
+        if piece["kind"] == "barks":
+            continue
+        spec = {"id": name.replace(" ", "-"), "class": "V8 " + piece["kind"], "title": "Prototype 7.13 " + name + ", for Prototype 8"}
+        jobs.append((job_piece, (run_dir, spec["id"], piece, spec)))
+    notices = {"kind": "notices", "items": [dict({"id": i, "where": w, "text": t, "caps": c, "maxChars": m}, **({"placeholders": ph} if ph else {}),
+                                                 **({"sign": True} if i == "n23" else {})) for i, w, t, c, ph, m in V8_NOTICES]}
+    jobs.append((job_piece, (run_dir, "notices", notices, {"id": "notices", "class": "V8 notices", "title": "Prototype 7.13's interface texts, for Prototype 8"})))
+    bk = {b["id"]: b for b in FLEET["barks"]}
+    barks = {"kind": "barks", "lines": [bk[i] for i in V8_BARKS]}
+    jobs.append((job_piece, (run_dir, "barks", barks, {"id": "barks", "class": "V8 barks", "title": "Barks over two sentences, or naming Farsight"})))
+    jobs.append((job_piece, (run_dir, "credits", {"kind": "credits", "lines": V8_CREDITS}, {"id": "credits", "class": "V8 credits", "title": "The Credits card"})))
+    res = run_all(run_dir, jobs, workers)
+    run_trace(run_dir, "Prototype 8's text on Style Guide V2", res, V8_NOTE)
+    v8_collect(run_dir, res)
+    v8_batch(run_dir)
+    v8_banners(run_dir)
+    v8_review(run_dir)
+    return run_dir
+
+
+def v8_batch(run_dir):
+    """Stage 2 of --v8: the story's 31 texts as one batch (T14: one slogan leaned on; V10: the purpose stated)."""
+    run_dir = Path(run_dir)
+    c = json.loads((run_dir / "v8_copy.json").read_text(encoding="utf-8"))
+    items = []
+    for d in STORY["districts"]:
+        items.append({"id": f"act-{d['id']}", "kind": "act", "district": d["id"], "text": c["acts"][d["id"]]})
+        items += [{"id": f"{CODE[d['id']]}{t}", "kind": "tale", "district": d["id"], "tile": t, "text": c["tales"][d["id"]][t]} for t in d["order"]]
+    items.append({"id": "ending", "kind": "ending", "text": c["ending"]})
+    s = job_piece(run_dir, "story-batch", {"kind": "batch", "items": items}, {"id": "story-batch", "class": "V8 batch", "title": "The story's 31 texts as one batch"})
+    if "error" in s:
+        raise RuntimeError(s["error"])
+    fin = json.loads((run_dir / "story-batch" / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+    for it in fin["items"]:
+        if it["kind"] == "act":
+            c["acts"][it["district"]] = it["text"]
+        elif it["kind"] == "tale":
+            c["tales"][it["district"]][it["tile"]] = it["text"]
+        else:
+            c["ending"] = it["text"]
+    c["accepted"]["story-batch"] = s["accepted"]
+    (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != "story-batch"] + [s]
+    run_trace(run_dir, "Prototype 8's text on Style Guide V2", res, V8_NOTE)
+    return run_dir
+
+
+V8_BANNERS = [   # Arcade's opening banner: each district's mood line (prototypes/p6/world6.js), drawn under its label in Prototype 8
+    ("n24", "monument", "Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument."),
+    ("n25", "parkland", "Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath."),
+    ("n26", "waterfront", "A hill walled by towers; a river below. The valley avenue meets the tunnel and the beach road at the circus; the hill's bridges cross the drive and the river."),
+]
+
+
+def v8_review(run_dir):
+    """Stage 4 of --v8, on V2.2 (V11): what the player reads in the story, with the title's and Arcade's opening lines, as one batch.
+    T14 then counts a slogan across the title and the story; V11 asks every tale for its place."""
+    run_dir = Path(run_dir)
+    c = json.loads((run_dir / "v8_copy.json").read_text(encoding="utf-8"))
+    nspec = {it["id"]: it for name in ("notices", "arcade-banners") for it in json.loads((run_dir / name / "r0_piece.json").read_text(encoding="utf-8"))["items"]}
+    items = []
+    for i in ("n01", "n02", "n03", "n24", "n25", "n26"):
+        items.append({"id": i, "kind": "notice", "where": nspec[i]["where"], "maxChars": nspec[i]["maxChars"], "text": c["notices"][i]})
+    for d in STORY["districts"]:
+        items.append({"id": f"act-{d['id']}", "kind": "act", "district": d["id"], "text": c["acts"][d["id"]]})
+        items += [{"id": f"{CODE[d['id']]}{t}", "kind": "tale", "district": d["id"], "tile": t, "text": c["tales"][d["id"]][t]} for t in d["order"]]
+    items.append({"id": "ending", "kind": "ending", "text": c["ending"]})
+    s = job_piece(run_dir, "review", {"kind": "batch", "items": items}, {"id": "review", "class": "V8 batch", "title": "The story's 31 texts and six opening lines, on V2.2"})
+    if "error" in s:
+        raise RuntimeError(s["error"])
+    fin = json.loads((run_dir / "review" / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+    for it in fin["items"]:
+        if it["kind"] == "act":
+            c["acts"][it["district"]] = it["text"]
+        elif it["kind"] == "tale":
+            c["tales"][it["district"]][it["tile"]] = it["text"]
+        elif it["kind"] == "notice":
+            c["notices"][it["id"]] = it["text"]
+        else:
+            c["ending"] = it["text"]
+    c["accepted"]["review"] = s["accepted"]
+    (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != "review"] + [s]
+    run_trace(run_dir, "Prototype 8's text on Style Guide V2", res, V8_NOTE)
+    return run_dir
+
+
+V8_NOTE = ("Each piece starts as Prototype 7.13 shipped it. The evaluator grades it on V2; the refiner rewrites it; the accepted text goes to Prototype 8. "
+           "Stage 1 (45 pieces) ran on V2.0. Stage 2 (`story-batch`) runs the story's 31 texts together, on V2.1 (T14, V10). "
+           "Stage 3 (`arcade-banners`) runs Arcade's district banners, found by the text audit. "
+           "Stage 4 (`review`) runs the story with the six opening lines, on V2.2 (V11).")
+
+
+def v8_banners(run_dir):
+    """Stage 3 of --v8: Arcade's three district banners, found by Prototype 8's text audit (over two sentences and 20 words)."""
+    run_dir = Path(run_dir)
+    c = json.loads((run_dir / "v8_copy.json").read_text(encoding="utf-8"))
+    piece = {"kind": "notices", "items": [{"id": i, "where": f"Arcade: {DIST[d]['name']}'s opening banner, four seconds at the start of a run, under the label "
+                                           f"'DISTRICT n OF 3 · {DIST[d]['name'].upper()} · q WRITE-OFFS'. The text describes the district's streets, as the original does",
+                                           "text": t, "caps": False, "maxChars": 110} for i, d, t in V8_BANNERS]}
+    s = job_piece(run_dir, "arcade-banners", piece, {"id": "arcade-banners", "class": "V8 notices", "title": "Arcade's district banners"})
+    if "error" in s:
+        raise RuntimeError(s["error"])
+    fin = json.loads((run_dir / "arcade-banners" / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+    c["notices"].update({it["id"]: it["text"] for it in fin["items"]})
+    c["accepted"]["arcade-banners"] = s["accepted"]
+    (run_dir / "v8_copy.json").write_text(json.dumps(c, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    res = [r for r in json.loads((run_dir / "results.json").read_text(encoding="utf-8")) if r.get("case") != "arcade-banners"] + [s]
+    run_trace(run_dir, "Prototype 8's text on Style Guide V2", res, V8_NOTE)
+    return run_dir
+
+
+def v8_collect(run_dir, res=None):
+    run_dir = Path(run_dir)
+    res = res or json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
+    out = {"run": run_dir.name, "guide": GUIDES[VERSION]["file"], "accepted": {}, "tales": {}, "acts": {}, "briefs": {}, "ending": None, "notices": {}, "barks": {}, "credits": None}
+    for s in res:
+        if "error" in s:
+            continue
+        d = run_dir / s["case"]
+        fin = json.loads((d / (f"f{s['final_version']}_piece.json" if s["final_version"] else "r0_piece.json")).read_text(encoding="utf-8"))
+        out["accepted"][s["case"]] = s["accepted"]
+        k = fin["kind"]
+        if k == "tale":
+            out["tales"].setdefault(fin["district"], {})[fin["tile"]] = fin["tale"]
+        elif k == "act":
+            out["acts"][fin["district"]] = fin["intro"]
+        elif k == "brief":
+            out["briefs"][fin["task"]] = {"label": fin["label"], "brief": fin["brief"]}
+        elif k == "ending":
+            out["ending"] = fin["ending"]
+        elif k == "notices":
+            out["notices"] = {it["id"]: it["text"] for it in fin["items"]}
+        elif k == "barks":
+            out["barks"] = {b["id"]: {"text": b["text"], "style": b["style"]} for b in fin["lines"]}
+        elif k == "credits":
+            out["credits"] = fin["lines"]
+    (run_dir / "v8_copy.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    return out
+
+
+DEDUCTED_RX = re.compile(r"\b([TVFRC]\d{1,2})\s*\((?:blocking|major|minor)")
 
 
 def main_text(piece):
-    if piece["kind"] == "barks":
-        return " ".join(str(b.get("text") or "") for b in piece.get("lines") or [])
+    if piece["kind"] in ("barks", "notices", "credits"):
+        return piece_text(piece)
     return " ".join(str(piece.get(k)) for k in ("label", "brief", "tale", "intro", "ending") if piece.get(k))
 
 
@@ -609,8 +867,8 @@ def retrace_calibration(run_dir):
 
 def guide_rules():
     out = []
-    for ln in (STYLE / "STYLE_GUIDE.md").read_text(encoding="utf-8").splitlines():
-        m = re.match(r"^\| ([TVFR]\d{1,2}) \| ([^|]+) \|.*\| ([a-z ();]+) \|$", ln)
+    for ln in (STYLE / GUIDES[VERSION]["file"]).read_text(encoding="utf-8").splitlines():
+        m = re.match(r"^\| ([TVFRC]\d{1,2}) \| ([^|]+) \|.*\| ([a-z ();]+) \|$", ln)
         if m:
             out.append({"id": m.group(1), "speaker": m.group(2).strip(), "severity": m.group(3).strip()})
     return out
@@ -628,8 +886,14 @@ def main():
     ap.add_argument("--calibrate", action="store_true")
     ap.add_argument("--retrace-calibration", metavar="RUN")
     ap.add_argument("--piece", metavar="JSON")
+    ap.add_argument("--v8", action="store_true")
+    ap.add_argument("--v8-batch", metavar="RUN")
+    ap.add_argument("--v8-banners", metavar="RUN")
+    ap.add_argument("--v8-review", metavar="RUN")
+    ap.add_argument("--guide", choices=sorted(GUIDES), default=None, help="v1: STYLE_GUIDE.md (default); v2: STYLE_GUIDE_V2.md (--v8 implies v2)")
     ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args()
+    set_guide(a.guide or ("v2" if a.v8 or a.v8_batch or a.v8_banners or a.v8_review else "v1"))
     index()
     if a.examples:
         print(examples(a.workers))
@@ -643,13 +907,21 @@ def main():
         print(calibrate(a.workers))
     if a.retrace_calibration:
         print(retrace_calibration(a.retrace_calibration))
+    if a.v8:
+        print(v8(a.workers))
+    if a.v8_batch:
+        print(v8_batch(a.v8_batch))
+    if a.v8_banners:
+        print(v8_banners(a.v8_banners))
+    if a.v8_review:
+        print(v8_review(a.v8_review))
     if a.piece:
         run_dir = new_run("piece")
         piece = json.loads(Path(a.piece).read_text(encoding="utf-8"))
         s = run_piece(Case(run_dir, "piece"), {"id": "piece", "title": Path(a.piece).name}, piece=piece)
         run_trace(run_dir, "One piece", [s])
         print(run_dir, s["scores"])
-    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece]):
+    if not any([a.examples, a.d78, a.d78_batch, a.audit, a.calibrate, a.retrace_calibration, a.piece, a.v8, a.v8_batch, a.v8_banners, a.v8_review]):
         ap.print_help()
 
 

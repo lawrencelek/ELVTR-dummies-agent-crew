@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against T1–T5 and T13, V1, V3, V4, V6 and V8–V9, F5, F6, F8 and F10, and R5. The label "A {cls}" is a capitals label within 19 characters, and its placeholder stays as given. The brief is two sentences of 14 words and repeats the cls row of [STORY#S3] word for word. It is flat and has no exclamation mark. It sets out the training and the final hit, and it names no company or banned word [EDIT95#3.1] [EDIT95#3.2] [EDIT95#4.2]. Lint found nothing.
+Total: 10.

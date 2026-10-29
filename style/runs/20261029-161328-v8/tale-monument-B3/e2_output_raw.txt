@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone (T1, T3–T5, T13), Vocabulary (V1–V4, V6, V8–V9), Formatting (F5–F7) and Truth (R4–R5) and found no violation: it has 16 words in two sentences, names Legs 1 as the equipment this tile issues, gives a duty that matches the brief JUMP INTO A CAR, places the jump between the tile's screens, and treats a write-off as progress toward Certification in a flat, deadpan voice [EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, STORY#MB3, STORY#S1, STORY#S3, EDIT93#3.1, PLAY#PS2].
+Total: 10.

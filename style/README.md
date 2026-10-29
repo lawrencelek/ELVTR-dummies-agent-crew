@@ -33,3 +33,24 @@ Models: `STYLE_GEN_MODEL` (default `sonnet`), `STYLE_EVAL_MODEL` and `STYLE_REFI
 | `cases/` | `examples.json` (three adversarial prompts), `calibration.json` (shipped and seeded items) |
 | `runs/<id>/` | Every input, output, lint result and piece, a `trace.md` per case and per run, and the guide the run read (`STYLE_GUIDE.snapshot.md`) |
 | `publish_submission.sh` | Copies `style/` and the inputs it reads into the submission repository |
+
+## Style Guide V2 (GDD Edit 95, Prototype 8)
+
+A separate guide for the lore refinement. `STYLE_GUIDE.md` (V1) stays as submitted, for Prototype 7.13.
+- **The lore:** inside the game the company is Dummy Corporation. Farsight, the publisher, is named only in the Credits.
+- **The voice:** deadpan and inspirational; few adjectives; no "!"; at most two sentences and 20 words (`style.v2.text.*`).
+- **Tone reference:** *Play Station* (Lawrence Lek, 2017), `kb/DUMMIES_Play_Station_Script_2017.md` (doc `PLAY`).
+
+```
+python3 style/style_kb.py --v2                     # the V2 knowledge base: Edit 95 and PLAY first; kb/manifest_v2.json
+python3 style/loop.py --v8                         # Prototype 8's text, four stages (below); writes runs/<id>-v8/v8_copy.json
+python3 style/loop.py --guide v2 --piece x.json    # one piece on V2
+```
+
+| File | Role |
+|---|---|
+| `STYLE_GUIDE_V2.md` | 41 rules (V2.2). V2.0 had 38; V2.1 added T14 (one slogan per batch) and V10 (the purpose stated); V2.2 added V11 (environmental storytelling) |
+| `agents/v2/` | The three agents for V2: Dummy Corporation's voice, the 20-word cap, Farsight only in the Credits |
+| `lint.py` | `lint.MODE = "v2"`: Farsight blocking outside the Credits, intensifiers, the company's name, the sentence and word caps, a batch's repeated phrases |
+| `loop.py --v8` | Stage 1: each 7.13 text that breaks V2, piece by piece. Stage 2: the story's 31 texts as one batch. Stage 3: Arcade's district banners. Stage 4: the story and six opening lines as one batch, on V2.2 |
+

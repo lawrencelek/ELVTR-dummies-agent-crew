@@ -947,7 +947,7 @@
     for (let j = 0; j < ch; j++) for (let i = 0; i < cw; i++) { const c = D.d[(cy0 + j) * D.w + cx0 + i]; if (!c) continue; const l = lumOf(c);
       B2.put(fx + i, fy + j, (fy + j) % 2 && l > 0.3 ? mixK(N.cyan, K.white, 0.25) : l > 0.78 ? K.white : l > 0.55 ? mixK(N.cyan, K.white, 0.45) : l > 0.3 ? N.cyan : mixK(N.cyan, DK[0], 0.7)); }
     const tx = fx + cw + 8, ty = top + Math.round((bot - top) / 2) - 9;
-    PIX.smallText(B2, 'WELCOME', tx, ty, K.white); PIX.smallText(B2, 'NEW STAFF', tx, ty + 9, N.magenta); PIX.smallText(B2, 'FARSIGHT', tx, ty + 18, N.cyan);
+    PIX.smallText(B2, 'WELCOME', tx, ty, K.white); PIX.smallText(B2, 'NEW STAFF', tx, ty + 9, N.magenta); PIX.smallText(B2, (root.DUMMIES_LORE && root.DUMMIES_LORE.notices && root.DUMMIES_LORE.notices.n23) || 'FARSIGHT', tx, ty + 18, N.cyan); // Edit 95 (P8): the sign names the company in the game
     return S;
   }
   function shopSigns(S, H0, k) { // Monument A2: the neon shops: two shopfronts, a lit sign over each, the windows below

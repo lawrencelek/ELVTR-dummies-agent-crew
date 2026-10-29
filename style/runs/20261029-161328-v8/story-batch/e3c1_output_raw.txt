@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked every text for tone, vocabulary, length and truth (T1–T5, T13, V1–V10, F5–F7, R4–R5), and the batch for T14 and V10: each tale matches its tile's brief and equipment ([STORY#S1], [STORY#S3], [STORY#MA1]–[STORY#WB2]), the act frames hold ([EDIT95#3.3]), no slogan of four or more words appears in more than two texts, and act-waterfront states the sacrifice plainly ([EDIT95#3.1]).
+Total: 10.

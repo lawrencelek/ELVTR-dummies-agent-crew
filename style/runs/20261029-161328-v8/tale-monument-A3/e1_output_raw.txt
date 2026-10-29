@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight calls this growth." Farsight is the publisher and may be named only in the Credits, never in a tale. [EDIT95#3.1] Fix: remove the sentence; if the company must speak, it is "Dummy Corporation", "the Corporation" or "we".
+- tale · F6 (blocking, −4) "Each cube was added as the budget arrived, one quarter at a time, each leaning further than the last. Farsight calls this growth. Today's duty is the same: one hit, then another before the first is forgotten." The tale has 37 words and 3 sentences, over the cap of 20 words and 2 sentences. [EDIT95#3.2] Fix: replace with "Each cube was stacked on the last. Stack your hits the same way: one, then the next." (16 words, 2 sentences).
+- tale · T1 (major, −2) "added as the budget arrived, one quarter at a time, each leaning further than the last. Farsight calls this growth." The narrator mocks its own company's growth as underfunded and unstable, which is winking irony rather than a flat notice that motivates. [EDIT95#3.2] Fix: state the cubes plainly as a model for the trainee, as in the replacement above, with no comment on budget or lean.
+Total: 10 − 4 − 4 − 2 = 1.

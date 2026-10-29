@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all 23 notices. Tone, voice and training framing pass T1–T5 and T13 [EDIT95#3.2, EDIT95#3.1, PLAY#PS2]. No banned words, no other city and no other company name appear, and the glossary is used correctly under V1–V4 and V6–V9 [EDIT95#0, FLEET#F3, EDIT95#3.3]. The caps labels, the DUMMY CORP sign and the placeholders match the UI table under F10 [EDIT95#4.2]. Every text keeps within two sentences and 20 words under F6, with no typed figures under F5 [EDIT95#3.2, STORY#S1].
+Total: 10.

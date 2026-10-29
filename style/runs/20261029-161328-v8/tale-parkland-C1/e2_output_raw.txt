@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the tale against T1–T5, T13, V1, V3, V4, V6, V8, V9, F5–F7 and R4–R5. It has 19 words and two sentences, and "Arms 1" is an allowed part rank [EDIT95#3.2]. The lantern is on this tile [EDIT92#7, STORY#PC1], and the clients fit the OPENING DAY frame [EDIT95#3.3]. Arms 1 is named on the tile that issues it [STORY#S1]. The duty matches the PUSH OFF A CAR brief [STORY#S3]. There is no Farsight, no "!" and no intensifier [EDIT95#0, PLAY#PS0].
+Total: 10.

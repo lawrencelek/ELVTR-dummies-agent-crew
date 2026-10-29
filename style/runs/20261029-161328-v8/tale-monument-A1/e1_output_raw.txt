@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight is pleased to have you." Farsight is the publisher and may appear only in the Credits, so it cannot narrate a tale. [EDIT95#3.1] Fix: remove the sentence. If the company needs to speak, write "Dummy Corporation welcomes you."
+- tale · F6 (blocking, −4) "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you." The tale has 37 words and 4 sentences, over the limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: "The welcome wall shows your face. Stand in the road until a colleague notices you." (15 words, 2 sentences).
+Total: 10 − 4 − 4 = 2.

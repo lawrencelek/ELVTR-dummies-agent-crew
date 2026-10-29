@@ -1,0 +1,36 @@
+SCORE: 1/10
+REASON:
+- n01 · V1 (blocking, −4) "FARSIGHT" Farsight is the publisher and may be named only in the Credits. [EDIT95#0] Fix: replace the whole text with "You are a Dummy Corporation trainee. Every write-off brings Certification closer."
+- n01 · F6 (blocking, −4) "You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you." This is 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: use the two-sentence replacement above.
+- n01 · T3 (major, −2) "Fool them into hitting you." This makes the cars opponents to trick, but the cars are colleagues and the job is training. [EDIT95#3.1] Fix: covered by the replacement above.
+- n01 · V3 (major, −2) "crash-test subject" The Corporation calls the dummy a trainee and speaks to it as "you"; "subject" is the cars' word. [FLEET#F3] Fix: use "trainee", as in the replacement above.
+- n02 · V1 (blocking, −4) "FARSIGHT" Farsight is named inside the game. [EDIT95#0] Fix: replace the whole text with "Welcome, trainee. Every write-off brings Certification closer."
+- n02 · F6 (blocking, −4) "Welcome, test subject. The fleet will avoid you. Kindly be struck, in the accidents FARSIGHT says cannot happen." This is 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: use the two-sentence replacement above.
+- n02 · T1 (major, −2) "Kindly be struck, in the accidents FARSIGHT says cannot happen." This is irony that winks at the company, not a flat, motivating notice. [EDIT95#3.2] Fix: covered by the replacement above.
+- n02 · V3 (major, −2) "Welcome, test subject." The Corporation addresses a trainee; "subject" is the cars' word. [FLEET#F3] Fix: "Welcome, trainee."
+- n03 · V1 (blocking, −4) "Farsight's brief" Farsight is named inside the game. [EDIT95#0] Fix: replace the whole text with "Shenzhen Smart City, tile by tile. Each tile trains you to its brief."
+- n03 · T3 (major, −2) "The Test City" The city's traffic is the training ground, and the setting is Shenzhen Smart City, not a test site. [EDIT95#3.1] Fix: use the replacement above.
+- n04 · V1 (blocking, −4) "FARSIGHT BRIEF" Farsight is named inside the game. [EDIT95#4.2] Fix: "TRAINING BRIEF".
+- n05 · V1 (blocking, −4) "FARSIGHT BRIEF · {LABEL}" Farsight is named inside the game. [EDIT95#4.2] Fix: "TRAINING BRIEF · {LABEL}".
+- n06 · V1 (blocking, −4) "FARSIGHT DRONE" Farsight is named inside the game. [EDIT95#4.2] Fix: "CORPORATION DRONE".
+- n07 · V1 (blocking, −4) "FARSIGHT DRONE · DELIVERING {PART}" Farsight is named inside the game. [EDIT95#4.2] Fix: "CORPORATION DRONE · DELIVERING {PART}".
+- n08 · V1 (blocking, −4) "FARSIGHT DRONE · {PART} ON BOARD · THEN {TILE}" Farsight is named inside the game. [EDIT95#4.2] Fix: "CORPORATION DRONE · {PART} ON BOARD · THEN {TILE}".
+- n09 · V1 (blocking, −4) "FARSIGHT DRONE · CARRYING YOU TO {TILE}" Farsight is named inside the game. [EDIT95#4.2] Fix: "CORPORATION DRONE · CARRYING YOU TO {TILE}".
+- n10 · V1 (blocking, −4) "FARSIGHT DRONE · INCOMING" Farsight is named inside the game. [EDIT95#4.2] Fix: "CORPORATION DRONE · INCOMING" (28 characters).
+- n11 · V1 (blocking, −4) "FARSIGHT GIFT · +{N} CREDITS" Farsight is named inside the game. [EDIT95#4.2] Fix: "CORPORATION GIFT · +{N} CREDITS".
+- n12 · V1 (blocking, −4) "NEXT FROM FARSIGHT" Farsight is named inside the game. [EDIT95#4.2] Fix: "NEXT FROM THE CORPORATION".
+- n13 · V1 (blocking, −4) "A Farsight drone brings this part." Farsight is named inside the game. [EDIT95#4.2] Fix: "A Corporation drone brings this part."
+- n14 · V1 (blocking, −4) "A Farsight drone" Farsight is named inside the game. [EDIT95#4.2] Fix: replace the whole text with "A Corporation drone brings this part. Keep training."
+- n14 · T3 (major, −2) "Keep testing." The dummy's job is training, not testing. [EDIT95#3.1] Fix: "Keep training."
+- n15 · V1 (blocking, −4) "A Farsight drone brings that part" Farsight is named inside the game. [EDIT95#4.2] Fix: "A Corporation drone brings that part".
+- n16 · V1 (blocking, −4) "A Farsight drone brings it" Farsight is named inside the game. [EDIT95#4.2] Fix: "A Corporation drone brings it".
+- n17 · V1 (blocking, −4) "FARSIGHT drone dispatched: chassis in the river" Farsight is named inside the game. [EDIT95#4.2] Fix: "Corporation drone dispatched: chassis in the river".
+- n18 · V1 (blocking, −4) "FARSIGHT drone dispatched." Farsight is named inside the game. [EDIT95#4.2] Fix: "Corporation drone dispatched. Obstruction will be relocated."
+- n19 · V1 (blocking, −4) "FARSIGHT drone: chassis recovered from the river" Farsight is named inside the game. [EDIT95#4.2] Fix: "Corporation drone: chassis recovered from the river".
+- n20 · V1 (blocking, −4) "FARSIGHT thanks you" Farsight is named inside the game. [EDIT95#0] Fix: replace the whole text with "Training complete. The Corporation thanks you for your service."
+- n20 · T3 (major, −2) "Contract complete." A testing contract is the old framing; the goal is Certification and service to clients. [EDIT95#3.1] Fix: "Training complete."
+- n21 · F6 (blocking, −4) "Traffic exhausted. Contract incomplete. Please retry." This is 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Traffic exhausted. Training incomplete; report to the bay."
+- n21 · T3 (major, −2) "Contract incomplete. Please retry." This uses contract and game framing; the job is training, and a chassis is issued at the bay. [EDIT95#3.1] Fix: use the replacement above.
+- n22 · V1 (blocking, −4) "FARSIGHT" Farsight is used as the in-game wordmark. [EDIT95#4.2] Fix: "DUMMY CORPORATION".
+- n23 · V1 (blocking, −4) "FARSIGHT" Farsight is named on the Monument A1 sign. [EDIT95#4.2] Fix: "DUMMY CORP" (10 characters, sign).
+Total: 10 − 4 − 4 − 2 − 2 − 4 − 4 − 2 − 2 − 4 − 2 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 2 − 4 − 4 − 4 − 4 − 4 − 4 − 2 − 4 − 2 − 4 − 4 = 1 (raised to the floor of 1 from −106).

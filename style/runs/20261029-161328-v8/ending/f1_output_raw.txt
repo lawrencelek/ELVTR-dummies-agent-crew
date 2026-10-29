@@ -1,0 +1,1 @@
+{"kind": "ending", "ending": "Your model has passed and will be manufactured for our clients. A Corporation drone carries you to the ship."}

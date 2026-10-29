@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All 31 texts pass every rule: tone T1–T5, T13 and T14 [EDIT95#3.2, PLAY#PS2, SUB4#6.1]; glossary and story frame V1–V10, including the plain sacrifice statement in act-waterfront and the exact phrases ZERO ACCIDENTS and ROLE: DESTRUCTIVE TESTING [EDIT95#3.1, EDIT95#3.3, STORY#S2]; caps F5–F7 [EDIT95#3.2, STORY#S1]; and R4–R5, where each duty matches its brief and each part appears on the tile that issues it [STORY#S3, STORY#S1, EDIT93#3.1, STORY#MA1–STORY#WB2]. Lint found nothing.
+Total: 10.

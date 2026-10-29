@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "A1", "title": "The west portal", "tale": "We need the bus fleet's data before Certified dummies ship across the river. Meet the bus; it will not miss."}

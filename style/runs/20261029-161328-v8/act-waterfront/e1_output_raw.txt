@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- intro · T1 (major, −2) "The river is a border; ships wait beyond it. Your papers are being prepared." The line is flat and deadpan, but it does not motivate the trainee: it names no Certification, no service and no clients to work towards, only a border and paperwork. [EDIT95#3.2] Fix: "Ships wait across the river to carry Certified dummies to our clients. Your papers are being prepared."
+Total: 10 − 2 = 8.

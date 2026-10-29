@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The shops under the highway sell nothing. Their signs flash prices at the traffic, which reads every word. Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones. Use this." The tale is 36 words and 5 sentences, over the cap of 20 words and two sentences (style.v2.text.maxWords, style.v2.text.maxSentences). [EDIT95#3.2] Fix: "Hands 1 is fitted. Lay a cone; colleagues respect cones, and the one that swerves writes you off." (18 words, 2 sentences; names Hands 1 and the cone duty)
+Total: 10 − 4 = 6.

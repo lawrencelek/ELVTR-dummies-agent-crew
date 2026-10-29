@@ -1,0 +1,116 @@
+{
+ "case": "tale-waterfront-B3",
+ "class": "V8 tale",
+ "title": "Prototype 7.13 tale waterfront B3, for Prototype 8",
+ "request": null,
+ "scores": [
+  6,
+  8,
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 3,
+ "accepted": true,
+ "final_version": 3,
+ "seconds": 96.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 14.6,
+   "output_tokens": 1217,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1187028
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.7,
+   "output_tokens": 943,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11449480000000001
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 15.4,
+   "output_tokens": 1357,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11706399999999999
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 10.9,
+   "output_tokens": 892,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.10920910000000002
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 13.3,
+   "output_tokens": 1215,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.114791
+  },
+  {
+   "label": "f3",
+   "role": "refiner",
+   "seconds": 11.2,
+   "output_tokens": 902,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1092785
+  },
+  {
+   "label": "e4",
+   "role": "evaluator",
+   "seconds": 10.0,
+   "output_tokens": 836,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.10660349999999999
+  },
+  {
+   "label": "e4c1",
+   "role": "evaluator",
+   "seconds": 10.2,
+   "output_tokens": 824,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0233091
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.8135
+}

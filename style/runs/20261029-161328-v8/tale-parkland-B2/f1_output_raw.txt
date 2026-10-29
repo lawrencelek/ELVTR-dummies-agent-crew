@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "B2", "title": "The ring over the pools", "tale": "Battery 2 is fitted. The board watches the ring; end a long chain on a car for our clients."}

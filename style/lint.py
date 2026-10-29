@@ -20,6 +20,9 @@ PARAMS = {e["id"]: e["default"] for e in json.loads((ROOT / "style" / "style.par
 SEV = {"blocking": PARAMS["style.score.deduct.blocking"], "major": PARAMS["style.score.deduct.major"], "minor": PARAMS["style.score.deduct.minor"]}
 
 BANNED = [w.lower() for w in FLEET["canon"]["banned"]]
+MODE = "v1"   # "v2": STYLE_GUIDE_V2.md (GDD Edit 95, Dummy Corporation); set by loop.py --guide v2
+INTENSIFIERS = ["very", "truly", "really", "incredibly", "extremely", "amazing", "amazingly", "awesome", "totally", "absolutely", "super", "hugely", "massively"]
+COMPANY_WRONG = re.compile(r"\b(?:dummy\s*corp\b(?!oration)\.?|dummycorp|dummy\s+co\b\.?|dummies\s+(?:inc|corp|ltd)\b)", re.I)
 CITIES = ["Beijing", "Shanghai", "Guangzhou", "Chongqing", "Hong Kong", "Chengdu", "Wuhan", "Hangzhou", "Tokyo", "London", "New York",
           "Paris", "Los Angeles", "Las Vegas", "Singapore", "Seoul", "Taipei", "Macau", "Dubai", "Berlin"]   # checks.py list, extended
 BRANDS = ["Tesla", "Toyota", "BYD", "Waymo", "Uber", "Nissan", "Honda", "BMW", "Mercedes", "Audi", "Ford", "Volkswagen", "Porsche", "Ferrari",
@@ -65,10 +68,10 @@ class Findings(list):
         self.append({"rule": rule, "severity": severity, "deduct": SEV[severity], "path": path, "quote": quote, "measured": measured, "source": source})
 
 
-def common(f, path, text, speaker):
+def common(f, path, text, speaker, sign=False):
     low = text.lower()
     hits = {}
-    for w in BANNED:      # one entry per word in the text: "killed" is one term, not "kill" and "killed"
+    for w in ([] if speaker == "credits" else BANNED):   # the Credits are extra-diegetic (STYLE_GUIDE_V2.md C1)      # one entry per word in the text: "killed" is one term, not "kill" and "killed"
         alt = "|dying" if w == "die" else "|killing" if w == "kill" else ""
         for m in re.finditer(r"\b(" + re.escape(w) + r"(?:s|d|ed|ing)?" + alt + r")\b", low):
             tok = m.group(1)
@@ -82,6 +85,19 @@ def common(f, path, text, speaker):
     for b in BRANDS:
         if b.lower() not in BANNED and re.search(r"\b" + re.escape(b.lower()) + r"\b", low):
             f.add("V2", "blocking", path, b, "a real brand", "FLEET#F1")
+    if MODE == "v2":
+        m = re.search(r"farsight", text, re.I)
+        if m and speaker != "credits":
+            f.add("V1", "blocking", path, m.group(0), "Farsight is the publisher: named only in the Credits (GDD Edit 95)", "EDIT95#3.1")
+        w = re.search(r"\b(" + "|".join(INTENSIFIERS) + r")\b", text, re.I)
+        if w and speaker == "company":
+            f.add("T13", "minor", path, w.group(1), "an intensifier", "EDIT95#3.2")
+        c = COMPANY_WRONG.search(text)
+        if c and speaker == "company" and not sign:
+            f.add("V4", "major", path, c.group(0), "the company is Dummy Corporation (signage alone may read DUMMY CORP)", "EDIT95#4.2")
+        if "!" in text and speaker in ("company", "farsight"):
+            f.add("T2", "major", path, text[max(0, text.index("!") - 20):text.index("!") + 1], "'!' in Dummy Corporation's voice", "EDIT95#3.2")
+        return
     for m in re.finditer(r"\bfarsight\b", text, re.I):
         tok = m.group(0)
         letters = re.sub(r"[^A-Za-z]", "", text)
@@ -99,6 +115,10 @@ def bark(f, i, b, batch_stock):
     common(f, path + ".text", text, "car")
     if "!" in text and style != "shout" and w.get("tier") != "04":
         f.add("T10", "major", path + ".text", text, f"'!' in a {style} bark, tier {w.get('tier', 'free')}", "DECISIONS#rows-541-550")
+    if MODE == "v2":
+        ns = len([x for x in re.split(r"(?<=[.!?])\s+", text.strip()) if x])
+        if ns > PARAMS["style.v2.text.maxSentences"]:
+            f.add("F9", "blocking", path + ".text", text, f"{ns} sentences > {PARAMS['style.v2.text.maxSentences']} (style.v2.text.maxSentences)", "EDIT95#3.2")
     n = len(text)
     if n > PARAMS["style.bark.maxChars"]:
         f.add("F1", "blocking", path + ".text", text, f"{n} characters > {PARAMS['style.bark.maxChars']} (style.bark.maxChars)", "EDIT39#6.6")
@@ -170,7 +190,94 @@ def narration(f, path, text, kind, district=None, tile=None):
         f.add("F9", "major", path, text, f"{len(sents)} sentences > {PARAMS['style.act.maxSentences']} (style.act.maxSentences)", "STORY#S2")
 
 
-def lint(piece):
+def cap_v2(f, path, text, speaker="company"):
+    """GDD Edit 95: every in-game text at most two sentences and 20 words."""
+    t = PLACEHOLDER.sub("X", str(text or "")).strip()
+    nw = len([w for w in re.split(r"\s+", t) if re.search(r"[A-Za-z0-9]", w)])
+    ns = len([x for x in re.split(r"(?<=[.?!])\s+", t) if re.search(r"[A-Za-z]", x)])
+    rule = "C1" if speaker == "credits" else "F6"
+    if nw > PARAMS["style.v2.text.maxWords"]:
+        f.add(rule, "blocking" if rule == "F6" else "major", path, t[:60] + ("…" if len(t) > 60 else ""), f"{nw} words > {PARAMS['style.v2.text.maxWords']} (style.v2.text.maxWords)", "EDIT95#3.2")
+    if ns > PARAMS["style.v2.text.maxSentences"]:
+        f.add(rule, "blocking" if rule == "F6" else "major", path, t[:60] + ("…" if len(t) > 60 else ""), f"{ns} sentences > {PARAMS['style.v2.text.maxSentences']} (style.v2.text.maxSentences)", "EDIT95#3.2")
+
+
+def narration_v2(f, path, text, kind, district=None, tile=None, sign=False, speaker="company"):
+    common(f, path, text, speaker, sign)
+    rest = NARRATION_DIGITS.sub("", PLACEHOLDER.sub("", text))
+    if re.search(r"\d", rest) and speaker != "credits":
+        f.add("F5", "major", path, " ".join(re.findall(r"\S*\d\S*", rest)), "typed figure; numbers live in the registry", "STORY#S1")
+    if kind != "label":
+        cap_v2(f, path, text, speaker)
+    if kind == "tale":
+        voc = tile_vocab(district, tile)
+        if voc is not None:
+            bad = sorted({lm for lm in LANDMARKS if lm in words(text) and lm not in voc})
+            if bad:
+                f.add("R4", "minor", path, ", ".join(bad), f"landmark words the shipped {district} {tile} tale does not have; check them against the tile", "STORY#S2")
+
+
+def lint_v2(piece):
+    f = Findings()
+    kind = piece.get("kind")
+    if kind == "barks":
+        return None          # the bark rules run as in V1, with V2's Farsight ban and sentence cap (common, bark)
+    if kind == "tale":
+        narration_v2(f, "tale", str(piece.get("tale") or ""), "tale", piece.get("district"), piece.get("tile"))
+    elif kind == "act":
+        narration_v2(f, "intro", str(piece.get("intro") or ""), "act")
+    elif kind == "ending":
+        narration_v2(f, "ending", str(piece.get("ending") or ""), "ending")
+    elif kind == "brief":
+        label, brief = str(piece.get("label") or ""), str(piece.get("brief") or "")
+        narration_v2(f, "label", label, "label")
+        narration_v2(f, "brief", brief, "brief")
+        core = re.sub(r"\{\w+\}|×", "", label)
+        if core != core.upper() or len(label) > PARAMS["style.brief.labelMaxChars"]:
+            f.add("F8", "major", "label", label, f"label must be caps, ≤ {PARAMS['style.brief.labelMaxChars']} characters (style.brief.labelMaxChars); {len(label)}", "STORY#S3")
+        if piece.get("task") != "any" and not re.search(r"final hit", brief, re.I):
+            f.add("F8", "major", "brief", brief, "the duty does not say what the final hit must be", "STORY#S3")
+    elif kind == "notices":
+        for i, it in enumerate(piece.get("items") or []):
+            path, text = f"items[{i}]", str(it.get("text") or "")
+            narration_v2(f, path, text, "label" if it.get("caps") else "notice", sign=bool(it.get("sign")))
+            for ph in it.get("placeholders") or []:
+                if ph not in text:
+                    f.add("F10", "major", path, ph, "placeholder dropped", "EDIT95#4.2")
+            if it.get("caps") and re.sub(r"\{\w+\}", "", text) != re.sub(r"\{\w+\}", "", text).upper():
+                f.add("F10", "major", path, text, "a caps label must stay caps", "EDIT95#4.2")
+            if it.get("maxChars") and len(text) > it["maxChars"]:
+                f.add("F10", "major", path, text, f"{len(text)} characters > {it['maxChars']}: the slot's width", "EDIT95#4.2")
+    elif kind == "batch":   # V2: many of the company's texts at once (the story's tales, act lines and ending)
+        items = piece.get("items") or []
+        for i, it in enumerate(items):
+            narration_v2(f, f"items[{i}]", str(it.get("text") or ""), it.get("kind") or "notice", it.get("district"), it.get("tile"))
+            if it.get("maxChars") and len(str(it.get("text") or "")) > it["maxChars"]:
+                f.add("F10", "major", f"items[{i}]", str(it.get("text"))[:40], f"{len(str(it.get('text')))} characters > {it['maxChars']}: the slot's width", "EDIT95#4.2")
+        grams = {}
+        for it in items:
+            w = re.findall(r"[a-z0-9']+", str(it.get("text") or "").lower())
+            for g in {" ".join(w[j:j + 4]) for j in range(len(w) - 3)}:
+                grams.setdefault(g, []).append(str(it.get("id")))
+        cap, seen = PARAMS["style.bark.maxStockEndings"], set()
+        for g, ids in sorted(grams.items(), key=lambda x: -len(x[1])):
+            key = tuple(ids)
+            if len(ids) > cap and key not in seen:
+                seen.add(key)
+                f.add("T14", "minor", f"batch:{g}", g, f"'{g}' in {len(ids)} texts ({', '.join(ids)}) > {cap} (style.bark.maxStockEndings)", "SUB4#6.1")
+    elif kind == "credits":
+        for i, ln in enumerate(piece.get("lines") or []):
+            narration_v2(f, f"lines[{i}]", str(ln), "credits", speaker="credits")
+    else:
+        f.add("F4", "major", "kind", kind, "kind must be barks, tale, brief, act, ending, notices or credits", "STORY#S2")
+    return merge(f)
+
+
+def lint(piece, mode=None):
+    if (mode or MODE) == "v2":
+        out = lint_v2(piece)
+        if out is not None:
+            return out
     f = Findings()
     kind = piece.get("kind")
     if kind == "barks":

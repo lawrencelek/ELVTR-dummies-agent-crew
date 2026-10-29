@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone (T1, T3, T4, T5, T13), Vocabulary (V1, V3, V4, V6, V8, V9), Formatting (F5, F6, F7) and Truth (R4, R5): it is deadpan and motivating, has 2 sentences and 20 words, names Arms 3 on the tile that issues it, matches the PUSH OFF A CAR duty, and puts Chassis 0 at the stilt houses as canon does. [EDIT95#3.2] [EDIT95#3.3] [STORY#WB3] [STORY#S1] [STORY#S3]
+Total: 10.

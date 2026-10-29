@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight would like to know" Farsight is the publisher and must not be named in any in-game text, only in the Credits. [EDIT95#0] Fix: remove Farsight. The company speaks as "we" or "Dummy Corporation", or not at all.
+- tale · F6 (blocking, −4) "The obelisk marks the surveyors' first stake. A school party will visit it on opening day, escorted by the police fleet. Farsight would like to know how the police fleet handles a dummy first." The tale has 34 words in 3 sentences, over the limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: replace with "On opening day, police escort a school party to the obelisk. Your final hit comes from them first." (18 words, 2 sentences).
+- tale · T1 (major, −2) "would like to know how the police fleet handles a dummy first" This is a procedural observation and gives the trainee no reason to do the job, so it fails the rule that a notice must motivate. [EDIT95#3.2] Fix: end on the duty, stated flatly as a step in training: "Your final hit comes from them first."
+- tale · T5 (minor, −1) "handles a dummy" The trainee is called "a dummy" in the third person instead of "you". [EDIT95#3.2] Fix: address the trainee as "you" or "your", as in the replacement above.
+Total: 10 − 4 − 4 − 2 − 1 = −1, floored to 1.

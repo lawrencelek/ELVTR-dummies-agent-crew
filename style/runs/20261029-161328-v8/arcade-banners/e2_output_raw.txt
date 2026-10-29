@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked n24, n25 and n26 against the tone rules T1–T5, T13 and T14, the vocabulary rules V1–V10 and the format rules F5, F6 and F10. Each text has 2 sentences and 17, 17 or 19 words, and stays within 110 characters. The street descriptions match the canon for Monument's split road [DECISIONS#rows-231-240~2] row 238 and Parkland's ring road [DECISIONS#rows-231-240~2] row 236. The Opening Day and Customs frames match [EDIT95#3.3], and the deadpan, motivating register follows [EDIT95#3.2] and [PLAY#PS2]. Lint found nothing.
+Total: 10.

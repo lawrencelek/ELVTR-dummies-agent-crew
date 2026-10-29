@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight calls it safety equipment" Farsight is the publisher and may be named only in the Credits, never in an in-game text. [EDIT95#0] Fix: remove the clause and end the sentence at "Arms 1 is fitted."
+- tale · F6 (blocking, −4) "The paper lantern was the Expo's first exhibit, and it is lit again for the visitors. Arms 1 is fitted; Farsight calls it safety equipment. Under the footbridge, push off one car into the next." The tale has 35 words and 3 sentences, but the limit is 20 words and 2 sentences. [EDIT95#3.2] Fix: "The lantern is lit again for opening day. Arms 1 is fitted: push off one car into the next." (19 words, 2 sentences)
+- tale · T1 (major, −2) "calls it safety equipment" This line winks: it hints that the equipment is not really for safety, which breaks the flat, motivating corporate tone. [EDIT95#3.2] Fix: state the equipment plainly, e.g. "Arms 1 is fitted.", with no comment on what anyone calls it.
+Total: 10 − 4 − 4 − 2 = 1 (floor).

@@ -1,0 +1,1 @@
+{"kind": "act", "district": "monument", "intro": "Dummy Corporation welcomes you off the factory floor. The cars are your colleagues; Certification is your goal."}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all four rule sets. It has 2 sentences and 16 words with no adjectives, intensifiers or "!", and no banned words, other company names or digits (F6, T2, T13, V1, V4, F5; [EDIT95#3.2], [EDIT95#0]). Its tone is flat and motivating: the write-off is progress towards Certification, with no pity and no wink (T1, T3, T4; [EDIT95#3.1], [PLAY#PS2]). It addresses the trainee as "you", and its glossary words are correct (T5, V3; [FLEET#F3]). It fits the CUSTOMS frame (V6; [EDIT95#3.3]). Its duty matches CONE-BAITED CAR, and it rightly names no equipment because this tile issues none (R5, F7; [STORY#WA2], [STORY#S3], [EDIT93#3.1]). It mentions only a cone and a car, both of which the tile has (R4; [EDIT93#measured]).
+Total: 10.

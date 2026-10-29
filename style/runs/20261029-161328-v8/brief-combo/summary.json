@@ -1,0 +1,44 @@
+{
+ "case": "brief-combo",
+ "class": "V8 brief",
+ "title": "Prototype 7.13 brief combo, for Prototype 8",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 14.2,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 6.2,
+   "output_tokens": 400,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.08932939999999999
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 8.0,
+   "output_tokens": 527,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.017051800000000002
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1064
+}

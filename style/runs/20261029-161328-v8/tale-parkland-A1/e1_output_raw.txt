@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "The gardener keeps the three pools level by hand." Lint found the banned term "level", and no rule exempts it in a tale. [EDIT95#3.1] Fix: drop the sentence, or write "The gardener tends the three pools by hand."
+- tale · F6 (blocking, −4) "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by hitting one car into the next." Lint measured 37 words and 4 sentences, against a limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: cut it to two sentences of about 15 words, e.g. "Arms 2 is fitted: a stronger push. Push off one car into the next, before the water."
+- tale · R5 (blocking, −4) "Teach them by hitting one car into the next." The brief says to push off one car so that the next car makes the final hit, but this says to knock one car into another. [STORY#S3] Fix: name the push as the duty, e.g. "Push off one car into the next."
+Total: 10 − 4 − 4 − 4 = 1 (floor).

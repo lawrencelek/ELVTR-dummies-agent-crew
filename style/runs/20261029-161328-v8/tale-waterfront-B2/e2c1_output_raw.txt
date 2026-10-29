@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tale against T1–T5 and T13 (deadpan, no "!", training framing, write-off as progress) under [EDIT95#3.2] and [EDIT95#3.1]. I checked the glossary, company and story-frame rules (V1, V3, V4, V6, V8, V9) under [EDIT95#3.3]: CUSTOMS, shipping as Certified. I checked length, figures and equipment (F5, F6, F7): 2 sentences, 17 words, with the part rank "Battery 3" allowed and named on the tile that issues it, per [STORY#S1]. I checked the brief match and tile truth (R4, R5): "finish the chain" fits COMBO ×{n}, and the circus has the monument, per [STORY#WB2] and [EDIT94#3.2].
+Total: 10.

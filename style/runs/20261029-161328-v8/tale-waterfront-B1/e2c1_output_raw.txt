@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale for tone, voice, adjectives, framing, glossary, story frame, equipment naming, tile truth, the duty against the brief, length, digits and banned words (T1–T5, T13, V1–V9, F5–F7, R4–R5), against [EDIT95#3.1], [EDIT95#3.2], [EDIT95#3.3], [STORY#S1], [STORY#S3] and [STORY#WB1]: it has two sentences and 19 words, names Legs 3 on the tile that issues it, and gives the brief's duty, a jump into a car, at the portal.
+Total: 10.

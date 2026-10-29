@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · V3 (major, −2) "They train on you first." The style guide defines training as your job, but this line makes the police fleet the trainees and you their equipment, and "They" could also refer to the school party. [EDIT95#3.1] Fix: "On opening day, the police fleet escorts a school party to the obelisk. Your training meets them first."
+Total: 10 − 2 = 8.

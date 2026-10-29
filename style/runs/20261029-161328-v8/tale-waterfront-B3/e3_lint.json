@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "Chassis 0 stands behind glass. Show it how far the model has…",
+  "measured": "24 words > 20 (style.v2.text.maxWords)",
+  "source": "EDIT95#3.2"
+ }
+]

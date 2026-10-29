@@ -1,0 +1,1 @@
+{"kind": "act", "district": "waterfront", "intro": "Ships wait across the river to carry Certified dummies to our clients. Your papers are being prepared."}

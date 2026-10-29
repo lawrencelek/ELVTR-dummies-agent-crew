@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "PUSH OFF A CAR" (14 characters, caps) and the duty "Coverage gap: ricochets. Push off one car; the final hit must be the next car." (2 sentences, 15 words). They match the push row word for word [STORY#S3] and fit the brief form, length and voice limits [EDIT95#3.2]. No banned word or company name appears [EDIT95#0, EDIT95#3.1], there is no "!", no intensifier and no typed figure. The training framing holds [EDIT95#3.1], and the duty agrees with the push tiles [STORY#PC1, STORY#PA1, STORY#WB3].
+Total: 10.

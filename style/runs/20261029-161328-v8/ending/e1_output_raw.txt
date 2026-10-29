@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- ending · V1 (blocking, −4) "A Farsight drone carries you over the river to a container ship." Farsight is the publisher and may appear only in the Credits, so it cannot name the drone. [EDIT95#0] Fix: replace "A Farsight drone" with "A Corporation drone".
+- ending · F6 (blocking, −4) "Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please remain still for the voyage." The text has 32 words in 5 sentences, but the limit is 20 words in 2 sentences. [EDIT95#3.2] Fix: cut to two sentences and at most 20 words, for example "Your model has passed, and will be manufactured for our clients. A Corporation drone carries you to the ship."
+- ending · V6 (major, −2) "Destination: a market far away." The CERTIFIED ending must say the model is made for clients, and Certified dummies ship to their clients, not to an unnamed market. [EDIT95#3.3] Fix: name the clients as the purpose, for example "will be manufactured for our clients", and drop "a market far away".
+Total: 10 − 4 − 4 − 2 = 1.

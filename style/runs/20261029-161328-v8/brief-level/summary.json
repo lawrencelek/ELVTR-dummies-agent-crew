@@ -1,0 +1,44 @@
+{
+ "case": "brief-level",
+ "class": "V8 brief",
+ "title": "Prototype 7.13 brief level, for Prototype 8",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 14.0,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 6.7,
+   "output_tokens": 413,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.08865050000000001
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 7.3,
+   "output_tokens": 404,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.014557700000000002
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1032
+}

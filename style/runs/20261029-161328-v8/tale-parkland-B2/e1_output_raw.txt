@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- tale · F6 (blocking, −4) "Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefers the product to the test. Give it a chain of three." Lint counts 39 words and 6 sentences, above the caps of 20 words and 2 sentences. [EDIT95#3.2] Fix: cut to two sentences of about 15 words: "Inspection day: Battery 2 is fitted. The board watches the ring; finish a chain for our clients."
+- tale · F5 (major, −2) "a chain of three" This types the combo figure as a word, but story.task.comboHard holds that number and the tale should not. [STORY#S1] Fix: drop the figure. Use "finish a chain" or "a long chain", or use the brief's bound placeholder {n} if the tale slot fills it in.
+- tale · V6 (major, −2) "The public prefers the product to the test." The OPENING DAY frame now has the Expo opening to clients, not to the public, and "the public" comes from the superseded Edit 92 frame. [EDIT95#3.3] Fix: delete the sentence, or name clients: "Our clients arrive when the ring passes."
+- tale · T1 (major, −2) "When the cars come round clean, the board applauds the cars. The public prefers the product to the test." This is winking irony that undercuts the trainee's work, so the notice does not motivate. [EDIT95#3.2] Fix: replace both sentences with a flat line that motivates, e.g. "The board watches the ring; finish a chain for our clients."
+Total: 10 − 4 − 2 − 2 − 2 = 1 (floor, style.score.floor).

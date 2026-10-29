@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The drum lights each bend before a car reaches it, so no col…",
+  "measured": "40 words > 20 (style.v2.text.maxWords); 5 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

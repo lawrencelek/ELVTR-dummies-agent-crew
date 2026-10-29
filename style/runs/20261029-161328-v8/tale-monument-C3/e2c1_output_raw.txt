@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: the tale is 17 words in two sentences (F6, [EDIT95#3.2]). It is flat and motivating with no "!" (T1, T2, [EDIT95#3.2], [PLAY#PS0]). It addresses "you" and calls the cars colleagues (T3, T5, [EDIT95#3.1]). It keeps the fixed phrase ROLE: DESTRUCTIVE TESTING exact (V6, [EDIT95#3.3]). It names only the gateway, which the tile has (R4, [STORY#MC3]). Its duty matches the THROWN INTO A CAR brief and it names no equipment on a tile that issues none (R5, F7, [STORY#S3], [STORY#S1]). It has no banned word, company name or digit (V1, V4, F5, [EDIT95#0]).
+Total: 10.

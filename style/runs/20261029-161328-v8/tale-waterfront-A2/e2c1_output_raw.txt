@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I found no violations. I checked the tale's 16 words in 2 sentences against F6 [EDIT95#3.2]. I checked tone, address and the training frame under T1–T5 and T13 [EDIT95#3.2, EDIT95#3.1, PLAY#PS2]. I checked the banned words and the company's name under V1–V4 [EDIT95#0, EDIT95#3.1]. I checked the CUSTOMS frame under V6 [EDIT95#3.3]. I checked under R5 that the duty matches the CONE-BAITED CAR brief and that no equipment is named on a tile that issues none [STORY#S3, STORY#WA2, EDIT93#3.1]. I checked tile truth under R4 [STORY#WA2].
+Total: 10.

@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight would like one more clean reading before the speeches." The tale names Farsight inside the game, but Farsight is the publisher and appears only in the Credits. [EDIT95#0] Fix: remove Farsight. If the company must speak, use "Dummy Corporation", "the Corporation" or "we".
+- tale · F6 (blocking, −4) "The valley began here: a cliff, an avenue, and a beach of sand brought from three provinces. The ceremony is being prepared in the circus. Place a cone. Farsight would like one more clean reading before the speeches." It has 38 words and 4 sentences, over the limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: replace with "Place a cone. The final hit must come from a car reacting to it; Certification is close." (17 words, 2 sentences).
+- tale · R4 (blocking, −4) "The ceremony is being prepared in the circus." The circus is on Waterfront B2, not A2, so this tale names a place its tile does not have. [STORY#WA2] Fix: delete the sentence and name only what is on A2 (the west beach terrace, the cliff, the avenue, the beach), or nothing.
+Total: 10 − 4 − 4 − 4 = −2, floored to 1.

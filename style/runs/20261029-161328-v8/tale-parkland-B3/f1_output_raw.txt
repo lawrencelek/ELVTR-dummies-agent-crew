@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "B3", "title": "The obelisk court", "tale": "On opening day, the police fleet escorts a school party to the obelisk. They train on you first."}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the Waterfront act line against the CUSTOMS frame and found no violation: Certified dummies ship to their clients across the river [EDIT95#3.3]. I also checked the voice (deadpan, no "!", "you" and "our") [EDIT95#3.2], the glossary and how clients are treated [EDIT95#3.1], the banned words and company name [EDIT95#0], and the length cap of 2 sentences and 20 words, which the line meets at 17 words [EDIT95#3.2].
+Total: 10.

@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "B3", "title": "The LED canyon", "tale": "Legs 1 is fitted. Jump into a car between the screens; each write-off brings Certification closer."}

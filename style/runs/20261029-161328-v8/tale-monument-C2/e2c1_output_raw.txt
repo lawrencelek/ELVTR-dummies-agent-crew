@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+- I checked the tale against T1–T5 and T13 (flat, motivating, no exclamation marks, one adjective per sentence) [EDIT95#3.2] [PLAY#PS2]. I also checked training framing and the story frame (INDUCTION; Certification as the goal) [EDIT95#3.1] [EDIT95#3.3], plus V1–V4, V6, V8 and V9. F6 holds at 2 sentences and 17 words [EDIT95#3.2]. F7 does not apply because the tile issues no equipment. R4 holds: the tower and its raised road match [STORY#MC2]. R5 holds: the duty matches ON A RAISED ROAD, the final hit at Z1 or above, and no equipment is named [STORY#S3] [EDIT93#3.1].
+Total: 10.

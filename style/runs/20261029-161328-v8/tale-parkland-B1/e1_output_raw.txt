@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest." The tale has 37 words and 4 sentences, over the limit of 20 words and 2 sentences (lint finding). [EDIT95#3.2] Fix: "The cascade steps its water down beside the highway. Climb to the raised road; a write-off there serves our clients." (2 sentences, 20 words)
+- tale · T1 (major, −2) "It was built to drown out the traffic. The traffic got louder." This is a winking joke about a failed landmark, and nothing in it motivates the trainee toward Certification or service to clients. [EDIT95#3.1] Fix: cut the joke and end on the duty framed as service, as in the F6 fix above.
+Total: 10 − 4 − 2 = 4.

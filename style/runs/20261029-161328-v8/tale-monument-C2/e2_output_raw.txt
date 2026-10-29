@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1–T5 and T13 [EDIT95#3.2, PLAY#PS2], Vocabulary V1, V3, V4, V6, V8 and V9 [EDIT95#3.1, EDIT95#3.3, FLEET#F3], Formatting F5–F7 (2 sentences, 17 words, no equipment named) [EDIT95#3.2, STORY#S1], and Truth R4–R5: the raised road runs through the portal tower, and "Take the final hit up there" matches ON A RAISED ROAD, Z1 or above, with no equipment issued [STORY#MC2, STORY#S3, EDIT93#3.1].
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked both sentences of the tale for Dummy Corporation's voice and found no violations. Tone is deadpan and motivating, with no "!", no intensifiers and no adjectives (T1–T5, T13; [EDIT95#3.2], [PLAY#PS2]). The text frames the work as training: cars are colleagues and a write-off is progress (T3, T4, V3; [EDIT95#3.1], [EDIT95#3.3]). It uses no banned word and names only Dummy Corporation's world, never Farsight (V1, V4; [EDIT95#0]). It is 2 sentences and 13 words, and "Battery 1" is an allowed part rank (F5, F6; [EDIT95#3.2], [STORY#S1]). It names Battery 1 on the tile that issues it, B1 (F7, R5; [STORY#MB1], [STORY#S1]). Its duty matches the brief DASH INTO A CAR (R5; [STORY#S3]), and it names nothing the tile lacks (R4; [STORY#MB1]).
+Total: 10.

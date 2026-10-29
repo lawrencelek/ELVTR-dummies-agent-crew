@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the slot facts in [STORY#MA2] and the CONE-BAITED CAR duty in [STORY#S3]. It names Hands 1 on the tile that issues it, as F7 and R5 require ([STORY#S1], [EDIT93#3.1/tales-rewritten~1]). It has 17 words in 2 sentences, within F6 ([EDIT95#3.2]). Its tone is deadpan and motivating, with no "!" and no intensifiers (T1, T2, T13 [EDIT95#3.2], [PLAY#PS0]). It frames the write-off as progress and the car as a colleague (T3, T4 [EDIT95#3.1]). It uses only glossary terms and fits the INDUCTION frame (V3, V6 [EDIT95#3.3]). It contains no banned word, other company name or Farsight (V1, V4 [EDIT95#0]).
+Total: 10.

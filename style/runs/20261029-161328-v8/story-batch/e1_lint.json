@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:write off brings certification",
+  "quote": "write off brings certification",
+  "measured": "'write off brings certification' in 4 texts (MB1, MB3, PA1, WB1) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ },
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:jump into a car",
+  "quote": "jump into a car",
+  "measured": "'jump into a car' in 3 texts (MB3, PA3, WB1) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ },
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:one car into the",
+  "quote": "one car into the",
+  "measured": "'one car into the' in 3 texts (PC1, PA1, WB3) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ }
+]

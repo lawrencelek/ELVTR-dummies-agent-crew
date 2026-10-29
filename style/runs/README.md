@@ -2,6 +2,14 @@
 
 Each run folder holds every agent input and output, the lint findings, each version of the piece, a `trace.md` per case and per run, and the guide it read (`STYLE_GUIDE.snapshot.md`).
 
+## Style Guide V2 (GDD Edit 95, Prototype 8)
+
+| Run | Guide | Job | Result |
+|---|---|---|---|
+| [`20261029-161328-v8`](20261029-161328-v8/trace.md) | V2.0 → V2.2 | Prototype 8's text, four stages: 45 pieces one by one (V2.0); the story as one batch (V2.1); Arcade's banners (V2.1); the story and six opening lines as one batch (V2.2) | 48 of 48 at 10/10, confirmed. 183 calls, $19.88. The text: `v8_copy.json`, placed by `prototypes/p8/make_lore.py` |
+
+- Each stage's folder keeps the guide it read (`STYLE_GUIDE.snapshot.md`). The run's root snapshot is V2.0. The V2.1 snapshots in `story-batch/` and `arcade-banners/` were written after those stages ran (see their first line).
+
 ## The submission's runs (guide v5)
 
 | Run | Job | Result |

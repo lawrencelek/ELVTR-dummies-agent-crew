@@ -1,0 +1,44 @@
+{
+ "case": "brief-push",
+ "class": "V8 brief",
+ "title": "Prototype 7.13 brief push, for Prototype 8",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 17.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 10.3,
+   "output_tokens": 784,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.09654030000000001
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 6.9,
+   "output_tokens": 382,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0141356
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1107
+}

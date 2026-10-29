@@ -17,6 +17,8 @@ scripts += ''.join(f'<script>\n{(p6 / f).read_text(encoding="utf-8")}\n</script>
 pads = (here.parent / 'controls' / 'pads.js').read_text(encoding='utf-8')  # Edit 75: gamepads of any kind
 scripts += db + f'<script>\n{(here / "story.js").read_text(encoding="utf-8")}\n</script>\n'
 scripts += f'<script>\n{pads}\n</script>\n' + f'<script>\n{(p6 / "game.js").read_text(encoding="utf-8")}\n</script>\n'
+import sys
+sys.exit('Prototype 7.13 is frozen (GDD Edit 95). Its file stays as built; build Prototype 8 with prototypes/p8/build.py.')
 out = here / 'dummies_p7_13.html'
 assert out.name not in ('dummies_p7.html', 'dummies_p7_1.html', 'dummies_p7_2.html', 'dummies_p7_3.html', 'dummies_p7_4.html', 'dummies_p7_5.html', 'dummies_p7_6.html', 'dummies_p7_7.html', 'dummies_p7_8.html', 'dummies_p7_9.html', 'dummies_p7_10.html', 'dummies_p7_11.html', 'dummies_p7_12.html')  # Prototypes 7 to 7.12 stay frozen
 full = shell.replace('<!--SCRIPTS-->', scripts)

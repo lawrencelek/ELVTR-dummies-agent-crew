@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Chassis 0 stands behind glass. Show it how far the model has come: Arms 3 is fitted, push off one car into the next." The tale is 24 words, over the 20-word cap for in-game text. [EDIT95#3.2] Fix: replace with "Show Chassis 0 how far the model has come. Arms 3 is fitted: push off one car into the next." (19 words, 2 sentences)
+Total: 10 − 4 = 6.

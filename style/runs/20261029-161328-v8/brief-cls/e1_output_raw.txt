@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "A {cls}" and the duty "Coverage gap: the {clsLong}. The final hit must come from a {cls}." against the brief form [STORY#S3], [EDIT95#3.2] (F8, F10, F5). I also checked the length cap of two sentences and 20 words, the deadpan voice with no "!" (F6, T1, T2, T13), the training framing and glossary [EDIT95#3.1], [EDIT95#3.3], [FLEET#F3] (T3, V3, V8), and the banned words and company name [EDIT95#0], [EDIT95#4.2] (V1, V4); none is broken, and the {cls}/{clsLong} placeholders stay as given.
+Total: 10.

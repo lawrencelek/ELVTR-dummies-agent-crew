@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The terrace was built for tourists, then joggers, then sensors. From its rail you can see the ships in the estuary and the cranes that load them. Drop onto a car below. The ships will wait." At 36 words and 4 sentences, it is over the 20-word and 2-sentence caps. [EDIT95#3.2] Fix: "From the terrace rail, ships wait to carry Certified dummies to clients. Drop onto a car below." (17 words, 2 sentences; this keeps the CUSTOMS frame and the drop duty).
+Total: 10 − 4 = 6.

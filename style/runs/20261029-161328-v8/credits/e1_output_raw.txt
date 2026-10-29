@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against C1: names the game, maker and Farsight as publisher, no lore or slogans, one sentence per line; matches the Credits line in [EDIT95#3.3] and the Credits-only ruling in [EDIT95#0]; V1 exempts Farsight in the Credits; lint is clean.
+Total: 10.

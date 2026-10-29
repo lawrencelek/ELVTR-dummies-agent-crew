@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against F8 (a caps label of 15 characters, under the 19 limit, then the duty), F6 (2 sentences, 13 words), T1–T5, T13 (no intensifiers, "final" is the only adjective in its sentence) and V1–V9 (no banned words, no company name, glossary terms kept). The text matches the jump brief in [STORY#S3] word for word, follows the Edit 95 voice and length rules [EDIT95#3.2], and states the same duty as the jump tiles' briefs [STORY#MB3] [STORY#PA3] [STORY#WB1].
+Total: 10.

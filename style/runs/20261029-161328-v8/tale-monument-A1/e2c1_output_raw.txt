@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Dummy Corporation's rules. Length and form (F6, F7) pass: 15 words, two sentences, and no equipment is issued on this tile. Tone (T1–T5, T13) passes: deadpan and motivating, no "!", no adjectives, and the trainee is "you". Vocabulary (V1, V3, V4) passes: no banned words, "colleague" for a car, and the company named as Dummy Corporation. The story frame (V6) and truth (R4, R5) hold: the arrival suits INDUCTION, nothing is named that the tile lacks, and standing in the road matches the ANY WRITE-OFF brief. [EDIT95#3.1] [EDIT95#3.2] [EDIT95#3.3] [EDIT95#0] [STORY#MA1] [STORY#S3]
+Total: 10.

@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "C2", "title": "The portal tower", "tale": "The raised road runs through this tower. Take the final hit up there, and Certification comes closer."}

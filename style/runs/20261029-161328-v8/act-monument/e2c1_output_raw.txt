@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. The line has two sentences and 17 words (F6). It is flat and motivating, with no "!" (T1, T2), and frames the work as training, with cars as colleagues and Certification as the goal (T3, T4). It addresses "you" and names the company correctly (T5, V4). It holds the INDUCTION frame, where the trainee arrives (V6), and uses no banned or glossary-breaking words (V1, V3). Checked against [EDIT95#3.1], [EDIT95#3.2], [EDIT95#3.3], [EDIT95#0] and [PLAY#PS0].
+Total: 10.

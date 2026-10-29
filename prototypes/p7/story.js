@@ -28,7 +28,7 @@
   const NODE = typeof module !== 'undefined' && module.exports;
   const X = NODE ? require('../p6/sim.js') : root.DUMMIES;
   const W6 = NODE ? require('../p6/world6.js') : root.WORLD6;
-  const DATA = NODE ? JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', '..', 'content', 'story', 'story.json'), 'utf8')) : root.DUMMIES_STORY;
+  const DATA = root.DUMMIES_STORY || (NODE ? JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', '..', 'content', 'story', 'story.json'), 'utf8')) : null); // Edit 95 (P8): a bundled or preset story (story_v2.json) wins
   const SIDES = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
   const nameOf = (c, r) => 'ABC'[c] + (r + 1);
   const cellOf = (t) => ['ABC'.indexOf(t[0]), +t[1] - 1];

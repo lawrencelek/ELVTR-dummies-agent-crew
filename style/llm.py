@@ -19,11 +19,14 @@ MODELS = {"generator": os.environ.get("STYLE_GEN_MODEL", "sonnet"),
           "refiner": os.environ.get("STYLE_REFINE_MODEL", "opus")}
 
 
+GUIDE = {"agents": "agents", "file": "STYLE_GUIDE.md"}   # loop.set_guide("v2"): agents/v2, STYLE_GUIDE_V2.md
+
+
 def system_prompt(role):
     """The role's prompt; the evaluator and refiner also get the whole style guide, so the guide has one source."""
-    text = (ROOT / "agents" / f"{role}.md").read_text(encoding="utf-8")
+    text = (ROOT / GUIDE["agents"] / f"{role}.md").read_text(encoding="utf-8")
     if role in ("evaluator", "refiner"):
-        text += "\n\n---\n\n" + (ROOT / "STYLE_GUIDE.md").read_text(encoding="utf-8")
+        text += "\n\n---\n\n" + (ROOT / GUIDE["file"]).read_text(encoding="utf-8")
     return text
 
 

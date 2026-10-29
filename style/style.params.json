@@ -169,6 +169,42 @@
    "default": 9,
    "status": "proposed",
    "source": "style/STYLE_GUIDE.md §6"
+  },
+  {
+   "id": "style.v2.text.maxSentences",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Sentences per text (V2)",
+   "description": "Sentences in any in-game text: a tale, a brief, an act line, the ending, a notice, a bark.",
+   "unit": "sentences",
+   "type": "number",
+   "default": 2,
+   "status": "user-decided (29 October)",
+   "source": "GDD Edit 95 §3.2: \"maximum two sentences\""
+  },
+  {
+   "id": "style.v2.text.maxWords",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Words per text (V2)",
+   "description": "Words in any in-game text of the company's voice.",
+   "unit": "words",
+   "type": "number",
+   "default": 20,
+   "status": "user-decided (29 October)",
+   "source": "GDD Edit 95 §3.2: \"15-20 words max\""
+  },
+  {
+   "id": "style.v2.text.targetWords",
+   "group": "Style",
+   "owner": "Narrative",
+   "label": "Target words (V2)",
+   "description": "The length to aim for. Guidance, not a limit.",
+   "unit": "words",
+   "type": "number",
+   "default": 15,
+   "status": "user-decided (29 October)",
+   "source": "GDD Edit 95 §3.2"
   }
  ]
 }
