@@ -1,0 +1,6 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I checked the ending for tone and voice: deadpan, no "!", no more than one adjective per sentence, the training frame, and addressing the trainee as "you" and the company as "our" ([EDIT95#3.2], [PLAY#PS0]). I checked vocabulary: no banned words, "Corporation drone" as named in [EDIT95#4.2], and clients served without being named ([EDIT95#3.1]). I checked length: 2 sentences and 19 words ([EDIT95#3.2]). I checked the story frame: the model is manufactured for clients and ships out ([EDIT95#3.3]). I found no violations.
+Total: 10.

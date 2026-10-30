@@ -1,0 +1,19 @@
+[
+ {
+  "id": "R-CRATE-FACES",
+  "title": "Put the dummy's face on every crate of the ship",
+  "score": 0.456,
+  "terms": {
+   "value": 0.4,
+   "unblocks": 0.0,
+   "authority": 0.995,
+   "cost": 0.667
+  },
+  "partial": false,
+  "waiting": [],
+  "files": [
+   "prototypes/p6/world6.js"
+  ],
+  "attempts": 0
+ }
+]

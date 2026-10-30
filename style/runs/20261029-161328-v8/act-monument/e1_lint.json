@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "intro",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ }
+]

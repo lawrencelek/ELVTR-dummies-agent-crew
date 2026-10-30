@@ -1,0 +1,6 @@
+{
+ "kind": "brief",
+ "task": "combo",
+ "label": "COMBO ×{n}",
+ "brief": "Coverage gap: chains. The final hit must be link {n} or later of a combo."
+}

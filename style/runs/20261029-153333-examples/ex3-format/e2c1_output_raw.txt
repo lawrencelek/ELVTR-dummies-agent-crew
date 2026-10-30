@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Line t902 passes all four rule groups. Tone: a calm Corporate line about KPIs with dry resentment under the polite form (T6, T7, T9, T12; [FLEET#F4], [FLEET#F9.1~2]). Vocabulary: no banned word, and it names the tile by its landmark, not its grid code (V1, V5; [FLEET#F2], [SUB4#6.2]). Formatting: 46 characters, one line, ends with ".", speech style at impact priority 2 (F1–F4; [EDIT39#6.6]). Truth: an impact guarantees contact, and the belvedere is Parkland A3's own title, covered by the claims district:parkland and tile:A3 (R1–R4; [FLEET#F8], [STORY#PA3]).
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the length and sentence caps (30 words, 2 sentences) [EDIT96#3.2], tone and adjectives [EDIT95#3.2, PLAY#PS2], the training frame and sacrifice as service [EDIT95#3.1], the OPENING DAY frame and the board as a narrated cast member [EDIT95#3.3, STORY#PC2], the place and duty, since the amphitheatre's terraces and avenue lead to the final hit from a van, matching the brief A VAN with no equipment named [STORY#PC2, STORY#S3, STORY#S1], and the glossary and banned words with Farsight absent [EDIT95#0, FLEET#F3].
+Total: 10.

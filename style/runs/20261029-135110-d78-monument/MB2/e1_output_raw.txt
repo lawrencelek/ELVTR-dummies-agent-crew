@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- t118 · R1 (blocking, −4) "Zero accidents voided." The line says the hit cancels the plaque's target, but an impact logs no KPI or record change, and the plaque's full wording excludes tests ("ZERO ACCIDENTS (EXCLUDING TESTS)"). [FLEET#F8; DESIGN#D9.3; EDIT94#3.2] Fix: "Contact at the monument. Form 9 filed."
+- t119 · R1 (blocking, −4) "Not anymore." The line says the zero-accident record is now broken, but nothing logged backs that up, and canon says tests are excluded from the count. [FLEET#F8; SUB4#5; EDIT94#3.2] Fix: "Zero accidents, the plaque says. Of course."
+Total: 10 − 4 − 4 = 2.

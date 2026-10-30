@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale, which has 29 words in two sentences, against the following rules and found no violation: tone and address (T1, T3, T4, T5, T13) [EDIT95#3.2]; the glossary, the company name and the CUSTOMS frame (V3, V4, V6, V8, V9) [EDIT95#3.1, EDIT95#3.3]; naming its place, the west portal, upper town and bridge, and turning it toward the bus-fleet duty (V11) [STORY#WA1]; length and padding (F5, F6, F11) [EDIT97#3.2]; and a duty that matches the brief, with no equipment named on a tile that issues none (R4, R5) [STORY#WA1, EDIT93#3.1].
+Total: 10.

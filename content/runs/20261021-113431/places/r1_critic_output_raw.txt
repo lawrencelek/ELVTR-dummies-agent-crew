@@ -1,0 +1,1 @@
+{"verdict":"pass","summary":"It sounds like DUMMIES. Screen names are concrete place nouns in a calm planner's voice, and the intros and level toasts are plain and instructive, with no jokes or cheer. I found no canon, truth or data breaks.","issues":[]}

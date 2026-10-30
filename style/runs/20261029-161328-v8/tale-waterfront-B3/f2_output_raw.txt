@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "B3", "title": "The stilt houses", "tale": "Chassis 0 stands behind glass. Show it how far the model has come: Arms 3 is fitted, push off one car into the next."}

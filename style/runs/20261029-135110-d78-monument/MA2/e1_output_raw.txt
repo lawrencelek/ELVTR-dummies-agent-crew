@@ -1,0 +1,9 @@
+SCORE: 10/10
+REASON:
+- None. All four lines pass their speaker's rules:
+  - **Tone (T6, T7, T9, T12):** each line holds its tier's voice against [FLEET#F4], with a polite form over a real feeling.
+  - **"!" (T10):** only t124 uses it, and it is a Budget shout [DECISIONS#rows-541-550].
+  - **Vocabulary (V1–V3, V5, V8):** no banned words, cities or brands, no game words, no grid codes [FLEET#F2] [SUB4#6.2].
+  - **Formatting (F1–F5):** every line is at most 48 characters, plain and correctly ended, with the right fields and priority 2. The only figures are the shipped "KPIs adjusted", and there are no digits [EDIT39#6.6] [FLEET#F9.1~2].
+  - **Truth (R1–R4):** every line reacts to a logged impact without claiming a write-off. Each names only Monument A2's own neon shops and shopfronts [STORY#MA2] [EDIT92#7]. The paint-scuff in t121 claims no more than the shipped "You scratched the clear coat!" does.
+Total: 10.

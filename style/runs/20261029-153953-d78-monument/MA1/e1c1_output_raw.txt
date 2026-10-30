@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against every bark rule. Tone and tier voice (T6–T12) were checked against [FLEET#F4], [FLEET#F2] and [FLEET#F9.1~2]. Vocabulary and roster (V1–V8) were checked against [FLEET#F2], [FLEET#F3] and [SUB4#6.2]. Format, length, style and priority (F1–F5) were checked against [EDIT39#6.6] and [FSG#field-text]. Truth and tile truth (R1–R4) were checked against [FLEET#F8], [STORY#MA1] and [SUB4#5]. Each line names the welcome wall as the place, invents no fact, has only "!" allowed by the Budget shout rule, and holds its tier's voice.
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "Farsight would like to know how the police fleet handles a dummy first." The tale ends on Farsight's wish, not a duty in the imperative, so the card never gives the dummy its instruction. [STORY#PB3, EDIT93#3.1] Fix: replace the last sentence with "Let a police car handle you before they arrive." (the tale becomes 162 characters).
+Total: 10 − 1 = 9.

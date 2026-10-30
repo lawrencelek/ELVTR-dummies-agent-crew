@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against the T, V, F and R rules for Dummy Corporation, and nothing is broken. It has 2 sentences and 19 words, uses no "!" or banned words, and its frame and glossary fit CUSTOMS. The police at the east portal match the tile, the duty matches the A POLICE CAR brief, and it names no equipment on a tile that issues none. [EDIT95#3.2] [EDIT95#3.3] [EDIT95#3.1] [STORY#WC1] [STORY#S3] [EDIT93#3.1]
+Total: 10.

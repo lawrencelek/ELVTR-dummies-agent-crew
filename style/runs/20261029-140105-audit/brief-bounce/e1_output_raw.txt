@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked the label and brief against the bounce row of the brief table, word for word [STORY#S3], the brief used on Monument C3 and Waterfront C3 [STORY#MC3] [STORY#WC3], and the label limit of 19 characters (17 used, F8) [STORY#S3]. Also checked the "Coverage gap: … The final hit must …" form (F8) [STORY#S3], the dry, duty-framed Farsight voice with no "!" (T1–T3) [EDIT92#3], the banned terms (V1) [FLEET#F2], the glossary terms (V3) [FLEET#F3] and the rule against typed figures (F5) [STORY#S1].
+Total: 10.

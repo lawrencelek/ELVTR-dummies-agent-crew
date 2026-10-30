@@ -1,0 +1,79 @@
+{
+ "case": "notices-83",
+ "class": "V8.3 notices",
+ "title": "The intro line (n36) and Arcade's goal (n37)",
+ "request": "Write n36 and n37. n36: one line for the intro screen that tells a new player what to do. The user's draft, to make funnier while keeping it obvious: 'Find new ways to make the cars hit you. Combo bonuses and upgrades await. Make Dummy Corporation proud.' n37: Arcade's goal, simple and direct, with {Q} for the write-offs per grade.",
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 58.3,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 5.6,
+   "output_tokens": 362,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.1070783
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 13.8,
+   "output_tokens": 1227,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15050840000000001
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.1,
+   "output_tokens": 1032,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1480003
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 15.4,
+   "output_tokens": 1414,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1468612
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 13.4,
+   "output_tokens": 1186,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.031892199999999996
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5843
+}

@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The pier tower is a customs post. It logs everything that floats on the river: containers, ducks and, so far, one dummy, inbound. Be thrown into a car. Customs is watching." The tale has 31 words and 4 sentences, over the limit of 20 words and 2 sentences. [EDIT95#3.2] Fix: "The customs post logs every shipment to our clients. Be thrown into a car, and earn your entry." (18 words, 2 sentences).
+- tale · T1 (major, −2) "containers, ducks and, so far, one dummy, inbound" The list sets up a joke by putting the dummy next to ducks, which is irony that winks rather than a flat notice that motivates the trainee. [EDIT95#3.2] Fix: drop "ducks and, so far," and give the log a motivating purpose, as in the F6 fix: "The customs post logs every shipment to our clients."
+Total: 10 − 4 − 2 = 4.

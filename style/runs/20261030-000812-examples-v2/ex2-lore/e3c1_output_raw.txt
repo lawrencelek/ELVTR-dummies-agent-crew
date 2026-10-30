@@ -1,0 +1,12 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations in n36.
+  - **Lint:** no findings.
+  - **Length (F6):** 17 words in two sentences, about 104 characters. That is within the 20-word cap and the slot's 110-character width.
+  - **Form (F10):** the text is not caps and the slot has no placeholders.
+  - **Tone (T1, T2, T13):** the line is deadpan and has no "!" or intensifiers. It gives a direct instruction ("be hit anyway"), so it motivates the trainee. "preferably in chains" is a flat joke, which the slot asks for ("quirky but obvious") [EDIT98#0].
+  - **Training frame (T3, V8):** "crash-test trainee" fits the training frame and the dummy as a product. The line does not call it a game or a contest [EDIT95#3.1].
+  - **Voice (T5):** it speaks to the trainee as "you".
+  - **Banned words, cities and other company names (V1, V2, V4):** none. No company is named, which the slot allows [EDIT95#0].
+  - **Truth (R4):** each fact matches the slot. You are a trainee, cars avoid you, you want to be hit, chains are preferred, and equipment comes with progress. It also fits both modes.
+Total: 10.

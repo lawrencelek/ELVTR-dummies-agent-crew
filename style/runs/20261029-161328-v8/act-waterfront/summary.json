@@ -1,0 +1,68 @@
+{
+ "case": "act-waterfront",
+ "class": "V8 act",
+ "title": "Prototype 7.13 act waterfront, for Prototype 8",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 36.0,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 15.9,
+   "output_tokens": 1237,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1061892
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 6.3,
+   "output_tokens": 392,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0904923
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 6.8,
+   "output_tokens": 408,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0914327
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 6.9,
+   "output_tokens": 473,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.016043099999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3042
+}

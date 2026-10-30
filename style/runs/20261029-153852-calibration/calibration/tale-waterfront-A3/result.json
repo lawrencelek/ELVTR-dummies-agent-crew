@@ -1,0 +1,13 @@
+{
+ "id": "tale-waterfront-A3",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Hono",
+ "cost_usd": 0.1133,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against the rules for Farsight. Tone (T1–T5): polite and procedural, no \"!\", \"you\" used for the dummy, harm left unremarked [EDIT92#3, EDIT39#4.1.1]. Vocabulary (V1–V8): no banned terms, Act III's customs frame, and the customs-log phrase copied exactly from canon [EDIT92#3, STORY#S2]. Formatting (F5–F7): about 197 characters, every sentence under 19 words, no digits, no equipment issued on this tile [EDIT93#3.1/tales-rewritten~2, STORY#WA3]. Truth (R4–R5): \"the raised road\" matches the ON A RAISED ROAD brief, and only things on this tile are named [STORY#WA3, STORY#S3].\nTotal: 10."
+}

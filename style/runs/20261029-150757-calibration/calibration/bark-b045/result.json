@@ -1,0 +1,13 @@
+{
+ "id": "bark-b045",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Write-off confirmed.",
+ "cost_usd": 0.1178,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b045's \"Write-off confirmed.\" against T6–T12, V1–V8, F1–F5 and R1–R4. It is the shipped neutral fallback for a `writeoff` event, with no tier condition [FLEET#F9.2]. It is the guide's in-voice tier-free example and has no single tier's signature [FLEET#F4, SUB4#5]. It uses \"write-off\" as the glossary defines it [FLEET#F3]. It asserts only the logged write-off, so empty claims are correct [FLEET#F8, DESIGN#D9.3]. The speech style and priority 3 fit the event [EDIT39#6.6]. It has 20 characters, ends with \".\", and lint found nothing [FSG#field-text, FLEET#F2].\nTotal: 10."
+}

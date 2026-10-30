@@ -1,0 +1,44 @@
+{
+ "case": "brief-struck",
+ "class": "V8 brief",
+ "title": "Prototype 7.13 brief struck, for Prototype 8",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 18.6,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.3,
+   "output_tokens": 903,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.09847360000000001
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 7.3,
+   "output_tokens": 551,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0174974
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.116
+}

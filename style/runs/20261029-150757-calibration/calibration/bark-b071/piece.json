@@ -1,0 +1,19 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b071",
+   "event": "commit",
+   "when": {
+    "cause": "body",
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Route committed per policy 6.3.",
+   "claims": [
+    "cause:body"
+   ]
+  }
+ ]
+}

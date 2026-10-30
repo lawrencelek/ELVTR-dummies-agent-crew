@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 for tone (EDIT92#3, STORY#S2, EDIT39#4.1.1), V1–V4, V6 and V8 for vocabulary, F5–F7 for format, and R4–R5 for truth (STORY#WA3, STORY#S3, EDIT93#3.1). Lint found nothing. The Act III CUSTOMS frame holds, and the customs log matches EDIT92#3. The duty matches the ON A RAISED ROAD brief, the tile issues no equipment and the tale names none, and it is under 223 characters.
+Total: 10.

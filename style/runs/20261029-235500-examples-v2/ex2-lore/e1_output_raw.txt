@@ -1,0 +1,9 @@
+SCORE: 1/10
+REASON:
+- n36 · V1 (blocking, −4) "Farsight tests the player in Chongqing: three lives, respawn, level up." Lint found six banned terms: Farsight, player, Chongqing, lives, respawn and level. Farsight may appear only in the Credits. [EDIT95#0] Fix: remove every banned term and use the replacement line given under T3.
+- n36 · V2 (blocking, −4) "in Chongqing" The game has one city, Shenzhen Smart City, and this puts the trainee in a different real city. [EDIT95#3.1] Fix: drop the place, or write "in Shenzhen Smart City".
+- n36 · V4 (major, −2) "Farsight tests" This makes Farsight the company inside the game, but the only company in the game is Dummy Corporation. [EDIT95#4.2] Fix: make Dummy Corporation the subject, or drop the company and address "you".
+- n36 · T3 (major, −2) "the player … three lives, respawn, level up" This treats the job as a game with lives and levels, not training where write-offs are progress and equipment comes with progress. [EDIT95#3.1] Fix: "You are a crash-test dummy in training. The cars avoid you; get hit anyway, chain combos, earn equipment."
+- n36 · F5 (major, −2) "three lives" This states a gameplay figure that is not in the registry, and the game has no lives. [STORY#S1] Fix: remove the figure. Progress is told through equipment, not a count.
+- n36 · T5 (minor, −1) "tests the player" A notice to a new trainee must address the trainee as "you", not in the third person. [EDIT95#3.2] Fix: begin with "You are a crash-test dummy in training."
+Total: 10 − 4 − 4 − 2 − 2 − 2 − 1 = 1.

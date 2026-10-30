@@ -1,0 +1,9 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and goal for the speaker Dummy Corporation, and found nothing to deduct:
+  - **F8:** The label "STRUCK, NOT DASHING" has 19 characters and matches [STORY#S3]. The goal starts with an imperative, then says what the final hit must be. It drops the "coverage gap" wording, as [EDIT98#3.2] requires.
+  - **F6:** Two sentences and 18 words, within [EDIT95#3.2].
+  - **T2, V1, V4, F5:** Lint found nothing: no "!", no banned word, no company name, no figure.
+  - **T1, T3, V3, V8:** The tone is flat procedure in a training frame, with cars as the ones that hit, per [EDIT95#3.1] and [EDIT95#3.2].
+  - **Truth against the struck task:** "Walk or stand" matches the S3 condition, and "not dashing" matches the label [STORY#S3].
+Total: 10.

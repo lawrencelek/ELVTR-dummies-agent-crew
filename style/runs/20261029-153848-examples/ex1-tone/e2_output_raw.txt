@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. No rule is broken. Lint found nothing. I checked the tone against T1–T5 [EDIT92#3, STORY#S1, EDIT39#4.1.1]: it is polite and procedural, has no "!", calls the cars colleagues and you staff, and leaves the harm understated in "until a colleague notices you". I checked the vocabulary and the Act I INDUCTION frame against V1–V8 [FLEET#F2, FLEET#F3, STORY#S2]. I checked the length and the sentences against F6 [EDIT92#measured]. F7 does not apply because this tile issues no equipment. For R4 and R5, the conveyor, the tower, the face, WELCOME and the duty all match the tile's facts and its ANY WRITE-OFF brief [STORY#MA1, STORY#S3].
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- intro · V1 (blocking, −4) "Farsight greets you as new staff" Farsight is the publisher, so it can only be named in the Credits and never inside the game. [EDIT95#0] Fix: replace "Farsight" with "Dummy Corporation", e.g. "Dummy Corporation greets you as new staff".
+- intro · T1 (major, −2) "Off the factory floor. Farsight greets you as new staff; the cars are your colleagues." The line only welcomes the trainee and does not push it towards its job or Certification, and an act line that does not motivate fails the deadpan-inspirational voice. [EDIT95#3.1] Fix: "Off the factory floor. Dummy Corporation welcomes you as new staff; your colleagues will train you for Certification."
+Total: 10 − 4 − 2 = 4.

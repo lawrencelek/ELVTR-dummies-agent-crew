@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F11 (minor, −1) "Legs 3 is fitted: your longest flight, for clients." The tale keeps the place, the equipment and a detail, but leaves out the duty: the brief's jump into a car is only hinted at by "flight". [EDIT97#3.2] Fix: "Cars enter the tunnel under the hill; data comes back. Legs 3 is fitted: jump into one at the portal." (19 words, two sentences)
+Total: 10 − 1 = 9.

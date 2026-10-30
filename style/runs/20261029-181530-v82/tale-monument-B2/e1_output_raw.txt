@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The plaque reads ZERO ACCIDENTS, which new staff mistake for a record. It is a target. Stand or walk beside it and let a colleague find you; dashing would spoil the training." The tale has 3 sentences, but the limit is 2 (`style.v2.text.maxSentences`). [EDIT97#3.2] Fix: join the first two sentences with a semicolon: "The plaque reads ZERO ACCIDENTS, which new staff mistake for a record; it is a target. Stand or walk beside it and let a colleague find you; dashing would spoil the training." (32 words, 2 sentences).
+Total: 10 − 4 = 6.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label "JUMP INTO A CAR" (15 characters, all caps) and the brief "Coverage gap: jumps. The final hit must be a jump into a car." match the shipped jump brief word for word. Lint found nothing. The brief keeps the duty framing with no "!" and no figures, and says Legs fits the tiles that hand out jump briefs (Legs 1 at Monument B3, Legs 2 at Parkland A3, Legs 3 at Waterfront B1). [STORY#S3, EDIT92#3, STORY#S1, STORY#MB3, STORY#PA3, STORY#WB1]
+Total: 10.

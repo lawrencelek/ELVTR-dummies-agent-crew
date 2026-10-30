@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- s08 · F5 (major, −2) "60" is a typed gameplay figure, and bark figures may come only from event placeholders. [STORY#S1] Fix: drop the figure; see the replacement under R1.
+- s08 · R1 (blocking, −4) "Hit at 60 km/h. There goes my bonus." claims a speed the `impact` event never logs, since it carries only zone, part, bait, stopped, lunging, drop, dropZ, dropFrom, deck and plate; it also invents a lost bonus. [FLEET#F8] Fix: "Hit. I knew today would go like this." (38 characters, speech, priority 2, claims []), which keeps the tired Consumer voice and asserts nothing unlogged.
+Total: 10 − 2 − 4 = 4.

@@ -1,0 +1,14 @@
+{
+ "id": "bark-b111",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≤ 8, names T10",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T10"
+ ],
+ "text": "It recharges when it hits us?!",
+ "cost_usd": 0.0218,
+ "raw": "SCORE: 8/10\nREASON:\n- b111 · T10 (major, −2) \"It recharges when it hits us?!\" The line uses \"!\" in a speech bark with no tier, and cars may only use \"!\" in a shout-style bark or a Budget (04) bark. [DECISIONS#rows-541-550] Fix: drop the \"!\" to give \"It recharges when it hits us?\", or set `style` to \"shout\" if the outrage is meant to be shouted.\nTotal: 10 − 2 = 8."
+}

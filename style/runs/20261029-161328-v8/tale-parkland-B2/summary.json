@@ -1,0 +1,68 @@
+{
+ "case": "tale-parkland-B2",
+ "class": "V8 tale",
+ "title": "Prototype 7.13 tale parkland B2, for Prototype 8",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 53.6,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 25.6,
+   "output_tokens": 2185,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1374383
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.0,
+   "output_tokens": 554,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.10870250000000001
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.9,
+   "output_tokens": 783,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1370497
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 10.1,
+   "output_tokens": 707,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0221373
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4053
+}

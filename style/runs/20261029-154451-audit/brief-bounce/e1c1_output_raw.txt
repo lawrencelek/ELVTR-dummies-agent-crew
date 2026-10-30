@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against T1–T5, V1–V8, F5, F8 and R5. Both match the shipped canon word for word: the label "THROWN INTO A CAR" is in capitals and has 17 of the 19 characters allowed. The brief follows the pattern "Coverage gap: <behaviour>. The final hit must <condition>." It addresses the dummy as "you", has no "!", no digits and no banned terms, and it matches the bounce duty used on Monument C3 and Waterfront C3. [STORY#S3] [EDIT92#3] [STORY#MC3] [STORY#WC3]
+Total: 10.

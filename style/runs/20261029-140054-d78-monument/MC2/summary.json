@@ -1,0 +1,79 @@
+{
+ "case": "MC2",
+ "class": "D78 tile barks",
+ "title": "Monument C2 · The portal tower",
+ "request": "Write the four impact barks a car says when it hits the dummy on this tile, one per price tier (01 Luxury, 02 Corporate, 03 Consumer, 04 Budget). Each line names this tile's place: its landmark from the title or the tale, or the district. Never the grid code. Each in its tier's voice, at most 48 characters, true to an impact on this tile. Pick each line's style.",
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 71.6,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 5.5,
+   "output_tokens": 367,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0104252
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 19.7,
+   "output_tokens": 1715,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1614445
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.4,
+   "output_tokens": 781,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14550169999999998
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 23.0,
+   "output_tokens": 1907,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.16527640000000002
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 14.9,
+   "output_tokens": 1150,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0312254
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5139
+}

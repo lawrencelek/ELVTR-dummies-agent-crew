@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tale against Farsight's tone rules T1–T5 (EDIT92#3, STORY#S1, STORY#S2, EDIT39#4.1.1, STORY#MA1). It is dry and procedural, with no "!", and it addresses "you" while naming Farsight in the third person. I checked V1–V4, V6 and V8 (FLEET#F2, FLEET#F3, DECISIONS#rows-531-540~2): no banned or game words, "write you off" uses the glossary term, and the Act II OPENING DAY frame holds with the opening-day school party visit. I checked F5–F7 (EDIT92#measured, EDIT93#3.1/tales-rewritten~2, STORY#MB3) against the clean lint: one paragraph, no digits, and the shape runs place, fact, then an imperative duty, with no equipment line because none is issued. I checked R4 and R5 (STORY#PB3, STORY#S3): the obelisk, the surveyors' stake and the police escort are all in this tile's canon, and "Let a police car write you off" matches the A POLICE CAR brief.
+Total: 10.

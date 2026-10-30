@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · R5 (blocking, −4) "Push off one car into the next." The duty is a push, but the brief here is JUMP INTO A CAR ("The final hit must be a jump into a car"). [STORY#WB1] Fix: replace with "Jump into a car at the portal." or keep the shipped line "Legs 3 is fitted: the longest flight." and add a jump duty.
+- tale · F7 (major, −2) "Legs 1 is fitted." Waterfront B1 issues Legs 3, and the tale never names it. Legs 1 was issued earlier, at Monument B3. [STORY#S1] Fix: replace with "Legs 3 is fitted: the longest flight."
+Total: 10 − 4 − 2 = 4.

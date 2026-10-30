@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V4, V6, V8, F5–F7 and R4–R5. Its frame is Act II: the board, the terraces and opening day. The duty, "Arrange for it to deliver you.", matches the van brief, and the tile issues no equipment. The text is the shipped tale, unchanged, and lint found nothing. [STORY#PC2] [STORY#S2] [EDIT92#3] [STORY#S3] [EDIT93#3.1/tales-rewritten~2]
+Total: 10.

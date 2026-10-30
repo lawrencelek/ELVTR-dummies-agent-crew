@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has no violations: two sentences and 34 words, no banned words, no "!", no intensifiers, no digits (F6, T2, T13, V1; [EDIT96#3.2], [EDIT95#0]); it is flat, motivating and in the training frame (T1, T3; [EDIT95#3.2], [EDIT95#3.1]); the terrace and its sand from three provinces are canon (V11, R4; [STORY#WA2]); the clients are served and unseen, which fits CUSTOMS (V6, V9; [EDIT95#3.3]); the duty matches CONE-BAITED CAR, and no equipment is named on a tile that issues none (F7, R5; [STORY#S3], [EDIT93#3.1]).
+Total: 10.

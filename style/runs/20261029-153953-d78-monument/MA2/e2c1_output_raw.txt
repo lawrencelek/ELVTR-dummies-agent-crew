@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All four lines pass. Tier voice holds against [FLEET#F4]: t121 is superior and does not apologise, t122 cites a policy number, t123 is resigned and t124 is a Budget shout with "Kind regards." Each line names the neon shops or Monument as the place, which R4 allows [STORY#MA2], [SUB4#6.2]. Each line reacts to impact only and claims no cone bait, write-off, speed or damage figure [FLEET#F8], [DESIGN#D9.3]. "!" appears only in the Budget shout, which T10 allows [DECISIONS#rows-541-550]. "Policy 6.3" is Corporate paperwork, not a statistic (F5), and the thought style's trailing dots fit t123 [EDIT39#6.6].
+Total: 10.

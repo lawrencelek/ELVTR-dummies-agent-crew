@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s05 · T10 (major, −2) "Hit again! Wonderful! Just wonderful!" This is a tier 03 Consumer speech bark, and cars may use "!" only in a shout-style bark or a Budget (04) bark. [DECISIONS#rows-541-550] Fix: "Hit again. Wonderful. Just wonderful." The flat, resigned delivery fits the Consumer voice.
+Total: 10 − 2 = 8.

@@ -1,0 +1,68 @@
+{
+ "case": "tale-monument-A3",
+ "class": "V8 tale",
+ "title": "Prototype 7.13 tale monument A3, for Prototype 8",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 57.4,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 18.2,
+   "output_tokens": 1395,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.12228699999999999
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.4,
+   "output_tokens": 706,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1108745
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 16.2,
+   "output_tokens": 1317,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13355740000000002
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 12.6,
+   "output_tokens": 949,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.026451000000000002
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3932
+}

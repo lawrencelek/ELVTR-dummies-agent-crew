@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The tunnel runs north under the hill: cars go in, and data c…",
+  "measured": "31 words > 20 (style.v2.tale.maxWords)",
+  "source": "EDIT96#3.2"
+ }
+]

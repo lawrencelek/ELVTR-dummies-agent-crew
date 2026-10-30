@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s01 · V1 (blocking, −4) "The player did this." "player" is a banned term in diegetic text, and the fleet calls the dummy "the subject". [FLEET#F2] Fix: "A write-off? The subject did this. Unthinkable." (47 characters).
+Total: 10 − 4 = 6.

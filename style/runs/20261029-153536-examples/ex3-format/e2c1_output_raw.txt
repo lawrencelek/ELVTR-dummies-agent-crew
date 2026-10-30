@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902 against all the car rules: the Corporate tier voice (procedural, using a form number as paperwork flavour) [FLEET#F4], the impact event and its speech style and priority 2 [FLEET#F8, EDIT39#6.6], the landmark "the belvedere" rather than a grid code [SUB4#6.2], tile truth for Parkland A3's title and the line's claims [STORY#PA3], the glossary and banned terms [FLEET#F3, FLEET#F2], and the 48-character limit (the line has 47) [FSG#field-text]; nothing is broken.
+Total: 10.

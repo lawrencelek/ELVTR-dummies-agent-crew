@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "A wedding is booked on the belvedere for opening day. The couple asked for a view of the traffic. Legs 2 is fitted: longer in the air. Land on a car here, so that no guest ever does." Lint measured 38 words against the 35-word cap for a tale and 4 sentences against the 2-sentence cap. [EDIT96#3.2] Fix: cut it to two sentences and keep the belvedere, Legs 2 and the jump duty: "A wedding on the belvedere wants a view of the traffic on opening day. Legs 2 is fitted: jump into a car here, so that no guest ever does." (29 words).
+Total: 10 − 4 = 6.

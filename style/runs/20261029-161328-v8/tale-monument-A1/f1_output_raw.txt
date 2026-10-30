@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "A1", "title": "The welcome wall", "tale": "Dummy Corporation welcomes you to training. Stand in the road until a colleague notices you."}

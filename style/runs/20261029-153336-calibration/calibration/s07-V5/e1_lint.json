@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "V5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "lines[0]",
+  "quote": "B2",
+  "measured": "a grid code; cars name the landmark or the district",
+  "source": "EDIT94#who-built-what-assignment-5"
+ }
+]

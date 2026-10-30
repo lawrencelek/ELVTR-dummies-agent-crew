@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · V1 (blocking, −4) "The gardener keeps the three pools level by hand." "level" is on the banned-terms list, and the ban applies to diegetic text such as a tale. [FLEET#F2] [DECISIONS#rows-531-540~2] Fix: replace the sentence with "The gardener keeps the three pools even by hand."
+Total: 10 − 4 = 6.

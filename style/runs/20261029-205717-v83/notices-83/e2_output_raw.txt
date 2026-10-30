@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. I checked n36 and n37 against these rules and found no violations:
+  - **Length and form (F6, F10, F5):** n36 is 17 words in two sentences. n37 is 16 words in two sentences, opens with an imperative, and keeps {Q} exactly as given. [EDIT98#3.2, EDIT95#3.2, EDIT95#4.2]
+  - **Voice (T1–T5, T13, T14):** both lines are deadpan, use no "!", address "you", use no intensifiers and repeat no phrase. [EDIT95#3.2, PLAY#PS0]
+  - **Vocabulary (V1–V4):** no banned word, other city, car brand or other company name appears. "Points" is canon and not the banned "score". [EDIT95#3.1, FLEET#F2, EDIT26#9.1]
+  - **Truth (R4):** each line states only the slot's facts. n36 covers the crash-test dummy, cars that avoid you, combos and upgrades. n37 covers the {Q} grade rise and the shift ending when the vehicles run out. [EDIT97#7, EDIT98#0]
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and V6 (dry customs notice in Act III, imperative duty, no "!"), V1–V4 and V8 (no banned terms, glossary held, "one dummy" logged as cargo), F5–F7 (about 172 characters, longest sentence 16 words, no figures, no equipment issued or named), and R4–R5 (pier tower and customs post are this tile's landmark; the "Be thrown into a car" duty matches THROWN INTO A CAR), per [STORY#WC3], [EDIT92#3], [STORY#S2], [STORY#S3], [EDIT93#3.1/tales-rewritten~2], [EDIT92#7] and [FLEET#F2].
+Total: 10.

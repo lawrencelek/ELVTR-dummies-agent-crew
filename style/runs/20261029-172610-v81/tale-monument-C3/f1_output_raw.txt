@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "C3", "title": "The LED gateway", "tale": "The LED gateway thanks every car for driving safely, even the one that wrote you off. Your file reads ROLE: DESTRUCTIVE TESTING; let one colleague throw you into the next."}

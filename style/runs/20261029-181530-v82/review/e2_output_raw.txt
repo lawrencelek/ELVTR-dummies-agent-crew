@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked every line against T1–T5, T13–T14, V1–V11, F5–F8, F10–F11 and R4–R5: the act lines and ending keep the frame [EDIT95#3.3, STORY#S2]; act-waterfront states the sacrifice plainly [EDIT95#3.1]; every tale names its landmark or a canon detail of it, matches its brief and names equipment only on the tile that issues it [STORY#S1, EDIT93#3.1]; ZERO ACCIDENTS and ROLE: DESTRUCTIVE TESTING appear exactly as written; no phrase of four or more words appears in more than two texts [PLAY#PS5]; and none of the 37 texts names Farsight or another company [EDIT95#0, EDIT95#4.2].
+Total: 10.

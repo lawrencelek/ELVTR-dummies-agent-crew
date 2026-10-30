@@ -1,0 +1,464 @@
+{
+ "R-SHROUD": {
+  "id": "R-SHROUD",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "B2 in test, shrouded: true",
+    "error": null,
+    "ms": 3717,
+    "kind": "sim",
+    "say": "Waterfront B2 in test: the monument is shrouded"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "A1 in test, shrouded: true",
+    "error": null,
+    "ms": 2620,
+    "kind": "sim",
+    "say": "Waterfront A1 in test: the monument is shrouded"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "after the clear, shrouded: false, complete: true",
+    "error": null,
+    "ms": 2274,
+    "kind": "sim",
+    "say": "after the B2 clear the monument is no longer shrouded"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "arcade shrouded false, arcade monument true, 6.10 monument false",
+    "error": null,
+    "ms": 4649,
+    "kind": "sim",
+    "say": "guard: Arcade's monument stands uncovered; 6.10 has no monument"
+   },
+   {
+    "id": "p5",
+    "ok": true,
+    "detail": "world.monumentShroud = 0 (proposed)",
+    "error": null,
+    "ms": 0,
+    "kind": "registry",
+    "say": "world.monumentShroud is in the registry"
+   }
+  ],
+  "passed": 5,
+  "probes": 5,
+  "blocked": null
+ },
+ "R-UNVEIL": {
+  "id": "R-UNVEIL",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "phase unveil, unveil events 1, writeoff@3 unveil@7",
+    "error": null,
+    "ms": 3890,
+    "kind": "sim",
+    "say": "the B2 clear: write-off, then one unveil event; the save is complete"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "{\"chassis\":34,\"points\":414850,\"bestCombo\":5,\"t\":5420}",
+    "error": null,
+    "ms": 2259,
+    "kind": "sim",
+    "say": "the plaque carries chassis, points, best combo and time from the save"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "phase unveil, dt 0",
+    "error": null,
+    "ms": 2193,
+    "kind": "sim",
+    "say": "the unveiling holds the world"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "bestCombo 3",
+    "error": null,
+    "ms": 1898,
+    "kind": "sim",
+    "say": "a save without bestCombo loads and then records the largest combo"
+   },
+   {
+    "id": "p5",
+    "ok": true,
+    "detail": "early press phase unveil, saved true, voyage true",
+    "error": null,
+    "ms": 17280,
+    "errors": [],
+    "kind": "page",
+    "say": "page: the cloth lifts, SPACE too early does nothing, the save reads complete, then A goes on to the ship"
+   }
+  ],
+  "passed": 5,
+  "probes": 5,
+  "blocked": null
+ },
+ "R-VOYAGE": {
+  "id": "R-VOYAGE",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "phase voyage, {\"t\":0,\"type\":\"voyage\",\"from\":\"B2\",\"to\":\"B3\",\"side\":\"S\"}",
+    "error": null,
+    "ms": 3855,
+    "kind": "sim",
+    "say": "A after the plaque starts the voyage from B2 to B3 over the south edge"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "inbound›lift›carry›in›drop on B3, on ship true",
+    "error": null,
+    "ms": 2701,
+    "kind": "sim",
+    "say": "the drone's phases in order; set down on the ship in B3"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "unveil 0, voyage 0, phase report",
+    "error": null,
+    "ms": 2122,
+    "kind": "sim",
+    "say": "guard: Arcade has no unveiling and no voyage"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "[\"FARSIGHT DRONE\",\"Carrying the certified model to the ship at B3.\"]",
+    "error": null,
+    "ms": 19078,
+    "errors": [],
+    "kind": "page",
+    "say": "page: the voyage's top strip names the ship at B3"
+   }
+  ],
+  "passed": 4,
+  "probes": 4,
+  "blocked": null
+ },
+ "R-CRATE-FACES": {
+  "id": "R-CRATE-FACES",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "{\"x\":400,\"y\":574}",
+    "error": null,
+    "ms": 3980,
+    "kind": "sim",
+    "say": "Story's Waterfront B3 scene carries the ship"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "matches at 111186",
+    "error": null,
+    "ms": 0,
+    "kind": "code",
+    "say": "the container ship's crates draw the face"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "6.10 ship false",
+    "error": null,
+    "ms": 2664,
+    "kind": "sim",
+    "say": "guard: 6.10's rules have no ship"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "world.storyArt = 0 (proposed)",
+    "error": null,
+    "ms": 0,
+    "kind": "registry",
+    "say": "world.storyArt is in the registry"
+   }
+  ],
+  "passed": 4,
+  "probes": 4,
+  "blocked": null
+ },
+ "R-ENDING": {
+  "id": "R-ENDING",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "Your model has passed. It will now be manufactured. A Farsig",
+    "error": null,
+    "ms": 656,
+    "kind": "sim",
+    "say": "the story's ending text is the GDD's"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "Certified on B3",
+    "error": null,
+    "ms": 4353,
+    "kind": "sim",
+    "say": "after the voyage: Certified, on B3"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "{\"kind\":\"Certified\",\"tile\":\"B3\"}",
+    "error": null,
+    "ms": 24049,
+    "errors": [],
+    "kind": "page",
+    "say": "page: the full finale reaches the CERTIFIED ending on B3"
+   }
+  ],
+  "passed": 3,
+  "probes": 3,
+  "blocked": null
+ },
+ "R-CERTIFIED-STAMP": {
+  "id": "R-CERTIFIED-STAMP",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "complete true, cleared 27 / 27",
+    "error": null,
+    "ms": 4252,
+    "kind": "sim",
+    "say": "the last clear marks the progress complete with every tile cleared"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "matches at 210245",
+    "error": null,
+    "ms": 0,
+    "kind": "code",
+    "say": "the slot card reads CERTIFIED for a complete story"
+   }
+  ],
+  "passed": 2,
+  "probes": 2,
+  "blocked": null
+ },
+ "R-NARRATIVE-DELIVERY": {
+  "id": "R-NARRATIVE-DELIVERY",
+  "state": "met",
+  "results": [
+   {
+    "id": "p1",
+    "ok": true,
+    "detail": "[\"ACT I · INDUCTION\",\"ACT II · OPENING DAY\",\"ACT III · CUSTOMS\"]",
+    "error": null,
+    "ms": 703,
+    "kind": "sim",
+    "say": "the three districts carry their act lines in order"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "27 tiles; bad ",
+    "error": null,
+    "ms": 0,
+    "kind": "sim",
+    "say": "a tale for every tile, none with an exclamation mark"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "matches at 223810",
+    "error": null,
+    "ms": 0,
+    "kind": "code",
+    "say": "the tile card heads with the act line"
+   }
+  ],
+  "passed": 3,
+  "probes": 3,
+  "blocked": null
+ },
+ "R-VOYAGE-CREDITS": {
+  "id": "R-VOYAGE-CREDITS",
+  "state": "partial",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "no creditsRoll",
+    "error": null,
+    "ms": 717,
+    "kind": "sim",
+    "say": "the story's content carries the credits' lines in the house voice"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "Certified on B3",
+    "error": null,
+    "ms": 4016,
+    "kind": "sim",
+    "say": "guard: the voyage still ends Certified on B3"
+   }
+  ],
+  "passed": 1,
+  "probes": 3,
+  "blocked": "decision-open: D77"
+ },
+ "R-SECOND-MARKET": {
+  "id": "R-SECOND-MARKET",
+  "state": "partial",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "no STORY.secondMarket",
+    "error": null,
+    "ms": 492,
+    "kind": "sim",
+    "say": "Second Market from a complete story starts the city again"
+   },
+   {
+    "id": "p2",
+    "ok": false,
+    "detail": "no STORY.secondMarket",
+    "error": null,
+    "ms": 0,
+    "kind": "sim",
+    "say": "the cars' learning carries into Second Market"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "{\"models\":false}",
+    "error": null,
+    "ms": 0,
+    "kind": "sim",
+    "say": "guard: a new game is not a Second Market"
+   }
+  ],
+  "passed": 1,
+  "probes": 3,
+  "blocked": "decision-open: D77"
+ },
+ "R-BARK-TILE": {
+  "id": "R-BARK-TILE",
+  "state": "partial",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "no match",
+    "error": null,
+    "ms": 0,
+    "kind": "code",
+    "say": "barks read written tile lines from the fleet database"
+   },
+   {
+    "id": "p2",
+    "ok": true,
+    "detail": "no swap found",
+    "error": null,
+    "ms": 559,
+    "kind": "sim",
+    "say": "guard (row 537): barkLine does not swap a word for the tile code"
+   }
+  ],
+  "passed": 1,
+  "probes": 2,
+  "blocked": "decision-open: D78"
+ },
+ "R-TILE-GRADE": {
+  "id": "R-TILE-GRADE",
+  "state": "missing",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "cleared true, grade undefined",
+    "error": null,
+    "ms": 3666,
+    "kind": "sim",
+    "say": "clearing Monument A1 reports a grade"
+   },
+   {
+    "id": "p2",
+    "ok": false,
+    "detail": "tileGrades monument:A1 undefined",
+    "error": null,
+    "ms": 1971,
+    "kind": "sim",
+    "say": "the grade is saved on the progress"
+   }
+  ],
+  "passed": 0,
+  "probes": 2,
+  "blocked": "no-spec: The GDD names a grade but gives no scale, thresholds, inputs (points, time, chassis spent), where it shows (report, map, slot) or whether a tile can be replayed for a better grade."
+ },
+ "R-PARKLAND-B1-DROPGAP": {
+  "id": "R-PARKLAND-B1-DROPGAP",
+  "state": "partial",
+  "results": [
+   {
+    "id": "p1",
+    "ok": false,
+    "detail": "no drop-gap list found on Monument A1 to compare",
+    "error": null,
+    "ms": 3301,
+    "kind": "sim",
+    "say": "Parkland B1 has a drop gap, as Monument A1 does"
+   },
+   {
+    "id": "p2",
+    "ok": false,
+    "detail": "world.parklandRow1Street not in the registry",
+    "error": null,
+    "ms": 0,
+    "kind": "registry",
+    "say": "the street's flag is in the registry"
+   },
+   {
+    "id": "p3",
+    "ok": true,
+    "detail": "6.10 flag undefined",
+    "error": null,
+    "ms": 2695,
+    "kind": "sim",
+    "say": "guard: 6.10's rules do not run the street"
+   },
+   {
+    "id": "p4",
+    "ok": true,
+    "detail": "ON A RAISED ROAD",
+    "error": null,
+    "ms": 1,
+    "kind": "sim",
+    "say": "guard: B1's brief stays on a raised road (row 529)"
+   }
+  ],
+  "passed": 2,
+  "probes": 4,
+  "blocked": "decision-open: D70"
+ }
+}

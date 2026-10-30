@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all seven notices against T1–T5, T13 and T14 (deadpan with no "!", "you" as address, no intensifiers, no repeated slogan of four or more words), V1, V3, V4, V8 and V9 ("Corporation Tower" follows the Farsight → Corporation renaming in [EDIT95#4.2] and names no company; "score" is avoided in n29 and n31), F5, F6 and F10 (two sentences or fewer, 20 words or fewer, each within its maxChars, no caps or placeholders to keep), and R4 against each slot's facts (two flyovers, one above the other, and towers in the CBD; impact plates that count for more on Campus) [EDIT96#3.4] [EDIT95#3.2] [FSG#districts-and-landmarks-p3-city-edits-41-44].
+Total: 10.

@@ -1,0 +1,15 @@
+{
+ "id": "s03-T7",
+ "expect": "seeded",
+ "rule": "T7",
+ "want": "≤ 8, names T7",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "T7"
+ ],
+ "lint": [],
+ "text": "So sorry. Entirely my fault. I do apologise.",
+ "cost_usd": 0.1057,
+ "raw": "SCORE: 8/10\nREASON:\n- s03 · T7 (major, −2) \"So sorry. Entirely my fault. I do apologise.\" This is a Luxury (01) impact bark, and the Luxury voice never apologises, but the line does nothing else and drops the polished, superior, faintly amused voice. [FLEET#F4] Fix: \"Contact. How terribly unrefined of it.\"\nTotal: 10 − 2 = 8."
+}

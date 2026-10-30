@@ -1,0 +1,20 @@
+[
+  {
+    "id": "V1",
+    "kind": "data",
+    "severity": "block",
+    "path": "layers[5].when.assessed",
+    "found": "{'min': 'proto.hits.impact.big.assessedMin'}",
+    "canon": "pipeline:consumer",
+    "rule": "Range conditions use {min, max} on a numeric field."
+  },
+  {
+    "id": "V2",
+    "kind": "data",
+    "severity": "block",
+    "path": "layers[12].when.gap",
+    "found": "{'max': 'proto.hits.nearMiss.tightGap'}",
+    "canon": "pipeline:consumer",
+    "rule": "Range conditions use {min, max} on a numeric field."
+  }
+]

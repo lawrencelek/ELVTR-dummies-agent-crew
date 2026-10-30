@@ -1,0 +1,171 @@
+[
+  {
+    "query": "dummy is the only persistently saturated actor reserved red warning hazard markings exceptions",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 13.794
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 13.333
+      }
+    ]
+  },
+  {
+    "query": "frame aqua separate role gloss translucency bloom stay in the frame",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 12.627
+      },
+      {
+        "id": "LOG#P1.3/physics-basis",
+        "score": 8.732
+      }
+    ]
+  },
+  {
+    "query": "essential geometry stays legible behind the authored art",
+    "results": [
+      {
+        "id": "JUICE#J2",
+        "score": 6.506
+      },
+      {
+        "id": "DESIGN#D10.4",
+        "score": 5.75
+      }
+    ]
+  },
+  {
+    "query": "kerbs and painted stripes add no mechanics visual material implicit physics",
+    "results": [
+      {
+        "id": "ENG#7.2",
+        "score": 24.634
+      },
+      {
+        "id": "DESIGN#D6.2",
+        "score": 18.751
+      }
+    ]
+  },
+  {
+    "query": "intent chevron arrow shape detected car provisional route",
+    "results": [
+      {
+        "id": "DESIGN#D1.1",
+        "score": 12.929
+      },
+      {
+        "id": "DRIVER#DB3a",
+        "score": 8.656
+      }
+    ]
+  },
+  {
+    "query": "not claims of documentary accuracy editorial review",
+    "results": [
+      {
+        "id": "ENG#9.4",
+        "score": 3.244
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 3.2
+      }
+    ]
+  },
+  {
+    "query": "expansion catalogue Sports Hatchback SUV Police expansion-gated",
+    "results": [
+      {
+        "id": "DESIGN#D3.10",
+        "score": 19.073
+      },
+      {
+        "id": "DESIGN#D3.3",
+        "score": 19.032
+      }
+    ]
+  },
+  {
+    "query": "Text size for bilingual district and destination identifiers, so essential language is not micro-type. Matches ui.typeSecondary.",
+    "results": [
+      {
+        "id": "DRIVER#DB3a",
+        "score": 8.676
+      },
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 8.238
+      }
+    ]
+  },
+  {
+    "query": "Threshold hatching across the first barrier gap, an entrance to the service yard.",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 8.314
+      },
+      {
+        "id": "ENG#7.2",
+        "score": 8.01
+      }
+    ]
+  },
+  {
+    "query": "Stroke width of painted lane lines and edge lines on every P1 road.",
+    "results": [
+      {
+        "id": "LOG#P1.1/car-rules",
+        "score": 15.779
+      },
+      {
+        "id": "LOG#P1.8/automated-evidence",
+        "score": 15.365
+      }
+    ]
+  },
+  {
+    "query": "Calibration ticks along the south shoulder, one every 40 units.",
+    "results": [
+      {
+        "id": "BRIEF#P1.9",
+        "score": 10.098
+      },
+      {
+        "id": "BRIEF#P1.8",
+        "score": 9.113
+      }
+    ]
+  },
+  {
+    "query": "High-visibility maintenance cordon hatching on the north verge.",
+    "results": [
+      {
+        "id": "BRIEF#P1.3",
+        "score": 7.633
+      },
+      {
+        "id": "LOG#P1.9/automated-evidence",
+        "score": 5.67
+      }
+    ]
+  },
+  {
+    "query": "Bilingual destination text for the depot the traffic serves.",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 5.755
+      },
+      {
+        "id": "DESIGN#D9.4",
+        "score": 5.117
+      }
+    ]
+  }
+]

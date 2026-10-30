@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- t121 · R4 (blocking, −4) "Struck beneath the neon shops." The tile's tale puts the shops under the highway, so no car is ever beneath them: a street car passes beside them and a highway car passes above, which makes the place in this line false in every logged state. [STORY#MA2] Fix: "Contact at the neon shops. How gauche."
+Total: 10 − 4 = 6.

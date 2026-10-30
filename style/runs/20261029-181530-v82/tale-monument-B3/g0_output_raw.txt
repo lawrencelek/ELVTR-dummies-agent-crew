@@ -1,0 +1,1 @@
+{"kind":"tale","district":"monument","tile":"B3","title":"The LED canyon","tale":"Two screens face each other across the road and advertise to each other all night. A skybridge was added so someone would watch. Legs 1 is fitted: jump into a car between them."}

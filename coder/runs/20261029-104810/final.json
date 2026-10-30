@@ -1,0 +1,18 @@
+{
+ "stop": "plan only: the next write would be R-SHROUD (score 0.757)",
+ "writes": 0,
+ "seconds": 521,
+ "calls": [
+  {
+   "label": "analyst_1",
+   "role": "Analyst",
+   "seconds": 243.2,
+   "output_tokens": 27842,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.5890567999999999
+  }
+ ]
+}

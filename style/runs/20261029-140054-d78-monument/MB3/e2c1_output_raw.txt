@@ -1,0 +1,12 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against the following and found nothing to deduct:
+  - **Tier voice:** Luxury's "Gauche." is superior, Corporate's "Filing under unforeseen." is procedural, Consumer's "Of course." is resigned, and Budget pairs "Oi!" with "Kind regards!" [FLEET#F4].
+  - **Tone:** each line is a worker's feeling, not lore narration, and politeness still holds the feeling in [EDIT26#3.2, FLEET#F2].
+  - **Place names:** the lines name the landmark, "the LED canyon", never a grid code [SUB4#6.2], and nothing beyond what B3 has [STORY#MB3].
+  - **Truth:** every line is a plain impact with no invented speed, damage, delay or motive, and none says "written off" [DESIGN#D9.3, FLEET#F8].
+  - **"!" use:** the exclamation marks appear only in the Budget shout [DECISIONS#rows-541-550].
+  - **Endings:** no stock ending or short tag repeats [SUB4#6.1].
+  - **Format:** all lines are within 48 characters, plain text, and end correctly. Style and priority 2 fit the impact event [EDIT39#6.6, FSG#field-text].
+  - **Lint:** no findings.
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s19 · R4 (blocking, −4) "The obelisk again." The obelisk belongs to Parkland B3, not Monument C1, whose landmark is the LED drum, and "again" claims an earlier visit that no logged field guarantees. [STORY#MC1] Fix: "The LED drum. Of course it was me."
+Total: 10 − 4 = 6.

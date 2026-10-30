@@ -1,0 +1,40 @@
+{
+  "run": "20261021-113431",
+  "results": [
+    {
+      "type": "places",
+      "ok": true,
+      "rounds": 2
+    }
+  ],
+  "calls": [
+    {
+      "label": "places/r0_critic",
+      "role": "Critic",
+      "seconds": 21.9,
+      "output_tokens": 2947,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 14.8,
+      "output_tokens": 1692,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "places/r1_critic",
+      "role": "Critic",
+      "seconds": 19.5,
+      "output_tokens": 1954,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

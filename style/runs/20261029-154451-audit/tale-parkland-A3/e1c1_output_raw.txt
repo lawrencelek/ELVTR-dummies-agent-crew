@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V8, F5–F7 and R4–R5. The voice is dry and procedural with no "!" [EDIT92#3]. It uses the Act II OPENING DAY frame, with a wedding booked for opening day [STORY#S2]. It names Legs 2 on the tile that issues it, and the duty "Land on a car here" fits the JUMP INTO A CAR brief [STORY#PA3, STORY#S1]. It refers only to the belvedere, this tile's landmark [STORY#PA3]. It stays under 223 characters, and no sentence runs past 19 words [EDIT93#3.1/tales-rewritten~2].
+Total: 10.

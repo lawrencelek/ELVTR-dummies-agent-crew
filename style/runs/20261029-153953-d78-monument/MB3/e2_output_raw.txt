@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t129–t132 against every rule for the cars and found nothing to deduct. Tone (T6–T12): each line keeps its tier's voice under `FLEET#F4`. The Luxury line sniffs without apologising, the Corporate line cites a form, the Consumer line is resigned, and the Budget shout uses "!" with a polite form bolted on, which `DECISIONS#rows-541-550` row 541 allows. No line ends on a stock word and no closing tag repeats (`SUB4#6.1`). Vocabulary (V1–V8): there are no banned words, no grid codes and no callsigns (`FLEET#F2`, `SUB4#6.2`). Format (F1–F5): every line is 48 characters or fewer, ends correctly and has the right style and priority 2 for `impact` (`EDIT39#6.6`); "Form 9" is paperwork flavour, not a statistic. Truth (R1–R4): each line reacts only to the impact and names only the tile's landmark, the LED canyon, as the place, which `STORY#MB3` and `FLEET#F8` guarantee.
+Total: 10.

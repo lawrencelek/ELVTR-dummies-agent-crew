@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label and brief match the shipped combo row word for word, and they pass every Farsight rule this kind of slot covers: T1, T2, T3, T4 and T5 for tone (EDIT92#3, STORY#S1, EDIT39#4.1.1); V1 to V8 for vocabulary, with no banned words and the "write-off" and "chassis" sense of FLEET#F3 intact; F5 and F8 for format, since {n} is a registry placeholder, not a typed figure, and the caps label is 10 characters (STORY#S3, STORY#S1); and R5 for truth, since the duty matches the comboEasy and comboHard briefs on Monument A3, Parkland B2 and Waterfront B2 (STORY#MA3, STORY#PB2, STORY#WB2).
+Total: 10.

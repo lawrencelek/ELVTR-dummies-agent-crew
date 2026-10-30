@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all Farsight rules and found nothing to deduct: it sounds like a dry staff notice for new staff, with no "!", and the cars are colleagues [EDIT92#3, STORY#S2]. It calls the dummy "you" and names Farsight in the third person [STORY#MB1]. The welcome wall showing your face matches the tile art [EDIT92#7, STORY#MA1]. The duty matches the ANY WRITE-OFF brief, and no equipment is named on a tile that issues none [STORY#S3, STORY#S1]. The tale is about 186 characters with no sentence over 19 words, and lint found nothing [EDIT92#measured, EDIT93#3.1/tales-rewritten~2].
+Total: 10.

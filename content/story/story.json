@@ -1,0 +1,114 @@
+{
+ "meta": {
+  "name": "DUMMIES story: the Test City, tile by tile",
+  "version": "edit93-2026-10-29",
+  "status": "Narrative A, Certified (user-decided, 28 October; Edit 92). Tales, act lines and the ending in its voice. Briefs and parts paced by Edit 93 (introduce, then test); the order of tiles as before",
+  "consumers": ["prototypes/p7 (story.js, game.js): Prototype 7.12"],
+  "sources": ["GDD Edit 26 §3 Setting", "world6.js tile notes (Edits 62–68)", "circus_valley.js PLAN.tiles", "GDD Edits 81–85", "GDD Edit 91", "GDD Edit 92: Narrative A, Certified", "GDD Edit 93: introduce, then test"],
+  "rules": [
+   "Numbers live in the registry: tasks and gifts name parameter IDs, never values.",
+   "A task tests the hit that writes the chassis off (the fatal hit).",
+   "Tile names are column-row, as in the game: A1 is the top-left tile.",
+   "Each tile's write-offs are story.writeOffs.<district>.<tile> in the registry (Edit 82).",
+   "Edit 93: introduce, then test. A part arrives on the tile whose brief first needs it; no brief needs a part not yet issued. Monument: Battery 1 B1 (dash), Hands 1 A2 (cone), Legs 1 B3 (jump). Parkland: Arms 1 C1 (push), Legs 2 A3 (jump), Hands 2 A2 (cone), Arms 2 A1 (push), Battery 2 B2 (combo). Waterfront: Legs 3 B1 (jump), Arms 3 B3 (push), Battery 3 B2 (combo).",
+   "Edit 92: Narrative A, Certified. Act I Monument (Induction), Act II Parkland (Opening Day), Act III Waterfront (Customs). Farsight narrates: polite, procedural, dry; no exclamation marks. The cars are colleagues; the briefs are duties; the parts are equipment.",
+   "A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade sells every part for credits; its chassis ships with Battery 1 (Edit 91).",
+   "Each tile's traffic is story.traffic.<district>.<tile> in the registry, on the tile and its neighbours (Edit 85)."
+  ]
+ },
+ "ending": "Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please remain still for the voyage.",
+ "tasks": {
+  "any": { "label": "ANY WRITE-OFF", "brief": "General coverage. Any write-off in this tile counts." },
+  "dash": { "label": "DASH INTO A CAR", "brief": "Coverage gap: dashes. The final hit must be a dash into a car." },
+  "drop": { "label": "DROP ONTO A CAR", "brief": "Coverage gap: falls. The final hit must be a drop onto a car from above." },
+  "jump": { "label": "JUMP INTO A CAR", "brief": "Coverage gap: jumps. The final hit must be a jump into a car." },
+  "level": { "label": "ON A RAISED ROAD", "brief": "Coverage gap: raised roads. The final hit must land at Z1 or above." },
+  "cone": { "label": "CONE-BAITED CAR", "brief": "Coverage gap: cones. The final hit must come from a car reacting to a cone." },
+  "push": { "label": "PUSH OFF A CAR", "brief": "Coverage gap: ricochets. Push off one car; the final hit must be the next car." },
+  "bounce": { "label": "THROWN INTO A CAR", "brief": "Coverage gap: rebounds. The final hit must come while a hit is still throwing you." },
+  "struck": { "label": "STRUCK, NOT DASHING", "brief": "Coverage gap: pedestrians. The final hit must be a car hitting you while you walk or stand." },
+  "combo": { "label": "COMBO ×{n}", "brief": "Coverage gap: chains. The final hit must be link {n} or later of a combo." },
+  "cls": { "label": "A {cls}", "brief": "Coverage gap: the {clsLong}. The final hit must come from a {cls}." }
+ },
+ "classes": { "van": ["VAN", "van fleet"], "police": ["POLICE CAR", "police fleet"], "bus": ["BUS", "bus fleet"], "sedan": ["SEDAN", "sedan fleet"], "hatchback": ["HATCHBACK", "hatchback fleet"] },
+ "districts": [
+  {
+   "id": "monument", "name": "Monument",
+   "act": "ACT I · INDUCTION",
+   "intro": "Off the factory floor. Farsight greets you as new staff; the cars are your colleagues.",
+   "order": ["A1", "B1", "C1", "C2", "B2", "A2", "A3", "B3", "C3"],
+   "tiles": {
+    "A1": { "title": "The welcome wall", "task": { "kind": "any" }, "gift": null,
+     "tale": "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you." },
+    "B1": { "title": "The podium bridge", "task": { "kind": "dash" }, "gift": { "node": "battery1" },
+     "tale": "Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you join the road. Dash into a colleague. Farsight will time you." },
+    "C1": { "title": "The LED drum", "task": { "kind": "drop" }, "gift": null,
+     "tale": "The drum lights each bend before a car reaches it, so no colleague is ever surprised. Today one will be. The high road breaks its rail over the street below. Step off it onto a car. Gravity is company policy." },
+    "C2": { "title": "The portal tower", "task": { "kind": "level" }, "gift": null,
+     "tale": "The high road runs through this tower at the sixth floor. The tenants say the traffic is good company. Today your duty is on the road itself, at height. The view is not part of the job." },
+    "B2": { "title": "The monument", "task": { "kind": "struck" }, "gift": null,
+     "tale": "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashing would spoil the data." },
+    "A2": { "title": "The neon shops", "task": { "kind": "cone" }, "gift": { "node": "hands1" },
+     "tale": "The shops under the highway sell nothing. Their signs flash prices at the traffic, which reads every word. Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones. Use this." },
+    "A3": { "title": "The stacked cubes", "task": { "kind": "combo", "param": "story.task.comboEasy" }, "gift": null,
+     "tale": "Each cube was added as the budget arrived, one quarter at a time, each leaning further than the last. Farsight calls this growth. Today's duty is the same: one hit, then another before the first is forgotten." },
+    "B3": { "title": "The LED canyon", "task": { "kind": "jump" }, "gift": { "node": "legs1" },
+     "tale": "Two screens face each other across the road and advertise to each other all night. The skybridge was added so that someone would watch. You are now someone. Legs 1 is fitted. Jump into a car between the screens." },
+    "C3": { "title": "The LED gateway", "task": { "kind": "bounce" }, "gift": null,
+     "tale": "The gateway thanks every car for driving safely. It thanked the last one seconds after that car wrote you off. Your file is updated: ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next." }
+   }
+  },
+  {
+   "id": "parkland", "name": "Parkland",
+   "act": "ACT II · OPENING DAY",
+   "intro": "The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked.",
+   "order": ["C1", "C2", "C3", "B3", "A3", "A2", "A1", "B1", "B2"],
+   "tiles": {
+    "C1": { "title": "The lantern pavilion", "task": { "kind": "push" }, "gift": { "node": "arms1" },
+     "tale": "The paper lantern was the Expo's first exhibit, and it is lit again for the visitors. Arms 1 is fitted; Farsight calls it safety equipment. Under the footbridge, push off one car into the next." },
+    "C2": { "title": "The amphitheatre", "task": { "kind": "cls", "cls": "van" }, "gift": null,
+     "tale": "Farsight's board will watch from these terraces on opening day. The seats face the avenue, so every crossing is a performance. A van delivers the catering. Arrange for it to deliver you." },
+    "C3": { "title": "The arch and the roundabout", "task": { "kind": "combo", "param": "story.task.comboEasy" }, "gift": null,
+     "tale": "The arch is the Expo's gate. Visitors will circle the roundabout once before they enter, which gives the cars time to learn them. You go round faster. Two hits, the second before the first is forgotten." },
+    "B3": { "title": "The obelisk court", "task": { "kind": "cls", "cls": "police" }, "gift": null,
+     "tale": "The obelisk marks the surveyors' first stake. A school party will visit it on opening day, escorted by the police fleet. Farsight would like to know how the police fleet handles a dummy first." },
+    "A3": { "title": "The belvedere", "task": { "kind": "jump" }, "gift": { "node": "legs2" },
+     "tale": "A wedding is booked on the belvedere for opening day. The couple asked for a view of the traffic. Legs 2 is fitted: longer in the air. Land on a car here, so that no guest ever does." },
+    "A2": { "title": "The dome by the canal", "task": { "kind": "cone" }, "gift": { "node": "hands2" },
+     "tale": "The dome is the Expo's showroom. The canal beside it cools the highway's footings; the ducks are registered volunteers. Hands 2 is fitted: two cones. Lay them where the visitors will walk, and see who stops." },
+    "A1": { "title": "The reservoir terraces", "task": { "kind": "push" }, "gift": { "node": "arms2" },
+     "tale": "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by hitting one car into the next." },
+    "B1": { "title": "The cascade", "task": { "kind": "level" }, "gift": null,
+     "tale": "The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest." },
+    "B2": { "title": "The ring over the pools", "task": { "kind": "combo", "param": "story.task.comboHard" }, "gift": { "node": "battery2" },
+     "tale": "Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefers the product to the test. Give it a chain of three." }
+   }
+  },
+  {
+   "id": "waterfront", "name": "Waterfront",
+   "act": "ACT III · CUSTOMS",
+   "intro": "The river is a border; ships wait beyond it. Your papers are being prepared.",
+   "order": ["A1", "B1", "C1", "C2", "C3", "B3", "A3", "A2", "B2"],
+   "tiles": {
+    "A1": { "title": "The west portal", "task": { "kind": "cls", "cls": "bus" }, "gift": null,
+     "tale": "The upper town houses the engineers, and the bus carries them to the bridge. Farsight requires the bus fleet's data before anyone crosses the river. The bus is slow and very large. It will not miss." },
+    "B1": { "title": "The tunnel portal", "task": { "kind": "jump" }, "gift": { "node": "legs3" },
+     "tale": "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Where your data goes after the tunnel is not within your role." },
+    "C1": { "title": "The east portal", "task": { "kind": "cls", "cls": "police" }, "gift": null,
+     "tale": "The east bridge was built a year after the west, to correct its mistakes. Its portal block faces the other way and pretends not to know its twin. The police here check papers. Yours are being prepared." },
+    "C2": { "title": "The east beach terrace", "task": { "kind": "drop" }, "gift": null,
+     "tale": "The terrace was built for tourists, then joggers, then sensors. From its rail you can see the ships in the estuary and the cranes that load them. Drop onto a car below. The ships will wait." },
+    "C3": { "title": "The east customs post", "task": { "kind": "bounce" }, "gift": null,
+     "tale": "The pier tower is a customs post. It logs everything that floats on the river: containers, ducks and, so far, one dummy, inbound. Be thrown into a car. Customs is watching." },
+    "B3": { "title": "The stilt houses", "task": { "kind": "push" }, "gift": { "node": "arms3" },
+     "tale": "The stilt houses are older than the city, kept as heritage. Behind glass in one of them stands Chassis 0, the prototype before you. A ship is moored beyond. Arms 3 is fitted. Show Chassis 0 how far the model has come." },
+    "A3": { "title": "The west customs post", "task": { "kind": "level" }, "gift": null,
+     "tale": "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Honour the declaration on the raised road." },
+    "A2": { "title": "The west beach terrace", "task": { "kind": "cone" }, "gift": null,
+     "tale": "The valley began here: a cliff, an avenue, and a beach of sand brought from three provinces. The ceremony is being prepared in the circus. Place a cone. Farsight would like one more clean reading before the speeches." },
+    "B2": { "title": "The circus", "task": { "kind": "combo", "param": "story.task.comboHard" }, "gift": { "node": "battery3" },
+     "tale": "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted. A chain of three certifies the city. And you." }
+   }
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and T13 (deadpan and motivating, no "!", training framing, no adjectives), V1–V9 (no banned words, Dummy Corporation glossary, OPENING DAY frame), F5–F7 (16 words in 2 sentences; the part rank "Arms 2" is allowed; the issued equipment is named) and R4–R5 (the duty matches PUSH OFF A CAR; Arms 2 is named on its issuing tile, Parkland A1), with no LINT findings to deduct. [EDIT95#3.1] [EDIT95#3.2] [EDIT95#3.3] [STORY#S1] [STORY#S3] [STORY#PA1]
+Total: 10.

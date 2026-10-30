@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- tale · F6 (blocking, −4) "Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefers the product to the test. Give it a chain of three." The tale is 39 words and 6 sentences, over the limits of 35 words and 2 sentences. [EDIT96#3.2] Fix: Cut it to two sentences and no more than 35 words, for example "Inspection day: Battery 2 is fitted, a second charge. Over the pools the board watches the ring; give our clients a chain to link {n}."
+- tale · F5 (major, −2) "a chain of three" This types a gameplay figure, but the brief's number lives in the registry as {n} = story.task.comboHard. [STORY#S1] Fix: Replace it with "a chain to link {n}".
+- tale · T1 (major, −2) "When the cars come round clean, the board applauds the cars." This is winking dry-comedy irony from the old narrator, and it does not motivate the trainee. [EDIT95#3.2] Fix: Delete it, and turn the board's watching toward the duty instead, for example "The board watches the ring over the pools."
+- tale · V6 (major, −2) "The public prefers the product to the test." OPENING DAY opens the Expo to clients, not to the public. This line restates the replaced Edit 92 turn. [EDIT95#3.3] Fix: Delete the sentence. If the Expo is named, say it opens to clients, for example "the Expo's clients are watching".
+Total: 10 − 4 − 2 − 2 − 2 = 1 (floor 1).

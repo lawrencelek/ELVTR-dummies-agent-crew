@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the tale against Edit 95's length limit of 17 words in two sentences [EDIT95#3.2] and its deadpan tone with no "!" or intensifiers [EDIT95#3.2]. "Our board" replaces Farsight and is in the company voice [EDIT95#0, EDIT95#3.1], and the line fits the OPENING DAY frame [EDIT95#3.3]. The duty matches the A VAN brief, and the tale names no equipment, as no equipment is issued on this tile [STORY#S3, STORY#PC2]. It names only the amphitheatre's terraces [STORY#PC2] and uses no banned or game words [EDIT95#0].
+Total: 10.

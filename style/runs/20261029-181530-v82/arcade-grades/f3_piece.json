@@ -1,0 +1,22 @@
+{
+ "kind": "notices",
+ "items": [
+  {
+   "id": "n34",
+   "where": "the title's ARCADE card, under the word ARCADE: what an Arcade run is. Facts: one district; every few write-offs the grade rises, with a tougher chassis and denser traffic; the run ends when the shift's cars run out; the score is the points. Three lines of about 30 characters",
+   "text": "One district, one shift of cars. Every few write-offs, you earn a tougher grade.",
+   "caps": false,
+   "maxChars": 90
+  },
+  {
+   "id": "n35",
+   "where": "Arcade: the toast, and the write-off report's header, when the grade rises. A caps label; {G} is the new grade. Facts: the next chassis is tougher (more health); traffic is denser",
+   "text": "GRADE {G} · TOUGHER CHASSIS · DENSER TRAFFIC",
+   "caps": true,
+   "placeholders": [
+    "{G}"
+   ],
+   "maxChars": 46
+  }
+ ]
+}

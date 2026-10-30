@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The high road runs through this tower at the sixth floor. The tenants say the traffic is good company. Today your duty is on the road itself, at height. The view is not part of the job." The tale has 37 words, over the 35-word cap, and 4 sentences, over the 2-sentence cap; this is a lint finding. [EDIT96#3.2] Fix: "The high road runs through the portal tower at the sixth floor. Your duty is on that road, at height; the view is not part of the job." (27 words, 2 sentences)
+Total: 10 − 4 = 6.

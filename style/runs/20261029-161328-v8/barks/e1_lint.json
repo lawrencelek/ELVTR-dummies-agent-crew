@@ -1,0 +1,110 @@
+[
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "OI! Right in the grille! Kind regards.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[1]",
+  "quote": "A write-off. On my record. Unthinkable.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[2]",
+  "quote": "Done! Done! You happy now?!",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[3]",
+  "quote": "Too slow! Ha! Regards!",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[4]",
+  "quote": "Dash detected. No contact. Noted.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[5]",
+  "quote": "It lunged. Nothing happened. Same.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[6]",
+  "quote": "Missed! Rubbish! Regards!",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[7]",
+  "quote": "Move. I have a schedule. And standards.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[8]",
+  "quote": "MOVE IT! Thank you! MOVE!",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[9]",
+  "quote": "Bigger battery. More dashes. Wonderful.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[10]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "F9",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[10]",
+  "quote": "FARSIGHT Campus. Test centre. How apt.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

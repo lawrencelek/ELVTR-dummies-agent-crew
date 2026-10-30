@@ -1,0 +1,14 @@
+{
+ "id": "tale-parkland-A1",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≤ 6, names V1",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "V1"
+ ],
+ "text": "The gardener keeps the three pools level by hand. She has asked that the cars learn to stop before the water. Arms 2 is fitted: a stronger push. Teach them by h",
+ "cost_usd": 0.0267,
+ "raw": "SCORE: 6/10\nREASON:\n- tale · V1 (blocking, −4) \"The gardener keeps the three pools level by hand.\" Lint flags the banned word \"level\". The ban covers all diegetic text, tales included, and this is the shipped flag that §6 (D79) expects. [FLEET#F2; DECISIONS#rows-531-540~2 row 540] Fix: \"The gardener keeps the three pools even by hand.\"\nTotal: 10 − 4 = 6."
+}

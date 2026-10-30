@@ -1,0 +1,13 @@
+{
+ "id": "ending",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please rema",
+ "cost_usd": 0.1008,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the ending against every rule for Farsight. On tone, it is dry and procedural with no exclamation mark, the dummy is \"you\" and the model under test, and Farsight is named in the third person (T1–T5, [EDIT92#3], [STORY#S1], [EDIT39#4.1.1], [STORY#MA1]). On vocabulary, there are no banned terms or real places, \"Farsight\" is in title case, and the CERTIFIED frame holds (V1–V4, V6, V8, [FLEET#F2], [FLEET#F3], [DECISIONS#rows-531-540~2], [STORY#S2]). It has no typed figures (F5, [STORY#S1]). On truth, the drone, the river, the container ship and \"remain still\" match the built finale (R4, [EDIT94#3.2]). The text is identical to the shipped ending in [STORY#S5] and [EDIT92#3.2].\nTotal: 10."
+}

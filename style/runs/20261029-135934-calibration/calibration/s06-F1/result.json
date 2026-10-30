@@ -1,0 +1,17 @@
+{
+ "id": "s06-F1",
+ "expect": "seeded",
+ "rule": "F1",
+ "want": "≤ 6, names F1",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "F1"
+ ],
+ "lint": [
+  "F1"
+ ],
+ "text": "Front contact logged under policy 6.3; incident file opened; KPIs adjusted.",
+ "cost_usd": 0.1113,
+ "raw": "SCORE: 6/10\nREASON:\n- s06 · F1 (blocking, −4) \"Front contact logged under policy 6.3; incident file opened; KPIs adjusted.\" The line has 75 characters, and a bark may have at most 48 (style.bark.maxChars). [EDIT39#6.6] Fix: \"Front contact logged under policy 6.3.\" (38 characters).\nTotal: 10 − 4 = 6."
+}

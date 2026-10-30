@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and T13 (deadpan, no "!", training framing, one adjective per sentence) [EDIT95#3.2], the glossary, story frame and landmark under V1–V4, V6 and V8–V11 [EDIT95#3.1, EDIT95#3.3], length and form under F5–F7 and F11 (two sentences, 20 words, no placeholder, no equipment due) [EDIT98#3.2], and truth under R4–R5 (the sand from three provinces and the cone duty both match the tile) [STORY#WA2, STORY#S3].
+Total: 10.

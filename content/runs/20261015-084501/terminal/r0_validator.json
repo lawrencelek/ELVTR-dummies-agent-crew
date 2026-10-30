@@ -1,0 +1,38 @@
+[
+  {
+    "id": "V1",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "icons.BODY[3]",
+    "found": "[-2.8, 5.2, -1.2, 8.8]",
+    "canon": "pipeline:consumer",
+    "rule": "Icons fit their 16-unit box."
+  },
+  {
+    "id": "V2",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "icons.BODY[4]",
+    "found": "[1.2, 5.2, 2.8, 8.8]",
+    "canon": "pipeline:consumer",
+    "rule": "Icons fit their 16-unit box."
+  },
+  {
+    "id": "V3",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "icons.BUILD[1]",
+    "found": "[-0.8, -8.8, 0.8, 8.8]",
+    "canon": "pipeline:consumer",
+    "rule": "Icons fit their 16-unit box."
+  },
+  {
+    "id": "V4",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "icons.BUILD[2]",
+    "found": "[-8.8, -0.8, 8.8, 0.8]",
+    "canon": "pipeline:consumer",
+    "rule": "Icons fit their 16-unit box."
+  }
+]

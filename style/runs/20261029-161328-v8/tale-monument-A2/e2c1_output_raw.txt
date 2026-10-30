@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale "Hands 1 is fitted. Place a cone; the colleague that reacts writes you off, and you progress." against every rule for Dummy Corporation, and none is broken: it is deadpan and motivating, frames the write-off as progress and the cars as colleagues, and addresses the trainee as "you" with no exclamation mark or intensifier (T1–T5, T13) [EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, PLAY#PS2]; it uses glossary terms, fits the INDUCTION frame and names no banned word, company or client (V1–V9) [EDIT95#0, FLEET#F3]; it has 2 sentences and 17 words, the "1" in "Hands 1" is an allowed part rank, and it names Hands 1 on the tile that issues it (F5–F7) [EDIT95#3.2, STORY#S1, DECISIONS#rows-531-540~2]; and its duty matches the CONE-BAITED CAR brief, with nothing named that tile A2 lacks (R4, R5) [STORY#S3, STORY#MA2, EDIT93#3.1].
+Total: 10.

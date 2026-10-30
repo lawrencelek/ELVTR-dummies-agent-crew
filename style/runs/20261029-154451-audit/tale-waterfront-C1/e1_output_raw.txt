@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (it reads as a dry notice, has no "!", names no equipment as a reward, and addresses the dummy as "Yours") [EDIT92#3, STORY#S1]; V1–V8 (no banned words, and the Act III frame of police and papers holds, echoing the act line) [STORY#S2, FLEET#F2]; F5–F7 (no figures, and with no lint finding it fits the card in one paragraph and needs no equipment because none is issued) [EDIT93#3.1/tales-rewritten~2, EDIT92#measured]; and R4–R5 (the east bridge and portal block are on the tile, the police fit the brief, and no part is named early) [STORY#WC1, DECISIONS#rows-311-320~2, EDIT93#3.1].
+Total: 10.

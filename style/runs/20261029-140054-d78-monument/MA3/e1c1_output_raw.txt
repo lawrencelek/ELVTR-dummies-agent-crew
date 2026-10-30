@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against Tone T6–T12 for their tiers (01 polished and amused, 02 procedural, 03 resigned, 04 rage with "Kind regards!" bolted on, with "!" allowed in a Budget shout) [FLEET#F4, FLEET#F2, DECISIONS#rows-541-550]; against Vocabulary V1–V3 and V5, which name the landmark or district and never the grid code [FLEET#F3, SUB4#6.2]; against Formatting F1–F5: all lines are 48 characters or fewer, plain text, end on valid punctuation, and use priority 2 for impact with no figures [EDIT39#6.6, FSG#field-text]; and against Truth R1–R4: each is an impact line with no invented damage or motive, and "lean" comes from the tile's tale [FLEET#F8, STORY#MA3].
+Total: 10.

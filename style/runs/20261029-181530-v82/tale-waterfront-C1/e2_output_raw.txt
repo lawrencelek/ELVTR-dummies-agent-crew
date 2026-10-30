@@ -1,0 +1,6 @@
+SCORE: 10/10
+REASON:
+- None.
+Total: 10.
+
+I found no violations. I checked tone and the training frame against [EDIT95#3.2], [EDIT95#3.1] and [PLAY#PS2]: it is deadpan and has no "!". The tale addresses "you", and "your Certification" gives the trainee a motive. The length is 34 words in 2 sentences, which meets [EDIT97#3.2]. Under [STORY#WC1], the tale names the east portal and the east bridge, and its police and papers fit the place and the CUSTOMS act [EDIT95#3.3]. The landmark is turned toward the duty, as [EDIT95#3.1] requires. Under [STORY#S3] and [EDIT93#3.1], "their fleet on record" matches the brief's police-fleet coverage gap, and the tale names no equipment on a tile that issues none. There is no banned word, no company name, no placeholder and no gameplay number.

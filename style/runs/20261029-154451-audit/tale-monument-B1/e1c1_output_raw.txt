@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the T, V, F and R rules for Farsight; it has no lint findings and matches the shipped tale word for word. Tone: dry, procedural, with colleagues and staff and no "!". Story frame: Act I INDUCTION. Equipment: "a battery, for the dash" is issued on this tile. Duty: "Dash into a colleague." matches the DASH INTO A CAR brief. Address: "you" for the dummy, and Farsight in the third person. [STORY#MB1] [EDIT93#3.1/tales-rewritten~1] [EDIT92#3] [STORY#S1] [STORY#S3]
+Total: 10.

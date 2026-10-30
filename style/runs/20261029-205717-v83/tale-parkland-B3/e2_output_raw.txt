@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules and found no violation:
+  - **T1, T3–T5, T13** (`EDIT95#3.2`, `EDIT95#3.1`): the voice is flat, framed as training, gives a motivating instruction and has no "!".
+  - **V1–V4, V8, V9** (`EDIT95#3.1`): no banned words, no company name and no named clients.
+  - **V6** (`EDIT95#3.3`): the OPENING DAY frame holds.
+  - **V11** (`STORY#PB3`): the tale names the obelisk and the surveyors' stake, then turns the place toward the duty.
+  - **F5–F7, F11** (`EDIT98#3.2`, `EDIT97#3.2`): 19 words in two sentences, no placeholders or figures, and no equipment named where the tile issues none.
+  - **R4, R5** (`STORY#PB3`, `EDIT93#3.1`): the school party and police escort are canon for this tile, and "test them first" matches the police brief.
+
+Total: 10.

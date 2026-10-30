@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and goal against every rule for this speaker and found no violations:
+  - **Length and form:** the label "THROWN INTO A CAR" is 17 characters and in capitals. The goal is two imperative sentences of 18 words. It says what to do first, then what the final hit must be. There is no "coverage gap" framing, and the bounce task needs no placeholder (F6, F8 [EDIT98#3.2], [EDIT95#3.2]).
+  - **Tone:** the line is deadpan, with no "!" and no intensifiers (T1, T2, T13 [EDIT95#3.2], [PLAY#PS0]).
+  - **Vocabulary:** there are no banned words, and the line uses no game terms (V1, V3 [EDIT95#3.1]).
+  - **Truth:** the goal matches the bounce task's final-hit condition (R5 [STORY#S3], [STORY#MC3]).
+Total: 10.

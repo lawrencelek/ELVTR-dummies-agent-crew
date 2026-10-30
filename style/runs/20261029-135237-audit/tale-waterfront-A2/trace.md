@@ -1,0 +1,19 @@
+# tale-waterfront-A2 · audit · shipped tale waterfront A2
+
+- **Scores:** 10/10. **Accepted** after 0 refinement(s).
+- **Calls:** 1 · 16.2 s · $0.1614. Models: generator sonnet, evaluator opus, refiner opus.
+
+## Before (input)
+
+> The valley began here: a cliff, an avenue, and a beach of sand brought from three provinces. The ceremony is being prepared in the circus. Place a cone. Farsight would like one more clean reading before the speeches.
+
+216 characters.
+
+### Evaluation 1: 10/10
+
+```
+SCORE: 10/10
+REASON:
+- None. The tale breaks no rule. It is the shipped STORY#WA2 text, word for word, and lint found nothing. Tone and voice pass T1–T5: it is dry and procedural, has no "!", refers to Farsight in the third person and makes no comment on harm [EDIT92#3, EDIT39#4.1.1, STORY#MB1]. It uses no banned or game words and stays in the Act III frame (the ceremony leads to the circus finale), with no fixed phrase altered [FLEET#F2, FLEET#F3, STORY#S2]. It fits the card at about 216 of 223 characters, its longest sentence is 17 words, and "three provinces" is spelled out, not a gameplay figure [EDIT93#3.1/tales-rewritten~2, STORY#S1]. Its shape is place, dry fact, then an imperative duty, "Place a cone.", which matches the CONE-BAITED CAR brief. It names no equipment, which fits a tile that issues none, and it names only this tile's own features: the cliff, the avenue and the beach [STORY#S3, STORY#WA2, DECISIONS#rows-311-320~2 rows 318–319].
+Total: 10.
+```

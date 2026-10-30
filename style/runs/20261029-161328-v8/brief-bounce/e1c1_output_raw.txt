@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "THROWN INTO A CAR" (17 characters, all caps) and the duty (2 sentences, 15 words, gives the coverage, rebounds, and the final hit) against F6, F8, T1–T5, T13, V1, V3, V4, V6 and V8; both match the bounce row exactly, with no banned words, no "!", no figures, and the trainee addressed as "you" [STORY#S3, EDIT95#3.2, EDIT95#3.1, EDIT95#0].
+Total: 10.

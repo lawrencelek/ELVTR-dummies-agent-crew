@@ -1,0 +1,116 @@
+{
+ "case": "review",
+ "class": "V8 batch",
+ "title": "The story and the opening lines, on V2.7; the user's lines locked",
+ "request": null,
+ "scores": [
+  6,
+  8,
+  9,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 3,
+ "accepted": true,
+ "final_version": 3,
+ "seconds": 372.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 47.5,
+   "output_tokens": 5375,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.34046849999999995
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 30.5,
+   "output_tokens": 4062,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.31671720000000003
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 45.9,
+   "output_tokens": 4977,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.33179569999999997
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 22.7,
+   "output_tokens": 3179,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2968459
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 74.7,
+   "output_tokens": 8232,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3968957
+  },
+  {
+   "label": "f3",
+   "role": "refiner",
+   "seconds": 30.0,
+   "output_tokens": 3688,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3082079999999999
+  },
+  {
+   "label": "e4",
+   "role": "evaluator",
+   "seconds": 66.5,
+   "output_tokens": 7406,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.38024610000000003
+  },
+  {
+   "label": "e4c1",
+   "role": "evaluator",
+   "seconds": 54.2,
+   "output_tokens": 5637,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1251167
+  }
+ ],
+ "restored": [],
+ "cost_usd": 2.4963
+}

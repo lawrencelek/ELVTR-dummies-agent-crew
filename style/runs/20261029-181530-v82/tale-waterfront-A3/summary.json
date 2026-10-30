@@ -1,0 +1,79 @@
+{
+ "case": "tale-waterfront-A3",
+ "class": "V8.2 tale",
+ "title": "Waterfront A3: The west customs post, redrafted",
+ "request": "Redraft the tale for Waterfront A3 (The west customs post). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Honour the declaration on the raised road.\n- Prototype 8.1 (Dummy Corporation): At the west customs post, the log lists every dummy bound for clients across the river. Your entry reads PURPOSE DESTRUCTION; honour it on the raised road.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 52.0,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 5.0,
+   "output_tokens": 102,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0561347
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.4,
+   "output_tokens": 996,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1289759
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.9,
+   "output_tokens": 674,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1236213
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 12.1,
+   "output_tokens": 1076,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.130017
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 15.5,
+   "output_tokens": 1377,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0352547
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.474
+}

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s06 · F1 (blocking, −4) "Front contact logged under policy 6.3; incident file opened; KPIs adjusted." At 75 characters, the line is longer than the 48-character bubble limit (style.bark.maxChars), which is three lines of the field face. [EDIT39#6.6] Fix: "Front contact. Policy 6.3. KPIs adjusted." (41 characters).
+Total: 10 − 4 = 6.

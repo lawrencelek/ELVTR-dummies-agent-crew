@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- intro · V6 (major, −2) "The river is a border; ships wait beyond it. Your papers are being prepared." Parkland's act line uses the Act III Waterfront, CUSTOMS frame (river border, ships, papers) instead of Act II's OPENING DAY frame (the Expo, the board, visitors). [STORY#S2] Fix: replace with the canon Parkland act line, "The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked."
+Total: 10 − 2 = 8.

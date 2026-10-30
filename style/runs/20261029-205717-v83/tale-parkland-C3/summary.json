@@ -1,0 +1,79 @@
+{
+ "case": "tale-parkland-C3",
+ "class": "V8.3 tale",
+ "title": "Parkland C3, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 52.4,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.9,
+   "output_tokens": 1145,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1692369
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 6.9,
+   "output_tokens": 548,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1581623
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 11.8,
+   "output_tokens": 1040,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1546143
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 11.7,
+   "output_tokens": 905,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.026833499999999996
+  },
+  {
+   "label": "e2c1b",
+   "role": "evaluator",
+   "seconds": 10.1,
+   "output_tokens": 762,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15150049999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.6603
+}

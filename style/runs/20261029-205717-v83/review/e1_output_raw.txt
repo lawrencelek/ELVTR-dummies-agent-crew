@@ -1,0 +1,6 @@
+SCORE: 6/10
+REASON:
+- n36 · T3 (major, −2) "combos count more, and upgrades follow" This presents the training as a game with points and power-ups, but the Corporation's parts are equipment and its goal is Certification. [EDIT95#3.1] Fix: "You are a Dummy Corporation trainee. Cars avoid you: get hit anyway, chain your hits, and earn equipment."
+- WA1 · F11 (minor, −1) "Certified dummies cross to our clients" This clause repeats the Act III line ("Certified dummies ship across the river… to our clients") and pads the tale instead of adding a detail of the west portal. [EDIT97#3.2] Fix: "The bus carries engineers through the west portal to the bridge. It never misses; take its hit."
+- WB1 · T14 (minor, −1) "is fitted: jump into" The four-word phrase "is fitted jump into" appears in three texts (MB3, PA3, WB1), and the limit is two. [SUB4#6.1] Fix: "Cars go into the tunnel under the hill, and data comes back. Legs 3 is fitted: leap into one."
+Total: 10 − 2 − 1 − 1 = 6.

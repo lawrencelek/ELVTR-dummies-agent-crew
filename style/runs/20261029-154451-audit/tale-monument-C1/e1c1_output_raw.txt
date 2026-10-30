@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (it is dry, procedural and comic, calls the cars "colleague", speaks to "you" and has no "!"; EDIT92#3, STORY#S1, EDIT39#4.1.1); V1–V8 (no banned word or other city, the Act I INDUCTION frame holds, and the dummy is not called a person; FLEET#F2, FLEET#F3, STORY#S2); F5–F7 (about 206 characters, one paragraph, no sentence over 19 words, no figures, and no equipment to name because the tile issues none; EDIT92#measured, EDIT93#3.1/tales-rewritten~2); and R4–R5 (it names only the drum, the high road and the street below from STORY#MC1, and "Step off it onto a car" matches the DROP ONTO A CAR brief; STORY#S3, STORY#S1). The text is the same as the shipped tale in STORY#MC1 and EDIT93#3.1/tales-rewritten~1, and lint found nothing.
+Total: 10.

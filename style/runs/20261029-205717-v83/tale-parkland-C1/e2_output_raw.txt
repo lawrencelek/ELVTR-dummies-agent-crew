@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · R5 (blocking, −4) "push one car into the next" The brief has the dummy push off one car so that the next car makes the final hit, but this line says the dummy shoves one car into another car, so the duty does not match the brief. [STORY#PC1] Fix: replace the second sentence with "Arms 1 is fitted: push off a car into the next." The tale stays at 20 words.
+Total: 10 − 4 = 6.

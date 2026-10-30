@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The east bridge was built a year after the west, to correct its mistakes. Its portal block faces the other way and pretends not to know its twin. The police here check papers. Yours are being prepared." The tale has 37 words and 4 sentences, but a tale is capped at 35 words and 2 sentences. [EDIT96#3.2] Fix: "The east bridge was built to correct the west. At its portal the police check papers; a police car's final hit prepares yours." (two sentences, 24 words)
+- tale · T1 (major, −2) "Its portal block faces the other way and pretends not to know its twin." This joke about the portal block winks at the reader, and the tale never motivates the trainee toward the brief's duty, so it fails the deadpan and inspirational register. [EDIT95#3.2] Fix: Cut "pretends not to know its twin". End on the duty instead: the final hit must come from a police car, and that hit moves the trainee's papers forward. See the replacement above.
+Total: 10 − 4 − 2 = 4.

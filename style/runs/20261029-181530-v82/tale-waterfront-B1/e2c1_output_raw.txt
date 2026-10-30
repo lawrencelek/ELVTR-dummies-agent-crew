@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has 32 words in two sentences, which fits the 15-to-35-word range [EDIT97#3.2]. It names the tunnel portal, using its canon details (north under the hill, cars go in, data comes back), and turns that place toward the duty [STORY#WB1, EDIT95#3.1]. It names Legs 3 on the tile that issues it, and its duty is a jump into a car, which matches the brief [STORY#S1, STORY#S3]. It keeps the CUSTOMS frame by having the dummy serve clients without naming them [EDIT95#3.3]. The voice is deadpan and inspirational, with no "!" and at most one adjective per sentence [EDIT95#3.2, PLAY#PS0]. It uses no banned words, no other company name and no placeholder; "Legs 3" is an allowed part rank [EDIT95#0, EDIT95#4.2].
+Total: 10.

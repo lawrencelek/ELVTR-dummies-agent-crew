@@ -1,0 +1,707 @@
+{
+  "lines": [
+    {
+      "id": "c001",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "drop": true,
+        "dropFrom": "roof",
+        "dropZ": 2
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "A roof? I was not briefed on roofs.",
+      "claims": [
+        "drop",
+        "dropFrom:roof",
+        "dropZ:2"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c002",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "drop": true,
+        "dropFrom": "roof",
+        "dropZ": 2
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Incident filed: load received from above.",
+      "claims": [
+        "drop",
+        "dropFrom:roof",
+        "dropZ:2"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c003",
+      "event": "impact",
+      "when": {
+        "drop": true,
+        "dropFrom": "roof",
+        "dropZ": 2
+      },
+      "style": "mutter",
+      "priority": 2,
+      "text": "That came down from a roof.",
+      "claims": [
+        "drop",
+        "dropFrom:roof",
+        "dropZ:2"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "LOG#P3.3"
+      ]
+    },
+    {
+      "id": "c004",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "drop": true,
+        "dropFrom": "roof",
+        "dropZ": 2
+      },
+      "style": "thought",
+      "priority": 2,
+      "text": "Dropped from a rooftop. How very provincial.",
+      "claims": [
+        "drop",
+        "dropFrom:roof",
+        "dropZ:2"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c005",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "drop": true,
+        "dropFrom": "roof",
+        "dropZ": 2
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Roof arrival. No policy covers roof arrivals.",
+      "claims": [
+        "drop",
+        "dropFrom:roof",
+        "dropZ:2"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c006",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "drop": true,
+        "dropFrom": "deck"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Off the highway, onto me. Quite uncivilised.",
+      "claims": [
+        "drop",
+        "dropFrom:deck",
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c007",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "drop": true,
+        "dropFrom": "deck"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Highway drop filed. Form 9, load from above.",
+      "claims": [
+        "drop",
+        "dropFrom:deck",
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c008",
+      "event": "impact",
+      "when": {
+        "drop": true,
+        "dropFrom": "deck"
+      },
+      "style": "mutter",
+      "priority": 2,
+      "text": "It came off the highway above me.",
+      "claims": [
+        "drop",
+        "dropFrom:deck",
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "LOG#P3.3"
+      ]
+    },
+    {
+      "id": "c009",
+      "event": "impact",
+      "when": {
+        "drop": true,
+        "dropFrom": "deck",
+        "dropZ": 2
+      },
+      "style": "thought",
+      "priority": 2,
+      "text": "The high highway. That is a long way down.",
+      "claims": [
+        "drop",
+        "dropFrom:deck",
+        "dropZ:2",
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "EDIT44#8.3"
+      ]
+    },
+    {
+      "id": "c010",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "drop": true,
+        "dropZ": 2
+      },
+      "style": "shout",
+      "priority": 2,
+      "text": "From that height? Quite excessive.",
+      "claims": [
+        "drop",
+        "dropZ:2"
+      ],
+      "sources": [
+        "EDIT44#8.3",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c011",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "drop": true,
+        "dropFrom": "deck",
+        "dropZ": 1
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Low highway drop. A short form will do.",
+      "claims": [
+        "drop",
+        "dropFrom:deck",
+        "dropZ:1",
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c012",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "deck": true
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Nobody walks the highway. Nobody.",
+      "claims": [
+        "highway"
+      ],
+      "sources": [
+        "EDIT42#6.3",
+        "EDIT44#6.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c013",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "deck": true
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Highway contact filed. Form 12-B attached.",
+      "claims": [
+        "highway"
+      ],
+      "sources": [
+        "EDIT42#6.3",
+        "EDIT44#6.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c014",
+      "event": "impact",
+      "when": {
+        "deck": true
+      },
+      "style": "mutter",
+      "priority": 2,
+      "text": "Foot traffic on a highway. Unusual.",
+      "claims": [
+        "highway"
+      ],
+      "sources": [
+        "EDIT42#6.3",
+        "EDIT44#6.2"
+      ]
+    },
+    {
+      "id": "c015",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "deck": true
+      },
+      "style": "thought",
+      "priority": 2,
+      "text": "A highway is no place to be on foot.",
+      "claims": [
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#6.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c016",
+      "event": "impact",
+      "when": {
+        "deck": true
+      },
+      "style": "thought",
+      "priority": 2,
+      "text": "How did it get up here?",
+      "claims": [
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "EDIT44#6.2"
+      ]
+    },
+    {
+      "id": "c017",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "plate": true
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "A calibration plate. Do mind the finish.",
+      "claims": [
+        "plate"
+      ],
+      "sources": [
+        "EDIT41#7.3",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c018",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "plate": true
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Plate strike. Calibration form 3 required.",
+      "claims": [
+        "plate"
+      ],
+      "sources": [
+        "EDIT41#7.3",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c019",
+      "event": "impact",
+      "when": {
+        "plate": true
+      },
+      "style": "mutter",
+      "priority": 2,
+      "text": "That was on a calibration plate.",
+      "claims": [
+        "plate"
+      ],
+      "sources": [
+        "EDIT41#7.3"
+      ]
+    },
+    {
+      "id": "c020",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "plate": true
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Plate hit confirmed. Measured, as intended.",
+      "claims": [
+        "plate"
+      ],
+      "sources": [
+        "EDIT41#7.3",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c021",
+      "event": "writeoff",
+      "when": {
+        "tier": "01",
+        "drop": true
+      },
+      "style": "speech",
+      "priority": 3,
+      "text": "Written off from above. How undignified.",
+      "claims": [
+        "drop"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F9.2"
+      ]
+    },
+    {
+      "id": "c022",
+      "event": "writeoff",
+      "when": {
+        "tier": "02",
+        "drop": true
+      },
+      "style": "speech",
+      "priority": 3,
+      "text": "Write-off by drop. Closing the ticket.",
+      "claims": [
+        "drop"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F9.2"
+      ]
+    },
+    {
+      "id": "c023",
+      "event": "writeoff",
+      "when": {
+        "drop": true,
+        "dropFrom": "roof"
+      },
+      "style": "mutter",
+      "priority": 3,
+      "text": "Written off by a drop from a roof.",
+      "claims": [
+        "drop",
+        "dropFrom:roof"
+      ],
+      "sources": [
+        "EDIT44#5.2",
+        "FLEET#F9.2"
+      ]
+    },
+    {
+      "id": "c024",
+      "event": "writeoff",
+      "when": {
+        "tier": "01",
+        "deck": true
+      },
+      "style": "speech",
+      "priority": 3,
+      "text": "Written off on the highway. Truly vulgar.",
+      "claims": [
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#6.2",
+        "FLEET#F9.2"
+      ]
+    },
+    {
+      "id": "c025",
+      "event": "writeoff",
+      "when": {
+        "tier": "01",
+        "plate": true
+      },
+      "style": "speech",
+      "priority": 3,
+      "text": "Written off on a plate. Rather precisely.",
+      "claims": [
+        "plate"
+      ],
+      "sources": [
+        "EDIT41#7.3",
+        "FLEET#F9.2"
+      ]
+    },
+    {
+      "id": "c026",
+      "event": "writeoff",
+      "when": {
+        "tier": "02",
+        "plate": true
+      },
+      "style": "speech",
+      "priority": 3,
+      "text": "Plate write-off filed. Impact measured.",
+      "claims": [
+        "plate"
+      ],
+      "sources": [
+        "EDIT41#7.3",
+        "FLEET#F9.2"
+      ]
+    },
+    {
+      "id": "c027",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "district": "riverside"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Riverside. I came for the lantern, not this.",
+      "claims": [
+        "district:riverside"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c028",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "district": "riverside"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Riverside incident opened. Form R-1.",
+      "claims": [
+        "district:riverside"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c029",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "district": "market"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Old Market. Even the fountain looks appalled.",
+      "claims": [
+        "district:market"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c030",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "district": "market"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Old Market incident. Form M-2 raised.",
+      "claims": [
+        "district:market"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c031",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "district": "interchange"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Interchange. I expected ramps, not this.",
+      "claims": [
+        "district:interchange"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c032",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "district": "interchange"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Interchange incident. Two flyovers, one form.",
+      "claims": [
+        "district:interchange"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c033",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "district": "cbd"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "The Central Business District. How very public.",
+      "claims": [
+        "district:cbd"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c034",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "district": "cbd"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "CBD incident. Tower file updated, form 5.",
+      "claims": [
+        "district:cbd"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c035",
+      "event": "impact",
+      "when": {
+        "tier": "01",
+        "district": "campus"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "The test centre. I did not enrol.",
+      "claims": [
+        "district:campus"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c036",
+      "event": "impact",
+      "when": {
+        "tier": "02",
+        "district": "campus"
+      },
+      "style": "speech",
+      "priority": 2,
+      "text": "Campus incident. Test centre form 8 raised.",
+      "claims": [
+        "district:campus"
+      ],
+      "sources": [
+        "EDIT41#7.2",
+        "FLEET#F4"
+      ]
+    },
+    {
+      "id": "c037",
+      "event": "writeoff",
+      "when": {
+        "tier": "02",
+        "deck": true
+      },
+      "style": "speech",
+      "priority": 3,
+      "text": "Highway write-off. Incident filed and closed.",
+      "claims": [
+        "highway"
+      ],
+      "sources": [
+        "EDIT44#6.2",
+        "FLEET#F9.2"
+      ]
+    }
+  ]
+}

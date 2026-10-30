@@ -1,0 +1,8 @@
+SCORE: 1/10
+REASON:
+- t902 · F1 (blocking, −4) "V02: Impact recorded at 38 km/h on the belvedere.\nBody damage is assessed at 14%.\nRoute delay stands at 42 seconds." The line is 115 characters, and a bubble holds at most 48. [EDIT39#6.6] Fix: cut to one sentence pair of 48 characters or fewer, e.g. "Belvedere contact. Filed under opening day."
+- t902 · F2 (major, −2) "V02:" + "\n" The text has a speaker tag and runs over three lines, not one plain line in one bubble. [FSG#field-text] Fix: delete the "V02:" prefix and both line breaks.
+- t902 · F5 (major, −2) "38 km/h … 14% … 42 seconds" These are typed gameplay figures, and barks may take figures only from event placeholders. [STORY#S1] Fix: remove all three figures. Corporate paperwork numbers (form 9) are allowed as flavour.
+- t902 · R1 (blocking, −4) "Impact recorded at 38 km/h … Body damage is assessed at 14% … Route delay stands at 42 seconds" `impact` does not log speed, damage share or delay, so all three facts are invented. [FLEET#F8] [DESIGN#D9.3] Fix: assert only what is logged or claimed, which here is contact at the belvedere in Parkland, e.g. "Belvedere contact. Filed under opening day."
+- t902 · T12 (minor, −1) "Impact recorded … Body damage is assessed … Route delay stands" This is a flat report with no feeling or joke under the procedure. [SUB4#6.1] Fix: keep the procedural form but add a dry Corporate feeling, as in "Side contact. Filing under unforeseen." [FLEET#F9.1~2]
+Total: 10 − 4 − 2 − 2 − 4 − 1 = 1 (floor; raw −3).

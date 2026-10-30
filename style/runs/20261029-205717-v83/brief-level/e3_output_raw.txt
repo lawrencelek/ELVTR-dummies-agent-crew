@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "ON A RAISED ROAD" and the brief against F8, F6, F5, T1–T5, T13, V1, V3, V4 and R5 and found no violation: the label is caps and 16 characters, the goal opens in the imperative and then states the final hit, it runs 16 words in two sentences with no "!" and no "coverage gap", and it keeps the duty of landing the final hit at Z1 or above. [EDIT98#3.2] [EDIT95#3.2] [STORY#S3] [EDIT95#3.1]
+Total: 10.

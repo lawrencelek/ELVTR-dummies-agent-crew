@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all 36 lines, t101 to t136. Every line fits the bubble length and has the right style and priority for an impact (F1–F4; lint found nothing). No "!" falls outside Budget lines or shouts (T10, [DECISIONS#rows-541-550]). Each tier keeps its own voice: Luxury lines sniff, Corporate lines cite forms and logs, Consumer lines sound resigned, and Budget lines rage with a polite tag (T7, [FLEET#F4]). Every line names its own tile's landmark or the Monument district, never a grid code (V5, R4, [STORY#MA1]–[STORY#MC3]). These details come from the tile's tale or art: the WELCOME screen, the lit bends, the leaning cubes, the ZERO ACCIDENTS target and the gateway's thanks ([EDIT92#7]). No line claims anything beyond an impact (R1–R3, [FLEET#F8]). No banned word, game word or second city appears (V1–V3, [FLEET#F2], [FLEET#F3]).
+Total: 10.

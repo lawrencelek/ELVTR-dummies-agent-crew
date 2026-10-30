@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief for tone (T1, T2, T3, T5, T13), vocabulary (V1, V3, V4, V8), formatting (F5, F6, F8) and truth (R5) against [EDIT98#3.2], [EDIT95#3.2], [EDIT95#3.1] and [STORY#S3]: the label "JUMP INTO A CAR" is 15 characters, the brief opens with the imperative and then states the final hit, it has no "coverage gap" framing, and it runs 13 words in two sentences.
+Total: 10.

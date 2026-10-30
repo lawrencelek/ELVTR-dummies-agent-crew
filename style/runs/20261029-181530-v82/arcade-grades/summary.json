@@ -1,0 +1,116 @@
+{
+ "case": "arcade-grades",
+ "class": "V8.2 notices",
+ "title": "Arcade's grades: the title card and the grade label",
+ "request": null,
+ "scores": [
+  6,
+  8,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 3,
+ "accepted": true,
+ "final_version": 3,
+ "seconds": 102.4,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 20.6,
+   "output_tokens": 1798,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2162789
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.9,
+   "output_tokens": 664,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1923616
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 13.8,
+   "output_tokens": 1226,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1531807
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 7.5,
+   "output_tokens": 686,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1436969
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 17.7,
+   "output_tokens": 1666,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1619888
+  },
+  {
+   "label": "f3",
+   "role": "refiner",
+   "seconds": 7.9,
+   "output_tokens": 728,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1448726
+  },
+  {
+   "label": "e4",
+   "role": "evaluator",
+   "seconds": 12.1,
+   "output_tokens": 995,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.136111
+  },
+  {
+   "label": "e4c1",
+   "role": "evaluator",
+   "seconds": 14.8,
+   "output_tokens": 1275,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0335328
+  }
+ ],
+ "restored": [],
+ "cost_usd": 1.182
+}

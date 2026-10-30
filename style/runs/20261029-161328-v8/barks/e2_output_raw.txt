@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked all eleven barks against these rules:
+  - **Tone:** T6–T12, comparing each line's tier voice against [FLEET#F4] and each tier-free line against [SUB4#5].
+  - **"!" use:** only in shouts and Budget lines, per [DECISIONS#rows-541-550].
+  - **Vocabulary:** V1–V8, against the glossary and banned words in [FLEET#F2] and [FLEET#F3].
+  - **Format:** F1–F5 and F9: 48 characters, two sentences, line endings, and style and priority fields, per [EDIT39#6.6] and [EDIT95#3.2].
+  - **Truth:** R1–R4. Each line's claims and logged event fields match [FLEET#F8]: b013's "grille" is covered by zone:front, c024's "campus" by district:campus, and b110's "battery" by node:bigBattery.
+
+Total: 10.

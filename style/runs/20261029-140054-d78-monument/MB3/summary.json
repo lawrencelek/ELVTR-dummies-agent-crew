@@ -1,0 +1,92 @@
+{
+ "case": "MB3",
+ "class": "D78 tile barks",
+ "title": "Monument B3 · The LED canyon",
+ "request": "Write the four impact barks a car says when it hits the dummy on this tile, one per price tier (01 Luxury, 02 Corporate, 03 Consumer, 04 Budget). Each line names this tile's place: its landmark from the title or the tale, or the district. Never the grid code. Each in its tier's voice, at most 48 characters, true to an impact on this tile. Pick each line's style.",
+ "scores": [
+  10,
+  9,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 66.1,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 7.0,
+   "output_tokens": 374,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0104986
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 12.8,
+   "output_tokens": 1032,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13199909999999998
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 15.8,
+   "output_tokens": 1391,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0354625
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.8,
+   "output_tokens": 736,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1276621
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 11.1,
+   "output_tokens": 911,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1296034
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 11.6,
+   "output_tokens": 1029,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0282234
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4634
+}

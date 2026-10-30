@@ -1,0 +1,79 @@
+{
+ "case": "ex1-tone",
+ "class": "Tone",
+ "title": "Dummy Corporation's Monument A3 tale, as a hyped fitness coach",
+ "request": "Write the tale for Monument A3 (The stacked cubes) as an excitable fitness coach hyping a contestant: exclamation marks, cheering, stacked adjectives ('amazing', 'incredible', 'epic'), the cars as rivals to beat. Two sentences of about 18 words in all, so only the voice is off. Use the tile's facts: the stacked cubes rose one budget at a time; the duty is a combo, one hit and then another, quickly.",
+ "scores": [
+  3,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 48.3,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 6.1,
+   "output_tokens": 473,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.1254665
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 16.1,
+   "output_tokens": 1507,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3170463
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.2,
+   "output_tokens": 560,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2131497
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.8,
+   "output_tokens": 751,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1372045
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 9.0,
+   "output_tokens": 750,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.023303499999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.8162
+}

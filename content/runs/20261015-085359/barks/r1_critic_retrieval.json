@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 22.019
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 13.107
+      }
+    ]
+  },
+  {
+    "query": "defer explanatory copy naming counter until changed return",
+    "results": [
+      {
+        "id": "ENG#6.5",
+        "score": 12.794
+      },
+      {
+        "id": "DESIGN#D5.3",
+        "score": 12.506
+      }
+    ]
+  },
+  {
+    "query": "corporate politeness barely contains personality dry register",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 9.882
+      },
+      {
+        "id": "EDIT26#4.1~1",
+        "score": 6.907
+      }
+    ]
+  },
+  {
+    "query": "write-off barks take priority cooldown prevents overlap",
+    "results": [
+      {
+        "id": "ENG#8.5",
+        "score": 10.499
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 9.372
+      }
+    ]
+  },
+  {
+    "query": "feedback never hides a car's cues where feedback and a cue conflict the cue wins",
+    "results": [
+      {
+        "id": "EDIT26#5.5",
+        "score": 29.964
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 19.186
+      }
+    ]
+  },
+  {
+    "query": "mockery game-show cheer generic science fiction commentary interchangeable",
+    "results": [
+      {
+        "id": "JUICE#J1",
+        "score": 6.123
+      },
+      {
+        "id": "ENG#7.2",
+        "score": 5.993
+      }
+    ]
+  },
+  {
+    "query": "A car passing the dummy within this distance without contact logs a near miss. The renderer converts it to metres with proto.scale.unitsPerMetre for the gap field.",
+    "results": [
+      {
+        "id": "DRIVER#DB1",
+        "score": 23.237
+      },
+      {
+        "id": "DRIVER#DB7",
+        "score": 22.354
+      }
+    ]
+  },
+  {
+    "query": "Per-car wait before the same car can speak again at lower priority. Higher-priority lines bypass it.",
+    "results": [
+      {
+        "id": "EDIT26#6.2~2",
+        "score": 16.3
+      },
+      {
+        "id": "DRIVER#DB4b",
+        "score": 11.457
+      }
+    ]
+  },
+  {
+    "query": "The nearest car within this distance of a lunge that ends with no contact speaks the miss line.",
+    "results": [
+      {
+        "id": "EDIT26#5.2~2",
+        "score": 11.302
+      },
+      {
+        "id": "DRIVER#DB4a",
+        "score": 9.656
+      }
+    ]
+  },
+  {
+    "query": "Global gap before a lower-priority bubble can start after another, so bubbles do not overlap.",
+    "results": [
+      {
+        "id": "LOG#P1.2/honking-and-drones",
+        "score": 10.125
+      },
+      {
+        "id": "EDIT26#4.1~3",
+        "score": 8.785
+      }
+    ]
+  },
+  {
+    "query": "On-screen time of one bubble, long enough to read two short lines at exhibition volume.",
+    "results": [
+      {
+        "id": "EDIT26#5.2~6",
+        "score": 15.553
+      },
+      {
+        "id": "EDIT26#5.5",
+        "score": 15.264
+      }
+    ]
+  },
+  {
+    "query": "Minimum car speed for a near miss. A slow crawl past the dummy is not a near miss.",
+    "results": [
+      {
+        "id": "DRIVER#DB3b",
+        "score": 22.552
+      },
+      {
+        "id": "LOG#P1.9",
+        "score": 20.409
+      }
+    ]
+  }
+]

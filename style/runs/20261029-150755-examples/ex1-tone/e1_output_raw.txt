@@ -1,0 +1,10 @@
+SCORE: 1/10
+REASON:
+- tale · T2 (major, −2) "a new contestant arrives by conveyor!" Lint finds "!" in Farsight's narration, and "the crowd goes wild!" and "are you ready?!" repeat it; Farsight never uses "!". [EDIT92#3] Fix: end each sentence with "." and recast the closing question as a statement.
+- tale · T1 (major, −2) "Ladies and gentlemen" This is game-show hype, not a polite, dry staff notice about a crash test. [STORY#S1] Fix: open with the procedure: "A conveyor sets you down beside a tower."
+- tale · T3 (major, −2) "Your first challenge" This presents the brief as a challenge, when a brief is a duty. [EDIT92#3] Fix: "Your first duty is simple:".
+- tale · T4 (major, −2) "the crowd goes wild" This plays to an audience and celebrates the harm, when the brand never comments on it. [EDIT39#4.1.1] Fix: "Farsight is pleased to have you."
+- tale · T5 (minor, −1) "Cars, are you ready?!" Farsight speaks to the cars and to an audience here, not to the dummy as "you". [STORY#MA1] Fix: delete the sentence and keep the address on "you".
+- tale · V8 (major, −2) "a new contestant" This casts the dummy as a competitor, but it is staff and the product under test. [FLEET#F3] Fix: "you", with the act's framing "new staff".
+- tale · R4 (blocking, −4) "the crowd" Monument A1 has no crowd: its tile, title and tale give only the conveyor, the tower and the screen. [STORY#MA1] Fix: drop the crowd and keep only what A1 has: "Its screen shows your face and the word WELCOME."
+Total: 10 − 2 − 2 − 2 − 2 − 1 − 2 − 4 = −5, floored at 1.

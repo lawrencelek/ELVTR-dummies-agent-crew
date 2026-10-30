@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against the tale's rules: length is 33 words in two sentences (F6, [EDIT97#3.2]). It names the dome and the canal as its place and points them at the duty (V11, R4, [EDIT95#3.1], [STORY#PA2]). It names Hands 2 on the tile that issues it (F7, R5, [STORY#S1]). Its cone-baited final hit matches the brief ([STORY#S3]). The showroom fits the OPENING DAY frame (V6, [EDIT95#3.3]). It has a deadpan, product-framed voice with no "!", no intensifiers and no banned words (T1–T5, T13, V1, V3, V8, [EDIT95#3.2], [EDIT95#0]). There is no placeholder or padding (F5, F11).
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations: the tale is 19 words in two sentences, which fits F6 [EDIT98#3.2]. It names the obelisk and the surveyors' first stake from the canon and turns that place toward the duty, so V11 holds [EDIT95#3.1]. Its duty, to test the police first, matches the A POLICE CAR brief and it names no equipment on a tile that issues none, so R5 and R4 hold [STORY#PB3, EDIT93#3.1]. It keeps the OPENING DAY frame, with the school party and the police in narration only (V6) [EDIT95#3.3, STORY#S2]. Its tone is deadpan and motivating, with no "!" and no intensifiers, so T1, T2 and T13 hold [EDIT95#3.2]. It contains no Farsight, no banned word and no digit (V1, F5) [EDIT95#0, STORY#S1].
+Total: 10.

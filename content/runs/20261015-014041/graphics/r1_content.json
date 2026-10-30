@@ -1,0 +1,930 @@
+{
+  "params": [],
+  "vehicles": {
+    "sedan": {
+      "job": "Depot parcel courier",
+      "jobZh": "仓区包裹配送",
+      "review": "pending",
+      "roof": [
+        {
+          "shape": "line",
+          "points": [
+            [
+              -12,
+              -11
+            ],
+            [
+              12,
+              -11
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 2
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -12,
+              11
+            ],
+            [
+              12,
+              11
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 2
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -15,
+              -6
+            ],
+            [
+              -11,
+              -6
+            ],
+            [
+              -11,
+              6
+            ],
+            [
+              -15,
+              6
+            ],
+            [
+              -15,
+              -6
+            ]
+          ],
+          "stroke": "primary",
+          "lineWidth": 1
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -13,
+              -6
+            ],
+            [
+              -13,
+              6
+            ]
+          ],
+          "stroke": "primary",
+          "lineWidth": 1,
+          "alpha": 0.6
+        },
+        {
+          "shape": "text",
+          "x": -22,
+          "y": 3,
+          "text": "01",
+          "size": 9,
+          "font": "mono",
+          "align": "center",
+          "fill": "primary"
+        },
+        {
+          "shape": "rect",
+          "x": 14,
+          "y": -4,
+          "w": 6,
+          "h": 8,
+          "stroke": "secondary",
+          "lineWidth": 1
+        },
+        {
+          "shape": "circle",
+          "x": 17,
+          "y": 0,
+          "r": 3.5,
+          "fill": "primary"
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              24,
+              -6
+            ],
+            [
+              24,
+              6
+            ]
+          ],
+          "stroke": "primary",
+          "lineWidth": 2
+        }
+      ],
+      "sources": [
+        "DESIGN#D9.2",
+        "DESIGN#D5.1",
+        "DESIGN#D10.6",
+        "LOG#P1.2/light-and-relief"
+      ]
+    },
+    "van": {
+      "job": "Lane maintenance",
+      "jobZh": "道路养护",
+      "review": "pending",
+      "roof": [
+        {
+          "shape": "stripes",
+          "x": -32,
+          "y": -14,
+          "w": 12,
+          "h": 28,
+          "angle": 45,
+          "gap": 4,
+          "stroke": "primary",
+          "alpha": 0.6
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -10,
+              -10
+            ],
+            [
+              10,
+              -10
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -10,
+              10
+            ],
+            [
+              10,
+              10
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              -10,
+              -10
+            ],
+            [
+              -10,
+              10
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              10,
+              -10
+            ],
+            [
+              10,
+              10
+            ]
+          ],
+          "stroke": "secondary",
+          "lineWidth": 1.5
+        },
+        {
+          "shape": "circle",
+          "x": -17,
+          "y": 0,
+          "r": 4,
+          "fill": "primary"
+        },
+        {
+          "shape": "ring",
+          "x": -17,
+          "y": 0,
+          "r": 6,
+          "lineWidth": 1,
+          "stroke": "secondary"
+        },
+        {
+          "shape": "text",
+          "x": 20,
+          "y": 3,
+          "text": "02",
+          "size": 9,
+          "font": "mono",
+          "align": "center",
+          "fill": "primary"
+        },
+        {
+          "shape": "line",
+          "points": [
+            [
+              28,
+              -12
+            ],
+            [
+              28,
+              12
+            ]
+          ],
+          "stroke": "primary",
+          "lineWidth": 3
+        },
+        {
+          "shape": "circle",
+          "x": 28,
+          "y": -12,
+          "r": 2.5,
+          "fill": "secondary"
+        },
+        {
+          "shape": "circle",
+          "x": 28,
+          "y": 12,
+          "r": 2.5,
+          "fill": "secondary"
+        },
+        {
+          "shape": "circle",
+          "x": 31,
+          "y": 0,
+          "r": 2,
+          "fill": "primary"
+        }
+      ],
+      "sources": [
+        "DESIGN#D9.2",
+        "DESIGN#D5.1",
+        "DESIGN#D10.6",
+        "DESIGN#D6.2"
+      ]
+    }
+  },
+  "dummy": {
+    "markings": [
+      {
+        "shape": "quadrant",
+        "x": -4,
+        "y": -6.5,
+        "r": 3.5,
+        "a": "joints",
+        "b": "floor"
+      },
+      {
+        "shape": "quadrant",
+        "x": -4,
+        "y": 6.5,
+        "r": 3.5,
+        "a": "joints",
+        "b": "floor"
+      },
+      {
+        "shape": "stripes",
+        "x": -11,
+        "y": -5,
+        "w": 3,
+        "h": 10,
+        "angle": 45,
+        "gap": 3,
+        "stroke": "joints",
+        "alpha": 0.7
+      }
+    ],
+    "sources": [
+      "DESIGN#D4.1",
+      "DESIGN#D10.1",
+      "LOG#P1.2/dummy-damage-states"
+    ]
+  },
+  "environment": {
+    "straight": [
+      {
+        "shape": "text",
+        "x": 60,
+        "y": 278,
+        "text": "L1 SERVICE ROAD",
+        "size": 16,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Road identifier in the north lane",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 60,
+        "y": 334,
+        "text": "服务道路 L1",
+        "size": 16,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "review": "pending",
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Chinese road identifier in the south lane",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            3,
+            252
+          ],
+          [
+            797,
+            252
+          ]
+        ],
+        "dash": [
+          2,
+          38
+        ],
+        "stroke": "secondary",
+        "lineWidth": 6,
+        "alpha": 0.4,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Survey ticks on the 40-unit grid pitch",
+        "sources": [
+          "DESIGN#D9.1",
+          "DESIGN#D10.1"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            3,
+            348
+          ],
+          [
+            797,
+            348
+          ]
+        ],
+        "dash": [
+          2,
+          38
+        ],
+        "stroke": "secondary",
+        "lineWidth": 6,
+        "alpha": 0.4,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Survey ticks on the south edge",
+        "sources": [
+          "DESIGN#D9.1",
+          "DESIGN#D10.1"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            120,
+            378
+          ],
+          [
+            330,
+            378
+          ]
+        ],
+        "dash": [
+          8,
+          6
+        ],
+        "stroke": "fleet",
+        "lineWidth": 1.5,
+        "alpha": 0.7,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Service edge line for maintenance vehicles",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 600,
+        "y": 373,
+        "text": "SERVICE SHOULDER",
+        "size": 9,
+        "font": "mono",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Service marking on the pavement",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 560,
+        "y": 150,
+        "text": "DEPOT GATE A",
+        "size": 12,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Destination sign for the depot entrance",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 560,
+        "y": 168,
+        "text": "仓区入口 A",
+        "size": 12,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Chinese destination sign",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 700,
+        "y": 520,
+        "w": 90,
+        "h": 60,
+        "stroke": "structure",
+        "lineWidth": 1,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Painted loading bay outline, no collider",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D10.3~1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 745,
+        "y": 555,
+        "text": "BAY 3",
+        "size": 9,
+        "font": "mono",
+        "align": "center",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Loading bay label",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      }
+    ],
+    "barrier": [
+      {
+        "shape": "text",
+        "x": 60,
+        "y": 278,
+        "text": "L2 SERVICE ROAD",
+        "size": 16,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Road identifier in the north lane",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 60,
+        "y": 334,
+        "text": "服务道路 L2",
+        "size": 16,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "review": "pending",
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Chinese road identifier in the south lane",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            3,
+            252
+          ],
+          [
+            797,
+            252
+          ]
+        ],
+        "dash": [
+          2,
+          38
+        ],
+        "stroke": "secondary",
+        "lineWidth": 6,
+        "alpha": 0.4,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Survey ticks on the grid pitch",
+        "sources": [
+          "DESIGN#D9.1",
+          "DESIGN#D10.1"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            0,
+            368
+          ],
+          [
+            800,
+            368
+          ]
+        ],
+        "dash": [
+          8,
+          6
+        ],
+        "stroke": "fleet",
+        "lineWidth": 1.5,
+        "alpha": 0.7,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Service edge line along the south pavement",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 270,
+        "y": 424,
+        "text": "STAFF GAP",
+        "size": 9,
+        "font": "mono",
+        "align": "center",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Label for the west yard entrance in the barrier",
+        "sources": [
+          "DESIGN#D9.2",
+          "BRIEF#P1.8"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 530,
+        "y": 424,
+        "text": "STAFF GAP",
+        "size": 9,
+        "font": "mono",
+        "align": "center",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Label for the east yard entrance in the barrier",
+        "sources": [
+          "DESIGN#D9.2",
+          "BRIEF#P1.8"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            0,
+            450
+          ],
+          [
+            800,
+            450
+          ]
+        ],
+        "dash": [
+          30,
+          10
+        ],
+        "stroke": "structure",
+        "lineWidth": 1,
+        "alpha": 0.8,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Yard bay line behind the barrier",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 560,
+        "y": 150,
+        "text": "DEPOT GATE B",
+        "size": 12,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Destination sign for the depot entrance",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 560,
+        "y": 168,
+        "text": "仓区入口 B",
+        "size": 12,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Chinese destination sign",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      }
+    ],
+    "corner": [
+      {
+        "shape": "text",
+        "x": 40,
+        "y": 474,
+        "text": "L3 SERVICE ROAD",
+        "size": 16,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Road identifier on the approach leg",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 40,
+        "y": 418,
+        "text": "服务道路 L3",
+        "size": 16,
+        "font": "ui",
+        "align": "left",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "review": "pending",
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Chinese road identifier on the approach leg",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 550,
+        "y": 100,
+        "text": "DEPOT EXIT 3",
+        "size": 12,
+        "font": "mono",
+        "align": "center",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Destination marking on the vertical leg",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            3,
+            392
+          ],
+          [
+            440,
+            392
+          ]
+        ],
+        "dash": [
+          2,
+          38
+        ],
+        "stroke": "secondary",
+        "lineWidth": 6,
+        "alpha": 0.4,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Survey ticks along the approach leg",
+        "sources": [
+          "DESIGN#D9.1",
+          "DESIGN#D10.1"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            502,
+            3
+          ],
+          [
+            502,
+            330
+          ]
+        ],
+        "dash": [
+          2,
+          38
+        ],
+        "stroke": "secondary",
+        "lineWidth": 6,
+        "alpha": 0.4,
+        "surface": "tarmac",
+        "hazard": false,
+        "note": "Survey ticks along the vertical leg",
+        "sources": [
+          "DESIGN#D9.1",
+          "DESIGN#D10.1"
+        ]
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            0,
+            508
+          ],
+          [
+            450,
+            508
+          ]
+        ],
+        "dash": [
+          8,
+          6
+        ],
+        "stroke": "fleet",
+        "lineWidth": 1.5,
+        "alpha": 0.7,
+        "surface": "shoulder",
+        "hazard": false,
+        "note": "Service edge line on the south pavement",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D6.2"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 40,
+        "y": 60,
+        "w": 150,
+        "h": 90,
+        "stroke": "structure",
+        "lineWidth": 1,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Painted maintenance bay outline inside the bend, no collider",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D10.3~1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 115,
+        "y": 100,
+        "text": "MAINT BAY 3",
+        "size": 12,
+        "font": "ui",
+        "align": "center",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Maintenance bay label",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 115,
+        "y": 120,
+        "text": "养护区 3",
+        "size": 12,
+        "font": "ui",
+        "align": "center",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "review": "pending",
+        "surface": "verge",
+        "hazard": false,
+        "note": "Chinese maintenance bay label",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      },
+      {
+        "shape": "rect",
+        "x": 650,
+        "y": 240,
+        "w": 120,
+        "h": 50,
+        "stroke": "structure",
+        "lineWidth": 1,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Painted depot gate outline outside the bend, no collider",
+        "sources": [
+          "DESIGN#D9.2",
+          "DESIGN#D10.3~1"
+        ]
+      },
+      {
+        "shape": "text",
+        "x": 710,
+        "y": 270,
+        "text": "DEPOT GATE C",
+        "size": 12,
+        "font": "mono",
+        "align": "center",
+        "fill": "secondary",
+        "alpha": 0.7,
+        "surface": "verge",
+        "hazard": false,
+        "note": "Destination sign for the depot entrance",
+        "sources": [
+          "DESIGN#D9.2"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All 36 lines pass. Tier voice holds: Luxury lines sniff and never apologise; Corporate lines use logs, KPIs and policy or form numbers; Consumer lines are resigned; Budget lines put a polite tag over the rage, and their "!" is allowed [FLEET#F4, DECISIONS#rows-541-550]. Every line is an impact line, and none says "written off" [EDIT26#6.6]. Each line names only its own tile's landmark or district, as the place itself, and no line uses a grid code [STORY#MA1–STORY#MC3, SUB4#6.2]. The facts the lines use (the drum lighting bends, the gateway's thanks, the shops' prices, the WELCOME screen) all come from the tile tales. The lines use no banned words, and their fields match the event [FLEET#F2, FLEET#F8, EDIT39#6.6]. Lint reported no findings.
+Total: 10.

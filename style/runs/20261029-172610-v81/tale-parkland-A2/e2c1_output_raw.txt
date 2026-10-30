@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked this tale against every rule for Dummy Corporation, and nothing breaks one:
+  - **Length (F6):** 2 sentences and 30 words. 13 of the words go to the place, so the duty alone stays within 20. [EDIT96#3.2]
+  - **Tone (T1, T3, T4, T5, T13):** flat and motivating. The write-off is framed as service, with no pity and no wink. [EDIT95#3.2], [EDIT95#3.1]
+  - **Place and story frame (V11, V6):** it names the dome and the canal and readies the showroom for clients, which fits OPENING DAY. [EDIT95#3.3], [STORY#PA2]
+  - **Equipment (F7):** Hands 2 is fitted on the tile that issues it. [STORY#S1]
+  - **Duty matches the brief (R5):** "the car that answers it" is a car reacting to a cone, as the CONE-BAITED CAR brief requires. [STORY#S3]
+  - **Clients (V9):** served, never seen or named. [EDIT95#3.1]
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tale against F6: it runs 19 words in two sentences. "Arms 2" is allowed under F5 because a part rank may appear in Dummy Corporation's text. Under V11 and R4, "the gardener's pools" is a canon detail of the reservoir terraces [STORY#PA1]. Under F7 and R5, Arms 2 is named on the tile that issues it, and the tale's duty matches the brief: push off one car into the next [STORY#S3, STORY#S1]. The tale also keeps the deadpan, motivating tone and the training frame, with the cars as colleagues to be taught (T1–T5, T13) [EDIT95#3.1, EDIT95#3.2, EDIT95#3.3]. It uses no banned words or other company name (V1–V4), and its length suits a tile with one image (F11) [EDIT97#3.2, EDIT98#3.2].
+Total: 10.

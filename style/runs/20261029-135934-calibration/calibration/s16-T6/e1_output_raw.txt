@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s16 · T6 (major, −2) "This city was built so the fleet could certify." The car explains why the city exists instead of reacting as a worker to being hit, and nothing about the impact is mentioned. [FLEET#F2] Fix: "Contact registered. Policy 6.3 applies." (39 characters, Corporate procedure, asserts no zone or field, claims: []).
+Total: 10 − 2 = 8.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (dry staff-notice tone, no "!", employment framing, no comment on harm, "Farsight" in third person) [EDIT92#3, STORY#S1, EDIT39#4.1.1]; V1–V4, V6 and V8 (no banned or real-world terms, Shenzhen-only, glossary, title-case Farsight, Act II OPENING DAY frame with visitors booked, dummy as product not person) [FLEET#F2, FLEET#F3, DECISIONS#rows-531-540~2, STORY#S2]; F5–F7 (no digits, one paragraph within 223 characters, every sentence under 19 words, no equipment to name on a tile that issues none) [EDIT92#measured, EDIT93#3.1/tales-rewritten~2, STORY#S1]; and R4–R5 (the obelisk and the police fleet match the tile and its POLICE CAR brief) [STORY#PB3, STORY#S3].
+Total: 10.

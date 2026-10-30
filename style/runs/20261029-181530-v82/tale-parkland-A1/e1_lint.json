@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "levels",
+  "measured": "banned term 'level' ('levels')",
+  "source": "FLEET#F2"
+ }
+]

@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · F6 (blocking, −4) "The dome is the Expo's showroom. The canal beside it cools the highway's footings; the ducks are registered volunteers. Hands 2 is fitted: two cones. Lay them where the visitors will walk, and see who stops." The tale has 36 words and 4 sentences, over the caps of 20 words and 2 sentences. [EDIT95#3.2] Fix: replace the tale with "The dome awaits clients. Hands 2 is fitted: lay a cone, and let the car that reacts write you off." (19 words, 2 sentences).
+- tale · R5 (blocking, −4) "Lay them where the visitors will walk, and see who stops." The brief requires the final hit to come from a car reacting to a cone, but this duty only places cones for visitors and watches who stops, so it never states that hit. [STORY#S3] Fix: state the brief's hit, e.g. "lay a cone, and let the car that reacts write you off."
+Total: 10 − 4 − 4 = 2.

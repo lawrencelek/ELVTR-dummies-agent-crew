@@ -1,0 +1,1 @@
+{"verdict":"pass","summary":"It sounds like DUMMIES: the intros and level toasts are plain, short and instructive, and the screen names read as calm planner signage. I found no canon or truth breaks. Every screen name promises only features all three layouts have, and all names and toasts are within the length limits.","issues":[]}

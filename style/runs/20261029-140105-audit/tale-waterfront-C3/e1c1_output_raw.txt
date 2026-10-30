@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the tale against its slot, act and rules. The length is about 171 characters and the longest sentence is 16 words, so it fits the card [EDIT92#measured, EDIT93#3.1/tales-rewritten~2]. Lint found nothing. It has no "!" and no figures. The tone is dry and procedural, like a staff notice [EDIT92#3, STORY#S1]. It stays in the Act III CUSTOMS frame: the river, the customs post, "inbound" [STORY#S2]. The dummy is a logged item, not a person [FLEET#F3]. "Be thrown into a car" matches the THROWN INTO A CAR brief [STORY#S3, STORY#WC3]. The tile issues no equipment and the tale names none [EDIT93#3.1]. It mentions only this tile's landmark, the pier tower customs post [STORY#WC3, EDIT92#7].
+Total: 10.

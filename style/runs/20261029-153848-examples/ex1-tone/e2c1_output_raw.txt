@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (dry staff-notice tone, no "!", colleagues and duty framing, harm understated, "you" with Farsight in third person) [EDIT92#3, EDIT39#4.1.1, STORY#MA1]; V1–V4, V6 and V8 (no banned word, one city, Act I INDUCTION framing as new staff, "Farsight" in title case) [STORY#S2, FLEET#F3]; F5–F7 (183 characters, sentences of 19 words or fewer, no figures, and no equipment named on a tile that issues none) [EDIT93#3.1/tales-rewritten~2, STORY#S1]; and R4–R5 (conveyor, tower, screen face and WELCOME are all in the tile's facts, and the duty "the road, until a colleague notices you" matches ANY WRITE-OFF) [STORY#MA1, STORY#S3].
+Total: 10.

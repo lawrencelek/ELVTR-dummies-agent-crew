@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V8, F5–F7 and R4–R5: it matches the shipped Monument A1 tale word for word, fits the card at 198 characters with no sentence over 19 words, frames the dummy as new staff and the car as a colleague, names only the welcome wall's tower, screen and WELCOME, and gives a duty that fits ANY WRITE-OFF on a tile that issues no equipment. [STORY#MA1, EDIT92#3, STORY#S2, STORY#S3, EDIT92#7, EDIT93#3.1/tales-rewritten~2]
+Total: 10.

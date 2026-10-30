@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines and found no violations. Tone: each tier holds its voice (Luxury superior with no apology, Corporate procedural, Consumer resigned, Budget polite over rage) [FLEET#F4], and each line carries a feeling or joke rather than a flat report [SUB4#6.1]. Vocabulary: the cars name the landmark, never a grid code [SUB4#6.2], and use no banned term [FLEET#F2]. Format: every line is a single bubble of at most 48 characters, and t136's "!" is allowed because it is a Budget shout [DECISIONS#rows-541-550]. Truth: every fact belongs to the impact event and to C3's gateway, which thanks every car for driving safely [STORY#MC3, EDIT92#7]. Only t134 ends on a stock word, under the batch limit of two.
+Total: 10.

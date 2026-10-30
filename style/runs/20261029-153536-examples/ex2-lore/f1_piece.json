@@ -1,0 +1,21 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t901",
+   "event": "writeoff",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "The monument. A write-off. How very provincial.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  }
+ ]
+}

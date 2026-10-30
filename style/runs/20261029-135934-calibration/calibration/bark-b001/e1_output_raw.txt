@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b001 against T6, T7, T9, T10, T12, V1–V3, V5, V7, V8, F1–F5 and R1–R4, and found no violation: it is the shipped Luxury front-impact line in polished, superior and faintly amused voice; "Luxury trim" is guaranteed by tier 01, front zone guarantees "Bumper", and the event, style, priority and length all fit, as the clean lint confirms. [FLEET#F9.1~2, FLEET#F4, FLEET#F8, FLEET#F2, EDIT39#6.6, FSG#field-text]
+Total: 10.

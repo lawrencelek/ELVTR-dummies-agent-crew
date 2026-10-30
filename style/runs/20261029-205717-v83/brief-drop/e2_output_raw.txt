@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against F8: the label "DROP ONTO A CAR" is 15 characters in caps, and the brief starts with the imperative goal and then gives the final-hit condition, with no "coverage gap" framing [EDIT98#3.2, STORY#S3]. I also checked F6 (2 sentences, 13 words) [EDIT95#3.2], T1 and T2 (deadpan, no "!") [EDIT95#3.2, PLAY#PS0], V1 and V4 (no banned words, no company name) [EDIT95#0, EDIT95#4.2], F5 (no figures) [STORY#S1], and R5 (the duty matches the drop task) [STORY#MC1, STORY#WC2].
+Total: 10.

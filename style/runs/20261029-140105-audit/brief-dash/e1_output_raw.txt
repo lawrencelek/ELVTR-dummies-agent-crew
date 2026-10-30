@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against F8 and the canonical dash row [STORY#S3], [EDIT93#3.3] and [STORY#MB1], which they match word for word. I also checked T1 and T3 (it reads as a duty in procedural voice, and cars are not enemies) against [EDIT92#3] and [STORY#S2]. For T2, V1 and F5 there is no "!", no banned word and no figure [FLEET#F2], [STORY#S1]. For R5 the dash duty belongs to Monument B1, the tile that issues Battery 1 [STORY#S1].
+Total: 10.

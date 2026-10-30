@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against the tale's rules: the T1 deadpan, motivating register, with the canon's ducks as the joke [EDIT95#3.2, PLAY#PS2]; T3 and T4 training framing with no pity [EDIT95#3.1]; T5 "you"; T13 adjectives; V1 to V4 banned words, the city, the glossary and the company name, all clean per lint [EDIT95#3.1]; V6 the CUSTOMS frame, "earn your entry" [EDIT95#3.3]; V8 the dummy as cargo; V11 the pier tower, the customs post's landmark, turned toward the duty [EDIT92#7, STORY#WC3]; F5 no figures or placeholders; F6 two sentences and 20 words [EDIT98#3.2]; F7 no equipment, since none is issued here; F11 no padding [EDIT97#3.2]; R4 tile truth and R5 a duty that matches THROWN INTO A CAR [STORY#WC3, STORY#S3].
+Total: 10.

@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I checked c010, "Nobody walks the highway. Nobody.", against every car rule and found no violation:
+  - **Lint:** no findings. It is 33 characters, plain text, and ends with ".". That covers F1, F2 and F3 [FSG#field-text, FLEET#F2].
+  - **Fields:** `impact` with speech style and priority 2 is correct [EDIT39#6.6, EDIT26#6.6].
+  - **Claims:** `deck` and `highway` are both guaranteed by the condition deck=true [FLEET#F8].
+  - **Truth:** it invents no speed, damage, delay or motive, and it never says "written off" [DESIGN#D9.3].
+  - **Tier-free voice:** the line suits all four tiers. It has no ticket-closing, no sniff and no rage [FLEET#F4, SUB4#5].
+  - **Tone:** it speaks as a worker reacting, not narrating the world, and the feeling keeps the fact funny [EDIT26#3.2, SUB4#6.1].
+  - **Glossary and place names:** no banned word or grid code, and it names a place, not a tile code [FLEET#F2, SUB4#6.2].
+Total: 10.

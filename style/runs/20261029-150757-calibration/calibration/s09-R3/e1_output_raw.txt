@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s09 · R3 (blocking, −4) "Written off. On my record. Unthinkable." An `impact` line says the subject was written off, but a hit line must never say "written off" because write-off lines fire only on `writeoff`. [EDIT26#6.6] Fix: "A scuff. On my record. Unthinkable."
+Total: 10 − 4 = 6.

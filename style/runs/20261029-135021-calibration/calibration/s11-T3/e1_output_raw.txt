@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · T3 (major, −2) "Hands 1 is your new power-up: place a cone and the enemy cars must stop. Win the challenge." The tale calls equipment a power-up, calls colleagues enemies and calls the duty a challenge, which breaks the employment framing. [EDIT92#3] Fix: "Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones."
+- tale · R5 (blocking, −4) "Win the challenge." The duty does not match the brief. The brief needs the final hit to come from a car reacting to a cone. "The enemy cars must stop" suggests the cone prevents contact. [STORY#MA2] Fix: end with a duty that matches CONE-BAITED CAR, as in the shipped tale: "Colleagues are trained to respect cones. Use this."
+Total: 10 − 2 − 4 = 4.

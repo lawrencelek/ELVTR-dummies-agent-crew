@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (tone, Farsight's voice), V1–V8 (vocabulary and lore) with Act II's frame (Expo, visitors), F5–F7 (formatting and length; the lint reports no findings, and "Hands 2 is fitted: two cones." names the equipment this tile issues) and R4–R5 (truth; the duty and equipment fit the CONE-BAITED CAR brief), against [STORY#PA2], [EDIT92#3], [STORY#S1], [STORY#S2] and [EDIT93#3.1/tales-rewritten~1].
+Total: 10.

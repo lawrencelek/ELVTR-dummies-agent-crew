@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against their tier voices: t117 is a Luxury sniff with no apology, t118 is a Corporate log entry, t119 is resigned Consumer and t120 is Budget rage with a polite close, with "!" allowed for Budget [FLEET#F4, DECISIONS#rows-541-550]. Each line names the tile by its landmark, not its grid code [SUB4#6.2], and claims only contact, which the impact event logs [FLEET#F8]. t118's "Target was zero" comes from the B2 tale's plaque [STORY#MB2]. Lint found nothing on length, banned words, endings or repeated closing tags [FLEET#F2, SUB4#6.1].
+Total: 10.

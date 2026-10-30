@@ -1,0 +1,85 @@
+{
+ "note": "Knowledge base of the Style Guide Agent, V2 (GDD Edit 95). Paths are relative to the repository root. Newest wins: EDIT98 > EDIT97 > EDIT96 > EDIT95 > EDIT94 > EDIT93 > EDIT92 > STORY > FLEET > EDIT39 > DESIGN (V29) > EDIT26. EDIT95 to EDIT98 replace every source that names Farsight inside the game. PLAY is a tone reference, not canon.",
+ "docs": [
+  {
+   "id": "EDIT98",
+   "path": "style/kb/DUMMIES_GDD_Edit98_Lore.md",
+   "title": "GDD Edit 98: Prototype 8.3; intro screen, level card, drone drop; tales 15 to 20 words; goals; the user's own lines"
+  },
+  {
+   "id": "EDIT97",
+   "path": "style/kb/DUMMIES_GDD_Edit97_Lore.md",
+   "title": "GDD Edit 97: Prototype 8.2; tales redrafted, 15 to 35 words; high scores; the Arcade loop"
+  },
+  {
+   "id": "EDIT96",
+   "path": "style/kb/DUMMIES_GDD_Edit96_Lore.md",
+   "title": "GDD Edit 96: Prototype 8.1; tales up to 35 words; the CBD and Campus districts in the lore"
+  },
+  {
+   "id": "EDIT95",
+   "path": "style/kb/DUMMIES_GDD_Edit95_Lore.md",
+   "title": "GDD Edit 95: Prototype 8; lore refinement: Dummy Corporation; Farsight in the Credits only"
+  },
+  {
+   "id": "PLAY",
+   "path": "style/kb/DUMMIES_Play_Station_Script_2017.md",
+   "title": "Play Station (Lawrence Lek, 2017): the tone reference"
+  },
+  {
+   "id": "EDIT94",
+   "path": "coder/gdd/DUMMIES_GDD_Edit94_Prototype_7_13_Finale_Coding_Agent.md",
+   "title": "GDD Edit 94: P7.13 finale; R-BARK-TILE rejected"
+  },
+  {
+   "id": "EDIT93",
+   "path": "coder/gdd/DUMMIES_GDD_Edit93_Prototype_7_12_Introduce_Then_Test.md",
+   "title": "GDD Edit 93: introduce, then test; tales rewritten"
+  },
+  {
+   "id": "EDIT92",
+   "path": "coder/gdd/DUMMIES_GDD_Edit92_Prototype_7_11_Narrative_A_Certified_Tile_Art.md",
+   "title": "GDD Edit 92: Narrative A, Certified; Farsight's voice; the 27 tiles"
+  },
+  {
+   "id": "STORY",
+   "path": "style/kb/DUMMIES_Story_Canon.md",
+   "title": "Story canon (generated from content/story/story.json)"
+  },
+  {
+   "id": "FLEET",
+   "path": "style/kb/DUMMIES_Fleet_Canon.md",
+   "title": "Fleet canon (generated from content/db/fleet.json)"
+  },
+  {
+   "id": "EDIT39",
+   "path": "content/kb/p3/DUMMIES_GDD_Edit39_Canon_Lore_City.md",
+   "title": "GDD Edit 39: canon, lore system, bark bubbles"
+  },
+  {
+   "id": "DESIGN",
+   "path": "content/kb/DUMMIES_V29_Design.md",
+   "title": "V29 Design, the GDD of record"
+  },
+  {
+   "id": "EDIT26",
+   "path": "content/kb/DUMMIES_GDD_Edit26.md",
+   "title": "GDD Edit 26: fiction, voice, bark key"
+  },
+  {
+   "id": "FSG",
+   "path": "style/kb/DUMMIES_FARSIGHT_Style_Guide.md",
+   "title": "FARSIGHT Style Guide: canon rules, field text"
+  },
+  {
+   "id": "SUB4",
+   "path": "style/kb/DUMMIES_Submission4_Precedents.md",
+   "title": "Submission 4 precedents: off-brand lines and fixes"
+  },
+  {
+   "id": "DECISIONS",
+   "path": "style/kb/DUMMIES_DECISIONS.md",
+   "title": "Decision log (live DECISIONS.md, headings every ten rows)"
+  }
+ ]
+}

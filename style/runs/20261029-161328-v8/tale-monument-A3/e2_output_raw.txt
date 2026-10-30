@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the 19-word, two-sentence tale against T1–T5 and T13 for deadpan, motivating tone with "you" address [EDIT95#3.2]; against V1, V3, V4, V6 and V8 for vocabulary and the INDUCTION frame [EDIT95#3.1, EDIT95#3.3]; against F5–F7, which apply because this tile issues no equipment [STORY#MA3]; and against R4–R5, where the duty matches COMBO ×{n} and the stacked cubes are this tile's landmark [STORY#S3, STORY#MA3].
+Total: 10.

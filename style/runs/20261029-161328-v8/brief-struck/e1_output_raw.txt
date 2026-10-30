@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against these rules and found no violations: tone (T1–T5, T13: deadpan, no "!", training framing, "you", at most one adjective per sentence), glossary and the dummy as a trainee (V1, V3, V8), form and length (F5, F6, F8: two sentences, 17 words, no typed figures, caps label then the duty and the final hit) and duty truth (R5). The canon cited is [EDIT95#3.1], [EDIT95#3.2], [STORY#S3], [STORY#MB2] and [EDIT93#3.3].
+Total: 10.

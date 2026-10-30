@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s15 · V3 (major, −2) "Another life lost. Back to the spawn point." This line uses game words ("a life lost", "spawn point") where the fleet glossary has write-off and bay. [FLEET#F3] Fix: "Another write-off. Back to the bay, then."
+Total: 10 − 2 = 8.

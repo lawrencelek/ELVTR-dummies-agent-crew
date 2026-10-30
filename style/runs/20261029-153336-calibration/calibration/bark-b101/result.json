@@ -1,0 +1,13 @@
+{
+ "id": "bark-b101",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Subject has acquired hips.",
+ "cost_usd": 0.1021,
+ "raw": "SCORE: 10/10\nREASON:\n- None. b101 \"Subject has acquired hips.\" breaks no rule. It names the dummy as the subject in the glossary's term ([FLEET#F3], V3 and V8) and uses no banned word, city, brand or grid code (V1, V2, V5). It is a neutral line with no tier signature, so it suits all four tiers ([FLEET#F4], T8). The joke is the deadpan inventory note on a body gaining hips, which meets T6, T9 and T12 ([EDIT26#3.2], [FLEET#F2]). It is 26 characters of plain text ending in \".\" (F1–F3, [FSG#field-text]). Its fields fit the event: speech style, priority 1 for chatter ([EDIT39#6.6], F4). Its only claim, `node:hips`, is guaranteed by `when.node=\"hips\"` on `upgrade-seen` (R1–R3, [FLEET#F8]). It matches the shipped line in [FLEET#F9.12] and the draft in [EDIT26#3.2].\nTotal: 10."
+}

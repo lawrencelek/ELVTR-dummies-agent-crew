@@ -1,0 +1,75 @@
+{
+ "case": "batch",
+ "class": "D78 batch",
+ "title": "all 36 Monument lines as one batch",
+ "request": null,
+ "scores": [
+  9,
+  1,
+  10
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "best_version": 2,
+ "seconds": 188.4,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 36.3,
+   "output_tokens": 3235,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2880836
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 27.8,
+   "output_tokens": 3736,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2990431
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 48.4,
+   "output_tokens": 4815,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.31902749999999996
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 40.2,
+   "output_tokens": 5117,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3278204
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 35.7,
+   "output_tokens": 3323,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2891551
+  }
+ ],
+ "restored": [],
+ "cost_usd": 1.5231
+}

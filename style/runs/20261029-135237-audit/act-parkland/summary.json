@@ -1,0 +1,29 @@
+{
+ "case": "act-parkland",
+ "class": "audit",
+ "title": "shipped act parkland",
+ "request": null,
+ "scores": [
+  10
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "best_version": 0,
+ "seconds": 5.4,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 5.4,
+   "output_tokens": 258,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0199866
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.02
+}

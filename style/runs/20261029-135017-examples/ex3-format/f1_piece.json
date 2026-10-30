@@ -1,0 +1,21 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t902",
+   "event": "impact",
+   "when": {
+    "district": "parkland",
+    "tile": "A3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact at the belvedere. Form 9, in triplicate.",
+   "claims": [
+    "district:parkland",
+    "tile:A3"
+   ]
+  }
+ ]
+}

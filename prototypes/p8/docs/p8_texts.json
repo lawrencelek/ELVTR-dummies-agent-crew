@@ -1,0 +1,1976 @@
+{
+ "html": "dummies_p8.html",
+ "steps": [
+  "title",
+  "credits (title)",
+  "arcade select",
+  "arcade play",
+  "arcade toasts",
+  "arcade report",
+  "arcade workshop",
+  "pause",
+  "pause Options",
+  "pause Controls",
+  "arcade ending Licensed",
+  "arcade ending Failed test",
+  "arcade ending Non-compliant",
+  "saves",
+  "name",
+  "map",
+  "card A1",
+  "story play",
+  "story toasts",
+  "gift screen",
+  "story report",
+  "gift screen (ferry)",
+  "card B1",
+  "story controls",
+  "plaque",
+  "certified",
+  "credits (ending)"
+ ],
+ "errors": [],
+ "count": 291,
+ "farsight": [
+  {
+   "text": "Published by Farsight",
+   "where": [
+    "title+credits",
+    "sim:ending+credits"
+   ]
+  }
+ ],
+ "long": [],
+ "texts": [
+  {
+   "text": "DUMMY CORPORATION",
+   "where": [
+    "title",
+    "title+credits",
+    "arcade",
+    "loading",
+    "saves",
+    "storymap"
+   ]
+  },
+  {
+   "text": "SELECT A MODE",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "DUMMIES",
+   "where": [
+    "title",
+    "title+credits",
+    "arcade",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "You are a Dummy Corporation trainee. Every write-off brings",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "Certification closer.",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "ARCADE",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "Pick one district and write off",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "its quota. The score is the run.",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "Parkland · Waterfront · Monument",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "STORY",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "Shenzhen Smart City, tile by",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "tile. Each tile trains you to its",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "brief.",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "3 save slots · a new game begins in Monument A1",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "CREDITS",
+   "where": [
+    "title",
+    "title+credits",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "ARROWS CHOOSE · SPACE SELECT",
+   "where": [
+    "title",
+    "title+credits"
+   ]
+  },
+  {
+   "text": "A game by Lawrence Lek",
+   "where": [
+    "title+credits",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Published by Farsight",
+   "where": [
+    "title+credits",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "SPACE · BACK",
+   "where": [
+    "title+credits",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "ARCADE · SELECT A DISTRICT",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "Welcome, trainee. Every write-off brings Certification closer.",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "1  Parkland",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "2 WRITE-OFFS",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "2  Waterfront",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "3 WRITE-OFFS",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "3  Monument",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "4 WRITE-OFFS",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "◀  STANDARD · 800 HEALTH  ▶",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "WASD",
+   "where": [
+    "arcade",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "MOVE",
+   "where": [
+    "arcade",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "SPACE",
+   "where": [
+    "arcade",
+    "sim:play",
+    "saves"
+   ]
+  },
+  {
+   "text": "DASH",
+   "where": [
+    "arcade",
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending",
+    "sim:brief",
+    "sim:gift",
+    "sim:scroll",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "ESC",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "PAUSE",
+   "where": [
+    "arcade",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "PRESS A OR SPACE TO BEGIN YOUR TEST.",
+   "where": [
+    "arcade"
+   ]
+  },
+  {
+   "text": "BUILDING DISTRICT",
+   "where": [
+    "loading"
+   ]
+  },
+  {
+   "text": "Waterfront",
+   "where": [
+    "loading"
+   ]
+  },
+  {
+   "text": "DISTRICT 2 OF 3 · WATERFRONT · 3 WRITE-OFFS",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "A hill walled by towers; bridges cross the drive and the river.",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Certified dummies ship across it to clients.",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "BODY",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending",
+    "sim:brief",
+    "sim:gift",
+    "sim:scroll",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "800",
+   "where": [
+    "sim:play",
+    "sim:ending",
+    "sim:gift",
+    "sim:scroll",
+    "sim:brief",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "WATERFRONT · B2",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "0",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "saves",
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "POINTS",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending",
+    "sim:brief",
+    "sim:gift",
+    "sim:scroll",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "93",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "CARS LEFT",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "CHASSIS 01",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "LAST HIT",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending",
+    "sim:brief",
+    "sim:gift",
+    "sim:scroll",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "—",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending",
+    "sim:brief",
+    "sim:gift",
+    "sim:scroll",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "OBJECTIVE · WATERFRONT",
+   "where": [
+    "sim:play",
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "Write off 3 bodies (0 of 3).",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "CORPORATION GIFT · +2 CREDITS",
+   "where": [
+    "sim:play",
+    "sim:writeoff"
+   ]
+  },
+  {
+   "text": "2,500",
+   "where": [
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:play",
+    "sim:ending",
+    "sim:gift",
+    "sim:scroll",
+    "sim:brief",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Write off 3 bodies (1 of 3).",
+   "where": [
+    "sim:writeoff",
+    "sim:report",
+    "sim:shop",
+    "sim:play",
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "WRITE-OFF REPORT",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "Chassis 01 written off.",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "Write-off 1 of 3 · points this body 2,500",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "CAR",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "ANGLE",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "HEALTH LOST",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "V02",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "90°",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "120",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "30",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "One body credit granted. Balance: 1.",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "SPACE  CONTINUE",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "WORKSHOP · CHASSIS 02",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "1 CREDIT",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "A",
+   "where": [
+    "sim:shop",
+    "saves",
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "BATTERY",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "DASH · 1 CHARGE · 1.0 s",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "NEXT · DASH · 2 CHARGES · 1.0 s",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "SHORT BY 1",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "B",
+   "where": [
+    "sim:shop",
+    "saves"
+   ]
+  },
+  {
+   "text": "LEGS",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "NO JUMP",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "NEXT · AIR 0.3 s",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "X",
+   "where": [
+    "sim:shop",
+    "saves"
+   ]
+  },
+  {
+   "text": "HANDS",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "NO GRAB",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "NEXT · 1 CONE",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "Y",
+   "where": [
+    "sim:shop",
+    "saves"
+   ]
+  },
+  {
+   "text": "ARMS",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "BOUNCE ONLY",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "NEXT · PUSH +160 ×1",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "Legs 1: B jumps. Run and jump to clear a rail; a dash jump clears a sedan.",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "FIT LEGS 1 · 1 CREDIT",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "DONE · DEPLOY CHASSIS 02",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "ARROWS A PART · SPACE FIT · SHIFT DONE",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "Hands 1: X picks up a cone. Hold X to put it down.",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "FIT HANDS 1 · 1 CREDIT",
+   "where": [
+    "sim:shop"
+   ]
+  },
+  {
+   "text": "CHASSIS 02",
+   "where": [
+    "sim:play",
+    "sim:ending",
+    "sim:gift",
+    "sim:scroll",
+    "sim:brief",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "PAUSED",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Resume",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Restart level",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Refuse testing",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Options",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Controls",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Show trace",
+   "where": [
+    "sim:play",
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Quit to title",
+   "where": [
+    "sim:play",
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Refusal is a deliberate ending.",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "P8 · registry values",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "CUE KEY",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Has noticed you",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Route fixed",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Commitment ending",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Braking for safety",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Slowing past you",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Slowing",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Where it can stop",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "No more points",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Blocked, warning you",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Cannot sense you",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "What you can see",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "OPTIONS",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Sound: on",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Palette: cyber → day",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Full screen: off",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Tuning panel",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Gamepad setup",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Back",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "CONTROLS",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "CONTROLS · KEYBOARD",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "WASD / arrows",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Space / K",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Out of a dash, the jump is",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "L / Shift",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "???",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "A Corporation drone brings",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "J / E",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "I / Q",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Esc / P",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "T",
+   "where": [
+    "sim:play",
+    "saves"
+   ]
+  },
+  {
+   "text": "TUNING",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "G",
+   "where": [
+    "sim:play",
+    "saves"
+   ]
+  },
+  {
+   "text": "GAMEPAD SETUP",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "A gamepad shows its own buttons here once",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "pressed.",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "CONTRACT RESULT",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "LICENSED",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "Training complete. The Corporation thanks you for your service.",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "TIME",
+   "where": [
+    "sim:ending",
+    "sim:unveil",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "0:02",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "WRITE-OFFS",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "1",
+   "where": [
+    "sim:ending",
+    "saves",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "BEST HIT",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Play this district again",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "Choose a district",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "FAILED TEST",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "Traffic exhausted. Training incomplete; report to the bay.",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "Retry this district",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "NON-COMPLIANT",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "Testing declined. Your refusal has been recorded.",
+   "where": [
+    "sim:ending"
+   ]
+  },
+  {
+   "text": "STORY · SAVE GAMES",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "SAVE GAMES",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "SAVED IN THIS BROWSER",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "NEW GAME",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "Monument A1 · into slot 1",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "EMPTY",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "No story saved here.",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "2",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "3",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "ARROWS CHOOSE · SPACE SELECT · SHIFT BACK",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "NEW GAME · SLOT 1",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "12 / 12",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "E",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "S",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "D",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "U",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "M",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "Type to replace the name, or OK to keep it.",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "C",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "F",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "H",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "I",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "J",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "K",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "L",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "N",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "O",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "P",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "Q",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "R",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "V",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "W",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "Z",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "4",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "5",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "6",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "7",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "8",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "9",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "-",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": ".",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "'",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "DEL",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "OK",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "TYPE THE NAME · ENTER OK · BACKSPACE DELETE · ESC CANCEL",
+   "where": [
+    "saves"
+   ]
+  },
+  {
+   "text": "STORY · THE TEST CITY",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "0 / 27 TILES · 0 POINTS · 0 / 11 PARTS",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "SLOT 1 · TEST DUMMY 1",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "I · MONUMENT",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "0/9",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "A1",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "0/1",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "B1",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "C1",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "A2",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "B2",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "C2",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "A3",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "B3",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "C3",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "II · PARKLAND",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "III · WATERFRONT",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "MONUMENT · A1 · TILE 1 OF 27 · IN TEST · 0 OF 1",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "The welcome wall",
+   "where": [
+    "storymap",
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "The welcome wall shows your face and the word WELCOME. Stand in the road",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "until a colleague notices you.",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "TRAINING BRIEF · ANY WRITE-OFF",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "DEPLOY · MONUMENT A1",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "ARROWS READ A TILE · SPACE DEPLOY · SHIFT BACK",
+   "where": [
+    "storymap"
+   ]
+  },
+  {
+   "text": "Monument",
+   "where": [
+    "loading"
+   ]
+  },
+  {
+   "text": "500",
+   "where": [
+    "sim:brief",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "NOT FITTED",
+   "where": [
+    "sim:brief",
+    "sim:play",
+    "sim:writeoff",
+    "sim:report"
+   ]
+  },
+  {
+   "text": "MONUMENT · A1",
+   "where": [
+    "sim:brief",
+    "sim:play",
+    "sim:writeoff",
+    "sim:report"
+   ]
+  },
+  {
+   "text": "OBJECTIVE · A1",
+   "where": [
+    "sim:brief",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Write off a body (0 of 1).",
+   "where": [
+    "sim:brief",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "ACT I · INDUCTION · MONUMENT · TILE A1 · 1 OF 27",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "Dummy Corporation welcomes you off the factory floor. The cars are",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "your colleagues; Certification is your goal.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "The welcome wall shows your face and the word WELCOME.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "Stand in the road until a colleague notices you.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "TRAINING BRIEF",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "ANY WRITE-OFF",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "General coverage. Any write-off in this tile counts.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "TO CLEAR · 1 COUNTED WRITE-OFF",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "SPACE  BEGIN THE TEST",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "Fenced until cleared. Cleared tiles stay open.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "NOT COUNTED · C3 is not in test",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "CORPORATION DRONE",
+   "where": [
+    "objective",
+    "sim:play",
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "Delivering Legs 1.",
+   "where": [
+    "objective"
+   ]
+  },
+  {
+   "text": "Carrying the chassis to C1.",
+   "where": [
+    "objective"
+   ]
+  },
+  {
+   "text": "Carrying the certified model to the ship at B3.",
+   "where": [
+    "objective"
+   ]
+  },
+  {
+   "text": "TILE A1 CLEARED · B1 OPEN",
+   "where": [
+    "sim:writeoff",
+    "sim:report"
+   ]
+  },
+  {
+   "text": "TILE A1 CLEARED",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "Counted for A1: 1 of 1 · points this body 2,500",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "0 / 11 PARTS FITTED · NEXT: BATTERY 1 AT MONUMENT B1",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "OBJECTIVE · B1",
+   "where": [
+    "sim:report",
+    "sim:brief",
+    "sim:play",
+    "sim:unveil",
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Back to B1: write off a body. Last hit: dash into a car (0 of 1).",
+   "where": [
+    "sim:report"
+   ]
+  },
+  {
+   "text": "MONUMENT · A1 · DRONE",
+   "where": [
+    "sim:play",
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "CORPORATION DRONE · BATTERY 1 ON BOARD · THEN B1",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Bringing Battery 1, then on to B1.",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "Carrying the chassis to B1.",
+   "where": [
+    "sim:gift",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "CORPORATION DRONE · INCOMING",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "NEW PART FITTED",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "BATTERY 1",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "A dashes. One charge; a jump out",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "of a dash is free.",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "NEXT FROM THE CORPORATION",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "Hands 1 · Monument A2 (tile 6 of 27).",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "SPACE  ON TO B1",
+   "where": [
+    "sim:gift"
+   ]
+  },
+  {
+   "text": "MONUMENT · B1 · DRONE",
+   "where": [
+    "sim:scroll",
+    "sim:play"
+   ]
+  },
+  {
+   "text": "B1 · Podium and tower at the bridge head",
+   "where": [
+    "sim:scroll",
+    "sim:play",
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "MONUMENT · B1",
+   "where": [
+    "sim:brief",
+    "sim:play",
+    "sim:unveil",
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "ACT I · INDUCTION · MONUMENT · TILE B1 · 2 OF 27",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "The podium bridge",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "Battery 1 is fitted. Staff watch from the podium bridge; you join",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "the road and dash into a colleague.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "DASH INTO A CAR",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "Coverage gap: dashes. The final hit must be a dash into a car.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "GIFT · Battery 1: A dashes. One charge; a jump out of a dash is free.",
+   "where": [
+    "sim:brief"
+   ]
+  },
+  {
+   "text": "Write off a body. Last hit: dash into a car (0 of 1).",
+   "where": [
+    "sim:brief",
+    "sim:play",
+    "sim:unveil",
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Story map",
+   "where": [
+    "sim:play",
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "The story map saves this tile's",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "count. The body in play is lost.",
+   "where": [
+    "sim:play"
+   ]
+  },
+  {
+   "text": "THE DUMMY MONUMENT · UNVEILED",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "ZERO ACCIDENTS (EXCLUDING TESTS)",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "CHASSIS SPENT",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "34",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "414,850",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "BEST COMBO",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "×5",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "90:20",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "SPACE  ON TO THE SHIP",
+   "where": [
+    "sim:unveil"
+   ]
+  },
+  {
+   "text": "CERTIFIED",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Your model has passed and will be manufactured for our clients. A",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Corporation drone carries you to the ship.",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "0:11",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  },
+  {
+   "text": "Credits",
+   "where": [
+    "sim:ending",
+    "sim:ending+credits"
+   ]
+  }
+ ]
+}

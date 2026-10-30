@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all of Farsight's rules and found no violation:
+  - **Tone and voice (T1–T5):** the tone is dry and procedural, with no "!", employment framing and the dummy called "the model" [EDIT92#3].
+  - **Length (F6):** about 212 characters, under the 223 limit, with every sentence under 19 words [EDIT93#3.1/tales-rewritten~2].
+  - **Equipment (F7, R5):** "Arms 3 is fitted." names the equipment issued on this tile [STORY#S1].
+  - **Duty (R5):** the closing line is a dry duty that fits the PUSH OFF A CAR brief [STORY#S3].
+  - **Tile truth (R4):** the stilt houses, the moored ship and Chassis 0 appear on this tile and nowhere earlier [STORY#WB3, EDIT92#7].
+  - **Act III frame (V6):** the ship beyond the river keeps the CUSTOMS frame [STORY#S2].
+  - **Vocabulary and digits (V1, V4, F5):** no banned terms or brand names, and the only digits are allowed (Arms 3, Chassis 0).
+Total: 10.

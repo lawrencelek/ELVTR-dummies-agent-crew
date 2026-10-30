@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1–T5, Vocabulary V1–V8, Formatting F5–F7 and Truth R4–R5, and found no violation:
+  - **Tone:** it is dry, procedural and in the third person, with no "!" ([EDIT92#3], [STORY#S1]).
+  - **Act II frame:** it keeps the board and its applause, as set for this tile's turn ([EDIT92#3], [STORY#S2]).
+  - **Equipment:** "Battery 2" is a part rank, which narration may use. It names the equipment this tile issues ([STORY#S1], [EDIT93#3.1/tales-rewritten~1]).
+  - **Duty:** "a chain of three" matches the COMBO ×{n} brief ([STORY#S3]). It is the shipped text, unchanged ([STORY#PB2]).
+  - **Card fit:** the lint found nothing, so the tale is within 223 characters and 19 words a sentence ([EDIT92#measured]).
+
+Total: 10.

@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "B2", "title": "The monument", "tale": "The monument's plaque reads ZERO ACCIDENTS, a target rather than a record. Stand or walk beside it and let a colleague find you; dashing would spoil the data."}

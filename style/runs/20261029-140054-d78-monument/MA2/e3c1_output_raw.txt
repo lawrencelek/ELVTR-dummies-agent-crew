@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines for tier voice (T7, T9), stock endings (T11), banned words, the glossary and naming places rather than grid codes (V1, V3, V5), length, style, priority and end punctuation (F1–F5), and truth for an `impact` event on Monument A2. "Neon shops" is the tile's title, no line makes a claim its conditions don't guarantee, and "!" appears only in the Budget shout. [FLEET#F2] [FLEET#F4] [FLEET#F8] [EDIT39#6.6] [STORY#MA2] [DECISIONS#rows-541-550]
+Total: 10.

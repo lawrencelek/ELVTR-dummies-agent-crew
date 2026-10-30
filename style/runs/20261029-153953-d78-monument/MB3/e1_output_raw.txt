@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- t130 · T12 (minor, −1) "LED canyon contact logged. Incident filed." This line only reports where the contact happened and that it was logged, with no feeling or joke, much like the guide's failing example "Riverside. Low-rise streets. Hit logged." [SUB4#6.1] Fix: "LED canyon contact. Policy 6.3: not my KPI." (43 characters). It keeps the Corporate policy-number voice and adds the car's self-interest.
+Total: 10 − 1 = 9.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the rules for Farsight. Tone (T1–T5): polite and procedural, no "!", "you" used for the dummy, harm left unremarked [EDIT92#3, EDIT39#4.1.1]. Vocabulary (V1–V8): no banned terms, Act III's customs frame, and the customs-log phrase copied exactly from canon [EDIT92#3, STORY#S2]. Formatting (F5–F7): about 197 characters, every sentence under 19 words, no digits, no equipment issued on this tile [EDIT93#3.1/tales-rewritten~2, STORY#WA3]. Truth (R4–R5): "the raised road" matches the ON A RAISED ROAD brief, and only things on this tile are named [STORY#WA3, STORY#S3].
+Total: 10.

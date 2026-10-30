@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "rule",
+    "severity": "fix",
+    "path": "environment.straight[4]",
+    "found": "overlaps pillar at (276,358)",
+    "canon": "DESIGN#D10.6",
+    "rule": "Cover must stay legible as cover."
+  }
+]

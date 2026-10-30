@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b101 "Subject has acquired hips." and found no violations. Under F1–F4 it is a 26-character speech line at priority 1, ending in ".", with no lint findings [FSG#field-text, EDIT39#6.6]. Under R1–R3 its only claim, `node:hips`, is guaranteed by its `when` [FLEET#F8]. It carries no single tier's signature, so it is valid as a tier-free line (T8) [FLEET#F4, SUB4#5]. It uses the glossary's "subject" (V3, V8) [FLEET#F3]. The deadpan "acquired hips" is a joke, not a flat report, so it passes T9 and T12 [EDIT26#3.2, FLEET#F9.12].
+Total: 10.

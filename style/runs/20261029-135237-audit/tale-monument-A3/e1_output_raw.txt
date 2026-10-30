@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "Today's duty is the same: one hit, then another before the first is forgotten." The duty is a statement about the duty, not an instruction, so the tale's shape lacks the imperative close the rule requires. [STORY#MB3] Fix: "Farsight calls this growth. Grow likewise: one hit, then another before the first is forgotten."
+Total: 10 − 1 = 9.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale is two sentences and 17 words, and lint reported nothing. Its tone is deadpan and still motivates the trainee, with no "!", no consoling and no game words, and it calls the cars colleagues [EDIT95#3.2, EDIT95#3.1, PLAY#PS2]. It keeps ZERO ACCIDENTS word for word, which fits the INDUCTION frame [EDIT95#3.3, STORY#S2]. It names only the tile's own plaque and no equipment, and its duty (a car hits you while you walk or stand) matches the STRUCK, NOT DASHING brief [STORY#MB2, STORY#S3, STORY#S1].
+Total: 10.

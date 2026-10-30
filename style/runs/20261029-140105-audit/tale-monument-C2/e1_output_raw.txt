@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violation. I checked tone and framing (T1–T5: dry, procedural, no "!", "you" address, the task called a "duty"), vocabulary (V1–V8: no banned words, no other city or brand, consistent with the Act I INDUCTION frame), format (F5–F7: no digits, under 223 characters, every sentence under 19 words, no equipment issued here, so none named) and truth (R4–R5: the tower and high road belong to this tile, and "on the road itself, at height" matches the brief "The final hit must land at Z1 or above"), against [EDIT92#3], [STORY#S1], [STORY#S2], [STORY#S3], [EDIT39#4.1.1], [FLEET#F2], [FLEET#F3], [EDIT92#measured], [EDIT93#3.1/tales-rewritten~2] and [STORY#MC2], and the text matches the shipped tale.
+Total: 10.

@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902's text "Contact at the belvedere. Not in my KPIs." against every car rule and found no violation:
+  - **Tier and tone:** it speaks with the Corporate tier's procedural voice through KPIs (T7, [FLEET#F4]). It shows a worker's resentment, not world narration (T6, T9, [EDIT26#3.2]).
+  - **Length and fields:** it is 41 characters, plain, and ends with "." (F1–F3, [FSG#field-text], [FLEET#F2]). Speech style at priority 2 fits an impact (F4, [EDIT39#6.6]).
+  - **Truth:** "Contact" matches the impact event (R3, [EDIT26#6.6]). It invents no figure or motive (R1, [DESIGN#D9.3]).
+  - **Place:** it names the belvedere as the place, which is the tile's landmark (R4, V5, [STORY#PA3]). The district and tile conditions guarantee its claims (R2, [FLEET#F8]).
+Total: 10.

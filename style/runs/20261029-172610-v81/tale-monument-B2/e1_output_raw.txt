@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashing would spoil the data." The tale has six sentences, and the cap is two (34 words is within the 35-word tale cap). [EDIT96#3.2] Fix: "The monument's plaque reads ZERO ACCIDENTS: a target, not a record. Stand or walk near it and let a colleague find you; dashing would spoil the data."
+Total: 10 − 4 = 6.

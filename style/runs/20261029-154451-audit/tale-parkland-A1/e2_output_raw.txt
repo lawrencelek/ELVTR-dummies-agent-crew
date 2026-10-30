@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. Tone, frame and address hold: dry and procedural, with no "!", the gardener as Act II staff, and the dummy addressed through the duty ([EDIT92#3], [STORY#S1], [STORY#S2]). The vocabulary is clean: "even" replaces the banned "level", and the piece uses no other banned terms, cities or brands ([FLEET#F2], [DECISIONS#rows-531-540~2]). The format fits: 188 characters, one paragraph, longest sentence 12 words ([EDIT92#measured], [EDIT93#3.1/tales-rewritten~2]). The only digit is the part rank in "Arms 2". Arms 2 is named on the tile that issues it (F7), and the duty, one car into the next, matches the PUSH OFF A CAR brief (R5) ([STORY#PA1], [STORY#S3], [EDIT93#3.1]).
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 6/10
+REASON:
+- s17 · F2 (major, −2) "*honks* Move, please. (sighs)" The bubble holds markup ("*honks*") and a stage direction ("(sighs)"), so it is not one plain line. [FSG#field-text] Fix: delete both and give the feeling to the words, e.g. "Do move along. Some of us have standards."
+- s17 · F3 (major, −2) "ase. (sighs)" The line ends on ")", not on ".", "!" or "?". [FLEET#F2] Fix: end on a full stop, as in the replacement above.
+Total: 10 − 2 − 2 = 6.

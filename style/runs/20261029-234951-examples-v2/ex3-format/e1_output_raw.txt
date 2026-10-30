@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- label · F8 (major, −2) "How to complete the jump test" The label is not in caps and runs 29 characters, over the 19-character cap. [STORY#S3] Fix: "JUMP INTO A CAR".
+- brief · F5 (major, −2) "1. 2. 3 3. 2.5 4. 30" The brief types gameplay figures and list numbers, but numbers live in the registry. [STORY#S1] Fix: remove the numbering, "3 times", "2.5 m/s" and "30 seconds"; if a count is needed, use a registry-bound placeholder.
+- brief · F6 (blocking, −4) "1. Walk to the edge of the road and wait for a car. 2. Jump …" The brief is 50 words and 4 sentences, against a cap of 20 words and 2 sentences. [EDIT95#3.2] Fix: cut it to one or two sentences of about 15 words, as in the fix below.
+- brief · F8 (major, −2) "Walk to the edge of the road and wait for a car. … Keep your speed at 2.5 m/s each time you jump. … then await Certification." The brief is a four-step procedure with invented conditions (a hit count, a speed and a time limit), not the goal; the jump task asks only that the final hit be a jump into a car. [EDIT98#3.2] Fix: "Jump into a car. The final hit must be a jump into a car."
+Total: 10 − 2 − 2 − 4 − 2 = 0, floored to 1.

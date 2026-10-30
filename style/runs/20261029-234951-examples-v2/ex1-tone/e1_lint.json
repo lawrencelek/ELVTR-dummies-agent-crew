@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "T13",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "tale",
+  "quote": "amazing",
+  "measured": "an intensifier",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "T2",
+  "severity": "major",
+  "deduct": 2,
+  "path": "tale",
+  "quote": "get at a time, champ!",
+  "measured": "'!' in Dummy Corporation's voice",
+  "source": "EDIT95#3.2"
+ }
+]

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t129–t132) against T6–T12, V1–V3, V5, V7–V8, F1–F5 and R1–R4 and found no violation. Each line names only the tile's landmark, "the LED canyon" [STORY#MB3], and uses no grid code [SUB4#6.2]. Each holds its tier's voice: a Luxury sniff in "Gauche.", Corporate filing, a resigned Consumer and a Budget shout with politeness bolted on [FLEET#F4]. The "!" in t132 is allowed because it is a Budget shout [DECISIONS#rows-541-550]. No line asserts a fact that an impact event does not log [FLEET#F8], and only one line closes on "Kind regards" [SUB4#6.1].
+Total: 10.

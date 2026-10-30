@@ -1,0 +1,1 @@
+{"kind":"brief","task":"jump","label":"How to complete the jump test","brief":"1. Walk to the edge of the road and wait for a car.\n2. Jump into the car's path 3 times; the final hit must be a jump.\n3. Keep your speed at 2.5 m/s each time you jump.\n4. Finish all of it within 30 seconds, then await Certification."}

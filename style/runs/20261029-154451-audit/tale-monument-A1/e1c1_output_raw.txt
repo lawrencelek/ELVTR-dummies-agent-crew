@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale for tone, vocabulary and the Act I induction frame [EDIT92#3, STORY#S2, EDIT39#4.1.1, FLEET#F3]; for length and sentences, and that a tile with no equipment names none [EDIT93#3.1/tales-rewritten~2, EDIT92#measured]; and for truth against the brief and the tile [STORY#MA1, STORY#S1]. It matches the shipped tale in STORY#MA1 word for word.
+Total: 10.

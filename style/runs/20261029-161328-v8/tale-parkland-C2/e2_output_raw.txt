@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13, V1, V3, V4, V6, V8, V9, F5, F6, F7 and R4–R5: it has 17 words in 2 sentences, no "!" and no adjectives, it frames Opening Day correctly, its van duty matches the brief A VAN, and it names no equipment on a tile that issues none [EDIT95#3.2, EDIT95#3.3, STORY#PC2, STORY#S3].
+Total: 10.

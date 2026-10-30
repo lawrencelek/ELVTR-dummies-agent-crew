@@ -1,0 +1,172 @@
+[
+  {
+    "query": "juice reference top-down arcade driving games screen shake hit pause permanence",
+    "results": [
+      {
+        "id": "JUICE#J1",
+        "score": 44.096
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 30.922
+      },
+      {
+        "id": "LOG#P1.1-observations",
+        "score": 19.413
+      }
+    ]
+  },
+  {
+    "query": "impact feedback hit-stop destruction presentation cues take priority over particles shake",
+    "results": [
+      {
+        "id": "DESIGN#D4.5",
+        "score": 36.791
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 18.262
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 15.765
+      }
+    ]
+  },
+  {
+    "query": "P1.2 juice camera shake player shake lunge impact write-off stamp cone in flight",
+    "results": [
+      {
+        "id": "LOG#P1.2/juice",
+        "score": 43.335
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 27.876
+      },
+      {
+        "id": "LOG#P1.1-observations",
+        "score": 26.827
+      }
+    ]
+  },
+  {
+    "query": "brake marks tyre marks persist floor forensic record",
+    "results": [
+      {
+        "id": "JUICE#J1",
+        "score": 21.371
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 17.313
+      },
+      {
+        "id": "JUICE#J2",
+        "score": 10.011
+      }
+    ]
+  },
+  {
+    "query": "touch spent car must not look like scored hit reward feedback",
+    "results": [
+      {
+        "id": "JUICE#J3",
+        "score": 27.878
+      },
+      {
+        "id": "DESIGN#D4.5",
+        "score": 22.456
+      },
+      {
+        "id": "DESIGN#D10.6",
+        "score": 9.742
+      }
+    ]
+  },
+  {
+    "query": "replacement chassis drop helicopter delivery placement",
+    "results": [
+      {
+        "id": "JUICE#J1",
+        "score": 15.645
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 15.282
+      },
+      {
+        "id": "DESIGN#D9.1",
+        "score": 9.167
+      }
+    ]
+  },
+  {
+    "query": "dummy damage states wear smoke sparks tremble vignette",
+    "results": [
+      {
+        "id": "LOG#P1.2/dummy-damage-states",
+        "score": 30.935
+      },
+      {
+        "id": "JUICE#J4",
+        "score": 12.192
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 11.334
+      }
+    ]
+  },
+  {
+    "query": "dummy only persistently saturated actor reserved red warning palette",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 20.854
+      },
+      {
+        "id": "DESIGN#D10.2",
+        "score": 19.441
+      },
+      {
+        "id": "JUICE#J4",
+        "score": 13.794
+      }
+    ]
+  },
+  {
+    "query": "input denial near miss write-off purchase blocked traffic distinct cues sound visual equivalent",
+    "results": [
+      {
+        "id": "DESIGN#D9.4",
+        "score": 47.043
+      },
+      {
+        "id": "DESIGN#D10.5",
+        "score": 20.023
+      },
+      {
+        "id": "ENG#11.2",
+        "score": 15.054
+      }
+    ]
+  },
+  {
+    "query": "recoil stagger knock bounce restitution",
+    "results": [
+      {
+        "id": "LOG#P1.3/rules",
+        "score": 14.976
+      },
+      {
+        "id": "JUICE#J1",
+        "score": 7.734
+      },
+      {
+        "id": "LOG#P1.3",
+        "score": 6.632
+      }
+    ]
+  }
+]

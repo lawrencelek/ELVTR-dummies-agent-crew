@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines. Tone: each holds its tier's voice (Luxury amused, Corporate procedural, Consumer resigned, Budget raging behind "Kind regards"). Format: "!" appears only in the Budget shout t112, and every style and priority fits an impact. Truth: no line claims a drop, write-off or anything the impact log doesn't record. Tile truth: each line names the drum itself as the place, never a spot beside it. Each line is a feeling or joke, not a flat report, and the batch ends on "Kind regards." only once. [FLEET#F4] [FLEET#F2] [FLEET#F8] [FLEET#F9.1~2] [EDIT39#6.6] [STORY#MC1] [SUB4#5] [DECISIONS#rows-541-550]
+Total: 10.

@@ -1,0 +1,158 @@
+[
+  {
+    "query": "the brand never comments the contrast is the tone",
+    "results": [
+      {
+        "id": "EDIT37#4.1~1",
+        "score": 18.244
+      },
+      {
+        "id": "DECISIONS#rows-81-90~2",
+        "score": 10.44
+      }
+    ]
+  },
+  {
+    "query": "marketing gloss game-show cheer generic science fiction",
+    "results": [
+      {
+        "id": "DESIGN#D9.2",
+        "score": 14.998
+      },
+      {
+        "id": "EDIT37#decisions",
+        "score": 10.621
+      }
+    ]
+  },
+  {
+    "query": "a line may only say what the game state guarantees",
+    "results": [
+      {
+        "id": "FLEET#F2",
+        "score": 8.341
+      },
+      {
+        "id": "FLEET#F8",
+        "score": 8.061
+      }
+    ]
+  },
+  {
+    "query": "banned terms level game player city names Shenzhen",
+    "results": [
+      {
+        "id": "DESIGN#D1",
+        "score": 14.977
+      },
+      {
+        "id": "FLEET#F2",
+        "score": 14.708
+      }
+    ]
+  },
+  {
+    "query": "roof no traffic ledge drop high highway Interchange CBD only",
+    "results": [
+      {
+        "id": "EDIT44#evidence",
+        "score": 33.83
+      },
+      {
+        "id": "EDIT44#open-items",
+        "score": 24.617
+      }
+    ]
+  },
+  {
+    "query": "the dummy starts on B1 on the river",
+    "results": [
+      {
+        "id": "EDIT40#7.1.1",
+        "score": 6.01
+      },
+      {
+        "id": "EDIT42#7.9",
+        "score": 5.376
+      }
+    ]
+  },
+  {
+    "query": "High highway: fast deck traffic. A broken parapet is a long drop to whatever lies below.",
+    "results": [
+      {
+        "id": "EDIT44#7.7",
+        "score": 20.62
+      },
+      {
+        "id": "EDIT44#evidence",
+        "score": 17.612
+      }
+    ]
+  },
+  {
+    "query": "Flyovers carry their own traffic. A roundabout with a matting island marks the centre.",
+    "results": [
+      {
+        "id": "EDIT26#7.2~1",
+        "score": 20.152
+      },
+      {
+        "id": "EDIT41#decisions",
+        "score": 17.9
+      }
+    ]
+  },
+  {
+    "query": "Low highway: deck traffic only. A broken parapet drops you to the road.",
+    "results": [
+      {
+        "id": "EDIT44#7.7",
+        "score": 20.321
+      },
+      {
+        "id": "LOG#P3.1",
+        "score": 17.329
+      }
+    ]
+  },
+  {
+    "query": "Narrow streets around a fountain. Puddles slow you and vans are many.",
+    "results": [
+      {
+        "id": "EDIT26#5.6~1",
+        "score": 14.16
+      },
+      {
+        "id": "DRIVER#DB8",
+        "score": 12.11
+      }
+    ]
+  },
+  {
+    "query": "The test centre the city was modelled on. Calibrated plates pay more.",
+    "results": [
+      {
+        "id": "LOG#P3/automated-evidence-automated-evidence",
+        "score": 10.275
+      },
+      {
+        "id": "EDIT26#3.1",
+        "score": 9.805
+      }
+    ]
+  },
+  {
+    "query": "Roof: no traffic. Step off a ledge to fall to the deck or road below.",
+    "results": [
+      {
+        "id": "EDIT44#5.2",
+        "score": 24.039
+      },
+      {
+        "id": "EDIT44#7.4",
+        "score": 15.403
+      }
+    ]
+  }
+]

@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · T1 (major, −2) "Circle the roundabout faster than visitors, and chain each hit to the last." The tone is flat, as T1 requires, but the tale only gives orders: nothing ties the chain to Certification, to clients or to the Expo opening, so it does not motivate the trainee. [EDIT95#3.2, EDIT95#3.1, EDIT95#3.3] Fix: "The arch is the Expo's gate. Clients enter when the park passes; chain each hit to the last." (17 words, two sentences, duty unchanged, no equipment named).
+Total: 10 − 2 = 8.

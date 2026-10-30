@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 22.019
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 13.107
+      }
+    ]
+  },
+  {
+    "query": "defer explanatory copy naming counter until changed return",
+    "results": [
+      {
+        "id": "ENG#6.5",
+        "score": 12.794
+      },
+      {
+        "id": "DESIGN#D5.3",
+        "score": 12.506
+      }
+    ]
+  },
+  {
+    "query": "corporate politeness barely contains personality dry register",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 9.882
+      },
+      {
+        "id": "EDIT26#4.1~1",
+        "score": 6.907
+      }
+    ]
+  },
+  {
+    "query": "write-off barks take priority cooldown prevents overlap",
+    "results": [
+      {
+        "id": "ENG#8.5",
+        "score": 10.499
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 9.372
+      }
+    ]
+  },
+  {
+    "query": "feedback never hides a car's cues where feedback and a cue conflict the cue wins",
+    "results": [
+      {
+        "id": "EDIT26#5.5",
+        "score": 29.964
+      },
+      {
+        "id": "JUICE#J3",
+        "score": 19.186
+      }
+    ]
+  },
+  {
+    "query": "mockery game-show cheer generic science fiction commentary interchangeable",
+    "results": [
+      {
+        "id": "JUICE#J1",
+        "score": 6.123
+      },
+      {
+        "id": "ENG#7.2",
+        "score": 5.993
+      }
+    ]
+  },
+  {
+    "query": "Closest car-to-dummy distance at or under which a no-contact pass counts as a near miss (about 3.3 m at proto.scale.unitsPerMetre).",
+    "results": [
+      {
+        "id": "DRIVER#DB1",
+        "score": 23.237
+      },
+      {
+        "id": "DRIVER#DB7",
+        "score": 17.876
+      }
+    ]
+  },
+  {
+    "query": "Radius around the end of a contactless lunge within which the nearest car speaks (matches perception.sideRadius).",
+    "results": [
+      {
+        "id": "DRIVER#DB3a",
+        "score": 16.092
+      },
+      {
+        "id": "BRIEF#P1.6",
+        "score": 15.497
+      }
+    ]
+  },
+  {
+    "query": "Minimum car speed for a close pass to count as a near miss; slow creeping cars do not qualify.",
+    "results": [
+      {
+        "id": "DRIVER#DB4",
+        "score": 15.175
+      },
+      {
+        "id": "LOG#P1.8",
+        "score": 13.452
+      }
+    ]
+  },
+  {
+    "query": "Bubble text size: above texture type, below secondary type, readable at exhibition volume.",
+    "results": [
+      {
+        "id": "EDIT26#4.2~3",
+        "score": 15.443
+      },
+      {
+        "id": "EDIT26#4.2~2",
+        "score": 15.441
+      }
+    ]
+  },
+  {
+    "query": "On-screen time of one bubble; long enough to read two short lines at exhibition volume.",
+    "results": [
+      {
+        "id": "EDIT26#5.2~6",
+        "score": 15.553
+      },
+      {
+        "id": "EDIT26#5.5",
+        "score": 15.264
+      }
+    ]
+  },
+  {
+    "query": "Global gap between new bubbles of equal or lower priority, so barks do not overlap.",
+    "results": [
+      {
+        "id": "EDIT26#8.2",
+        "score": 8.726
+      },
+      {
+        "id": "LOG#P1.3/physics-basis",
+        "score": 8.703
+      }
+    ]
+  }
+]

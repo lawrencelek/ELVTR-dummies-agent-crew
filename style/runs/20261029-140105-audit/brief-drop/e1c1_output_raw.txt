@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The brief checks out: it matches the drop row in [STORY#S3] word for word and follows the F8 form, with a caps label of 15 characters ([STORY#S3]). Its tone is procedural, with no "!" ([EDIT92#3]). It uses no banned or game words and stays within the glossary ([FLEET#F2], [FLEET#F3], [DECISIONS#rows-531-540~2]). It has no typed figures ([STORY#S1]), and it agrees with the drop tiles [STORY#MC1] and [STORY#WC2].
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 for tone, V1, V3, V4, V6 and V8 for vocabulary and the story frame, F5–F7 for format, and R4–R5 for truth. "even" replaces the banned "level" from the shipped tale [DECISIONS#rows-531-540~2]. "Arms 2 is fitted: a stronger push." names the equipment this tile issues [EDIT93#3.1]. "push off one car into the next" matches the PUSH OFF A CAR brief [STORY#S3]. The pools and the gardener belong to this tile [STORY#PA1]. Lint found nothing, there is no "!", the cars are treated as colleagues, and nothing breaks Act II's frame [EDIT92#3].
+Total: 10.

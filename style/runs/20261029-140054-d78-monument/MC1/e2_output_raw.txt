@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines and found no violation. Each keeps its tier's voice (T7, [FLEET#F4]): t109 is a Luxury sniff with no apology, t110 is Corporate procedure with flavour paperwork that F5 allows, t111 is a resigned Consumer mutter, and t112 is a Budget shout where "!" and "?!" are allowed (T10, [DECISIONS#rows-541-550] row 541) with "Kindly." as the polite tag (T9). The lines name places, not grid codes: the Monument district and the drum, which is C1's own landmark (V5, R4, [STORY#MC1], [SUB4#6.2]). They claim no drop, speed, damage or motive beyond what the logged impact supports (R1–R3, [FLEET#F8], [DESIGN#D9.3]). There are no banned terms and no stock endings (V1, T11, [FLEET#F2], [SUB4#6.1]), and the lint found nothing (F1–F5, [EDIT39#6.6], [FSG#field-text]).
+Total: 10.

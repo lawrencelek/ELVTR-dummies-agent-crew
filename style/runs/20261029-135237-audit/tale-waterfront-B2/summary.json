@@ -1,0 +1,52 @@
+{
+ "case": "tale-waterfront-B2",
+ "class": "audit",
+ "title": "shipped tale waterfront B2",
+ "request": null,
+ "scores": [
+  9,
+  10
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "best_version": 1,
+ "seconds": 43.6,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 20.8,
+   "output_tokens": 1788,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1540628
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.3,
+   "output_tokens": 606,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13157899999999997
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 14.5,
+   "output_tokens": 1071,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1397309
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4254
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3, T4, T5 and T13 for deadpan, inspiring voice, training framing, address and adjectives [EDIT95#3.2, EDIT95#3.1]; V1, V3, V4, V8 and V11 for banned words, the glossary, the company name, the dummy's status and naming its landmark, the neon shops, and turning it toward the duty [EDIT95#3.1, STORY#MA2]; F5, F6, F7 and F11 for "Hands 1" as an allowed part rank, two sentences and 34 words in the 15–35 range, equipment named on the tile that issues it, and no padding or repeated brief [EDIT97#3.2, STORY#S1]; and R4 and R5 for the shops under the highway and their signs, which the tile has, and a duty that matches CONE-BAITED CAR [STORY#MA2, EDIT92#7, STORY#S3].
+Total: 10.

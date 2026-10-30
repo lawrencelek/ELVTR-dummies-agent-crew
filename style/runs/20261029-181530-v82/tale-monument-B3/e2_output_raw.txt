@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13, V1–V4, V6, V8, V11, F5–F7, F11, R4 and R5 and found no violation: it has 32 words in two sentences, names its own place (two facing screens and the skybridge), fits Legs 1 on its issuing tile, and its duty, "jump into a car", matches the JUMP INTO A CAR brief. [EDIT97#3.2] [EDIT95#3.1] [EDIT95#3.2] [STORY#MB3] [STORY#S1] [STORY#S3] [EDIT93#3.1]
+Total: 10.

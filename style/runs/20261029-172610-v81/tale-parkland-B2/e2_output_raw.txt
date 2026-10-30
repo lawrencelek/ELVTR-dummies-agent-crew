@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3–T5 and T13 [EDIT95#3.2] [PLAY#PS2], and against V1, V3, V6, V8, V9 and V11, including the landmark "the ring over the pools" turned toward the duty [EDIT95#3.1] [EDIT95#3.3] [STORY#PB2]. I checked the length cap of two sentences and 35 words under F6, the fitting of Battery 2 under F7, and the {n} placeholder under F5 [EDIT96#3.2] [STORY#S1]. I checked R4 and R5: the chain matches the COMBO brief, Battery 2 is issued on this tile, and the Expo opens to clients when the park's last tile passes [STORY#S3] [EDIT95#3.3].
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked tone, framing and adjectives (T1–T5, T13) against [EDIT95#3.2] and [PLAY#PS2]. I checked vocabulary and the OPENING DAY frame, which says the Expo opens to clients, under V1–V9 against [EDIT95#3.1] and [EDIT95#3.3]. Length is 19 words in two sentences, and equipment is named on its issuing tile as Arms 1, a part rank (F5–F7) [EDIT95#3.2], [STORY#S1]. The duty matches the brief "PUSH OFF A CAR", and the lantern is on this tile (R4–R5) [STORY#S3], [STORY#PC1], [EDIT92#7].
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Honour the declaration on the raised road." The tale has 4 sentences; the limit is 2 (lint fact). Its 32 words are within the 35-word tale cap. [EDIT96#3.2] Fix: cut it to two sentences, e.g. "The west customs post logs every chassis bound for clients across the river. Your entry reads PURPOSE DESTRUCTION; honour it on the raised road."
+- tale · V6 (major, −2) "ORIGIN OVERSEAS … You were shipped here to be tested." This makes customs the dummy's arrival from abroad. Under Act III's frame, customs is where Certified dummies ship out to clients across the river. It also clashes with Act I, where the trainee comes off the factory floor. This line comes from Edit 92's customs log, which EDIT95 replaces. [EDIT95#3.3] Fix: drop "ORIGIN OVERSEAS" and "You were shipped here to be tested". Point the log outward to the clients, as in the F6 fix: "The west customs post logs every chassis bound for clients across the river."
+Total: 10 − 4 − 2 = 4.

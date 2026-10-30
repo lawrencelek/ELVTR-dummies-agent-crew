@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: falls. The final hit must be a drop onto a car from above." The brief opens with the "coverage gap" framing that EDIT98 removed, not with an imperative goal saying what to do. [EDIT98#3.2] Fix: "Drop onto a car from above. The final hit must be that drop." Keep the label "DROP ONTO A CAR".
+Total: 10 − 2 = 8.

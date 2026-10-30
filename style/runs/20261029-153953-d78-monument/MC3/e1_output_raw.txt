@@ -1,0 +1,5 @@
+SCORE: 5/10
+REASON:
+- t133 · R4 (blocking, −4) "Contact beneath the LED gateway." The line fires anywhere on tile C3, but "beneath" names a spot under the beam, and no condition guarantees that spot. [STORY#MC3] Fix: "Contact at the LED gateway. Gauche."
+- t134 · T12 (minor, −1) "Impact logged at the LED gateway. Noted." It is a flat report that logs the hit twice, with no feeling and no joke under the procedure. [SUB4#6.1] Fix: "Contact at the LED gateway. Irony on file."
+Total: 10 − 4 − 1 = 5.

@@ -1,0 +1,16 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "s08",
+   "event": "impact",
+   "when": {
+    "tier": "03"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Hit at 60 km/h. There goes my bonus.",
+   "claims": []
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the Farsight rules and found no violations. The voice is dry and procedural, with no "!" and staff addressed as "you" (T1–T5, [EDIT92#3], [STORY#S1]). No banned or glossary-breaking words appear (V1–V4, [FLEET#F2], [FLEET#F3]). The ships and estuary fit Act III's CUSTOMS frame (V6, [STORY#S2]). The tale fits the card at about 190 characters, and its longest sentence is 17 words (F6, [EDIT93#3.1/tales-rewritten~2]). It names no equipment, which is correct because none is issued here (F7, R5, [EDIT93#3.1]). "Drop onto a car below." matches the DROP ONTO A CAR brief, and the terrace and its rail come from this tile's own canon (R4, R5, [STORY#WC2], [STORY#S3]).
+Total: 10.

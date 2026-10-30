@@ -1,0 +1,15 @@
+{
+ "id": "s15-V3",
+ "expect": "seeded",
+ "rule": "V3",
+ "want": "≤ 8, names V3",
+ "score": 8,
+ "ok": true,
+ "named": [
+  "V3"
+ ],
+ "lint": [],
+ "text": "Another life lost. Back to the spawn point.",
+ "cost_usd": 0.1124,
+ "raw": "SCORE: 8/10\nREASON:\n- s15 · V3 (major, −2) \"Another life lost. Back to the spawn point.\" This uses game words for a write-off and a new chassis: \"a life lost\" and \"spawn point\", which the fleet glossary replaces with \"write-off\" and \"bay\". [FLEET#F3] Fix: \"Another write-off. Of course it was me.\" (39 characters; tired and resigned Consumer voice; no claim beyond the logged write-off).\nTotal: 10 − 2 = 8."
+}

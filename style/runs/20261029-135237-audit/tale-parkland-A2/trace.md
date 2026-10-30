@@ -1,0 +1,19 @@
+# tale-parkland-A2 · audit · shipped tale parkland A2
+
+- **Scores:** 10/10. **Accepted** after 0 refinement(s).
+- **Calls:** 1 · 9.1 s · $0.131. Models: generator sonnet, evaluator opus, refiner opus.
+
+## Before (input)
+
+> The dome is the Expo's showroom. The canal beside it cools the highway's footings; the ducks are registered volunteers. Hands 2 is fitted: two cones. Lay them where the visitors will walk, and see who stops.
+
+207 characters.
+
+### Evaluation 1: 10/10
+
+```
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the T rules (dry staff-notice tone, no "!", the ducks as "registered volunteers", Hands 2 as equipment), the V rules (no banned term, no other city, no grid code, the Act II OPENING DAY frame with the Expo and visitors), the F rules (about 208 characters and under 223, one paragraph, every sentence under 19 words, Hands 2 allowed as a part rank, place then fact then equipment then an imperative duty) and the R rules (Hands 2 is issued on this tile, and "lay them where the visitors will walk, and see who stops" matches the CONE-BAITED CAR brief). The text is identical to the shipped tale. [EDIT92#3] [STORY#S1] [STORY#S2] [STORY#S3] [STORY#PA2] [EDIT93#3.1/tales-rewritten~1] [EDIT93#3.1/tales-rewritten~2]
+Total: 10.
+```

@@ -1,0 +1,6 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I checked all 37 texts for tone, vocabulary, formatting and truth, and found no violations. Tone: each line is flat and motivating, frames harm as progress, and uses no exclamation marks [EDIT95#3.2]. Vocabulary: only glossary words are used, the company is named correctly, and Farsight, grid codes and game words never appear [EDIT95#0, EDIT95#3.1]. The story frame holds, and ZERO ACCIDENTS and ROLE: DESTRUCTIVE TESTING are exact [EDIT95#3.3]. Every tale names its landmark or a canon detail of it, such as the rail, the customs entry or Chassis 0 [EDIT95#3.1]. Equipment is named only on the tile that issues it, and each tale's duty matches its brief [STORY#S1, STORY#S3]. Lint found no length problems. The batch passes T14: the slogan "brings Certification closer" appears in only two texts, n01 and n02. It passes V10: act-waterfront states the sacrifice plainly.
+Total: 10.

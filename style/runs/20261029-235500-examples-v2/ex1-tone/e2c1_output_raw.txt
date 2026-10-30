@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. The tale is in voice for STORY#MA3, with one dry image and no wink: "The stacked cubes rose one budget at a time. Certification rises the same way: one hit, then another, quickly." I checked four groups of rules:
+  - **Tone:** deadpan and motivating, with no "!" and no intensifiers; it frames the hits as training toward Certification [EDIT95#3.2, EDIT95#3.3, PLAY#PS2].
+  - **Place and duty:** it names its landmark, the stacked cubes, and uses the canon detail that they rose one budget at a time. It turns that detail toward the duty, a combo that matches the brief COMBO ×{n} [EDIT95#3.1, STORY#MA3, STORY#S3].
+  - **Equipment:** the tile issues none, and the tale names none [EDIT93#3.1].
+  - **Length and frame:** 19 words in two sentences, inside 15 to 20, with no placeholders or figures. It fits the INDUCTION frame and uses no banned words or company names [EDIT98#3.2, STORY#S1, EDIT95#0, EDIT95#3.3].
+Total: 10.

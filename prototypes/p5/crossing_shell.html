@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skewed Crossroads Options</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --good: #57e389; --warn: #ffb347; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 4px 0 0; color: var(--dim); max-width: 1000px; }
+  main { padding: 12px 16px 32px; display: grid; gap: 12px; max-width: 1500px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+  canvas { display: block; image-rendering: pixelated; width: 100%; height: auto; border-radius: 6px; background: #10141c; }
+  .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 12px; }
+  .opts > figure { margin: 0; min-width: 0; }
+  figcaption { font-size: 12px; color: var(--dim); margin-top: 6px; }
+  figcaption b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
+  figcaption ul { margin: 4px 0 0; padding-left: 18px; }
+  .plus { color: var(--good); } .minus { color: var(--warn); }
+  .live { color: var(--accent); margin-top: 4px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 1px; }
+  .yes { background: #173a26; color: var(--good); } .no { background: #3a2417; color: var(--warn); } .some { background: #16304a; color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { color: var(--dim); font-weight: 600; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .scroll { overflow-x: auto; }
+  button { background: #1d2a40; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  a { color: var(--accent); }
+  .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 1000px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>A 45° crossroads · four engineered options</h1>
+  <p>Example only, not in the districts. A W–E road (priority) crossed by a 45° road, in game art with live P5 traffic. Road design guides want crossings at 90°, accept 75° and realign anything under 60°. A 45° four-way crossing is below every guide's minimum. These are the four standard ways out.</p>
+  <p><b style="color:var(--ink)">Decided (user, 26 October; supersedes 25 October):</b> every four-way junction takes a roundabout (C), its arms brought in 90° apart; street rings smaller than highway rings. Three-way joins meet at 90° after a transition bend (A's method). D only where a level design names it. B is not used.</p>
+</header>
+<main>
+  <section>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><button id="play">Pause</button><span class="note" style="margin:0">Each option runs its own traffic. Cars enter at its edges about every 1.6 s.</span></div>
+    <div class="opts">
+      <figure><canvas id="x0"></canvas><figcaption><b>Today: crossroads at 45°<span class="tag no">Retired</span></b>
+        Four arms meet at one point. The 45° road gives way.
+        <ul><li class="minus">Two turns are 135° hairpins; drivers on the 45° road look back over their shoulder.</li><li class="minus">Paths cross in the middle of a wide, skewed box.</li></ul>
+        <div class="live" id="l0"></div></figcaption></figure>
+      <figure><canvas id="x1"></canvas><figcaption><b>A · Realigned to 90°<span class="tag some">Three-way joins only</span></b>
+        The 45° road bends to meet the W–E road square, then bends back out. The standard fix below 60°.
+        <ul><li class="plus">One junction, every turn 90°, clear sightlines.</li><li class="minus">Needs land for the reverse curves (R 224 bends); the 45° road slows for them.</li></ul>
+        <div class="live" id="l1"></div></figcaption></figure>
+      <figure><canvas id="x2"></canvas><figcaption><b>B · Staggered T junctions<span class="tag no">Not used</span></b>
+        The crossing splits into two T junctions 256 apart. Crossing traffic turns left onto the W–E road, then right off it (the preferred stagger, keep right).
+        <ul><li class="plus">Only three-way junctions, each at 90°; one conflict at a time.</li><li class="minus">Crossing traffic shares the W–E road for a block; left turns queue on the link.</li></ul>
+        <div class="live" id="l2"></div></figcaption></figure>
+      <figure><canvas id="x3"></canvas><figcaption><b>C · Roundabout, skew kept<span class="tag yes">Every four-way, arms 90° apart</span></b>
+        A four-arm ring takes the arms as they come. Nothing crosses; everything merges.
+        <ul><li class="plus">No crossing conflicts; every turn allowed; the game's ring rules apply.</li><li class="minus">Arms 45° apart get short, tight entries (R 64). Takes the most space.</li></ul>
+        <div class="live" id="l3"></div></figcaption></figure>
+      <figure><canvas id="x4"></canvas><figcaption><b>D · Flyover (grade separated)<span class="tag some">Named level designs only</span></b>
+        The 45° road rises on a Z1 deck and passes over. The interchange answer for heavy traffic.
+        <ul><li class="plus">No conflict at all; uses the game's Z1 highway kit and its drop-onto-cars play.</li><li class="minus">No turns between the two roads without ramps or link roads elsewhere.</li></ul>
+        <div class="live" id="l4"></div></figcaption></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Measured (P5 driver, cars only, 180 s × 3 seeds)</h2>
+    <div class="scroll"><table id="cmp"></table></div>
+    <p class="note">Generated by <code>node tools/crossing_report.js</code>. Conflict points are the textbook counts: a four-leg crossing 32, two offset T junctions 22, a four-leg roundabout 8. Offset T pairs are reported 1.5–2 times as safe as crossroads for the same flow. One junction passes 22–25 cars a minute here: the lab holds new cars while an entry is blocked.</p>
+  </section>
+  <section>
+    <h2>Sources</h2>
+    <ul class="note">
+      <li><a href="https://iowadot.gov/design-manual/chapter-6-geometric-design/6a-8-intersection-alignment-and-realignment">Iowa DOT Design Manual 6A-8: intersection alignment and realignment</a> — 90° ideal, 75° desirable, realign below 60°; realign the crossroad, or offset it into two T junctions (left then right preferred).</li>
+      <li><a href="https://highways.dot.gov/safety/other/older-road-user/handbook-designing-roadways-aging-population/chapter-7-intersections">FHWA Handbook for Designing Roadways for the Aging Population, ch. 7</a> — AASHTO accepts 60°; the Traffic Engineering Handbook asks for no less than 75°.</li>
+      <li><a href="https://www.essexdesignguide.co.uk/design-details/highways-technical-manual/junction-types-and-design/">Essex Design Guide: junction types and design</a> — right-left stagger preferred (keep left); 45° is the hard limit for a skewed junction.</li>
+      <li><a href="https://wisconsindot.gov:443/rdwy/fdm/fd-11-26.pdf">WisDOT Facilities Development Manual 11-26: roundabouts</a> — legs ideally at 90°; a roundabout can leave an existing skew in place.</li>
+      <li><a href="https://www.oregon.gov/ODOT/Engineering/TRSDocs/Safety_Research/safety_of_4-leg_vs_t.pdf">ODOT, Safety of 4-leg vs T intersections</a> — 32 conflict points become 22 at two offset T junctions; offset pairs 1.5–2 times as safe.</li>
+      <li><a href="https://www.fhwa.dot.gov/resourcecenter/teams/safety/teamsafe_rndabout.pdf">FHWA Resource Center: roundabouts</a> — 32 conflict points at a four-way intersection, 8 at a roundabout.</li>
+    </ul>
+  </section>
+</main>
+<!--SCRIPTS-->
+<script>
+(function () {
+  const R = window.CROSS_REPORT, t = document.getElementById('cmp'); if (!R) return;
+  const names = R.geo.map((g) => g.name), rg = (v) => (Math.min(...v) === Math.max(...v) ? '' + Math.min(...v) : Math.min(...v) + '–' + Math.max(...v));
+  let h = '<tr><th>Option</th><th>Conflict points</th><th>Tightest lane</th><th>Cars out /min (one car every 1.8 s offered: 33)</th><th>Jams (of 9 runs)</th><th>Longest wait on the 45° road (s)</th></tr>';
+  for (const g of R.geo) { const rs = R.rows.filter((r) => r.name === g.name && r.interval === 1.8), all = R.rows.filter((r) => r.name === g.name); h += `<tr><td>${g.name}</td><td class="n">${g.points}</td><td class="n">${g.minR == null ? 'straight' : 'R ' + g.minR}</td><td class="n">${rg(rs.map((r) => r.outPerMin))}</td><td class="n">${all.filter((r) => r.jam).length}</td><td class="n">${rg(rs.map((r) => r.minorWait))}</td></tr>`; }
+  t.innerHTML = h;
+})();
+</script>
+</body>
+</html>

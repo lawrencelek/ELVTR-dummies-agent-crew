@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The gardener tends the three terraced pools by hand and asks that cars stop before the water. Arms 2 is fitted: teach them by pushing off one car into the next." At 31 words, the tale runs past the 20-word cap for tales. [EDIT98#3.2] Fix: "The gardener asks that cars stop before her pools. Arms 2 is fitted: push off one, and teach the next." (20 words, two sentences; keeps the pools and the gardener, Arms 2, and the push-off-one-car duty.)
+Total: 10 − 4 = 6.

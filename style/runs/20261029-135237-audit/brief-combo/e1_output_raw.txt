@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label and brief match the shipped combo row in [STORY#S3] word for word, and the same text appears on [STORY#MA3], [STORY#PB2] and [STORY#WB2]. The label fits F8's 19-character cap, and the figure is the registry placeholder {n}, not a typed value (F5, [STORY#S1]). Tone and employment framing hold: it reads as a procedural duty with no "!" (T1–T3, [EDIT92#3]). It uses no banned or game words (V1, V3, [FLEET#F2], [FLEET#F3]), and lint found nothing.
+Total: 10.

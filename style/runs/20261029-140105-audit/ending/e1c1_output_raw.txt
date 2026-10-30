@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the ending for tone and framing: dry staff-notice register, you-address, Farsight named in the third person, the dummy called "your model", and no comment on the harm (T1–T5 [EDIT92#3], [STORY#S1], [EDIT39#4.1.1]). I also checked vocabulary: no banned terms, one city, the Act III customs and shipping frame, and "Farsight" in title case (V1–V4, V6, V8 [FLEET#F2], [FLEET#F3], [DECISIONS#rows-531-540~2], [STORY#S2]). The lint found no "!" and no figures (T2, F5). On truth, the text matches the built ending word for word, and the drone, river and container ship match the finale as built (R4 [STORY#S5], [EDIT92#3.2], [EDIT94#3.2]).
+Total: 10.

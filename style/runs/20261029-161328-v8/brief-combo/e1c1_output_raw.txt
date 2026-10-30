@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "COMBO ×{n}" and the duty against the following, and found no violation:
+  - **Form:** the brief form (F8, [STORY#S3]). The label is caps and 10 characters, and the duty states the coverage and the final hit.
+  - **Length:** two sentences and 15 words (F6, [EDIT95#3.2]).
+  - **Placeholder:** {n} is kept as given, with no typed figure (F5, F10, [STORY#S1]).
+  - **Tone:** deadpan, with no "!" and no intensifiers (T1, T2, T13, [EDIT95#3.2], [PLAY#PS0]).
+  - **Training framing, glossary and banned words:** no violations (T3, V1, V3, [EDIT95#3.1], [FLEET#F2]).
+  - **Combo canon:** the brief matches the combo brief on [STORY#MA3], [STORY#PB2] and [STORY#WB2] (R5).
+Total: 10.

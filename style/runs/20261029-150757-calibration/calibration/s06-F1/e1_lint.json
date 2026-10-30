@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "Front contact logged under policy 6.3; incident file opened; KPIs adjusted.",
+  "measured": "75 characters > 48 (style.bark.maxChars)",
+  "source": "EDIT39#6.6"
+ }
+]

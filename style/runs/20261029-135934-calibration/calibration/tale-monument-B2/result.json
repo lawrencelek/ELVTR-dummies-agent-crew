@@ -1,0 +1,13 @@
+{
+ "id": "tale-monument-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashi",
+ "cost_usd": 0.1096,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against Farsight's voice (polite, dry, no \"!\", cars as colleagues, harm understated), the Act I INDUCTION frame and the exact phrase ZERO ACCIDENTS, the banned-word list and glossary, the card length and sentence limits, the lack of equipment on this tile, and whether the walk-or-stand duty matches the STRUCK, NOT DASHING brief, and found no violation. [EDIT92#3] [STORY#S1] [STORY#S2] [STORY#S3] [EDIT39#4.1.1] [FLEET#F2] [FLEET#F3] [EDIT92#measured] [EDIT93#3.1/tales-rewritten~2] [DECISIONS#rows-531-540~2] [STORY#MB2]\nTotal: 10."
+}

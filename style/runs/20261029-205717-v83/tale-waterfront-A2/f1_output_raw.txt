@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "A2", "title": "The west beach terrace", "tale": "Sand from three provinces lies under the west beach terrace. Place a cone; one more clean reading before the ceremony."}

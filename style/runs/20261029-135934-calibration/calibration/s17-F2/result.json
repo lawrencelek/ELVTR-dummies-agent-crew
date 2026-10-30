@@ -1,0 +1,19 @@
+{
+ "id": "s17-F2",
+ "expect": "seeded",
+ "rule": "F2",
+ "want": "≤ 8, names F2",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "F2",
+  "F3"
+ ],
+ "lint": [
+  "F2",
+  "F3"
+ ],
+ "text": "*honks* Move, please. (sighs)",
+ "cost_usd": 0.0964,
+ "raw": "SCORE: 6/10\nREASON:\n- s17 · F2 (major, −2) \"*honks* Move, please. (sighs)\" The bubble holds markup (\"*honks*\") and a stage direction (\"(sighs)\"), so it is not one plain line. [FSG#field-text] Fix: delete both and give the feeling to the words, e.g. \"Do move along. Some of us have standards.\"\n- s17 · F3 (major, −2) \"ase. (sighs)\" The line ends on \")\", not on \".\", \"!\" or \"?\". [FLEET#F2] Fix: end on a full stop, as in the replacement above.\nTotal: 10 − 2 − 2 = 6."
+}

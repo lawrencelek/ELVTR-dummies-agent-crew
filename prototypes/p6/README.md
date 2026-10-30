@@ -1,0 +1,316 @@
+# DUMMIES — Prototype 6.10: Hands and Arms. Pick up with X, push off cars with Y
+
+**Prototype 6.10 · 27 October 2026 · Lawrence Lek** · Spec: GDD Edits 62–80 (proposed), built on Edits 51–61. P3, P4 and P5 are unchanged.
+
+Prototype 6.10 follows 6.9 (Edit 79) with Edit 80: four tracks again. Hands (X, two levels): a tap picks up a cone, a hold of 0.3 s puts it down; Hands 1 carries one, Hands 2 two. Arms (Y, three levels): push off a car you hit or touch, a ricochet you time; stronger and once more per level. The throw, the hitch and the cone link retire. 6.9 (Edit 79) brought: three abilities of three levels (Battery, Legs, Arms); X holds to throw; Arms 3 hitches a passing car and slings off it; combos pay for variety and keep their clock in the air; a thrown cone into a car links a chain; a combo meter. 6.8 (Edit 78) brought: four levels per ability, each a linear step (airtime 0.3–0.6 s, 1–4 cones, throw range +40, recharge −0.1 s); the bounce off a car is Newtonian and tunable. 6.7 (Edit 77) brought: the shop sells four ability tracks, one per button, by level; each level shields its ability from damage; only a running or dash jump clears. 6.6 (Edit 76) brought: the screen fills the window at any scale; touch controls only on phones and tablets, in the game's glass panels; a jump that keeps its take-off speed (Link's Awakening); the stair-head freeze fixed. A jump test yard sits beside it (`../jump/`). 6.5 (Edit 75) brought DIRECT turning; A dash, B jump, X grab, Y throw, each unlocked in the shop; the jumpable tag; combo scoring; Ricochet; gamepads of any kind; landscape touch. 6.4 (Edit 72) brought the ring diagnosis, vehicles at 0.9 size and steady roundabout signals.
+
+- **`dummies_p6_10.html`:** the game. Parkland → Waterfront → Monument. Open in a browser; no server. Frozen since Prototype 7 (`../p7/`).
+- **Live (GitHub Pages):** https://lawrencelek.github.io/ELVTR-Multiagent-Submission-5/p6-10/ (6.10); the site's front page is now Prototype 7. Also `/jump/` (jump test) and `/controls/` (control test), from [ELVTR-Multiagent-Submission-5](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-5). Gamepads, touch and keys. Claude's hosted preview blocks gamepads.
+- **`p6_10_page.html`:** the same page for Claude's hosted preview (touch and keys; no gamepads).
+- **`dummies_p6_9.html`:** Prototype 6.9 (Edit 79). Frozen.
+- **`dummies_p6_8.html`:** Prototype 6.8 (Edit 78). Frozen.
+- **`dummies_p6_7.html`:** Prototype 6.7 (Edit 77). Frozen.
+- **`dummies_p6_6.html`:** Prototype 6.6 (Edit 76). Frozen.
+- **`dummies_p6_5.html`:** Prototype 6.5 (Edit 75). Frozen.
+- **`dummies_p6_4.html`:** Prototype 6.4 (Edit 72). Frozen.
+- **`dummies_p6_3.html`:** Prototype 6.3 (Edit 71). Frozen.
+- **`dummies_p6_2.html`:** Prototype 6.2 (Edit 70). Frozen.
+- **`dummies_p6_1.html`:** Prototype 6.1 (Edit 69). Frozen.
+- **`dummies_p6.html`:** P6 as released (Edit 62). Frozen.
+- **`world6.js`:** the world. Art, edges, traffic, play data and the player sim (`Sim6`) per district.
+- **`circus_valley.js`:** the Waterfront plan (Edits 58–61). One source for its layout.
+- **`test_p6.js`:** headless checks, the release tests included. `node test_p6.js [minutes]`.
+- **`test_p610.js`:** Prototype 6.10's checks (Edit 80: four tracks, Hands tap and hold, Hands 1–2 cones, the push by Arms level, pushes before landing, one push a contact, the ricochet combo; then 6.9's and 6.8's): DIRECT, the jump by take-off speed and Legs level, run to clear, stair heads, jumpable tag, combo variety; prices and wear shields; the Newtonian bounce; keys, the shop, fit to screen, an emulated USB joypad, touch. `node test_p610.js [screenshot folder]`.
+- **`../jump/jump.js`:** the jump's rules, shared with the jump test. Bundled by `build.py`.
+- **`tools/p65_shots.js`:** the jump, combo and phone shots. `node tools/p65_shots.js [folder]`.
+- **`../controls/pads.js`:** gamepads, shared with the controls prototype. Bundled by `build.py`.
+- **`tools/p6_traffic.js`:** the traffic soak. `node tools/p6_traffic.js [seconds per screen] [district]`. `P6OV=key=value,…` overrides registry values.
+- **`tools/p6_rings.js`:** roundabout entries: waits at the line, signals. `node tools/p6_rings.js [seconds per screen] [district|all] [key=value …]`.
+- **`tools/p6_ringstall.js`:** why cars stall at rings: stopped time by phase and cause, queue heads, ring jams, signal changes. `node tools/p6_ringstall.js [seconds per screen] [district|all] [watch=B2] [block=x,y] [seed=n] [key=value …]`.
+- **`tools/p6_walk.js`:** the walking test. `node tools/p6_walk.js [district]`.
+- **`tools/p6_nav.js`:** the navigation checks: dead space, garden paths, flight forecourts, one ground. `node tools/p6_nav.js [district]`.
+- **`tools/p6_audit.js`:** the playtest audit on all 27 screens. `node tools/p6_audit.js [district]`.
+
+## Controls (6.10)
+
+| | Keys | Gamepad | Touch (phones and tablets, landscape) | Unlocked by |
+|---|---|---|---|---|
+| Move | WASD / arrows (8 directions) | left stick or d-pad | analog stick, left column | — |
+| Dash | SPACE or K | A (or RT) | A, the diamond's foot | start; Battery speeds it |
+| Jump | L or SHIFT | B | B, right | Legs 1 |
+| Pick up a cone | J or E, tap | X, tap | X, left, tap | Hands 1 (one cone); Hands 2 (two) |
+| Put a cone down | J or E, hold `input.dropHoldSeconds` (0.3 s) | X, hold | X, hold | Hands 1 |
+| Push off a car | I or Q, after a hit or beside a car | Y | Y, the diamond's top | Arms 1 |
+| Pause | ESC or P | START | ❚❚ PAUSE chip | — |
+| Pad setup | G | hold START `proto.input.padSetupHoldSeconds` (1 s) | — | — |
+
+- **DIRECT** (`proto.turnModel` 2): facing follows the input at `movement.directTurnRate` (1080°/s); no turning slow-down; no reversal stop; the dash goes where the player points; speed scales with tilt.
+- **Jump (after Link's Awakening):** keeps the take-off speed. Always `upgrades.jumpHeight` (44) at the top, `upgrades.jumpAirtime` (0.5 s) in the air; `battery.jumpCost` (1).
+  - Ground covered = take-off speed × airtime: standing 0 · walking 41 · running 81 · B during a dash 162 (`upgrades.jumpMaxSpeed` 324).
+  - **6.7, run to clear** (`proto.jump.runToClear`): a standing or walking jump hops and clears nothing. Only a running or dash jump clears.
+  - Diagonals are longer to cross: a running jump clears a handrail to 55° off square, a sedan broadside to 32°.
+  - A normal jump steers toward the stick at `upgrades.jumpAirAccel` (324 u/s²). A dash jump holds its line.
+  - Landing keeps the speed. No dash or jump for `upgrades.jumpRecovery` (0.1 s).
+  - Clears a car only while above its roof: a sedan broadside needs a running jump; a van broadside a dash jump; a bus never.
+  - Clears a piece tagged jumpable above `world.jumpableHeight` (20): planters drawn ≤ `proto.art.jumpableTop` (5 art px), ≤ `world.jumpableDepth` (48) deep.
+  - Over a walkway's handrail, a highway parapet or a ring's, on a run: drops to the level below, onto traffic.
+  - The whole table: `../jump/README.md`.
+- **Combo (6.9; kinds 6.10):** a hit within `scoring.comboWindow` (1.5 s) of the last links a chain. Each link adds `scoring.comboStep` (0.5); each new kind of move adds `scoring.comboVariety` (0.5); to `scoring.comboMax` (×5).
+  - Kinds (6.10): DASH, JUMP (a jump into a car), BOUNCE (thrown from a hit), PUSH (pushed off a car into the next), DROP (onto a car from above), STRUCK (a car into you).
+  - Three dashes: ×1, ×1.5, ×2. Dash › bounce › jump › push › drop: ×1, ×2, ×3, ×4, ×5.
+  - **The clock holds in the air** (`scoring.comboAirPause`): it stops in a jump, a bounce, a push and a drop. Airborne play keeps a chain alive.
+  - **Meter:** foot of the field while a chain lives: hits, multiplier, the moves so far, a bar for the clock (cyan while held). It banks when the clock runs out.
+- **Abilities (6.10, `proto.abilities` 3):** four tracks, one per button. Three levels (`abilities.maxLevel`); Hands two (`abilities.hands.maxLevel`). Each level cuts its part's wear by `abilities.wearCut` (0.25; level 3: −75%).
+
+| Track | Button | Level 1 | Level 2 | Level 3 | Shields |
+|---|---|---|---|---|---|
+| Battery | A | a charge every `abilities.battery.level1Seconds` 0.8 s | 0.7 s | 0.6 s | the torso: recharge |
+| Legs | B | the jump, 0.3 s in the air | 0.4 s | 0.5 s | the legs: run, dash, jump |
+| Hands | X | carry one cone: tap to pick up, hold to put down | carry two | — (two hands) | the grip |
+| Arms | Y | push off a car: +160 u/s, one push before landing | +200, two | +240, three | the push |
+
+  - **Base:** a dash charge every `battery.secondsPerCharge` 1 s. Every jump, hop or not, costs `battery.jumpCost` 1.
+  - **Legs:** airtime `abilities.legs.airtimeBase` 0.3 + `abilities.legs.airtimeStep` 0.1 a level; height 44. A running jump covers 49, 65, 81. Legs 1: a running jump clears a handrail, a dash jump a sedan. Legs 2: a dash jump a van. Legs 3: a running jump a sedan.
+  - **Hands:** `abilities.hands.conesPerLevel` (1) a level. A tap picks up when there is room and a cone in reach. A hold of `input.dropHoldSeconds` (0.3 s) puts the top cone down. A short tap with nothing to pick up: "Hold X to put the cone down". No throw.
+  - **Push (Arms):** Y pushes off the car hit or touched in the last `abilities.arms.pushWindow` (0.3 s), or one within `abilities.arms.pushReach` (10) of the body.
+    - Adds `abilities.arms.pushSpeed` (160) + `abilities.arms.pushStep` (40) a level, × arm wear (`proto.parts.armPushLoss` 1, floor `armPushFloor` 0.5). Away from the car, or along the stick when it points away. Motion into the car is dropped.
+    - `abilities.arms.pushesPerLevel` (1) × level before landing; they refill on the ground. One push a contact: the same car needs a fresh hit.
+    - The flight is a knock: it slides and strikes the next car as a dash. Combo kind: PUSH.
+    - No Arms: the bounce off a car is the plain Newtonian one below, the default ricochet.
+  - **Prices:** `economy.price.ability.level1`–`level3`: 1, 2, 3. A track costs 6; Hands 3.
+  - **Shop:** one card per track; A buys the next level.
+- **Bounce (6.8, `proto.bounce.newton`):** the dummy leaves a hit at its full post-impact velocity: momentum (`proto.dummyMass` 0.056 of a sedan), `proto.restitution` (0.3), `proto.contactFriction` (0.3); `proto.recoilScale` 1. It slides at `physics.slideFriction` (1) × `physics.gravity` × `proto.scale.unitsPerMetre`, about 120 u/s². Control returns under walking pace after `proto.recoilSeconds` (0.35).
+
+| Hit | 6.7 | 6.8 |
+|---|---|---|
+| Dash into a parked sedan | 14 u/s, 2 | 23 u/s, 2 |
+| Dash into a moving sedan's flank | 26 u/s, 4 | 44 u/s, 8 |
+| Standing, hit by a sedan | 143 u/s, 24 | 170 u/s, 92 |
+| Dash head-on into a sedan | 143 u/s, 24 | 193 u/s, 127 |
+
+  - Damage is unchanged. A throw into another car strikes it and chains a combo. Ricochet is this physics now.
+  - All of these sit in Tuning (T): restitution, mass, contact friction, slide friction, strike speed cap, recoil scale and time.
+- **Tuning (T), 6.10:** Battery seconds per level; the put-down hold; cones per Hands level; push speed, step, pushes per level, reach, window and arm wear; combo window, step, variety, max, the held clock; the bounce physics; ability levels to install. Sliders 6.10 does not use (the throw, the hitch, the cone link, the old tree) are gone.
+- **Gamepads:** every pad read, the last used drives; hat d-pads; setup saved per pad. The status line and the pause screen show what the pad sends.
+- **Screen (6.6):** fills the window at the largest scale that fits, `min(width / 1280, height / 720)`; any fraction, not ×2 or ×3 (art pixels ×2.03 at 1300 × 900). The margins take the frame's gradient.
+- **Touch (6.6):** only on touch devices: `(hover: none) and (pointer: coarse)`, or `#touch` in the address. Never on a computer with a mouse.
+  - Drawn in the canvas, in the HUD's glass: dark panels, cyan rims, the Silkscreen and Plex labels. A is yellow-rimmed, DASH.
+  - Stick: a dial with ticks, the dead-zone ring dashed, an arc toward the push, a MOVE knob. Under the district map.
+  - Y X B A: round keys in a diamond under the chassis. Locked keys dim, "LOCKED".
+  - Chips: ❚❚ PAUSE and ⤢ FULL in the left margin when it is wide enough; else a pause chip over the brand.
+  - The stick floats to the thumb. Upright: a "turn your phone sideways" screen.
+- **Tuning (T):** install ability levels for a test run; the bounce physics; outline what a jump clears; set up a gamepad.
+
+![6.10: the ability shop: Battery, Legs, Hands, Arms](docs/p710_shop.png)
+
+![6.10: the combo meter: COMBO 3 · DASH › BOUNCE › PUSH · ×3; the keys: GRAB, PUSH ×2](docs/p710_desktop.png)
+
+![6.10: phone, sideways: Y X B A](docs/p710_phone.png)
+
+![6.9: the ability shop: Battery, Legs, Arms; three levels](docs/p79_shop.png)
+
+![6.6: phone, sideways (S25 Ultra size), fit to the height](docs/p76_phone.png)
+
+![6.6: a computer, fit to the window, no touch](docs/p76_desktop.png)
+
+![6.6: a dash jump](docs/p76_jump.png)
+
+![6.5: combo ×1.5](docs/p75_combo.png)
+
+## Districts
+
+| # | District | Quota | Interval | Levels |
+|---|---|---|---|---|
+| 1 | Parkland | `world.district.parkland.quota` 2 | `world.district.parkland.interval` 3.2 | Z0 streets; Z1 highways meet at the B2 ring; Z1 walkways |
+| 2 | Waterfront | `world.district.waterfront.quota` 3 | `world.district.waterfront.interval` 3.2 | Z1 hill and ridge road; Z0 valley, tunnel, beach, drive; Z1 bridges; the river |
+| 3 | Monument | `world.district.monument.quota` 4 | `world.district.monument.interval` 2.4 | Z0 snake road; Z1 and Z2 highways; Z1 walkway ring and skybridges; Z2 roof plaza |
+
+- **Start:** every district in B2. Off the lanes, below the intro banner.
+
+## How it plays
+
+- **Floors:** a test on the dummy's centre at its level.
+  - Deck and ring: inside the parapets, less `body.radius`. Open at stair heads, links and broken parapets.
+  - Walkway: holds, except one opening per road below.
+    - One `world.tileSize` module, on one side of the road's centre line. Ends cyan on the magenta rail.
+    - A straight drop lands on the centre line. Steer a little to land in a lane.
+  - Hill, terrace, roof: every edge drops. The Parkland A3 belvedere's lawn holds.
+  - **6.2:** the Parkland ring's hole stands open over the boulevard. Its inner parapet opens one `world.tileSize` module over each road centre line; step off onto the traffic below.
+- **Edges:** another floor at the level, then a stair, then the next screen, then a drop. Else the parapet holds.
+- **Screen edges:** no invisible walls. Where an edge holds, a barrier shows on this side.
+  - Between screens: a low planter (`world.wallThickness`). Never in a lane.
+  - The district's edge: the perimeter wall; a booth and boom on a road; a boom on a highway or hill street; a parapet on the hill.
+  - A walkway running into the next screen: chevrons.
+  - **6.1:** a crossing needs standing room on arrival: within `body.radius` along the edge, or `world.edgeArrivalDepth` in.
+  - **6.1:** an edge that holds holds all along. No sliver narrower than the body stays open.
+- **Ground (6.1):** none out of reach. Unreachable ground is planted: a low planter, a hedge top.
+- **Dead space (6.2):** none. Open ground the body cannot touch (a gap narrower than the body) is planted the same way.
+- **Flights:**
+  - A clear apron beyond every foot: `world.stairApron` (40), the flight's width plus 8 each side.
+  - A flight as drawn, and its apron, stay `world.stairEdgeMargin` (16) inside the screen.
+  - No building stands in an apron or draws over a flight. Every drawn flight walks.
+  - **6.2:** a forecourt `world.stairForecourt` (44) beyond the apron: no block, bed, pool or column.
+  - **6.6:** a head re-enters its flight only on a move back down. Before, a dash past the head onto a narrow walkway hit the far rail, re-entered and left each frame: the dummy froze (Monument B2, since 6.3).
+- **Buildings:** every plan is solid at its level, to 4 units. Terraces and landings too.
+- **Walkway joints:** the slab stops at the floor it joins. Square at 90°; mitred at 45°.
+- **Raised layers at the screen's edge:** drawn to the edge, past the lift. At a level, a north–south crossing happens at the edge as drawn.
+- **Wayfinding:** every apron a lit mat, chevrons into its flight. Monument B2: square paving; guide strips to the ring escalators.
+- **Parkland: an Expo site on one garden grid (6.2).** Cells `world.gardenCellWidth` × `world.gardenCellHeight`; paths `world.gardenPath` on the grid lines.
+  - A seam path runs whole inside each screen; at the district's bound inside the wall. Grass verges (`world.gardenVerge`) frame every path.
+  - Every piece sits in cells; nothing in one cell stands on a path. Set pieces span cells and absorb their inner paths.
+  - Pavilions: dome, shell hall, LED box, canopy, observation tower. S a kiosk, M a hall, L the whole cell.
+  - Parterres, fountains, sculpture courts; sculptures on grass squares, never on a crossing.
+  - Great lawns: a paved cross-walk (the hedge opens at it), a reflecting rill with jets.
+  - B1 cascade: one pool a cell. B2: the two pools, four cells each. A1 reservoir: stepped up to the back.
+  - Along a 45° road: the shoulder, a verge, a footpath, then the grid.
+  - Flights: the axis on a path at their own end of the deck (five kept in place by roads). Columns between paths.
+- **Tunnel (Waterfront B1):** the dummy walks in. It stops at the top edge of B1, not the mouth.
+- **River:** sink `proto.rescueSinkSeconds` (2 s). A drone flies in at `proto.droneSpeed`, lifts the dummy (`proto.droneLiftSeconds`) and sets it on the nearest land.
+- **Cues:** only for cars on the dummy's level.
+
+## Traffic (managed)
+
+- **One traffic per district.** Lanes link at seams by elevation. Cars in seam sight show next door.
+- **Spacing:** one car per lane every 2 × `world.district.<id>.interval` at `vehicles.sedan.cruiseSpeed`. Highways at their feed.
+- **Out of view only:** spawns at inlets with room; a car stopped `traffic.offscreenCullSeconds` (12) is removed.
+- **In view:** nothing appears or vanishes. A followed car keeps its speed.
+- **Rings (6.1):**
+  - A car checks circulating traffic from `traffic.giveWayWindow` out, across a seam too.
+  - A fast car starts slowing a stopping distance out, plus `traffic.giveWayLookahead`.
+  - Cars on different laps of one route follow each other.
+- **The shift:** `run.appearances.road` (100) Z0 cars, counted as each first appears in view.
+
+## Driving (6.3)
+
+- **Heading:** continuous under the hood. Within `proto.headingBlend` (12) of a path vertex the tangent blends to the next segment's. Capped at `proto.carYawRate`.
+- **Sprite:** the nearest of 32 headings (11.25°), separately.
+- **Vehicles (6.4):** every class at `vehicles.scale` (0.9) of its registered length, width and height.
+- **Turn signals:** from `traffic.signalDistance` (140) before a turn.
+  - Ring (6.4, the Highway Code's rule 186 mirrored): approach right for the first exit, left past 12 o'clock or a U-turn, none straight on; held onto the ring.
+  - Toward the exit once past the exit before its own, or moving out of the inner lane; until `traffic.signalCancel` (30) past it. Inner lane: left or none.
+  - Junction: toward the turn. Lane shifts first. Honking: both sides. Deck traffic: none.
+  - Amber, front and rear, 2 × `proto.art.signalLength` (4) art px, 1.5 Hz.
+- **Ring entry:** wait while a circulating car would reach the join within `traffic.ringEntryGap` (2.0). Junctions keep `traffic.giveWayGap` (2.5).
+  - 6.4: past its line, a car commits at half `traffic.giveWaySpeed`, or 4 plus its braking distance (`traffic.comfortBraking`) over. A car held as it rolls up still holds.
+  - The ring gap and turn signals are P6's; the lab pieces keep 6.2's rings.
+  - A circulating car signalling to leave before the join is passed over: outer lane, not changing lanes, its exit clear.
+- **Ring lane change:** over `traffic.ringLaneChange` (150): a 30° arc.
+- **Cones:** 8 art px (`proto.art.coneHeight` 16). A free cone in a lane `proto.droneConeSeconds` (5) fetches a drone; it sets the cone at a home.
+
+## Release tests (Edit 69; rerun on 6.3)
+
+| 13.5 min per district, view touring all nine screens | Parkland | Waterfront | Monument |
+|---|---|---|---|
+| Pop-ins in view | 0 | 0 | 0 |
+| Overlaps (P6.6 build → 6.1) | 4 → 0 | 8 → 0 | 0 → 0 |
+| Longest stop (6.2 → 6.3) | 14.2 → 12.6 s | 12.4 → 11.9 s | 0 s |
+| Emptiest street tile | 12% | 3% | 0% |
+
+| Walking | Parkland | Waterfront | Monument |
+|---|---|---|---|
+| Reach from the B2 spawn | 18/18 | 30/30 | 27/27 |
+| Tour: screen-levels; crossings; flights | 9; 16; 13 | 15; 27; 16 | 9; 16; 18 |
+| Building faces hold | 30/30 | 10/10 | 140/140 |
+| Wander, 22 × 5 min: traps | 0 | 0 | 0 |
+
+| Rings, 3 × 6 min a district (6.3 → 6.4) | Parkland | Waterfront |
+|---|---|---|
+| Wait at the line, mean | 1.07 → 0.96 s | 2.35 → 2.44 s |
+| Wait, 90th percentile | 2.93 → 2.56 s | 5.56 → 5.56 s |
+| Stopped car-seconds a minute | 23.2 → 19.0 | 39.4 → 38.7 |
+| Stalls ≥5 s | 5 → 2 | 19 → 26 |
+| Cars changing signal more than the rule | 60% → 1% | 32% → 1% |
+
+| Roundabout entries, 18 min (6.2 rules → 6.3) | Parkland | Waterfront |
+|---|---|---|
+| Entries | 941 → 954 | 569 → 594 |
+| Wait at the line, mean | 2.29 → 1.09 s | 4.51 → 2.75 s |
+| Wait, 90th percentile | 4.88 → 2.87 s | 9.32 → 6.03 s |
+| Went on a leaving car's signal | 420 | 283 |
+
+| Navigation (6.2) | Parkland | Waterfront | Monument |
+|---|---|---|---|
+| Dead space | 0 (18 before) | 0 | 0 (25 planted) |
+| Garden paths blocked | 0 | — | — |
+| Flight forecourts blocked | 0 | 0 | 0 |
+| Walk round the B2 ring at ground | yes | — | — |
+
+## HUD (6.2)
+
+- **Controls:** a panel in the right column under the chassis, one key a row, while play is live.
+- **Messages:** toasts and car barks in the strip under the field, never over it. A bark leads with its car's tag. Type `ui.typeSecondary` down to `ui.typeFieldLabel`.
+- **District map:** from the world's lanes. Z0 white solid; Z1 blue dashed over it; Z2 magenta dashed. One line weight; the screen in play outlined.
+
+## Drawing
+
+- **One projection** (decision 320): height z draws at y − z × `proto.art.extrusion`.
+- **Layers:** decks, the ring, walkways and the hill draw surface, props and actors, then lift as one.
+- **X-ray:** cars and the dummy under the hill, a deck or a portal show as a checker.
+- **Shadows:** option 2 (decision 309). One shadow per slab.
+
+## Evidence
+
+- `node test_p610.js docs` → 47/47.
+  - Edit 80: four tracks; Hands 2 tops its track; a tap picks up, a hold puts down at 0.30 s, a short tap with nothing near says "hold X"; Hands 1 carries 1, Hands 2 carries 2. Arms 0 is locked; a push adds 160, 200, 240 at Arms 1–3; 1, 2, 3 pushes before landing, refilled on the ground; a second Y off the same car refused; nothing near: "nothing to push off". Dash into a parked car › Y into a second: COMBO 2, DASH › PUSH, ×2. 6.4–6.9 byte-identical.
+- `node test_p69.js docs` (6.9, now `test_p610.js`) → 47/47.
+  - Edit 79: three tracks; Battery 1.0 → 0.8 → 0.7 → 0.6 s; X tap and hold (throw at 0.30 s); Y idle; the hitch rides, lets go at 120 u/s, slings at 170 with A, ends at 1.5 s; dash › sling chains ×2 and banks, and breaks with the clock running in the air; three dashes ×1/×1.5/×2 against five kinds ×1–×5; a cone link. 6.4–6.8 byte-identical.
+- `node test_p68.js docs` (6.8, now `test_p69.js`) → 46/46.
+  - Edit 78: Legs 1–4 airtime and distances; what a level clears; Arms 1, 2, 4 carry 1, 2, 4 cones; Throw 1–4 lands 140, 180, 220, 260 away; Battery 0.8 → 0.4 s; the Newtonian bounce against 6.7's; tuned restitution and slide friction. 6.4–6.7 byte-identical.
+- `node test_p67.js docs` (6.7, now `test_p68.js`) → 40/40.
+  - Edit 77: the flags; the walkway rail holds a walking hop and a running jump drops; Ricochet, Spine, Hips and Big battery not sold; four tracks, prices, order, no level 4; leg, torso, grip and throw shields; the recharge in play; the shop bought and left by keys. 6.4, 6.5, 6.6 byte-identical.
+- `node test_p66.js docs` (6.6, now `test_p67.js`) → 33/33.
+  - Headless: DIRECT; the jump's distances, momentum, steering and broadside clears; stair heads on Monument B2, Parkland A1 and C1; the jumpable tag; X/Y; combo; Ricochet; shop. 6.4 and 6.5 byte-identical.
+  - Browser: keys; a computer at 1300 × 900 fills at ×2.03, no touch; an emulated USB joypad with setup; a phone at 844 × 390 (touch on; the screen 693 × 390; nothing over the field); the stick at −25°; B locked; upright prompt. No page errors.
+- `node test_p6.js 3` → 72/73. The audit, walking, navigation, soak and driving checks run in it. Parkland A2 reads empty 20% of 3 min with the player in B2 (limit under 20%; 6.3: 19%).
+- `node tools/p6_ringstall.js 40 <district> seed=n` → the rings table above.
+- `node tools/p6_rings.js 120 all` → the roundabout table above.
+- `node tools/p6_audit.js` → 198/198: 47 flights, 128 building plans, 23 walkway ends.
+- `node test_sim.js` → 104/104 (this copy and P5).
+- Browser: no page errors over scripted play in all three districts.
+
+![6.4: steady signals at the circus; vehicles at 0.9](docs/p72_signals_scale.png)
+
+![6.3: heading change a frame round the Waterfront circus](docs/p71_heading.png)
+
+![6.3: turn signals at the circus; the cone, 6.2 and 6.3](docs/p71_signals_cone.png)
+
+![Parkland](docs/p62_parkland_3x3.png)
+
+![Waterfront](docs/p62_waterfront_3x3.png)
+
+![Monument](docs/p62_monument_3x3.png)
+
+![6.2: Parkland B2 and B1, 6.1 | 6.2](docs/p70_before_after.png)
+
+![6.2: the HUD](docs/p70_hud.png)
+
+![Edit 69: edges that hold, before and after](docs/p69_edges_before_after.png)
+
+![Edit 64: one walkway opening](docs/p64_walkway_opening.png)
+
+![Edit 65: playtest routes](docs/p65_playtest_routes.png)
+
+![Edit 66: Parkland B2 and Monument B2, before and after](docs/p66_before_after.png)
+
+![Edit 67: Parkland as an Expo site](docs/p67_parkland_expo.png)
+
+![Edit 68: the pavilions; the A1 reservoir](docs/p68_pavilions.png)
+
+## Known gaps
+
+- Cues still crowd at a busy junction on the dummy's level (D40).
+- Tile names: column-row in the game, row-column in playtest notes (D41).
+- Five Parkland flights keep their place beside the boulevard or a street (B2, C2, B3).
+- Copy for the new toasts is literal in `game.js`. Not yet in the content pipeline.
+- Left turns at a two-lane ring join the outer lane, then change lanes (D43).
+- Waterfront's circus runs at capacity: cars still wait at its lines (D44).
+- Parkland A2's street-emptiness check sits at its limit (20% of 3 min, 21% of 5 min with the player in B2). Same on 6.4's code.
+- Few Z0 pieces are low enough to jump: P6's planters mostly carry taller hedges. Handrails and parapets carry the jump (D50).
+- Ability prices set the pace: a track costs 6; a run of 9 write-offs buys all three tracks to level 2 (D52).
+- The push is free: a parked car is a launch pad, 109–253 units without a charge (review A19, D62).
+- "Default ricochet is 'X'": built as the plain bounce with no Arms. If X meant the button, the push moves to X (D61).
+- The adversarial review of the upgrades lists the open risks: `DUMMIES_Upgrades_Adversarial_Review.md` (D53–D57; 6.9 settles D53–D55; 6.10 adds A19–A22).
+
+## Build
+
+Frozen (28 October): `dummies_p6_10.html` and `p6_10_page.html` stay as built. This folder's code is shared with Prototype 7; `python3 ../p7/build.py` builds it. `build.py` here refuses. `node tools/p6_shots.js docs && python3 tools/p6_shots.py docs` → the 3 × 3 images.

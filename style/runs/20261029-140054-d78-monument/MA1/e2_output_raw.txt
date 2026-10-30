@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- t102 · T12 (minor, −1) "Welcome wall contact. Incident 4471 opened." This is a flat report: it takes the shipped line "Front contact. Incident 4471 opened." and swaps in the landmark, so the line carries no joke or feeling. It also reads as though the car hit the wall. [SUB4#6.1] Fix: "Welcome wall incident. Form 9 says welcome too." (47 characters; the procedure becomes the joke, and the line invents no KPI).
+Total: 10 − 1 = 9.

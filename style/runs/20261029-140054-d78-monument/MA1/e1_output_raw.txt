@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- t102 · R1 (blocking, −4) "Induction delayed." An impact logs zone, part, bait, stopped, lunging, drop, dropZ, dropFrom, deck and plate, but no delay, so the line makes up a consequence, like the rejected "My schedule slips by a minute." [FLEET#F8, SUB4#5] Fix: "Welcome wall contact. Incident 4471 opened." (43 characters; Corporate incident numbers are allowed as flavour).
+Total: 10 − 4 = 6.

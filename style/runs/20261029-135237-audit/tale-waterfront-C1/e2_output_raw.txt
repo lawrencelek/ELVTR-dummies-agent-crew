@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 for Farsight's tone and found it dry and procedural, with the police as colleagues and no comment on the harm [EDIT92#3, STORY#S1, EDIT39#4.1.1]. I checked V1–V8 for vocabulary and lore, including Act III's customs and papers frame [STORY#S2]. I checked F5–F7 for format: 223 characters, which is exactly the limit and passes lint, with the shape of place, a dry fact, no equipment, then the duty [EDIT93#3.1/tales-rewritten~2, STORY#MB3]. I checked R4–R5 for truth: the east portal, the bridge and the police all belong to this tile, and "Let a police car check you" matches the brief A POLICE CAR, with no equipment named on a tile that issues none [STORY#WC1, STORY#S3].
+Total: 10.

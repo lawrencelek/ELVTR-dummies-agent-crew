@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · T3 (major, −2) "Hands 1 is your new power-up: place a cone and the enemy cars must stop. Win the challenge." This calls equipment a power-up, the colleagues enemies and the duty a challenge, which breaks the employment framing. [EDIT92#3] Fix: replace with "Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones. Use this."
+Total: 10 − 2 = 8.

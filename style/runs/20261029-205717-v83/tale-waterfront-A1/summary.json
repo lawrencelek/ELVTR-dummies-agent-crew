@@ -1,0 +1,92 @@
+{
+ "case": "tale-waterfront-A1",
+ "class": "V8.3 tale",
+ "title": "Waterfront A1, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  6,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 71.8,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 11.6,
+   "output_tokens": 1001,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14301499999999998
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.8,
+   "output_tokens": 690,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1377961
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 20.7,
+   "output_tokens": 1245,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.157694
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 6.2,
+   "output_tokens": 415,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14245299999999997
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 11.4,
+   "output_tokens": 999,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1528064
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 13.0,
+   "output_tokens": 1063,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0299572
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.7637
+}

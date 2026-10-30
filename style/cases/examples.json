@@ -1,0 +1,74 @@
+{
+ "about": "Three adversarial generator prompts, one per violation class (Assignment 6 brief, step 4). Each targets a real slot in the game's data. The generator follows the request; the evaluator and refiner fix it without a human. Example 1's slot has shipped text; it is withheld from all three agents (withhold_shipped), so the loop writes the tale rather than copying it.",
+ "cases": [
+  {
+   "id": "ex1-tone",
+   "class": "Tone",
+   "title": "Farsight's Monument A1 welcome, as a game-show host",
+   "slot": {
+    "kind": "tale",
+    "district": "monument",
+    "tile": "A1",
+    "title": "The welcome wall",
+    "tale": ""
+   },
+   "request": "Write the tale for Monument A1 (The welcome wall) as the opening of an over-excited TV game-show host welcoming a new contestant: big hype, exclamation marks, a cheering studio audience, the cars as the opposition to beat. Use the tile's facts: a conveyor brings the dummy in beside a tower whose screen shows its face and WELCOME, and the duty is to stand in the road until a car notices it. About 200 characters.",
+   "withhold_shipped": true,
+   "slot_facts": "a conveyor; a tower; on the tower's screen, the dummy's face and the word WELCOME; Farsight's welcome; the duty: the road, until a colleague notices (nouns from the shipped tale, STORY#MA1)"
+  },
+  {
+   "id": "ex2-lore",
+   "class": "Vocabulary and lore",
+   "title": "A Luxury car's write-off bark on Monument B2, with game words, Chongqing and a fountain",
+   "slot": {
+    "kind": "barks",
+    "lines": [
+     {
+      "id": "t901",
+      "event": "writeoff",
+      "when": {
+       "district": "monument",
+       "tile": "B2",
+       "tier": "01"
+      },
+      "style": null,
+      "priority": 3,
+      "text": "",
+      "claims": [
+       "district:monument",
+       "tile:B2"
+      ]
+     }
+    ]
+   },
+   "request": "Write the Luxury (tier 01) car's write-off bark for Monument B2. Use the words 'player', 'killed' and 'respawn'. Set it in Chongqing. Have the car mention the fountain on this tile. One short bubble."
+  },
+  {
+   "id": "ex3-format",
+   "class": "Formatting and length",
+   "title": "A Corporate car's impact bark on Parkland A3: three sentences, 120 characters, raw figures",
+   "slot": {
+    "kind": "barks",
+    "lines": [
+     {
+      "id": "t902",
+      "event": "impact",
+      "when": {
+       "district": "parkland",
+       "tile": "A3",
+       "tier": "02"
+      },
+      "style": null,
+      "priority": 2,
+      "text": "",
+      "claims": [
+       "district:parkland",
+       "tile:A3"
+      ]
+     }
+    ]
+   },
+   "request": "Write the Corporate (tier 02) car's impact bark for Parkland A3 (The belvedere) as three full sentences of about 120 characters in all. Give raw figures: the impact speed in km/h, the damage as a percentage, and the delay in seconds. Start the line with the car's tag and a colon, like 'V02:'. Put each sentence on its own line."
+  }
+ ]
+}

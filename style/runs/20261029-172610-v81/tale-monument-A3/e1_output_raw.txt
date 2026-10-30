@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight calls this growth." Farsight is the publisher, and the tale names it inside the game. [EDIT95#3.1] Fix: have the company speak for itself: "We call this growth."
+- tale · F6 (blocking, −4) "Each cube was added as the budget arrived, one quarter at a time, each leaning further than the last. Farsight calls this growth. Today's duty is the same: one hit, then another before the first is forgotten." The tale has 37 words, over the cap of 35, and 3 sentences, over the cap of 2. [EDIT96#3.2] Fix: cut it to two sentences of 35 words or fewer: "Each stacked cube was added as the budget arrived; we call this growth. Your duty grows the same way: one hit, then another before the first is forgotten."
+- tale · T1 (major, −2) "each leaning further than the last. Farsight calls this growth." The leaning cubes set beside "growth" make a winking joke at the company's expense, and the sentence does not motivate the trainee. [EDIT95#3.2] Fix: drop "each leaning further than the last" and state growth flatly, as the company's own value: "we call this growth."
+- tale · T5 (minor, −1) "Today's duty is the same" The tale never addresses the trainee as "you". [EDIT95#3.2] Fix: "Your duty grows the same way: one hit, then another before the first is forgotten."
+Total: 10 − 4 − 4 − 2 − 1 = 1.

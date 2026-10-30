@@ -1,0 +1,183 @@
+{
+ "kind": "notices",
+ "items": [
+  {
+   "id": "n01",
+   "where": "title screen, under DUMMIES",
+   "text": "You are a FARSIGHT crash-test subject. Cars avoid you. Fool them into hitting you.",
+   "caps": false,
+   "maxChars": 110
+  },
+  {
+   "id": "n02",
+   "where": "Arcade's district screen, under DUMMIES",
+   "text": "Welcome, test subject. The fleet will avoid you. Kindly be struck, in the accidents FARSIGHT says cannot happen.",
+   "caps": false,
+   "maxChars": 120
+  },
+  {
+   "id": "n03",
+   "where": "the title's STORY card",
+   "text": "The Test City, tile by tile. Each tile wants its write-offs to Farsight's brief.",
+   "caps": false,
+   "maxChars": 100
+  },
+  {
+   "id": "n04",
+   "where": "the tile card's header",
+   "text": "FARSIGHT BRIEF",
+   "caps": true,
+   "maxChars": 18
+  },
+  {
+   "id": "n05",
+   "where": "the story map's side panel",
+   "text": "FARSIGHT BRIEF · {LABEL}",
+   "caps": true,
+   "maxChars": 40,
+   "placeholders": [
+    "{LABEL}"
+   ]
+  },
+  {
+   "id": "n06",
+   "where": "the objective strip's label while a drone flies",
+   "text": "FARSIGHT DRONE",
+   "caps": true,
+   "maxChars": 18
+  },
+  {
+   "id": "n07",
+   "where": "a toast",
+   "text": "FARSIGHT DRONE · DELIVERING {PART}",
+   "caps": true,
+   "maxChars": 44,
+   "placeholders": [
+    "{PART}"
+   ]
+  },
+  {
+   "id": "n08",
+   "where": "a toast",
+   "text": "FARSIGHT DRONE · {PART} ON BOARD · THEN {TILE}",
+   "caps": true,
+   "maxChars": 54,
+   "placeholders": [
+    "{PART}",
+    "{TILE}"
+   ]
+  },
+  {
+   "id": "n09",
+   "where": "a toast",
+   "text": "FARSIGHT DRONE · CARRYING YOU TO {TILE}",
+   "caps": true,
+   "maxChars": 46,
+   "placeholders": [
+    "{TILE}"
+   ]
+  },
+  {
+   "id": "n10",
+   "where": "the gift screen, before the part lands",
+   "text": "FARSIGHT DRONE · INCOMING",
+   "caps": true,
+   "maxChars": 28
+  },
+  {
+   "id": "n11",
+   "where": "a toast",
+   "text": "FARSIGHT GIFT · +{N} CREDITS",
+   "caps": true,
+   "maxChars": 32,
+   "placeholders": [
+    "{N}"
+   ]
+  },
+  {
+   "id": "n12",
+   "where": "the gift screen, the next part",
+   "text": "NEXT FROM FARSIGHT",
+   "caps": true,
+   "maxChars": 26
+  },
+  {
+   "id": "n13",
+   "where": "the workshop, a part not yet issued",
+   "text": "A Farsight drone brings this part.",
+   "caps": false,
+   "maxChars": 44
+  },
+  {
+   "id": "n14",
+   "where": "the workshop's note, a part not yet issued",
+   "text": "A Farsight drone brings this part. Keep testing.",
+   "caps": false,
+   "maxChars": 56
+  },
+  {
+   "id": "n15",
+   "where": "a toast, a part not yet issued",
+   "text": "A Farsight drone brings that part",
+   "caps": false,
+   "maxChars": 44
+  },
+  {
+   "id": "n16",
+   "where": "the Controls list, a verb not yet issued",
+   "text": "A Farsight drone brings it",
+   "caps": false,
+   "maxChars": 34
+  },
+  {
+   "id": "n17",
+   "where": "a toast, the chassis in the river",
+   "text": "FARSIGHT drone dispatched: chassis in the river",
+   "caps": false,
+   "maxChars": 56
+  },
+  {
+   "id": "n18",
+   "where": "a toast, a cone in the way",
+   "text": "FARSIGHT drone dispatched. Obstruction will be relocated.",
+   "caps": false,
+   "maxChars": 64
+  },
+  {
+   "id": "n19",
+   "where": "a toast, the chassis recovered",
+   "text": "FARSIGHT drone: chassis recovered from the river",
+   "caps": false,
+   "maxChars": 56
+  },
+  {
+   "id": "n20",
+   "where": "Arcade's ending, LICENSED",
+   "text": "Contract complete. FARSIGHT thanks you for your cooperation.",
+   "caps": false,
+   "maxChars": 80
+  },
+  {
+   "id": "n21",
+   "where": "Arcade's ending, FAILED TEST",
+   "text": "Traffic exhausted. Contract incomplete. Please retry.",
+   "caps": false,
+   "maxChars": 70
+  },
+  {
+   "id": "n22",
+   "where": "the frame's wordmark, title and menus",
+   "text": "FARSIGHT",
+   "caps": true,
+   "maxChars": 20
+  },
+  {
+   "id": "n23",
+   "where": "Monument A1's LED wall, third line under WELCOME and NEW STAFF (pixel signage)",
+   "text": "FARSIGHT",
+   "caps": true,
+   "maxChars": 10,
+   "sign": true
+  }
+ ]
+}

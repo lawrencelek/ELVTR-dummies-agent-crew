@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone (T1, T3, T4, T5, T13), Vocabulary and lore (V1–V4, V6, V8, V9, V11) and Formatting (F5, F6, F7, F11). Length is fine: two sentences and 29 words, inside 15 to 35 [EDIT97#3.2]. The tale names the arch and the roundabout as its place and turns them toward the duty [EDIT95#3.1]. "Visitors" fits the OPENING DAY frame [EDIT95#3.3]. The duty, "chain your hits", matches the COMBO brief, and the tale names no equipment on a tile that issues none (R4, R5) [STORY#PC3, STORY#S3]. The voice is flat with no "!", and it addresses the trainee as "you" [EDIT95#3.2].
+Total: 10.

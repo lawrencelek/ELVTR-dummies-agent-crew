@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turn Lab</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --warn: #ffb347; --bad: #ff5a6a; --good: #57e389; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 18px; letter-spacing: .02em; }
+  header p { margin: 0; color: var(--dim); }
+  main { display: grid; grid-template-columns: 280px minmax(0, 1fr) 260px; gap: 12px; padding: 12px 16px; }
+  @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 8px; }
+  label { display: block; margin: 8px 0 2px; color: var(--dim); font-size: 12px; }
+  select, input[type=range] { width: 100%; }
+  select { background: #0f1520; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px; }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  button { background: #1d2a40; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer; font: inherit; }
+  button.on { background: #154a63; border-color: var(--accent); }
+  canvas { width: 100%; height: auto; display: block; background: #10141c; border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+  td { padding: 3px 0; border-bottom: 1px solid #1f2a3d; }
+  td:last-child { text-align: right; }
+  .bad { color: var(--bad); } .good { color: var(--good); } .warn { color: var(--warn); }
+  .note { color: var(--dim); font-size: 12px; margin-top: 8px; }
+  #matrix td, #matrix th { padding: 2px 4px; text-align: right; } #matrix th { color: var(--dim); font-weight: 500; }
+  .val { color: var(--accent); float: right; }
+</style>
+</head>
+<body>
+<header><h1>Turn Lab · P4</h1><p>Road pieces at chosen radii, run with the game's driver. Does traffic flow, or pile up?</p></header>
+<main>
+  <section id="controls">
+    <h2>Piece</h2>
+    <select id="piece"></select>
+    <div id="sliders"></div>
+    <h2 style="margin-top:14px">Traffic</h2>
+    <label>Fleet</label><select id="fleet"><option value="p3">P3: sedans and vans</option><option value="expanded">Expanded: all eight classes</option><option value="buses">Buses only</option></select>
+    <label>Bus length</label><select id="busL"><option value="96">96 (7.9 m, V29)</option><option value="120">120 (9.8 m)</option><option value="144">144 (11.8 m)</option></select>
+    <label>Vans (P3 fleet) <span class="val" id="vanV"></span></label><input id="van" type="range" min="0" max="1" step="0.1" value="0.4">
+    <label>One car every <span class="val" id="intV"></span></label><input id="int" type="range" min="1" max="5" step="0.25" value="2.5">
+    <div class="row"><button id="drv">Driver: P4</button><button id="hold">Spawn hold: on</button></div>
+    <div class="row"><button id="play">Pause</button><button id="speed">Speed 4×</button><button id="reset">Reset</button><button id="view" class="on">View: game art</button></div>
+    <p class="note">Driver P3: a car judges other cars in a straight strip ahead of its nose. On a bend that strip points at oncoming traffic, and both cars stop. Driver P4: other cars count only where they stand on this car's own lane; a jammed car backs up; at a roundabout entry a car gives way to circulating traffic, and circulating cars let a car in once it is going. At a junction the minor road gives way to the major road, and a left turn off the major road gives way to oncoming traffic.</p>
+  </section>
+  <section><canvas id="cv" width="800" height="640"></canvas></section>
+  <section>
+    <h2>This run</h2>
+    <table id="stats"></table>
+    <h2 style="margin-top:14px">Sweep this piece</h2>
+    <div class="row"><button id="sweep">Run sweep (120 s each)</button></div>
+    <div id="matrix" class="note"></div>
+    <p class="note">Red car: jammed (stopped 6 s, waiting on nothing or on a ring of cars). Orange: stopped. Magenta outline: bodies overlap. Red ring: the tightest lane bend.</p>
+  </section>
+</main>
+<!--SCRIPTS-->
+</body>
+</html>

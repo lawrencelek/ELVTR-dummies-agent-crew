@@ -1,0 +1,13 @@
+{
+ "id": "tale-parkland-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefer",
+ "cost_usd": 0.1363,
+ "raw": "SCORE: 10/10\nREASON:\n- None. No rule is broken. I checked the tale against the following:\n  - **Tone (T1–T5):** the voice is dry and procedural, with no \"!\". The board and the cars fit the employment frame, and Farsight makes no comment on the harm. [EDIT92#3, EDIT39#4.1.1]\n  - **Glossary and lore (V1–V8):** no banned word appears. The tale holds the Act II OPENING DAY frame with the board and the public, and it uses the turn line \"The public prefers the product to the test.\" exactly. [STORY#S2, EDIT92#3]\n  - **Format (F5–F7):** the tale is about 214 characters in one paragraph, every sentence is 19 words or fewer, and there are no digits outside the part rank. It names the equipment this tile issues: \"Battery 2 is fitted\". [EDIT92#measured, EDIT93#3.1/tales-rewritten~2, DECISIONS#rows-531-540~2]\n  - **Truth (R4, R5):** the ring is this tile's landmark. The chain duty matches the COMBO ×{n} brief, and Battery 2 is introduced on the tile that tests it. [STORY#PB2, STORY#S1, STORY#S3]\nTotal: 10."
+}

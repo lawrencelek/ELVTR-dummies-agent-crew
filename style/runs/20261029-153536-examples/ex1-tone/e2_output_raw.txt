@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone rules: dry and procedural, "you" with Farsight in the third person, no "!", colleagues and a duty, no comment on harm [EDIT92#3, EDIT39#4.1.1, STORY#MA1]. I checked the glossary and the Act I INDUCTION frame [FLEET#F3, STORY#S2]. I checked the card length: about 198 characters, and no sentence over 19 words [EDIT93#3.1/tales-rewritten~2]. I checked equipment: the tile issues none, and the tale names none [STORY#S1]. I checked tile truth and the brief: the conveyor, the tower, the face, WELCOME, the duty to stand in the road and "Any write-off counts" all match ANY WRITE-OFF [STORY#MA1, STORY#S3].
+Total: 10.

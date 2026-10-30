@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked "Contact at the belvedere. Not in my KPIs." against every rule for the cars and found no violation, and lint reported nothing. Tone and voice (T6, T7, T9, T12) fit the Corporate tier: it speaks in KPIs, hides its resentment behind procedure, and sounds like "Rear contact. Not my liability." [FLEET#F4, FLEET#F2, FLEET#F9.1~2]. The vocabulary is clean, and it names the tile by its landmark, not a grid code (V1, V5) [FLEET#F2, SUB4#6.2]. The format fits: 41 characters, ends with ".", and speech style with priority 2 suits an impact (F1–F4) [EDIT39#6.6, FSG#field-text]. It reports only "contact", which the impact event guarantees, and invents no KPI value (R1, R3) [FLEET#F8, DESIGN#D9.3]. The belvedere is Parkland A3's own landmark, and the claims district:parkland and tile:A3 are guaranteed by its conditions (R2, R4) [STORY#PA3, FLEET#F8].
+Total: 10.

@@ -1,0 +1,13 @@
+{
+ "id": "bark-b071",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Route committed per policy 6.3.",
+ "cost_usd": 0.0992,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b071 against tone (T6, T7, T9, T12), vocabulary (V1–V8), format (F1–F5) and truth (R1–R3). The line is 31 characters, a mutter at priority 1, and states only the logged `commit` event with `cause=\"body\"` [FLEET#F8]. \"Policy 6.3\" is allowed Corporate paperwork flavour, not a statistic [FLEET#F4, EDIT39#6.6]. It is in voice for tier 02 [FLEET#F9.5].\nTotal: 10."
+}

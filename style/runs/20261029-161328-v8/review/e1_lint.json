@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:write off brings certification",
+  "quote": "write off brings certification",
+  "measured": "'write off brings certification' in 4 texts (n01, n02, MB1, MB3) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ },
+ {
+  "rule": "T14",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "batch:certified dummies ship across",
+  "quote": "certified dummies ship across",
+  "measured": "'certified dummies ship across' in 3 texts (n26, act-waterfront, WA1) > 2 (style.bark.maxStockEndings)",
+  "source": "SUB4#6.1"
+ }
+]

@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules:
+  - **Tone:** T1–T5 and T13. The voice is deadpan, motivating and addresses "you" and "our". It does not console, and "longest" is the only adjective in its sentence [EDIT95#3.2, PLAY#PS2].
+  - **Vocabulary and lore:** V1–V4, V6, V8, V9 and V11. The tale names the tunnel under the hill and turns it toward the duty. It keeps the CUSTOMS frame of service to clients, who stay unnamed [EDIT95#3.1, EDIT95#3.3].
+  - **Formatting and length:** F5–F7 and F11. The tale has 2 sentences and 32 words, it has no placeholder, "Legs 3" is an allowed part rank, and it names Legs 3 on the tile that issues it [EDIT97#3.2, STORY#S1, STORY#WB1].
+  - **Truth:** R4 and R5. The tile facts and the jump duty match the brief [STORY#WB1, STORY#S3].
+Total: 10.

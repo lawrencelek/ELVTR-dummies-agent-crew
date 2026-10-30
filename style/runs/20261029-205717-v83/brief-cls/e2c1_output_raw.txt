@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. The label "A {cls}" is the canonical label, under 19 characters, with its placeholder kept (F8, F10; [STORY#S3], [EDIT95#4.2]). The goal starts with an imperative, then states the final hit, in two sentences and 14 words (F6, F8; [EDIT98#3.2], [EDIT98#0]). It drops the "coverage gap" framing and keeps {cls} and {clsLong} (F5, F8; [STORY#S1]). The tone is flat, has no "!", and keeps the training frame, with no banned or game words and no other company name (T1–T5, T13, V1, V3, V4; [EDIT95#3.1], [EDIT95#3.2], [PLAY#PS0]). The LINT run returned no findings.
+Total: 10.

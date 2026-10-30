@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against F8 (caps label of 15 characters, imperative goal first, then the final hit, no "coverage gap" framing; [EDIT98#3.2], [STORY#S3]), F6 (2 sentences, 13 words; [EDIT95#3.2]), T1–T5 and T13 (flat, no "!", no intensifiers; [EDIT95#3.2], [PLAY#PS0]), V1–V4 and V8 (no banned words, city or company problems; [EDIT95#3.1]), F5 (no figures; [STORY#S1]) and R5 (the duty matches the drop task in [STORY#S3]).
+Total: 10.

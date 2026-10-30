@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The obelisk marks the surveyors' first stake. A school party…",
+  "measured": "34 words > 20 (style.v2.text.maxWords); 3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

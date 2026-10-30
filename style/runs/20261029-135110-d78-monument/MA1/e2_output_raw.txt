@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines and found no violations. The checks covered tier voice and politeness (FLEET#F4, FLEET#F2), "!" use (DECISIONS#rows-541-550), banned words and city names (FLEET#F2, FLEET#F1), length, plain text, ending and fields (EDIT39#6.6, FSG#field-text), and impact-event truth (FLEET#F8). "Welcome wall" and the WELCOME screen are tile facts set by STORY#MA1 and EDIT92#7. "Incident 4471" is allowed Corporate paperwork, not a statistic (FLEET#F9.1~2).
+Total: 10.

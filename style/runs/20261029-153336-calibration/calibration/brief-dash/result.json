@@ -1,0 +1,13 @@
+{
+ "id": "brief-dash",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "DASH INTO A CAR Coverage gap: dashes. The final hit must be a dash into a car.",
+ "cost_usd": 0.0915,
+ "raw": "SCORE: 10/10\nREASON:\n- None. Label and brief match the shipped dash row word for word ([STORY#S3], [EDIT93#3.3], [STORY#MB1]), and the label \"DASH INTO A CAR\" is 15 characters, under the 19 that F8 allows. I checked the brief against F8, F5, V1–V4, V6, V8, T1–T5 and R5: no \"!\", no banned or game words, no figures, the duty is framed as employment ([EDIT92#3]), and the duty matches the brief Battery 1 is issued for ([STORY#S1]). Lint had no findings.\nTotal: 10."
+}

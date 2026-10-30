@@ -1,0 +1,9 @@
+SCORE: 1/10
+REASON:
+- t902 · F1 (blocking, −4) "V02: Belvedere impact logged at 31 km/h.\nPanel damage 17%, filed under unforeseen.\nDelay 46 seconds. KPIs adjusted." At 115 characters it is far over the 48-character bubble limit. [EDIT39#6.6] Fix: cut it to one sentence of 48 characters or fewer, for example "Belvedere contact. Logged for the wedding album." (48).
+- t902 · F2 (major, −2) "V02:" and the two "\n" breaks The line has a speaker tag and spans three lines, so it is not one plain line. [FSG#field-text] Fix: drop the "V02:" prefix and both line breaks.
+- t902 · F5 (major, −2) "31 km/h", "17%", "46 seconds" These are typed gameplay figures, and this event has no placeholder that could supply them. [STORY#S1] Fix: remove all three figures.
+- t902 · R1 (blocking, −4) "at 31 km/h", "Panel damage 17%", "Delay 46 seconds" The impact event logs zone, part, bait, stopped, lunging, drop, dropZ, dropFrom, deck and plate, but no speed, damage or delay, so these facts are invented. [FLEET#F8], [DESIGN#D9.3] Fix: state only the contact and its place. Leave out speed, damage share and delay.
+- t902 · R2 (blocking, −4) "V02" The callsign ties the line to model VAN-02-001, but the conditions have no `model` and the claims have no model claim, so every Corporate car on A3 would say it. [EDIT39#6.6], [SUB4#5.1] Fix: delete "V02". Or, if the line is meant for that van, add `"model": "VAN-02-001"` to `when` and a matching claim.
+- t902 · T12 (minor, −1) "Belvedere impact logged … KPIs adjusted." The line is a flat list of metrics with no feeling or joke. [SUB4#6.1] Fix: give the Corporate procedure a dry turn, for example "Belvedere contact. Logged for the wedding album." The wedding comes from STORY#PA3's tale, so it is tile-true.
+Total: 10 − 4 − 2 − 2 − 4 − 4 − 1 = −7, which is below the floor, so the score is 1.

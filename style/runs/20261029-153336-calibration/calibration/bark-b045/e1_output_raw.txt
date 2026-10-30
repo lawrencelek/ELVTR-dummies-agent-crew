@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b045 "Write-off confirmed." against T6–T12, V1–V8, F1–F5 and R1–R4, with no lint findings. It is a shipped tier-free write-off line ([FLEET#F9.2]), and the guide's §8 lists it as the in-voice tier-free example. It carries no single tier's signature ([FLEET#F4]) and asserts only the logged `writeoff` event, so it needs no claims ([FLEET#F8], [DESIGN#D9.3]). Its style (speech) and priority (3) fit the event ([EDIT39#6.6]), and its length and ending pass ([FSG#field-text], [FLEET#F2]).
+Total: 10.

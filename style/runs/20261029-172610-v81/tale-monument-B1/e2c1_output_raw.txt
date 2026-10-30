@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the tale against the tone and lore rules, the 35-word and two-sentence limits (27 words, two sentences), the equipment rule (Battery 1 is named on the tile that issues it), the brief (a dash into a car), the podium bridge landmark and its canon detail, and the ban on Farsight and on game words [EDIT95#3.1] [EDIT95#3.2] [EDIT96#3.2] [STORY#MB1] [STORY#S1] [STORY#S3] [EDIT95#3.3].
+Total: 10.

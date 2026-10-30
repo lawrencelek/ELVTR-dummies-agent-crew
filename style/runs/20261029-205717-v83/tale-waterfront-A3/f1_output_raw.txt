@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "A3", "title": "The west customs post", "tale": "The west tower keeps the customs log. Your entry reads PURPOSE DESTRUCTION: honour it on the raised road."}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the act line against T1 (deadpan and motivating: "Certification is your goal" [EDIT95#3.2]), T2, T3 and T4 (training framing, cars as colleagues, no cheer or consolation [EDIT95#3.1]), T5 ("you" and Dummy Corporation [EDIT95#3.2]), T13 (no intensifiers, at most one adjective per sentence), V1, V3, V4, V6 and V8 (no banned words, the glossary's "Certification", the company name, the INDUCTION frame where the trainee arrives [EDIT95#3.3], the dummy as a trainee), F5 and F6 (no figures, two sentences and 17 words [EDIT95#0]), and R4 (no claims about a tile). I found no violation.
+Total: 10.

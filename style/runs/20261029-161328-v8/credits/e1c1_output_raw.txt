@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the three Credits lines against C1 [EDIT95#0, EDIT95#3.3]: they name the game, its maker and its publisher Farsight with no lore or slogans; V1 allows Farsight in the Credits, and there are no exclamation marks, no digits and no line over the length limit [EDIT95#3.2]; lint found nothing.
+Total: 10.

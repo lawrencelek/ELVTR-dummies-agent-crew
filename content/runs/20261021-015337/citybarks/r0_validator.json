@@ -1,0 +1,110 @@
+[
+  {
+    "id": "V1",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[0]",
+    "found": "c001",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'dropZ:2' but its conditions do not guarantee it — \"A roof? I was not briefed on roofs.\""
+  },
+  {
+    "id": "V2",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[1]",
+    "found": "c002",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'dropZ:2' but its conditions do not guarantee it — \"Incident filed: load received from above.\""
+  },
+  {
+    "id": "V3",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[2]",
+    "found": "c003",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'dropZ:2' but its conditions do not guarantee it — \"Something landed on me from a rooftop!\""
+  },
+  {
+    "id": "V4",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[3]",
+    "found": "c004",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'dropZ:2' but its conditions do not guarantee it — \"Falling from rooftops. How very common.\""
+  },
+  {
+    "id": "V5",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[8]",
+    "found": "c009",
+    "canon": "EDIT39#6.6.1",
+    "rule": "unknown claim 'deck'"
+  },
+  {
+    "id": "V6",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[8]",
+    "found": "c009",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'deck' but its conditions do not guarantee it — \"On the highway? Do mind the paintwork.\""
+  },
+  {
+    "id": "V7",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[9]",
+    "found": "c010",
+    "canon": "EDIT39#6.6.1",
+    "rule": "unknown claim 'deck'"
+  },
+  {
+    "id": "V8",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[9]",
+    "found": "c010",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'deck' but its conditions do not guarantee it — \"Deck contact logged. Highway delay noted.\""
+  },
+  {
+    "id": "V9",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[10]",
+    "found": "c011",
+    "canon": "EDIT39#6.6.1",
+    "rule": "unknown claim 'deck'"
+  },
+  {
+    "id": "V10",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[10]",
+    "found": "c011",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'deck' but its conditions do not guarantee it — \"Nobody walks the highway. Nobody.\""
+  },
+  {
+    "id": "V11",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[16]",
+    "found": "c017",
+    "canon": "EDIT39#6.6.1",
+    "rule": "unknown claim 'deck'"
+  },
+  {
+    "id": "V12",
+    "kind": "truth",
+    "severity": "block",
+    "path": "lines[16]",
+    "found": "c017",
+    "canon": "EDIT39#6.6.1",
+    "rule": "claims 'deck' but its conditions do not guarantee it — \"Written off on the highway. Of all places.\""
+  }
+]

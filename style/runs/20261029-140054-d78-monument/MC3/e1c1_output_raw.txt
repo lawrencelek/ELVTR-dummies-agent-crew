@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All four lines pass every rule. Tone: each tier keeps its voice under [FLEET#F4], with Luxury superior and never apologising, Corporate procedural, Consumer resigned and Budget's rage under "Kind regards". Vocabulary: no glossary word or banned term misused and no grid code, under [FLEET#F2], [FLEET#F3] and [SUB4#6.2]. Formatting: every line is plain, 48 characters or fewer, ends correctly, and uses "!" only in the Budget shout, under [EDIT39#6.6] and [DECISIONS#rows-541-550]. Truth: every line is impact-correct and invents no speed, damage or motive, and the gateway's thanks come from the tile's tale, under [FLEET#F8], [DESIGN#D9.3] and [STORY#MC3].
+Total: 10.

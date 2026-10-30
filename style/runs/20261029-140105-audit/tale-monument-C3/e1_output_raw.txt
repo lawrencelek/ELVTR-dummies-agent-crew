@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale for tone, employment framing and understatement (T1–T5; [EDIT92#3], [STORY#S1], [EDIT39#4.1.1]) and for banned words, the glossary and the Act I INDUCTION frame (V1–V8; [FLEET#F2], [FLEET#F3], [STORY#S2]). The fixed phrase ROLE: DESTRUCTIVE TESTING is exact ([EDIT93#3.1/tales-rewritten~2]). Length, sentence length, digits and equipment are within the rules: C3 issues none, so F7 does not apply (F5–F7; [EDIT92#measured], [DECISIONS#rows-531-540~2]). The duty matches the THROWN INTO A CAR brief, and the tale names only the gateway ([STORY#MC3], [STORY#S3]).
+Total: 10.

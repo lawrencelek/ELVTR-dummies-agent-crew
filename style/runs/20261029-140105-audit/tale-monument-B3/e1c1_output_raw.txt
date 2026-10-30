@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against tone T1–T5 (EDIT92#3, STORY#S2, EDIT39#4.1.1), vocabulary V1–V4, V6 and V8 (FLEET#F2, FLEET#F3, DECISIONS#rows-531-540~2), formatting F5–F7 (EDIT93#3.1/tales-rewritten~2, EDIT92#measured, STORY#MB3), and truth R4–R5 (STORY#MB3, STORY#S1, EDIT93#3.1); lint found nothing, Legs 1 is named on the tile that issues it, the duty "Jump into a car between the screens." matches JUMP INTO A CAR, and every landmark is in the tile's canon.
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the tale against T1–T5 and T13 for deadpan, motivating tone that addresses the trainee and uses few adjectives [EDIT95#3.2]; V1–V4 and V8–V11 for vocabulary, the glossary, and the stacked cubes landmark turned toward the duty [EDIT95#3.1]; V6 for the INDUCTION frame [EDIT95#3.3]; F5 and F6 for no placeholders, 18 words and two sentences [EDIT98#3.2]; F11 for length set by content [EDIT97#3.2]; and R4 and R5 for a chain duty matching COMBO ×{n} and no equipment named [STORY#MA3, STORY#S3].
+Total: 10.

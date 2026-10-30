@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1–T5 and found it polite, procedural and dry, with no exclamation marks, the employment framing intact, no comment on the harm, and the dummy addressed as "you" ([EDIT92#3], [STORY#S1], [EDIT39#4.1.1]). It passes vocabulary rules V1–V8: no banned or game words, no other city or brand, the CUSTOMS frame and its customs log held exactly ([STORY#S2], [FLEET#F2], [FLEET#F3]). It passes formatting rules F5–F7: no gameplay digits, 199 characters, one paragraph, no sentence over 19 words, and the place → fact → duty shape ([EDIT93#3.1/tales-rewritten~2], [STORY#MB3]). It passes truth rules R4–R5: only the west customs post's own landmark and log, the duty "on the raised road" matching ON A RAISED ROAD, and no equipment named where none is issued ([STORY#WA3], [STORY#S3]).
+Total: 10.

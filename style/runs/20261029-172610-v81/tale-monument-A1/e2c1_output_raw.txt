@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has no violations. It has 33 words in two sentences and no "!" (F6, T2; [EDIT96#3.2]). It names the welcome wall, its screen, your face and WELCOME as the place (V11, R4; [STORY#MA1], [EDIT92#7]). It frames standing in the road as the first duty toward Certification, among colleagues (T1, T3, T4, V3, V6; [EDIT95#3.1], [EDIT95#3.3]). That duty fits the ANY WRITE-OFF brief, and the tale names no equipment on a tile that issues none (R5, F7; [STORY#S3], [STORY#S1]). It contains no Farsight, banned word or digit (V1, F5; [EDIT95#0]).
+Total: 10.

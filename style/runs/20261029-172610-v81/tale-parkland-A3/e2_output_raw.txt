@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: length (28 words, 2 sentences) [EDIT96#3.2]; deadpan, motivating tone with no "!" [EDIT95#3.2]; training and service framing [EDIT95#3.1]; OPENING DAY frame [EDIT95#3.3]; the belvedere landmark tied to the duty [STORY#PA3]; Legs 2 issued on this tile [STORY#S1]; the duty matches JUMP INTO A CAR [STORY#S3]; no banned words, no other company name, no intensifiers [EDIT95#0].
+Total: 10.

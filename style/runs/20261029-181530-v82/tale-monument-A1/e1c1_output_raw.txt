@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations: the tale has two sentences and 34 words (F6, F11 [EDIT97#3.2]); it shows the INDUCTION arrival and names the welcome wall, its tower screen and the WELCOME sign, then turns that place toward the duty (V6, V11, R4 [EDIT95#3.3], [STORY#MA1], [EDIT92#7]); its duty matches ANY WRITE-OFF and it names no equipment on a tile that issues none (R5, F7 [STORY#S3], [STORY#MA1]); it speaks deadpan to "you", with Certification as the goal and the cars as colleagues, uses at most one adjective per sentence and has no "!" (T1–T5, T13 [EDIT95#3.1], [EDIT95#3.2]); and it has no banned word, other company name, figure or placeholder (V1, V4, F5 [EDIT95#0], [STORY#S1]).
+Total: 10.

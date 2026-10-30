@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has two sentences and 34 words, which meets F6 [EDIT97#3.2]; I found no problems with tone, vocabulary or truth. Lint returned no findings for banned words, the company name, "!", digits or placeholders [EDIT95#0]. The voice is deadpan and motivating, and it frames the arrival as training with a colleague and Certification [EDIT95#3.2, EDIT95#3.1]. Under V11 it names the welcome wall, its screen and the conveyor, and turns them toward the duty [STORY#MA1, EDIT92#7]. The duty fits ANY WRITE-OFF, and the tale names no equipment on a tile that issues none [STORY#S3, STORY#S1]. It has no padding clause and keeps close to the wording already approved in Edit 96 [EDIT96#4.2].
+Total: 10.

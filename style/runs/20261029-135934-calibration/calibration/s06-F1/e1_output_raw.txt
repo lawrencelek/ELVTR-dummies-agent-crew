@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s06 · F1 (blocking, −4) "Front contact logged under policy 6.3; incident file opened; KPIs adjusted." The line has 75 characters, and a bark may have at most 48 (style.bark.maxChars). [EDIT39#6.6] Fix: "Front contact logged under policy 6.3." (38 characters).
+Total: 10 − 4 = 6.

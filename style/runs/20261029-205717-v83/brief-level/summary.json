@@ -1,0 +1,92 @@
+{
+ "case": "brief-level",
+ "class": "V8.3 goal",
+ "title": "the level brief, as a goal",
+ "request": null,
+ "scores": [
+  8,
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 38.8,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 6.6,
+   "output_tokens": 359,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11210049999999999
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 6.6,
+   "output_tokens": 408,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1139865
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 6.8,
+   "output_tokens": 454,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1142273
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 5.4,
+   "output_tokens": 212,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1098726
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 6.2,
+   "output_tokens": 458,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1140537
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 7.3,
+   "output_tokens": 537,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0184022
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5826
+}

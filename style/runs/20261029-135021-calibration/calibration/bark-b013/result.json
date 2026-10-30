@@ -1,0 +1,12 @@
+{
+ "id": "bark-b013",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "OI! Right in the grille! Kind regards.",
+ "cost_usd": 0.1121,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b013 against T6, T7, T9, T10 and T12, which cover the Budget voice, rage under a polite form and \"!\" in a shout or Budget bark [FLEET#F4, DECISIONS#rows-541-550, FLEET#F2]. I checked V1, V2, V3, V5 and V7 on vocabulary and lore [FLEET#F2, FLEET#F1, FLEET#F3, SUB4#6.2]. I checked F1 to F5: length, plain text, ending, and shout style at priority 2 for an impact [EDIT39#6.6, FSG#field-text]. I checked R1 to R3: \"grille\" claims front contact, which the zone condition guarantees, on a logged impact [FLEET#F8, DESIGN#D9.3]. The line matches the shipped in-voice precedent [FLEET#F9.1~2].\nTotal: 10."
+}

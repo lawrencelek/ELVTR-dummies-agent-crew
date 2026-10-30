@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · T2 (major, −2) "A conveyor sets you down beside a tower! Its screen shows your face and the word WELCOME! Farsight is pleased to have you! Your first duty is simple: stand in the road until a colleague notices you!" Farsight never uses "!". All four sentences end on one, and the rule deducts once for the line. [EDIT92#3] Fix: end each sentence with a full stop, which restores the shipped tale: "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you."
+Total: 10 − 2 = 8.

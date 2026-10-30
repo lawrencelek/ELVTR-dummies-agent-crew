@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations after checking the tale against these rules:
+  - **Length (F6):** two sentences and 30 words. Without the place words, the rest is under 20 words [EDIT96#3.2].
+  - **Place (V11, R4):** it names the tile's landmark, the arch and the roundabout, and turns the circling of the roundabout toward the duty [EDIT95#3.1, STORY#PC3].
+  - **Act frame (V6):** the Expo's gate and its visitors fit OPENING DAY [EDIT95#3.3].
+  - **Duty (R5):** the duty matches the COMBO ×{n} brief, the {n} placeholder is kept, and no equipment is named because this tile issues none [STORY#S3, STORY#S1].
+  - **Tone (T1, T3, T4, T13):** the voice is flat, there is no "!", at most one adjective per sentence and no intensifiers [EDIT95#3.2].
+  - **Banned words, glossary and clients (V1, V3, V9):** no banned word, no game vocabulary, and clients are not named or mocked [EDIT95#0, EDIT95#3.1].
+Total: 10.

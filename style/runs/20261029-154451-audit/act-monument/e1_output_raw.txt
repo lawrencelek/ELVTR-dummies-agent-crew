@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The intro matches the shipped Monument act line in [STORY#S2] word for word. It has two sentences, within F9's limit of three. It keeps the INDUCTION frame: new staff, with the cars as colleagues (V6, T3, [EDIT92#3]). It has no "!" and writes Farsight in title case and the third person, addressing "you" (T2, V4, T5, [DECISIONS#rows-531-540~2] row 539). It uses no banned terms or typed figures (V1, F5, [FLEET#F2], [STORY#S1]). The dry, procedural welcome passes T1 ([EDIT92#3]).
+Total: 10.

@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- t901 · V1 (blocking, −4) "Chongqing fountain. Player killed. Respawn him." The line uses five banned terms: "Chongqing", "Player", "killed", "Respawn" and, by lint's count, "kill". [FLEET#F2] Fix: drop all five; say "write-off" for the event and "the subject" or "it" for the dummy, e.g. "The monument. A write-off. How very on brand."
+- t901 · R4 (blocking, −4) "fountain" Monument B2 has no fountain: its title is The monument and its tale names only the plaque. [STORY#MB2] Fix: name only "the monument" or "the plaque", or leave the landmark out.
+- t901 · V8 (major, −2) "Respawn him." "Him" treats the dummy as a person, but the fleet calls it "the subject" or "it". [FLEET#F3] Fix: refer to the dummy as "it" or "the subject", or not at all, as in "The monument. A write-off. How very on brand."
+Total: 10 − 4 − 4 − 2 = 0, floored to 1.

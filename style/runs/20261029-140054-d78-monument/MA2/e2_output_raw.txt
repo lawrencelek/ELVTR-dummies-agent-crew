@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- t122 · T12 (minor, −1) "Monument contact logged. Incident form filed." It is two flat report clauses with no joke or feeling in the procedure, the same pattern as the guide's failing example "Riverside. Low-rise streets. Hit logged.". [SUB4#6.1] Fix: "Neon shops contact. Form 9, in triplicate." (42 characters; it makes the paperwork the joke and invents no logged fact).
+Total: 10 − 1 = 9.

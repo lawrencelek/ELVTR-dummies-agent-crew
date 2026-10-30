@@ -1,0 +1,44 @@
+{
+ "case": "brief-jump",
+ "class": "audit",
+ "title": "shipped brief jump",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 9.6,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 4.7,
+   "output_tokens": 205,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.09281779999999999
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 4.8,
+   "output_tokens": 236,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.011521700000000001
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1043
+}

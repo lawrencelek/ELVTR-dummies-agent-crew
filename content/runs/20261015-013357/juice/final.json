@@ -1,0 +1,1063 @@
+{
+  "params": [
+    {
+      "id": "proto.juice.reducedMotion",
+      "value": 0.25,
+      "unit": "ratio",
+      "purpose": "Scale on shake, flinch and tremble under reduced-motion settings.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J4"
+      ]
+    },
+    {
+      "id": "proto.juice.lunge.shakeAmpMin",
+      "value": 1,
+      "unit": "canvas units",
+      "purpose": "Lunge camera kick at the lowest charge.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.lunge.shakeAmpMax",
+      "value": 2.5,
+      "unit": "canvas units",
+      "purpose": "Lunge camera kick at full charge. Kept small so the nose vector stays readable.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.lunge.shakeSeconds",
+      "value": 0.15,
+      "unit": "s",
+      "purpose": "Duration of the lunge camera kick.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.lunge.dustCount",
+      "value": 6,
+      "unit": "count",
+      "purpose": "Dust puffs kicked behind the body on a lunge.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.lunge.dustSpeed",
+      "value": 70,
+      "unit": "canvas units/s",
+      "purpose": "Launch speed of lunge dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.lunge.dustLife",
+      "value": 0.4,
+      "unit": "s",
+      "purpose": "Lifetime of lunge dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.lunge.dustSize",
+      "value": 3,
+      "unit": "canvas units",
+      "purpose": "Size of lunge dust puffs.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.shakeAmpMin",
+      "value": 3,
+      "unit": "canvas units",
+      "purpose": "Shake amplitude for the lightest scored hit. Matches the P1 literal 3.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.shakeAmpMax",
+      "value": 12,
+      "unit": "canvas units",
+      "purpose": "Shake amplitude at full assessed impact. Matches the P1 literal 3 + 9.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.shakeSecondsMin",
+      "value": 0.25,
+      "unit": "s",
+      "purpose": "Shake duration for the lightest scored hit. Matches the P1 literal.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.shakeSecondsMax",
+      "value": 0.45,
+      "unit": "s",
+      "purpose": "Shake duration at full assessed impact. Matches the P1 literal 0.25 + 0.2.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.flash",
+      "value": 0.08,
+      "unit": "s",
+      "purpose": "White contact flash on a scored hit.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.sparkCountMin",
+      "value": 8,
+      "unit": "count",
+      "purpose": "Sparks on the lightest scored hit. Matches the P1 literal 8.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.sparkCountMax",
+      "value": 18,
+      "unit": "count",
+      "purpose": "Sparks at full assessed impact. Matches the P1 literal 8 + 10.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.sparkSpeed",
+      "value": 180,
+      "unit": "canvas units/s",
+      "purpose": "Launch speed of impact sparks.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.sparkLife",
+      "value": 0.35,
+      "unit": "s",
+      "purpose": "Lifetime of impact sparks.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.sparkSize",
+      "value": 2.5,
+      "unit": "canvas units",
+      "purpose": "Size of impact sparks.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.ringCount",
+      "value": 1,
+      "unit": "count",
+      "purpose": "Contact rings per scored hit.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.ringSpeed",
+      "value": 140,
+      "unit": "canvas units/s",
+      "purpose": "Expansion speed of the contact ring.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.ringLife",
+      "value": 0.2,
+      "unit": "s",
+      "purpose": "Lifetime of the contact ring.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.impact.ringSize",
+      "value": 14,
+      "unit": "canvas units",
+      "purpose": "Starting radius of the contact ring.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.knock.dustCountMin",
+      "value": 2,
+      "unit": "count",
+      "purpose": "Dust for the slowest damage-free knock.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.knock.dustCountMax",
+      "value": 5,
+      "unit": "count",
+      "purpose": "Dust for a fast damage-free knock.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.knock.dustSpeed",
+      "value": 50,
+      "unit": "canvas units/s",
+      "purpose": "Launch speed of knock dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.knock.dustLife",
+      "value": 0.35,
+      "unit": "s",
+      "purpose": "Lifetime of knock dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.knock.dustSize",
+      "value": 2.5,
+      "unit": "canvas units",
+      "purpose": "Size of knock dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.touchSpent.shakeAmp",
+      "value": 1.5,
+      "unit": "canvas units",
+      "purpose": "Dull bump on a touch of a spent car. Below the lightest scored hit.",
+      "sources": [
+        "JUICE#J3",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "id": "proto.juice.touchSpent.shakeSeconds",
+      "value": 0.12,
+      "unit": "s",
+      "purpose": "Duration of the spent-car bump. Shorter than any scored hit.",
+      "sources": [
+        "JUICE#J3",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "id": "proto.juice.touchSpent.dustCount",
+      "value": 3,
+      "unit": "count",
+      "purpose": "Low dust puff on a spent-car touch. No sparks, no flash.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.touchSpent.dustSpeed",
+      "value": 30,
+      "unit": "canvas units/s",
+      "purpose": "Slow launch speed for the dull bump.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.touchSpent.dustLife",
+      "value": 0.5,
+      "unit": "s",
+      "purpose": "Lifetime of spent-car dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.touchSpent.dustSize",
+      "value": 3.5,
+      "unit": "canvas units",
+      "purpose": "Size of spent-car dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.shakeAmp",
+      "value": 16,
+      "unit": "canvas units",
+      "purpose": "Heavy shake on write-off. Above the strongest scored hit.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.shakeSeconds",
+      "value": 0.7,
+      "unit": "s",
+      "purpose": "Duration of the write-off shake. Inside the destruction presentation.",
+      "sources": [
+        "LOG#P1.2/juice",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.flash",
+      "value": 0.15,
+      "unit": "s",
+      "purpose": "Field flash on write-off.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.sparkCount",
+      "value": 24,
+      "unit": "count",
+      "purpose": "Sparks on write-off.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.sparkSpeed",
+      "value": 240,
+      "unit": "canvas units/s",
+      "purpose": "Launch speed of write-off sparks.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.sparkLife",
+      "value": 0.5,
+      "unit": "s",
+      "purpose": "Lifetime of write-off sparks.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.sparkSize",
+      "value": 3,
+      "unit": "canvas units",
+      "purpose": "Size of write-off sparks.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.smokeCount",
+      "value": 14,
+      "unit": "count",
+      "purpose": "Smoke puffs on write-off.",
+      "sources": [
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.smokeSpeed",
+      "value": 40,
+      "unit": "canvas units/s",
+      "purpose": "Launch speed of write-off smoke.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.smokeSize",
+      "value": 8,
+      "unit": "canvas units",
+      "purpose": "Size of write-off smoke puffs.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.debrisCount",
+      "value": 10,
+      "unit": "count",
+      "purpose": "Body-coloured debris pieces on write-off.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.jointDebrisCount",
+      "value": 4,
+      "unit": "count",
+      "purpose": "Black joint debris pieces on write-off.",
+      "sources": [
+        "JUICE#J3",
+        "DESIGN#D10.1"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.debrisSpeed",
+      "value": 160,
+      "unit": "canvas units/s",
+      "purpose": "Launch speed of debris.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.writeoff.debrisSize",
+      "value": 5,
+      "unit": "canvas units",
+      "purpose": "Size of debris rectangles.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.denied.shakeAmp",
+      "value": 1.2,
+      "unit": "canvas units",
+      "purpose": "Short stutter on a denied action. Costs nothing.",
+      "sources": [
+        "JUICE#J3",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "id": "proto.juice.denied.shakeSeconds",
+      "value": 0.1,
+      "unit": "s",
+      "purpose": "Duration of the denial stutter.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.chassis.dustCount",
+      "value": 10,
+      "unit": "count",
+      "purpose": "Rotor-wash dust around the arriving chassis.",
+      "sources": [
+        "JUICE#J1",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.chassis.dustSpeed",
+      "value": 80,
+      "unit": "canvas units/s",
+      "purpose": "Outward speed of rotor-wash dust.",
+      "sources": [
+        "JUICE#J1"
+      ]
+    },
+    {
+      "id": "proto.juice.chassis.dustLife",
+      "value": 0.6,
+      "unit": "s",
+      "purpose": "Lifetime of rotor-wash dust.",
+      "sources": [
+        "JUICE#J1"
+      ]
+    },
+    {
+      "id": "proto.juice.chassis.dustSize",
+      "value": 4,
+      "unit": "canvas units",
+      "purpose": "Size of rotor-wash dust.",
+      "sources": [
+        "JUICE#J1"
+      ]
+    },
+    {
+      "id": "proto.juice.chassis.dropSeconds",
+      "value": 0.9,
+      "unit": "s",
+      "purpose": "Replacement chassis fall time from drone height to the floor.",
+      "sources": [
+        "JUICE#J1",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.throw.dustCount",
+      "value": 3,
+      "unit": "count",
+      "purpose": "Small dust at the dummy on a cone throw.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.throw.dustSpeed",
+      "value": 40,
+      "unit": "canvas units/s",
+      "purpose": "Launch speed of prop-handling dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.throw.dustLife",
+      "value": 0.3,
+      "unit": "s",
+      "purpose": "Lifetime of prop-handling dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.throw.dustSize",
+      "value": 2.5,
+      "unit": "canvas units",
+      "purpose": "Size of prop-handling dust.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.drop.dustCount",
+      "value": 2,
+      "unit": "count",
+      "purpose": "Dust where the dummy sets a cone down.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.punt.dustCount",
+      "value": 4,
+      "unit": "count",
+      "purpose": "Dust kicked ahead when the dummy punts a cone.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.brakeMarks.width",
+      "value": 2.5,
+      "unit": "canvas units",
+      "purpose": "Width of each rear-wheel tyre mark.",
+      "sources": [
+        "JUICE#J1",
+        "JUICE#J4"
+      ]
+    },
+    {
+      "id": "proto.juice.brakeMarks.alpha",
+      "value": 0.3,
+      "unit": "alpha",
+      "purpose": "Starting opacity of a tyre mark. Low contrast, under every cue.",
+      "sources": [
+        "JUICE#J4",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.brakeMarks.fadeSeconds",
+      "value": 12,
+      "unit": "s",
+      "purpose": "Time for a mark to fade out, so old marks do not read as braking now.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.brakeMarks.max",
+      "value": 400,
+      "unit": "count",
+      "purpose": "Cap on live mark segments.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.brakeMarks.minSpeed",
+      "value": 40,
+      "unit": "world units/s",
+      "purpose": "Slowest braking speed that still leaves a mark.",
+      "sources": [
+        "JUICE#J3"
+      ]
+    },
+    {
+      "id": "proto.juice.lowHealth.smokeFrom",
+      "value": 0.45,
+      "unit": "ratio",
+      "purpose": "Wear fraction where body smoke starts.",
+      "sources": [
+        "LOG#P1.2/dummy-damage-states"
+      ]
+    },
+    {
+      "id": "proto.juice.lowHealth.sparkFrom",
+      "value": 0.7,
+      "unit": "ratio",
+      "purpose": "Wear fraction where body sparks start.",
+      "sources": [
+        "LOG#P1.2/dummy-damage-states"
+      ]
+    },
+    {
+      "id": "proto.juice.lowHealth.vignetteFrom",
+      "value": 0.7,
+      "unit": "ratio",
+      "purpose": "Wear fraction where the red edge vignette starts pulsing.",
+      "sources": [
+        "LOG#P1.2/dummy-damage-states"
+      ]
+    }
+  ],
+  "hitStop": "feedback.hitStop",
+  "writeOff": "feedback.writeOffSeconds",
+  "reducedMotion": "proto.juice.reducedMotion",
+  "events": [
+    {
+      "event": "lunge",
+      "scale": {
+        "by": "charge",
+        "full": "battery.capacity"
+      },
+      "shake": {
+        "amp": [
+          "proto.juice.lunge.shakeAmpMin",
+          "proto.juice.lunge.shakeAmpMax"
+        ],
+        "seconds": "proto.juice.lunge.shakeSeconds"
+      },
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "dust",
+          "count": "proto.juice.lunge.dustCount",
+          "speed": "proto.juice.lunge.dustSpeed",
+          "life": "proto.juice.lunge.dustLife",
+          "size": "proto.juice.lunge.dustSize",
+          "role": "structure",
+          "dir": "backward"
+        }
+      ],
+      "reference": "Dust kicked backwards (Micro Machines, art of rally)",
+      "sources": [
+        "LOG#P1.2/juice",
+        "JUICE#J3",
+        "JUICE#J1",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "event": "impact",
+      "scale": {
+        "by": "assessed",
+        "full": "damage.bodyHealth"
+      },
+      "shake": {
+        "amp": [
+          "proto.juice.impact.shakeAmpMin",
+          "proto.juice.impact.shakeAmpMax"
+        ],
+        "seconds": [
+          "proto.juice.impact.shakeSecondsMin",
+          "proto.juice.impact.shakeSecondsMax"
+        ]
+      },
+      "flash": "proto.juice.impact.flash",
+      "flinch": true,
+      "carPulse": true,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "spark",
+          "count": [
+            "proto.juice.impact.sparkCountMin",
+            "proto.juice.impact.sparkCountMax"
+          ],
+          "speed": "proto.juice.impact.sparkSpeed",
+          "life": "proto.juice.impact.sparkLife",
+          "size": "proto.juice.impact.sparkSize",
+          "role": "primary",
+          "dir": "random"
+        },
+        {
+          "type": "ring",
+          "count": "proto.juice.impact.ringCount",
+          "speed": "proto.juice.impact.ringSpeed",
+          "life": "proto.juice.impact.ringLife",
+          "size": "proto.juice.impact.ringSize",
+          "role": "primary",
+          "dir": "random"
+        }
+      ],
+      "reference": "Hit pause, scaled shake, sparks, contact flash (Art of Screenshake)",
+      "sources": [
+        "JUICE#J3",
+        "JUICE#J2",
+        "LOG#P1.2/juice",
+        "DESIGN#D4.5",
+        "JUICE#J4"
+      ]
+    },
+    {
+      "event": "knock",
+      "scale": {
+        "by": "speed",
+        "full": "proto.dummyStrikeSpeed"
+      },
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "dust",
+          "count": [
+            "proto.juice.knock.dustCountMin",
+            "proto.juice.knock.dustCountMax"
+          ],
+          "speed": "proto.juice.knock.dustSpeed",
+          "life": "proto.juice.knock.dustLife",
+          "size": "proto.juice.knock.dustSize",
+          "role": "structure",
+          "dir": "random"
+        }
+      ],
+      "reference": "Small dust puff, no reward feedback (art of rally)",
+      "sources": [
+        "JUICE#J3",
+        "JUICE#J1",
+        "LOG#P1.3/rules"
+      ]
+    },
+    {
+      "event": "touch-spent",
+      "scale": null,
+      "shake": {
+        "amp": "proto.juice.touchSpent.shakeAmp",
+        "seconds": "proto.juice.touchSpent.shakeSeconds"
+      },
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "dust",
+          "count": "proto.juice.touchSpent.dustCount",
+          "speed": "proto.juice.touchSpent.dustSpeed",
+          "life": "proto.juice.touchSpent.dustLife",
+          "size": "proto.juice.touchSpent.dustSize",
+          "role": "fleet",
+          "dir": "random"
+        }
+      ],
+      "reference": "Dull bump with springy recoil, no burst (Micro Machines)",
+      "sources": [
+        "JUICE#J3",
+        "JUICE#J1",
+        "DESIGN#D4.5",
+        "LOG#P1.2/juice"
+      ]
+    },
+    {
+      "event": "writeoff",
+      "scale": null,
+      "shake": {
+        "amp": "proto.juice.writeoff.shakeAmp",
+        "seconds": "proto.juice.writeoff.shakeSeconds"
+      },
+      "flash": "proto.juice.writeoff.flash",
+      "flinch": true,
+      "carPulse": false,
+      "stamp": true,
+      "particles": [
+        {
+          "type": "spark",
+          "count": "proto.juice.writeoff.sparkCount",
+          "speed": "proto.juice.writeoff.sparkSpeed",
+          "life": "proto.juice.writeoff.sparkLife",
+          "size": "proto.juice.writeoff.sparkSize",
+          "role": "primary",
+          "dir": "random"
+        },
+        {
+          "type": "smoke",
+          "count": "proto.juice.writeoff.smokeCount",
+          "speed": "proto.juice.writeoff.smokeSpeed",
+          "life": "feedback.writeOffSeconds",
+          "size": "proto.juice.writeoff.smokeSize",
+          "role": "structure",
+          "dir": "random"
+        },
+        {
+          "type": "debris",
+          "count": "proto.juice.writeoff.debrisCount",
+          "speed": "proto.juice.writeoff.debrisSpeed",
+          "life": "feedback.writeOffSeconds",
+          "size": "proto.juice.writeoff.debrisSize",
+          "role": "dummy",
+          "dir": "random"
+        },
+        {
+          "type": "debris",
+          "count": "proto.juice.writeoff.jointDebrisCount",
+          "speed": "proto.juice.writeoff.debrisSpeed",
+          "life": "feedback.writeOffSeconds",
+          "size": "proto.juice.writeoff.debrisSize",
+          "role": "joints",
+          "dir": "random"
+        }
+      ],
+      "reference": "Car destroyed, debris stays; wreck permanence (Super Sprint, GTA)",
+      "sources": [
+        "JUICE#J3",
+        "JUICE#J1",
+        "LOG#P1.2/juice",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "event": "denied",
+      "scale": null,
+      "shake": {
+        "amp": "proto.juice.denied.shakeAmp",
+        "seconds": "proto.juice.denied.shakeSeconds"
+      },
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [],
+      "reference": "Short stutter, costs nothing; distinct from a miss (Super Sprint)",
+      "sources": [
+        "JUICE#J3",
+        "JUICE#J1",
+        "DESIGN#D4.5"
+      ]
+    },
+    {
+      "event": "chassis",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "dust",
+          "count": "proto.juice.chassis.dustCount",
+          "speed": "proto.juice.chassis.dustSpeed",
+          "life": "proto.juice.chassis.dustLife",
+          "size": "proto.juice.chassis.dustSize",
+          "role": "structure",
+          "dir": "random"
+        }
+      ],
+      "reference": "Helicopter lowers the replacement, rotor wash (Super Sprint)",
+      "sources": [
+        "JUICE#J1",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "event": "throw",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "dust",
+          "count": "proto.juice.throw.dustCount",
+          "speed": "proto.juice.throw.dustSpeed",
+          "life": "proto.juice.throw.dustLife",
+          "size": "proto.juice.throw.dustSize",
+          "role": "structure",
+          "dir": "facing"
+        }
+      ],
+      "reference": "Arc with stretched shadow stays as P1.2; light dust only (Juice It or Lose It)",
+      "sources": [
+        "JUICE#J3",
+        "LOG#P1.2/juice",
+        "JUICE#J2"
+      ]
+    },
+    {
+      "event": "drop",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "dust",
+          "count": "proto.juice.drop.dustCount",
+          "speed": "proto.juice.throw.dustSpeed",
+          "life": "proto.juice.throw.dustLife",
+          "size": "proto.juice.throw.dustSize",
+          "role": "structure",
+          "dir": "random"
+        }
+      ],
+      "reference": "Small settle dust on the mundane desk-scale prop (Micro Machines)",
+      "sources": [
+        "JUICE#J1",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "event": "pickup",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [],
+      "reference": "Quiet action; sound already covers it (Juice It or Lose It)",
+      "sources": [
+        "JUICE#J2",
+        "DESIGN#D9.4"
+      ]
+    },
+    {
+      "event": "punt",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [
+        {
+          "type": "dust",
+          "count": "proto.juice.punt.dustCount",
+          "speed": "proto.juice.throw.dustSpeed",
+          "life": "proto.juice.throw.dustLife",
+          "size": "proto.juice.throw.dustSize",
+          "role": "structure",
+          "dir": "facing"
+        }
+      ],
+      "reference": "Knockback dust along the kick (Art of Screenshake)",
+      "sources": [
+        "JUICE#J2",
+        "JUICE#J3"
+      ]
+    },
+    {
+      "event": "honk",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [],
+      "reference": "Hazard lights, headlight flash and HONK bubble stay as P1.2; no added field juice; sound carries the horn (Micro Machines)",
+      "sources": [
+        "LOG#P1.1-observations",
+        "JUICE#J1",
+        "DESIGN#D9.4"
+      ]
+    },
+    {
+      "event": "purchase",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [],
+      "reference": "Frame-level confirmation only; field stays still",
+      "sources": [
+        "DESIGN#D10.5",
+        "JUICE#J4"
+      ]
+    },
+    {
+      "event": "drone-dispatch",
+      "scale": null,
+      "shake": null,
+      "flash": null,
+      "flinch": false,
+      "carPulse": false,
+      "stamp": false,
+      "particles": [],
+      "reference": "Drone lift animation already in P1 (helicopter delivery)",
+      "sources": [
+        "LOG#P1.1-observations",
+        "JUICE#J1"
+      ]
+    }
+  ],
+  "states": {
+    "brakeMarks": {
+      "width": "proto.juice.brakeMarks.width",
+      "alpha": "proto.juice.brakeMarks.alpha",
+      "fadeSeconds": "proto.juice.brakeMarks.fadeSeconds",
+      "max": "proto.juice.brakeMarks.max",
+      "minSpeed": "proto.juice.brakeMarks.minSpeed",
+      "role": "fleet",
+      "reference": "Tyre marks as ink strokes on a pale floor (Absolute Drift, art of rally)",
+      "sources": [
+        "JUICE#J1",
+        "JUICE#J3",
+        "JUICE#J4",
+        "DESIGN#D10.1"
+      ]
+    },
+    "lowHealth": {
+      "smokeFrom": "proto.juice.lowHealth.smokeFrom",
+      "sparkFrom": "proto.juice.lowHealth.sparkFrom",
+      "vignetteFrom": "proto.juice.lowHealth.vignetteFrom",
+      "sources": [
+        "LOG#P1.2/dummy-damage-states",
+        "JUICE#J3",
+        "JUICE#J4"
+      ]
+    },
+    "replacementDrop": {
+      "seconds": "proto.juice.chassis.dropSeconds",
+      "height": "proto.art.droneHeight",
+      "reference": "Helicopter lowers the replacement car (Super Sprint)",
+      "sources": [
+        "JUICE#J1",
+        "JUICE#J3",
+        "ENG#11.2"
+      ]
+    }
+  }
+}

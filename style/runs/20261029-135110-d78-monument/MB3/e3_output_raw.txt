@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t129–t132) against the rules for car speakers. Tone and tier voice are right for each tier: Luxury sniffs ("How gauche"), Corporate files a report, Consumer is resigned, and Budget shouts with "Kind regards!" tacked on [FLEET#F4, FLEET#F2]. The "!" in t132 is allowed because it is a Budget shout [DECISIONS#rows-541-550]. The lines use no banned or glossary-breaking words [FLEET#F2, FLEET#F3]. Each line names the landmark, not the grid code [SUB4#6.2]. Length, ending punctuation and fields pass: every line is under 48 characters, the styles fit the event and priority is 2 [EDIT39#6.6, FSG#field-text]. On truth, each line claims only a contact on tile B3 at the LED canyon, with no invented jump, damage or motive [FLEET#F8, STORY#MB3, DESIGN#D9.3].
+Total: 10.

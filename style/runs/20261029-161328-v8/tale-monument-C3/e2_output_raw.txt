@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked both sentences against T1–T5 and T13, V1–V9, F5–F7 and R4–R5: the tale is 17 words in two sentences; it has no "!" and no banned word; it keeps the fixed phrase ROLE: DESTRUCTIVE TESTING exact; it treats the cars as colleagues; and its duty matches the THROWN INTO A CAR brief, naming no equipment on a tile that issues none [EDIT95#3.2, EDIT95#3.1, EDIT95#3.3, STORY#S2, STORY#S3, STORY#MC3, STORY#S1].
+Total: 10.

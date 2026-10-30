@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against tone, vocabulary, formatting and truth: T1–T5, T13, V1, V3, V4, F5, F6, F8 and R5 [EDIT95#3.2, EDIT95#3.1, EDIT98#3.2, STORY#S3]. The label "JUMP INTO A CAR" is caps and under 19 characters, the goal opens in the imperative and then names the final hit, and the brief is 11 words in two sentences with no "!", no "coverage gap" framing and no banned words.
+Total: 10.

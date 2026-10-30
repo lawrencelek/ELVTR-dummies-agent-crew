@@ -1,0 +1,69 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t109",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact at the Monument. How very provincial.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  },
+  {
+   "id": "t110",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Monument contact. Form 9, in triplicate.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  },
+  {
+   "id": "t111",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "The drum lit the bend. Not the subject.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  },
+  {
+   "id": "t112",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "C1",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "OI! At the Monument?! Some respect! Kindly.",
+   "claims": [
+    "district:monument",
+    "tile:C1"
+   ]
+  }
+ ]
+}

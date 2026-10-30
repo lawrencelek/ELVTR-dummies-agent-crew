@@ -1,0 +1,9 @@
+{
+ "round": 2,
+ "validation": [],
+ "calibration": [
+  "R-SHROUD: probe defect: p4 threw Error: path: unsupported mime type \"null\" |     at determineScreenshotType (/opt/npm-tools/node_modules/playwright-core/lib/coreBundle.js:60788:11) |     at _Page.screenshot (/opt/npm-tools/node_modules/playwright-core/lib/coreBundle.js:61787:23)",
+  "R-UNVEIL: probe defect: p5 threw Error: path: unsupported mime type \"null\" |     at determineScreenshotType (/opt/npm-tools/node_modules/playwright-core/lib/coreBundle.js:60788:11) |     at _Page.screenshot (/opt/npm-tools/node_modules/playwright-core/lib/coreBundle.js:61787:23)",
+  "R-ENDING-SCREEN: probe defect: p3 threw Error: path: unsupported mime type \"null\" |     at determineScreenshotType (/opt/npm-tools/node_modules/playwright-core/lib/coreBundle.js:60788:11) |     at _Page.screenshot (/opt/npm-tools/node_modules/playwright-core/lib/coreBundle.js:61787:23)"
+ ]
+}

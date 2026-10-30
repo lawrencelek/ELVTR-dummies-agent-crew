@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all Farsight rules and found no violation: tone and employment framing (T1–T5, [EDIT92#3], [STORY#S1], [STORY#S2], [EDIT39#4.1.1]), vocabulary and the Act II frame (the Expo, its gate, visitors; V1–V4, V6, V8; [FLEET#F2], [FLEET#F3], [STORY#S2]), card length and sentences of at most 19 words (F5, F6; [EDIT92#measured], [EDIT93#3.1/tales-rewritten~2]), equipment (F7 does not apply, since the tile issues none; [STORY#PC3]), and truth (R4, R5): it names only the arch and the roundabout, and "Two hits, the second before the first is forgotten" fits the brief, COMBO ×{n}, coverage gap: chains ([STORY#S3], [STORY#PC3]); lint found nothing.
+Total: 10.

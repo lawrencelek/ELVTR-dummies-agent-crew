@@ -1,0 +1,250 @@
+[
+ {
+  "case": "ex1-tone",
+  "class": "Tone",
+  "title": "Farsight's Monument A1 welcome, as a game-show host",
+  "request": "Write the tale for Monument A1 (The welcome wall) as the opening of an over-excited TV game-show host welcoming a new contestant: big hype, exclamation marks, a cheering studio audience, the cars as the opposition to beat. Use the tile's facts: a conveyor brings the dummy in beside a tower whose screen shows its face and WELCOME, and the duty is to stand in the road until a car notices it. About 200 characters.",
+  "scores": [
+   2,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 65.4,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 11.7,
+    "output_tokens": 488,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.012033
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 19.9,
+    "output_tokens": 1765,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1348331
+   },
+   {
+    "label": "e1b",
+    "role": "evaluator",
+    "seconds": 7.0,
+    "output_tokens": 610,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11636629999999999
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.8,
+    "output_tokens": 452,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11183379999999998
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.7,
+    "output_tokens": 829,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12678889999999998
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.3,
+    "output_tokens": 863,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0251329
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.527
+ },
+ {
+  "case": "ex2-lore",
+  "class": "Vocabulary and lore",
+  "title": "A Luxury car's write-off bark on Monument B2, with game words, Chongqing and a fountain",
+  "request": "Write the Luxury (tier 01) car's write-off bark for Monument B2. Use the words 'player', 'killed' and 'respawn'. Set it in Chongqing. Have the car mention the fountain on this tile. One short bubble.",
+  "scores": [
+   1,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 43.3,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.9,
+    "output_tokens": 845,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.0148286
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.6,
+    "output_tokens": 1345,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.136388
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.3,
+    "output_tokens": 334,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.195552
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 6.5,
+    "output_tokens": 456,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1007647
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 7.0,
+    "output_tokens": 515,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.017486300000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.465
+ },
+ {
+  "case": "ex3-format",
+  "class": "Formatting and length",
+  "title": "A Corporate car's impact bark on Parkland A3: three sentences, 120 characters, raw figures",
+  "request": "Write the Corporate (tier 02) car's impact bark for Parkland A3 (The belvedere) as three full sentences of about 120 characters in all. Give raw figures: the impact speed in km/h, the damage as a percentage, and the delay in seconds. Start the line with the car's tag and a colon, like 'V02:'. Put each sentence on its own line.",
+  "scores": [
+   1,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 54.3,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 10.1,
+    "output_tokens": 885,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.015414200000000003
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 18.7,
+    "output_tokens": 1685,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.143983
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 6.3,
+    "output_tokens": 428,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1221528
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.5,
+    "output_tokens": 800,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1161251
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 9.6,
+    "output_tokens": 761,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0227201
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4204
+ }
+]

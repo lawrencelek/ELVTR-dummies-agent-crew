@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all of Farsight's rules. Tone (T1–T5): it is dry, procedural, has no "!" and addresses "you" [EDIT92#3, STORY#S1]. Vocabulary (V1–V4, V6, V8): no banned terms, it says "the model", and the ship fits Act III's CUSTOMS frame [FLEET#F2, FLEET#F3, STORY#S2]. Formatting (F5–F7): about 216 characters, the longest sentence is 13 words, "Chassis 0" and "Arms 3" are allowed digits, and it names the issued equipment "Arms 3 is fitted." [EDIT92#measured, DECISIONS#rows-531-540~2]. Truth (R4–R5): it names only the stilt houses and the moored ship that this tile has, and Arms 3 arrives on this tile, which matches the push brief [STORY#WB3, EDIT92#7, STORY#S1].
+Total: 10.

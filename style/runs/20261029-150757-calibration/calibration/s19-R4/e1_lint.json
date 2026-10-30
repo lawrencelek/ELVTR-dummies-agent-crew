@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "R4",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "lines[0]",
+  "quote": "obelisk",
+  "measured": "not on monument C1: its title and tale lack it",
+  "source": "STORY#MC1"
+ }
+]

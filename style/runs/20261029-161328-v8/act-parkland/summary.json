@@ -1,0 +1,68 @@
+{
+ "case": "act-parkland",
+ "class": "V8 act",
+ "title": "Prototype 7.13 act parkland, for Prototype 8",
+ "request": null,
+ "scores": [
+  2,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 31.7,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 12.9,
+   "output_tokens": 1020,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1193064
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 4.8,
+   "output_tokens": 220,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1056805
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 7.2,
+   "output_tokens": 482,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0993995
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 6.8,
+   "output_tokens": 442,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0156621
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.34
+}

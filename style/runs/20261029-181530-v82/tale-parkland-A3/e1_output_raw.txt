@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked both sentences against every tale rule and found no violation. Tone holds: the text is flat and motivating, it has no "!", and the sacrifice is framed as service with no pity [EDIT95#3.2, EDIT95#3.1]. Act II's frame holds: a wedding is booked for opening day, and clients are served unseen [EDIT95#3.3, STORY#PA3]. The glossary words, Corporation name and banned words are all clean [EDIT95#3.1, EDIT95#0]. Length is fine at 33 words in 2 sentences with no placeholder [EDIT97#3.2]. The tale names its landmark, the belvedere, and turns it toward the duty [EDIT95#3.1]. It names Legs 2 on the tile that issues it [STORY#S1, STORY#MB3]. Its duty, a jump into a car, matches the brief [STORY#S3, STORY#PA3]. "Four tiers" is the one detail the canon given doesn't confirm, but nothing here contradicts it.
+Total: 10.

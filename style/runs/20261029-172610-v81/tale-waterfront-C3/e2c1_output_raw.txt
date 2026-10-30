@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the voice rules T1–T5, T13 and T14 ([EDIT95#3.2], [PLAY#PS2]) and found deadpan motivation with "you" and "our" and no "!". I checked it against the lore rules V1, V3, V4, V6, V8, V9 and V11 ([EDIT95#3.1], [EDIT95#3.3], [STORY#WC3]): the tale names the east customs post's pier tower and the river, and it states the CUSTOMS frame of Certified dummies crossing to clients. I checked length under F6 ([EDIT96#3.2]): 2 sentences and 35 words, with no lint findings. F7 does not apply because the tile issues no equipment. I checked truth under R4 and R5 ([STORY#S3], [EDIT93#3.1]): the duty matches the brief THROWN INTO A CAR, and the tale names no equipment.
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against every rule for Farsight: tone (T1–T5), vocabulary and lore (V1–V4, V6, V8), format and length (F5–F7) and truth (R4–R5), with no lint findings. It reads as a dry staff notice with no "!" ([EDIT92#3]). The dome, the Expo and the visitors keep it in Act II, OPENING DAY ([STORY#S2]). It names Hands 2, the equipment this tile issues ([EDIT93#3.1/tales-rewritten~1]), and "Hands 2" is an allowed part rank ([STORY#S1]). Laying cones so a car stops matches the CONE-BAITED CAR brief ([STORY#S3], [STORY#PA2]). It is about 207 characters, under the 223 limit, and its longest sentence has 14 words ([EDIT93#3.1/tales-rewritten~2]).
+Total: 10.

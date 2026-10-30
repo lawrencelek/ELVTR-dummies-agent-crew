@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- n36 · V1 (blocking, −4) "Combos score more" uses the banned term "score" in an in-game text. [FLEET#F2] Fix: "Combos count for more".
+- n36 · F6 (blocking, −4) "Get hit by cars, who would rather not. Combos score more, upgrades follow. Make Dummy Corporation proud." has 3 sentences, above the limit of 2. [EDIT95#3.2] Fix: "Get hit by cars, who would rather not. Combos count for more; upgrades follow."
+- n37 · V1 (blocking, −4) "Score points until the vehicles run out." uses the banned term "score" in an in-game text. [FLEET#F2] Fix: "Earn points until the vehicles run out."
+- n37 · F6 (blocking, −4) "Write off bodies. Every {Q} write-offs, the grade rises. Score points until the vehicles run out." has 3 sentences, above the limit of 2. [EDIT95#3.2] Fix: "Write off bodies; every {Q} write-offs, the grade rises. Earn points until the vehicles run out."
+Total: 10 − 4 − 4 − 4 − 4 = 1.

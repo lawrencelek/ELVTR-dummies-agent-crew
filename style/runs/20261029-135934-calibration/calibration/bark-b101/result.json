@@ -1,0 +1,13 @@
+{
+ "id": "bark-b101",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Subject has acquired hips.",
+ "cost_usd": 0.1001,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b101 against T6–T12 for a tier-free line, V1–V8, F1–F5 and R1–R4, and found no violation: \"subject\" is the fleet's own glossary word [FLEET#F3]; the line carries no single tier's signature [FLEET#F4]; it is 26 characters, plain speech at priority 1, ending on \".\" [FSG#field-text], [EDIT39#6.6]; and it asserts only `node:hips`, which `when.node=\"hips\"` guarantees on an `upgrade-seen` event [FLEET#F8], matching the shipped line [FLEET#F9.12] and its source [EDIT26#3.2].\nTotal: 10."
+}

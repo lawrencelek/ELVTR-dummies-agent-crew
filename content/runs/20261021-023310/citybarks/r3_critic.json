@@ -1,0 +1,26 @@
+{
+  "verdict": "revise",
+  "summary": "The bank sounds like DUMMIES. It uses dry, in-character humour, stays within 48 characters, invents no consequences, and respects the drop, deck and plate facts. Two small problems remain: a Luxury line uses the shout style, and one Corporate plate line says 'strike', which a drop landing is not.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "tone",
+      "severity": "fix",
+      "path": "lines[11].style",
+      "found": "shout",
+      "canon": "FLEET#F4",
+      "rule": "Tier 01 Luxury is polished, superior and faintly amused. Shout is the Budget style (FLEET#F9.2), and the earlier Luxury shout was already changed to speech.",
+      "fix": "speech"
+    },
+    {
+      "id": "C2",
+      "kind": "truth",
+      "severity": "fix",
+      "path": "lines[17].text",
+      "found": "Plate strike. Calibration form 3 required.",
+      "canon": "EDIT39#3.1",
+      "rule": "A plate impact can be a drop landing as well as a lunge, so 'strike' asserts a lunge that the simulation may not have logged.",
+      "fix": "Plate hit filed. Calibration form 3 required."
+    }
+  ]
+}

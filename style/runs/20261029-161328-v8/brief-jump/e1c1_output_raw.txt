@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "JUMP INTO A CAR" (15 characters, caps, under the 19-character cap) and the duty (two sentences, 13 words, no "!", no banned words, no figures). The text matches the jump row's prescribed form word for word, uses glossary terms ("write-off" framing via "final hit", "coverage gap"), keeps the deadpan training frame and has at most one adjective per sentence, with LINT reporting no findings. [STORY#S3] [EDIT95#3.2] [EDIT95#3.1] [EDIT95#0]
+Total: 10.

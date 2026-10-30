@@ -1,0 +1,92 @@
+{
+ "case": "story-batch",
+ "class": "V8 batch",
+ "title": "The story's 31 texts as one batch",
+ "request": null,
+ "scores": [
+  5,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 242.1,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 48.1,
+   "output_tokens": 5067,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3643399
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 55.6,
+   "output_tokens": 6693,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3975007
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 38.2,
+   "output_tokens": 4128,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2879608
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 19.9,
+   "output_tokens": 2565,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.25774800000000003
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 45.6,
+   "output_tokens": 5100,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3074104
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 34.4,
+   "output_tokens": 3756,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.08627869999999999
+  }
+ ],
+ "restored": [],
+ "cost_usd": 1.7012
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale for Farsight's voice and found no violation: T1–T5 (dry, procedural, no "!", duty as an imperative) [EDIT92#3, EDIT39#4.1.1]; V1–V4 and V6 (no banned or game words, one city, nothing outside Act II's frame) [FLEET#F2, FLEET#F3, STORY#S2]; F5–F7 (no figures, 196 characters, longest sentence 13 words, no equipment issued here and none named) [EDIT93#3.1/tales-rewritten~2, STORY#PB1]; R4–R5 (the cascade, reservoir and highway belong to the tile, and "Go up to the highway" matches ON A RAISED ROAD, Z1 or above) [STORY#PB1, STORY#S3].
+Total: 10.

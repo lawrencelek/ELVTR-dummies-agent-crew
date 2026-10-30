@@ -1,0 +1,13 @@
+{
+ "id": "bark-b001",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Bumper damage on a Luxury trim. Typical.",
+ "cost_usd": 0.2676,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b001 \"Bumper damage on a Luxury trim. Typical.\" against tone (T6, T7 and T9 [FLEET#F2, FLEET#F4]: superior and faintly amused, no apology, the feeling inside a polite form), vocabulary (V1, V2, V3, V5 and V7 [FLEET#F2, FLEET#F3]), formatting (F1 to F5 [FSG#field-text, EDIT39#6.6]: 40 characters, plain text, ends with \".\", shout style at priority 2 fits an impact) and truth (R1 to R3 [FLEET#F8, DESIGN#D9.3]: a front-zone impact guarantees bumper contact, and the claim zone:front is backed by when.zone). This is the shipped in-voice line [FLEET#F9.1~2] and the lint reports no findings.\nTotal: 10."
+}

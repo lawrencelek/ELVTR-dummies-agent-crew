@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "PUSH OFF A CAR" (14 characters, all caps) and the brief against T1–T5, V1–V8, F5 and F8, and R5. Both match the push row in [STORY#S3] word for word, and the same brief ships on [STORY#PC1], [STORY#PA1] and [STORY#WB3]. The voice follows [EDIT92#3]: dry, procedural, framed as a duty, with no "!", no banned terms ([FLEET#F2]) and no figures ([STORY#S1]).
+Total: 10.

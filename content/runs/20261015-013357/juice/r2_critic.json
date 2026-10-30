@@ -1,0 +1,16 @@
+{
+  "verdict": "revise",
+  "summary": "The content sounds like DUMMIES: it is dry and mundane, every particle has a role, and the shakes and flashes are kept small. One reference line is wrong: the drone-dispatch row describes the chassis delivery instead of the cone drone.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "events[13].reference",
+      "found": "Drone lift animation already in P1 (helicopter delivery)",
+      "canon": "LOG#P1.2/honking-and-drones",
+      "rule": "The drone dispatched after a honk flies in from off-field top right and lifts and drops a blocked cone (proto.droneSpeed, proto.droneLiftSeconds). The helicopter delivery belongs to the 'chassis' event.",
+      "fix": "Drone fly-in, cone pickup and drop stay as P1.2; no added field juice (Micro Machines)"
+    }
+  ]
+}

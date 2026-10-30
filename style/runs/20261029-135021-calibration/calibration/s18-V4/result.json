@@ -1,0 +1,14 @@
+{
+ "id": "s18-V4",
+ "expect": "seeded",
+ "rule": "V4",
+ "want": "≤ 9, names V4",
+ "score": 9,
+ "ok": true,
+ "named": [
+  "V4"
+ ],
+ "text": "Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you jo",
+ "cost_usd": 0.1225,
+ "raw": "SCORE: 9/10\nREASON:\n- tale · V4 (minor, −1) \"FARSIGHT will time you.\" The brand name is in capitals inside a sentence-case tale, but decision 539 says to write \"Farsight\" in every sentence-case string. [DECISIONS#rows-531-540~2] Fix: \"Farsight will time you.\"\nTotal: 10 − 1 = 9."
+}

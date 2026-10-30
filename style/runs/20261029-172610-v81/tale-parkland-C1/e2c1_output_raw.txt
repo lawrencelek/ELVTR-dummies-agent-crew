@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone (T1–T5, T13, T14), Vocabulary and lore (V1–V4, V6, V8, V9, V11), Formatting (F5, F6, F7) and Truth (R4, R5), and found no violation. It has two sentences and 32 words, and the place carries the extra words [EDIT96#3.2]. It names the lantern pavilion's landmark and the footbridge, then turns them toward the duty [STORY#PC1, EDIT95#3.1]. It keeps the OPENING DAY frame, with the Expo opening for clients [EDIT95#3.3]. It fits Arms 1 on the tile that issues it, and its duty matches the PUSH OFF A CAR brief [STORY#S1, STORY#S3]. It contains no Farsight, no "!" and no intensifier [EDIT95#0, EDIT95#3.2].
+Total: 10.

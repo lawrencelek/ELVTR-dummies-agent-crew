@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s16 · T6 (major, −2) "This city was built so the fleet could certify." The line explains why the city exists, which is lore narration, and it does not react to the logged impact as a worker would. [EDIT26#3.2] Fix: "Contact logged. Certification is my KPI."
+Total: 10 − 2 = 8.

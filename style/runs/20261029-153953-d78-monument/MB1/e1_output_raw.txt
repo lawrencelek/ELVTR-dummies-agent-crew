@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- t105 · R4 (blocking, −4) "Struck on the podium bridge." The line puts the car on the bridge, but a tile line can fire anywhere on Monument B1, and the cars drive the road beneath the skybridge, so it names a spot relative to the landmark that no condition guarantees. [STORY#MB1] Fix: "Struck at the podium bridge. How gauche."
+- t107 · R4 (blocking, −4) "Hit on the podium bridge." The line places the car on the bridge rather than naming the landmark as the place, and no condition guarantees that spot. [STORY#MB1] Fix: "Hit at the podium bridge. Of course."
+Total: 10 − 4 − 4 = 2.

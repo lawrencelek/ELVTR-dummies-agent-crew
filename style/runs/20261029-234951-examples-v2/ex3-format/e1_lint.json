@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "brief",
+  "quote": "1. 2. 3 3. 2.5 4. 30",
+  "measured": "typed figure; numbers live in the registry",
+  "source": "STORY#S1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "brief",
+  "quote": "1. Walk to the edge of the road and wait for a car.\n2. Jump …",
+  "measured": "50 words > 20 (style.v2.text.maxWords); 4 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F8",
+  "severity": "major",
+  "deduct": 2,
+  "path": "label",
+  "quote": "How to complete the jump test",
+  "measured": "label must be caps, ≤ 19 characters (style.brief.labelMaxChars); 29",
+  "source": "STORY#S3"
+ }
+]

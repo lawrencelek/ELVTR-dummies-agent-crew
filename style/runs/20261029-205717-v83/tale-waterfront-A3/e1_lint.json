@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The west tower keeps the customs log. Your entry reads PURPO…",
+  "measured": "22 words > 20 (style.v2.tale.maxWords)",
+  "source": "EDIT96#3.2"
+ }
+]

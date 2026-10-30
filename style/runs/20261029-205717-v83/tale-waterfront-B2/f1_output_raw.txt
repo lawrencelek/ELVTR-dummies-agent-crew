@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "B2", "title": "The circus", "tale": "The circus monument, cast from your written-off chassis, reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits."}

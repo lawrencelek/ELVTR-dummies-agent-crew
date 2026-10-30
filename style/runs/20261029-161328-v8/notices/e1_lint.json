@@ -1,0 +1,227 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[0]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[0]",
+  "quote": "You are a FARSIGHT crash-test subject. Cars avoid you. Fool …",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[1]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[1]",
+  "quote": "Welcome, test subject. The fleet will avoid you. Kindly be s…",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[2]",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[3]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[4]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[5]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[6]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[7]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[8]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[9]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[10]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[11]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[12]",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[13]",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[14]",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[15]",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[16]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[17]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[18]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[19]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[20]",
+  "quote": "Traffic exhausted. Contract incomplete. Please retry.",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[21]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[22]",
+  "quote": "FARSIGHT",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ }
+]

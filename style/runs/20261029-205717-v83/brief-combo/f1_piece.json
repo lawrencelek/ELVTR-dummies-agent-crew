@@ -1,0 +1,6 @@
+{
+ "kind": "brief",
+ "task": "combo",
+ "label": "COMBO ×{n}",
+ "brief": "Chain your hits into a combo. The final hit must be link {n} or later."
+}

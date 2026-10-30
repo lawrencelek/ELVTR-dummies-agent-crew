@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All three banners pass. Lint found nothing: each has 2 sentences, 17 to 19 words, fits its 110-character slot, and uses no banned word, Farsight, "!" or digit. The street details match the canon: Monument's neon shops, its road splitting round the monument and its walkway ring [DECISIONS#rows-231-240~2] (rows 238–239); Parkland's road under the raised ring, with water and concrete [DECISIONS#rows-231-240~2] (rows 236, 240); and Waterfront's hill, edge towers and river bridges [DECISIONS#rows-321-330~2] (rows 321, 322, 329). Each closing sentence fits its act: INDUCTION for Monument, OPENING DAY for Parkland, and CUSTOMS for Waterfront, where Certified dummies ship across the river to clients [EDIT95#3.3]. The tone is flat and motivating, with no cheer, pity or wink, and the clients are served without being seen or named [EDIT95#3.1, EDIT95#3.2, PLAY#PS2].
+Total: 10.

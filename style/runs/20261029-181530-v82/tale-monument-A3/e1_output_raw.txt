@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "Each cube was added as the budget arrived, one quarter at a time, each leaning further than the last. Dummy Corporation calls this growth; your duty grows the same way: one hit, then another before the first is forgotten." The tale is 39 words, over the 35-word limit for a tale (style.v2.tale.maxWords). [EDIT97#3.2] Fix: cut "each leaning further than the last" and "Dummy Corporation calls this growth;" so the tale is at most 35 words. Example: "Each cube was added as the budget arrived, one quarter at a time. Your training grows the same way: one hit, then another before the first is forgotten." (28 words).
+- tale · T1 (major, −2) "Dummy Corporation calls this growth" The company sets its own word apart from cubes that lean further each time, which is self-mocking irony that winks, not a flat, motivating notice. [EDIT95#3.2] Fix: state the growth as fact with no distance, or drop the clause and tie the cubes straight to the training, as in "Your training grows the same way".
+Total: 10 − 4 − 2 = 4.

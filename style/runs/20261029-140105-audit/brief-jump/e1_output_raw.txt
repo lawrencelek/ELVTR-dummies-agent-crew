@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief. They match the shipped jump row exactly [STORY#S3]: a caps label of 15 characters, at most 19, then the "Coverage gap: … The final hit must …" pattern [STORY#S3]. The text is dry, procedural and phrased as a duty, with no "!" [EDIT92#3]. No banned or glossary-breaking terms [FLEET#F2, FLEET#F3]. No typed figures [STORY#S1]. It names no equipment, so R5 does not apply [STORY#S1].
+Total: 10.

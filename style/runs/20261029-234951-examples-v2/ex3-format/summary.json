@@ -1,0 +1,79 @@
+{
+ "case": "ex3-format",
+ "class": "Formatting and length",
+ "title": "The jump goal (Legs 1) as a numbered checklist: four sentences, 45 words, raw figures",
+ "request": "Write the training brief for the jump task (Legs 1, Monument B3) as a numbered checklist (1. 2. 3. 4.) of four sentences, about 45 words in all, with raw figures: jump 3 times, at 2.5 m/s, within 30 seconds. Use the sentence-case label 'How to complete the jump test'.",
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 44.8,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 8.3,
+   "output_tokens": 801,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.10926000000000001
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 16.6,
+   "output_tokens": 1482,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1638097
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.1,
+   "output_tokens": 462,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.145683
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 6.9,
+   "output_tokens": 462,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1151969
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 5.9,
+   "output_tokens": 447,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0166403
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5506
+}

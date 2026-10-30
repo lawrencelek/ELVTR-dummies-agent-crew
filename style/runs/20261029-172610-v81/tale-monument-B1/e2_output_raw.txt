@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has no violations: it checks clean against the tone rules (T1, T3, T4, T5, T13 [EDIT95#3.1, EDIT95#3.2, PLAY#PS2]), the vocabulary and lore rules (V1, V3, V4, V6, V8, V11 [EDIT95#0, EDIT95#3.1, EDIT95#3.3, FLEET#F3]), formatting (F5, F6 at 2 sentences and 27 words with the place carrying the extra words, and F7 for Battery 1 [EDIT96#3.2, STORY#S1, STORY#MB1]) and truth (R4 for the podium bridge, where shoppers never came and staff watch, and R5 for a duty matching DASH INTO A CAR on the tile that issues Battery 1 [STORY#MB1, STORY#S3, EDIT93#3.1]).
+Total: 10.

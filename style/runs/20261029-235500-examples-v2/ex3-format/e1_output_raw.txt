@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- label · F8 (major, −2) "How to complete the jump test" The label is not in caps and runs to 29 characters, over the 19-character cap. [STORY#S3] Fix: "JUMP INTO A CAR".
+- brief · F5 (major, −2) "2.5 m/s", "3 times", "all 3 jumps within 30 seconds" These are typed gameplay figures, but numbers must live in the registry. [STORY#S1] Fix: remove every figure; the brief needs none.
+- brief · F6 (blocking, −4) "1. Walk toward a car at 2.5 m/s, then jump into its path.\n2. … 4. Make the final hit a jump, and the Corporation will count the write-off." The brief runs to 49 words in four sentences, over the caps of 20 words and two sentences. [EDIT95#3.2] Fix: cut to two sentences and about 15 words, as below.
+- brief · F8 (major, −2) "Jump into a car 3 times in this tile.\n3. Complete all 3 jumps within 30 seconds of your first jump." The goal adds a jump count, a time limit and an approach speed that the jump task does not have, since only the final hit must be a jump into a car. [STORY#S3] Fix: "Jump into a car in the traffic. The final hit must be a jump into a car."
+Total: 10 − 2 − 2 − 4 − 2 = 1.

@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: pedestrians. The final hit must be a car hitting you while you walk or stand." This brief uses the old "Coverage gap" framing that the guide bars, and its first sentence names a category instead of telling the trainee what to do. [EDIT98#3.2] Fix: "Walk or stand in the traffic. The final hit must be a car striking you while you are not dashing."
+Total: 10 − 2 = 8.

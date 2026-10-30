@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- PC2 · V6 (major, −2) "Opening day: our board watches from these terraces." The present tense says it is already opening day on tile 2 of 9, but the act frame opens the Expo only when the park passes. [EDIT95#3.3] Fix: "On opening day, our board will watch from these terraces. A van delivers the catering; let it deliver you."
+Total: 10 − 2 = 8.

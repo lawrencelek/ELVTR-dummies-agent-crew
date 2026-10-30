@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- t102 · R1 (blocking, −4) "Induction delayed." The impact event logs zone, part, bait, stopped, lunging, drop, dropZ, dropFrom, deck and plate, but no delay, so this consequence is invented, like the "schedule slips" line the critic caught in SUB4#5. [DESIGN#D9.3] Fix: "Welcome wall contact logged. Incident 4471 opened."
+- t103 · R1 (blocking, −4) "Then you stepped out..." The line says the dummy stepped out, but impact does not log that move (bait, lunging and stopped are all unset here), and D9.3 says a bark cannot invent a manoeuvre. [DESIGN#D9.3] Fix: "Welcome, it said. Should have known better..."
+Total: 10 − 4 − 4 = 2.

@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "B3", "title": "The obelisk court", "tale": "The obelisk marks the surveyors' first stake, and on opening day the police fleet escorts a school party here. Until then, your training covers the police fleet: a police car makes the final hit."}

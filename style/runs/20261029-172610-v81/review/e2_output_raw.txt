@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked all 37 texts against T1–T14 (tone, slogan repeats), V1–V11 (the story frame, the glossary, place-naming in every tale, the sacrifice stated in act-waterfront), F5–F8 and F10 (length, sentence count, equipment ranks) and R4–R5 (tile and brief truth), using the SLOT and [EDIT95#3.1], [EDIT95#3.2], [EDIT95#3.3], [EDIT96#3.2], [STORY#S1], [STORY#S3] and the tile chunks [STORY#MA1]–[STORY#WB2].
+Total: 10.

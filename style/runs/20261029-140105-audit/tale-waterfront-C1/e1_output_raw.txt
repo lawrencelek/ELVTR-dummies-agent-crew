@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the tone rules T1–T5 (EDIT92#3, STORY#S1, EDIT39#4.1.1, STORY#WC1): it is dry and procedural, has no "!" and speaks to "you". It fits the CUSTOMS frame from V6 (STORY#S2), since the police check papers and "Yours are being prepared". It follows the glossary and the crash-test-body rules in V1–V4 and V8 (FLEET#F3, DECISIONS#rows-531-540~2). It fits the card under F6, with about 205 characters and no sentence over 19 words (EDIT92#measured), and has no typed figures under F5. Under F7, R4 and R5 (STORY#WC1, EDIT93#3.1), it stays true to the tile: it names only the east bridge and portal, mentions the police as the brief requires, and names no equipment on a tile that issues none.
+Total: 10.

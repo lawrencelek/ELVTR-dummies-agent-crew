@@ -1,0 +1,7 @@
+SCORE: 1/10
+REASON:
+- tale · F6 (blocking, −4) "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted. A chain of three certifies the city. And you." The tale has 38 words and 6 sentences, but the limits are 35 words and 2 sentences. [EDIT96#3.2] Fix: "Battery 3 is fitted: chain {n} hits, and you are Certified for shipment to our clients. On the circus island, the monument cast from every write-off reads ZERO ACCIDENTS (EXCLUDING TESTS)." (31 words, 2 sentences.)
+- tale · F5 (major, −2) "A chain of three" This types the combo figure as a word, but the number belongs in the registry (story.task.comboHard). [STORY#S1] Fix: change "three" to the placeholder {n}.
+- tale · V3 (major, −2) "certifies the city" The glossary uses Certified only for a dummy that passed, so the city cannot be certified. [EDIT95#3.1] Fix: make the dummy the one Certified, e.g. "chain {n} hits, and you are Certified".
+- tale · T3 (major, −2) "every chassis you lost" This calls write-offs losses, but in the training frame a write-off is progress. [EDIT95#3.3] Fix: change "every chassis you lost" to "every write-off".
+Total: 10 − 4 − 2 − 2 − 2 = 1.

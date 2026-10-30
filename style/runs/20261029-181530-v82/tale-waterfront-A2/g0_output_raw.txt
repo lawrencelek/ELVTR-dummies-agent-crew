@@ -1,0 +1,1 @@
+{"kind":"tale","district":"waterfront","tile":"A2","title":"The west beach terrace","tale":"The valley began here: a cliff, an avenue, and a beach of sand brought from three provinces. Place a cone, and let the car that reacts to it complete your training."}

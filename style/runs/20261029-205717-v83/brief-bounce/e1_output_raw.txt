@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: rebounds. The final hit must come while a hit is still throwing you." The brief opens with the banned "coverage gap" framing, not an imperative goal. [EDIT98#3.2] Fix: "Let one car throw you into the next. The final hit must come while a hit is still throwing you."
+Total: 10 − 2 = 8.

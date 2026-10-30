@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "The police here check papers. Yours are being prepared." The tale gives the place and a dry fact about it, but it never states the duty in the imperative, so the card never tells you to be hit by a police car. [STORY#MB3, STORY#PA3, EDIT93#3.1] Fix: add a closing imperative that stays within 223 characters, e.g. "…The police here check papers. Yours are being prepared. Meet a police car." (220 characters).
+Total: 10 − 1 = 9.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against the style rules. The label is in capitals and is 19 characters, the brief follows the "Coverage gap: … The final hit must …" form exactly, and both match the shipped `struck` row [STORY#S3] and Monument B2's brief [STORY#MB2]. The text is dry and procedural, frames the task as a duty and addresses the dummy as "you" [EDIT92#3]. It has no "!", no banned or game words and no typed figures [FLEET#F2, STORY#S1], and lint reported no findings.
+Total: 10.

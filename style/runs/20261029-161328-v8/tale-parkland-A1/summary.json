@@ -1,0 +1,68 @@
+{
+ "case": "tale-parkland-A1",
+ "class": "V8 tale",
+ "title": "Prototype 7.13 tale parkland A1, for Prototype 8",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 43.8,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 17.6,
+   "output_tokens": 1468,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14287999999999998
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 9.5,
+   "output_tokens": 666,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1290359
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.2,
+   "output_tokens": 687,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.09929070000000001
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 7.5,
+   "output_tokens": 513,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0169298
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3881
+}

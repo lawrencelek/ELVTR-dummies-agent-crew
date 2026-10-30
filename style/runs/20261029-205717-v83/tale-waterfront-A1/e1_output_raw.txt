@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "At the west portal, the bus carries the upper town's engineers to the bridge. Dummy Corporation requires the bus fleet's data before you cross the river to our clients." At 29 words, the tale is over the 20-word cap for tales. [EDIT98#3.2] Fix: "The bus carries engineers through the west portal to the bridge. Meet it before you cross to our clients." (19 words, two sentences; keeps the landmark, the bus duty and the CUSTOMS crossing).
+Total: 10 − 4 = 6.

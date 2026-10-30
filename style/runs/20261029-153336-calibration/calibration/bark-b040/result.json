@@ -1,0 +1,13 @@
+{
+ "id": "bark-b040",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "WRITE-OFF! Tell dispatch I tried!",
+ "cost_usd": 0.1022,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b040 \"WRITE-OFF! Tell dispatch I tried!\" on every bark rule:\n  - **Tone:** it speaks as a worker reporting to dispatch, so T6 holds [FLEET#F2]. It reads as Budget rage, which T7 asks of tier 04 [FLEET#F4]. \"Tell dispatch\" supplies the polite form over the feeling that T9 asks for [EDIT26#3.2]. The \"!\" marks are allowed because the line is a Budget shout [DECISIONS#rows-541-550].\n  - **Vocabulary:** it uses no banned or game words and keeps to the glossary terms \"write-off\" and \"dispatch\" [FLEET#F3].\n  - **Formatting:** it is 33 characters, plain, and ends on \"!\". It has shout style and priority 3, as a write-off line should (F1–F4) [FSG#field-text], [EDIT39#6.6].\n  - **Truth:** it fires only on `writeoff` and asserts no logged fact, so the empty claims list is correct (R1–R4) [FLEET#F8], [DESIGN#D9.3].\n  - **Shipped:** it matches the shipped line in [FLEET#F9.2].\nTotal: 10."
+}

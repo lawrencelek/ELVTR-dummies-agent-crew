@@ -1,0 +1,19 @@
+# tale-parkland-B1 · audit · shipped tale parkland B1
+
+- **Scores:** 10/10. **Accepted** after 0 refinement(s).
+- **Calls:** 1 · 10.5 s · $0.145. Models: generator sonnet, evaluator opus, refiner opus.
+
+## Before (input)
+
+> The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest.
+
+195 characters.
+
+### Evaluation 1: 10/10
+
+```
+SCORE: 10/10
+REASON:
+- None. I checked the tale against every Farsight rule and found no violation. On tone, it reads as a dry staff notice that never comments on harm, has no "!" and treats the cars as colleagues (T1–T5; EDIT92#3, EDIT39#4.1.1). On vocabulary, it contains no banned or game words, names no other city or brand and keeps Act II's frame (V1–V3, V6, V8; FLEET#F2, FLEET#F3, STORY#S2). On length, it is one paragraph well under 223 characters, and its longest sentence has 15 words (F6; EDIT92#measured, EDIT93#3.1/tales-rewritten~2). On shape, it gives the place, then a dry fact, adds no equipment line because none is issued here, and ends on an imperative duty (F7; STORY#MB3). On truth, it names only the cascade, the reservoir and the highway, and "Go up to the highway" matches the brief's Z1-or-above final hit (R4, R5; STORY#PB1, STORY#S3). It matches the shipped text in EDIT93#3.1/tales-rewritten~1 word for word.
+Total: 10.
+```

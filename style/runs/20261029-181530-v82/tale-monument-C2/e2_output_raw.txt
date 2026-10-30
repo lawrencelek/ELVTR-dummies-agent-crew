@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the Tone, Vocabulary, Formatting and Truth rules. It names the portal tower and keeps the tenants detail from canon [STORY#MC2], and it uses the INDUCTION training frame, deadpan with no "!" [EDIT95#3.2, EDIT95#3.3]. It runs 33 words in two sentences [EDIT97#3.2], names no equipment on a tile that issues none, and its duty ("on that road, at height") matches the brief ON A RAISED ROAD [STORY#S3, EDIT93#3.1]. It uses no banned word, no other company name and no placeholder [EDIT95#0, EDIT95#3.1].
+Total: 10.

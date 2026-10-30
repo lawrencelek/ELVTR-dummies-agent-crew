@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations after checking the tale against Farsight's rules, which the shipped Waterfront A1 tale also satisfies:
+  - **Voice:** polite and procedural, with no "!" and Farsight written in the third person (T1–T5, [EDIT92#3], [EDIT39#4.1.1]).
+  - **Act frame:** the CUSTOMS frame holds; the river is a border to cross (V6, [STORY#S2]).
+  - **Vocabulary:** no banned words or game terms (V1–V3, [FLEET#F2], [FLEET#F3]).
+  - **Card fit:** no lint findings for length, sentence words or digits (F5–F6, [EDIT92#measured]).
+  - **Equipment:** none is issued on this tile and the tale names none (F7, R5, [STORY#S1]).
+  - **Brief:** the bus duty matches the brief A BUS (R5, [STORY#WA1]).
+  - **Tile truth:** every place it names comes from the tile's own canon (R4, [STORY#WA1]).
+Total: 10.

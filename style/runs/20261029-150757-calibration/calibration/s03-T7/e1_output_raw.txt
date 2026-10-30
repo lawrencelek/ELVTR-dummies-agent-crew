@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s03 · T7 (major, −2) "So sorry. Entirely my fault. I do apologise." This tier 01 Luxury car apologises three times, and the Luxury voice must be polished, superior and faintly amused and never apologise; the guide's §8 lists "So sorry, my fault entirely." as its out-of-voice example. [FLEET#F4] Fix: "Contact? With me? How very common." (34 characters, speech, no zone claim needed).
+Total: 10 − 2 = 8.

@@ -1,0 +1,158 @@
+[
+  {
+    "query": "dry register corporate politeness optimistic surface",
+    "results": [
+      {
+        "id": "EDIT26#3.2",
+        "score": 16.747
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 8.091
+      }
+    ]
+  },
+  {
+    "query": "texture never changes in response to gameplay state load-bearing promoted or removed",
+    "results": [
+      {
+        "id": "EDIT26#4.2~5",
+        "score": 18.555
+      },
+      {
+        "id": "EDIT26#4.2~2",
+        "score": 12.771
+      }
+    ]
+  },
+  {
+    "query": "gloss bloom translucency stay in frame matte play area",
+    "results": [
+      {
+        "id": "JUICE#J4",
+        "score": 13.473
+      },
+      {
+        "id": "EDIT26#7.1~1",
+        "score": 9.905
+      }
+    ]
+  },
+  {
+    "query": "high-contrast mode suppresses texture and gloss",
+    "results": [
+      {
+        "id": "EDIT26#12.3",
+        "score": 12.199
+      },
+      {
+        "id": "EDIT26#12.2",
+        "score": 12.099
+      }
+    ]
+  },
+  {
+    "query": "Chinese wording requires informed editorial review",
+    "results": [
+      {
+        "id": "EDIT26#6.2~3",
+        "score": 6.745
+      },
+      {
+        "id": "EDIT26#7.6",
+        "score": 5.113
+      }
+    ]
+  },
+  {
+    "query": "cars avoid you fool them into hitting you bait commit",
+    "results": [
+      {
+        "id": "BRIEF#P1.11",
+        "score": 14.243
+      },
+      {
+        "id": "LOG#P1.5/car-fixes-found-in-testing",
+        "score": 13.154
+      }
+    ]
+  },
+  {
+    "query": "{roads} roads, needing {q1}, {q2} and {q3} write-offs. Each body lost earns a modification credit, except the last.",
+    "results": [
+      {
+        "id": "BRIEF#P1.1",
+        "score": 19.881
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 17.576
+      }
+    ]
+  },
+  {
+    "query": "Welcome, test subject. The cars here are qualifying, and they would prefer you were not in the way.",
+    "results": [
+      {
+        "id": "EDIT26#7.2~2",
+        "score": 11.964
+      },
+      {
+        "id": "EDIT26#1",
+        "score": 10.919
+      }
+    ]
+  },
+  {
+    "query": "FARSIGHT reminds all vehicles that qualification is a shared goal.",
+    "results": [
+      {
+        "id": "EDIT26#1",
+        "score": 7.888
+      },
+      {
+        "id": "EDIT26#2~1",
+        "score": 4.655
+      }
+    ]
+  },
+  {
+    "query": "Height of the specular gloss highlight at the top of each panel.",
+    "results": [
+      {
+        "id": "LOG#P1.2/light-and-relief",
+        "score": 8.856
+      },
+      {
+        "id": "EDIT26#7.7",
+        "score": 6.64
+      }
+    ]
+  },
+  {
+    "query": "Welcome to the New Economic Zone. Your safety is being measured.",
+    "results": [
+      {
+        "id": "EDIT26#1",
+        "score": 13.39
+      },
+      {
+        "id": "BRIEF#P1.11",
+        "score": 7.408
+      }
+    ]
+  },
+  {
+    "query": "Time each signage notice stays before cross-fading to the next.",
+    "results": [
+      {
+        "id": "DESIGN#D2.2",
+        "score": 9.041
+      },
+      {
+        "id": "ENG#11.4",
+        "score": 7.98
+      }
+    ]
+  }
+]

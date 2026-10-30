@@ -1,0 +1,69 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t117",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "At the monument, of all places. Charming.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t118",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "Contact at the monument. Incident form 3 filed.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t119",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "At the monument. Of course it was me.",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  },
+  {
+   "id": "t120",
+   "event": "impact",
+   "when": {
+    "district": "monument",
+    "tile": "B2",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "At the monument?! Thanks ever so much!",
+   "claims": [
+    "district:monument",
+    "tile:B2"
+   ]
+  }
+ ]
+}

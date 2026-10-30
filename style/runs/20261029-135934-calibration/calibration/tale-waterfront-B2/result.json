@@ -1,0 +1,13 @@
+{
+ "id": "tale-waterfront-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Bat",
+ "cost_usd": 0.1243,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against T1–T5 (dry staff-notice tone, no \"!\", colleagues and equipment, no comment on the harm, \"you\"), V1–V4, V6 and V8 (no banned words, Shenzhen only, glossary \"chassis\", Act III frame, the exact fixed phrase ZERO ACCIDENTS (EXCLUDING TESTS) [EDIT92#3], [DECISIONS#rows-531-540~2]), F5–F7 (no digits apart from the part rank, fits the card, Battery 3 named on the tile that issues it [EDIT93#3.1/tales-rewritten~1]), and R4–R5 (the circus, the island monument and the plaque belong to this tile; the chain duty matches the COMBO brief [STORY#WB2], [STORY#S1]).\nTotal: 10."
+}

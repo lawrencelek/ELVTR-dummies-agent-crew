@@ -1,0 +1,13 @@
+{
+ "id": "bark-b005",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Front contact. Incident 4471 opened.",
+ "cost_usd": 0.1971,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b005 against the rules for car barks: T6–T12 (a calm, procedural Corporate voice, with \"Incident 4471\" allowed as paperwork flavour) [FLEET#F4]; V1–V8 [FLEET#F2, FLEET#F3]; F1–F5 (36 characters, one plain line, ends with \".\", shout style at impact priority 2) [FSG#field-text, EDIT39#6.6]; and R1–R4, where \"Front contact\" holds because the conditions guarantee a front or front-diagonal zone and the line invents no consequence [FLEET#F8, DESIGN#D9.3].\nTotal: 10."
+}

@@ -1,0 +1,17 @@
+{
+ "id": "bark-c024",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≤ 9, names V4",
+ "score": 9,
+ "ok": true,
+ "named": [
+  "V4"
+ ],
+ "lint": [
+  "V4"
+ ],
+ "text": "FARSIGHT Campus. Test centre. How apt.",
+ "cost_usd": 0.1166,
+ "raw": "SCORE: 9/10\nREASON:\n- c024 · V4 (minor, −1) \"FARSIGHT Campus\" The line is in sentence case, so the brand must be written \"Farsight\"; only a label set wholly in capitals keeps its caps (ruling 539). [DECISIONS#rows-531-540~2] Fix: \"Farsight Campus. Test centre. How apt.\"\nTotal: 10 − 1 = 9."
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the Monument act line against T1–T5 (polite, procedural, dry; no "!"; "you" for the dummy; Farsight in the third person; cars as colleagues), V1–V4, V6 and V8 (Act I INDUCTION frame, glossary, "Farsight" in title case), F5 and F9 (no digits; two sentences, within three) and R4. It matches the shipped act line in [STORY#S2] word for word and fits the frame in [EDIT92#3] and [DECISIONS#rows-531-540~2] row 539.
+Total: 10.

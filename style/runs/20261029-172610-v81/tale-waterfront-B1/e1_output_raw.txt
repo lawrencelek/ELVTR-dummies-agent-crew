@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Where your data goes after the tunnel is not within your role." The tale is 36 words and 5 sentences, over the limits of 35 words and 2 sentences. [EDIT96#3.2] Fix: "Legs 3 is fitted for the longest flight. Jump into a car at the tunnel portal, where cars go in under the hill and data comes back to serve our clients." (31 words, 2 sentences).
+- tale · T1 (major, −2) "Where your data goes after the tunnel is not within your role." The closing line turns the trainee away from the tunnel instead of toward the jump, and the tale never connects the place to the duty. It reads like the old procedural Farsight voice, not a deadpan line that motivates. [EDIT95#3.2] Fix: cut the line and end on the duty and its service to clients, as in the F6 fix.
+Total: 10 − 4 − 2 = 4.

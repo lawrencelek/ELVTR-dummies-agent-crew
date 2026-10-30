@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all 37 texts against T1–T5, T13, T14, V1–V4, V6 and V8–V11, F5–F7, F10, and R4–R5. Every tale names its landmark and matches its brief. Each piece of equipment is named on the tile that issues it. The fixed phrases ZERO ACCIDENTS and ROLE: DESTRUCTIVE TESTING are exact. No four-word phrase appears in more than two texts. The sacrifice is stated once, in act-waterfront. [EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, EDIT96#3.2, STORY#S1, STORY#S3, STORY#MA1–STORY#WB2]
+Total: 10.

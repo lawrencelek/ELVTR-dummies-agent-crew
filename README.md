@@ -1,10 +1,57 @@
 # DUMMIES — Agent Crew (ELVTR Assignment #3)
 
+> **Current prototype: [Prototype 8.4](prototypes/p8/README.md)** (29 October 2026). Open `prototypes/p8/dummies_p8_4.html` in a browser. Three districts: Parkland, Waterfront, Monument. Spec: GDD Edits 62–99; current state indexed in [`coder/gdd/DUMMIES_GDD_Current_State_Edit99.md`](coder/gdd/DUMMIES_GDD_Current_State_Edit99.md). Lore (Edit 95): the company in the game is Dummy Corporation; Farsight publishes and is named only in the Credits.
+>
+> | Prototype | Folder | Build | Status |
+> |---|---|---|---|
+> | 8.4 | [`prototypes/p8/`](prototypes/p8/README.md) | `dummies_p8_4.html` | Current (Edit 99). Cars steer round cones; straight headlight beams; noticed cars flash their headlights; braking for safety keeps brake lights; spent cars grey; a seven-row cue key; whole cars at the bottom edge |
+> | 8.3 | `prototypes/p8/` | `dummies_p8_3.html` | Frozen (Edit 98). The intro screen, STORY first, a level card in both modes, the drone drop, the Story splash; tales 15–20 words; briefs as goals |
+> | 8.2 | `prototypes/p8/` | `dummies_p8_2.html` | Frozen (Edit 97). Arcade in grades; HIGH SCORES; tales redrafted |
+> | 8.1 | `prototypes/p8/` | `dummies_p8_1.html` | Frozen (Edit 96). Longer tales; CBD and Campus in the lore |
+> | 8 | `prototypes/p8/` | `dummies_p8.html` | Frozen (Edit 95). The lore refinement: Dummy Corporation; Farsight only in the Credits; text from the Style Guide Agent (Assignment 6) |
+> | 7.13 | [`prototypes/p7/`](prototypes/p7/README.md) | `dummies_p7_13.html` | Frozen (Edit 94). The finale, built by the coding agent ([`coder/`](coder/README.md), Assignment #5): the circus's monument shrouded until B2 clears; the cloth lifted, the plaque with the run (chassis, points, best combo, time); a drone carries the dummy to the ship at B3, every crate with its face; then CERTIFIED |
+> | 7.12 | `prototypes/p7/` | `dummies_p7_12.html` | Frozen (Edit 93). Introduce, then test: each part on the tile whose brief first needs it. B1 tests the dash; C1 the drop; parts paced 3 · 5 · 3 by act, Battery 3 on the last tile; 34 bodies |
+> | 7.11 | `prototypes/p7/` | `dummies_p7_11.html` | Frozen (Edit 92). Narrative A, Certified: three acts (Induction, Opening Day, Customs), 27 tales, the ending; five tiles renamed; the story's tile art, cosmetic only (the welcome wall, neon shops, the gateway's THANK YOU, a lantern, the cascade, customs posts, the ship) |
+> | 7.10 | `prototypes/p7/` | `dummies_p7_10.html` | Frozen (Edit 91). Story: every part by drone on a fixed tile, no levels; Arcade: parts for credits; Battery 1 the dash; on foot at A1 (500); a miss of the brief holds at 1; POINTS small top right; damage in red on the chassis; the circus's DUMMY MONUMENT |
+> | 7.9 | `prototypes/p7/` | `dummies_p7_9.html` | Frozen (Edit 90). The dash's jump is free; X taps a cone down; buttons named only once fitted, OK and BACK in menus |
+> | 7.8 | `prototypes/p7/` | `dummies_p7_8.html` | Frozen (Edit 89). Every menu tappable; touch on at the first touch (S Pen phones); Story levels from points, an upgrade a level, no credits; the workshop, the chassis as its interface; LEVEL UP in play |
+> | 7.7 | `prototypes/p7/` | `dummies_p7_7.html` | Frozen (Edit 88). Save games: NEW GAME and three named slots, each with a time stamp and its own story (tile, points, credits, levels); CONTINUE, RENAME, ERASE |
+> | 7.6 | `prototypes/p7/` | `dummies_p7_6.html` | Frozen (Edit 87). One top edge: BODY, the field, a POINTS · CREDITS box; the objective on top; touch controls the player moves and sizes |
+> | 7.5 | `prototypes/p7/` | `dummies_p7_5.html` | Frozen (Edit 86). A clean screen: no row under the stage; options and per-device controls in the pause menu; BODY as tall as DASH; no wordmark in play |
+> | 7.4 | `prototypes/p7/` | `dummies_p7_4.html` | Frozen (Edit 85). Story traffic per tile (the tile in test and its neighbours; Arcade per district); every highway a flight and a lit parapet gap over each road beneath; cones never on a road or out of view |
+> | 7.3 | `prototypes/p7/` | `dummies_p7_3.html` | Frozen (Edit 84). Verbs issued, levels bought: Legs 1, Hands 1, Arms 1 come by drone (Monument C1, A2, C3; Arcade one a write-off), never sold. The drone carries the module in view and lowers it onto the dummy; a gift screen: the module falls onto the chassis with a flash, rays and a fanfare |
+> | 7.2 | `prototypes/p7/` | `dummies_p7_2.html` | Frozen (Edit 83). Defaults: two dashes, no ability; story tracks fill only at Waterfront's end (35 bodies); the ricochet tamed (recoil 0.7, throw ≤ 40); a drone ferries the dummy to the next tile; fences as an edge glow; greyed map, live tile in yellow; speech bubbles on cars; the objective on the bottom line |
+> | 7.1 | `prototypes/p7/` | `dummies_p7_1.html` | Frozen (Edit 82). One credit a body in both modes; story levels cost 3, 4, 5 (Arcade 1, 2, 3); write-offs tuned per tile (1–3, 62 in all); only the last hit counts; Arcade one district a run |
+> | 7 | `prototypes/p7/` | `dummies_p7.html` | Frozen (Edit 81). Two modes on the title. ARCADE: the 6.10 game, one district a run. STORY: the Test City, 27 tiles from Monument A1 to Waterfront B2; a tale and a Farsight brief per tile; 3 counted write-offs clear a tile; fenced until cleared; power-ups for clears and score; the map revealed as you go; saved in the browser |
+> | 6.10 | `prototypes/p6/` | `dummies_p6_10.html` | Frozen (Edit 80). Battery (A), Legs (B), Hands (X: tap to pick up, hold 0.3 s to put down; one or two cones), Arms (Y: push off a car you hit, a timed ricochet; +160/200/240 u/s, 1/2/3 pushes before landing); the throw and the hitch retire |
+> | 6.9 | `prototypes/p6/` | `dummies_p6_9.html` | Frozen (Edit 79). Battery, Legs, Arms at three levels; hold X to throw; Arms 3 hitches a car and slings off it; combos pay for variety, hold their clock in the air, show a meter |
+> | 6.8 | `prototypes/p6/` | `dummies_p6_8.html` | Frozen (Edit 78). Four levels per ability, linear steps (airtime 0.3–0.6 s, 1–4 cones, throw +40, recharge −0.1 s); the Newtonian bounce off cars, tunable |
+> | 6.7 | `prototypes/p6/` | `dummies_p6_7.html` | Frozen (Edit 77). Four ability tracks by level, one per button (Battery A, Legs B, Arms X, Throw Y); each level shields its ability from damage; run to clear |
+> | 6.6 | `prototypes/p6/` | `dummies_p6_6.html` | Frozen (Edit 76). Fits any screen; touch only on phones and tablets, in the HUD's glass; the jump keeps its take-off speed (Link's Awakening); stair-head freeze fixed |
+> | Jump | [`prototypes/jump/`](prototypes/jump/README.md) | `dummies_jump.html` | Test (Edits 76–79). Phaser 3.90 yard: moving traffic, parked cars, barriers 8–64 deep, a ruler, a side view of every flight; run to clear; diagonals; Legs levels |
+> | 6.5 | `prototypes/p6/` | `dummies_p6_5.html` | Frozen (Edit 75). DIRECT turning; A dash, B jump, X grab, Y throw; jumpable tag; combos; Ricochet; any gamepad; landscape touch |
+> | 6.4 | `prototypes/p6/` | `dummies_p6_4.html` | Frozen (Edit 72). Ring stalls diagnosed; vehicles at 0.9; steady roundabout signals |
+> | Controls | [`prototypes/controls/`](prototypes/controls/README.md) | `dummies_controls.html` | Test (Edits 73–74). Phaser 3.90: landscape touch with an analog stick and A/B columns; any gamepad, with button setup; keys and mouse; three turn models |
+> | 6.3 | `prototypes/p6/` | `dummies_p6_3.html` | Frozen (Edit 71). Smooth turns, turn signals, ring entry, the cone drone |
+> | 6.2 | `prototypes/p6/` | `dummies_p6_2.html` | Frozen (Edit 70). The open ring, one garden grid, navigation checks, the HUD |
+> | 6.1 | `prototypes/p6/` | `dummies_p6_1.html` | Frozen (Edit 69). Release tests: traffic soak, walking |
+> | 6 | `prototypes/p6/` | `dummies_p6.html` | Frozen (Edit 62) |
+> | 5 | [`prototypes/p5/`](prototypes/p5/README.md) | `dummies_p5.html` | Frozen at P5.3 |
+> | 4 | [`prototypes/p4/`](prototypes/p4/README.md) | `dummies_p4.html` | Frozen at P4.3 |
+> | 3 | [`prototypes/p3/`](prototypes/p3/README.md) | `dummies_p3.html` | Frozen at P3.4 |
+> | 2, 1 | `prototypes/p2/`, `prototypes/p1/` | | Frozen at P2.2, P1.9 |
+
+> **Assignment #6 (Style Guide Agent)** lives in [`style/`](style/README.md): generator → evaluator (SCORE + REASON) → refiner, on Style Guide V1 (Prototype 7.13) and V2 (Dummy Corporation, Prototype 8). Write-up: [ELVTR-Multiagent-Submission-6](https://github.com/lawrencelek/elvtr-multiagent-submission-6).
+>
+> **Assignment #5 (Goal-Oriented Coding Agent)** lives in [`coder/`](coder/README.md). It reads the GDD, scans the code, scores the gaps, writes the top one, verifies it and re-scans. It built Prototype 7.13's finale. Write-up: [ELVTR-Multiagent-Submission-5](https://github.com/lawrencelek/ELVTR-Multiagent-Submission-5).
+>
+> **Assignment #4 (Dynamic Content Pipeline)** lives in [`content/`](content/README.md). It generates juice, interface and graphics content from the GDD. The playable result is [`prototypes/p3/`](prototypes/p3/README.md) (pixel art, 640 × 360). [`prototypes/p2/`](prototypes/p2/README.md) stays at P2.2; [`prototypes/p1/`](prototypes/p1/README.md) stays frozen at P1.9.
+
 **Capstone game:** DUMMIES, by Lawrence Lek.
 
 DUMMIES is a single-player, top-down 2D browser game for an exhibition. You are
-a FARSIGHT crash-test dummy in Shenzhen Smart City, New Economic Zone, China,
-20XX. *You are buying your freedom by destroying your body.* You bait
+a crash-test dummy in Shenzhen Smart City, New Economic Zone, China, 20XX: a
+Dummy Corporation trainee (Edit 95; Prototypes 1–7.13 said FARSIGHT). *You are buying your freedom by destroying your body.* You bait
 self-driving cars and lunge into their path.
 
 ## What the crew produces

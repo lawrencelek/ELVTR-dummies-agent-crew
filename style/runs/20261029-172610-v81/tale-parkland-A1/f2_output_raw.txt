@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "A1", "title": "The reservoir terraces", "tale": "At the reservoir terraces, the gardener keeps three pools level by hand; she asks that cars stop before the water. Arms 2 is fitted: push off one car; the next writes you off."}

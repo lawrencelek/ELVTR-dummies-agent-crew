@@ -1,0 +1,11 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations after checking the tale against these rules:
+  - **Tone (T1–T5):** dry, procedural and in the second person, with no "!" [EDIT92#3, STORY#S1].
+  - **Act frame and fixed phrase (V6):** it fits ACT III · CUSTOMS and keeps ZERO ACCIDENTS (EXCLUDING TESTS) exactly as written [EDIT92#3, DECISIONS#rows-531-540~2].
+  - **Banned words and glossary (V1, V3, V8):** the tale uses "chassis" and "you" [FLEET#F2, FLEET#F3].
+  - **Equipment (F7, R5):** it names Battery 3, the equipment this tile issues [STORY#S1, STORY#WB2].
+  - **Duty (R5):** the duty is a chain, which matches the COMBO brief [STORY#S3].
+  - **Tile truth (R4):** the island, the monument cast from every chassis you lost, and the plaque all match this tile [STORY#WB2, DECISIONS#rows-511-520~2].
+  - **Card fit (F6):** lint found no length or sentence problem [EDIT93#3.1/tales-rewritten~2].
+Total: 10.

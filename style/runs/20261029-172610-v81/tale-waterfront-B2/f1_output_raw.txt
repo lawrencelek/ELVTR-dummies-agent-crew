@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "B2", "title": "The circus", "tale": "Battery 3 is fitted: end a combo on link {n} or later, and you are Certified for our clients. The circus island's monument, cast from every write-off, reads ZERO ACCIDENTS (EXCLUDING TESTS)."}

@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked all 37 texts against T1–T14, V1–V11, F5–F8, F10, F11 and R4–R5: tone, the story frame, the glossary, each tale's landmark, duty and equipment tile, slogan repeats across the batch (n01 and n02 only), and the plain sacrifice line in act-waterfront [EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, EDIT97#3.2, STORY#S1, EDIT93#3.1].
+Total: 10.

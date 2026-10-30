@@ -1,0 +1,18 @@
+{
+ "id": "s07-V5",
+ "expect": "seeded",
+ "rule": "V5",
+ "want": "≤ 8, names V5",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "T7",
+  "V5"
+ ],
+ "lint": [
+  "V5"
+ ],
+ "text": "B2. I did not sign up for this.",
+ "cost_usd": 0.1424,
+ "raw": "SCORE: 6/10\nREASON:\n- s07 · V5 (major, −2) \"B2.\" The line names a grid code, but cars must name the landmark or the district. [EDIT94#who-built-what-assignment-5] Fix: replace \"B2.\" with \"The monument.\" or \"Monument.\"\n- s07 · T7 (major, −2) \"I did not sign up for this.\" This is the tired, resigned voice of a Consumer car, not the polished, superior and faintly amused voice of a Luxury car; decision 537 rejected this exact line for a Luxury sedan because it did not fit the tier's voice. [FLEET#F4, SUB4#6.2] Fix: write a Luxury sniff that names only the landmark, e.g. \"Contact at the monument? How very provincial.\"\nTotal: 10 − 2 − 2 = 6."
+}

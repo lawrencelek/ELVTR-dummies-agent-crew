@@ -1,0 +1,68 @@
+{
+ "case": "notices",
+ "class": "V8 notices",
+ "title": "Prototype 7.13's interface texts, for Prototype 8",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 108.8,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 56.7,
+   "output_tokens": 6510,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2449384
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 19.0,
+   "output_tokens": 2431,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1730149
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 18.4,
+   "output_tokens": 1621,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1486443
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 14.6,
+   "output_tokens": 1240,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.032605800000000004
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5992
+}

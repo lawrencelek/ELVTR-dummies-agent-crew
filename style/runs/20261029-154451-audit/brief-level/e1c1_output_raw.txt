@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label "ON A RAISED ROAD" and the brief "Coverage gap: raised roads. The final hit must land at Z1 or above." match the level row of [STORY#S3] word for word, and match the shipped briefs on Waterfront A3, Monument C2 and Parkland B1 [STORY#WA3] [STORY#MC2] [STORY#PB1]. I checked F8 [STORY#S3]: the label is in caps and is 16 characters, under the 19 allowed. I checked F5 [STORY#S1]: "Z1" is a Z level, which narration may use. I checked T1, T2 and T3 [EDIT92#3]: the brief is a dry, procedural duty with no "!". I checked V1 [FLEET#F2]: no banned word appears in the shown text, and "level" is only the schema task key, not diegetic text [DECISIONS#rows-531-540~2]. I checked R5 [STORY#S1]: the brief names no equipment. Lint found nothing.
+Total: 10.

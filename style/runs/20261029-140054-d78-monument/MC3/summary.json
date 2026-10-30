@@ -1,0 +1,55 @@
+{
+ "case": "MC3",
+ "class": "D78 tile barks",
+ "title": "Monument C3 · The LED gateway",
+ "request": "Write the four impact barks a car says when it hits the dummy on this tile, one per price tier (01 Luxury, 02 Corporate, 03 Consumer, 04 Budget). Each line names this tile's place: its landmark from the title or the tale, or the district. Never the grid code. Each in its tier's voice, at most 48 characters, true to an impact on this tile. Pick each line's style.",
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 36.9,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 4.6,
+   "output_tokens": 367,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0104327
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 14.5,
+   "output_tokens": 1179,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1334386
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 17.7,
+   "output_tokens": 1578,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.039145
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.183
+}

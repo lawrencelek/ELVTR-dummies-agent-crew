@@ -1,0 +1,13 @@
+{
+ "id": "tale-waterfront-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Bat",
+ "cost_usd": 0.1309,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I found no violations after checking the tale against these rules:\n  - **Tone (T1–T5):** dry, procedural and in the second person, with no \"!\" [EDIT92#3, STORY#S1].\n  - **Act frame and fixed phrase (V6):** it fits ACT III · CUSTOMS and keeps ZERO ACCIDENTS (EXCLUDING TESTS) exactly as written [EDIT92#3, DECISIONS#rows-531-540~2].\n  - **Banned words and glossary (V1, V3, V8):** the tale uses \"chassis\" and \"you\" [FLEET#F2, FLEET#F3].\n  - **Equipment (F7, R5):** it names Battery 3, the equipment this tile issues [STORY#S1, STORY#WB2].\n  - **Duty (R5):** the duty is a chain, which matches the COMBO brief [STORY#S3].\n  - **Tile truth (R4):** the island, the monument cast from every chassis you lost, and the plaque all match this tile [STORY#WB2, DECISIONS#rows-511-520~2].\n  - **Card fit (F6):** lint found no length or sentence problem [EDIT93#3.1/tales-rewritten~2].\nTotal: 10."
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All 37 texts pass for Dummy Corporation's voice: tone and adjectives (T1–T5, T13), with no slogan in more than two texts (T14) [EDIT95#3.2, PLAY#PS2]; vocabulary, the act frames and fixed phrases (V1–V9) [EDIT95#3.1, EDIT95#3.3, STORY#S2]; the sacrifice stated plainly in act-waterfront (V10) and every tale naming its landmark (V11) [EDIT95#3.1]; length, equipment on its issuing tile and no placeholders (F5–F7, F10) [EDIT96#3.2, STORY#S1, EDIT95#4.2]; and each tale's duty against its brief (R4–R5) [STORY#S3, EDIT93#3.1, STORY#MA1–STORY#WB2].
+Total: 10.

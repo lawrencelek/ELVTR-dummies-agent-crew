@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The gateway thanks every car for driving safely. It thanked the last one seconds after that car wrote you off. Your file is updated: ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next." Lint measured 35 words in 4 sentences, over the cap of 20 words and 2 sentences. [EDIT95#3.2] Fix: "Under the gateway, your file reads ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next." This is 17 words in 2 sentences. It keeps the tile's landmark, the exact fixed phrase and the brief's rebound duty.
+Total: 10 − 4 = 6.

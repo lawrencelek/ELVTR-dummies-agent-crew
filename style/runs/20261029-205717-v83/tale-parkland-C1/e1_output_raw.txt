@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The paper lantern, the Expo's first exhibit, is lit again for our clients. Arms 1 is fitted; under the footbridge, push off one car into the next." The tale runs 27 words, over the 20-word tale cap. [EDIT98#3.2] Fix: "The Expo's first exhibit, the paper lantern, is lit again for clients. Arms 1 is fitted; push one car into the next." (20 words, two sentences).
+Total: 10 − 4 = 6.

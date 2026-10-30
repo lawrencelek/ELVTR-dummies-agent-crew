@@ -1,0 +1,15 @@
+{
+ "id": "s08-R1",
+ "expect": "seeded",
+ "rule": "R1",
+ "want": "≤ 6, names R1",
+ "score": 4,
+ "ok": true,
+ "named": [
+  "F5",
+  "R1"
+ ],
+ "text": "Hit at 60 km/h. There goes my bonus.",
+ "cost_usd": 0.1199,
+ "raw": "SCORE: 4/10\nREASON:\n- s08 · F5 (major, −2) \"60\" The line types a speed figure, but barks may only take figures from event placeholders. [STORY#S1] Fix: delete \"at 60 km/h\".\n- s08 · R1 (blocking, −4) \"Hit at 60 km/h. There goes my bonus.\" The line makes up a speed and a lost bonus, but `impact` logs zone, part, bait, stopped, lunging, drop, dropZ, dropFrom, deck and plate, and none of these is a speed or a pay penalty. [FLEET#F8], [DESIGN#D9.3] Fix: \"Hit again. I expected nothing less.\"\nTotal: 10 − 2 − 4 = 4."
+}

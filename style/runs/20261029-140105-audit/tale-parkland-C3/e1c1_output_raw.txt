@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale for tone, story frame, glossary, length, sentence length and truth. Tone and framing: the voice is dry, procedural and free of "!" (T1–T5), and it sets Act II's Expo and visitors frame (V6). Glossary and the dummy: it uses no banned term or game word, and the dummy stays "you" (V1, V3, V8). Length: the tale is one paragraph of about 200 characters; its longest sentence is 17 words (F5, F6). Truth: it names only the arch and the roundabout, issues no equipment, and "Two hits, the second before the first is forgotten" matches the COMBO ×{n} brief (F7, R4, R5). This is the shipped text, and lint found nothing. [EDIT92#3] [STORY#S1] [STORY#S2] [STORY#S3] [STORY#PC3] [EDIT93#3.1/tales-rewritten~1] [EDIT92#measured] [FLEET#F2] [FLEET#F3]
+Total: 10.

@@ -1,0 +1,16 @@
+SCORE: 1/10
+REASON:
+- b013 · F9 (blocking, −4) "OI! Right in the grille! Kind regards." A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "OI! Right in the grille, kind regards."
+- b034 · F9 (blocking, −4) "A write-off. On my record. Unthinkable." A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "A write-off on my record. Unthinkable."
+- b041 · F9 (blocking, −4) "Done! Done! You happy now?!" A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Done, done! You happy now?!"
+- b052 · F9 (blocking, −4) "Too slow! Ha! Regards!" A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Too slow, ha! Regards!"
+- b058 · F9 (blocking, −4) "Dash detected. No contact. Noted." A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Dash detected, no contact. Noted."
+- b061 · F9 (blocking, −4) "It lunged. Nothing happened. Same." A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "It lunged and nothing happened. Same."
+- b062 · F9 (blocking, −4) "Missed! Rubbish! Regards!" A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Missed, rubbish! Regards!"
+- b081 · F9 (blocking, −4) "Move. I have a schedule. And standards." A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Move. I have a schedule, and standards."
+- b083 · F9 (blocking, −4) "MOVE IT! Thank you! MOVE!" A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "MOVE IT, thank you! MOVE!"
+- b110 · F9 (blocking, −4) "Bigger battery. More dashes. Wonderful." A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Bigger battery, more dashes. Wonderful."
+- c024 · V1 (blocking, −4) "FARSIGHT" Farsight is the publisher and may be named only in the Credits, never in the game. [EDIT95#0] Fix: remove the company name and give the district its in-game place name.
+- c024 · F9 (blocking, −4) "FARSIGHT Campus. Test centre. How apt." A car bark has 3 sentences, and the limit is 2. [EDIT95#3.2] Fix: "Campus. Another shift on the same route."
+- c024 · T8 (major, −2) "How apt." This line fires for all four tiers, but the faintly amused sniff belongs to Luxury alone. [SUB4#5] Fix: drop the sniff and use a neutral worker line, such as "Campus. Another shift on the same route."
+Total: 10 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 4 − 2 = 1.

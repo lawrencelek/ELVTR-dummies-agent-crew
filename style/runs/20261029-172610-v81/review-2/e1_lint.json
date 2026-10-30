@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "items[25]",
+  "quote": "{n}",
+  "measured": "a placeholder in a tale: the card draws it as written; the brief carries the number",
+  "source": "EDIT96#3.2"
+ },
+ {
+  "rule": "F5",
+  "severity": "major",
+  "deduct": 2,
+  "path": "items[35]",
+  "quote": "{n}",
+  "measured": "a placeholder in a tale: the card draws it as written; the brief carries the number",
+  "source": "EDIT96#3.2"
+ }
+]

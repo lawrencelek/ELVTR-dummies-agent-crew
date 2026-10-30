@@ -1,0 +1,189 @@
+SLOT
+- Kind: tale, `content/story/story.json` `districts[].tiles.<tile>.tale`. Speaker: Farsight. Shown on the tile card.
+- Schema: {"kind": "tale", "district", "tile", "title", "tale"}
+- Card: at most 223 characters (style.tale.maxChars); sentences of at most 19 words.
+- Tile: Parkland B1 · The cascade (ACT II · OPENING DAY; tile 8 of 9). Brief: ON A RAISED ROAD. Coverage gap: raised roads. The final hit must land at Z1 or above. Equipment issued here: none. Chunk: STORY#PB1.
+
+CANON
+
+[EDIT92#3] 3 Story: Narrative A, Certified (replaces the proposal)
+## 3 Story: Narrative A, Certified (replaces the proposal)
+```markdown
+- **Logline:** a dummy sits the longest job interview in the world. Passing means being shipped.
+- **Tone:** dry corporate comedy. Farsight narrates. You are the product under test.
+- **Voice:** polite, procedural, dry. No exclamation marks. Cars are colleagues; briefs are duties; parts are equipment.
+- **Act I · Monument · INDUCTION:** off the factory floor; Farsight greets you as new staff.
+  - Turn (C3): the gateway thanks a car for driving safely, seconds after it wrote you off. ROLE: DESTRUCTIVE TESTING.
+- **Act II · Parkland · OPENING DAY:** the Expo opens when the park passes. Nine tiles, nine days. Visitors are booked.
+  - Turn (B2): the board applauds the cars. "The public prefers the product to the test."
+- **Act III · Waterfront · CUSTOMS:** the river is a border; ships wait beyond it.
+  - The customs log (A3): ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION.
+  - The circus (B2): the monument, cast from every chassis you lost. ZERO ACCIDENTS (EXCLUDING TESTS).
+- **Delivery (built):** the act line on each district's first card and at the head of every card; the map's act numerals (I, II, III); 27 tales; the ending.
+```
+
+[STORY#S1] S1 Story rules
+## S1 Story rules
+- Numbers live in the registry: tasks and gifts name parameter IDs, never values.
+- A task tests the hit that writes the chassis off (the fatal hit).
+- Tile names are column-row, as in the game: A1 is the top-left tile.
+- Each tile's write-offs are story.writeOffs.<district>.<tile> in the registry (Edit 82).
+- Edit 93: introduce, then test. A part arrives on the tile whose brief first needs it; no brief needs a part not yet issued. Monument: Battery 1 B1 (dash), Hands 1 A2 (cone), Legs 1 B3 (jump). Parkland: Arms 1 C1 (push), Legs 2 A3 (jump), Hands 2 A2 (cone), Arms 2 A1 (push), Battery 2 B2 (combo). Waterfront: Legs 3 B1 (jump), Arms 3 B3 (push), Battery 3 B2 (combo).
+- Edit 92: Narrative A, Certified. Act I Monument (Induction), Act II Parkland (Opening Day), Act III Waterfront (Customs). Farsight narrates: polite, procedural, dry; no exclamation marks. The cars are colleagues; the briefs are duties; the parts are equipment.
+- A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade sells every part for credits; its chassis ships with Battery 1 (Edit 91).
+- Each tile's traffic is story.traffic.<district>.<tile> in the registry, on the tile and its neighbours (Edit 85).
+
+[STORY#S2] S2 Acts
+## S2 Acts
+| District | Act | Act line (intro) | Order |
+|---|---|---|---|
+| Monument | ACT I · INDUCTION | Off the factory floor. Farsight greets you as new staff; the cars are your colleagues. | A1 → B1 → C1 → C2 → B2 → A2 → A3 → B3 → C3 |
+| Parkland | ACT II · OPENING DAY | The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked. | C1 → C2 → C3 → B3 → A3 → A2 → A1 → B1 → B2 |
+| Waterfront | ACT III · CUSTOMS | The river is a border; ships wait beyond it. Your papers are being prepared. | A1 → B1 → C1 → C2 → C3 → B3 → A3 → A2 → B2 |
+
+[STORY#S3] S3 Briefs
+## S3 Briefs
+A brief is a caps label, then "Coverage gap: …. The final hit must ….". Figures are placeholders bound to registry IDs ({n}).
+| Kind | Label | Brief |
+|---|---|---|
+| any | ANY WRITE-OFF | General coverage. Any write-off in this tile counts. |
+| dash | DASH INTO A CAR | Coverage gap: dashes. The final hit must be a dash into a car. |
+| drop | DROP ONTO A CAR | Coverage gap: falls. The final hit must be a drop onto a car from above. |
+| jump | JUMP INTO A CAR | Coverage gap: jumps. The final hit must be a jump into a car. |
+| level | ON A RAISED ROAD | Coverage gap: raised roads. The final hit must land at Z1 or above. |
+| cone | CONE-BAITED CAR | Coverage gap: cones. The final hit must come from a car reacting to a cone. |
+| push | PUSH OFF A CAR | Coverage gap: ricochets. Push off one car; the final hit must be the next car. |
+| bounce | THROWN INTO A CAR | Coverage gap: rebounds. The final hit must come while a hit is still throwing you. |
+| struck | STRUCK, NOT DASHING | Coverage gap: pedestrians. The final hit must be a car hitting you while you walk or stand. |
+| combo | COMBO ×{n} | Coverage gap: chains. The final hit must be link {n} or later of a combo. |
+| cls | A {cls} | Coverage gap: the {clsLong}. The final hit must come from a {cls}. |
+
+[EDIT39#4.1.1] 4.1.1 The register (replaces Edit 37)
+## 4.1.1 The register (replaces Edit 37)
+```markdown
+#### 4.1.1 The register
+**A Sinofuturist cyber city inside a friendly corporate terminal.** Two layers, never mixed.
+- **The play area is the city at night.** 16-bit pixel art: dark deck plates, LED city blocks, neon spill, jersey barriers, a white fleet.
+- **The frame is FARSIGHT's brand.** Dark glass, cyan LED edges, rounded panels. High resolution.
+- **The contrast is the tone.** The city glows. The test writes off bodies in it. The brand never comments.
+- **Dark ground rules every edge** (4.1.2). No sprite edge is black.
+- **Reserved hues hold.** Yellow is the dummy. Red is the warning. Neon is material, never a cue.
+- **Options:** day (Edit 37 eco-city) and night (parkland) remain as build palettes. Play never changes.
+```
+
+[FLEET#F2] F2 Voice
+## F2 Voice
+- Vehicles speak as workers, not lore narrators.
+- Corporate politeness barely contains their personalities.
+- Barks react to logged events only. Never claim what did not happen.
+- Lines are at most 48 characters, end with . ! or ?, and react to logged events only.
+- **Banned words** (never in a line): kill, killed, die, died, dead, death, player, level, game, score, respawn, lives, Chongqing, Tesla, Toyota, BYD.
+
+[FLEET#F3] F3 Terms
+## F3 Terms
+- **subject:** What FARSIGHT and the fleet call the dummy
+- **write-off:** A destroyed body
+- **chassis:** One body of the dummy
+- **certification:** The fleet passing its test
+- **retraining:** What a car fears most
+- **dispatch:** The cars' management
+- **route:** A car's planned path
+- **bay:** Where a new chassis is issued
+
+[EDIT93#3.1/tales-rewritten~2] Tales rewritten
+- **Voice kept:** no exclamation marks; the longest 223 characters. C3 keeps ROLE: DESTRUCTIVE TESTING.
+
+[EDIT92#measured] Measured
+## Measured
+| Check | Result |
+|---|---|
+| Solids, floors, stairs, spawns, cone homes, with and without the art | identical on all 27 tiles |
+| Tiles the art draws on | 9: Monument A1, A2, A3, C3; Parkland C1, B1; Waterfront A3, C3, B3 |
+| Longest tale | 217 characters: four lines on the card |
+| Tile card, Monument A1 | ACT I · INDUCTION · MONUMENT · TILE A1 · 1 OF 27; The welcome wall; the act line; the tale |
+| Story map | I · MONUMENT, II · PARKLAND, III · WATERFRONT |
+
+[DECISIONS#rows-531-540~2] Rows 531–540
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 531 | Tales rewritten where a brief or part moved: Monument B1, C1, B3, C3; Parkland C1, C3, A2, B1, B2; Waterfront A1, B2. Voice kept: no exclamation marks; C3 keeps ROLE: DESTRUCTIVE TESTING, Waterfront B2 ZERO ACCIDENTS (EXCLUDING TESTS) | proposed (assistant) under row 520 | Each tale names the equipment the tile issues | — | ≤ 223 characters |
+| 532 | Registry `edit93-2026-10-29`: no IDs added; the 27 `story.writeOffs.*` and `story.traffic.*` descriptions carry the new briefs (505 entries) | proposed (assistant) | Every statistic has an ID | — | `content/params/tuning.parameters.json` |
+| 533 | The finale is the unveiling and the ship: the circus's monument shrouded until Waterfront B2 clears; its unveiling, with the plaque showing the run (chassis spent, points, best combo, time); a Farsight drone lifts the dummy over the river to the container ship at Waterfront B3, every crate carrying its face. The ending screen follows | user-decided: "Unveiling and ship" (29 October) | The reward for clearing is seen, not only read | Credits over the voyage and Second Market wait (D77) | Closes D76; GDD Edit 92 §3.2 |
+| 534 | Assignment #5: a goal-oriented coding agent (`coder/`) reads the GDD, scans the code, detects gaps with executable probes, scores them, writes the code for the top one and re-scans after each write. An open D-item blocks a requirement; the loop stops when every requirement is met or blocked | proposed (assistant) | The agent builds only what the GDD specifies and a decision has settled | A blocked requirement waits for Lawrence | `coder/coder.py` |
+| 535 | The finale as built (Edit 94, P7.13): the circus's monument shrouded in Story until Waterfront B2 clears (`world.monumentShroud`); the last write-off plays under the cloth; a drone lifts the cloth (`ui.finale.unveilSeconds`) and the plaque reads THE DUMMY MONUMENT · UNVEILED, ZERO ACCIDENTS (EXCLUDING TESTS), chassis spent, points, best combo, time; A or a tap: a drone carries the dummy from B2 over the edge to the container ship at B3, every crate with its face; then CERTIFIED. Arcade has no finale | user-decided (row 533); requirements and code by the coding agent (coder/, run 20261029-105801); reviewed (assistant) | The reward for clearing is seen | Credits and Second Market wait (D77) | `test_p713.js`; closes the finale part of D76 |
+| 536 | The agent's writes accepted with manual changes: the write-off plays before the unveiling (the agent cut it); a drone lifts the cloth over 1.2 s, the gift screen's hold (the agent swapped it at once); the plaque in the game's own panel and type, inside the field, with the device's prompt and a tap target (the agent drew its own text below the field, keys only); the voyage reads FARSIGHT DRONE and · DRONE; the shroud's registry entry filed under World | proposed (assistant, manual review) | The agent's probes test state; the screen needed a person | — | Separate commit after the agent's; all 11 requirements' probes still pass |
+| 537 | R-BARK-TILE rejected: the agent's write replaced the district's name with the tile code in Story barks ("B2. I did not sign up for this."). It met its one probe, not the voice. Reverted; the requirement set to spec none | proposed (assistant, manual review) | Barks are written lines in each tier's voice, with the lore check | Barks still name the district | Raises D78 |
+| 538 | Registry `edit94-2026-10-29`: `world.monumentShroud` (0; P7SIM 1; written by the agent), `ui.finale.unveilSeconds` (1.2 s; added in review). 507 entries | proposed (assistant) | Every statistic has an ID | — | `content/params/tuning.parameters.json` |
+| 539 | "Farsight" in title case in every sentence-case string: barks, tales, briefs, act lines, the ending. A label set wholly in capitals keeps its caps (FARSIGHT DRONE). Supersedes the fleet canon's capitals (Edit 39; `check_lore.py`) | user-decided (29 October): "Farsight everywhere" | Edit 92's tales, Edits 93–94 and rows 533, 535 write Farsight | `check_lore.py`, `checks.py` and bark c024 still say FARSIGHT (D79) | `style/STYLE_GUIDE.md` V4 |
+| 540 | The fleet canon's banned terms apply to diegetic text only: barks, tales, briefs, act lines, the ending, plaques. Menu chrome is exempt (NEW GAME, Edit 88; LEVEL UP, Edit 89) | user-decided (29 October): "Diegetic text only" | Menus are interface, not voice | `checks.py` still applies the ban to every string shown | `style/STYLE_GUIDE.md` V1 |
+
+[DECISIONS#rows-541-550] Rows 541–550
+## Rows 541–550
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 541 | "!" by speaker: Farsight never; cars in a shout-style bark or any Budget (04) bark | user-decided (29 October): "Shouts and Budget only" | 16 of 17 shipped "!" lines fit (12 shouts; 13 Budget) | b111 "It recharges when it hits us?!" (speech, tier-free) is a minor break | `style/STYLE_GUIDE.md` T2, T10 |
+| 542 | Lines the style loop accepts stay in `style/runs/` as a demonstration. D78 stays open; the Monument tile barks are its proposal. No change to `fleet.json`, `story.json`, builds or tests | user-decided (29 October): "Runs only" | Merging needs a tile condition in `fleet.json`, `check_lore.py` and `game.js`, and a 7.13 rebuild | D78 not closed | `style/runs/` |
+
+[STORY#PB1] PB1 Parkland B1 · The cascade
+### PB1 Parkland B1 · The cascade
+- **Tile:** Parkland B1, 8 of 9 in the act's order. Act: ACT II · OPENING DAY.
+- **Title (its landmark):** The cascade.
+- **Brief:** ON A RAISED ROAD. Coverage gap: raised roads. The final hit must land at Z1 or above.
+- **Equipment issued here:** none.
+- **Tale:** The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest.
+
+[EDIT93#3.1/tales-rewritten~1] Tales rewritten
+### Tales rewritten
+| Tile | Tale |
+|---|---|
+| Monument B1 | Your first equipment has arrived: a battery, for the dash. The skybridge was built for shoppers who never came; staff now use it to watch the road. Today you join the road. Dash into a colleague. Farsight will time you. |
+| Monument C1 | The drum lights each bend before a car reaches it, so no colleague is ever surprised. Today one will be. The high road breaks its rail over the street below. Step off it onto a car. Gravity is company policy. |
+| Monument B3 | Two screens face each other across the road and advertise to each other all night. The skybridge was added so that someone would watch. You are now someone. Legs 1 is fitted. Jump into a car between the screens. |
+| Monument C3 | The gateway thanks every car for driving safely. It thanked the last one seconds after that car wrote you off. Your file is updated: ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next. |
+| Parkland C1 | The paper lantern was the Expo's first exhibit, and it is lit again for the visitors. Arms 1 is fitted; Farsight calls it safety equipment. Under the footbridge, push off one car into the next. |
+| Parkland C3 | The arch is the Expo's gate. Visitors will circle the roundabout once before they enter, which gives the cars time to learn them. You go round faster. Two hits, the second before the first is forgotten. |
+| Parkland A2 | The dome is the Expo's showroom. The canal beside it cools the highway's footings; the ducks are registered volunteers. Hands 2 is fitted: two cones. Lay them where the visitors will walk, and see who stops. |
+| Parkland B1 | The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest. |
+| Parkland B2 | Inspection day. The board watches the ring. Battery 2 is fitted: a second charge. When the cars come round clean, the board applauds the cars. The public prefers the product to the test. Give it a chain of three. |
+| Waterfront A1 | The upper town houses the engineers, and the bus carries them to the bridge. Farsight requires the bus fleet's data before anyone crosses the river. The bus is slow and very large. It will not miss. |
+| Waterfront B2 | Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted. A chain of three certifies the city. And you. |
+
+[DECISIONS#rows-361-370~2] Rows 361–370
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 361 | Parkland B2: the two pools back (row 352 reversed). The ring's island a fountain at Z1, a ring of twelve jets and a sculpture of light. The ring's planted shoulders stay | user-directed: "There should also be the two water pools back" | — | — | `docs/p67_parkland_expo.png` |
+| 362 | Jets draw as water: a ripple at the foot, a fine column, a soft plume | proposed (assistant, 27 October) | Jets never read as arrows | — | — |
+| 363 | Parkland pavilions: five types (dome, shell hall, LED box, canopy, observation tower) in three sizes (S a kiosk, M a cell, L two cells across their path). A large hall (shell or dome) wherever two open cells adjoin; the rest cycle across the district's screens. Each stands on a framed lawn, solid to its plan | user-directed (27 October): "Two more Pavilion types in different sizes"; the types proposed | Eight pavilions, all five types, all three sizes | — | `docs/p68_pavilions.png` |
+| 364 | Green that frames: grass verges along every path (10 wide); pavilions and fountains on framed lawns; cells left part free alternate a small fountain and a grass square. Every Parkland screen at least 8% green (district 16%) | user-directed: "Some more grass squares, there should be at least a bit of green visible in each tile to help frame paths and pavilions" | Paths and pavilions read framed | — | `docs/p62_parkland_3x3.png` |
+| 365 | A1 reservoir: three tiers stepped up to the back (north), sharing their north edge; each rises one step; each spills over its front into the one below | user-directed: "it should be stepped towards the top" | Reads as a stepped fountain | — | `docs/p68_pavilions.png` |
+| 366 | Prototype 6.1 is the release of P6: Edits 63–68 (steps P6.1–P6.6) and Edit 69's fixes. Built as `prototypes/p6/dummies_p6_1.html`; P6 stays frozen as `dummies_p6.html` (Edit 62). From here "P6.1" means the release | user-directed: "build the new prototype 6.1" | One playable file per release; the history stays playable | The step labels P6.1–P6.6 in Edits 63–68 now read as steps | `prototypes/p6/dummies_p6_1.html`; title and HUD read P6.1 |
+| 367 | Release tests in `test_p6.js`. Traffic soak: the view tours all nine screens; no car appears or vanishes in view, no two overlap on a level, no stop of 30 s, no street tile empty a fifth of the time. Walking: reach from the B2 spawn, a physics tour of every screen and flight, every building face, random wandering with no trap | user-directed: "test traffic and character can walk between tiles, paths, staircases, buildings ok" | Every release proves traffic and walking hold | About 1.5 min more test time | `node test_p6.js 3` → 59/59 |
+| 368 | Ring give-way across a seam and at speed. The line and the ring's traffic read from the next screen. A fast car starts slowing a stopping distance out (at `traffic.comfortBraking`) plus `traffic.giveWayLookahead` (40), at least `traffic.giveWayWindow` (200; Edit 49.1's window, now registered) | proposed (assistant, 27 October), from the soak | No car arrives too fast to give way | Highway cars slow earlier before a ring | Parkland B2 ring overlaps 4 → 0 in 13.5 min |
+| 369 | Ring laps: cars on one route with different laps follow by projection, not by distance along the route | proposed (assistant, 27 October), from the soak | Laps never run into each other on the exit | — | Waterfront B2 overlap samples 8 → 0 |
+| 370 | A crossing needs standing room on arrival: within `body.radius` along the edge or `world.edgeArrivalDepth` (8) in. Else a planter on the near side. Planters next door count; the plan settles before any is drawn. An edge that holds holds all along, behind buildings and lawns too | proposed (assistant, 27 October), from the browser smoke (Monument B2 → B3) and the wander test | No crevice or sliver at a screen edge holds the dummy | Edge planters 29 → 43; some Parkland seam paths end at a planter (D42) | Wander 66 × 5 min: 0 traps; `docs/p69_edges_before_after.png` |
+
+[DECISIONS#rows-371-380~2] Rows 371–380
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 371 | No ground out of reach: open ground the dummy cannot reach from the B2 spawn is planted (a low planter, a hedge top). The great lawn's hedge opens where its cross-walk meets it | proposed (assistant, 27 October), from the reach test | Nothing in view is out of reach | Five Parkland patches and one Monument patch planted | Reach 19/19, 30/30, 26/26 |
+| 372 | Prototype 6.2: the playtest of 27 October on top of 6.1. Built as `prototypes/p6/dummies_p6_2.html`; 6.1 and P6 frozen | user-directed (27 October, five points and two screenshots) | Each build stays playable | — | Title and HUD read P6.2 |
+| 373 | Parkland B2: no island. The ring's hole stands open over the boulevard. The inner parapet opens one `world.tileSize` module where the inner edge passes over a Z0 road's centre line (two); the dummy steps off and lands on the road. Elsewhere the inner parapet holds. Supersedes row 361's island fountain | user-directed: "can't have fountain in the middle because it's a road underneath. should be able to leap from above into path of traffic below" | A drop onto traffic from the ring | The island's jets and sculpture go | Both openings drop onto the boulevard; the parapet holds elsewhere |
+| 374 | Deck lamps only where the parapet is the deck's own edge; never where flares meet over the carriageway. The ring's flares lit too | user-directed: "some of the street lamps are placed incorrectly" | No lamp on a carriageway | — | `docs/p70_before_after.png` |
+| 375 | Parkland on one garden grid. A seam path runs whole inside each screen, inside the wall at the district's bound. Every piece sits in cells; nothing in one cell stands on a path. Set pieces snapped to cells: A1 reservoir, B1 cascade (one pool a cell), C1 lantern pavilion, A2 canal, C2 amphitheatre, A3 belvedere, B3 and C3 courts, B2 pools. Pavilions S, M, L inside one cell (supersedes row 363's L across two cells). Sculptures on grass squares, never on a crossing. Closes D42 | user-directed: "cannot walk between these pools, which aren't placed relative to the other grid"; "inconsistent placement of elements, i.e. larger pavilion blocks the entry points"; "inconsistency between pond and tiles below and diagonal assets" | Every path that reads as a path walks | Fewer, smaller halls | Parkland: 0 dead space (was 18); 0 edge planters (was 12) |
+| 376 | Along a 45° road: the shoulder, a grass verge (`world.gardenVerge`, now registered), a footpath (`world.gardenPath`), then the grid | user-directed: "the diagonal street is not well placed against the bottom left corner" | Diagonals meet the grid at one setback | Cells by the boulevard become part-free | `docs/p62_parkland_3x3.png` |
+| 377 | Parkland flights: the axis on a garden path at the flight's own end of the deck. A flight a road leaves no path line in reach keeps its place (five). Every district: a forecourt `world.stairForecourt` (44) beyond the apron, as wide as it, where nothing stands | proposed (assistant, 27 October), from "larger pavilion blocks the entry points" | Every flight opens onto a path or open ground | — | Forecourts clear in all 27 screens |
+| 378 | Parkland deck and ring columns stand between paths: at row centres under a vertical deck, set in under the deck; none in a flight's apron or forecourt (all districts) | proposed (assistant, 27 October) | Paths under deck edges walk | — | `node tools/p6_nav.js` |
+| 379 | No dead space: open ground the body cannot touch (centre clear by `body.radius` − 2, body covering `body.radius`) is planted, a low planter with a hedge top, in every district | user-directed: "thoroughly fix the navigation route logic" | No gap that reads as walkable and is not | Hedges in slivers by Monument's blocks | Monument: 25 patches planted |
+| 380 | Navigation checks (`tools/p6_nav.js`, in `test_p6.js`): dead space; Parkland's paths node to node; flight forecourts and apron axes; Parkland's ground one piece a screen. Route tests: walk round the B2 ring at ground; drop through the hole | user-directed: "in the central B2 roundabout I cannot walk around the bottom left corner"; "thoroughly fix the navigation route logic" | Navigation proved, not eyeballed | About 20 s more test time | `node test_p6.js 3` → 64/64 |
+
+LINT (style/lint.py)
+- No findings.
+
+CONTENT
+{
+ "kind": "tale",
+ "district": "parkland",
+ "tile": "B1",
+ "title": "The cascade",
+ "tale": "The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest."
+}

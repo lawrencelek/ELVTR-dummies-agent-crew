@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked against: two sentences and 19 words (F6, [EDIT95#3.2]); no banned words, no other company, no "!" (V1, V4, T2, [EDIT95#0], [PLAY#PS0]); a deadpan, motivating tone that speaks as "our" and addresses "your" (T1, T5, T13, [EDIT95#3.2]); training framing, glossary and the CUSTOMS frame of dummies shipped to unnamed clients (T3, V3, V6, V9, [EDIT95#3.1], [EDIT95#3.3]); the duty matches the THROWN INTO A CAR brief with no equipment named (R5, F7, [STORY#S3], [STORY#WC3]); and the customs post as the tile's landmark (R4, [STORY#WC3]).
+Total: 10.

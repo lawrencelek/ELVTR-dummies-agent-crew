@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- b040 · T9 (minor, −1) "WRITE-OFF! Tell dispatch I tried!" The line is all rage with no polite form, so the bolted-on politeness the Budget voice calls for is missing. [FLEET#F4] Fix: "WRITE-OFF! Tell dispatch I tried! Regards." (42 characters).
+Total: 10 − 1 = 9.

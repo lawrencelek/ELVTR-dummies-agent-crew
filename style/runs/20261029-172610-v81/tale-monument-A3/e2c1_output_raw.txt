@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against all rules for Dummy Corporation, using these chunks: T1–T5 and T13 for tone ([EDIT95#3.2], [PLAY#PS2]); V1, V3, V4, V6, V8, V9 and V11 for vocabulary and lore ([EDIT95#3.1], [EDIT95#3.3]); F5–F7 for format, with 32 words in 2 sentences, the place in the first sentence and no equipment issued on this tile ([EDIT96#3.2], [STORY#MA3]); and R4–R5 for truth, since the stacked cubes and the chained-hit duty match the COMBO ×{n} brief ([STORY#S3], [EDIT93#3.1]).
+Total: 10.

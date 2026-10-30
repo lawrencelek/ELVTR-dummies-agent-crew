@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Every road in the valley meets at the circus. On its island stands a monument cast from every chassis written off, plaque reading ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits." The tale has three sentences, and the cap is two. [EDIT97#3.2] Fix: Join the first two sentences: "Every road in the valley meets at the circus, where a monument cast from every chassis written off reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits." (30 words, 2 sentences).
+Total: 10 − 4 = 6.

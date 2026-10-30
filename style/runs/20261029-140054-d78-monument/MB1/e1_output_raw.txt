@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- t108 · R2 (blocking, −4) "Off the podium bridge!" The line says the subject came down off the skybridge, which is a drop or dropFrom claim. Its conditions do not guarantee that: they set no `drop` field and claim only district and tile. Read as an order instead, it tells the subject to get off a bridge it is not standing on, because it is on the road hitting the car. [FLEET#F8], [EDIT39#6.6], [STORY#MB1] Fix: "Right by the podium bridge! Kindly, you plank!" (43 characters), which names the tile's landmark without saying where the subject came from.
+Total: 10 − 4 = 6.

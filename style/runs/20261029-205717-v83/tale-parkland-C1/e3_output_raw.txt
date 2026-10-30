@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The lantern, the Expo's first exhibit, is lit for clients. Arms 1 is fitted: push off a car into the next." The tale runs 21 words, one over the 20-word cap for tales. [EDIT98#3.2] Fix: "The lantern, the Expo's first exhibit, is lit for clients. With Arms 1, push off a car into the next." (19 words).
+Total: 10 − 4 = 6.

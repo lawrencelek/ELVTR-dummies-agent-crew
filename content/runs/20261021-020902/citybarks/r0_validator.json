@@ -1,0 +1,11 @@
+[
+  {
+    "id": "V1",
+    "kind": "data",
+    "severity": "fix",
+    "path": "lines",
+    "found": "shout",
+    "canon": "EDIT39#6.6",
+    "rule": "Style 'shout' is unused."
+  }
+]

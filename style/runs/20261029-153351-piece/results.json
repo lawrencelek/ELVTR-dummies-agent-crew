@@ -1,0 +1,46 @@
+[
+ {
+  "case": "piece",
+  "class": null,
+  "title": "piece.json",
+  "request": null,
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 15.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.8,
+    "output_tokens": 475,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12650039999999999
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 7.3,
+    "output_tokens": 400,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.016089
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1426
+ }
+]

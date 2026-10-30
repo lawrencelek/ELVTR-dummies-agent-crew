@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "B2", "title": "The circus", "tale": "Everything in the valley meets at the circus, where a monument cast from every chassis written off reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits toward Certification."}

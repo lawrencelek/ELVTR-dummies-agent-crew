@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules and found no violations. The voice is dry, procedural and in the employment frame (T1–T5; EDIT92#3, STORY#S1, EDIT39#4.1.1). The Act I INDUCTION frame holds, with "New staff", "colleague" and an exact ZERO ACCIDENTS (V6; STORY#S2). The glossary, banned terms and casing are clean (V1, V3, V4, V8; FLEET#F3, DECISIONS#rows-531-540~2). Length, sentence length and digits pass lint (F5, F6; EDIT92#measured, EDIT93#3.1/tales-rewritten~2). No equipment is named on a tile that issues none (F7; STORY#MB2). The duty, to walk or stand and not dash, matches the STRUCK, NOT DASHING brief (R4, R5; STORY#MB2, STORY#S3).
+Total: 10.

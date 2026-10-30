@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 "A write-off by the monument. How quaint." for each car rule. Tone: it is a worker's line, not lore (T6). It uses the Luxury tier's polished, superior, faintly amused voice and does not apologise (T7). It is a joke, not a flat report (T12). Vocabulary: no banned or brand words, it uses the glossary term "write-off", and it names the landmark rather than a grid code (V1–V5, V8). Formatting: 40 characters, plain text, ends in ".", and speech style at priority 3 suits a write-off (F1–F5). Truth: it fires on `writeoff` and asserts only the tile's own landmark, which its district:monument and tile:B2 claims guarantee (R1–R4). Sources: [FLEET#F2], [FLEET#F3], [FLEET#F4], [FLEET#F8], [EDIT39#6.6], [FSG#field-text], [SUB4#6.2], [STORY#MB2].
+Total: 10.

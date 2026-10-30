@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s02 · V2 (blocking, −4) "Shanghai" is a real city other than Shenzhen, and the game allows no other city. [FLEET#F1] Fix: remove the place name, for example "Bumper damage. How terribly typical." (36 characters, Luxury sniff, claims only zone:front).
+Total: 10 − 4 = 6.

@@ -1,0 +1,72 @@
+{
+ "stop": "every unmet requirement is blocked: R-VOYAGE-CREDITS (decision-open: D77), R-SECOND-MARKET (decision-open: D77), R-TILE-GRADE (no-spec: The GDD does not say what the grade measures, its scale, its thresholds, or where it shows. Edit 90's grade is not given here.), R-PARKLAND-B1-STREET (decision-open: D70)",
+ "writes": 5,
+ "seconds": 2204,
+ "calls": [
+  {
+   "label": "it1_R-SHROUD_coder_1",
+   "role": "Coder",
+   "seconds": 82.5,
+   "output_tokens": 7574,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.5639589
+  },
+  {
+   "label": "it2_R-UNVEIL_coder_1",
+   "role": "Coder",
+   "seconds": 83.5,
+   "output_tokens": 8089,
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.6084448
+  },
+  {
+   "label": "it3_R-VOYAGE_coder_1",
+   "role": "Coder",
+   "seconds": 135.7,
+   "output_tokens": 13807,
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.6642532000000001
+  },
+  {
+   "label": "it4_R-BARK-TILE_coder_1",
+   "role": "Coder",
+   "seconds": 27.4,
+   "output_tokens": 2758,
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.49122520000000003
+  },
+  {
+   "label": "it5_R-CRATE-FACES_coder_1",
+   "role": "Coder",
+   "seconds": 43.8,
+   "output_tokens": 3531,
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.5872692
+  }
+ ],
+ "suites": [
+  {
+   "suite": "prototypes/p6/test_sim.js",
+   "ok": true,
+   "tail": "104 passed, 0 failed",
+   "fails": []
+  },
+  {
+   "suite": "prototypes/p6/test_p610.js",
+   "ok": true,
+   "tail": "47 passed, 0 failed",
+   "fails": []
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1–T5 and T13 [EDIT95#3.2, PLAY#PS0], Vocabulary V1, V3, V4, V6, V8 and V9 [EDIT95#0, EDIT95#3.1, EDIT95#3.3], and Formatting F5–F7 (2 sentences, 17 words) [EDIT95#3.2]. I also checked Truth R4–R5, which require the raised-road duty to match the brief and the tale to name no equipment, since this tile issues none [STORY#WA3, STORY#S3, EDIT93#3.1].
+Total: 10.

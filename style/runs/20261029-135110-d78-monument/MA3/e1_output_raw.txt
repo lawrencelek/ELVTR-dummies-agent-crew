@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines (t125–t128) against tier voice and the "!" rule for Budget shouts, the place names, the banned words and glossary, the format, and truth against the impact event and tile A3. "Lean" is true because Monument A3's tale says the cubes lean, and no line invents speed, damage, delay or motive [FLEET#F4, FLEET#F2, FLEET#F3, FLEET#F8, SUB4#6.2, DECISIONS#rows-541-550, STORY#MA3, EDIT92#7].
+Total: 10.

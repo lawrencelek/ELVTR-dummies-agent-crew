@@ -1,0 +1,7 @@
+SCORE: 2/10
+REASON:
+- tale · T2 (major, −2) "Welcome, contestant!" Farsight never uses "!", and this tale has five of them (lint finding). [EDIT92#3] Fix: end every sentence with "." and use no "!" anywhere in the tale.
+- tale · T1 (major, −2) "Hear the studio cheer!" This is game-show hype and cheer, so it does not read as a dry staff notice about a crash test. [STORY#S1] Fix: replace it with a dry procedural line such as "Farsight is pleased to have you."
+- tale · T3 (major, −2) "Your first round: … Beat the cars!" It turns the duty into a round, makes the cars opponents to beat instead of colleagues, and says "a car" where it should say "a colleague". [STORY#S2] Fix: "Your first duty is simple: stand in the road until a colleague notices you."
+- tale · V8 (major, −2) "contestant" It casts the dummy as a game-show contestant, but Farsight addresses the dummy as "you", "staff" or "the model". [EDIT92#3] Fix: delete "Welcome, contestant!" and open with the place: "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME."
+Total: 10 − 2 − 2 − 2 − 2 = 2.

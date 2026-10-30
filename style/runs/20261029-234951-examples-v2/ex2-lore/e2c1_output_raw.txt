@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked n36 against tone and training framing (T1, T3, T5, T13), the glossary, the dummy and the company name (V1, V3, V4, V8), length and form (F5, F6, F10) and the slot's facts. The text is 18 words in two sentences, under 110 characters, has no "!" and covers every guaranteed fact for both modes without inventing one. [EDIT95#3.2] [EDIT95#3.1] [EDIT98#0] [EDIT95#4.2]
+Total: 10.

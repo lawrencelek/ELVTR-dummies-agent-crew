@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "waterfront", "tile": "C2", "title": "The east beach terrace", "tale": "The east beach terrace served tourists, then sensors. Drop from its rail onto a car; ships wait for the Certified."}

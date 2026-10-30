@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "T2",
+  "severity": "major",
+  "deduct": 2,
+  "path": "tale",
+  "quote": " arrives by conveyor!",
+  "measured": "'!' in Farsight's narration",
+  "source": "EDIT92#3"
+ }
+]

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (dry, procedural, "you" address, no "!", no comment on harm) [EDIT92#3, EDIT39#4.1.1]. I checked V1–V8: no banned or game words, one city, and no wrong-act frame in Act II [FLEET#F2, STORY#S2]. I checked F5–F7: no digits, about 196 characters in one paragraph, every sentence under 19 words, and no equipment issued on this tile [EDIT93#3.1/tales-rewritten~2]. I checked R4–R5: the tale names only the cascade, the reservoir and the highway, and "go up to the highway" matches the Z1 raised-road brief [STORY#PB1, STORY#S3].
+Total: 10.

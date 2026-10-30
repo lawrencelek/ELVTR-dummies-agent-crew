@@ -1,0 +1,50 @@
+=== SUMMARY
+game.js: a new `barkPlace(sim)` returns the place word for barks. In Story it is the tile's code on screen (B2). In Arcade it is still the district's name.
+game.js `barkLine`: in Story, the district's name in the chosen line is replaced with the tile's code, in the same case. This covers a `{…}` placeholder and words written into the line. Arcade's text is unchanged.
+`window.__dummiesUI.barkPlace` is set when game.js loads. `objective` and `drawFieldHD` set it again on each frame, so it survives if the test hooks are set up later. p1: Waterfront B2 in Story gives 'B2'.
+Risk: I could not see `enrich`, `fillIn` or the bark texts. Any district word in a bark line is swapped after `fillIn`, whether a placeholder or written in the line. A line that names the district another way (by its id, say) is not caught.
+=== EDIT prototypes/p6/game.js
+<<<<<<< FIND
+  function barkLine(e, s) {
+    if (!FLEET || !e.car) return;
+=======
+  // Edit 94 (P7.13): the place a bark names. Story: the tile on screen (B2). Arcade: the district, as before
+  function barkPlace(s) {
+    if (!s) return null;
+    const dn = INFO(s.levelId) ? INFO(s.levelId).name : String(s.levelId || '');
+    if (!s.storyMode || typeof s.screenName !== 'function') return dn;
+    return s.screenName() || dn;
+  }
+  function barkPlaceText(text, s) { // Edit 94 (P7.13): the district's name in a Story bark becomes the tile's code, in the line's own case
+    if (!s || !s.storyMode || !INFO(s.levelId)) return text;
+    const dn = INFO(s.levelId).name, pl = barkPlace(s);
+    if (!dn || !pl || pl === dn) return text;
+    return String(text).replace(new RegExp(dn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), (m) => (m === m.toUpperCase() ? pl.toUpperCase() : pl));
+  }
+  function exposeBarkPlace() { const ui = window.__dummiesUI = window.__dummiesUI || {}; if (ui.barkPlace !== barkPlace) ui.barkPlace = barkPlace; } // Edit 94 (P7.13): the test hook
+  exposeBarkPlace();
+  function barkLine(e, s) {
+    if (!FLEET || !e.car) return;
+>>>>>>> REPLACE
+<<<<<<< FIND
+    const text = fillIn(pick.text, e); fx.lastLine = pick.id;
+=======
+    const text = barkPlaceText(fillIn(pick.text, e), s); fx.lastLine = pick.id; // Edit 94 (P7.13): barks name the tile in Story
+>>>>>>> REPLACE
+<<<<<<< FIND
+  function drawFieldHD(s) {
+    const P = s.P;
+=======
+  function drawFieldHD(s) {
+    const P = s.P;
+    exposeBarkPlace(); // Edit 94 (P7.13)
+>>>>>>> REPLACE
+<<<<<<< FIND
+  function objective(s) {
+    if (!s) return null;
+=======
+  function objective(s) {
+    exposeBarkPlace(); // Edit 94 (P7.13)
+    if (!s) return null;
+>>>>>>> REPLACE
+=== END

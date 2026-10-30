@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "COMBO ×{n}" and the duty against the canonical combo brief form, and found no violation. I checked the caps label, the 19-character limit and the {n} placeholder (F8, F10). I checked length: two sentences and 15 words (F6). I checked the flat, deadpan tone with no "!" or intensifiers (T1, T2, T13), the training framing (T3), the banned words and company name (V1, V4), and that no gameplay figures are typed (F5). Sources: [STORY#S3] [EDIT95#3.2] [EDIT95#3.1] [EDIT95#4.2] [STORY#S1].
+Total: 10.

@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- s05 · T10 (major, −2) "Hit again! Wonderful! Just wonderful!" Lint finds "!" in a speech-style bark from tier 03, and "!" is allowed only in a shout or a Budget bark. [DECISIONS#rows-541-550] Fix: replace each "!" with "." to keep the speech style, or change the style to shout.
+- s05 · R2 (blocking, −4) "Hit again" The line says this car has been hit before, but the impact event logs no earlier hits and claims [] guarantees no history. [FLEET#F8] Fix: drop "again" and keep the resigned joke: "Hit. Wonderful. Just wonderful."
+Total: 10 − 2 − 4 = 4.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the ending against Farsight's rules and found no violations: the tone is dry and procedural, with no exclamation marks and no comment on the harm (T1, T2, T4 [EDIT92#3], [EDIT39#4.1.1]); it uses employment and product framing and addresses the dummy as "you" and "your model" (T3, T5, V8 [STORY#S2], [STORY#MA1]); no word is banned, no real city or brand appears, and "Farsight" is in title case (V1, V2, V4 [FLEET#F2], [DECISIONS#rows-531-540~2]); it has no figures (F5 [STORY#S1]); and the river, ship and drone voyage match the shipped ending and the finale as built (R4 [STORY#S5], [EDIT92#3.2], [EDIT94#3.2]).
+Total: 10.

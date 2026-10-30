@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- t130 · T12 (minor, −1) "Contact in the LED canyon. Incident logged." The line only gives the place, the contact and the logging, the same flat-report pattern as the guide's failing example "Riverside. Low-rise streets. Hit logged." The procedure never becomes a joke. [SUB4#6.1] Fix: make the Corporate procedure carry the joke, e.g. "Contact in the LED canyon. Filed under advertising." (49 characters, one over the 48 limit, so shorten it), or use "LED canyon contact. Filed under advertising." (44 characters).
+Total: 10 − 1 = 9.

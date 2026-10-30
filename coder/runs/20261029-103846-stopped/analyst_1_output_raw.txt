@@ -1,0 +1,332 @@
+```json
+{
+  "requirements": [
+    {
+      "id": "R-SHROUD",
+      "title": "Shroud the circus's monument until Waterfront B2 clears",
+      "statement": "In Story, the circus's monument stays shrouded until Waterfront B2 clears. Arcade's monument is unchanged.",
+      "sources": ["EDIT92#3.2:1", "EDIT93#open:0", "EDIT92#open:0", "P7#known-gaps:7", "row 533"],
+      "gdd_status": "proposed",
+      "decision": "D76",
+      "spec": "partial",
+      "spec_gap": "The GDD does not say what the shroud looks like. It does not say whether the shrouded monument stays solid, or whether Arcade's monument is ever shrouded.",
+      "impact": "reward",
+      "depends_on": [],
+      "touches": [
+        {"file": "prototypes/p6/world6.js", "symbol": "dummyMonument / drawMonument", "why": "set the shroud on the scene's monument and draw it"},
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.reset / arrive", "why": "work out the shroud from the progress: shrouded while Waterfront B2 is not in done"},
+        {"file": "prototypes/p6/game.js", "symbol": "drawLive6 / drawSprites", "why": "draw the shrouded monument in the page"}
+      ],
+      "registry_uses": ["world.dummyMonument"],
+      "registry_new": [],
+      "contract": "H.scene(s, 'B2').dummyMonument.shrouded === true in a Story sim of Waterfront while B2 is not in progress.done. The value comes from the progress (Story-only state). In an ArcadeSim of Waterfront, dummyMonument exists and .shrouded is falsy. In the page: window.__dummies.sim.sc.dummyMonument.shrouded.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "Waterfront A1 in test: the B2 monument exists and is shrouded", "expr": "const wf = H.STORY.DIST.find(d => /water/i.test(d.id + ' ' + d.name))?.id; const s = H.story(wf, H.progress(wf, 'A1')); const m = H.scene(s, 'B2')?.dummyMonument; return { ok: !!m && m.shrouded === true, detail: 'monument ' + !!m + ' shrouded ' + m?.shrouded };"},
+        {"id": "p2", "kind": "sim", "say": "B2 in test, not cleared: shrouded in Story; Arcade's monument stands unshrouded", "expr": "const wf = H.STORY.DIST.find(d => /water/i.test(d.id + ' ' + d.name))?.id; const s = H.story(wf, H.progress(wf, 'B2')); const a = H.arcade(wf); const m = H.scene(s, 'B2')?.dummyMonument, am = H.scene(a, 'B2')?.dummyMonument; return { ok: m?.shrouded === true && !!am && !am.shrouded, detail: 'story ' + m?.shrouded + ' arcade ' + (am ? am.shrouded : 'none') };"},
+        {"id": "p3", "kind": "page", "say": "In the page, B2 in test: the monument in view is shrouded (screenshot)", "expr": "await G.openStory(await G.certifyProgress()); const r = await G.eval(() => { const s = window.__dummies?.sim; return { tile: s?.screenName?.(), sh: s?.sc?.dummyMonument?.shrouded }; }); await G.shot('monument_shrouded'); return { ok: r?.tile === 'B2' && r?.sh === true, detail: JSON.stringify(r) };"}
+      ]
+    },
+    {
+      "id": "R-UNVEIL",
+      "title": "Unveil the monument when the circus clears",
+      "statement": "Clearing Waterfront B2 unveils the circus's monument. The unveiling comes before the ending screen, which still certifies the run.",
+      "sources": ["EDIT92#3.2:1", "EDIT92#3.2:2", "EDIT93#open:0", "EDIT92#open:0", "P7#known-gaps:7", "row 533"],
+      "gdd_status": "proposed",
+      "decision": "D76",
+      "spec": "partial",
+      "spec_gap": "The GDD does not say how long the unveiling lasts, whether A ends it, or how it looks. If it lasts a set time, that duration needs a registry ID and a value, and the GDD gives neither.",
+      "impact": "reward",
+      "depends_on": ["R-SHROUD"],
+      "touches": [
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.checkTerminal", "why": "on storyDone, enter phase 'unveil' instead of end('Certified') at once"},
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.step / continueUnveil", "why": "hold or advance the unveil phase"},
+        {"file": "prototypes/p6/game.js", "symbol": "renderScreen / handleMenus / processEvents", "why": "show the unveiling; let A continue it"}
+      ],
+      "registry_uses": ["world.dummyMonument"],
+      "registry_new": [],
+      "contract": "After the last write-off on Waterfront B2, s.phase becomes 'unveil' before 'ending'. The unveiling ends by itself or through s.continueUnveil(). It emits one 'unveil' event. Afterwards H.scene(s, 'B2').dummyMonument.shrouded === false. s.run.ending.kind is still 'Certified'. Arcade's Licensed ending gets no unveil.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "Certifying passes through 'unveil', then reaches the Certified ending", "expr": "const s = H.certify(); const ph = [s.phase]; for (let i = 0; i < 3600 && s.phase !== 'ending'; i++) { if (s.phase === 'unveil') s.continueUnveil?.(); H.step(s, 1); if (ph[ph.length - 1] !== s.phase) ph.push(s.phase); } const iu = ph.indexOf('unveil'); return { ok: iu >= 0 && ph.lastIndexOf('ending') > iu && s.run?.ending?.kind === 'Certified' && H.ev(s, 'unveil').length === 1, detail: ph.join('>') + ' ' + s.run?.ending?.kind };"},
+        {"id": "p2", "kind": "sim", "say": "Shrouded with B2 in test; unshrouded after the finale", "expr": "const wf = H.STORY.DIST.find(d => /water/i.test(d.id + ' ' + d.name))?.id; const s0 = H.story(wf, H.progress(wf, 'B2')); const before = H.scene(s0, 'B2')?.dummyMonument?.shrouded; const s = H.certify(); for (let i = 0; i < 3600 && s.phase !== 'ending'; i++) { if (s.phase === 'unveil') s.continueUnveil?.(); H.step(s, 1); } const after = H.scene(s, 'B2')?.dummyMonument?.shrouded; return { ok: before === true && after === false, detail: 'before ' + before + ' after ' + after };"},
+        {"id": "p3", "kind": "sim", "say": "Story unveils, and Arcade's Licensed ending still comes with no unveil", "expr": "const s = H.certify(); for (let i = 0; i < 3600 && s.phase !== 'ending'; i++) { if (s.phase === 'unveil') s.continueUnveil?.(); H.step(s, 1); } const story = H.ev(s, 'unveil').length === 1; const pk = H.STORY.DIST.find(d => /park/i.test(d.id + ' ' + d.name))?.id; const a = H.arcade(pk); for (let i = 0; i < 12 && !a.run?.ending; i++) { H.kill(a); if (!a.run?.ending) H.next(a); } return { ok: story && a.run?.ending?.kind === 'Licensed' && H.ev(a, 'unveil').length === 0, detail: 'story unveil ' + story + ' arcade ' + a.run?.ending?.kind };"},
+        {"id": "p4", "kind": "page", "say": "In the page the last write-off reaches the unveiling (screenshot)", "expr": "await G.openStory(await G.certifyProgress({ points: 123456 })); await G.lastWriteOff(); const ok = await G.waitFor(() => window.__dummies?.sim?.phase === 'unveil', 15000); await G.shot('finale_unveil'); const ph = await G.eval(() => window.__dummies?.sim?.phase); return { ok, detail: 'phase ' + ph };"}
+      ]
+    },
+    {
+      "id": "R-PLAQUE",
+      "title": "Show the run on the monument's plaque",
+      "statement": "At the unveiling, the plaque shows the run: chassis spent, points, best combo, time.",
+      "sources": ["EDIT92#3.2:1", "EDIT92#3.2:2", "row 533"],
+      "gdd_status": "proposed",
+      "decision": "D76",
+      "spec": "partial",
+      "spec_gap": "The GDD gives no words or format for the plaque. It does not say whether 'best combo' covers the whole story or one session. Here it is the whole story, kept on the progress.",
+      "impact": "reward",
+      "depends_on": ["R-UNVEIL"],
+      "touches": [
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.syncProgress / newProgress", "why": "keep progress.bestCombo across tiles and saves"},
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.checkTerminal", "why": "build the plaque from the progress when the unveiling starts"},
+        {"file": "prototypes/p6/game.js", "symbol": "renderScreen", "why": "draw the plaque at the unveiling"}
+      ],
+      "registry_uses": [],
+      "registry_new": [],
+      "contract": "progress.bestCombo is the highest hit combo of the story. It is updated from each hit, at the latest at each write-off. When the unveiling starts, s.finale.plaque, which is also carried on the 'unveil' event as .plaque, is { chassis, points, bestCombo, t }, read from the progress: chassis = progress.chassis, points = progress.points, bestCombo = max(progress.bestCombo, the last hit's combo), t = progress.t.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "The plaque carries the progress's chassis, points and time, and the seeded best combo 7", "expr": "const s = H.certify({ points: 123456, chassis: 40, t: 3600, bestCombo: 7 }); for (let i = 0; i < 3600 && !['unveil', 'ending'].includes(s.phase); i++) H.step(s, 1); const pl = s.finale?.plaque ?? H.ev(s, 'unveil')[0]?.plaque; const pr = s.story; const ok = !!pl && pl.chassis === pr.chassis && Math.round(pl.points) === Math.round(pr.points) && pl.bestCombo === 7 && Math.abs((pl.t ?? -1e9) - pr.t) < 1; return { ok, detail: JSON.stringify(pl ?? null) + ' vs chassis ' + pr.chassis + ' points ' + Math.round(pr.points) + ' t ' + pr.t };"},
+        {"id": "p2", "kind": "sim", "say": "The last write-off's combo 5 beats a seeded best of 2", "expr": "const s = H.certify({ bestCombo: 2 }); for (let i = 0; i < 3600 && !['unveil', 'ending'].includes(s.phase); i++) H.step(s, 1); const pl = s.finale?.plaque ?? H.ev(s, 'unveil')[0]?.plaque; return { ok: pl?.bestCombo === 5, detail: 'bestCombo ' + pl?.bestCombo };"},
+        {"id": "p3", "kind": "sim", "say": "A combo-3 write-off in Monument A1 is kept on progress.bestCombo", "expr": "const d = H.STORY.DIST[0], t = d.order[0]; const s = H.story(d.id, H.progress(d.id, t)); H.ready(s); H.kill(s, { kind: 'dash', cls: 'sedan', combo: 3 }); return { ok: (s.story?.bestCombo ?? 0) >= 3, detail: 'bestCombo ' + s.story?.bestCombo };"}
+      ]
+    },
+    {
+      "id": "R-SHIP-FLIGHT",
+      "title": "Fly the dummy to the ship at Waterfront B3",
+      "statement": "After the unveiling, a Farsight drone lifts the dummy over the river to the container ship at Waterfront B3. The ending screen follows.",
+      "sources": ["EDIT92#3.2:1", "EDIT93#open:0", "EDIT92#open:0", "P7#known-gaps:7", "row 533"],
+      "gdd_status": "proposed",
+      "decision": "D76",
+      "spec": "partial",
+      "spec_gap": "The GDD does not give the flight's route or height, where the dummy is set down on the ship, or whether the player can skip the flight.",
+      "impact": "reward",
+      "depends_on": ["R-UNVEIL"],
+      "touches": [
+        {"file": "prototypes/p7/story.js", "symbol": "droneTo / StorySim.stepRescue / startFerry", "why": "a voyage drone from B2 to the ship on B3, built like the ferry; end('Certified') on arrival"},
+        {"file": "prototypes/p6/world6.js", "symbol": "containerShip / waterTile", "why": "put the ship on the B3 scene (scene.ship) as a destination"},
+        {"file": "prototypes/p6/game.js", "symbol": "drawRescue6 / objective", "why": "draw the carry and its top strip"}
+      ],
+      "registry_uses": ["proto.droneSpeed", "proto.droneLiftSeconds"],
+      "registry_new": [],
+      "contract": "After 'unveil', s.phase becomes 'voyage': s.rescue holds a drone, body.mode is 'rescue', and the screen flips to 'B3'. Events: 'story-voyage' { from: 'B2', to: 'B3' } at lift-off and 'story-shipped' { tile: 'B3' } on arrival. Then phase 'ending', with s.run.ending.kind 'Certified'.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "Phases run unveil > voyage > ending; during the voyage a drone carries the body onto B3", "expr": "const s = H.certify(); const ph = [s.phase]; let b3 = false, drone = false; for (let i = 0; i < 3600 && s.phase !== 'ending'; i++) { if (s.phase === 'unveil') s.continueUnveil?.(); H.step(s, 1); if (ph[ph.length - 1] !== s.phase) ph.push(s.phase); if (s.phase === 'voyage') { if (s.screenName() === 'B3') b3 = true; if (s.rescue?.drone && s.body?.mode === 'rescue') drone = true; } } const iu = ph.indexOf('unveil'), iv = ph.indexOf('voyage'), ie = ph.lastIndexOf('ending'); return { ok: iu >= 0 && iv > iu && ie > iv && b3 && drone, detail: ph.join('>') + ' B3 ' + b3 + ' drone ' + drone };"},
+        {"id": "p2", "kind": "sim", "say": "One story-voyage B2 to B3 and one story-shipped at B3, both before the ending event", "expr": "const s = H.certify(); for (let i = 0; i < 3600 && s.phase !== 'ending'; i++) { if (s.phase === 'unveil') s.continueUnveil?.(); H.step(s, 1); } const v = H.ev(s, 'story-voyage'), sh = H.ev(s, 'story-shipped'), en = H.ev(s, 'ending'); const ok = v.length === 1 && v[0].from === 'B2' && v[0].to === 'B3' && sh.length === 1 && sh[0].tile === 'B3' && en.length > 0 && en[en.length - 1].t >= sh[0].t && s.run?.ending?.kind === 'Certified'; return { ok, detail: 'voyage ' + v.length + ' shipped ' + sh.length + ' ending ' + s.run?.ending?.kind };"},
+        {"id": "p3", "kind": "page", "say": "In the page the voyage reaches B3, then the ending (screenshots)", "expr": "await G.openStory(await G.certifyProgress()); await G.lastWriteOff(); const u = await G.waitFor(() => window.__dummies?.sim?.phase === 'unveil', 12000); if (!u) return { ok: false, detail: 'no unveil' }; await G.press('Space'); const v = await G.waitFor(() => window.__dummies?.sim?.phase === 'voyage' && window.__dummies.sim.screenName() === 'B3', 15000); await G.shot('finale_voyage_b3'); const e = v && await G.waitFor(() => window.__dummies?.sim?.phase === 'ending', 15000); await G.shot('finale_ending'); return { ok: !!(v && e), detail: 'voyage B3 ' + v + ' ending ' + e };"}
+      ]
+    },
+    {
+      "id": "R-CRATE-FACES",
+      "title": "Put the dummy's face on every crate on the ship",
+      "statement": "Every crate on the container ship at Waterfront B3 carries the dummy's face.",
+      "sources": ["EDIT92#3.2:1", "row 533"],
+      "gdd_status": "proposed",
+      "decision": "D76",
+      "spec": "partial",
+      "spec_gap": "The GDD does not say when the faces appear (the whole story, or only in the finale), how the face looks, or whether Arcade's ship gets them. Here Arcade's ship is left as built.",
+      "impact": "content",
+      "depends_on": [],
+      "touches": [
+        {"file": "prototypes/p6/world6.js", "symbol": "containerShip", "why": "draw a face on each container; expose scene.ship.crates"},
+        {"file": "prototypes/p6/world6.js", "symbol": "waterTile / buildScreen", "why": "set scene.ship on Waterfront B3, Story only for the faces"}
+      ],
+      "registry_uses": ["world.storyArt"],
+      "registry_new": [],
+      "contract": "H.scene(s, 'B3').ship = { x, y, faces, crates: [{ x, y, face }] }. In a Story sim of Waterfront, faces === true and every crate has face true. In an ArcadeSim of Waterfront, ship.faces is falsy.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "Story's B3 ship: every crate has a face; Arcade's ship has none", "expr": "const wf = H.STORY.DIST.find(d => /water/i.test(d.id + ' ' + d.name))?.id; const s = H.story(wf, H.progress(wf, 'B3')); const a = H.arcade(wf); const sh = H.scene(s, 'B3')?.ship, ash = H.scene(a, 'B3')?.ship; const ok = sh?.faces === true && (sh.crates?.length ?? 0) > 0 && sh.crates.every(c => !!c.face) && !ash?.faces; return { ok, detail: 'story faces ' + sh?.faces + ' crates ' + (sh?.crates?.length ?? 0) + ' arcade faces ' + ash?.faces };"},
+        {"id": "p2", "kind": "page", "say": "Screenshot of the faced crates as the voyage reaches B3", "expr": "await G.openStory(await G.certifyProgress()); await G.lastWriteOff(); const u = await G.waitFor(() => window.__dummies?.sim?.phase === 'unveil', 12000); if (!u) return { ok: false, detail: 'no unveil' }; await G.press('Space'); const v = await G.waitFor(() => window.__dummies?.sim?.phase === 'voyage' && window.__dummies.sim.screenName() === 'B3', 15000); const f = await G.eval(() => window.__dummies?.sim?.sc?.ship?.faces === true); await G.shot('ship_crate_faces'); return { ok: !!(v && f), detail: 'voyage B3 ' + v + ' faces ' + f };"}
+      ]
+    },
+    {
+      "id": "R-VOYAGE-CREDITS",
+      "title": "Roll the credits over the voyage",
+      "statement": "Credits roll over the voyage.",
+      "sources": ["EDIT92#3.2:1", "EDIT92#open:0", "row 533"],
+      "gdd_status": "proposed",
+      "decision": "D77",
+      "spec": "none",
+      "spec_gap": "The GDD gives no credits content (names, roles, order). It does not give the roll speed, where the credits sit on screen, or whether the player can skip them.",
+      "impact": "content",
+      "depends_on": ["R-SHIP-FLIGHT"],
+      "touches": [
+        {"file": "prototypes/p6/game.js", "symbol": "renderScreen / drawCredits (new)", "why": "draw the credits over the field during phase 'voyage'"},
+        {"file": "content/story/story.json", "symbol": "credits (new key)", "why": "the credits' lines, once the GDD gives them"}
+      ],
+      "registry_uses": [],
+      "registry_new": [],
+      "contract": "During sim phase 'voyage', window.__dummiesUI.credits() returns the credit lines on screen (a non-empty array). game.js has a drawCredits function.",
+      "probes": [
+        {"id": "p1", "kind": "page", "say": "During the voyage the credits hook returns lines (screenshot)", "expr": "await G.openStory(await G.certifyProgress()); await G.lastWriteOff(); const u = await G.waitFor(() => window.__dummies?.sim?.phase === 'unveil', 12000); if (!u) return { ok: false, detail: 'no unveil' }; await G.press('Space'); const v = await G.waitFor(() => window.__dummies?.sim?.phase === 'voyage', 15000); const c = await G.eval(() => window.__dummiesUI?.credits?.() ?? null); await G.shot('voyage_credits'); return { ok: !!v && Array.isArray(c) && c.length > 0, detail: 'voyage ' + v + ' credits ' + String(JSON.stringify(c)).slice(0, 80) };"},
+        {"id": "p2", "kind": "code", "say": "game.js draws credits", "file": "prototypes/p6/game.js", "pattern": "function drawCredits\\b"}
+      ]
+    },
+    {
+      "id": "R-SECOND-MARKET",
+      "title": "Offer Second Market: the city again, with the cars' learning kept",
+      "statement": "Clearing everything gives Second Market: the city again, with the cars' learning kept.",
+      "sources": ["EDIT92#3.2:2", "EDIT93#open:0", "EDIT92#open:0", "row 533"],
+      "gdd_status": "proposed",
+      "decision": "D77",
+      "spec": "partial",
+      "spec_gap": "The GDD does not say where Second Market starts (the ending screen, the save screen), or which slot it uses. It does not say what else carries over (points, parts, chassis count, the CERTIFIED stamp), or whether it differs from the first run in any other way.",
+      "impact": "reward",
+      "depends_on": ["R-CERTIFIED-ENDING"],
+      "touches": [
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.syncProgress / constructor", "why": "save the car models' learning on the progress and load it back"},
+        {"file": "prototypes/p7/story.js", "symbol": "secondMarket (new, on the api)", "why": "build the new progress from a certified one"},
+        {"file": "prototypes/p6/game.js", "symbol": "drawEnding / endItems / savesMenu", "why": "the way into Second Market"}
+      ],
+      "registry_uses": ["proto.learningEnabled", "learning.playerHitCap", "learning.playerHitStep"],
+      "registry_new": [],
+      "contract": "progress.learning = { [cls]: { applied, standoffApplied } }, synced from s.models. H.STORY.secondMarket(pr) returns a new progress: secondMarket true, complete false, no tile cleared, district = the first district, learning copied. A StorySim built on that progress starts with s.models[cls].applied equal to learning[cls].applied. A newProgress() sim starts unlearned.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "A certified progress carries the cars' learning, matching s.models", "expr": "const s = H.certify(); const L = s.story?.learning, M = s.models || {}; const ks = Object.keys(M); const ok = !!L && ks.length > 0 && ks.every(c => L[c]?.applied === M[c].applied && L[c]?.standoffApplied === M[c].standoffApplied); return { ok, detail: 'learning ' + JSON.stringify(L ?? null).slice(0, 80) };"},
+        {"id": "p2", "kind": "sim", "say": "secondMarket() gives a fresh city with the learning copied", "expr": "const s = H.certify(); const pr2 = H.STORY.secondMarket?.(s.story); const ok = !!pr2 && pr2.secondMarket === true && pr2.complete === false && H.STORY.clearedCount(pr2) === 0 && pr2.district === H.STORY.DIST[0].id && !!s.story.learning && JSON.stringify(pr2.learning) === JSON.stringify(s.story.learning); return { ok, detail: pr2 ? 'cleared ' + H.STORY.clearedCount(pr2) + ' district ' + pr2.district + ' market ' + pr2.secondMarket : 'no secondMarket' };"},
+        {"id": "p3", "kind": "sim", "say": "A Second Market sim starts with sedan learning 1; a new game starts at 0", "expr": "const s = H.certify(); const pr2 = H.STORY.secondMarket?.(s.story); if (!pr2) return { ok: false, detail: 'no secondMarket' }; pr2.learning = Object.assign({}, pr2.learning, { sedan: { applied: 1, standoffApplied: 0 } }); const mo = H.STORY.DIST[0].id; const a = H.story(mo, pr2); const f = H.story(mo, H.STORY.newProgress()); const ok = a.models?.sedan?.applied === 1 && !f.models?.sedan?.applied; return { ok, detail: 'market ' + a.models?.sedan?.applied + ' fresh ' + f.models?.sedan?.applied };"}
+      ]
+    },
+    {
+      "id": "R-CERTIFIED-ENDING",
+      "title": "Keep the CERTIFIED ending screen and save stamp",
+      "statement": "Clearing Waterfront B2 certifies the city. The ending screen reads CERTIFIED with the ending text, and the save carries the CERTIFIED stamp.",
+      "sources": ["EDIT92#3.2:0", "EDIT92#3.2:2", "P7#story~2"],
+      "gdd_status": "built",
+      "decision": null,
+      "spec": "full",
+      "spec_gap": "",
+      "impact": "reward",
+      "depends_on": [],
+      "touches": [
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.checkTerminal", "why": "the finale must still end in 'Certified' with progress.complete"},
+        {"file": "prototypes/p6/game.js", "symbol": "drawEnding / slotLines", "why": "the screen and the stamp"}
+      ],
+      "registry_uses": [],
+      "registry_new": [],
+      "contract": "STORY.DATA.ending is the GDD's text. After the last write-off, and after any finale phases, s.phase is 'ending', s.run.ending.kind is 'Certified' and progress.complete is true. slotLines writes 'CERTIFIED · ALL'.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "The ending text is the GDD's", "expr": "const e = H.STORY.DATA?.ending; return { ok: e === 'Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please remain still for the voyage.', detail: String(e).slice(0, 60) };"},
+        {"id": "p2", "kind": "sim", "say": "Certifying, through any finale, ends Certified with progress.complete", "expr": "const s = H.certify(); for (let i = 0; i < 3600 && s.phase !== 'ending'; i++) { if (s.phase === 'unveil') s.continueUnveil?.(); H.step(s, 1); } return { ok: s.phase === 'ending' && s.run?.ending?.kind === 'Certified' && s.story?.complete === true, detail: s.phase + ' ' + s.run?.ending?.kind + ' complete ' + s.story?.complete };"},
+        {"id": "p3", "kind": "code", "say": "The save card stamps a certified story", "file": "prototypes/p6/game.js", "pattern": "CERTIFIED · ALL"}
+      ]
+    },
+    {
+      "id": "R-ACT-DELIVERY",
+      "title": "Keep the act lines, the 27 tales and the act line on every card",
+      "statement": "The act line opens each district's first card and heads every card. The content carries three acts and 27 tales.",
+      "sources": ["EDIT92#3:6", "EDIT92#measured"],
+      "gdd_status": "built",
+      "decision": null,
+      "spec": "full",
+      "spec_gap": "",
+      "impact": "content",
+      "depends_on": [],
+      "touches": [
+        {"file": "content/story/story.json", "symbol": "districts[].act, tiles[].tale", "why": "the acts and tales"},
+        {"file": "prototypes/p6/game.js", "symbol": "drawBrief / drawStoryMap", "why": "the act line on the card; the map's numerals"}
+      ],
+      "registry_uses": [],
+      "registry_new": [],
+      "contract": "STORY.DIST[i].act is 'ACT I · INDUCTION', 'ACT II · OPENING DAY', 'ACT III · CUSTOMS'. There are 27 tales, none empty and none with an exclamation mark. drawBrief heads the card with d.act.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "The three act lines, in order", "expr": "const a = H.STORY.DIST.map(d => d.act); return { ok: JSON.stringify(a) === JSON.stringify(['ACT I · INDUCTION', 'ACT II · OPENING DAY', 'ACT III · CUSTOMS']), detail: a.join(' | ') };"},
+        {"id": "p2", "kind": "sim", "say": "27 tales, none empty, no exclamation marks", "expr": "const t = H.STORY.DIST.flatMap(d => d.order.map(k => d.tiles[k]?.tale)); return { ok: H.STORY.TOTAL === 27 && t.length === 27 && t.every(x => typeof x === 'string' && x.length > 0 && !x.includes('!')), detail: 'tales ' + t.length };"},
+        {"id": "p3", "kind": "code", "say": "Every tile card is headed by the act line", "file": "prototypes/p6/game.js", "pattern": "d\\.act \\? d\\.act \\+ ' · '"}
+      ]
+    },
+    {
+      "id": "R-TILE-GRADE",
+      "title": "Grade a tile on its clear",
+      "statement": "A cleared tile is graded. Today points are only a score; nothing ranks or grades a tile (Edit 90's grade is open).",
+      "sources": ["P7#known-gaps:1"],
+      "gdd_status": "gap",
+      "decision": null,
+      "spec": "none",
+      "spec_gap": "The text given here does not define Edit 90's grade: its scale, what it measures (points, time, chassis), its thresholds, where it shows, or whether it is saved. The governing D-item is not given.",
+      "impact": "reward",
+      "depends_on": [],
+      "touches": [
+        {"file": "prototypes/p7/story.js", "symbol": "StorySim.checkTerminal", "why": "grade the tile with its tilePoints on the clear"},
+        {"file": "prototypes/p6/game.js", "symbol": "drawReport / drawStoryMap", "why": "show the grade"}
+      ],
+      "registry_uses": [],
+      "registry_new": [],
+      "contract": "On a clear, s.report.story.grade is set, the 'story-clear' event carries grade, and progress.tileGrades['<district>:<tile>'] keeps it.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "Clearing Monument A1 gives a grade in the report", "expr": "const d = H.STORY.DIST[0], t = d.order[0]; const s = H.story(d.id, H.progress(d.id, t)); H.ready(s); H.kill(s); const g = s.report?.story?.grade; return { ok: g != null, detail: 'grade ' + g };"},
+        {"id": "p2", "kind": "sim", "say": "The story-clear event and the progress carry the grade", "expr": "const d = H.STORY.DIST[0], t = d.order[0]; const s = H.story(d.id, H.progress(d.id, t)); H.ready(s); H.kill(s); const e = H.ev(s, 'story-clear')[0]; return { ok: e?.grade != null && s.story?.tileGrades?.[d.id + ':' + t] != null, detail: 'event ' + e?.grade + ' saved ' + s.story?.tileGrades?.[d.id + ':' + t] };"}
+      ]
+    },
+    {
+      "id": "R-BARK-TILE",
+      "title": "Have barks name the tile, not the district",
+      "statement": "In Story, car barks name the tile. Today they still name the district.",
+      "sources": ["P7#known-gaps:5"],
+      "gdd_status": "gap",
+      "decision": null,
+      "spec": "partial",
+      "spec_gap": "The GDD does not say whether a bark names the tile's title ('The circus') or its grid name ('B2'), which barks name a place, or whether Arcade changes.",
+      "impact": "content",
+      "depends_on": [],
+      "touches": [
+        {"file": "prototypes/p6/game.js", "symbol": "barkLine", "why": "the place a bark names"},
+        {"file": "prototypes/p6/game.js", "symbol": "window.__dummiesUI", "why": "a barkPlace(sim) test hook"}
+      ],
+      "registry_uses": [],
+      "registry_new": [],
+      "contract": "window.__dummiesUI.barkPlace(sim) returns the place name barkLine uses. In Story it names the tile in view, by its title or its grid name.",
+      "probes": [
+        {"id": "p1", "kind": "page", "say": "In Waterfront B2 a bark's place names the tile", "expr": "await G.openStory(await G.certifyProgress()); const r = await G.eval(() => { const f = window.__dummiesUI?.barkPlace; return f ? String(f(window.__dummies?.sim)) : null; }); return { ok: !!r && (/circus/i.test(r) || /\\bB2\\b/.test(r)), detail: 'place ' + r };"},
+        {"id": "p2", "kind": "code", "say": "game.js exposes the bark place hook", "file": "prototypes/p6/game.js", "pattern": "barkPlace"}
+      ]
+    },
+    {
+      "id": "R-CHASSIS-ZERO",
+      "title": "Show Chassis 0 behind glass in the stilt houses",
+      "statement": "Waterfront B3 shows Chassis 0, the prototype before you, behind glass in one of the stilt houses. Today it lives only in the tale.",
+      "sources": ["P7#known-gaps:8", "EDIT92#3.1~2"],
+      "gdd_status": "gap",
+      "decision": null,
+      "spec": "partial",
+      "spec_gap": "The GDD does not say which stilt house, what Chassis 0 looks like, whether it is solid, or whether Arcade's Waterfront shows it.",
+      "impact": "content",
+      "depends_on": [],
+      "touches": [
+        {"file": "prototypes/p6/world6.js", "symbol": "stiltSprite / waterTile", "why": "draw Chassis 0 in a stilt house; expose scene.chassis0"}
+      ],
+      "registry_uses": ["world.storyArt"],
+      "registry_new": [],
+      "contract": "H.scene(s, 'B3').chassis0 = { x, y } in a Story sim of Waterfront. In the page: window.__dummies.sim.sc.chassis0.",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "Waterfront B3's scene carries Chassis 0", "expr": "const wf = H.STORY.DIST.find(d => /water/i.test(d.id + ' ' + d.name))?.id; const s = H.story(wf, H.progress(wf, 'B3')); const c = H.scene(s, 'B3')?.chassis0; return { ok: !!c, detail: JSON.stringify(c ?? null) };"},
+        {"id": "p2", "kind": "page", "say": "In the page, B3 in test shows Chassis 0 (screenshot)", "expr": "const pr = await G.certifyProgress(); const k = Object.keys(pr.done || {}).find(x => /water/i.test(x)); pr.done[k] = pr.done[k].filter(t => t !== 'B3'); pr.tileWO = 0; await G.openStory(pr); const r = await G.eval(() => ({ tile: window.__dummies?.sim?.screenName?.(), c: !!window.__dummies?.sim?.sc?.chassis0 })); await G.shot('chassis0_b3'); return { ok: r?.tile === 'B3' && r?.c === true, detail: JSON.stringify(r) };"}
+      ]
+    },
+    {
+      "id": "R-PARK-VISITORS",
+      "title": "Show Parkland's Expo visitors on screen",
+      "statement": "Parkland's visitors appear on screen. Today they live only in the tales.",
+      "sources": ["P7#known-gaps:8"],
+      "gdd_status": "gap",
+      "decision": null,
+      "spec": "none",
+      "spec_gap": "The GDD does not give the tiles, counts, look or movement of the visitors. It does not say whether they block the dummy or cars, whether they change with the story's days, or whether Arcade shows them.",
+      "impact": "content",
+      "depends_on": [],
+      "touches": [
+        {"file": "prototypes/p6/world6.js", "symbol": "parkTile / gardenPlan", "why": "place the visitors; expose scene.visitors"},
+        {"file": "prototypes/p6/game.js", "symbol": "drawSprites / drawLive6", "why": "draw them"}
+      ],
+      "registry_uses": [],
+      "registry_new": [],
+      "contract": "Some Parkland scene in a Story sim has a non-empty scene.visitors array (H.scene(s, tile).visitors).",
+      "probes": [
+        {"id": "p1", "kind": "sim", "say": "Parkland's scenes carry visitors", "expr": "const d = H.STORY.DIST.find(x => /park/i.test(x.id + ' ' + x.name)); const s = H.story(d.id, H.progress(d.id, d.order[0])); const n = d.order.reduce((a, t) => a + (H.scene(s, t)?.visitors?.length ?? 0), 0); return { ok: n > 0, detail: 'visitors ' + n };"},
+        {"id": "p2", "kind": "page", "say": "In the page, Parkland C1 in test (screenshot); visitors in the district", "expr": "const pr = await G.certifyProgress(); const ks = Object.keys(pr.done || {}); const mo = ks.find(x => /monu/i.test(x)), pk = ks.find(x => /park/i.test(x)); pr.done = { [mo]: pr.done[mo] }; pr.district = pk; pr.tileWO = 0; await G.openStory(pr); const r = await G.eval(() => { const s = window.__dummies?.sim; return { tile: s?.screenName?.(), v: s?.sc?.visitors?.length ?? 0 }; }); await G.shot('parkland_visitors'); return { ok: (r?.v ?? 0) > 0, detail: JSON.stringify(r) };"}
+      ]
+    }
+  ],
+  "excluded": [
+    {"cid": "EDIT93#open:1", "why": "Status note. D70 is eased by row 529 (B1's brief is now a raised road). The missing drop gap 'stands' (EDIT93#open; P7#highways-and-cones: 'no gap (D70)'). The GDD states no fix."},
+    {"cid": "EDIT93#open:2", "why": "Status note: D67 and D68 stand. No behaviour is stated."},
+    {"cid": "EDIT92#open:1", "why": "Status note: D67, D68 and D70 stand. Superseded by EDIT93#open."},
+    {"cid": "P7#known-gaps:0", "why": "Status note: tales, briefs and counts are proposals. The counts are set by row 463 and EDIT93#3.1."},
+    {"cid": "P7#known-gaps:2", "why": "A limit of a chosen rule. The miss floor holds at 1 by design (Edit 91; EDIT93#3.3: 'Miss floor: unchanged')."},
+    {"cid": "P7#known-gaps:3", "why": "An accepted limit of the save design: three browser-local slots (P7#save-games-edit-88: 'Stored in this browser'). Old-save handling is built."},
+    {"cid": "P7#known-gaps:4", "why": "Chosen as is: the slot card's time stamp is 'DD MON YYYY · HH:MM, local' (P7#save-games-edit-88)."},
+    {"cid": "P7#known-gaps:6", "why": "An accepted consequence of Arcade's economy (P7#arcade: a credit a body, short quotas). No change is stated."},
+    {"cid": "P7#known-gaps:9", "why": "The GDD keeps it: B1's street stays empty 67% of the time and its brief moved to a raised road (row 529; EDIT93#3.1). The missing drop gap stands (EDIT93#open; P7#highways-and-cones)."},
+    {"cid": "P7#known-gaps:10", "why": "A consequence of the 'introduce, then test' rule (EDIT93#3.1; P7#story/the-27-tiles: Battery 2 and 3 on the combo ×3 tiles)."},
+    {"cid": "P7#known-gaps:11", "why": "A measurement note the GDD accepts: culls out of view are never seen (row 477; P7#story~2 traffic per tile)."},
+    {"cid": "P7#known-gaps:12", "why": "Accepted limits of the touch layout, 'the player's choice' (P7#hud-story~2, Edit 87: saved in this browser)."},
+    {"cid": "P7#known-gaps:13", "why": "Chosen as is: Adjust layout moves and sizes two controls, the stick and the diamond (P7#hud-story~2, Edit 87: 'drag either'). The GDD states no plan to split the diamond."}
+  ]
+}
+```

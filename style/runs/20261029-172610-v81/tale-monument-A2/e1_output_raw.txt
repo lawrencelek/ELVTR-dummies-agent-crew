@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The shops under the highway sell nothing. Their signs flash prices at the traffic, which reads every word. Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones. Use this." The tale is 36 words, over the 35-word cap, and has 5 sentences, over the 2-sentence cap (lint). [EDIT96#3.2] Fix: "Hands 1 is fitted: place a cone, and let a colleague's respect for it write you off. The neon shops under the highway sell nothing; their signs flash prices at traffic that reads every word." (2 sentences, 35 words; the duty fits in the first 20 words and the remaining words name the place.)
+Total: 10 − 4 = 6.

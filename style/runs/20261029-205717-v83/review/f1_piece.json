@@ -1,0 +1,276 @@
+{
+ "kind": "batch",
+ "items": [
+  {
+   "id": "n36",
+   "kind": "notice",
+   "where": "the intro screen's line",
+   "maxChars": 110,
+   "text": "You are a Dummy Corporation trainee. Cars avoid you: get hit anyway, chain your hits, and earn equipment."
+  },
+  {
+   "id": "n02",
+   "kind": "notice",
+   "where": "Arcade's district screen",
+   "maxChars": 120,
+   "text": "Welcome, trainee. Every write-off brings Certification closer."
+  },
+  {
+   "id": "n03",
+   "kind": "notice",
+   "where": "the STORY card",
+   "maxChars": 100,
+   "text": "Get your Dummy Certification in Shenzhen Smart City and learn about the Corporation.",
+   "locked": true
+  },
+  {
+   "id": "n34",
+   "kind": "notice",
+   "where": "the ARCADE card",
+   "maxChars": 110,
+   "text": "Get hit in fun, creative, and destructive ways before the vehicles run out.",
+   "locked": true
+  },
+  {
+   "id": "n24",
+   "kind": "notice",
+   "where": "Monument's line on Arcade's level card",
+   "maxChars": 110,
+   "text": "Neon shops, LED walls; one road splits round the monument under the walkway ring. Your training begins here."
+  },
+  {
+   "id": "n25",
+   "kind": "notice",
+   "where": "Parkland's line on Arcade's level card",
+   "maxChars": 110,
+   "text": "Water and concrete; a boulevard passes under the raised ring. Your write-offs open the Expo to clients."
+  },
+  {
+   "id": "n26",
+   "kind": "notice",
+   "where": "Waterfront's line on Arcade's level card",
+   "maxChars": 110,
+   "text": "A hill walled by towers; bridges cross the drive and the river. Certified dummies ship across it to clients."
+  },
+  {
+   "id": "n37",
+   "kind": "notice",
+   "where": "Arcade's goal",
+   "maxChars": 110,
+   "text": "Write off bodies; every {Q} write-offs, the grade rises. Earn points until the vehicles run out."
+  },
+  {
+   "id": "act-monument",
+   "kind": "act",
+   "district": "monument",
+   "text": "Dummy Corporation welcomes you off the factory floor. The cars are your colleagues; Certification is your goal."
+  },
+  {
+   "id": "MA1",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "A1",
+   "text": "Fresh off the factory floor, you're ready to do some damage to yourself. Make your engineers proud.",
+   "locked": true
+  },
+  {
+   "id": "MB1",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "B1",
+   "text": "Battery 1 is fitted. The skybridge was built for shoppers who never came; staff watch you dash into a colleague."
+  },
+  {
+   "id": "MC1",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "C1",
+   "text": "The LED drum lights each bend for colleagues. Step off the high road onto a car: gravity is company policy."
+  },
+  {
+   "id": "MC2",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "C2",
+   "text": "The road runs through the portal tower at the sixth floor. Take your write-off up there; ignore the view."
+  },
+  {
+   "id": "MB2",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "B2",
+   "text": "The plaque reads ZERO ACCIDENTS: a target, not a record. Stand or walk near it until a colleague finds you."
+  },
+  {
+   "id": "MA2",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "A2",
+   "text": "The neon shops sell nothing, but the traffic reads them. Hands 1 is fitted: bait a colleague with a cone."
+  },
+  {
+   "id": "MA3",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "A3",
+   "text": "The stacked cubes rose one budget at a time. Build the same way: one hit, then another, quickly."
+  },
+  {
+   "id": "MB3",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "B3",
+   "text": "Two screens advertise to each other all night. Legs 1 is fitted: jump into a car between them."
+  },
+  {
+   "id": "MC3",
+   "kind": "tale",
+   "district": "monument",
+   "tile": "C3",
+   "text": "The gateway thanked the car that wrote you off for driving safely. Let one colleague throw you into the next."
+  },
+  {
+   "id": "act-parkland",
+   "kind": "act",
+   "district": "parkland",
+   "text": "The Expo opens to clients when this park passes. Your training keeps them safe."
+  },
+  {
+   "id": "PC1",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "C1",
+   "text": "The lantern, the Expo's first exhibit, is lit for clients. With Arms 1, push off one car into the next."
+  },
+  {
+   "id": "PC2",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "C2",
+   "text": "Our board watches opening day from these terraces. A van delivers the catering; arrange for it to deliver you."
+  },
+  {
+   "id": "PC3",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "C3",
+   "text": "The arch is the Expo's gate; visitors circle the roundabout once. You go faster: chain hits before each is forgotten."
+  },
+  {
+   "id": "PB3",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "B3",
+   "text": "The obelisk marks the surveyors' first stake. Police escort a school party here on opening day; test them first."
+  },
+  {
+   "id": "PA3",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "A3",
+   "text": "A wedding faces the traffic from the belvedere. Legs 2 is fitted: jump into a car, so no guest does."
+  },
+  {
+   "id": "PA2",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "A2",
+   "text": "The dome is the Expo's showroom; you are the exhibit. Hands 2 is fitted: bait a car with a cone."
+  },
+  {
+   "id": "PA1",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "A1",
+   "text": "The gardener's pools need cars that stop. Teach them with Arms 2: push off one car into the next."
+  },
+  {
+   "id": "PB1",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "B1",
+   "text": "The cascade was built to drown out the traffic. The traffic got louder; take your hit up on the highway."
+  },
+  {
+   "id": "PB2",
+   "kind": "tale",
+   "district": "parkland",
+   "tile": "B2",
+   "text": "The board watches the ring over the pools, where cars come round clean. Battery 2 is fitted: chain your hits."
+  },
+  {
+   "id": "act-waterfront",
+   "kind": "act",
+   "district": "waterfront",
+   "text": "Certified dummies ship across the river, to be sacrificed in service to our clients. Your papers are being prepared."
+  },
+  {
+   "id": "WA1",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "A1",
+   "text": "The bus carries engineers through the west portal to the bridge. It never misses; take its hit."
+  },
+  {
+   "id": "WB1",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "B1",
+   "text": "Cars go into the tunnel under the hill, and data comes back. Legs 3 is fitted: leap into one."
+  },
+  {
+   "id": "WC1",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "C1",
+   "text": "The east portal faces away from its twin. Police here check papers; your Certification needs their fleet on record."
+  },
+  {
+   "id": "WC2",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "C2",
+   "text": "The east beach terrace served tourists, then sensors. Drop from its rail onto a car; ships wait for the Certified."
+  },
+  {
+   "id": "WC3",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "C3",
+   "text": "The pier tower logs all that floats: containers, ducks, one dummy. Be thrown into a car to earn your entry."
+  },
+  {
+   "id": "WB3",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "B3",
+   "text": "The stilt houses keep Chassis 0 behind glass. Arms 3 is fitted; push off a car and show it progress."
+  },
+  {
+   "id": "WA3",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "A3",
+   "text": "The west tower keeps the customs log. Your entry reads PURPOSE DESTRUCTION: honour it on the raised road."
+  },
+  {
+   "id": "WA2",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "A2",
+   "text": "Sand from three provinces lies under the west beach terrace. Place a cone; one more clean reading before the ceremony."
+  },
+  {
+   "id": "WB2",
+   "kind": "tale",
+   "district": "waterfront",
+   "tile": "B2",
+   "text": "The circus monument, cast from your written-off chassis, reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits."
+  },
+  {
+   "id": "ending",
+   "kind": "ending",
+   "text": "Your model has passed and will be manufactured for our clients. A Corporation drone carries you to the ship."
+  }
+ ]
+}

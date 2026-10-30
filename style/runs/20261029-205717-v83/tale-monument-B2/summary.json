@@ -1,0 +1,44 @@
+{
+ "case": "tale-monument-B2",
+ "class": "V8.3 tale",
+ "title": "Monument B2, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 22.2,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 12.9,
+   "output_tokens": 702,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2951342
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 9.3,
+   "output_tokens": 709,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0223054
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3174
+}

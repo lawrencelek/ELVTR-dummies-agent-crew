@@ -1,0 +1,12 @@
+{
+ "id": "bark-b005",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "Front contact. Incident 4471 opened.",
+ "cost_usd": 0.122,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b005 \"Front contact. Incident 4471 opened.\" against every bark rule and broke none. Tone fits a calm, procedural 02 Corporate car [FLEET#F4], and the polite form still carries some feeling [FLEET#F2]. Vocabulary is clean: no banned terms, real cities, brands or grid codes [FLEET#F2, FLEET#F1]. Length, ending and the impact fields are all correct; \"4471\" is Corporate incident-number flavour, not a gameplay figure [EDIT39#6.6, FSG#field-text, DESIGN#D9.3]. Truth holds: the line makes a single claim, front contact, and its zone conditions guarantee it on an impact event [FLEET#F8]. The line matches its shipped in-voice precedent [FLEET#F9.1~2].\nTotal: 10."
+}

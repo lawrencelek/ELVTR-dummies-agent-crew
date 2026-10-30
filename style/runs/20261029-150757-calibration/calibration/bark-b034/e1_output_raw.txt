@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b034 against every car rule, and nothing is broken. The tone is a worker's pride in its record, in the Luxury voice: superior, no apology (T6, T7, T9 [FLEET#F2], [FLEET#F4]). It uses the glossary's "write-off" and has no banned word (V1, V3 [FLEET#F3]). It is 39 characters, plain, ends with ".", and has the right style and priority for a write-off (F1–F4 [EDIT39#6.6], [FSG#field-text]). It reacts only to the logged `writeoff` event and claims nothing else (R1–R3 [FLEET#F8], [DESIGN#D9.3]). It matches the shipped line [FLEET#F9.2], and the lint found nothing.
+Total: 10.

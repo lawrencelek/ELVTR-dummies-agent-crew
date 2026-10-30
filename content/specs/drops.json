@@ -1,0 +1,221 @@
+{
+ "type": "drops",
+ "target": "p3",
+ "title": "Drop juice: the fall, the landing and the hit from above",
+ "param_prefix": "proto.drops.",
+ "gap": [
+  "My game is thin on juice for the new levels (designer's gap statement). P3.3 lets the dummy drop from a Z1 highway (0.35 s) or a Z2 roof or high highway (0.47 s, a harder hit: stopped sedan 136 against 76).",
+  "The renderer stubs both: stepping off plays one tone; landing plays a thud, eight dust puffs and a small shake. A Z2 fall feels the same as a Z1 fall.",
+  "Landing on a car uses the ground-hit juice unchanged, so a hit from above reads like a side swipe.",
+  "Designer decision: the drop timing and damage stay simulation values (world.dropSeconds, damage.dropSpeed). All new juice is presentation."
+ ],
+ "deliverable": [
+  "Layers the renderer stacks on the existing hit juice: a base layer for stepping off (deck-drop), a layer for landing on open ground (land with no car), and impact accents for landing on a car (drop) and for a Z2 drop (dropZ 2).",
+  "Height must be felt: scale the stepping-off and landing layers by the fall height h, full at world.highHeight.",
+  "A write-off from a drop gets its own accent.",
+  "Every numeric value is a parameter ID: declare proto.drops.* IDs with value, unit, purpose and sources, or reuse registry IDs.",
+  "Each layer names the reference technique it adapts."
+ ],
+ "queries": [
+  "drop off a ledge or broken parapet fall time world.dropSeconds square root of height lands on the nearest level below",
+  "landing on a car closing speed damage.dropSpeed hit from above legs take it Z2 136 stopped sedan",
+  "falling the dummy's shadow marks the landing spot drawn heights drop draws from the lift it left",
+  "hit feedback hit-stop dummy crumples dents shake grows with damage crunch horn",
+  "impact burst radial particles at contact two times body width",
+  "scored hit and a physical touch must not use indistinguishable reward feedback",
+  "screen shake squash and stretch hit pause top-down arcade juice reference",
+  "reduced motion juice scales to 25 percent shake flinch",
+  "reserved hues yellow is the dummy red is the warning neon is material never a cue",
+  "Z0 ground Z1 low highway Z2 high highway platform roofs world.highHeight world.deckHeight"
+ ],
+ "critic_queries": [
+  "feedback never hides a car's cues where feedback and a cue conflict the cue wins",
+  "a scored hit and a physical touch must not use indistinguishable reward feedback",
+  "the impact burst is at most two times body width",
+  "the hit-stop stays the simulation value",
+  "red is reserved for warnings aqua frame only yellow the dummy"
+ ],
+ "k": 3,
+ "max_chunks": 18,
+ "allowed": {
+  "events": [
+   "deck-drop",
+   "land",
+   "impact",
+   "writeoff"
+  ],
+  "event_fields": "real field names per event; see the table below",
+  "values": {
+   "drop": [
+    true
+   ],
+   "dropZ": [
+    1,
+    2
+   ],
+   "dropFrom": [
+    "deck",
+    "roof"
+   ],
+   "fromKind": [
+    "deck",
+    "roof"
+   ],
+   "fromZ": [
+    1,
+    2
+   ],
+   "car": [
+    null
+   ]
+  },
+  "numeric_fields": [
+   "assessed",
+   "lost",
+   "closing",
+   "h",
+   "fromZ",
+   "dropZ",
+   "level"
+  ],
+  "particle_types": [
+   "dust",
+   "smoke",
+   "spark",
+   "debris",
+   "ring"
+  ],
+  "particle_dirs": [
+   "random",
+   "backward",
+   "facing",
+   "away"
+  ],
+  "particle_at": [
+   "dummy",
+   "contact",
+   "car"
+  ],
+  "particle_roles": [
+   "floor",
+   "grid",
+   "structure",
+   "fleet",
+   "dummy",
+   "joints"
+  ],
+  "line_roles": [
+   "grid",
+   "structure",
+   "fleet",
+   "joints"
+  ],
+  "sound_types": [
+   "tone",
+   "noise"
+  ],
+  "waves": [
+   "square",
+   "sawtooth",
+   "triangle",
+   "sine"
+  ],
+  "only_on": {
+   "popup": [
+    "impact"
+   ],
+   "rays": [
+    "impact"
+   ],
+   "stumble": [
+    "land"
+   ],
+   "crumple": [
+    "impact",
+    "writeoff",
+    "land"
+   ],
+   "streaks": [
+    "deck-drop"
+   ]
+  },
+  "no_reward_events": [
+   "deck-drop",
+   "land"
+  ],
+  "reward_blocks": [
+   "popup",
+   "rays"
+  ],
+  "required_events": [
+   "deck-drop"
+  ],
+  "required_layers": [
+   {
+    "event": "land",
+    "when": {
+     "car": null
+    }
+   },
+   {
+    "event": "impact",
+    "when": {
+     "drop": true
+    }
+   },
+   {
+    "event": "impact",
+    "when": {
+     "dropZ": 2
+    }
+   },
+   {
+    "event": "writeoff",
+    "when": {
+     "drop": true
+    }
+   }
+  ],
+  "situation_keys": [
+   "drop",
+   "dropZ",
+   "dropFrom"
+  ],
+  "range_ids": true,
+  "max_gain": 0.25
+ },
+ "schema": [
+  "{",
+  "  \"params\": [ {\"id\": \"proto.drops.<event>.<name>\", \"value\": number, \"unit\": \"canvas units|s|count|ratio|world units|world units/s|Hz|gain|px\", \"purpose\": \"one line\", \"sources\": [chunk ids]} ],",
+  "  \"layers\": [ {",
+  "     \"event\": one of allowed.events,",
+  "     \"when\": {} for the stepping-off base layer; {\"car\": null} for an open-ground landing; {\"drop\": true} or {\"dropZ\": 2} for hits from above; {\"drop\": true} on writeoff,",
+  "     \"scale\": {\"by\": \"<numeric field of the event>\", \"full\": \"<param id>\"} | null,",
+  "     \"shake\": {\"amp\": V, \"seconds\": V} | null,",
+  "     \"zoom\": {\"amount\": V, \"seconds\": V} | null,",
+  "     \"flash\": V | null,",
+  "     \"crumple\": {\"amount\": V, \"seconds\": V} | null,",
+  "     \"stumble\": {\"amp\": V, \"seconds\": V} | null,",
+  "     \"ring\": {\"radius\": V, \"seconds\": V, \"width\": V, \"role\": allowed.line_roles} | null,",
+  "     \"rays\": {\"count\": V, \"length\": V, \"seconds\": V} | null,",
+  "     \"popup\": {\"size\": V, \"rise\": V, \"seconds\": V, \"pop\": V} | null,",
+  "     \"streaks\": {\"count\": V, \"length\": V, \"seconds\": V, \"role\": allowed.line_roles} | null,",
+  "     \"particles\": [ {\"type\": allowed.particle_types, \"count\": V, \"speed\": V, \"life\": V, \"size\": V, \"role\": allowed.particle_roles, \"dir\": allowed.particle_dirs, \"at\": allowed.particle_at} ],",
+  "     \"sound\": {\"type\": \"tone\"|\"noise\", \"from\": V, \"to\": V, \"seconds\": V, \"gain\": V, \"wave\": allowed.waves (tone only)} | null,",
+  "     \"reference\": \"which reference technique this adapts, in a few words\",",
+  "     \"sources\": [chunk ids]",
+  "  } ]",
+  "}",
+  "V is a parameter ID string, or a two-item array [minId, maxId] interpolated by the layer's scale (0 to 1). Never a bare number."
+ ],
+ "consumer": [
+  "These layers stack on the published hit layers (prototypes/p3/content/hits.json). For an impact the base hit layer always applies first: crunch, shake, flash, rays, popup, sparks. Add to it; do not repeat it.",
+  "deck-drop: the dummy steps off a ledge or a broken parapet. Fields: from (level), to (level it will land on), h (fall height, world units: 120 from Z1, 216 from Z2 to the ground), fromKind ('deck' or 'roof'). Juice at the dummy.",
+  "land: the dummy lands. Fields: car (null on open ground; a car id when it lands on one, which also fires an impact), level, fromZ, h, fromKind. Use when {\"car\": null} for the open-ground landing so a hit from above is not juiced twice.",
+  "impact accents: drop (true when the dummy landed on the car), dropZ (1 or 2), dropFrom ('deck' or 'roof'), plus the usual zone, assessed, closing.",
+  "writeoff: the same situation fields as the impact that caused it.",
+  "Streaks run along the dummy's facing reversed: use them for the fall (deck-drop). A ring is centred on the contact (the dummy on open ground).",
+  "Shake, zoom, flash, crumple and stumble: a later layer replaces an earlier one's value. Rings, streaks, particles and sounds add.",
+  "Gain is clamped to 0.25. Reduced motion already scales every shake, zoom and crumple by proto.juice.reducedMotion."
+ ]
+}

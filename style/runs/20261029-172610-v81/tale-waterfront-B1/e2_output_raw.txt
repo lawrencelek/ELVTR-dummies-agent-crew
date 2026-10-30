@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3–T5 and T13–T14 [EDIT95#3.2, EDIT95#3.1], V1–V4 and V6–V11 [EDIT95#3.1, EDIT95#3.3], F5–F7 [EDIT96#3.2, STORY#S1, DECISIONS#rows-531-540~2], and R4–R5 [STORY#WB1, EDIT93#3.1]. It has 31 words in 2 sentences. The duty and equipment take 17 of those words ("Legs 3 is fitted…", "jump into one…"), and the rest describe the tunnel portal under the hill. It names Legs 3 on the tile that issues it, its duty matches JUMP INTO A CAR, and its clients are served without being seen.
+Total: 10.

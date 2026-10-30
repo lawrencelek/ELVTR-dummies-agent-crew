@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale for tone (T1, T3, T4, T5, T13) against [EDIT95#3.2] and [PLAY#PS2]: no "!" and no intensifiers, with the dummy treated as "the model" [EDIT95#3.1]. Length is 2 sentences and 20 words, within F6 [EDIT95#3.2], and lint found nothing. Arms 3 is named on the tile that issues it (F7, R5) [STORY#S1], the duty matches PUSH OFF A CAR [STORY#S3], and Chassis 0 is on this tile (R4) [STORY#WB3]. Nothing breaks the CUSTOMS frame (V6) [EDIT95#3.3], and no banned word or company name appears (V1, V4) [EDIT95#0].
+Total: 10.

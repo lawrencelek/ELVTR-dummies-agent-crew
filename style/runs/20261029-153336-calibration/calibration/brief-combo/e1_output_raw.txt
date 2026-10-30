@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The label and brief match the shipped combo row of STORY#S3 word for word: a caps label of 19 characters or fewer, the "Coverage gap: … The final hit must …" form, and {n} as a placeholder with no typed figure (F8, F5; [STORY#S3], [STORY#S1]); the tone is dry and procedural, the duty is framed as employment, there is no "!", no banned or game word, and the brief agrees with the combo tiles MA3, PB2 and WB2 (T1–T3, V1, V3, R5; [EDIT92#3], [FLEET#F2], [FLEET#F3], [STORY#MA3], [STORY#PB2], [STORY#WB2]).
+Total: 10.

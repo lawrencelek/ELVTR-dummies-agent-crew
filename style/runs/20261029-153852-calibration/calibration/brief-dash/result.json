@@ -1,0 +1,13 @@
+{
+ "id": "brief-dash",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "DASH INTO A CAR Coverage gap: dashes. The final hit must be a dash into a car.",
+ "cost_usd": 0.0909,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the label and brief against F8, T1–T3, V1, V4, V6, F5 and R5. Both match the shipped dash brief word for word: label \"DASH INTO A CAR\" (15 characters, all caps), then \"Coverage gap: dashes. The final hit must be a dash into a car.\" There is no \"!\", no banned term and no figure, and the duty is framed as a duty. [STORY#S3] [EDIT93#3.3] [STORY#MB1] [EDIT92#3] [DECISIONS#rows-531-540~2]\nTotal: 10."
+}

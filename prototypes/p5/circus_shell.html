@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Circus Layout Options</title>
+<style>
+  :root { --bg: #0c1018; --panel: #141b28; --line: #2a3650; --ink: #e6f4ff; --dim: #8ea3bf; --accent: #49d3ff; --z2: #ff5fd2; --good: #57e389; --warn: #ffb347; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 4px 0 0; color: var(--dim); max-width: 1050px; }
+  main { padding: 12px 16px 32px; display: grid; gap: 12px; max-width: 1500px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+  h3 { font-size: 16px; margin: 0 0 4px; }
+  svg { display: block; width: 100%; height: auto; border-radius: 6px; background: #10141c; }
+  .four { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr)); gap: 12px; }
+  .four > figure { margin: 0; min-width: 0; cursor: pointer; }
+  figcaption { font-size: 12px; color: var(--dim); margin-top: 6px; }
+  figcaption b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .stats span { background: #1d2a40; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; font-size: 11px; color: var(--ink); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--dim); align-items: center; margin-top: 8px; }
+  .legend i { display: inline-block; width: 26px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .detail { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(560px, 100%), 1fr)); gap: 12px; align-items: start; }
+  .detail > * { min-width: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { color: var(--dim); font-weight: 600; }
+  td:first-child { font-weight: 700; white-space: nowrap; }
+  tr.centre td { color: var(--accent); }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  button { background: #1d2a40; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  button.on { background: #1b4a66; border-color: var(--accent); }
+  ul { margin: 4px 0 0; padding-left: 18px; }
+  .plus { color: var(--good); } .minus { color: var(--warn); }
+  .ok { color: var(--good); } .bad { color: var(--warn); }
+  .scroll { overflow-x: auto; }
+  .note { color: var(--dim); font-size: 12px; margin: 8px 0 0; max-width: 1050px; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Circus · three layouts round the central roundabout</h1>
+  <p>Brief (user, 26 October): today's Circus is monotonous, and its row-3 highway meets nothing. Keep the central roundabout. Layer the map like Parkland and Monument, with 45° angles. Perhaps a diamond of highways round the centre.</p>
+  <p>Plans only, in district units (3 × 3 screens of 800 × 640). The rules (Edits 43–56) are checked live below. The chosen one gets built in game art with traffic next.</p>
+  <div class="legend">
+    <span><i style="background:#4a5262"></i>Street (Z0)</span>
+    <span><i style="background:#c3ccd3;box-shadow:inset 0 0 0 2px var(--accent)"></i>Z1 highway</span>
+    <span><i style="background:#dfe5ea;box-shadow:inset 0 0 0 2px var(--z2)"></i>Z2 highway</span>
+    <span><i style="background:#e6f4ff;height:8px;width:18px"></i>Escalator</span>
+    <span>▼ in a white disc: deck over a street (drop point)</span>
+    <span><b>3</b> in a black disc: street, Z1 and Z2 at one point</span>
+    <span style="color:var(--good)">▶ Start (A2, west edge)</span>
+  </div>
+</header>
+<main>
+  <section>
+    <h2>Today and three options</h2>
+    <div class="four" id="four"></div>
+  </section>
+  <section>
+    <h2>Compared</h2>
+    <div class="scroll"><table id="cmp"></table></div>
+    <p class="note">Drop point: a deck passing over a street, where the dummy can fall onto cars. Stack: two decks crossing; a street under both makes three levels. Escalators: two per highway screen (Edit 51.2); a screen that only clips a deck corner is exempt.</p>
+  </section>
+  <section id="detail">
+    <h2>One option, screen by screen</h2>
+    <div class="tabs" id="tabs"></div>
+    <div class="detail">
+      <div><div id="big"></div><p class="note" id="idea"></p></div>
+      <div>
+        <table id="tiles"></table>
+        <div class="detail" style="margin-top:10px">
+          <div><b>For</b><ul id="pros"></ul></div>
+          <div><b>Against</b><ul id="cons"></ul></div>
+        </div>
+        <p class="note"><b style="color:var(--ink)">Rules</b></p>
+        <ul id="rules" class="note"></ul>
+      </div>
+    </div>
+  </section>
+</main>
+<!--SCRIPTS-->
+<script>
+(function () {
+  const C = window.CIRCUS_PLANS, $ = (id) => document.getElementById(id), esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const res = C.PLANS.map((p) => C.check(p));
+  const counts = (p, r) => {
+    const fails = r.rows.filter((q) => !q.ok).length, levels = new Set(p.decks.map((d) => d.z)), deg45 = r.drops.filter((d) => Math.abs(d.ang - 45) < 1).length + r.stacks.filter((d) => Math.abs(d.ang - 45) < 1).length;
+    return { levels: ['Z0'].concat([...levels].sort().map((z) => 'Z' + z)).join(' · '), drops: r.drops.length, stacks: r.stacks.length, three: r.stacks.filter((k) => k.three).length,
+      esc: r.esc.filter((e) => !e.missing).length, rings: (p.rings || []).length + (p.deckRings || []).length, streets: r.tilesWithStreet.size, decks: r.tilesWithDeck.size, fails, deg45 };
+  };
+  $('four').innerHTML = C.PLANS.map((p, i) => { const k = counts(p, res[i]); return `<figure data-i="${i}">${C.svg(p, res[i])}<figcaption><b>${esc(p.name)}</b>${esc(p.idea)}<div class="stats"><span>${k.levels}</span><span>${k.drops} drop points</span><span>${k.stacks} stacks</span><span>${k.rings} ring${k.rings > 1 ? 's' : ''}</span><span>streets on ${k.streets}/9 screens</span><span>highway on ${k.decks}/9</span><span class="${k.fails ? 'bad' : 'ok'}">${k.fails ? k.fails + ' rule breaks' : 'all rules hold'}</span></div></figcaption></figure>`; }).join('');
+  const rowsC = [['Levels', (k) => k.levels], ['Screens with a street', (k) => k.streets + ' / 9'], ['Screens with a highway', (k) => k.decks + ' / 9'], ['Drop points (deck over street)', (k) => k.drops], ['Stacks (Z1 × Z2)', (k) => k.stacks], ['Crossings at 45°', (k) => k.deg45], ['Rings (street + highway)', (k) => k.rings], ['Escalators', (k) => k.esc], ['Rule breaks', (k) => k.fails]];
+  const ks = C.PLANS.map((p, i) => counts(p, res[i]));
+  $('cmp').innerHTML = '<tr><th></th>' + C.PLANS.map((p) => `<th>${esc(p.name)}</th>`).join('') + '</tr>' + rowsC.map(([l, f]) => `<tr><td>${l}</td>${ks.map((k) => `<td class="n">${f(k)}</td>`).join('')}</tr>`).join('');
+  let cur = 1;
+  function show(i) {
+    cur = i; const p = C.PLANS[i], r = res[i];
+    document.querySelectorAll('#tabs button').forEach((b, k) => b.classList.toggle('on', k === i));
+    $('big').innerHTML = C.svg(p, r); $('idea').textContent = p.idea;
+    const lv = (t) => { const ups = r.esc.filter((e) => e.tile === t && !e.missing), dr = r.drops.filter((d) => d.tile === t), st = r.stacks.filter((d) => d.tile === t); return [st.length ? 'stack' : '', dr.length ? dr.length + ' drop' + (dr.length > 1 ? 's' : '') : '', ups.length ? ups.length + ' escalator' + (ups.length > 1 ? 's' : '') + ' (Z' + [...new Set(ups.map((e) => e.z))].join(', Z') + ')' : ''].filter(Boolean).join(' · ') || '—'; };
+    $('tiles').innerHTML = '<tr><th>Screen</th><th>Mechanic revealed</th><th>Landmark</th><th>Levels</th></tr>' + ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'].map((t) => `<tr${t === 'B2' ? ' class="centre"' : ''}><td>${t}</td><td>${esc(p.tiles[t][0])}</td><td>${esc(p.tiles[t][1])}</td><td>${lv(t)}</td></tr>`).join('');
+    $('pros').innerHTML = (p.pros || ['Built and running in the mock-up.']).map((t) => `<li class="plus">${esc(t)}</li>`).join('');
+    $('cons').innerHTML = (p.cons || ['Monotonous: one level on most screens; the row-3 highway crosses no street.']).map((t) => `<li class="minus">${esc(t)}</li>`).join('');
+    const seen = new Map(); for (const q of r.rows) { const k = q.rule; if (!seen.has(k)) seen.set(k, { ok: 0, bad: [] }); const e = seen.get(k); if (q.ok) e.ok++; else e.bad.push(q.detail); }
+    $('rules').innerHTML = [...seen.entries()].map(([k, e]) => `<li class="${e.bad.length ? 'bad' : 'ok'}">${esc(k)}: ${e.bad.length ? esc(e.bad.join('; ')) : 'holds (' + e.ok + ')'}</li>`).join('');
+  }
+  C.PLANS.forEach((p, i) => { const b = document.createElement('button'); b.textContent = p.name; b.onclick = () => show(i); $('tabs').appendChild(b); });
+  document.querySelectorAll('#four figure').forEach((f) => { f.onclick = () => { show(+f.dataset.i); $('detail').scrollIntoView({ behavior: 'smooth' }); }; });
+  show(cur);
+  window.__circus = { show, res };
+})();
+</script>
+</body>
+</html>

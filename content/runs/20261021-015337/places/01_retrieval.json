@@ -1,0 +1,206 @@
+[
+  {
+    "query": "five city districts Riverside Old Market Interchange Central Business District FARSIGHT Campus centre landmark form flyovers quota traffic hazards",
+    "results": [
+      {
+        "id": "EDIT41#7.2",
+        "score": 61.489
+      },
+      {
+        "id": "LOG#P3-update-five-city-districts-o3-40-o3-44",
+        "score": 61.019
+      },
+      {
+        "id": "EDIT41#evidence",
+        "score": 41.097
+      }
+    ]
+  },
+  {
+    "query": "lantern monument fountain square roundabout crash matting island FARSIGHT Tower plaza calibrated impact plates",
+    "results": [
+      {
+        "id": "EDIT41#7.2",
+        "score": 56.285
+      },
+      {
+        "id": "EDIT26#7.2~2",
+        "score": 31.579
+      },
+      {
+        "id": "EDIT41#7.3",
+        "score": 29.759
+      }
+    ]
+  },
+  {
+    "query": "bounded districts row 1 outer edge is the river wall checkpoint booth boom",
+    "results": [
+      {
+        "id": "EDIT42#7.1.1",
+        "score": 49.032
+      },
+      {
+        "id": "EDIT42#decisions",
+        "score": 30.213
+      },
+      {
+        "id": "EDIT42#7.9",
+        "score": 26.83
+      }
+    ]
+  },
+  {
+    "query": "the dummy starts on B1 on the river centre screen B2 holds the landmark",
+    "results": [
+      {
+        "id": "EDIT41#7.1.1",
+        "score": 36.221
+      },
+      {
+        "id": "EDIT40#edit-40-1-open-edges-body-health-20-october-20-1/evidence",
+        "score": 20.719
+      },
+      {
+        "id": "EDIT41#7.9",
+        "score": 19.005
+      }
+    ]
+  },
+  {
+    "query": "Z0 ground Z1 low highway Z2 high highway platform roofs skybridges reached by",
+    "results": [
+      {
+        "id": "LOG#P3.3",
+        "score": 58.098
+      },
+      {
+        "id": "EDIT44#decisions",
+        "score": 46.467
+      },
+      {
+        "id": "EDIT44#4.2",
+        "score": 46.203
+      }
+    ]
+  },
+  {
+    "query": "roof ledge drops onto the street striped kerb no traffic on roofs cues none",
+    "results": [
+      {
+        "id": "EDIT44#4.2",
+        "score": 31.419
+      },
+      {
+        "id": "DECISIONS#rows-161-170~2",
+        "score": 29.842
+      },
+      {
+        "id": "LOG#P3.3",
+        "score": 25.317
+      }
+    ]
+  },
+  {
+    "query": "high highway Interchange CBD second LED line long drop falls 0.47 s",
+    "results": [
+      {
+        "id": "LOG#P3.3",
+        "score": 31.842
+      },
+      {
+        "id": "DECISIONS#rows-161-170~2",
+        "score": 27.03
+      },
+      {
+        "id": "EDIT44#evidence",
+        "score": 24.835
+      }
+    ]
+  },
+  {
+    "query": "setting Shenzhen smart city new economic zone FARSIGHT sells a city without accidents",
+    "results": [
+      {
+        "id": "FLEET#F1",
+        "score": 42.727
+      },
+      {
+        "id": "EDIT39#3.1",
+        "score": 35.112
+      },
+      {
+        "id": "EDIT26#3.1",
+        "score": 32.142
+      }
+    ]
+  },
+  {
+    "query": "Sinofuturist cyber city inside a friendly corporate terminal the brand never comments",
+    "results": [
+      {
+        "id": "EDIT39#4.1.1",
+        "score": 40.977
+      },
+      {
+        "id": "EDIT26#4.1~1",
+        "score": 21.15
+      },
+      {
+        "id": "EDIT37#4.1~1",
+        "score": 20.644
+      }
+    ]
+  },
+  {
+    "query": "interface copy voice plain instructive toast first visit names the screen",
+    "results": [
+      {
+        "id": "EDIT40#4.2",
+        "score": 25.984
+      },
+      {
+        "id": "EDIT44#4.2",
+        "score": 12.097
+      },
+      {
+        "id": "DESIGN#D9.3",
+        "score": 12.076
+      }
+    ]
+  },
+  {
+    "query": "puddles water no dash cars brake late surfaces terrain",
+    "results": [
+      {
+        "id": "EDIT40#7.3",
+        "score": 32.289
+      },
+      {
+        "id": "EDIT26#7.3~1",
+        "score": 18.818
+      },
+      {
+        "id": "LOG#P3-update-districts-puddles-big-battery-o3-33-o3-37",
+        "score": 14.131
+      }
+    ]
+  },
+  {
+    "query": "buildings single double tower frontage forecourt alleys street wall",
+    "results": [
+      {
+        "id": "EDIT43#7.4",
+        "score": 25.306
+      },
+      {
+        "id": "LOG#P3.2",
+        "score": 21.303
+      },
+      {
+        "id": "EDIT43#decisions",
+        "score": 19.251
+      }
+    ]
+  }
+]

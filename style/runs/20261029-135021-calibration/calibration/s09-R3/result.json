@@ -1,0 +1,14 @@
+{
+ "id": "s09-R3",
+ "expect": "seeded",
+ "rule": "R3",
+ "want": "≤ 6, names R3",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "R3"
+ ],
+ "text": "Written off. On my record. Unthinkable.",
+ "cost_usd": 0.1022,
+ "raw": "SCORE: 6/10\nREASON:\n- s09 · R3 (blocking, −4) \"Written off. On my record. Unthinkable.\" This line fires on `impact`, and a hit line must never say \"written off\" because only the `writeoff` event logs a destroyed body. [EDIT26#6.6] Fix: \"A collision. On my record. Unthinkable.\"\nTotal: 10 − 4 = 6."
+}

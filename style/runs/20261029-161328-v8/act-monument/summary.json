@@ -1,0 +1,68 @@
+{
+ "case": "act-monument",
+ "class": "V8 act",
+ "title": "Prototype 7.13 act monument, for Prototype 8",
+ "request": null,
+ "scores": [
+  4,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 39.6,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 14.3,
+   "output_tokens": 959,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1747
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 9.2,
+   "output_tokens": 595,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1025626
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 8.3,
+   "output_tokens": 595,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.09573
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 7.8,
+   "output_tokens": 569,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0179822
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.391
+}

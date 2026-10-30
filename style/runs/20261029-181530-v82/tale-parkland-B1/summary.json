@@ -1,0 +1,79 @@
+{
+ "case": "tale-parkland-B1",
+ "class": "V8.2 tale",
+ "title": "Parkland B1: The cascade, redrafted",
+ "request": "Redraft the tale for Parkland B1 (The cascade). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest.\n- Prototype 8.1 (Dummy Corporation): The cascade steps the reservoir's water down beside the highway, pool by pool, to drown out the traffic. Go up to the highway and take your write-off where the traffic is loudest.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  2,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 59.0,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 5.0,
+   "output_tokens": 96,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.06031380000000001
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 19.8,
+   "output_tokens": 1905,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.16355
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.5,
+   "output_tokens": 911,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.14575980000000002
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 11.4,
+   "output_tokens": 1013,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1375776
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 12.3,
+   "output_tokens": 1115,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0303396
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5375
+}

@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- WA1 · V11 (major, −2) "We need the bus fleet's data before anyone crosses the river. Meet the bus; it will not miss." This tale doesn't name its place: the west portal, or a canon detail of it such as the upper town, the engineers or the bus to the bridge. "The river" belongs to the whole district, so the tile reads as duty alone. [EDIT95#3.1] Fix: "At the west portal, buses carry engineers to the bridge. We need the bus fleet's data; meet the bus."
+Total: 10 − 2 = 8.

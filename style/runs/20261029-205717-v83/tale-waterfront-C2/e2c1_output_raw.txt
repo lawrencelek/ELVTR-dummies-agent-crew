@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13 and V1–V11 (EDIT95#3.1, EDIT95#3.2, EDIT95#3.3); it names the east beach terrace and its rail, turns it to the CUSTOMS ships, and keeps the drop duty from the brief with no equipment (STORY#WC2, STORY#S3, EDIT93#3.1, R4, R5); it runs 20 words in two sentences with no "!", digits or placeholders (EDIT98#3.2, F5, F6, F11).
+Total: 10.

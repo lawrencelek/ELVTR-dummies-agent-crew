@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · V11 (major, −2) "The dome is the Expo's showroom, and the canal beside it cools the highway's footings." This sentence names the landmark, but it only describes it: the dome and canal never connect to the duty or the training, and the cone duty in the second sentence happens nowhere in particular. [EDIT95#3.1] Fix: "The dome is the Expo's showroom, and you are what it will show. Hands 2 is fitted: lay a cone by the canal, and let the car that answers it write you off." (32 words, two sentences)
+Total: 10 − 2 = 8.

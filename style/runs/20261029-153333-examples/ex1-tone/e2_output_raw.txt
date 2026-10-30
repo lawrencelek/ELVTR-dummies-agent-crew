@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone rules (T1–T5: dry, procedural, no "!", employment framing, no comment on harm, "you" and third-person Farsight; `EDIT92#3`, `EDIT39#4.1.1`), the vocabulary and lore rules (V1–V4, V6, V8; `FLEET#F2`, `FLEET#F3`, `STORY#S2`) and formatting (F5–F7; `EDIT92#measured`, `EDIT93#3.1/tales-rewritten~2`). The tale stays in the Act I INDUCTION frame (new staff, colleagues). Its duty matches the ANY WRITE-OFF brief, and it names no equipment on a tile that issues none (R5; `STORY#MA1`, `STORY#S3`). The face on the wall comes from this tile's art (R4; `EDIT92#7`). The lint found nothing.
+Total: 10.

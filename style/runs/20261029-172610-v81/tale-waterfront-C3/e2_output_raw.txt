@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+- Checked: lint passed on the length cap (35 of 35 words, two sentences), and judgement found no breach on tone, frame, glossary, place or truth: the CUSTOMS frame (Certified dummies crossing the river to clients) [EDIT95#3.3]; deadpan and motivating, with no "!" [EDIT95#3.2]; the landmark ("east pier tower is a customs post"), from canon and turned toward the duty [STORY#WC3, EDIT95#3.1]; the duty matching THROWN INTO A CAR, with no equipment named on a tile that issues none [STORY#S3, EDIT93#3.1]; clients served and unseen; "you" and "our" used correctly [EDIT95#3.1].
+Total: 10.

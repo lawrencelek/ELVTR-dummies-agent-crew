@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3, T4, T5 and T13 (deadpan, training framing, no adjective overload) [EDIT95#3.2, EDIT95#3.1]; V1 to V4 and V11 (it names the west beach terrace and its cliff, avenue and beach, and turns the place toward the training) [EDIT95#3.1, DECISIONS#rows-301-310~2 row 307, DECISIONS#rows-311-320~2 row 319]; F5, F6 and F11 (no figures or placeholders, two sentences, 34 words, no padding) [EDIT97#3.2]; and R4 and R5 (the tile truth holds, the duty matches CONE-BAITED CAR, and no equipment is named on a tile that issues none) [STORY#S3, STORY#S1].
+Total: 10.

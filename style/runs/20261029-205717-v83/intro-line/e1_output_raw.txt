@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- n36 · T3 (major, −2) "Prove the design wrong, in combos, and earn upgrades." This sets the dummy against the cars in a contest and pays it in rewards, not training and equipment, which is the framing EDIT95 used when it replaced the "Fool them into hitting you" title. [EDIT95#3.1, EDIT95#4.2] Fix: "Self-driving cars are designed never to hit anyone. Your training: get hit, in combos, and earn your parts."
+Total: 10 − 2 = 8.

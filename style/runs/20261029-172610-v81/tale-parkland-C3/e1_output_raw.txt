@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The arch is the Expo's gate. Visitors will circle the roundabout once before they enter, which gives the cars time to learn them. You go round faster. Two hits, the second before the first is forgotten." The tale has 36 words and 4 sentences, over the caps of 35 words and 2 sentences (lint). [EDIT96#3.2] Fix: "The arch is the Expo's gate, and visitors will circle the roundabout once before they enter. Go round faster: a chain of {n} hits, each before the last is forgotten."
+- tale · F5 (major, −2) "Two hits" This writes out the combo length as a fixed number, but the brief binds it to the registry as {n} = story.task.comboEasy. [STORY#S1] Fix: replace "Two hits" with the placeholder "a chain of {n} hits".
+Total: 10 − 4 − 2 = 4.

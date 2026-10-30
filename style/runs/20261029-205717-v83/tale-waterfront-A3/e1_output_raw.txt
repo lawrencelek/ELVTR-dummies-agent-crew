@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The west tower keeps the customs log. Your entry reads PURPOSE DESTRUCTION: honour it on the raised road, and complete your training." At 22 words, the tale is over the 20-word limit for tales (style.v2.tale.maxWords). [EDIT98#3.2] Fix: cut the closing clause, which adds nothing to the place, duty or detail: "The west tower keeps the customs log. Your entry reads PURPOSE DESTRUCTION: honour it on the raised road." (18 words).
+Total: 10 − 4 = 6.

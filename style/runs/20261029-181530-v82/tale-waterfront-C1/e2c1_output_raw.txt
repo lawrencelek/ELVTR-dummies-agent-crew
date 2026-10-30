@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13 and T14, V1–V4, V6 and V8–V11, F5–F7 and F11, R4 and R5, and LINT reported no findings: it runs 34 words in two sentences, names the east portal's bridge and portal block and turns the police fleet toward Certification, matches the brief A POLICE CAR, and names no equipment on a tile that issues none [EDIT97#3.2, EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, STORY#WC1, STORY#S1, EDIT93#3.1].
+Total: 10.

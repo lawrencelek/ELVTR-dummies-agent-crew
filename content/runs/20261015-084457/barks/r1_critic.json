@@ -1,0 +1,46 @@
+{
+  "verdict": "revise",
+  "summary": "The set mostly sounds like DUMMIES: flat procedural speech with resentment underneath, and no FARSIGHT slogans or game-show cheer. One line inverts the cars' fear of retraining, and three lines give a published job to every car of a class instead of the model that has it.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "lore",
+      "severity": "block",
+      "path": "lines[2].text",
+      "found": "Retraining would have been nicer.",
+      "canon": "DESIGN#D9.3",
+      "rule": "Vehicles are workers with a fear of retraining. This line treats retraining as the better outcome, and lines[13] fears it.",
+      "fix": "Retraining was the worst case. I was wrong."
+    },
+    {
+      "id": "C2",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "lines[7].when",
+      "found": "{\"zone\":\"front\",\"cls\":\"sedan\"}",
+      "canon": "DESIGN#D9.2",
+      "rule": "Only SEDAN-01 has a published job (depot parcel courier). 'MIND THE PARCEL!' keyed to every sedan gives the other sedan models a job they do not have.",
+      "fix": "{\"zone\":\"front\",\"model\":\"SEDAN-01\"}"
+    },
+    {
+      "id": "C3",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "lines[3].when",
+      "found": "{\"cls\":\"van\"}",
+      "canon": "DESIGN#D9.2",
+      "rule": "Only VAN-02 has a published lane-maintenance job. A line about being maintained in the lane should not play for every van model.",
+      "fix": "{\"model\":\"VAN-02\"}"
+    },
+    {
+      "id": "C4",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "lines[20].when",
+      "found": "{\"cls\":\"van\"}",
+      "canon": "DESIGN#D9.2",
+      "rule": "'Lane maintenance does not cover this.' states VAN-02's job, so it is keyed to the model that has that job rather than the whole van class.",
+      "fix": "{\"model\":\"VAN-02\"}"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+SCORE: 1/10
+REASON:
+- tale · T2 (major, −2) ", our new contestant!" Farsight never uses "!", and this tale has six of them. [EDIT92#3] Fix: end every sentence with a full stop, and write WELCOME without "!".
+- tale · T1 (major, −2) "Ladies and gentlemen, our new contestant!" This is a game-show host's hype, not a polite, procedural staff notice about a crash test. [EDIT92#3] Fix: open with induction procedure instead, e.g. "The welcome wall shows your face to every car that passes."
+- tale · T3 (major, −2) "Beat the cars!" It treats the cars as opponents to beat, not colleagues, and turns the duty into a challenge. [STORY#S2] Fix: replace with "Stand in the road. A colleague will be along."
+- tale · V8 (major, −2) "our new contestant" It calls the dummy a competitor, but Farsight calls the dummy "you", "staff" or "the model". [EDIT92#3] Fix: replace with "new staff" ("Farsight greets you as new staff.").
+- tale · T4 (major, −2) "Hear that crowd!" It winks at an audience, and the brand never plays to spectators about the harm. [EDIT39#4.1.1] Fix: cut the sentence, and close on a dry tag such as "A colleague will be along."
+- tale · R4 (blocking, −4) "The conveyor delivers you beside the tower, your face on its screen!" Monument A1 has no tower or conveyor; it has the welcome wall's LED panel showing your face. [STORY#MA1] Fix: replace with "The welcome wall shows your face to every car that passes."
+Total: 10 − 2 − 2 − 2 − 2 − 2 − 4 = 1 (floor 1).
+
+Suggested replacement tale: "The welcome wall shows your face to every car that passes. Farsight greets you as new staff. Any write-off here counts toward coverage. Stand in the road. A colleague will be along."

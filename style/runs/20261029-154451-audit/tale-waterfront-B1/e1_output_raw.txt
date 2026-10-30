@@ -1,0 +1,9 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules and found no violation:
+  - **Tone:** T1–T5. It is dry and procedural, has no "!", treats Legs 3 as fitted equipment and addresses you as "you" [EDIT92#3], [EDIT39#4.1.1].
+  - **Vocabulary:** V1–V8. It has no banned terms, no other city, and "Data comes back" matches a tile that sends cars north out of Act III [STORY#S2], [DECISIONS#rows-311-320~2] row 310.
+  - **Length and equipment:** F5–F7. It is 186 characters in one paragraph, its longest sentence is 12 words, its only digit is the part rank Legs 3, and it names the equipment the tile issues [EDIT93#3.1/tales-rewritten~2], [DECISIONS#rows-531-540~2] row 531.
+  - **Truth:** R4–R5. The tunnel, the hill and the next valley belong to this tile, Legs 3 is issued here, and "the longest flight" fits the JUMP INTO A CAR brief [STORY#WB1], [STORY#S1], [STORY#S3].
+  - **Calibration:** this is the shipped tale with no lint finding, so it must score at least 9.
+Total: 10.

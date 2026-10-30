@@ -1,0 +1,68 @@
+{
+ "case": "review-2",
+ "class": "V8 batch",
+ "title": "The story's 31 texts and six opening lines, on V2.4",
+ "request": null,
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 129.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 37.6,
+   "output_tokens": 3873,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3767686
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 30.6,
+   "output_tokens": 4234,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3827565
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 31.1,
+   "output_tokens": 3420,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.293887
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 29.9,
+   "output_tokens": 3124,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0744888
+  }
+ ],
+ "restored": [],
+ "cost_usd": 1.1279
+}

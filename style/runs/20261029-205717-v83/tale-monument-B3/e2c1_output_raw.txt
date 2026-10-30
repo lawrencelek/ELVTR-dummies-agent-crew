@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and T13 [EDIT95#3.2, PLAY#PS2], V1–V4, V8, V9 and V11 [EDIT95#3.1], V6 [EDIT95#3.3], F5 [STORY#S1], F6 and F11 [EDIT98#3.2, EDIT97#3.2], F7 and R4 [STORY#MB3], and R5 [EDIT93#3.1]: it has 18 words in two sentences, names the canyon's two screens and turns them toward the jump, fits Legs 1 on its issuing tile, matches the JUMP INTO A CAR brief and keeps the in-voice wording from Style Guide §7.
+Total: 10.

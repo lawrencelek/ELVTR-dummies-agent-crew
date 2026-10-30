@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale is 19 words in two sentences, inside 15 to 20 (F6, [EDIT98#3.2]). It names the east portal and its twin from canon and turns the place toward the police-car duty (V11, R4, R5, [STORY#WC1], [EDIT95#3.1]). It keeps the CUSTOMS papers frame (V6, [EDIT95#3.3]). It names no equipment on a tile that issues none. It has no "!", no banned word, no other company name and no placeholder, and the voice is deadpan and addresses "you" (T1–T5, T13, V1–V4, F5, F11, [EDIT95#3.2], [EDIT97#3.2]).
+Total: 10.

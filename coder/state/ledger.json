@@ -1,0 +1,70 @@
+{
+ "R-SHROUD": {
+  "status": "built",
+  "attempts": 0,
+  "run": "20261029-105801",
+  "iteration": 1,
+  "tries": 1,
+  "summary": "- story.js: adds `'world.monumentShroud': 1` to P7SIM (p4). Adds `StorySim.monumentShrouded()`, which is true while Story's Waterfront B2 is not cleared and false once B2 is in `story.done` (p1, p2). ArcadeSim does not get this method, so Arcade's monument stays uncovered (p4).\n- world6.js: `dummyMonument` now also builds a shroud sprite from the statue's own outline: one pixel wider, slate cloth folds, a darker hem and an aqua cord. Nothing solid changes. The 6.10 world still has no monument (p4).\n- game.js: `drawLive6` draws the shroud over the statue right after the scene is drawn, while `s.monumentShrouded?.()` is true. Waterfront B2 in test shows it (p5).\n- Registry: `world.monumentShroud` is added with default 0 and set to 1 in P7SIM, following the gating convention (the analyst proposed default 1) (p3).\n- Assumption: I did not see `dummyStatue`'s code. The shroud assumes the statue sprite stores `w`, `h` and pixel array `d` (as `PIX.doll` does), and that `PIX.blit` places it at the prop's `x, y`. If not, no shroud is built and none is drawn. p1–p4 do not depend on it; p5 checks only that the sim reports the shroud, so check its screenshot (`shroud_b2`).\n- Draw order: the shroud is drawn after the scene, so it covers anything standing in front of the island. The dummy's see-through outline still shows over it.",
+  "files": [
+   "content/params/tuning.parameters.json",
+   "prototypes/p6/game.js",
+   "prototypes/p6/world6.js",
+   "prototypes/p7/story.js"
+  ],
+  "registry": [
+   "world.monumentShroud"
+  ]
+ },
+ "R-UNVEIL": {
+  "status": "built",
+  "attempts": 0,
+  "run": "20261029-105801",
+  "iteration": 2,
+  "tries": 1,
+  "summary": "story.js: when the certifying write-off clears Waterfront B2, `checkTerminal` saves the story as complete, sets `s.unveil = { plaque: { chassis, points, bestCombo, t } }` from progress, emits one 'unveil' event and enters phase 'unveil' instead of ending at once (p1, p2, p3).\nstory.js: `step` holds in 'unveil' as it does in 'gift'. `continueUnveil()` leaves the unveiling for the Certified ending. `progress.bestCombo` (optional, so old saves load) keeps the largest combo of any hit. Every 'impact' event and every `writeOff` updates it (p4, p2).\ngame.js: the 'unveil' event plays a chime and saves the slot. `renderScreen` draws the plaque over the field. B2 is now cleared, so R-SHROUD's shroud is no longer drawn and the monument shows. In `handleMenus`, A continues to the ending screen (p5).\nworld6.js needs no change: the uncovered monument is the existing statue with the shroud gone.\nRisk: I could not see `panel`/`txt`/`fmtT`, so the plaque draws on the first page canvas with its own pixel-scaled text and its own time format. Check the `unveil` screenshot.",
+  "files": [
+   "prototypes/p6/game.js",
+   "prototypes/p7/story.js"
+  ],
+  "registry": []
+ },
+ "R-VOYAGE": {
+  "status": "built",
+  "attempts": 0,
+  "run": "20261029-105801",
+  "iteration": 3,
+  "tries": 1,
+  "summary": "- story.js: `continueUnveil()` now starts the voyage instead of ending at once. `startVoyage()` puts the dummy back on its feet with full health, so the voyage cannot end as a write-off. It sets `s.rescue = droneTo(…, { voyage: true, … })`, sets phase 'voyage' and emits 'voyage' { from: 'B2', to: 'B3' } (p1, p4).\n- The drone uses `droneTo`, so it flies at `proto.droneSpeed` and lifts over `proto.droneLiftSeconds`. On each frame, `step` treats 'voyage' as 'play' for that frame, as the proven ferry flight does, then sets 'voyage' back. `stepRescue` hands a voyage to `stepVoyage`.\n- `stepVoyage` steps through inbound, lift, carry over the south edge (`flip` to B3), in to the ship, then drop. On landing it emits one 'voyage-end' and calls `end('Certified')`. The dummy is alive, so the phase goes straight to 'ending' (p2).\n- ArcadeSim has no unveil, so it is unchanged (p3). game.js `drawRescue6` no longer draws water ripples under the voyage.\n- Risk: I could not see where `containerShip` is placed. The drone flies to `this.sc.ship` if the scene has it, or else to the centre of B3. world6.js is unchanged. Check the `voyage` screenshot.",
+  "files": [
+   "prototypes/p6/game.js",
+   "prototypes/p7/story.js"
+  ],
+  "registry": []
+ },
+ "R-BARK-TILE": {
+  "status": "rejected",
+  "attempts": 0,
+  "run": "20261029-105801",
+  "iteration": 4,
+  "tries": 1,
+  "summary": "game.js: a new `barkPlace(sim)` returns the place word for barks. In Story it is the tile's code on screen (B2). In Arcade it is still the district's name.\ngame.js `barkLine`: in Story, the district's name in the chosen line is replaced with the tile's code, in the same case. This covers a `{…}` placeholder and words written into the line. Arcade's text is unchanged.\n`window.__dummiesUI.barkPlace` is set when game.js loads. `objective` and `drawFieldHD` set it again on each frame, so it survives if the test hooks are set up later. p1: Waterfront B2 in Story gives 'B2'.\nRisk: I could not see `enrich`, `fillIn` or the bark texts. Any district word in a bark line is swapped after `fillIn`, whether a placeholder or written in the line. A line that names the district another way (by its id, say) is not caught.",
+  "files": [
+   "prototypes/p6/game.js"
+  ],
+  "registry": [],
+  "review": "reverted in manual review: a word swap met the probe but not the voice; the requirement is now spec none"
+ },
+ "R-CRATE-FACES": {
+  "status": "built",
+  "attempts": 0,
+  "run": "20261029-105801",
+  "iteration": 5,
+  "tries": 1,
+  "summary": "- I couldn't see where `containerShip` is called. So `buildScreen` now records the screen it is building in `SCN`, set next to `CAP = sc.solids`, and `containerShip` writes to that screen.\n- Under `ACCESS.storyArt`, `containerShip` sets `sc.containerShip = { x, y, crates: 24, face: true }` and `sc.ship = { x, y }`. Both are in world units at the hull's centre. R-VOYAGE's `shipPoint` reads `sc.ship`, so the voyage drone now lands on the ship.\n- Under the same flag, each crate gets a dark face mark: two eyes and a mouth, drawn on the crate's pixels.\n- Nothing solid changes. The ship adds no solid, floor, stair, spawn or cone home.\n- p1: Story's Waterfront B3 gets `face: true` and 24 crates.\n- p2: the 6.10 world has no `ACCESS.storyArt`, so it records no ship. If its art already calls `containerShip`, the crates stay as they were.\n- Risk: the B3 crate faces are not checked on screen, so look at them in a screenshot. If `H.scene` returns something other than the screen object `buildScreen` makes, p1 fails.",
+  "files": [
+   "prototypes/p6/world6.js"
+  ],
+  "registry": []
+ }
+}

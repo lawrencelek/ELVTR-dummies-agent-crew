@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- n24 · R4 (blocking, −4) "one road splits round the monument under the highways" The canon puts the split road under the raised walkway ring, not under highways, so the banner names a structure the monument's streets do not have there. [DECISIONS#rows-231-240~2] (rows 238, 239) Fix: "Neon commerce, LED walls; one road splits round the monument under the walkway ring. Your training begins here."
+Total: 10 − 4 = 6.

@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s15 · V3 (major, −2) "Another life lost. Back to the spawn point." This uses game words for a write-off and a new chassis: "a life lost" and "spawn point", which the fleet glossary replaces with "write-off" and "bay". [FLEET#F3] Fix: "Another write-off. Of course it was me." (39 characters; tired and resigned Consumer voice; no claim beyond the logged write-off).
+Total: 10 − 2 = 8.

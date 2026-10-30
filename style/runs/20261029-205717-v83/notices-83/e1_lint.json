@@ -1,0 +1,38 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[0]",
+  "quote": "score",
+  "measured": "banned term 'score'",
+  "source": "FLEET#F2"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[0]",
+  "quote": "Get hit by cars, who would rather not. Combos score more, up…",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[1]",
+  "quote": "score",
+  "measured": "banned term 'score'",
+  "source": "FLEET#F2"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "items[1]",
+  "quote": "Write off bodies. Every X write-offs, the grade rises. Score…",
+  "measured": "3 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

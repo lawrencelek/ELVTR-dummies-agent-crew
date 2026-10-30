@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked: length is 30 words in 2 sentences, which fits the cap and lint found nothing [EDIT96#3.2]; the tone is deadpan and inspirational, with no "!" or intensifiers [EDIT95#3.2]; the training framing and the write-off as duty hold [EDIT95#3.1]; the OPENING DAY frame holds, as the showroom is "readied for our clients", who stay unseen [EDIT95#3.3]; the landmark, the dome by the canal, is named and turned toward service [EDIT95#3.1]; Hands 2 is named on the tile that issues it [STORY#PA2, STORY#S1]; and the duty matches the CONE-BAITED CAR brief [STORY#S3].
+Total: 10.

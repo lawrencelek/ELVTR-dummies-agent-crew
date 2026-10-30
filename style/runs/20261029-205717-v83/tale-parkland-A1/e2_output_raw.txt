@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · F6 (blocking, −4) "The gardener asks that cars stop before her pools. Arms 2 is fitted; teach them by pushing one car into the next." The tale is 22 words, and a tale may run 15 to 20 words. [EDIT98#3.2] Fix: "The gardener asks that cars stop before her pools. Arms 2 is fitted; push off one car into the next." (20 words).
+- tale · R5 (blocking, −4) "teach them by pushing one car into the next" This says the dummy shoves one car into another, but the brief is to push off one car so that the next car makes the final hit. [STORY#S3] Fix: replace the clause with "push off one car into the next", the wording Parkland C1 uses for the same brief [EDIT93#3.1/tales-rewritten~1].
+Total: 10 − 4 − 4 = 2.

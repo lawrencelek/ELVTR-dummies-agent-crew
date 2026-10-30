@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: two sentences and 27 words, which is within 15 to 35 [EDIT97#3.2]. The tale names its landmark, the pier tower that serves as the customs post, and points it toward the duty [STORY#WC3, EDIT95#3.1]. "Be thrown into a car" matches the brief, and the tile issues no equipment [STORY#S3, STORY#S1]. The CUSTOMS frame holds: Certified dummies cross the river to clients, who stay unseen and unnamed [EDIT95#3.3, EDIT95#3.1]. The voice is deadpan with no "!", no intensifiers, at most one adjective per sentence, and the company speaks as "our" [EDIT95#3.2, PLAY#PS0]. No banned words, digits, placeholders or other company names appear, and lint found nothing.
+Total: 10.

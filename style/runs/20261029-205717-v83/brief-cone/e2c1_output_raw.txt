@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the brief against every rule for Dummy Corporation. The label "CONE-BAITED CAR" is caps, 15 characters, and matches the cone kind [STORY#S3]. The brief puts the imperative goal first and the required final hit second, with no "coverage gap" framing [EDIT98#3.2, STORY#S3]. It has two sentences and 14 words, no "!", no banned words, no figures, and no other company name [EDIT95#3.2, EDIT95#0, EDIT95#3.1, STORY#S1]. Its training framing holds and it states only what the cone brief guarantees [EDIT95#3.1].
+Total: 10.

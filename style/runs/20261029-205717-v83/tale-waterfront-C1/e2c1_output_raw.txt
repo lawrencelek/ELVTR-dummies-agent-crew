@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has 19 words in two sentences (F6, F11). It names the tile's landmark, the east portal, and its twin, then turns the place toward the police-car duty (V11, R4, R5). It names no equipment on a tile that issues none (F7). The voice is a flat, motivating notice that addresses "you" (T1, T5, T13). It keeps the CUSTOMS frame of police checking papers (V6). No banned words, placeholders, digits or "!" (V1, F5, T2), checked against [STORY#WC1], [EDIT98#3.2], [EDIT95#3.1], [EDIT95#3.2] and [EDIT95#3.3].
+Total: 10.

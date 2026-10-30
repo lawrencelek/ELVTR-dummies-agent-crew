@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the intro against each rule for Farsight: T1 to T5 for tone (EDIT92#3, STORY#S1, EDIT39#4.1.1), V1, V3, V4, V6 and V8 for vocabulary and lore (FLEET#F2, FLEET#F3, DECISIONS#rows-531-540~2, STORY#S2), F5 and F9 for formatting (two sentences, no digits), and R4 for truth. It matches the shipped Waterfront line in STORY#S2 word for word, and it holds the Act III CUSTOMS frame of a river border and papers (EDIT92#3, STORY#WC1).
+Total: 10.

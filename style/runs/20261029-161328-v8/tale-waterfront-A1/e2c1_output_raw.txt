@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the tone rules T1–T5 and T13 [EDIT95#3.2, PLAY#PS2]: it is deadpan, has no "!" and no intensifiers or extra adjectives, uses training framing, and speaks as "we". I checked it against V1–V9 [EDIT95#0, EDIT95#3.1]: it never names Farsight and uses Certified correctly. It fits the CUSTOMS frame, where Certified dummies ship across the river [EDIT95#3.3]. It has 2 sentences and 20 words, within F6 [EDIT95#3.2], and no digits under F5 [STORY#S1]. It names no equipment on a tile that issues none (F7, R5) [STORY#WA1]. Its duty matches the brief A BUS under R5 [STORY#S3], and it names only the bus and the river under R4 [STORY#WA1].
+Total: 10.

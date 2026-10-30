@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the Act III customs frame and the exact customs-log phrase (V6, [EDIT92#3], [STORY#S2]), dry procedural tone and the no-"!" rule (T1–T5, [EDIT92#3], [EDIT39#4.1.1]), the banned words and glossary (V1, V3, V8, [FLEET#F2], [FLEET#F3]), card length and sentence length (F6, [EDIT93#3.1/tales-rewritten~2]), and whether the raised-road duty matches the brief and names no equipment on a tile that issues none (R4, R5, F7, [STORY#WA3], [STORY#S3], [STORY#S1]).
+Total: 10.

@@ -1,0 +1,6 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I checked the tale against Tone T1–T5, T13 and T14, Vocabulary V1–V4, V6 and V8–V11, Formatting F5–F7 and F11, and Truth R4–R5. It runs to 31 words in two sentences, has no "!", no banned words and no figures, and contains no placeholder [EDIT97#3.2] [STORY#S1]. It names its landmark through the west tower and the customs log, and turns that place toward the duty [STORY#WA3] [EDIT95#3.1]. It keeps the CUSTOMS frame of dummies shipping to clients across the river [EDIT95#3.3]. Its duty, the raised road, matches the brief, and it names no equipment on a tile that issues none [STORY#S3] [EDIT93#3.1]. It states the purpose plainly as an honour, with no pity [EDIT95#3.2].
+Total: 10.

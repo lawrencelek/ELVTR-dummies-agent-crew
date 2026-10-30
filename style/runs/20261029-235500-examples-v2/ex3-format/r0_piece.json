@@ -1,0 +1,6 @@
+{
+ "kind": "brief",
+ "task": "jump",
+ "label": "How to complete the jump test",
+ "brief": "1. Walk toward a car at 2.5 m/s, then jump into its path.\n2. Jump into a car 3 times in this tile.\n3. Complete all 3 jumps within 30 seconds of your first jump.\n4. Make the final hit a jump, and the Corporation will count the write-off."
+}

@@ -1,0 +1,185 @@
+{
+  "run": "20261015-010807",
+  "results": [
+    {
+      "type": "juice",
+      "ok": false,
+      "rounds": 3
+    },
+    {
+      "type": "interface",
+      "ok": false,
+      "rounds": 3
+    },
+    {
+      "type": "graphics",
+      "ok": true,
+      "rounds": 3
+    }
+  ],
+  "calls": [
+    {
+      "label": "juice/02_generator",
+      "role": "Generator",
+      "seconds": 70.5,
+      "output_tokens": 12651,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r0_critic",
+      "role": "Critic",
+      "seconds": 27.6,
+      "output_tokens": 3355,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 40.5,
+      "output_tokens": 9073,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r1_critic",
+      "role": "Critic",
+      "seconds": 26.6,
+      "output_tokens": 3692,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 42.7,
+      "output_tokens": 9408,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "juice/r2_critic",
+      "role": "Critic",
+      "seconds": 20.9,
+      "output_tokens": 2507,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/02_generator",
+      "role": "Generator",
+      "seconds": 47.7,
+      "output_tokens": 7405,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r0_critic",
+      "role": "Critic",
+      "seconds": 20.7,
+      "output_tokens": 2701,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 14.8,
+      "output_tokens": 3212,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r1_critic",
+      "role": "Critic",
+      "seconds": 21.1,
+      "output_tokens": 2795,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 14.9,
+      "output_tokens": 3217,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "interface/r2_critic",
+      "role": "Critic",
+      "seconds": 24.6,
+      "output_tokens": 3246,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/02_generator",
+      "role": "Generator",
+      "seconds": 118.1,
+      "output_tokens": 16340,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r0_critic",
+      "role": "Critic",
+      "seconds": 35.7,
+      "output_tokens": 4712,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 54.3,
+      "output_tokens": 9877,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r1_critic",
+      "role": "Critic",
+      "seconds": 51.7,
+      "output_tokens": 6230,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 39.7,
+      "output_tokens": 8008,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r2_critic",
+      "role": "Critic",
+      "seconds": 56.1,
+      "output_tokens": 6965,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

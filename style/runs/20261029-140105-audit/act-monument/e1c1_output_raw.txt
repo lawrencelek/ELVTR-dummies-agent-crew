@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the Monument act line against the tone rules T1–T5, V1, V3, V4, V6 and V8, the F5 and F9 limits (two sentences, no digits), and R4. It matches the shipped intro word for word: Farsight in the third person, the dummy as "you" and new staff, the cars as colleagues, and the INDUCTION frame. [STORY#S2] [EDIT92#3] [STORY#S1] [FLEET#F3] [DECISIONS#rows-531-540~2]
+Total: 10.

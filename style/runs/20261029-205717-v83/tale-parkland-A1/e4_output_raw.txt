@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the tale against T1–T5, T13 and T14; V1–V4, V6 and V8–V11; F5–F7 and F11; and R4–R5. It runs to 19 words in two sentences with no "!" ([EDIT98#3.2], [EDIT95#3.2]). The gardener's pools are a detail from the reservoir terraces that leads into the duty ([EDIT95#3.1], [STORY#PA1]). Arms 2 is named on the tile that issues it ([STORY#S1]). The push into the next car matches the PUSH OFF A CAR brief, and the cars are framed as colleagues in training ([STORY#S3], [EDIT95#3.3]).
+Total: 10.

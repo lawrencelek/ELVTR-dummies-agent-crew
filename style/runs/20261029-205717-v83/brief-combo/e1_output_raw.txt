@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: chains. The final hit must be link {n} or later of a combo." The brief uses the "coverage gap" framing that the newer edits removed, and it does not open with an imperative telling the trainee what to do. [EDIT98#3.2] Fix: "Chain your hits into a combo. The final hit must be link {n} or later."
+Total: 10 − 2 = 8.

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Honour the declaration on the raised road." The tale has 32 words and 4 sentences, but the cap is 20 words and 2 sentences. [EDIT95#3.2] Fix: "Your customs entry reads DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. Honour it on the raised road." (16 words, 2 sentences; this keeps the customs-log turn and matches the ON A RAISED ROAD brief).
+Total: 10 − 4 = 6.

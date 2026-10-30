@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale, which has 32 words in two sentences, against these rules: T1–T5 and T13 for the deadpan, motivating voice ([EDIT95#3.2]). V1–V4 and V8–V11 for the glossary, clients and place: the lantern, the Expo and the footbridge ([EDIT95#3.1], [EDIT92#7], [STORY#PC1]). V6 for the OPENING DAY frame, where the Expo opens to clients ([EDIT95#3.3]). F5–F7 for length and the Arms 1 issue ([EDIT96#3.2], [STORY#S1]). R4–R5 for tile truth and the push brief ([STORY#S3]).
+Total: 10.

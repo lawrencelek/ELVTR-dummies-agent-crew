@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all eleven lines against T6–T12 (worker voice; Budget, Luxury, Corporate and Consumer voices; tier-free lines b110 and c024), V1–V8, F1–F5, F9 and R1–R4 (each line's event and claims, including zone:front, at:body, node:bigBattery and district:campus). "!" appears only in Budget lines, so it is allowed. [FLEET#F2] [FLEET#F4] [FLEET#F8] [SUB4#5] [DECISIONS#rows-541-550] [EDIT95#3.2]
+Total: 10.

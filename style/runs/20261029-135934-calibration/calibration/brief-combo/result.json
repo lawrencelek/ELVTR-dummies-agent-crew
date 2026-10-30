@@ -1,0 +1,13 @@
+{
+ "id": "brief-combo",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "COMBO ×{n} Coverage gap: chains. The final hit must be link {n} or later of a combo.",
+ "cost_usd": 0.0943,
+ "raw": "SCORE: 10/10\nREASON:\n- None. The label and brief match the combo row of the S3 table word for word ([STORY#S3]), with the figure kept as the {n} placeholder ([STORY#S1]). The brief also passes the Farsight voice and employment-framing rules, with no exclamation mark ([EDIT92#3]), and contains no banned or game words and keeps to the fleet glossary ([FLEET#F2], [FLEET#F3], [DECISIONS#rows-531-540~2]). Lint found nothing.\nTotal: 10."
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 and T13–T14 for tone, V1–V4, V6, V8–V9 and V11 for vocabulary and lore, F5–F7 and F11 for formatting and length, and R4–R5 for truth: it has 20 words in two sentences, no "!", digits or placeholders, it names the arch and the roundabout and points them at the COMBO brief's chain, and it names no equipment on a tile that issues none [EDIT98#3.2, EDIT95#3.1, EDIT95#3.2, EDIT95#3.3, STORY#PC3, STORY#S1].
+Total: 10.

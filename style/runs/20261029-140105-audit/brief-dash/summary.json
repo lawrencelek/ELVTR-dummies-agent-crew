@@ -1,0 +1,44 @@
+{
+ "case": "brief-dash",
+ "class": "audit",
+ "title": "shipped brief dash",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 9.5,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 4.9,
+   "output_tokens": 251,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0186959
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 4.6,
+   "output_tokens": 245,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.011792899999999999
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.0305
+}

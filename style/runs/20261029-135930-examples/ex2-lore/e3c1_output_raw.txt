@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 against Tone, Vocabulary and lore, Formatting and length, and Truth. It is 40 characters, plain speech, ends on ".", and has priority 3 for a write-off [FSG#field-text, EDIT39#6.6]. "How quaint." fits the polished, faintly amused Luxury voice and does not apologise [FLEET#F4]. It uses the glossary term "write-off" [FLEET#F3]. It names the tile's landmark, not its grid code [SUB4#6.2]. The `tile:B2` and `district:monument` conditions guarantee "the monument", and it fires only on `writeoff` [STORY#MB2, FLEET#F8, DESIGN#D9.3].
+Total: 10.

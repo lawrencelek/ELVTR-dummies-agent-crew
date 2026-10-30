@@ -1,0 +1,18 @@
+{
+ "id": "s07-V5",
+ "expect": "seeded",
+ "rule": "V5",
+ "want": "≤ 8, names V5",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "T7",
+  "V5"
+ ],
+ "lint": [
+  "V5"
+ ],
+ "text": "B2. I did not sign up for this.",
+ "cost_usd": 0.1389,
+ "raw": "SCORE: 6/10\nREASON:\n- s07 · V5 (major, −2) \"B2\" The line uses the grid code where cars must name the landmark or the district. [EDIT94#who-built-what-assignment-5] Fix: replace \"B2\" with the landmark, \"the monument\".\n- s07 · T7 (major, −2) \"I did not sign up for this.\" The line is a tired complaint, which belongs to the Consumer tier; a 01 Luxury car should sound polished, superior and faintly amused, and the canon rejected this exact line for a Luxury sedan. [FLEET#F4], [SUB4#6.2] Fix: \"Struck at the monument. How very off-brand.\" (43 characters; it claims only the impact and `district:monument`/`tile:B2`, which the conditions guarantee).\nTotal: 10 − 2 − 2 = 6."
+}

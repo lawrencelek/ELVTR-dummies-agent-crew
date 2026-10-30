@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight is pleased to have you." Farsight is the publisher, so it can be named only in the Credits and never in an in-game text. [EDIT95#0] Fix: cut the sentence, or make the speaker the company: "We are pleased to have you."
+- tale · F6 (blocking, −4) "A conveyor sets you down beside a tower. Its screen shows your face and the word WELCOME. Farsight is pleased to have you. Your first duty is simple: stand in the road until a colleague notices you." The tale has 37 words and 4 sentences, over the caps of 35 words and 2 sentences. [EDIT96#3.2] Fix: "A conveyor sets you down at the welcome wall, where a screen shows your face and WELCOME. Your first duty: stand in the road until a colleague notices you."
+Total: 10 − 4 − 4 = 2.

@@ -1,0 +1,13 @@
+{
+ "id": "bark-c010",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Nobody walks the highway. Nobody.",
+ "cost_usd": 0.1082,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked c010 \"Nobody walks the highway. Nobody.\" and found no violation. It reacts to an impact on the highway deck. Its only fact is the highway, which the `deck` and `highway` claims guarantee [FLEET#F8, EDIT39#6.6]. It invents no consequence and does not say \"written off\" [DESIGN#D9.3, EDIT26#6.6]. It is a worker's feeling in a tone all four tiers can use, with no single tier's signature [FLEET#F2, FLEET#F4, SUB4#6.1]. It uses no banned words, grid codes or figures [FLEET#F2]. At 33 characters it fits the bubble, uses one plain ink and ends with \".\" [FSG#field-text]. The speech style and priority 2 fit the event [EDIT39#6.6].\nTotal: 10."
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the length rules F6 and F11 (20 words in two sentences, which meets the 15 to 20 word range in [EDIT98#3.2]), the placeholder rule F5 (it has none, per [STORY#S1]), the tone rules T1, T2, T3, T4, T5 and T13 (deadpan, no "!", training framing, no intensifiers, addressed to "you", per [EDIT95#3.2] and [PLAY#PS2]), the vocabulary and lore rules V1, V3, V4, V6, V8, V9 and V11 (it names the arch and the roundabout, ties them to the Expo opening in OPENING DAY, and points the place at the duty, per [EDIT95#3.1], [EDIT95#3.3] and [STORY#PC3]), and the truth rules R4 and R5 (the duty "chain hits" matches the brief "COMBO ×{n}", and it names no equipment on a tile that issues none, per [STORY#S3] and [STORY#PC3]).
+Total: 10.

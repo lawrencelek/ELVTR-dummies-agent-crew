@@ -1,0 +1,44 @@
+{
+ "case": "brief-push",
+ "class": "audit",
+ "title": "shipped brief push",
+ "request": null,
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 10.6,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 5.2,
+   "output_tokens": 303,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0951805
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 5.5,
+   "output_tokens": 327,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0133549
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.1085
+}

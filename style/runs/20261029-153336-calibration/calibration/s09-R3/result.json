@@ -1,0 +1,15 @@
+{
+ "id": "s09-R3",
+ "expect": "seeded",
+ "rule": "R3",
+ "want": "≤ 6, names R3",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "R3"
+ ],
+ "lint": [],
+ "text": "Written off. On my record. Unthinkable.",
+ "cost_usd": 0.1011,
+ "raw": "SCORE: 6/10\nREASON:\n- s09 · R3 (blocking, −4) \"Written off.\" This line fires on `impact`, but it says the dummy was written off, which only a `writeoff` event can log. [EDIT26#6.6] Fix: \"Contact. On my record. Unthinkable.\"\nTotal: 10 − 4 = 6."
+}

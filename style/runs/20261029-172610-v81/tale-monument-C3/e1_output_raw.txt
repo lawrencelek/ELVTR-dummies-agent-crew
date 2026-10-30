@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The gateway thanks every car for driving safely. It thanked the last one seconds after that car wrote you off. Your file is updated: ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next." The tale has four sentences, and the cap is two (lint finding). [EDIT96#3.2] Fix: "The LED gateway thanks every car for driving safely, even the one that wrote you off. Your file reads ROLE: DESTRUCTIVE TESTING; let one colleague throw you into the next." (2 sentences, 30 words; the place, the ROLE: DESTRUCTIVE TESTING phrase and the rebound duty stay).
+Total: 10 − 4 = 6.

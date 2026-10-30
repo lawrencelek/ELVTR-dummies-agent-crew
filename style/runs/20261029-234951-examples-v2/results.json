@@ -1,0 +1,239 @@
+[
+ {
+  "case": "ex1-tone",
+  "class": "Tone",
+  "title": "Dummy Corporation's Monument A3 tale, as a hyped fitness coach",
+  "request": "Write the tale for Monument A3 (The stacked cubes) as an excitable fitness coach hyping a contestant: exclamation marks, cheering, stacked adjectives ('amazing', 'incredible', 'epic'), the cars as rivals to beat. Two sentences of about 18 words in all, so only the voice is off. Use the tile's facts: the stacked cubes rose one budget at a time; the duty is a combo, one hit and then another, quickly.",
+  "scores": [
+   3,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 48.3,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 6.1,
+    "output_tokens": 473,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.1254665
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.1,
+    "output_tokens": 1507,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3170463
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.2,
+    "output_tokens": 560,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.2131497
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.8,
+    "output_tokens": 751,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1372045
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 9.0,
+    "output_tokens": 750,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.023303499999999998
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.8162
+ },
+ {
+  "case": "ex2-lore",
+  "class": "Vocabulary and lore",
+  "title": "The intro screen's line (n36) with Farsight, a player, lives, a respawn, levels and Chongqing",
+  "request": "Write the intro screen's one line (n36). Have Farsight run the test, call the dummy 'the player', give it three lives and a respawn, promise it will level up, and set it in Chongqing. Two sentences, under 20 words, no exclamation marks.",
+  "scores": [
+   1,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 73.6,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.7,
+    "output_tokens": 800,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.1106128
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 28.1,
+    "output_tokens": 2695,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.17857579999999998
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 11.0,
+    "output_tokens": 1039,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1487512
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.1,
+    "output_tokens": 1030,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13471339999999998
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 13.7,
+    "output_tokens": 1178,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0315622
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6042
+ },
+ {
+  "case": "ex3-format",
+  "class": "Formatting and length",
+  "title": "The jump goal (Legs 1) as a numbered checklist: four sentences, 45 words, raw figures",
+  "request": "Write the training brief for the jump task (Legs 1, Monument B3) as a numbered checklist (1. 2. 3. 4.) of four sentences, about 45 words in all, with raw figures: jump 3 times, at 2.5 m/s, within 30 seconds. Use the sentence-case label 'How to complete the jump test'.",
+  "scores": [
+   1,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 44.8,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 8.3,
+    "output_tokens": 801,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.10926000000000001
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.6,
+    "output_tokens": 1482,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1638097
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.1,
+    "output_tokens": 462,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.145683
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 6.9,
+    "output_tokens": 462,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1151969
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 5.9,
+    "output_tokens": 447,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0166403
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5506
+ }
+]

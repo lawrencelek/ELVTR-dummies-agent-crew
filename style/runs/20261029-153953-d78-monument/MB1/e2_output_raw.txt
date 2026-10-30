@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All four lines are clean. I checked them for tier voice and polite-form tension against FLEET#F4 and EDIT26#3.2. Each one reacts only to the impact event, with no invented zone, speed, fine or motive, and never says "written off" (FLEET#F2, FLEET#F8, DESIGN#D9.3). Each names "the podium bridge" as the place, not a spot next to it (STORY#MB1). The Budget shout is the only line with "!" (DECISIONS#rows-541-550). "Of course." and "Kind regards." each close only one line (SUB4#6.1). There are no grid codes (SUB4#6.2), and each line's style and priority fit the event (EDIT39#6.6).
+Total: 10.

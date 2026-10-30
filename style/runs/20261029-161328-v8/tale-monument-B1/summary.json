@@ -1,0 +1,68 @@
+{
+ "case": "tale-monument-B1",
+ "class": "V8 tale",
+ "title": "Prototype 7.13 tale monument B1, for Prototype 8",
+ "request": null,
+ "scores": [
+  2,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 40.2,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 14.0,
+   "output_tokens": 894,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1752738
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.4,
+   "output_tokens": 379,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.09984760000000001
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 10.3,
+   "output_tokens": 808,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11519340000000002
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 8.3,
+   "output_tokens": 643,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0200275
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4103
+}

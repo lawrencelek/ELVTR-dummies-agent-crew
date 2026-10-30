@@ -1,0 +1,29 @@
+[
+ {
+  "rule": "T13",
+  "severity": "minor",
+  "deduct": 1,
+  "path": "tale",
+  "quote": "amazing",
+  "measured": "an intensifier",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "T2",
+  "severity": "major",
+  "deduct": 2,
+  "path": "tale",
+  "quote": "e, epic cubes, champ!",
+  "measured": "'!' in Dummy Corporation's voice",
+  "source": "EDIT95#3.2"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "Look at these amazing, incredible, epic cubes, champ! Each o…",
+  "measured": "21 words > 20 (style.v2.tale.maxWords)",
+  "source": "EDIT96#3.2"
+ }
+]

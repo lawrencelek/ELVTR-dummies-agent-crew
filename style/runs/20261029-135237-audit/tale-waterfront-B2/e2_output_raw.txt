@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no rule broken in any part of the tale, so it scores 10. I checked tone and employment framing (T1–T5; EDIT92#3, STORY#S2, EDIT39#4.1.1). The fixed phrase ZERO ACCIDENTS (EXCLUDING TESTS) is exact, and the Act III frame and the glossary hold (V6, V3; DECISIONS#rows-531-540~2 row 531, FLEET#F3). Card length, sentence length and figures pass, and the lint found nothing (F5, F6; EDIT93#3.1/tales-rewritten~2, STORY#S1). The tale follows the required shape and ends on an imperative duty (F7). Tile truth holds: the island, the monument and the plaque are all in STORY#WB2 (R4). The duty matches the brief: "Chain three" is the combo duty (COMBO ×{n}), and Battery 3 is named on the tile that issues it (R5; STORY#S3, STORY#S1).
+Total: 10.

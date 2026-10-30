@@ -1,0 +1,6 @@
+SCORE: 3/10
+REASON:
+- tale · F6 (blocking, −4) "The board watches the ring over the pools. Battery 2 is fitted, a second charge. Carry a chain of three, and the Expo opens to the clients." The tale has 3 sentences, and the limit is 2 (lint finding). [EDIT97#3.2] Fix: join the first two sentences with a semicolon: "The board watches the ring over the pools; Battery 2 is fitted, a second charge."
+- tale · F5 (major, −2) "a chain of three" This writes out the value of story.task.comboHard as a word, but a tale may not type gameplay figures or placeholders, and the slot does not guarantee the value is three. [STORY#S1] Fix: drop the number: "Chain your hits round the ring."
+- tale · F11 (minor, −1) "and the Expo opens to the clients" This clause repeats the act line of OPENING DAY ("the Expo opens to clients when the park passes") and adds nothing about this tile. [EDIT97#3.2] Fix: replace it with a detail of the place, e.g. "until the board applauds", giving "The board watches the ring over the pools; Battery 2 is fitted, a second charge. Chain your hits round the ring until the board applauds."
+Total: 10 − 4 − 2 − 1 = 3.

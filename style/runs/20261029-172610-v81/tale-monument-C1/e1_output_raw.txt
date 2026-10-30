@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The drum lights each bend before a car reaches it, so no colleague is ever surprised. Today one will be. The high road breaks its rail over the street below. Step off it onto a car. Gravity is company policy." The tale is 40 words in 5 sentences; the limit is 35 words in 2 sentences. [EDIT96#3.2] Fix: cut it to two sentences and 35 words or fewer, for example "The LED drum lights each bend so no colleague is surprised. Step off the high road where its rail breaks, onto a car below: gravity is company policy." (27 words).
+- tale · T1 (major, −2) "Today one will be." This line turns the drum's promise into a winking setup and makes the drop a prank on a colleague, not a flat duty that motivates. [EDIT95#3.2] Fix: delete the sentence, and state the drop as the duty, as in the F6 replacement above.
+Total: 10 − 4 − 2 = 4.

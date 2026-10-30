@@ -1,0 +1,280 @@
+{
+ "build": {
+  "ok": true,
+  "log": "dummies_p7_13.html 1230186 bytes\np7_13_page.html 1230002 bytes"
+ },
+ "smoke": [
+  {
+   "id": "title",
+   "ok": true,
+   "detail": "title",
+   "error": null,
+   "ms": 2114,
+   "errors": [],
+   "kind": "page",
+   "say": "the page loads to the title, no page error"
+  },
+  {
+   "id": "story",
+   "ok": true,
+   "detail": "A1 play",
+   "error": null,
+   "ms": 7834,
+   "errors": [],
+   "kind": "page",
+   "say": "Story opens on Monument A1 and plays"
+  }
+ ],
+ "target": [
+  {
+   "id": "p1",
+   "ok": true,
+   "detail": "{\"x\":400,\"y\":574,\"crates\":24,\"face\":true}",
+   "error": null,
+   "ms": 3935,
+   "kind": "sim",
+   "say": "Story's Waterfront B3 ship marks its crates with the face"
+  },
+  {
+   "id": "p2",
+   "ok": true,
+   "detail": "story true, 6.10 false",
+   "error": null,
+   "ms": 4711,
+   "kind": "sim",
+   "say": "guard: with the ship exposed, 6.10's Waterfront has no ship"
+  }
+ ],
+ "regression": [
+  {
+   "id": "R-SHROUD",
+   "state": "met",
+   "results": [
+    {
+     "id": "p1",
+     "ok": true,
+     "detail": "shrouded true",
+     "error": null,
+     "ms": 3800,
+     "kind": "sim",
+     "say": "with Waterfront A1 in test, the monument is shrouded"
+    },
+    {
+     "id": "p2",
+     "ok": true,
+     "detail": "before true, after false",
+     "error": null,
+     "ms": 4617,
+     "kind": "sim",
+     "say": "shrouded with B2 in test; unshrouded once the certifying write-off clears B2"
+    },
+    {
+     "id": "p3",
+     "ok": true,
+     "detail": "world.monumentShroud = 0 (proposed)",
+     "error": null,
+     "ms": 0,
+     "kind": "registry",
+     "say": "the shroud flag is registered"
+    },
+    {
+     "id": "p4",
+     "ok": true,
+     "detail": "flag true, arcade shrouded false, 6.10 monument false",
+     "error": null,
+     "ms": 4347,
+     "kind": "sim",
+     "say": "guard: with the flag in P7SIM, Arcade's monument is unshrouded and 6.10 has none"
+    },
+    {
+     "id": "p5",
+     "ok": true,
+     "detail": "{\"tile\":\"B2\",\"shrouded\":true}",
+     "error": null,
+     "ms": 15017,
+     "errors": [],
+     "kind": "page",
+     "say": "in the page, Waterfront B2 in test shows the shrouded monument"
+    }
+   ]
+  },
+  {
+   "id": "R-UNVEIL",
+   "state": "met",
+   "results": [
+    {
+     "id": "p1",
+     "ok": true,
+     "detail": "phase unveil",
+     "error": null,
+     "ms": 3976,
+     "kind": "sim",
+     "say": "the certifying write-off reaches phase 'unveil', not the ending at once"
+    },
+    {
+     "id": "p2",
+     "ok": true,
+     "detail": "{\"chassis\":41,\"points\":125956,\"bestCombo\":7,\"t\":3600} / progress chassis 41 points 125956 combo 7 t 3600",
+     "error": null,
+     "ms": 2190,
+     "kind": "sim",
+     "say": "the plaque carries the run's chassis, points, best combo and time"
+    },
+    {
+     "id": "p3",
+     "ok": true,
+     "detail": "unveil events 1, complete true",
+     "error": null,
+     "ms": 2264,
+     "kind": "sim",
+     "say": "one 'unveil' event; the story is already saved complete (the CERTIFIED stamp)"
+    },
+    {
+     "id": "p4",
+     "ok": true,
+     "detail": "bestCombo 3",
+     "error": null,
+     "ms": 2259,
+     "kind": "sim",
+     "say": "progress keeps the best combo of the run's hits"
+    },
+    {
+     "id": "p5",
+     "ok": true,
+     "detail": "phase unveil",
+     "error": null,
+     "ms": 14832,
+     "errors": [],
+     "kind": "page",
+     "say": "in the page, the last write-off at the circus reaches the unveiling"
+    }
+   ]
+  },
+  {
+   "id": "R-VOYAGE",
+   "state": "met",
+   "results": [
+    {
+     "id": "p1",
+     "ok": true,
+     "detail": "phase voyage, voyage true",
+     "error": null,
+     "ms": 4085,
+     "kind": "sim",
+     "say": "continuing the unveiling starts the voyage with the drone at work"
+    },
+    {
+     "id": "p2",
+     "ok": true,
+     "detail": "voyage 1, end 1, tile B3, ending Certified",
+     "error": null,
+     "ms": 2501,
+     "kind": "sim",
+     "say": "the voyage ends at the ship in B3, then the Certified ending"
+    },
+    {
+     "id": "p3",
+     "ok": true,
+     "detail": "built true, arcade phase play",
+     "error": null,
+     "ms": 2525,
+     "kind": "sim",
+     "say": "guard: with the voyage built, an Arcade Waterfront run never enters unveil or voyage"
+    },
+    {
+     "id": "p4",
+     "ok": true,
+     "detail": "unveil true, voyage true",
+     "error": null,
+     "ms": 17450,
+     "errors": [],
+     "kind": "page",
+     "say": "in the page, A on the unveiling starts the flight to the ship"
+    }
+   ]
+  },
+  {
+   "id": "R-BARK-TILE",
+   "state": "met",
+   "results": [
+    {
+     "id": "p1",
+     "ok": true,
+     "detail": "place B2",
+     "error": null,
+     "ms": 14658,
+     "errors": [],
+     "kind": "page",
+     "say": "in Waterfront B2, barks name the tile"
+    }
+   ]
+  },
+  {
+   "id": "R-ACT-DELIVERY",
+   "state": "met",
+   "results": [
+    {
+     "id": "p1",
+     "ok": true,
+     "detail": "districts 3, tiles 27",
+     "error": null,
+     "ms": 554,
+     "kind": "sim",
+     "say": "three acts and 27 tales in the content"
+    },
+    {
+     "id": "p2",
+     "ok": true,
+     "detail": "matches at 224276",
+     "error": null,
+     "ms": 0,
+     "kind": "code",
+     "say": "the tile card heads with the act"
+    }
+   ]
+  },
+  {
+   "id": "R-ENDING-SCREEN",
+   "state": "met",
+   "results": [
+    {
+     "id": "p1",
+     "ok": true,
+     "detail": "Your model has passed. It will now be manufactured. A Farsig",
+     "error": null,
+     "ms": 497,
+     "kind": "sim",
+     "say": "the ending text is the GDD's"
+    },
+    {
+     "id": "p2",
+     "ok": true,
+     "detail": "phase ending, ending Certified",
+     "error": null,
+     "ms": 3452,
+     "kind": "sim",
+     "say": "certifying reaches the Certified ending, story complete (through any finale)"
+    },
+    {
+     "id": "p3",
+     "ok": true,
+     "detail": "phase ending",
+     "error": null,
+     "ms": 23426,
+     "errors": [],
+     "kind": "page",
+     "say": "in the page, the last write-off at the circus reaches the ending"
+    }
+   ]
+  }
+ ],
+ "suites": [
+  {
+   "suite": "prototypes/p6/test_p610.js",
+   "ok": true,
+   "tail": "47 passed, 0 failed",
+   "fails": []
+  }
+ ],
+ "ok": true
+}

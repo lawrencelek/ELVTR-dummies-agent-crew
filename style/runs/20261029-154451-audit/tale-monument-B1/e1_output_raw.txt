@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 (dry, procedural, "you" with Farsight in the third person, cars as colleagues, no "!") [EDIT92#3, STORY#S2]. I also checked V1–V8 (no banned word, glossary held, Act I INDUCTION frame) [FLEET#F2, FLEET#F3], and F5–F7 (219 characters, longest sentence 17 words, Battery 1 named in words as "a battery, for the dash") [EDIT93#3.1/tales-rewritten~2, DECISIONS#rows-531-540~2]. R4–R5 also hold: the skybridge comes from the tile's own tale, and "Dash into a colleague." matches DASH INTO A CAR on the tile that issues Battery 1 [STORY#MB1, STORY#S1].
+Total: 10.

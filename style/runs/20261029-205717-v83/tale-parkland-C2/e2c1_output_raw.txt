@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: T1–T5 and T13 for deadpan voice that motivates, training framing, "our"/"you" address, no adjectives and no "!" [EDIT95#3.2, PLAY#PS2]; V1, V3, V4, V6, V9 and V11 for the OPENING DAY frame, the Corporation's board in Farsight's place, and the terraces turned toward the duty [EDIT95#3.1, EDIT95#3.3, STORY#PC2]; F5, F6 and F11 for 19 words, two sentences and no placeholder [EDIT98#3.2, EDIT97#3.2]; R4 and R5 for the van duty matching the brief and no equipment named on a tile that issues none [STORY#PC2, STORY#S1].
+Total: 10.

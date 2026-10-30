@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "PUSH OFF A CAR" (14 characters, caps) and the duty, which is two sentences and 15 words, against F6, F8 and F5, and found that it matches the push brief in [STORY#S3] and [STORY#PC1] word for word. I also found it follows the tone, vocabulary and story-frame rules in [EDIT95#3.1], [EDIT95#3.2] and [EDIT95#3.3]: it is flat, uses no "!", has at most one adjective per sentence, uses no banned words and names no company.
+Total: 10.

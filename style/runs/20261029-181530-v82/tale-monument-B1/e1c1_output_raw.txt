@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked the 31-word, two-sentence tale against T1, T3–T5 and T13 [EDIT95#3.2] [PLAY#PS2]; V1–V4, V8, V9 and V11, including the skybridge as the B1 landmark and turning it toward the training [EDIT95#3.1] [STORY#MB1] [DECISIONS#rows-341-350~2] (row 346); F5–F7 and F11, including Battery 1 named on its issuing tile [EDIT97#3.2] [STORY#S1]; and R4–R5, including the dash duty matching the DASH INTO A CAR brief with no Farsight [EDIT95#0] [STORY#S3].
+Total: 10.

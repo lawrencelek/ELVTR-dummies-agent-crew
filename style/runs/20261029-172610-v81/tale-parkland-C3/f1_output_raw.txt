@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "C3", "title": "The arch and the roundabout", "tale": "The arch is the Expo's gate; visitors will circle the roundabout once before they enter. Go round faster, and make the final hit link {n} or later of a chain."}

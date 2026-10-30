@@ -1,0 +1,10 @@
+{
+ "round": 1,
+ "validation": [
+  "R-SHIP-FLIGHT: registry_uses proto.droneSpeed is not in the registry (new IDs go in registry_new)",
+  "R-SHIP-FLIGHT: registry_uses proto.droneLiftSeconds is not in the registry (new IDs go in registry_new)",
+  "R-SECOND-MARKET: registry_uses learning.playerHitCap is not in the registry (new IDs go in registry_new)",
+  "R-SECOND-MARKET: registry_uses learning.playerHitStep is not in the registry (new IDs go in registry_new)"
+ ],
+ "calibration": []
+}

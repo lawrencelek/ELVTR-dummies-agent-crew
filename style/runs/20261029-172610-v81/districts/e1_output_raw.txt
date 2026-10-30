@@ -1,0 +1,14 @@
+SCORE: 1/10
+REASON:
+- n27 · V1 (blocking, −4) "FARSIGHT Campus" names Farsight inside the game, but Farsight may appear only in the Credits. [EDIT95#0] Fix: "Calibration Campus".
+- n28 · V1 (blocking, −4) "FARSIGHT Tower stands at the centre." names Farsight inside the game, but Farsight may appear only in the Credits. [EDIT95#3.1] Fix: "Towers and barriers. Corporation Tower stands over your training."
+- n28 · T1 (major, −2) "Towers and barriers. FARSIGHT Tower stands at the centre." is a flat map description that does not motivate the trainee. [EDIT95#3.2] Fix: turn the second sentence toward the training, as in the V1 fix above.
+- n29 · V1 (blocking, −4) "Calibrated plates score more." uses the banned word "score". [FLEET#F2] Fix: "The test centre the city was modelled on. Hits on its impact plates count for more."
+- n29 · T1 (major, −2) "The test centre the city was modelled on. Calibrated plates score more." describes the district without motivating the trainee. [EDIT95#3.2] Fix: frame the plates as training value, as in the V1 fix above.
+- n30 · V1 (blocking, −4) "FARSIGHT Tower stands at the centre" names Farsight inside the game, but Farsight may appear only in the Credits. [EDIT95#3.1] Fix: "Two flyovers cross it, one low and one high. Corporation Tower stands at the centre; towers shade your training."
+- n30 · F6 (blocking, −4) "Two flyovers cross the district, one low and one high. FARSIGHT Tower stands at the centre, and towers shade the street." runs to 21 words, over the 20-word cap for notices. [EDIT96#3.2] Fix: use the 19-word replacement above.
+- n30 · T1 (major, −2) "towers shade the street." ends the banner on a flat report that does not motivate the trainee. [EDIT95#3.2] Fix: end on the trainee's duty, as in the replacement above.
+- n31 · T1 (major, −2) "A hit taken on a plate pays more." is flat reward copy that does not motivate the trainee toward the training. [EDIT95#3.2] Fix: "Impact plates mark the road at the centre. A write-off on a plate counts for more."
+- n32 · V1 (blocking, −4) "FARSIGHT Tower Plaza" names Farsight inside the game, but Farsight may appear only in the Credits. [EDIT95#3.1] Fix: "Corporation Tower Plaza".
+- n33 · V1 (blocking, −4) "FARSIGHT Tower" names Farsight inside the game, but Farsight may appear only in the Credits. [EDIT95#3.1] Fix: "Corporation Tower".
+Total: 10 − 4 − 4 − 2 − 4 − 2 − 4 − 4 − 2 − 2 − 4 − 4 = 1.

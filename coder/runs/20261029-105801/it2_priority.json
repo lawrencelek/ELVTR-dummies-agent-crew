@@ -1,0 +1,58 @@
+[
+ {
+  "id": "R-UNVEIL",
+  "title": "Unveil the monument with the run's plaque when B2 clears",
+  "score": 0.697,
+  "terms": {
+   "value": 0.8,
+   "unblocks": 0.667,
+   "authority": 1.0,
+   "cost": 0.4
+  },
+  "partial": false,
+  "waiting": [
+   "R-VOYAGE",
+   "R-VOYAGE-CREDITS"
+  ],
+  "files": [
+   "prototypes/p6/game.js",
+   "prototypes/p6/world6.js",
+   "prototypes/p7/story.js"
+  ],
+  "attempts": 0
+ },
+ {
+  "id": "R-BARK-TILE",
+  "title": "Barks name the tile, not the district",
+  "score": 0.489,
+  "terms": {
+   "value": 0.6,
+   "unblocks": 0.0,
+   "authority": 0.75,
+   "cost": 0.667
+  },
+  "partial": false,
+  "waiting": [],
+  "files": [
+   "prototypes/p6/game.js"
+  ],
+  "attempts": 0
+ },
+ {
+  "id": "R-CRATE-FACES",
+  "title": "Put the dummy's face on every crate of the ship",
+  "score": 0.456,
+  "terms": {
+   "value": 0.4,
+   "unblocks": 0.0,
+   "authority": 0.995,
+   "cost": 0.667
+  },
+  "partial": false,
+  "waiting": [],
+  "files": [
+   "prototypes/p6/world6.js"
+  ],
+  "attempts": 0
+ }
+]

@@ -1,0 +1,12 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against these rules and found no violation:
+  - **Length (F6, F11):** two sentences and 20 words, inside 15 to 20, and it keeps place, duty and one joke with no padding.
+  - **Tone (T1, T3, T5, T13):** deadpan and directive; it speaks to "you"; the second sentence has one comparative adjective, "louder".
+  - **Place (V11, R4):** it names the cascade and its purpose, and turns it toward the duty on the highway the tile has.
+  - **Duty (R5):** the duty matches the brief's Z1 final hit.
+  - **Equipment (F7, F5):** it names no equipment on a tile that issues none, and has no placeholder or figure.
+  - **Vocabulary (V1, V4):** no banned word or company name.
+  - **Story frame (V6):** nothing breaks the ACT II frame.
+  - Sources: [STORY#PB1], [EDIT98#3.2], [EDIT97#3.2], [EDIT95#3.1], [EDIT95#3.2], [STORY#S1], [STORY#S3].
+Total: 10.

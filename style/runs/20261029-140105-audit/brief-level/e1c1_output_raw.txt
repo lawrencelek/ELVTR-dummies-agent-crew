@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against [STORY#S3] for brief format and the 19-character label limit, [EDIT92#3] and [STORY#S1] for tone and the duty frame, [FLEET#F2] and [DECISIONS#rows-531-540~2] for banned words (row 540) and Farsight casing (row 539), and [STORY#S1] for digits. Both strings match the shipped level brief word for word, the label is 16 characters, and "Z1" is a Z level, which F5 allows.
+Total: 10.

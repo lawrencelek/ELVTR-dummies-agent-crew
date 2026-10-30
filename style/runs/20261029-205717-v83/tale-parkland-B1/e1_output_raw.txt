@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The cascade steps the reservoir down beside the highway, pool by pool, to drown out the traffic; the traffic got louder. Climb to the highway and take your final hit above the noise." The tale runs 33 words, over the 20-word cap for a tale. [EDIT98#3.2] Fix: "The cascade was built to quiet the highway; it failed. Climb up and take your final hit above the noise." (20 words, two sentences)
+Total: 10 − 4 = 6.

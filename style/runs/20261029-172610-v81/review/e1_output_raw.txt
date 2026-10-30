@@ -1,0 +1,6 @@
+SCORE: 7/10
+REASON:
+- WA1 · T14 (minor, −1) "let it write you off" The phrase "it write you off" appears in three texts (MA2, PA2, WA1), and the limit is two. [SUB4#6.1] Fix: change WA1's closing clause to "…from the upper town to the bridge; stand in its path."
+- PA1 · T14 (minor, −1) "teach them by pushing off one car into the next" The phrase "car into the next" appears in three texts (PC1, PA1, WB3), and the limit is two. [SUB4#6.1] Fix: change PA1's second sentence to "Arms 2 is fitted; teach them with a ricochet: push off one car, and meet the second."
+- PC3 · T14 (minor, −1) "make the final hit link {n} or later of a chain" The phrase "link {n} or later" appears in three texts (PC3, PB2, WB2), and the limit is two. [SUB4#6.1] Fix: change PC3's second sentence to "Go round faster, and chain your hits before the first is forgotten."
+Total: 10 − 1 − 1 − 1 = 7.

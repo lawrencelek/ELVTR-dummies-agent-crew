@@ -1,0 +1,209 @@
+[
+ {
+  "cid": "EDIT93#open:0",
+  "chunk": "EDIT93#open",
+  "rank": 93,
+  "kind": "open",
+  "text": "**D76:** the finale and Second Market.",
+  "d_items": [
+   "D76"
+  ]
+ },
+ {
+  "cid": "EDIT93#open:1",
+  "chunk": "EDIT93#open",
+  "rank": 93,
+  "kind": "open",
+  "text": "**D70:** eased. Parkland B1's missing drop gap stands.",
+  "d_items": [
+   "D70"
+  ]
+ },
+ {
+  "cid": "EDIT93#open:2",
+  "chunk": "EDIT93#open",
+  "rank": 93,
+  "kind": "open",
+  "text": "**D67, D68** stand.",
+  "d_items": [
+   "D67",
+   "D68"
+  ]
+ },
+ {
+  "cid": "P7#known-gaps:0",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Tales and briefs are proposals (status Proposed in `story.json`). The tile counts are proposals too (D65).",
+  "d_items": [
+   "D65"
+  ]
+ },
+ {
+  "cid": "P7#known-gaps:1",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Points are a score only; nothing yet ranks or grades a tile (Edit 90's grade is open).",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:2",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "At 1 health after a miss, any hit to the brief ends the chassis; the floor makes a tile in test a long life.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:3",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Three slots, in this browser only: no cloud save, no export. A 7.7 save's credits are ignored; a 7.8–7.9 save keeps the upgrades it bought.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:4",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "A slot's time stamp is the browser's local time.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:5",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Barks still name the district, not the tile.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:6",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Short Arcade districts buy few parts: Parkland's 2 write-offs, 2 credits.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:7",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "The finale is words on the ending screen: no unveiling, no flight to the ship yet (D76). The monument stands from the start.",
+  "d_items": [
+   "D76"
+  ]
+ },
+ {
+  "cid": "P7#known-gaps:8",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Parkland's visitors and Chassis 0 live in the tales, not on screen.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:9",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Parkland B1: no road under its highway, a street empty 67% of the time (D70). Its brief is now a raised road (Edit 93).",
+  "d_items": [
+   "D70"
+  ]
+ },
+ {
+  "cid": "P7#known-gaps:10",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Battery 3 fits on the last tile: the faster recharge serves one tile, the circus.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:11",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Tile scales raise culls out of view: 27 in 54 min of soak (9 at 1). The player never sees them.",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:12",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "Touch layout: one saved layout a browser, as fractions of the screen; a phone turned between screen shapes keeps the fractions. A placed control can cover a panel (the player's choice).",
+  "d_items": []
+ },
+ {
+  "cid": "P7#known-gaps:13",
+  "chunk": "P7#known-gaps",
+  "rank": 93,
+  "kind": "gap",
+  "text": "The diamond moves and sizes as one; its four buttons do not separate.",
+  "d_items": []
+ },
+ {
+  "cid": "EDIT92#3:6",
+  "chunk": "EDIT92#3",
+  "rank": 92,
+  "kind": "built",
+  "text": "**Delivery (built):** the act line on each district's first card and at the head of every card; the map's act numerals (I, II, III); 27 tales; the ending.",
+  "d_items": []
+ },
+ {
+  "cid": "EDIT92#3.2:0",
+  "chunk": "EDIT92#3.2",
+  "rank": 92,
+  "kind": "built",
+  "text": "**Ending screen (built):** CERTIFIED. \"Your model has passed. It will now be manufactured. A Farsight drone carries you over the river to a container ship. Destination: a market far away. Please remain still for the voyage.\"",
+  "d_items": []
+ },
+ {
+  "cid": "EDIT92#3.2:1",
+  "chunk": "EDIT92#3.2",
+  "rank": 92,
+  "kind": "proposed",
+  "text": "**Finale (proposed, D76):**\n  - The unveiling: the circus's monument, shrouded until B2 clears; the plaque shows the run (chassis spent, points, best combo, time).\n  - The drone lifts the dummy over the river to the ship at Waterfront B3; every crate carries its face.\n  - Credits over the voyage.",
+  "d_items": [
+   "D76"
+  ]
+ },
+ {
+  "cid": "EDIT92#3.2:2",
+  "chunk": "EDIT92#3.2",
+  "rank": 92,
+  "kind": "built",
+  "text": "**What clearing everything gives:** the ending (built); the CERTIFIED save stamp (built, since Edit 81); the unveiling and the plaque; Second Market, the city again with the cars' learning kept (D76).",
+  "d_items": [
+   "D76"
+  ]
+ },
+ {
+  "cid": "EDIT92#open:0",
+  "chunk": "EDIT92#open",
+  "rank": 92,
+  "kind": "open",
+  "text": "**D76:** the finale (unveiling, plaque, drone to the ship, credits) and Second Market.",
+  "d_items": [
+   "D76"
+  ]
+ },
+ {
+  "cid": "EDIT92#open:1",
+  "chunk": "EDIT92#open",
+  "rank": 92,
+  "kind": "open",
+  "text": "**D67, D68, D70** stand.",
+  "d_items": [
+   "D67",
+   "D68",
+   "D70"
+  ]
+ }
+]

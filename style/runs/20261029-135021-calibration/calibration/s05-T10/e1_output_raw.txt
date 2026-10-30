@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- s05 · T10 (major, −2) "Hit again! Wonderful! Just wonderful!" The line uses "!" in a speech-style bark from a tier 03 Consumer car, but cars may only use "!" in a shout or a Budget bark. [DECISIONS#rows-541-550] Fix: replace every "!" with "." to get "Hit again. Wonderful. Just wonderful." That also gives the tired, resigned sarcasm a Consumer car should have.
+- s05 · R2 (blocking, −4) "Hit again" The line says this car was hit before, but no `impact` field or condition guarantees an earlier hit, and claims is empty. [FLEET#F8] Fix: drop the repeat claim, for example "Hit. Wonderful. Just wonderful." or "Of course. Wonderful. Just wonderful."
+Total: 10 − 2 − 4 = 4.

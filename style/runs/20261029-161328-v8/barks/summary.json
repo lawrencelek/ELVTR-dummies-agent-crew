@@ -1,0 +1,68 @@
+{
+ "case": "barks",
+ "class": "V8 barks",
+ "title": "Barks over two sentences, or naming Farsight",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 66.0,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 22.0,
+   "output_tokens": 2243,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.21348470000000003
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 15.3,
+   "output_tokens": 1605,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2032755
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 13.6,
+   "output_tokens": 1166,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1738893
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 15.1,
+   "output_tokens": 1305,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0351748
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.6258
+}

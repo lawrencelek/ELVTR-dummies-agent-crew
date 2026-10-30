@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b034 against T6–T12, V1–V8, F1–F5 and R1–R4. It is the shipped Luxury write-off line [FLEET#F9.2] and holds the tier's superior, unapologetic voice [FLEET#F4]. It fits the 48-character bubble [FSG#field-text], and as a speech bark it is correctly styled with priority 3 [EDIT39#6.6]. It asserts only the logged write-off [FLEET#F8], [DESIGN#D9.3].
+Total: 10.

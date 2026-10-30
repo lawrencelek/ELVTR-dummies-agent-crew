@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- tale · T1 (major, −2) "Chassis 0 stands behind glass in the stilt houses. Arms 3 is fitted: push off one car into the next." The tale states a fact and gives an order but does not motivate the trainee, and T1 fails any notice that does not motivate. [EDIT95#3.2] Fix: keep the duty and frame it as progress the prototype watches: "Chassis 0 watches behind glass. Show it progress: Arms 3 is fitted, push off one car into the next."
+Total: 10 − 2 = 8.

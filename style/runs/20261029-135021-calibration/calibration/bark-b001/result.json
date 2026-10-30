@@ -1,0 +1,12 @@
+{
+ "id": "bark-b001",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "text": "Bumper damage on a Luxury trim. Typical.",
+ "cost_usd": 0.0233,
+ "raw": "SCORE: 10/10\nREASON:\n- None. b001 \"Bumper damage on a Luxury trim. Typical.\" breaks no rule. It has 40 characters, plain text and a final full stop (F1–F3), and its impact event, shout style and priority 2 are correct (F4). It has no banned term, city, brand, grid code or digit (V1, V2, V5, F5). The voice is polished and superior and never apologises, which fits tier 01 (T7). It is a feeling, not a flat report (T12). Its conditions guarantee the front-zone and Luxury-tier facts it states, and it does not claim a write-off (R1–R3). It is the guide's own shipped in-voice example. [FLEET#F2] [FLEET#F4] [FLEET#F8] [FLEET#F9.1~2] [EDIT39#6.6] [FSG#field-text]\nTotal: 10."
+}

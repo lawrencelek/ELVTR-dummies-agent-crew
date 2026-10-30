@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: n24, n25 and n26 have no violations. I checked tone, the company voice and "you", adjectives and repeated slogans, the glossary and banned words, the story frame for each district, length and sentence count, and street truth against the city layout. [EDIT95#3.2] [EDIT95#3.1] [EDIT95#3.3] [STORY#S2] [DECISIONS#rows-231-240~2] [DECISIONS#rows-321-330~2] [FLEET#F2]
+Total: 10.

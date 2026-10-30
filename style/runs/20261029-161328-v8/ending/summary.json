@@ -1,0 +1,68 @@
+{
+ "case": "ending",
+ "class": "V8 ending",
+ "title": "Prototype 7.13 ending, for Prototype 8",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 38.9,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 12.9,
+   "output_tokens": 1181,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.10706560000000001
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 5.9,
+   "output_tokens": 372,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0929448
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.7,
+   "output_tokens": 831,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0949874
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 10.2,
+   "output_tokens": 826,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.022924600000000003
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3179
+}

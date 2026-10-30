@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The tale has 2 sentences and 32 words, so it passes F6. It names its landmark, the stilt houses, and Chassis 0 behind glass, and turns them toward the training (V11, R4). It issues Arms 3 on the tile that issues it (F7). Its duty matches PUSH OFF A CAR (R5). Its tone is deadpan and motivating, with no "!", no intensifiers, no banned words and no company name, so it passes T1–T5, T13, V1, V3, V4 and V8. [STORY#WB3] [EDIT96#3.2] [EDIT95#3.1] [EDIT95#3.2] [STORY#S1] [STORY#S3]
+Total: 10.

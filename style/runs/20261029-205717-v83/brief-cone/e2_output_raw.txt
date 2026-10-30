@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked the label and brief against F8 (label is 15 characters, under the 19 limit; the brief starts with an imperative goal, "Place a cone.", then states the final hit; no "coverage gap" framing) [EDIT98#3.2, STORY#S3], F6 (2 sentences, 14 words) [EDIT95#3.2], T1–T5 and T13 (flat, no "!", no intensifiers, training framing) [EDIT95#3.2, EDIT95#3.3], V1, V3 and V4 (no banned words, glossary held, no company name) [EDIT95#3.1], and F5 (no figures; this task needs no placeholders) [STORY#S1].
+Total: 10.

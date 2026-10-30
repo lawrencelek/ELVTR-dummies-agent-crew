@@ -1,0 +1,11 @@
+[
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "Inspection day. The board watches the ring. Battery 2 is fit…",
+  "measured": "39 words > 20 (style.v2.text.maxWords); 6 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

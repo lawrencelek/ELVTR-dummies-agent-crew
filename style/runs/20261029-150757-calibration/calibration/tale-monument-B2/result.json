@@ -1,0 +1,13 @@
+{
+ "id": "tale-monument-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashi",
+ "cost_usd": 0.1113,
+ "raw": "SCORE: 10/10\nREASON:\n- None.\nI checked this tale against every rule for Farsight. It matches the shipped tale in [STORY#MB2] word for word, and lint found nothing:\n  - **Tone** (T1–T5) [EDIT92#3, STORY#S1, STORY#S2, EDIT39#4.1.1, STORY#MA1]: it reads as a dry, procedural staff notice. The cars are colleagues and it addresses the dummy as \"you\".\n  - **Act I frame** (V6) [STORY#S2]: it uses \"New staff\" and keeps ZERO ACCIDENTS exact.\n  - **Card fit** (F6) [EDIT92#measured]: it is under 223 characters, and every sentence is 19 words or fewer.\n  - **Equipment** (F7, R5) [STORY#S1]: none is issued on this tile and none is named, so F7 does not apply. The duty \"Walking is permitted. Dashing would spoil the data.\" matches the STRUCK, NOT DASHING brief [STORY#S3].\n  - **Tile truth** (R4) [STORY#MB2]: it names only the monument's plaque.\nTotal: 10."
+}

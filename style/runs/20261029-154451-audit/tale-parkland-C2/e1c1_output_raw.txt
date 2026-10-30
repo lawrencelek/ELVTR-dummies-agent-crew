@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked T1–T5 (dry procedural voice; no "!"; "you"; Farsight in the third person), V1–V8 (no banned words; Act II OPENING DAY frame with the board; title-case "Farsight"), F5–F7 (no figures; under 223 characters; every sentence under 19 words; nothing named as equipment on a tile that issues none) and R4–R5 (terraces, avenue and van match the tile; the duty matches the brief A VAN) against [EDIT92#3], [STORY#S1], [STORY#S2], [STORY#S3], [EDIT93#3.1/tales-rewritten~2] and [STORY#PC2].
+Total: 10.

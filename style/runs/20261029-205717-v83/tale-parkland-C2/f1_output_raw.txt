@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "C2", "title": "The amphitheatre", "tale": "Our board watches opening day from these terraces. A van delivers the catering; arrange for it to deliver you."}

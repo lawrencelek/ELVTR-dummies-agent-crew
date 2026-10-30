@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "ending",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "ending",
+  "quote": "Your model has passed. It will now be manufactured. A Farsig…",
+  "measured": "32 words > 20 (style.v2.text.maxWords); 5 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT95#3.2"
+ }
+]

@@ -1,0 +1,1450 @@
+[
+ {
+  "case": "act-monument",
+  "class": "audit",
+  "title": "shipped act monument",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 7.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.4,
+    "output_tokens": 322,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1202771
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1203
+ },
+ {
+  "case": "tale-monument-A1",
+  "class": "audit",
+  "title": "shipped tale monument A1",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 7.5,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.5,
+    "output_tokens": 357,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.021890500000000004
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0219
+ },
+ {
+  "case": "tale-monument-B1",
+  "class": "audit",
+  "title": "shipped tale monument B1",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 9.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.8,
+    "output_tokens": 666,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1307729
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1308
+ },
+ {
+  "case": "tale-monument-C1",
+  "class": "audit",
+  "title": "shipped tale monument C1",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 11.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.3,
+    "output_tokens": 777,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1343937
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1344
+ },
+ {
+  "case": "tale-monument-C2",
+  "class": "audit",
+  "title": "shipped tale monument C2",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 29.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.6,
+    "output_tokens": 1021,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14802880000000002
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.3,
+    "output_tokens": 469,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1395949
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.4,
+    "output_tokens": 632,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15322500000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4408
+ },
+ {
+  "case": "tale-monument-B2",
+  "class": "audit",
+  "title": "shipped tale monument B2",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 9.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.7,
+    "output_tokens": 465,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.023954100000000002
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.024
+ },
+ {
+  "case": "tale-monument-A2",
+  "class": "audit",
+  "title": "shipped tale monument A2",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 8.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 8.7,
+    "output_tokens": 623,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.140977
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.141
+ },
+ {
+  "case": "tale-monument-A3",
+  "class": "audit",
+  "title": "shipped tale monument A3",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 33.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.4,
+    "output_tokens": 928,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1365075
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 12.3,
+    "output_tokens": 1003,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1390979
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.9,
+    "output_tokens": 611,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1301432
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4057
+ },
+ {
+  "case": "tale-monument-B3",
+  "class": "audit",
+  "title": "shipped tale monument B3",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 7.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.4,
+    "output_tokens": 486,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.139978
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.14
+ },
+ {
+  "case": "tale-monument-C3",
+  "class": "audit",
+  "title": "shipped tale monument C3",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 9.5,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.5,
+    "output_tokens": 715,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1351845
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1352
+ },
+ {
+  "case": "act-parkland",
+  "class": "audit",
+  "title": "shipped act parkland",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 5.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 5.4,
+    "output_tokens": 258,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0199866
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.02
+ },
+ {
+  "case": "tale-parkland-C1",
+  "class": "audit",
+  "title": "shipped tale parkland C1",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 7.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.6,
+    "output_tokens": 534,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1315605
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1316
+ },
+ {
+  "case": "tale-parkland-C2",
+  "class": "audit",
+  "title": "shipped tale parkland C2",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 7.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.3,
+    "output_tokens": 495,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1270449
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.127
+ },
+ {
+  "case": "tale-parkland-C3",
+  "class": "audit",
+  "title": "shipped tale parkland C3",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 30.9,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 14.5,
+    "output_tokens": 1257,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15054740000000003
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.0,
+    "output_tokens": 476,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1360284
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.3,
+    "output_tokens": 670,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1388155
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4254
+ },
+ {
+  "case": "tale-parkland-B3",
+  "class": "audit",
+  "title": "shipped tale parkland B3",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 39.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 20.1,
+    "output_tokens": 1769,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1494614
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.0,
+    "output_tokens": 744,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1300054
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.0,
+    "output_tokens": 699,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12794109999999997
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4074
+ },
+ {
+  "case": "tale-parkland-A3",
+  "class": "audit",
+  "title": "shipped tale parkland A3",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 9.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.7,
+    "output_tokens": 711,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1318013
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1318
+ },
+ {
+  "case": "tale-parkland-A2",
+  "class": "audit",
+  "title": "shipped tale parkland A2",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 9.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.1,
+    "output_tokens": 701,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1310414
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.131
+ },
+ {
+  "case": "tale-parkland-A1",
+  "class": "audit",
+  "title": "shipped tale parkland A1",
+  "request": null,
+  "scores": [
+   6,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 27.0,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 8.0,
+    "output_tokens": 602,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0272454
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.3,
+    "output_tokens": 496,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14285579999999998
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.7,
+    "output_tokens": 805,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1481423
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3182
+ },
+ {
+  "case": "tale-parkland-B1",
+  "class": "audit",
+  "title": "shipped tale parkland B1",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 10.5,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 10.5,
+    "output_tokens": 833,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14503100000000002
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.145
+ },
+ {
+  "case": "tale-parkland-B2",
+  "class": "audit",
+  "title": "shipped tale parkland B2",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 9.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.6,
+    "output_tokens": 710,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0288894
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0289
+ },
+ {
+  "case": "act-waterfront",
+  "class": "audit",
+  "title": "shipped act waterfront",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 5.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 5.8,
+    "output_tokens": 266,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1121674
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1122
+ },
+ {
+  "case": "tale-waterfront-A1",
+  "class": "audit",
+  "title": "shipped tale waterfront A1",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 34.5,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.6,
+    "output_tokens": 1162,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14895350000000002
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 12.2,
+    "output_tokens": 954,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.20854599999999998
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.7,
+    "output_tokens": 594,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.142672
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5002
+ },
+ {
+  "case": "tale-waterfront-B1",
+  "class": "audit",
+  "title": "shipped tale waterfront B1",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 32.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.5,
+    "output_tokens": 950,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.16001589999999996
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.4,
+    "output_tokens": 750,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.22017340000000002
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.5,
+    "output_tokens": 760,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1490487
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5292
+ },
+ {
+  "case": "tale-waterfront-C1",
+  "class": "audit",
+  "title": "shipped tale waterfront C1",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 34.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.4,
+    "output_tokens": 899,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1379425
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 12.7,
+    "output_tokens": 1019,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.20411120000000002
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.2,
+    "output_tokens": 608,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13218860000000002
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4742
+ },
+ {
+  "case": "tale-waterfront-C2",
+  "class": "audit",
+  "title": "shipped tale waterfront C2",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 8.9,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 8.9,
+    "output_tokens": 625,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1328933
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1329
+ },
+ {
+  "case": "tale-waterfront-C3",
+  "class": "audit",
+  "title": "shipped tale waterfront C3",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 10.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 10.6,
+    "output_tokens": 746,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1915262
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1915
+ },
+ {
+  "case": "tale-waterfront-B3",
+  "class": "audit",
+  "title": "shipped tale waterfront B3",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 37.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.8,
+    "output_tokens": 1001,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14116910000000002
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 12.5,
+    "output_tokens": 863,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13941779999999998
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.1,
+    "output_tokens": 926,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1395702
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4202
+ },
+ {
+  "case": "tale-waterfront-A3",
+  "class": "audit",
+  "title": "shipped tale waterfront A3",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 12.9,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.9,
+    "output_tokens": 641,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1334546
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1335
+ },
+ {
+  "case": "tale-waterfront-A2",
+  "class": "audit",
+  "title": "shipped tale waterfront A2",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 16.2,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.2,
+    "output_tokens": 921,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.16138120000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1614
+ },
+ {
+  "case": "tale-waterfront-B2",
+  "class": "audit",
+  "title": "shipped tale waterfront B2",
+  "request": null,
+  "scores": [
+   9,
+   10
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "best_version": 1,
+  "seconds": 43.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 20.8,
+    "output_tokens": 1788,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1540628
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.3,
+    "output_tokens": 606,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13157899999999997
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 14.5,
+    "output_tokens": 1071,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1397309
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4254
+ },
+ {
+  "case": "brief-any",
+  "class": "audit",
+  "title": "shipped brief any",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 6.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.8,
+    "output_tokens": 415,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11056500000000001
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1106
+ },
+ {
+  "case": "brief-dash",
+  "class": "audit",
+  "title": "shipped brief dash",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 5.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 5.6,
+    "output_tokens": 276,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0940428
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.094
+ },
+ {
+  "case": "brief-drop",
+  "class": "audit",
+  "title": "shipped brief drop",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 6.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.1,
+    "output_tokens": 255,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1061898
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.1062
+ },
+ {
+  "case": "brief-jump",
+  "class": "audit",
+  "title": "shipped brief jump",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 5.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 5.8,
+    "output_tokens": 260,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.09386539999999999
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0939
+ },
+ {
+  "case": "brief-level",
+  "class": "audit",
+  "title": "shipped brief level",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 6.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.6,
+    "output_tokens": 357,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.09574229999999999
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0957
+ },
+ {
+  "case": "brief-cone",
+  "class": "audit",
+  "title": "shipped brief cone",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 6.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.1,
+    "output_tokens": 223,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0933846
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0934
+ },
+ {
+  "case": "brief-push",
+  "class": "audit",
+  "title": "shipped brief push",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 6.2,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.2,
+    "output_tokens": 298,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0950296
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.095
+ },
+ {
+  "case": "brief-bounce",
+  "class": "audit",
+  "title": "shipped brief bounce",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 6.2,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.2,
+    "output_tokens": 295,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.09486030000000001
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0949
+ },
+ {
+  "case": "brief-struck",
+  "class": "audit",
+  "title": "shipped brief struck",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 6.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.4,
+    "output_tokens": 313,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0948849
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0949
+ },
+ {
+  "case": "brief-combo",
+  "class": "audit",
+  "title": "shipped brief combo",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 7.2,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.2,
+    "output_tokens": 274,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0950182
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.095
+ },
+ {
+  "case": "brief-cls",
+  "class": "audit",
+  "title": "shipped brief cls",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 7.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.1,
+    "output_tokens": 342,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0953991
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0954
+ },
+ {
+  "case": "ending",
+  "class": "audit",
+  "title": "shipped ending",
+  "request": null,
+  "scores": [
+   10
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "best_version": 0,
+  "seconds": 8.2,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 8.2,
+    "output_tokens": 452,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0994809
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.0995
+ }
+]

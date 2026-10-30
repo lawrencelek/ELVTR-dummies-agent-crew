@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The east bridge was built a year after the west, to correct its mistakes. Its portal block faces the other way. The police here check papers; a police car's final hit stamps yours." The tale has 3 sentences, over the cap of 2 (style.v2.text.maxSentences), as lint found; its 33 words are within 15 to 35. [EDIT97#3.2] Fix: "The east bridge was built a year after the west, to correct its mistakes; its portal block faces the other way. The police here check papers, and a police car's final hit stamps yours."
+Total: 10 − 4 = 6.

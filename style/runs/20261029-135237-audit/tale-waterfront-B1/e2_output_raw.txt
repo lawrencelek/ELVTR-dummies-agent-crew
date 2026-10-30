@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5 for tone, voice, the employment framing and the brand's silence on harm (EDIT92#3, STORY#S2, EDIT39#4.1.1). I checked V1–V4, V6 and V8 for banned words, the glossary and the Act III CUSTOMS frame (FLEET#F2, FLEET#F3, EDIT92#3). For format I checked F5–F7: no gameplay figures beyond "Legs 3", the tale fits the card at 223 characters or fewer with short sentences, and it has the full place, fact, equipment, duty shape (EDIT92#measured, STORY#MB3). For truth I checked R4–R5: the duty "Jump into a car" matches the JUMP brief, Legs 3 is issued on this tile, and the tunnel the cars enter is this tile's landmark (STORY#WB1, STORY#S1, EDIT93#3.1).
+Total: 10.

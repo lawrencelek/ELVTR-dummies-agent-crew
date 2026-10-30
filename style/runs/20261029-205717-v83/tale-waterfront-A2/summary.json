@@ -1,0 +1,68 @@
+{
+ "case": "tale-waterfront-A2",
+ "class": "V8.3 tale",
+ "title": "Waterfront A2, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 52.7,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 12.4,
+   "output_tokens": 1000,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1603705
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 10.6,
+   "output_tokens": 786,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1570582
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 15.4,
+   "output_tokens": 1276,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15879590000000002
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 14.3,
+   "output_tokens": 1210,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0329177
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.5091
+}

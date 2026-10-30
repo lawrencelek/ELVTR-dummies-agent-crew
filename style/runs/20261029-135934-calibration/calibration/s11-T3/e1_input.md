@@ -1,0 +1,188 @@
+SLOT
+- Kind: tale, `content/story/story.json` `districts[].tiles.<tile>.tale`. Speaker: Farsight. Shown on the tile card.
+- Schema: {"kind": "tale", "district", "tile", "title", "tale"}
+- Card: at most 223 characters (style.tale.maxChars); sentences of at most 19 words.
+- Tile: Monument A2 · The neon shops (ACT I · INDUCTION; tile 6 of 9). Brief: CONE-BAITED CAR. Coverage gap: cones. The final hit must come from a car reacting to a cone. Equipment issued here: Hands 1. Chunk: STORY#MA2.
+
+CANON
+
+[EDIT92#3] 3 Story: Narrative A, Certified (replaces the proposal)
+## 3 Story: Narrative A, Certified (replaces the proposal)
+```markdown
+- **Logline:** a dummy sits the longest job interview in the world. Passing means being shipped.
+- **Tone:** dry corporate comedy. Farsight narrates. You are the product under test.
+- **Voice:** polite, procedural, dry. No exclamation marks. Cars are colleagues; briefs are duties; parts are equipment.
+- **Act I · Monument · INDUCTION:** off the factory floor; Farsight greets you as new staff.
+  - Turn (C3): the gateway thanks a car for driving safely, seconds after it wrote you off. ROLE: DESTRUCTIVE TESTING.
+- **Act II · Parkland · OPENING DAY:** the Expo opens when the park passes. Nine tiles, nine days. Visitors are booked.
+  - Turn (B2): the board applauds the cars. "The public prefers the product to the test."
+- **Act III · Waterfront · CUSTOMS:** the river is a border; ships wait beyond it.
+  - The customs log (A3): ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION.
+  - The circus (B2): the monument, cast from every chassis you lost. ZERO ACCIDENTS (EXCLUDING TESTS).
+- **Delivery (built):** the act line on each district's first card and at the head of every card; the map's act numerals (I, II, III); 27 tales; the ending.
+```
+
+[STORY#S1] S1 Story rules
+## S1 Story rules
+- Numbers live in the registry: tasks and gifts name parameter IDs, never values.
+- A task tests the hit that writes the chassis off (the fatal hit).
+- Tile names are column-row, as in the game: A1 is the top-left tile.
+- Each tile's write-offs are story.writeOffs.<district>.<tile> in the registry (Edit 82).
+- Edit 93: introduce, then test. A part arrives on the tile whose brief first needs it; no brief needs a part not yet issued. Monument: Battery 1 B1 (dash), Hands 1 A2 (cone), Legs 1 B3 (jump). Parkland: Arms 1 C1 (push), Legs 2 A3 (jump), Hands 2 A2 (cone), Arms 2 A1 (push), Battery 2 B2 (combo). Waterfront: Legs 3 B1 (jump), Arms 3 B3 (push), Battery 3 B2 (combo).
+- Edit 92: Narrative A, Certified. Act I Monument (Induction), Act II Parkland (Opening Day), Act III Waterfront (Customs). Farsight narrates: polite, procedural, dry; no exclamation marks. The cars are colleagues; the briefs are duties; the parts are equipment.
+- A gift rides in on the drone that carries the dummy into its tile (Edit 84). Arcade sells every part for credits; its chassis ships with Battery 1 (Edit 91).
+- Each tile's traffic is story.traffic.<district>.<tile> in the registry, on the tile and its neighbours (Edit 85).
+
+[STORY#S2] S2 Acts
+## S2 Acts
+| District | Act | Act line (intro) | Order |
+|---|---|---|---|
+| Monument | ACT I · INDUCTION | Off the factory floor. Farsight greets you as new staff; the cars are your colleagues. | A1 → B1 → C1 → C2 → B2 → A2 → A3 → B3 → C3 |
+| Parkland | ACT II · OPENING DAY | The Expo opens to the public when this park passes. Nine tiles, nine days. Visitors are booked. | C1 → C2 → C3 → B3 → A3 → A2 → A1 → B1 → B2 |
+| Waterfront | ACT III · CUSTOMS | The river is a border; ships wait beyond it. Your papers are being prepared. | A1 → B1 → C1 → C2 → C3 → B3 → A3 → A2 → B2 |
+
+[STORY#S3] S3 Briefs
+## S3 Briefs
+A brief is a caps label, then "Coverage gap: …. The final hit must ….". Figures are placeholders bound to registry IDs ({n}).
+| Kind | Label | Brief |
+|---|---|---|
+| any | ANY WRITE-OFF | General coverage. Any write-off in this tile counts. |
+| dash | DASH INTO A CAR | Coverage gap: dashes. The final hit must be a dash into a car. |
+| drop | DROP ONTO A CAR | Coverage gap: falls. The final hit must be a drop onto a car from above. |
+| jump | JUMP INTO A CAR | Coverage gap: jumps. The final hit must be a jump into a car. |
+| level | ON A RAISED ROAD | Coverage gap: raised roads. The final hit must land at Z1 or above. |
+| cone | CONE-BAITED CAR | Coverage gap: cones. The final hit must come from a car reacting to a cone. |
+| push | PUSH OFF A CAR | Coverage gap: ricochets. Push off one car; the final hit must be the next car. |
+| bounce | THROWN INTO A CAR | Coverage gap: rebounds. The final hit must come while a hit is still throwing you. |
+| struck | STRUCK, NOT DASHING | Coverage gap: pedestrians. The final hit must be a car hitting you while you walk or stand. |
+| combo | COMBO ×{n} | Coverage gap: chains. The final hit must be link {n} or later of a combo. |
+| cls | A {cls} | Coverage gap: the {clsLong}. The final hit must come from a {cls}. |
+
+[EDIT39#4.1.1] 4.1.1 The register (replaces Edit 37)
+## 4.1.1 The register (replaces Edit 37)
+```markdown
+#### 4.1.1 The register
+**A Sinofuturist cyber city inside a friendly corporate terminal.** Two layers, never mixed.
+- **The play area is the city at night.** 16-bit pixel art: dark deck plates, LED city blocks, neon spill, jersey barriers, a white fleet.
+- **The frame is FARSIGHT's brand.** Dark glass, cyan LED edges, rounded panels. High resolution.
+- **The contrast is the tone.** The city glows. The test writes off bodies in it. The brand never comments.
+- **Dark ground rules every edge** (4.1.2). No sprite edge is black.
+- **Reserved hues hold.** Yellow is the dummy. Red is the warning. Neon is material, never a cue.
+- **Options:** day (Edit 37 eco-city) and night (parkland) remain as build palettes. Play never changes.
+```
+
+[FLEET#F2] F2 Voice
+## F2 Voice
+- Vehicles speak as workers, not lore narrators.
+- Corporate politeness barely contains their personalities.
+- Barks react to logged events only. Never claim what did not happen.
+- Lines are at most 48 characters, end with . ! or ?, and react to logged events only.
+- **Banned words** (never in a line): kill, killed, die, died, dead, death, player, level, game, score, respawn, lives, Chongqing, Tesla, Toyota, BYD.
+
+[FLEET#F3] F3 Terms
+## F3 Terms
+- **subject:** What FARSIGHT and the fleet call the dummy
+- **write-off:** A destroyed body
+- **chassis:** One body of the dummy
+- **certification:** The fleet passing its test
+- **retraining:** What a car fears most
+- **dispatch:** The cars' management
+- **route:** A car's planned path
+- **bay:** Where a new chassis is issued
+
+[EDIT93#3.1/tales-rewritten~2] Tales rewritten
+- **Voice kept:** no exclamation marks; the longest 223 characters. C3 keeps ROLE: DESTRUCTIVE TESTING.
+
+[EDIT92#measured] Measured
+## Measured
+| Check | Result |
+|---|---|
+| Solids, floors, stairs, spawns, cone homes, with and without the art | identical on all 27 tiles |
+| Tiles the art draws on | 9: Monument A1, A2, A3, C3; Parkland C1, B1; Waterfront A3, C3, B3 |
+| Longest tale | 217 characters: four lines on the card |
+| Tile card, Monument A1 | ACT I · INDUCTION · MONUMENT · TILE A1 · 1 OF 27; The welcome wall; the act line; the tale |
+| Story map | I · MONUMENT, II · PARKLAND, III · WATERFRONT |
+
+[DECISIONS#rows-531-540~2] Rows 531–540
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 531 | Tales rewritten where a brief or part moved: Monument B1, C1, B3, C3; Parkland C1, C3, A2, B1, B2; Waterfront A1, B2. Voice kept: no exclamation marks; C3 keeps ROLE: DESTRUCTIVE TESTING, Waterfront B2 ZERO ACCIDENTS (EXCLUDING TESTS) | proposed (assistant) under row 520 | Each tale names the equipment the tile issues | — | ≤ 223 characters |
+| 532 | Registry `edit93-2026-10-29`: no IDs added; the 27 `story.writeOffs.*` and `story.traffic.*` descriptions carry the new briefs (505 entries) | proposed (assistant) | Every statistic has an ID | — | `content/params/tuning.parameters.json` |
+| 533 | The finale is the unveiling and the ship: the circus's monument shrouded until Waterfront B2 clears; its unveiling, with the plaque showing the run (chassis spent, points, best combo, time); a Farsight drone lifts the dummy over the river to the container ship at Waterfront B3, every crate carrying its face. The ending screen follows | user-decided: "Unveiling and ship" (29 October) | The reward for clearing is seen, not only read | Credits over the voyage and Second Market wait (D77) | Closes D76; GDD Edit 92 §3.2 |
+| 534 | Assignment #5: a goal-oriented coding agent (`coder/`) reads the GDD, scans the code, detects gaps with executable probes, scores them, writes the code for the top one and re-scans after each write. An open D-item blocks a requirement; the loop stops when every requirement is met or blocked | proposed (assistant) | The agent builds only what the GDD specifies and a decision has settled | A blocked requirement waits for Lawrence | `coder/coder.py` |
+| 535 | The finale as built (Edit 94, P7.13): the circus's monument shrouded in Story until Waterfront B2 clears (`world.monumentShroud`); the last write-off plays under the cloth; a drone lifts the cloth (`ui.finale.unveilSeconds`) and the plaque reads THE DUMMY MONUMENT · UNVEILED, ZERO ACCIDENTS (EXCLUDING TESTS), chassis spent, points, best combo, time; A or a tap: a drone carries the dummy from B2 over the edge to the container ship at B3, every crate with its face; then CERTIFIED. Arcade has no finale | user-decided (row 533); requirements and code by the coding agent (coder/, run 20261029-105801); reviewed (assistant) | The reward for clearing is seen | Credits and Second Market wait (D77) | `test_p713.js`; closes the finale part of D76 |
+| 536 | The agent's writes accepted with manual changes: the write-off plays before the unveiling (the agent cut it); a drone lifts the cloth over 1.2 s, the gift screen's hold (the agent swapped it at once); the plaque in the game's own panel and type, inside the field, with the device's prompt and a tap target (the agent drew its own text below the field, keys only); the voyage reads FARSIGHT DRONE and · DRONE; the shroud's registry entry filed under World | proposed (assistant, manual review) | The agent's probes test state; the screen needed a person | — | Separate commit after the agent's; all 11 requirements' probes still pass |
+| 537 | R-BARK-TILE rejected: the agent's write replaced the district's name with the tile code in Story barks ("B2. I did not sign up for this."). It met its one probe, not the voice. Reverted; the requirement set to spec none | proposed (assistant, manual review) | Barks are written lines in each tier's voice, with the lore check | Barks still name the district | Raises D78 |
+| 538 | Registry `edit94-2026-10-29`: `world.monumentShroud` (0; P7SIM 1; written by the agent), `ui.finale.unveilSeconds` (1.2 s; added in review). 507 entries | proposed (assistant) | Every statistic has an ID | — | `content/params/tuning.parameters.json` |
+| 539 | "Farsight" in title case in every sentence-case string: barks, tales, briefs, act lines, the ending. A label set wholly in capitals keeps its caps (FARSIGHT DRONE). Supersedes the fleet canon's capitals (Edit 39; `check_lore.py`) | user-decided (29 October): "Farsight everywhere" | Edit 92's tales, Edits 93–94 and rows 533, 535 write Farsight | `check_lore.py`, `checks.py` and bark c024 still say FARSIGHT (D79) | `style/STYLE_GUIDE.md` V4 |
+| 540 | The fleet canon's banned terms apply to diegetic text only: barks, tales, briefs, act lines, the ending, plaques. Menu chrome is exempt (NEW GAME, Edit 88; LEVEL UP, Edit 89) | user-decided (29 October): "Diegetic text only" | Menus are interface, not voice | `checks.py` still applies the ban to every string shown | `style/STYLE_GUIDE.md` V1 |
+
+[DECISIONS#rows-541-550] Rows 541–550
+## Rows 541–550
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 541 | "!" by speaker: Farsight never; cars in a shout-style bark or any Budget (04) bark | user-decided (29 October): "Shouts and Budget only" | 16 of 17 shipped "!" lines fit (12 shouts; 13 Budget) | b111 "It recharges when it hits us?!" (speech, tier-free) is a minor break | `style/STYLE_GUIDE.md` T2, T10 |
+| 542 | Lines the style loop accepts stay in `style/runs/` as a demonstration. D78 stays open; the Monument tile barks are its proposal. No change to `fleet.json`, `story.json`, builds or tests | user-decided (29 October): "Runs only" | Merging needs a tile condition in `fleet.json`, `check_lore.py` and `game.js`, and a 7.13 rebuild | D78 not closed | `style/runs/` |
+| 543 | Assignment #6: the Style Guide Agent (`style/`). A style guide from the GDD (tone, vocabulary and lore, formatting and length, truth; every rule cites its chunk); a deterministic lint as evidence; a loop of three fresh agents, generator → evaluator → refiner → evaluator, until 10/10 or three refinements. The evaluator returns SCORE and REASON. Its statistics live in `style/style.params.json` until the registry moves past edit94 (the P7.13 suite gates the version) | proposed (assistant) | The brief: a capstone-anchored guide; no binary grading; no human in the loop | Style IDs sit outside `tuning.parameters.json` for now | `style/README.md` |
+
+[STORY#MA2] MA2 Monument A2 · The neon shops
+### MA2 Monument A2 · The neon shops
+- **Tile:** Monument A2, 6 of 9 in the act's order. Act: ACT I · INDUCTION.
+- **Title (its landmark):** The neon shops.
+- **Brief:** CONE-BAITED CAR. Coverage gap: cones. The final hit must come from a car reacting to a cone.
+- **Equipment issued here:** Hands 1.
+- **Tale:** The shops under the highway sell nothing. Their signs flash prices at the traffic, which reads every word. Hands 1 is fitted, so you can place a cone. Colleagues are trained to respect cones. Use this.
+
+[DECISIONS#rows-471-480~2] Rows 471–480
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 471 | Car barks are speech bubbles on the cars again (frame layer, legible). The bottom line carries the objective (story: tile, count, last hit wanted; Arcade: the quota); a toast takes it while it lives. The brief leaves the district panel | user-decided: "speech bubbles on the cars themselves"; "The current story or mission objective should be on the bottom line" | Funnier; the goal always in view | Supersedes Edit 70's strip for barks | Objective: "Write off a body (0 of 1)" |
+| 472 | Option B: verbs are issued, levels are bought. Legs 1, Hands 1, Arms 1 are the only gifts, in both modes; the shop never sells them ("GIFT AT A2"; Arcade "DRONE GIFT"). Supersedes row 465's placements | user-decided (28 October): "I agree with B" | Zelda's pacing: a verb opens the next briefs; credits buy depth | A player cannot rush a verb with credits | The fill unchanged: Waterfront B2, body 34 of 35 |
+| 473 | Monument issues a verb every three tiles: Legs 1 at C1, Hands 1 at A2, Arms 1 at C3. Briefs reordered: B2 struck, A2 cone, B3 jump, C3 push, so each verb is used on the tile that issues it | user-decided: "Legs 1 at C1, then at least 2 or 3 more tiles (so A2)"; Arms 1 at C3 and the reorder proposed (assistant) | Link's Awakening: one key item a dungeon, each opening the next area | Parkland and Waterfront issue nothing | Every brief's verb issued at or before its tile |
+| 474 | Arcade issues the same verbs, in the same order, one per `arcade.giftEvery` (1) write-offs, by drone to the next chassis after the shop, with the same gift screen. The bottom line names the next verb | user-decided: "ARCADE and STORY need the same kind of mechanic"; interval proposed (assistant) | One progression rule in both modes | Short quotas end before every verb (D69) | Monument Arcade: Legs 1, Hands 1, Arms 1 after write-offs 1–3 |
+| 475 | The gift ceremony: the drone carries the module in view and lowers it onto the dummy; the world holds on the gift screen: the chassis large, a drone brings the module over the head, it falls onto its part (`ui.gift.fallSeconds` 0.7), lands with a flash, ring, sparks, rays, shake and an original fanfare; then the verb, its button, what it does and the next level in the shop. A after `ui.gift.holdSeconds` 1.2; then the drone carries the dummy across | user-decided: "you SEE the item the drone carries … a large screen pops up showing the image of the dummy's body with an animation of the new item arriving … a satisfying SOUND and ANIMATION"; timings, layout and fanfare proposed (assistant) | Juice on the beats that matter: three in a story | 1.2 s held per verb | B1 → C1: screen at 2.5 s; A at 0.1 s ignored |
+| 476 | Story traffic per tile: `story.traffic.<district>.<tile>` scales density on the tile in test and its four neighbours; the rest at 1. Cars still enter the view only across its edges. Arcade keeps one density per district | user-directed (28 October): "have traffic spawning per tile … we can keep the arcade mode different (per-map rather than per tile)"; neighbours and the in-view rule proposed (assistant) | Each tile tuned for its roads and brief; the first tiles busier | 27 more values to tune | Monument A1 2.7 → 3.9 street cars in view; B1 2.2 → 3.8 |
+| 477 | A neighbour with a roundabout runs at the district rate under a tile scale (Parkland B2, C3; Waterfront B2). Out of view, a car stopped `traffic.offscreenCullSeconds` is removed (Edit 63) | proposed (assistant), answering "what if cars get trapped in the roundabout from tiles that can't be seen?" | No ring fills out of sight; no jam survives there | Parkland B1 gains little: its cars come through B2 (D70) | 27 tiles × 2 min: longest stop in view 11 s; 27 culls in 54 min (9 unscaled) |
+| 478 | Every highway has a flight (`world.deckFlightsMin` 1; Waterfront's bridges one each, from the beach) and a parapet gap over each Z0 road beneath (`world.deckDropGaps`): one `world.tileSize` module on the road's centre line, south or east (the other side at a flight), drawn lit. Both modes; 6.x unchanged | user-decided: "if there is a highway in a tile, there should be at least one staircase and one gap in the railing to drop to cars"; placement and drawing proposed (assistant) | Every highway is a route and a drop | Parkland B1 has no road beneath (D70) | 15 of 15 with a flight; 14 of 15 with a gap; 17 drops land on a road |
+| 479 | Cone homes: on the pavement beside a road, never on it; at least `props.cone.minVisible` (0.9) of the cone in view: never under a highway, ring or walkway as drawn, never behind a building's face. Both modes | user-decided: "cones must not spawn on roads, or under highways (where they cannot be seen)"; the visibility test proposed (assistant) | A cone the player cannot see is no bait | — | 49 homes; none on a road; 7 hidden before, none now |
+| 480 | Registry `edit85-2026-10-28`: 27 `story.traffic.*`, `world.deckDropGaps`, `world.deckFlightsMin`, `props.cone.minVisible` (488 entries) | proposed (assistant) | Every new statistic has an ID | — | `content/params/tuning.parameters.json` |
+
+[DECISIONS#rows-451-460~2] Rows 451–460
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 451 | A tile wants `story.tileWriteOffs` (3) counted write-offs. Farsight's brief tests the fatal hit; a miss scores but does not count | user-decided: "destroy three bodies with specific requirements from Farsight"; fatal-hit test proposed (assistant) | Every body still pays points; only data Farsight asked for counts | 81 bodies to certify (D65); fatal hit only (D66) | Dash write-off counted in A1; missed in B1 (drop brief) |
+| 452 | Fences: the tile in test is fenced on every side, held against walks, dashes, jumps, pushes and throws. A clear drops them and opens the next tile; entering it closes the fences behind. Cleared tiles stay open; write-offs there score only | user-decided: "fence barriers you can't jump until it is cleared"; "You can go back to tiles you have cleared"; closing behind proposed (assistant) | A tile is an arena; the cleared city is yours to roam | — | Held at x 787; B1 fenced E, S, W on entry |
+| 453 | Power-ups: a clear pays `story.clearPowerUps` (1); every `story.pointsPerPowerUp` (15,000) points pays one more. A power-up is one shop credit; levels cost 1, 2, 3. No per-body credit in the story; the shop shows only with power-ups to spend | user-decided: "Three bodies = one powerup"; "you can improve with score"; credit reading and values proposed (assistant) | Score buys strength; a clear always pays | A whole level per clear would max the tracks by tile 11 (D63) | 47,510 points, 1 paid → +2 |
+| 454 | Gifts on arrival: Legs 1 at Monument C1, Hands 1 at B2, Arms 1 at A2, Battery 1 at B3; `story.giftPowerUps` (1) at Parkland C1 and Waterfront A1. Each brief's ability is gifted by its tile | user-directed: "Farsight gives you a specific task and/or power up"; placement proposed (assistant) | Monument teaches one verb a tile | Four free levels | C1 installs Legs 1 |
+| 455 | 27 tales, one per tile, in `content/story/story.json` with the briefs and gifts. Shown on the tile card and the story map | user-directed: "Generate a simple tale about how this part of the Test City appeared"; text proposed (assistant) | Content stays out of code; numbers are registry IDs | — | 911 words |
+| 456 | The map reveals cleared tiles and the tile in test; the rest read "?". The HUD's district map draws fences as yellow dashes and the brief beneath | user-decided: "gradually the whole map is revealed" | Linear, legible progress | — | Story map at start: A1 only |
+| 457 | No clock in the story: a district runs `story.shiftCars` (5,000) cars; no Failed test | proposed (assistant) | Progress, not pressure | — | — |
+| 458 | Story progress saved in the browser (one slot), after every count, clear, gift and purchase. NEW STORY erases on a second press | proposed (assistant) | 81 bodies span sessions | One device, one slot | Reload resumes A1 at 1 of 3 |
+| 459 | Prototype 6.10 frozen; the shared code in `prototypes/p6` builds P7 from `prototypes/p7/build.py`. `p6/build.py` refuses | proposed (assistant) | One source; old builds byte-identical | — | test_p610 47/47 on the shared code |
+| 460 | Credits: `economy.creditsPerWriteOff` (1) for every body written off, in Arcade and Story, counted or not. Story clears and score pay nothing. Retires `story.clearPowerUps`, `story.pointsPerPowerUp` (P7 keeps them). Closes D63 | user-decided (28 October): "One credit per body destroyed" | One rule in both modes; every body pays | Replaying cleared tiles buys levels | Missed write-off: +1; a million points: +1 |
+
+[DECISIONS#rows-521-530~2] Rows 521–530
+| # | Decision | Status | Reason | Trade-off | Evidence / result |
+|---|---|---|---|---|---|
+| 521 | Story text in its voice: act lines on the first card of each district and at the head of every card; act numerals on the map; 27 tales; the ending screen's words. Briefs, parts, counts and order unchanged | proposed (assistant) under row 520 | The narrative reaches every card | — | `content/story/story.json` (edit92) |
+| 522 | Tile names: Monument A1 The welcome wall, A2 The neon shops; Parkland A2 The dome by the canal; Waterfront C3 The east customs post, A3 The west customs post. The rest keep theirs | user-decided: "Update the tile names"; names proposed (assistant) | Each name shows on its tile | — | `test_p711.js` |
+| 523 | The story's tile art (`world.storyArt` 1 in P7): A1's welcome wall (the face, WELCOME · NEW STAFF · FARSIGHT); A2's shop signs and their glow; A3's lit cube edges; C3's gateway (pylons, a deep beam, THANK YOU · DRIVE SAFE, its shadow); Parkland C1's paper lantern; B1's falls and runnels; Waterfront A3 and C3's CUSTOMS signs; the ship at B3 | user-decided: "tile assets (cosmetic only without changing gameplay interaction elements)" | Pixels on sprites already placed, flat marks, props never solid | — | Solids, floors, stairs, spawns and cone homes identical on all 27 tiles; the art on 9. Closes D75 |
+| 524 | Not drawn: Parkland's visitors and Chassis 0. They live in the tales | proposed (assistant): figures in play would read as targets or obstacles | Cosmetic stays cosmetic | Act II's people are unseen | — |
+| 525 | Registry `edit92-2026-10-28`: `world.storyArt` (505 entries) | proposed (assistant) | Every new statistic has an ID | — | `content/params/tuning.parameters.json` |
+| 526 | Introduce, then test: a part arrives on the tile whose brief first needs it. No brief needs a part not yet issued. Battery 1 tests the dash; Legs a jump; Hands a cone; Arms a push; Battery 2 and 3 a combo ×3 | user-decided: "Since you get DASH with B1, then it should have a write-off with DASH … pace the upgrades and goals to later … Re-evaluate the progression again for STORY MODE"; the rule proposed (assistant) | Every gift is used at once, on its own tile | Arms leaves Act I | Amends row 509's tiles |
+| 527 | The schedule: Monument Battery 1 B1, Hands 1 A2, Legs 1 B3; Parkland Arms 1 C1, Legs 2 A3, Hands 2 A2, Arms 2 A1, Battery 2 B2; Waterfront Legs 3 B1, Arms 3 B3, Battery 3 B2. Three parts in Act I, five in Act II, three in Act III; all 11 at tile 27 (7.11: tile 24) | proposed (assistant) under row 526 | Act I teaches three verbs; Act II carries the toolkit; each act ends on a part or a test | Battery 3 serves one tile | `content/story/story.json` (edit93) |
+| 528 | Brief moves: Monument B1 drop → dash (a new task, DASH INTO A CAR); C1 jump → drop; C3 push → thrown. Parkland C1 drop → push; C3 thrown → combo ×2; A2 raised road → cone; B1 cone → raised road. Waterfront unchanged | user-decided: B1 dash; "C1 could be the 'fall onto a car from above' goal"; the rest proposed (assistant) | The parts set the briefs, not the reverse; Act I's non-part briefs test what the body already does | — | `test_p712.js`: each verb's first brief is its drone's tile |
+| 529 | Parkland B1 drops its cone brief for a raised road. Its street stays empty 67% of the time | proposed (assistant) under row 528 | A cone needs a car on the street; the highway always has one | — | Eases D70 |
+| 530 | Monument C3 (thrown into a car, on foot of Arms): `story.writeOffs.monument.C3` 2 → 1; `story.traffic.monument.C3` 1 → 1.5. 34 bodies in all (7.11: 35) | proposed (assistant) | A rebound needs two cars close together | One body fewer | Registry |
+
+LINT (style/lint.py)
+- No findings.
+
+CONTENT
+{
+ "kind": "tale",
+ "district": "monument",
+ "tile": "A2",
+ "title": "The neon shops",
+ "tale": "The shops under the highway sell nothing. Their signs flash prices at the traffic. Hands 1 is your new power-up: place a cone and the enemy cars must stop. Win the challenge."
+}

@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "A chain of three certifies the city. And you." This tale shape needs the duty in the imperative, but here the duty is a statement of outcome, so the tale gives no instruction. [STORY#MB3] Fix: "Battery 3 is fitted. Give the city a chain of three; it certifies the city. And you."
+Total: 10 − 1 = 9.

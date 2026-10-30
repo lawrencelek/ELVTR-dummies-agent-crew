@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · T13 (minor, −1) "The high road runs through the portal tower at the sixth floor, above tenants who call the traffic good company." This sentence has two adjectives, "high" and "good", and the rule allows at most one per sentence. [EDIT95#3.2] Fix: remove "high": "The road runs through the portal tower at the sixth floor, above tenants who call the traffic good company." (33 words.)
+Total: 10 − 1 = 9.

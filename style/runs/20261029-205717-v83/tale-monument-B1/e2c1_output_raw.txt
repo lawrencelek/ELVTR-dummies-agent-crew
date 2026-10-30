@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the following rules and found no violations: T1–T5 and T13 (deadpan, training framing, "you", no adjectives) [EDIT95#3.2]; V1, V3, V4, V8 and V11 (the skybridge is named and turned toward watching your dash) [EDIT95#3.1]; F5 and F6 (20 words, two sentences; "Battery 1" is an allowed part rank) [EDIT98#3.2]; F7 and R5 (Battery 1 is named on the tile that issues it, and the duty matches DASH INTO A CAR) [STORY#MB1, STORY#S1]; R4 (tile truth) [STORY#MB1].
+Total: 10.

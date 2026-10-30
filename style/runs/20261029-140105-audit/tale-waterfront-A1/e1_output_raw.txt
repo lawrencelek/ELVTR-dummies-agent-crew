@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the shipped tale for tone, vocabulary and lore, formatting and length, and truth. Tone: dry staff-notice register with no "!", Farsight in the third person, the bus as fleet data rather than an enemy, and "It will not miss" as understatement [EDIT92#3, STORY#S1, EDIT39#4.1.1]. Vocabulary and lore: Act III's river-border frame and no banned or game words [STORY#S2, FLEET#F2, FLEET#F3]. Length: within the 223-character card, one paragraph, and no sentence over 19 words [EDIT92#measured, EDIT93#3.1/tales-rewritten~2]. Truth: no equipment is named on a tile that issues none, and the duty matches the brief A BUS [STORY#WA1, EDIT93#3.1, DECISIONS#rows-531-540~2].
+Total: 10.

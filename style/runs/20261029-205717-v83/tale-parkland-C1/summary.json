@@ -1,0 +1,116 @@
+{
+ "case": "tale-parkland-C1",
+ "class": "V8.3 tale",
+ "title": "Parkland C1, cut to 15 to 20 words",
+ "request": null,
+ "scores": [
+  6,
+  6,
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 3,
+ "accepted": true,
+ "final_version": 3,
+ "seconds": 108.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 20.5,
+   "output_tokens": 1591,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3138576
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 9.4,
+   "output_tokens": 845,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1360778
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 13.3,
+   "output_tokens": 1228,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1422391
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 10.1,
+   "output_tokens": 653,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1318733
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 14.9,
+   "output_tokens": 1322,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1446977
+  },
+  {
+   "label": "f3",
+   "role": "refiner",
+   "seconds": 15.4,
+   "output_tokens": 953,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1379852
+  },
+  {
+   "label": "e4",
+   "role": "evaluator",
+   "seconds": 11.2,
+   "output_tokens": 1021,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1478596
+  },
+  {
+   "label": "e4c1",
+   "role": "evaluator",
+   "seconds": 13.4,
+   "output_tokens": 1232,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.033137400000000004
+  }
+ ],
+ "restored": [],
+ "cost_usd": 1.1877
+}

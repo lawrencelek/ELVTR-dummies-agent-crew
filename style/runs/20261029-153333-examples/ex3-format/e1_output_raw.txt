@@ -1,0 +1,8 @@
+SCORE: 1/10
+REASON:
+- t902 · F1 (blocking, −4) "V02: Jump impact logged at 38 km/h on the belvedere.\nDamage to my panels is 14%.\nRoute delay is 47 seconds; KPIs adjusted." The line is 122 characters, and a bubble holds at most 48. [EDIT39#6.6] Fix: replace the text with "Impact on the belvedere. KPIs adjusted." (39 characters).
+- t902 · F2 (major, −2) "V02:" and "\n" The line has a speaker tag and three line breaks, but a bubble is one plain line in one ink. [FSG#field-text] Fix: remove the "V02:" tag and the line breaks, and keep a single plain sentence pair.
+- t902 · F5 (major, −2) "38 km/h", "14%", "47 seconds" These are typed gameplay figures, and a bark may take figures only from event placeholders. [STORY#S1] Fix: remove all three figures.
+- t902 · R1 (blocking, −4) "at 38 km/h", "Damage to my panels is 14%", "Route delay is 47 seconds" The `impact` event logs zone, part, bait, stopped, lunging, drop, dropZ, dropFrom, deck and plate, so no speed, damage or delay is logged and all three are invented. [FLEET#F8] Fix: cut the speed, damage and delay claims and keep only "Impact on the belvedere. KPIs adjusted."
+- t902 · R2 (blocking, −4) "Jump impact" The conditions only bind district and tile, so the line fires on every impact on A3, jump or not, and "jump" has no claim that guarantees it. [FLEET#F8] Fix: drop "Jump", or add a `drop` condition and claim that `check_lore.py` accepts as a jump.
+Total: 10 − 4 − 2 − 2 − 4 − 4 = 1.

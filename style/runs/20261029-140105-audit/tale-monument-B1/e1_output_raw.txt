@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked tone and the employment frame (T1–T5), and "Farsight" is in title case and named in the third person (V4). The ACT I · INDUCTION frame holds, with staff and colleagues (V6), and the dummy is addressed as "you" and staff (V8). The tale is about 217 characters, in one paragraph, and its longest sentence is 17 words (F6). It has no typed figures (F5). It names the equipment the tile issues: "a battery, for the dash" for Battery 1 (F7). Its duty, "Dash into a colleague", matches the DASH INTO A CAR brief, and it names only the bridge, which is this tile's landmark (R4, R5). It matches the shipped text in [STORY#MB1], [EDIT93#3.1/tales-rewritten~1] and [EDIT92#3], within the limits in [EDIT92#measured] and [STORY#S1]. Lint found nothing.
+Total: 10.

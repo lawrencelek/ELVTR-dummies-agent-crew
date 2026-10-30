@@ -1,0 +1,8 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the rules below and found no violations.
+  - **Tone:** T1, T3, T4, T5, T13 [EDIT95#3.1, EDIT95#3.2, PLAY#PS2].
+  - **Vocabulary and lore:** V1, V3, V4, V6, V8, V9, V11 [EDIT95#0, EDIT95#3.3, FLEET#F3].
+  - **Formatting:** F5 and F6, at two sentences and 27 words; F7, with no equipment issued; F11 [EDIT97#3.2].
+  - **Truth:** R4 and R5 hold. The obelisk, the school party and the police escort all come from the tile, and the duty matches the brief A POLICE CAR [STORY#PB3, STORY#S1].
+Total: 10.

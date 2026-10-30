@@ -1,0 +1,13 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I found no violations in any of the 36 texts:
+
+- **Tone (T1–T5, T13, T14):** every text is deadpan, flat and motivating, and has no "!". Adjectives stay within limits. The company speaks as Dummy Corporation, "the Corporation" or "we". No phrase of four or more words appears in more than two texts. [EDIT95#3.2] [PLAY#PS2]
+- **Vocabulary and lore (V1–V11):** no banned words. The glossary is followed. The three acts keep their story frames. ZERO ACCIDENTS and ROLE: DESTRUCTIVE TESTING are spelled exactly. Every tale names its landmark or a canon detail of it. [EDIT95#3.1] [EDIT95#3.3] [STORY#S2]
+- **The sacrifice (V10):** the Waterfront act line states it plainly. [EDIT95#3.1]
+- **Length and format (F5–F7, F10, F11):** each tale runs 15 to 35 words in at most two sentences. Every other text stays under 20 words. No tale has a placeholder. Each tile that issues equipment names it. [EDIT97#3.2] [EDIT95#4.2] [STORY#MB3]
+- **Tile truth and duties (R4, R5):** each tale's place matches its tile chunk (STORY#MA1–STORY#WB2), and its duty matches its brief. No tale names a part before the tile that issues it. [STORY#S1] [STORY#S3] [EDIT93#3.1]
+
+Total: 10.

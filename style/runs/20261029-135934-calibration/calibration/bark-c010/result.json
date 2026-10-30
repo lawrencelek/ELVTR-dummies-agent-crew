@@ -1,0 +1,13 @@
+{
+ "id": "bark-c010",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "Nobody walks the highway. Nobody.",
+ "cost_usd": 0.1106,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked c010, \"Nobody walks the highway. Nobody.\", against every bark rule and found no violation. It is a worker's disbelief, not world lore (T6, [FLEET#F2]). It has no tier's signature, so it works for all four tiers (T7, T8, [FLEET#F4], [SUB4#5]). It is a joke, not a flat report (T12, [SUB4#6.1]). It uses no banned or game words (V1, V3, [FLEET#F3]) and no grid code (V5, [SUB4#6.2]). It is plain text, ends with \".\", has no \"!\" and is within 48 characters (F1–F3, T10, [FSG#field-text]). Speech at priority 2 fits an impact (F4, [EDIT39#6.6]). It only reacts to the impact and claims nothing beyond \"deck\" and \"highway\", which deck=true guarantees (R1–R3, [FLEET#F8], [DESIGN#D9.3]).\nTotal: 10."
+}

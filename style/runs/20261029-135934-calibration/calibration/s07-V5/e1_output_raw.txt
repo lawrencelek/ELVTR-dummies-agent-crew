@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s07 · V5 (major, −2) "B2. I did not sign up for this." The line opens on a grid code, and cars name the landmark or the district, never the code. This is the line decision 537 rejected. [EDIT94#who-built-what-assignment-5] Fix: "The monument. I did not sign up for this." (41 characters; this tile's landmark per STORY#MB2; keeps claims district:monument and tile:B2).
+Total: 10 − 2 = 8.

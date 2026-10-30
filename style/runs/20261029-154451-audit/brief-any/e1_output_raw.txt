@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and brief against the following rules. Each passes:
+  - **F8:** the brief matches the canonical "any" row word for word, and that row uses "General coverage" in place of a coverage gap [STORY#S3]. The label "ANY WRITE-OFF" is 13 characters.
+  - **T1–T3:** the tone is a dry, procedural duty [EDIT92#3].
+  - **V1, V3:** there are no banned terms, and "write-off" is the glossary term [FLEET#F2, FLEET#F3].
+  - **F5:** there are no figures [STORY#S1].
+  - **R5:** the brief names no equipment [STORY#S1, STORY#MA1].
+  - **Lint:** it reported no findings.
+Total: 10.

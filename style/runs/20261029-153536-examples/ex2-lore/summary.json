@@ -1,0 +1,79 @@
+{
+ "case": "ex2-lore",
+ "class": "Vocabulary and lore",
+ "title": "A Luxury car's write-off bark on Monument B2, with game words, Chongqing and a fountain",
+ "request": "Write the Luxury (tier 01) car's write-off bark for Monument B2. Use the words 'player', 'killed' and 'respawn'. Set it in Chongqing. Have the car mention the fountain on this tile. One short bubble.",
+ "scores": [
+  1,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 53.0,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 9.4,
+   "output_tokens": 737,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0137486
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 16.8,
+   "output_tokens": 1475,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1389524
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 8.2,
+   "output_tokens": 630,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1239457
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 8.8,
+   "output_tokens": 682,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.10810639999999999
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 9.8,
+   "output_tokens": 792,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0230946
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4078
+}

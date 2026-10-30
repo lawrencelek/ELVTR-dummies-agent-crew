@@ -1,0 +1,68 @@
+{
+ "case": "brief-drop",
+ "class": "V8.3 goal",
+ "title": "the drop brief, as a goal",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 28.8,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 9.0,
+   "output_tokens": 686,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.13112549999999998
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 4.9,
+   "output_tokens": 162,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1218334
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 8.4,
+   "output_tokens": 541,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1281769
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 6.4,
+   "output_tokens": 459,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.017303699999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3984
+}

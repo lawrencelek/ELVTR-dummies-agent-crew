@@ -1,0 +1,11 @@
+SCORE: 1/10
+REASON:
+- n24 · T1 (major, −2) "Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument." It is a flat street survey that does nothing to motivate the trainee, and a notice that does not motivate fails the rule. [EDIT95#3.2] Fix: "Neon commerce, LED walls; one road splits round the monument under the highways. Your training starts there."
+- n25 · T1 (major, −2) "Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath." It describes the streets without motivating the trainee or pointing to Opening Day. [EDIT95#3.2] Fix: "Water, concrete and planting; a boulevard passes under the Z1 ring. Your write-offs open the Expo."
+- n25 · F5 (major, −2) "45°" This is a typed figure, and numbers live in the registry. [STORY#S1] Fix: delete "45°" and write "a boulevard".
+- n25 · F6 (blocking, −4) "Calm, water, concrete and planting. Two Z1 highways meet at …" At 21 words it is over the cap of 20. [EDIT95#3.2] Fix: use the n25 replacement above (16 words).
+- n25 · F10 (major, −2) "Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath." At 123 characters it is wider than the slot's 110. [EDIT95#4.2] Fix: use the n25 replacement above (98 characters).
+- n26 · T1 (major, −2) "A hill walled by towers; a river below. The valley avenue meets the tunnel and the beach road at the circus; the hill's bridges cross the drive and the river." It lists roads, motivates nothing, and leaves out the Customs frame. [EDIT95#3.2] Fix: "A hill walled by towers; bridges cross the drive to the river. Certified dummies ship across it."
+- n26 · F6 (blocking, −4) "A hill walled by towers; a river below. The valley avenue me…" At 30 words it is over the cap of 20. [EDIT95#3.2] Fix: use the n26 replacement above (16 words).
+- n26 · F10 (major, −2) "A hill walled by towers; a river below. The valley avenue meets the tunnel and the beach road at the circus; the hill's bridges cross the drive and the river." At 158 characters it is wider than the slot's 110. [EDIT95#4.2] Fix: use the n26 replacement above (96 characters).
+Total: 10 − 2 − 2 − 2 − 4 − 2 − 2 − 4 − 2 = 1.

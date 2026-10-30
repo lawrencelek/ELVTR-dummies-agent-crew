@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- c024 · V4 (minor, −1) "FARSIGHT Campus. Test centre. How apt." Lint finds "FARSIGHT" in all capitals inside a sentence-case line, and the ruling says to write "Farsight" everywhere. [DECISIONS#rows-531-540~2] (row 539) Fix: "Farsight Campus. Test centre. How apt."
+Total: 10 − 1 = 9.

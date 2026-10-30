@@ -1,0 +1,2844 @@
+[
+ {
+  "case": "tale-monument-B1",
+  "class": "V8.3 tale",
+  "title": "Monument B1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 46.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.2,
+    "output_tokens": 955,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.31046039999999997
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.5,
+    "output_tokens": 843,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1454811
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.4,
+    "output_tokens": 917,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14537680000000003
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.6,
+    "output_tokens": 928,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.027044600000000002
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6284
+ },
+ {
+  "case": "tale-monument-C1",
+  "class": "V8.3 tale",
+  "title": "Monument C1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 49.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 19.0,
+    "output_tokens": 1385,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.30622140000000003
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.3,
+    "output_tokens": 805,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1319145
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.8,
+    "output_tokens": 887,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1402894
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.3,
+    "output_tokens": 813,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.024578400000000004
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.603
+ },
+ {
+  "case": "tale-monument-C2",
+  "class": "V8.3 tale",
+  "title": "Monument C2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 27.5,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.6,
+    "output_tokens": 949,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.33211830000000003
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 11.9,
+    "output_tokens": 899,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0272922
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3594
+ },
+ {
+  "case": "tale-monument-B2",
+  "class": "V8.3 tale",
+  "title": "Monument B2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 22.2,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.9,
+    "output_tokens": 702,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.2951342
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 9.3,
+    "output_tokens": 709,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0223054
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3174
+ },
+ {
+  "case": "tale-monument-A2",
+  "class": "V8.3 tale",
+  "title": "Monument A2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 0,
+  "accepted": true,
+  "final_version": 0,
+  "seconds": 26.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.1,
+    "output_tokens": 929,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.31450019999999995
+   },
+   {
+    "label": "e1c1",
+    "role": "evaluator",
+    "seconds": 10.6,
+    "output_tokens": 785,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0243764
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3389
+ },
+ {
+  "case": "tale-monument-A3",
+  "class": "V8.3 tale",
+  "title": "Monument A3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 42.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 14.4,
+    "output_tokens": 871,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3095403
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.9,
+    "output_tokens": 725,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.21935670000000002
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.9,
+    "output_tokens": 699,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1352673
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.4,
+    "output_tokens": 854,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.025353100000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6895
+ },
+ {
+  "case": "tale-monument-B3",
+  "class": "V8.3 tale",
+  "title": "Monument B3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 46.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 17.9,
+    "output_tokens": 1287,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3269222
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.6,
+    "output_tokens": 738,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15350560000000002
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.8,
+    "output_tokens": 641,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1353218
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.9,
+    "output_tokens": 899,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0262976
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.642
+ },
+ {
+  "case": "tale-monument-C3",
+  "class": "V8.3 tale",
+  "title": "Monument C3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 50.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 20.0,
+    "output_tokens": 1616,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.31665719999999997
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.7,
+    "output_tokens": 850,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1388328
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.7,
+    "output_tokens": 699,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1338574
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.9,
+    "output_tokens": 1062,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0294569
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6188
+ },
+ {
+  "case": "tale-parkland-C1",
+  "class": "V8.3 tale",
+  "title": "Parkland C1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   6,
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 3,
+  "accepted": true,
+  "final_version": 3,
+  "seconds": 108.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 20.5,
+    "output_tokens": 1591,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3138576
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.4,
+    "output_tokens": 845,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1360778
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 13.3,
+    "output_tokens": 1228,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1422391
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 10.1,
+    "output_tokens": 653,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1318733
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 14.9,
+    "output_tokens": 1322,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1446977
+   },
+   {
+    "label": "f3",
+    "role": "refiner",
+    "seconds": 15.4,
+    "output_tokens": 953,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1379852
+   },
+   {
+    "label": "e4",
+    "role": "evaluator",
+    "seconds": 11.2,
+    "output_tokens": 1021,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1478596
+   },
+   {
+    "label": "e4c1",
+    "role": "evaluator",
+    "seconds": 13.4,
+    "output_tokens": 1232,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.033137400000000004
+   }
+  ],
+  "restored": [],
+  "cost_usd": 1.1877
+ },
+ {
+  "case": "tale-parkland-C2",
+  "class": "V8.3 tale",
+  "title": "Parkland C2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 43.0,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.6,
+    "output_tokens": 956,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.2963457
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.3,
+    "output_tokens": 451,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12357220000000001
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.0,
+    "output_tokens": 823,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12401809999999999
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 10.1,
+    "output_tokens": 762,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0230039
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5669
+ },
+ {
+  "case": "tale-parkland-C3",
+  "class": "V8.3 tale",
+  "title": "Parkland C3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 52.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.9,
+    "output_tokens": 1145,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1692369
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 6.9,
+    "output_tokens": 548,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1581623
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.8,
+    "output_tokens": 1040,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1546143
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.7,
+    "output_tokens": 905,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.026833499999999996
+   },
+   {
+    "label": "e2c1b",
+    "role": "evaluator",
+    "seconds": 10.1,
+    "output_tokens": 762,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15150049999999998
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.6603
+ },
+ {
+  "case": "tale-parkland-B3",
+  "class": "V8.3 tale",
+  "title": "Parkland B3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 56.5,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.4,
+    "output_tokens": 1195,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1448297
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.6,
+    "output_tokens": 857,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1389898
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 15.7,
+    "output_tokens": 1274,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14275659999999998
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 16.8,
+    "output_tokens": 1221,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0325434
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4591
+ },
+ {
+  "case": "tale-parkland-A3",
+  "class": "V8.3 tale",
+  "title": "Parkland A3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 49.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.3,
+    "output_tokens": 1566,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1409588
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 11.9,
+    "output_tokens": 981,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1305343
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.7,
+    "output_tokens": 750,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.129272
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.8,
+    "output_tokens": 875,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.025511600000000002
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4263
+ },
+ {
+  "case": "tale-parkland-A2",
+  "class": "V8.3 tale",
+  "title": "Parkland A2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 45.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 14.0,
+    "output_tokens": 1140,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1572481
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.6,
+    "output_tokens": 709,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1497365
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 10.5,
+    "output_tokens": 719,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1289932
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 12.0,
+    "output_tokens": 822,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0244662
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4604
+ },
+ {
+  "case": "tale-parkland-A1",
+  "class": "V8.3 tale",
+  "title": "Parkland A1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   2,
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 3,
+  "accepted": true,
+  "final_version": 3,
+  "seconds": 114.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 15.2,
+    "output_tokens": 1241,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14845260000000002
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.1,
+    "output_tokens": 859,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14189670000000001
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 17.3,
+    "output_tokens": 1192,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1474002
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 7.1,
+    "output_tokens": 524,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13577989999999998
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 20.3,
+    "output_tokens": 1757,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.149855
+   },
+   {
+    "label": "f3",
+    "role": "refiner",
+    "seconds": 20.6,
+    "output_tokens": 2220,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1606942
+   },
+   {
+    "label": "e4",
+    "role": "evaluator",
+    "seconds": 11.7,
+    "output_tokens": 856,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14006860000000002
+   },
+   {
+    "label": "e4c1",
+    "role": "evaluator",
+    "seconds": 11.9,
+    "output_tokens": 1009,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.028515399999999996
+   }
+  ],
+  "restored": [],
+  "cost_usd": 1.0527
+ },
+ {
+  "case": "tale-parkland-B1",
+  "class": "V8.3 tale",
+  "title": "Parkland B1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 51.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.3,
+    "output_tokens": 1108,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14877490000000002
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 11.8,
+    "output_tokens": 828,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.144014
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 15.8,
+    "output_tokens": 821,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.159649
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.1,
+    "output_tokens": 993,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.028944600000000004
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4814
+ },
+ {
+  "case": "tale-parkland-B2",
+  "class": "V8.3 tale",
+  "title": "Parkland B2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 51.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.1,
+    "output_tokens": 1172,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1685963
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.3,
+    "output_tokens": 769,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1617176
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 18.3,
+    "output_tokens": 943,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1634265
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.1,
+    "output_tokens": 893,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0269956
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5207
+ },
+ {
+  "case": "tale-waterfront-A1",
+  "class": "V8.3 tale",
+  "title": "Waterfront A1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 2,
+  "accepted": true,
+  "final_version": 2,
+  "seconds": 71.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.6,
+    "output_tokens": 1001,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14301499999999998
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.8,
+    "output_tokens": 690,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1377961
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 20.7,
+    "output_tokens": 1245,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.157694
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 6.2,
+    "output_tokens": 415,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14245299999999997
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 11.4,
+    "output_tokens": 999,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1528064
+   },
+   {
+    "label": "e3c1",
+    "role": "evaluator",
+    "seconds": 13.0,
+    "output_tokens": 1063,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0299572
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.7637
+ },
+ {
+  "case": "tale-waterfront-B1",
+  "class": "V8.3 tale",
+  "title": "Waterfront B1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   9,
+   9,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 3,
+  "accepted": true,
+  "final_version": 3,
+  "seconds": 102.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 19.3,
+    "output_tokens": 1896,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.181975
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 18.6,
+    "output_tokens": 1109,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.16755299999999998
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 12.1,
+    "output_tokens": 994,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1660233
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 6.3,
+    "output_tokens": 458,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1565084
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 13.5,
+    "output_tokens": 1184,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1670718
+   },
+   {
+    "label": "f3",
+    "role": "refiner",
+    "seconds": 8.4,
+    "output_tokens": 635,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1574007
+   },
+   {
+    "label": "e4",
+    "role": "evaluator",
+    "seconds": 10.4,
+    "output_tokens": 957,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.16526150000000003
+   },
+   {
+    "label": "e4c1",
+    "role": "evaluator",
+    "seconds": 13.6,
+    "output_tokens": 1214,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0334725
+   }
+  ],
+  "restored": [],
+  "cost_usd": 1.1953
+ },
+ {
+  "case": "tale-waterfront-C1",
+  "class": "V8.3 tale",
+  "title": "Waterfront C1, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 46.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 16.5,
+    "output_tokens": 1147,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15641590000000002
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 7.5,
+    "output_tokens": 578,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1460451
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.1,
+    "output_tokens": 811,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1329775
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.4,
+    "output_tokens": 791,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.023923500000000004
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4594
+ },
+ {
+  "case": "tale-waterfront-C2",
+  "class": "V8.3 tale",
+  "title": "Waterfront C2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 45.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.2,
+    "output_tokens": 1165,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15717380000000003
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.3,
+    "output_tokens": 692,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14852
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.7,
+    "output_tokens": 873,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1507349
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 12.4,
+    "output_tokens": 933,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.027376700000000004
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4838
+ },
+ {
+  "case": "tale-waterfront-C3",
+  "class": "V8.3 tale",
+  "title": "Waterfront C3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 46.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 14.6,
+    "output_tokens": 1330,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.144895
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 9.3,
+    "output_tokens": 723,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1337738
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 11.4,
+    "output_tokens": 954,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1394015
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.3,
+    "output_tokens": 969,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0276155
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4457
+ },
+ {
+  "case": "tale-waterfront-B3",
+  "class": "V8.3 tale",
+  "title": "Waterfront B3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 61.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 22.1,
+    "output_tokens": 2285,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1724387
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 14.9,
+    "output_tokens": 1244,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1528061
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 13.0,
+    "output_tokens": 1082,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14465170000000002
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 11.7,
+    "output_tokens": 957,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0274761
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4974
+ },
+ {
+  "case": "tale-waterfront-A3",
+  "class": "V8.3 tale",
+  "title": "Waterfront A3, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 35.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 11.7,
+    "output_tokens": 986,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1374085
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.3,
+    "output_tokens": 271,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1241678
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 9.3,
+    "output_tokens": 766,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1324253
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 9.4,
+    "output_tokens": 743,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0229759
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.417
+ },
+ {
+  "case": "tale-waterfront-A2",
+  "class": "V8.3 tale",
+  "title": "Waterfront A2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 52.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 12.4,
+    "output_tokens": 1000,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1603705
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.6,
+    "output_tokens": 786,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1570582
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 15.4,
+    "output_tokens": 1276,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15879590000000002
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 14.3,
+    "output_tokens": 1210,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0329177
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5091
+ },
+ {
+  "case": "tale-waterfront-B2",
+  "class": "V8.3 tale",
+  "title": "Waterfront B2, cut to 15 to 20 words",
+  "request": null,
+  "scores": [
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 55.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 14.5,
+    "output_tokens": 1445,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.14984470000000003
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 11.1,
+    "output_tokens": 975,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1421029
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 14.0,
+    "output_tokens": 1126,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1428248
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 15.8,
+    "output_tokens": 1394,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.036114400000000005
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4709
+ },
+ {
+  "case": "brief-dash",
+  "class": "V8.3 goal",
+  "title": "the dash brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 26.1,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.1,
+    "output_tokens": 490,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11452899999999999
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 4.6,
+    "output_tokens": 220,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11013160000000001
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 7.3,
+    "output_tokens": 475,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1155032
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 7.1,
+    "output_tokens": 492,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.017540100000000003
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3577
+ },
+ {
+  "case": "brief-drop",
+  "class": "V8.3 goal",
+  "title": "the drop brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 28.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.0,
+    "output_tokens": 686,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.13112549999999998
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 4.9,
+    "output_tokens": 162,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1218334
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.4,
+    "output_tokens": 541,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1281769
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 6.4,
+    "output_tokens": 459,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.017303699999999998
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3984
+ },
+ {
+  "case": "brief-jump",
+  "class": "V8.3 goal",
+  "title": "the jump brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 26.9,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 7.0,
+    "output_tokens": 446,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1138991
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 4.2,
+    "output_tokens": 187,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1096726
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.0,
+    "output_tokens": 467,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11426239999999999
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 7.6,
+    "output_tokens": 561,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.018884699999999997
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3567
+ },
+ {
+  "case": "brief-level",
+  "class": "V8.3 goal",
+  "title": "the level brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   6,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 2,
+  "accepted": true,
+  "final_version": 2,
+  "seconds": 38.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.6,
+    "output_tokens": 359,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11210049999999999
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 6.6,
+    "output_tokens": 408,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1139865
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 6.8,
+    "output_tokens": 454,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1142273
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 5.4,
+    "output_tokens": 212,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1098726
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 6.2,
+    "output_tokens": 458,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1140537
+   },
+   {
+    "label": "e3c1",
+    "role": "evaluator",
+    "seconds": 7.3,
+    "output_tokens": 537,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0184022
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5826
+ },
+ {
+  "case": "brief-cone",
+  "class": "V8.3 goal",
+  "title": "the cone brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 27.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 8.0,
+    "output_tokens": 495,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1151423
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.8,
+    "output_tokens": 405,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1144467
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 6.4,
+    "output_tokens": 421,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1136097
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 7.5,
+    "output_tokens": 493,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0175341
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3607
+ },
+ {
+  "case": "brief-push",
+  "class": "V8.3 goal",
+  "title": "the push brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 22.7,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 6.6,
+    "output_tokens": 458,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11454480000000002
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 3.3,
+    "output_tokens": 55,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.10748540000000001
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 5.9,
+    "output_tokens": 385,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1129856
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 6.9,
+    "output_tokens": 417,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0160179
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.351
+ },
+ {
+  "case": "brief-bounce",
+  "class": "V8.3 goal",
+  "title": "the bounce brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 30.0,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 8.0,
+    "output_tokens": 467,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.114611
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 5.5,
+    "output_tokens": 328,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1128584
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 7.6,
+    "output_tokens": 600,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11635770000000001
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 8.8,
+    "output_tokens": 692,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.021485499999999998
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3653
+ },
+ {
+  "case": "brief-struck",
+  "class": "V8.3 goal",
+  "title": "the struck brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 38.6,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.6,
+    "output_tokens": 660,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1181386
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.7,
+    "output_tokens": 620,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11857909999999999
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 7.1,
+    "output_tokens": 523,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1150685
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 13.0,
+    "output_tokens": 1069,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.029035000000000005
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3808
+ },
+ {
+  "case": "brief-combo",
+  "class": "V8.3 goal",
+  "title": "the combo brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 27.4,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 8.3,
+    "output_tokens": 463,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11511389999999999
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 4.7,
+    "output_tokens": 157,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.11010740000000001
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 7.7,
+    "output_tokens": 580,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1175015
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 6.6,
+    "output_tokens": 469,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0170805
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3598
+ },
+ {
+  "case": "brief-cls",
+  "class": "V8.3 goal",
+  "title": "the cls brief, as a goal",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 31.8,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 9.4,
+    "output_tokens": 640,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1176748
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 6.8,
+    "output_tokens": 514,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1162445
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 8.2,
+    "output_tokens": 693,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1316938
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 7.4,
+    "output_tokens": 581,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.019764399999999998
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.3854
+ },
+ {
+  "case": "notices-83",
+  "class": "V8.3 notices",
+  "title": "The intro line (n36) and Arcade's goal (n37)",
+  "request": "Write n36 and n37. n36: one line for the intro screen that tells a new player what to do. The user's draft, to make funnier while keeping it obvious: 'Find new ways to make the cars hit you. Combo bonuses and upgrades await. Make Dummy Corporation proud.' n37: Arcade's goal, simple and direct, with {Q} for the write-offs per grade.",
+  "scores": [
+   1,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 58.3,
+  "calls": [
+   {
+    "label": "g0",
+    "role": "generator",
+    "seconds": 5.6,
+    "output_tokens": 362,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-sonnet-5-5"
+    ],
+    "cost_usd": 0.1070783
+   },
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 13.8,
+    "output_tokens": 1227,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.15050840000000001
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 10.1,
+    "output_tokens": 1032,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1480003
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 15.4,
+    "output_tokens": 1414,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1468612
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 13.4,
+    "output_tokens": 1186,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.031892199999999996
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.5843
+ },
+ {
+  "case": "review",
+  "class": "V8 batch",
+  "title": "The story and the opening lines, on V2.7; the user's lines locked",
+  "request": null,
+  "scores": [
+   6,
+   8,
+   9,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 3,
+  "accepted": true,
+  "final_version": 3,
+  "seconds": 372.3,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 47.5,
+    "output_tokens": 5375,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.34046849999999995
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 30.5,
+    "output_tokens": 4062,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.31671720000000003
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 45.9,
+    "output_tokens": 4977,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.33179569999999997
+   },
+   {
+    "label": "f2",
+    "role": "refiner",
+    "seconds": 22.7,
+    "output_tokens": 3179,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.2968459
+   },
+   {
+    "label": "e3",
+    "role": "evaluator",
+    "seconds": 74.7,
+    "output_tokens": 8232,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3968957
+   },
+   {
+    "label": "f3",
+    "role": "refiner",
+    "seconds": 30.0,
+    "output_tokens": 3688,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.3082079999999999
+   },
+   {
+    "label": "e4",
+    "role": "evaluator",
+    "seconds": 66.5,
+    "output_tokens": 7406,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.38024610000000003
+   },
+   {
+    "label": "e4c1",
+    "role": "evaluator",
+    "seconds": 54.2,
+    "output_tokens": 5637,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1251167
+   }
+  ],
+  "restored": [],
+  "cost_usd": 2.4963
+ },
+ {
+  "case": "intro-line",
+  "class": "V8.3 notices",
+  "title": "The intro line (n36), a hand draft through the loop",
+  "request": null,
+  "scores": [
+   8,
+   10,
+   10
+  ],
+  "kinds": [
+   "evaluation",
+   "evaluation",
+   "confirmation"
+  ],
+  "refinements": 1,
+  "accepted": true,
+  "final_version": 1,
+  "seconds": 59.5,
+  "calls": [
+   {
+    "label": "e1",
+    "role": "evaluator",
+    "seconds": 23.9,
+    "output_tokens": 2236,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1584878
+   },
+   {
+    "label": "f1",
+    "role": "refiner",
+    "seconds": 8.7,
+    "output_tokens": 769,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1305554
+   },
+   {
+    "label": "e2",
+    "role": "evaluator",
+    "seconds": 13.2,
+    "output_tokens": 1095,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.1314639
+   },
+   {
+    "label": "e2c1",
+    "role": "evaluator",
+    "seconds": 13.7,
+    "output_tokens": 1166,
+    "models": [
+     "claude-haiku-5-5",
+     "claude-opus-5-5"
+    ],
+    "cost_usd": 0.031156300000000005
+   }
+  ],
+  "restored": [],
+  "cost_usd": 0.4517
+ }
+]

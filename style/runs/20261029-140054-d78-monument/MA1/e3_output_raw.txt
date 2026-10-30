@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. All four lines were checked against tone and tier voice (T6, T7, T9, T10, T11, T12: [FLEET#F2], [FLEET#F4]), vocabulary and roster (V1, V2, V3, V5, V7, V8: [FLEET#F3]), format and fields (F1–F5: [FSG#field-text], [EDIT39#6.6]), and impact-event and tile truth (R1–R4: [FLEET#F8], [STORY#MA1]); each line refers to the A1 tile by its title, "welcome wall", or its WELCOME screen, and only t104, a Budget shout, uses "!".
+Total: 10.

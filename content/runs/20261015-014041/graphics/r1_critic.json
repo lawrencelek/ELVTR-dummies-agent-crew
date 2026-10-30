@@ -1,0 +1,36 @@
+{
+  "verdict": "revise",
+  "summary": "The copy sounds like DUMMIES: dry depot and service-road wording, with no cheer or generic sci-fi. Two problems remain: two destination markings have no Chinese pair, which breaks the bilingual-entry anchor, and one van roof ring reads as a commitment cue.",
+  "issues": [
+    {
+      "id": "C1",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "environment.corner[10].text",
+      "found": "DEPOT GATE C",
+      "canon": "DESIGN#D9.2",
+      "rule": "Entry and destination identifiers must be bilingual. Gates A and B carry a Chinese pair; gate C does not.",
+      "fix": "Keep \"DEPOT GATE C\" and add a sibling entry directly below it: {\"shape\":\"text\",\"x\":710,\"y\":286,\"text\":\"仓区入口 C\",\"size\":12,\"font\":\"ui\",\"align\":\"center\",\"fill\":\"secondary\",\"alpha\":0.7,\"review\":\"pending\",\"surface\":\"verge\",\"hazard\":false,\"note\":\"Chinese destination sign\",\"sources\":[\"DESIGN#D9.2\"]}. Its y of 286 stays inside the 240–290 gate outline."
+    },
+    {
+      "id": "C2",
+      "kind": "lore",
+      "severity": "fix",
+      "path": "environment.corner[2].text",
+      "found": "DEPOT EXIT 3",
+      "canon": "DESIGN#D9.2",
+      "rule": "Entry and destination identifiers must be bilingual. Essential language cannot be left to English-only mono micro-type.",
+      "fix": "Keep \"DEPOT EXIT 3\" and add a sibling entry below it: {\"shape\":\"text\",\"x\":550,\"y\":118,\"text\":\"仓区出口 3\",\"size\":12,\"font\":\"ui\",\"align\":\"center\",\"fill\":\"secondary\",\"alpha\":0.7,\"review\":\"pending\",\"surface\":\"tarmac\",\"hazard\":false,\"note\":\"Chinese destination marking\",\"sources\":[\"DESIGN#D9.2\"]}"
+    },
+    {
+      "id": "C3",
+      "kind": "rule",
+      "severity": "fix",
+      "path": "vehicles.van.roof[6]",
+      "found": "{\"shape\": \"ring\", \"x\": -17, \"y\": 0, \"r\": 6, \"lineWidth\": 1, \"stroke\": \"secondary\"}",
+      "canon": "DESIGN#D10.3~1",
+      "rule": "Decoration must not imitate cue shapes. A closed ring on the car reads as the closed commitment cue. The sedan's equivalent ring was already replaced with a rect.",
+      "fix": "{\"shape\": \"rect\", \"x\": -20, \"y\": -3, \"w\": 6, \"h\": 6, \"stroke\": \"secondary\", \"lineWidth\": 1}"
+    }
+  ]
+}

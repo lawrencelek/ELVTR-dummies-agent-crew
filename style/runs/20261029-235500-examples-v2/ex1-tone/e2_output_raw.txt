@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, T13 and T14 [EDIT95#3.2, EDIT95#3.1]; V1, V3, V4, V6, V8, V9 and V11, where it names the stacked cubes and turns them toward Certification [EDIT95#3.3, STORY#MA3]; F5, F6, F7 and F11, at 19 words in two sentences with no equipment issued [EDIT98#3.2, EDIT97#3.2]; and R4 and R5, where the combo duty matches the COMBO ×{n} brief [STORY#S3, EDIT93#3.1].
+Total: 10.

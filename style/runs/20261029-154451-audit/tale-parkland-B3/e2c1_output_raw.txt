@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Tone T1–T5 [EDIT92#3, STORY#S1, EDIT39#4.1.1, STORY#MA1], Vocabulary V1–V8 [FLEET#F2, FLEET#F3], Formatting F5–F7 [EDIT92#measured, EDIT93#3.1/tales-rewritten~2] and Truth R4–R5 [STORY#PB3, STORY#S1]: it is about 189 characters long, with no sentence over 14 words and no "!"; it uses the Act II OPENING DAY frame (school party, opening day); it speaks to the dummy as "you" and names Farsight in the third person; it states its duty plainly and matches the A POLICE CAR brief; it names only the obelisk court's landmark; and it names no equipment because this tile issues none.
+Total: 10.

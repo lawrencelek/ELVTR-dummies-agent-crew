@@ -1,0 +1,496 @@
+{
+  "params": [
+    {
+      "id": "proto.term.panelRadius",
+      "value": 12,
+      "unit": "canvas units",
+      "purpose": "Corner radius for every glass panel in the frame.",
+      "sources": [
+        "DESIGN#D10.1",
+        "EDIT26#4.1~1"
+      ]
+    },
+    {
+      "id": "proto.term.glossHeight",
+      "value": 16,
+      "unit": "canvas units",
+      "purpose": "Height of the top gloss highlight on each glass panel.",
+      "sources": [
+        "EDIT26#4.1~2",
+        "DESIGN#D10.1"
+      ]
+    },
+    {
+      "id": "proto.term.borderAlpha",
+      "value": 0.7,
+      "unit": "alpha",
+      "purpose": "Opacity of the panel bevel border.",
+      "sources": [
+        "EDIT26#4.1~2"
+      ]
+    },
+    {
+      "id": "proto.term.shadowBlur",
+      "value": 10,
+      "unit": "canvas units",
+      "purpose": "Blur radius of the soft panel drop shadow.",
+      "sources": [
+        "EDIT26#4.1~1",
+        "EDIT26#4.1~2"
+      ]
+    },
+    {
+      "id": "proto.term.signSeconds",
+      "value": 6,
+      "unit": "s",
+      "purpose": "Time each FARSIGHT notice stays up before it cross-fades to the next.",
+      "sources": [
+        "EDIT26#4.2~4",
+        "EDIT26#4.2~3"
+      ]
+    },
+    {
+      "id": "proto.term.rangeStep",
+      "value": 20,
+      "unit": "canvas units",
+      "purpose": "Spacing of calibration ticks on the field bezel.",
+      "sources": [
+        "EDIT26#4.1~2",
+        "EDIT26#4.2~4"
+      ]
+    }
+  ],
+  "backdrop": {
+    "stops": [
+      {
+        "at": 0,
+        "role": "aqua",
+        "alpha": 0.55
+      },
+      {
+        "at": 0.55,
+        "role": "glass",
+        "alpha": 0.85
+      },
+      {
+        "at": 1,
+        "role": "aqua",
+        "alpha": 0.3
+      }
+    ],
+    "glows": [
+      {
+        "x": 120,
+        "y": 110,
+        "r": 240,
+        "role": "glass",
+        "alpha": 0.6
+      },
+      {
+        "x": 1170,
+        "y": 620,
+        "r": 280,
+        "role": "aqua",
+        "alpha": 0.35
+      },
+      {
+        "x": 1160,
+        "y": 90,
+        "r": 180,
+        "role": "aquaDeep",
+        "alpha": 0.12
+      }
+    ],
+    "sources": [
+      "DESIGN#D10.1",
+      "EDIT26#4.1~1"
+    ]
+  },
+  "header": {
+    "product": "SMART CITY",
+    "productZh": "智慧城市",
+    "review": "pending",
+    "tagline": "A city without accidents.",
+    "badges": [
+      "ZERO ACCIDENTS",
+      "CITY-READY",
+      "FRIENDLY BY DESIGN"
+    ],
+    "sources": [
+      "EDIT26#3.1",
+      "DESIGN#D9.1",
+      "DESIGN#D9.2",
+      "EDIT26#4.2~1"
+    ]
+  },
+  "panels": {
+    "radius": "proto.term.panelRadius",
+    "gloss": "proto.term.glossHeight",
+    "border": "glass",
+    "borderAlpha": "proto.term.borderAlpha",
+    "shadow": "proto.term.shadowBlur",
+    "band": true,
+    "bandRole": "aqua",
+    "sources": [
+      "DESIGN#D10.1",
+      "EDIT26#4.1~1",
+      "EDIT26#4.1~2"
+    ]
+  },
+  "icons": {
+    "BODY": [
+      {
+        "shape": "circle",
+        "x": 0,
+        "y": -4.5,
+        "r": 3,
+        "fill": "dummy"
+      },
+      {
+        "shape": "rect",
+        "x": -3,
+        "y": -1,
+        "w": 6,
+        "h": 7,
+        "fill": "dummy"
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            -3,
+            6
+          ],
+          [
+            -3,
+            8
+          ]
+        ],
+        "stroke": "joints",
+        "lineWidth": 1.5
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            8
+          ]
+        ],
+        "stroke": "joints",
+        "lineWidth": 1.5
+      }
+    ],
+    "CHARGE": [
+      {
+        "shape": "rect",
+        "x": -7,
+        "y": -4,
+        "w": 12,
+        "h": 8,
+        "stroke": "glass",
+        "lineWidth": 1.5
+      },
+      {
+        "shape": "rect",
+        "x": 5,
+        "y": -2,
+        "w": 2,
+        "h": 4,
+        "fill": "glass"
+      },
+      {
+        "shape": "rect",
+        "x": -5,
+        "y": -2,
+        "w": 3,
+        "h": 4,
+        "fill": "glass"
+      },
+      {
+        "shape": "rect",
+        "x": -1,
+        "y": -2,
+        "w": 3,
+        "h": 4,
+        "fill": "glass"
+      }
+    ],
+    "FLEET": [
+      {
+        "shape": "rect",
+        "x": -7,
+        "y": -5,
+        "w": 14,
+        "h": 6,
+        "fill": "glass"
+      },
+      {
+        "shape": "rect",
+        "x": -7,
+        "y": 2,
+        "w": 14,
+        "h": 5,
+        "fill": "aquaDeep"
+      },
+      {
+        "shape": "circle",
+        "x": -4,
+        "y": 1,
+        "r": 1.5,
+        "fill": "aquaDeep"
+      },
+      {
+        "shape": "circle",
+        "x": 4,
+        "y": 1,
+        "r": 1.5,
+        "fill": "aquaDeep"
+      }
+    ],
+    "CONTRACT": [
+      {
+        "shape": "rect",
+        "x": -5,
+        "y": -7,
+        "w": 10,
+        "h": 14,
+        "stroke": "glass",
+        "lineWidth": 1.5
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            -3,
+            -3
+          ],
+          [
+            3,
+            -3
+          ]
+        ],
+        "stroke": "glass",
+        "lineWidth": 1
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            -3,
+            0
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        "stroke": "glass",
+        "lineWidth": 1
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            -3,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "stroke": "glass",
+        "lineWidth": 1
+      }
+    ],
+    "SHIFT": [
+      {
+        "shape": "ring",
+        "x": 0,
+        "y": 0,
+        "r": 6.5,
+        "stroke": "glass",
+        "lineWidth": 1.5
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            -4
+          ]
+        ],
+        "stroke": "glass",
+        "lineWidth": 1.5
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "stroke": "glass",
+        "lineWidth": 1.5
+      }
+    ],
+    "RECORD": [
+      {
+        "shape": "rect",
+        "x": -7,
+        "y": 1,
+        "w": 3,
+        "h": 6,
+        "fill": "glass"
+      },
+      {
+        "shape": "rect",
+        "x": -2,
+        "y": -3,
+        "w": 3,
+        "h": 10,
+        "fill": "glass"
+      },
+      {
+        "shape": "rect",
+        "x": 3,
+        "y": -7,
+        "w": 3,
+        "h": 14,
+        "fill": "glass"
+      }
+    ],
+    "BUILD": [
+      {
+        "shape": "ring",
+        "x": -2,
+        "y": -2,
+        "r": 4,
+        "stroke": "glass",
+        "lineWidth": 1.5
+      },
+      {
+        "shape": "line",
+        "points": [
+          [
+            1,
+            1
+          ],
+          [
+            7,
+            7
+          ]
+        ],
+        "stroke": "glass",
+        "lineWidth": 2.5
+      },
+      {
+        "shape": "circle",
+        "x": -2,
+        "y": -2,
+        "r": 1.2,
+        "fill": "aquaDeep"
+      }
+    ],
+    "sources": [
+      "DESIGN#D10.5",
+      "EDIT26#4.2~4",
+      "EDIT26#4.1~2"
+    ]
+  },
+  "texture": {
+    "diagnostics": [
+      "battery.capacity",
+      "battery.secondsPerCharge",
+      "damage.bodyHealth",
+      "damage.baseImpact",
+      "movement.lungeDistance",
+      "movement.runSpeed",
+      "perception.reactionDelay",
+      "traffic.timeGap"
+    ],
+    "rangeMarks": "proto.term.rangeStep",
+    "sources": [
+      "EDIT26#4.2~3",
+      "EDIT26#4.1~2",
+      "DESIGN#D10.3~2"
+    ]
+  },
+  "signage": {
+    "lines": [
+      {
+        "text": "Thank you for choosing a city without accidents."
+      },
+      {
+        "text": "Every journey in this district is a certified journey.",
+        "zh": "本区每一次出行均已认证。",
+        "review": "pending"
+      },
+      {
+        "text": "Calibration marks are provided for your safety and ours."
+      },
+      {
+        "text": "This district is monitored for your convenience.",
+        "zh": "本区域受到监测,为您提供便利。",
+        "review": "pending"
+      },
+      {
+        "text": "Pedestrians are valued participants in the smart city."
+      },
+      {
+        "text": "Your feedback helps the fleet serve you better."
+      },
+      {
+        "text": "Safety is a shared responsibility. FARSIGHT shares it gladly."
+      },
+      {
+        "text": "Logistics roads are open for the benefit of the whole zone.",
+        "zh": "物流道路向全区开放。",
+        "review": "pending"
+      }
+    ],
+    "seconds": "proto.term.signSeconds",
+    "sources": [
+      "EDIT26#3.1",
+      "DESIGN#D9.2",
+      "DESIGN#D10.1",
+      "EDIT26#4.1~1",
+      "EDIT26#4.2~3"
+    ]
+  },
+  "title": {
+    "eyebrow": "VISITOR ORIENTATION",
+    "lines": [
+      "Welcome, test subject. The fleet will avoid you. Kindly be struck, so FARSIGHT stays accident-free.",
+      "{roads} roads, each certified in turn. Write-offs required: {q1}, {q2}, {q3}. Every lost body buys one modification."
+    ],
+    "start": "Press A or Space to begin your test.",
+    "difficulty": {
+      "Fragile": "Body health {health}. A short, tidy test.",
+      "Standard": "Body health {health}. The recommended chassis.",
+      "Reinforced": "Body health {health}. Built to last, regrettably."
+    },
+    "sources": [
+      "EDIT26#3.1",
+      "DESIGN#D9.1",
+      "DESIGN#D1",
+      "LOG#P1.5/campaign",
+      "LOG#P1.4",
+      "EDIT26#4.1~1"
+    ]
+  }
+}

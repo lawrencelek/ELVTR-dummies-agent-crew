@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · F7 (minor, −1) "Two hits, the second before the first is forgotten." The tale should end on the duty as an instruction, but this closing sentence has no verb, so it is not in the imperative. [STORY#PC3, EDIT93#3.1] Fix: "Land two hits, the second before the first is forgotten." (207 characters, 10 words in the sentence).
+Total: 10 − 1 = 9.

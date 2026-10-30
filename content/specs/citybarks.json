@@ -1,0 +1,235 @@
+{
+ "type": "citybarks",
+ "target": "p3",
+ "title": "City barks: what the fleet says about drops, highways and calibration plates",
+ "param_prefix": "proto.barks.",
+ "gap": [
+  "My game is thin on humour in the new city (designer's gap statement). P3.3 (GDD Edit 44) added three levels: a dummy can drop onto a car from a Z1 low highway, a Z2 high highway or a Z2 platform roof; highway cars can be hit on their own deck; FARSIGHT Campus scores hits on calibration plates.",
+  "The fleet bank (123 lines, content/db/fleet.json) was written for one road. No line knows about drops, highways, plates or districts.",
+  "So when the dummy lands on the Luxury sedan from a roof, the car says 'Bumper damage on a Luxury trim.' That breaks lore tied to state (GDD Edit 39 §6.6.1): the line asserts a front-bumper strike that did not happen.",
+  "Only two models run in the P3 city: SED-01-001 (tag S01, Meridian Imperial, callsign Ambassador, tier 01 Luxury, confident) and VAN-02-001 (tag V02, Porter Office, callsign Waybill, tier 02 Corporate, calm). A line bound to another tier, class or model never fires."
+ ],
+ "deliverable": [
+  "New fleet lines, in the database's own format, for the situations the city added: landed on from a roof, from a highway parapet, from Z2 height; hit on the highway deck; hit on a calibration plate; written off by any of these.",
+  "One or more lines per district (Riverside, Old Market, Interchange, CBD, FARSIGHT Campus) that only that district's situation makes true.",
+  "Tier voices: tier 01 Luxury (polished, superior, faintly amused, never apologises) and tier 02 Corporate (procedural, logs, KPIs, policy numbers). Tier-free lines must fit both.",
+  "Every line declares the claims it asserts, and its conditions guarantee them (check_lore.py runs on every draft).",
+  "Ids c001, c002, … in order. Impacts priority 2; write-offs priority 3."
+ ],
+ "queries": [
+  "drop off a ledge or broken parapet lands on the nearest level below fall time landing speed square root height",
+  "landing on a car closing speed hit from above legs take it stopped sedan van cruise Z2",
+  "Z0 ground Z1 low highway Z2 high highway platform roofs skybridges levels",
+  "deck traffic full drivers on their deck level cars sense their own level only",
+  "calibrated impact plates on the road points multiplier FARSIGHT Campus",
+  "vehicles speak as workers corporate politeness barely contains personalities retraining dispatch",
+  "tier temperament voice Luxury Corporate polished superior procedural logs KPIs",
+  "models in the P3 city S01 V02 Ambassador Waybill chauffeurs board members parcel route",
+  "lore follows state a line may only say what the game state guarantees claims conditions",
+  "bark key model number event front hit side hit write-off seniority mood priority",
+  "Riverside Old Market Interchange Central Business District FARSIGHT Campus landmark form traffic hazards",
+  "existing lines impact write-off fleet bark bank style priority"
+ ],
+ "critic_queries": [
+  "barks never assert facts the simulation did not establish neutral fallback",
+  "Luxury never apologises Corporate speaks in logs KPIs policy numbers",
+  "banned terms setting Shenzhen smart city FARSIGHT capitals",
+  "mockery game-show cheer generic science fiction commentary interchangeable",
+  "roofs are Z2 platform buildings low highway Z1 high highway Interchange CBD",
+  "plates on the road FARSIGHT Campus only"
+ ],
+ "k": 3,
+ "max_chunks": 22,
+ "allowed": {
+  "events": [
+   "impact",
+   "writeoff"
+  ],
+  "fields": "fleet.json events[event] plus the shared context; see the table below",
+  "values": {
+   "dropZ": [
+    1,
+    2
+   ],
+   "dropFrom": [
+    "deck",
+    "roof"
+   ],
+   "drop": [
+    true
+   ],
+   "deck": [
+    true
+   ],
+   "plate": [
+    true
+   ],
+   "district": [
+    "riverside",
+    "market",
+    "interchange",
+    "cbd",
+    "campus"
+   ],
+   "tier": [
+    "01",
+    "02"
+   ],
+   "class": [
+    "sedan",
+    "van"
+   ],
+   "model": [
+    "SED-01-001",
+    "VAN-02-001"
+   ],
+   "zone": [
+    "front",
+    "frontDiagonal",
+    "side",
+    "rearDiagonal",
+    "rear"
+   ]
+  },
+  "styles": [
+   "speech",
+   "shout",
+   "mutter",
+   "thought"
+  ],
+  "priorities": {
+   "impact": 2,
+   "writeoff": 3
+  },
+  "max_chars": 48,
+  "required_cases": [
+   {
+    "event": "impact",
+    "when": {
+     "dropFrom": "roof"
+    },
+    "min_lines": 3
+   },
+   {
+    "event": "impact",
+    "when": {
+     "dropFrom": "deck"
+    },
+    "min_lines": 2
+   },
+   {
+    "event": "impact",
+    "when": {
+     "dropZ": 2
+    },
+    "min_lines": 2
+   },
+   {
+    "event": "impact",
+    "when": {
+     "deck": true
+    },
+    "min_lines": 3
+   },
+   {
+    "event": "impact",
+    "when": {
+     "plate": true
+    },
+    "min_lines": 2
+   },
+   {
+    "event": "writeoff",
+    "when": {
+     "drop": true
+    },
+    "min_lines": 2
+   },
+   {
+    "event": "writeoff",
+    "when": {
+     "deck": true
+    },
+    "min_lines": 1
+   },
+   {
+    "event": "writeoff",
+    "when": {
+     "plate": true
+    },
+    "min_lines": 1
+   },
+   {
+    "event": "impact",
+    "when": {
+     "district": "riverside"
+    },
+    "min_lines": 1
+   },
+   {
+    "event": "impact",
+    "when": {
+     "district": "market"
+    },
+    "min_lines": 1
+   },
+   {
+    "event": "impact",
+    "when": {
+     "district": "interchange"
+    },
+    "min_lines": 1
+   },
+   {
+    "event": "impact",
+    "when": {
+     "district": "cbd"
+    },
+    "min_lines": 1
+   },
+   {
+    "event": "impact",
+    "when": {
+     "district": "campus"
+    },
+    "min_lines": 1
+   }
+  ],
+  "tier_cases": [
+   "01",
+   "02"
+  ]
+ },
+ "schema": [
+  "{",
+  "  \"lines\": [ {",
+  "    \"id\": \"c001\",",
+  "    \"event\": \"impact\" | \"writeoff\",",
+  "    \"when\": { field: literal, ... }   (fields from the table; a line with no situation field never outranks the old lines),",
+  "    \"style\": \"speech\" | \"shout\" | \"mutter\" | \"thought\",",
+  "    \"priority\": 2 for impact, 3 for writeoff,",
+  "    \"text\": \"at most 48 characters, ends with . ! or ?\",",
+  "    \"claims\": [ every fact the text asserts: \"drop\", \"highway\", \"plate\", \"dropFrom:roof\", \"dropZ:2\", \"district:<id>\", \"stopped\", \"zone:front\", \"class:van\", \"model:<id>\" … ],",
+  "    \"sources\": [chunk ids]",
+  "  } ]",
+  "}"
+ ],
+ "consumer": [
+  "game.js barkLine: on each impact or write-off naming a car, it collects lines whose event matches and whose 'when' all hold.",
+  "Highest priority wins. At equal priority, a line that tests a situation field (drop, dropZ, dropFrom, deck, plate, district) outranks every line that does not. Then the most specific line.",
+  "Impact fields: zone, part, bait, stopped, lunging, drop (true when the dummy landed on the car), dropZ (1 or 2: the level it fell from; 0 if no drop), dropFrom ('deck' or 'roof'), deck (true when the car is highway traffic and was hit on its deck), plate (true when the hit landed on a Campus calibration plate).",
+  "Write-off fields: writeOffs, chassis, zone, and the same situation fields as the impact that caused it.",
+  "Shared context: model, tier, class, seniority, mood, wear, owns, broken, district (riverside, market, interchange, cbd, campus).",
+  "Placeholders {field} insert an event field, but the text must stay true for every value it can take.",
+  "Facts: roofs are Z2 (a roof drop is always dropZ 2). A Z1 drop is always off a low highway. Highways run only in Interchange (Z1 and Z2), CBD (Z1 and Z2) and Campus (Z1). Plates are only in Campus, on the ground road. A dummy never drops onto highway traffic, so drop and deck are never both true.",
+  "The bubble shows above the car for proto.barks.seconds. Three lines of the 6-px field face: at most 48 characters."
+ ],
+ "voices": {
+  "tier 01 Luxury (S01 'Ambassador', chauffeurs FARSIGHT board members)": "Polished, superior, faintly amused. Never apologises. Complains about the indignity, not the danger.",
+  "tier 02 Corporate (V02 'Waybill', parcel route 44)": "Procedural. Speaks in logs, KPIs and policy numbers. Files the incident.",
+  "any car": "A worker on a schedule. Fears retraining and dispatch. Never mocks the dummy, never names the player, never cheers.",
+  "tier-free lines (no tier in 'when')": "They fire for both S01 (Luxury, confident) and V02 (Corporate, calm), so they must suit both: calm, no shout style, no exclamation mark.",
+  "every line": "Speaks as the car at work: its log, forms, route, passengers or paintwork. It reports the hit and how it feels about it. It never adds a consequence the simulation does not log: no lateness, delay, missed slot or KPI, rating, wet road or congestion.",
+  "humour": "Dry wit from the car's indignity or its procedure, never from an invented consequence. In voice: 'A roof? I was not briefed on roofs.' 'Nobody walks the highway. Nobody.' 'Incident filed: load received from above.' Out of voice: 'My schedule slips by a minute.' (invents a consequence) 'Interchange. Everything merges eventually.' (an aphorism) 'Hit logged. Noted.' (no character). At most two lines may end with 'Noted.' or 'Logged.'"
+ }
+}

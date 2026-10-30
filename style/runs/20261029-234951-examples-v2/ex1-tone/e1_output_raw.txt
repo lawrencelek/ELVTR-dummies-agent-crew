@@ -1,0 +1,7 @@
+SCORE: 3/10
+REASON:
+- tale · T13 (minor, −1) "These amazing, incredible, epic cubes" uses two intensifiers ("amazing", "incredible") and three adjectives in one sentence, where the limit is one adjective per sentence. [EDIT95#3.2] Fix: drop all three and write "The stacked cubes".
+- tale · T2 (major, −2) "at a time, champ!" and "then another, fast!" put "!" in Dummy Corporation's voice, which the guide bars. [EDIT95#3.2] Fix: end both sentences with ".".
+- tale · T1 (major, −2) "epic … champ … fast" is hype and cheer, not a flat corporate notice that motivates the trainee. [EDIT95#3.2] Fix: remove "epic" and "champ", then state the duty flatly, e.g. "Take one hit, then the next, before the chain breaks."
+- tale · T3 (major, −2) "Hit one rival" turns the cars into opponents in a contest, but in INDUCTION the cars are colleagues and the job is training. [EDIT95#3.3] Fix: replace "rival" with "colleague" and keep the chain as the duty. Suggested whole tale: "The stacked cubes rose one budget at a time. Take one colleague's hit, then the next, before the chain breaks."
+Total: 10 − 1 − 2 − 2 − 2 = 3.

@@ -1,0 +1,68 @@
+{
+ "case": "brief-jump",
+ "class": "V8.3 goal",
+ "title": "the jump brief, as a goal",
+ "request": null,
+ "scores": [
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 26.9,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 7.0,
+   "output_tokens": 446,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1138991
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 4.2,
+   "output_tokens": 187,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1096726
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 8.0,
+   "output_tokens": 467,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.11426239999999999
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 7.6,
+   "output_tokens": 561,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.018884699999999997
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.3567
+}

@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · F6 (blocking, −4) "The dome is the Expo's showroom. The canal beside it cools the highway's footings; the ducks are registered volunteers. Hands 2 is fitted: two cones. Lay them where the visitors will walk, and see who stops." The tale has 36 words, over the cap of 35, and 4 sentences, over the cap of 2 (lint fact). [EDIT96#3.2] Fix: cut it to two sentences and no more than 35 words, and drop the footings and ducks aside: "The dome by the canal is the Expo's showroom, ready for our clients. Hands 2 is fitted: lay a cone, and let the car that answers it write you off."
+- tale · R5 (blocking, −4) "Lay them where the visitors will walk, and see who stops." The duty asks the trainee to watch who stops, but the brief needs the final hit to come from a car reacting to a cone. [STORY#S3] Fix: state the brief's duty, e.g. "lay a cone, and let the car that answers it write you off."
+Total: 10 − 4 − 4 = 2.

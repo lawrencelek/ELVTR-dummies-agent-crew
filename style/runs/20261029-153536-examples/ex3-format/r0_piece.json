@@ -1,0 +1,21 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "t902",
+   "event": "impact",
+   "when": {
+    "district": "parkland",
+    "tile": "A3",
+    "tier": "02"
+   },
+   "style": "speech",
+   "priority": 2,
+   "text": "V02: Impact logged at 41 km/h.\nBodywork damage is 17%, filed under unforeseen.\nSchedule delay is 94 seconds, KPIs adjusted.",
+   "claims": [
+    "district:parkland",
+    "tile:A3"
+   ]
+  }
+ ]
+}

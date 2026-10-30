@@ -1,0 +1,158 @@
+[
+  {
+    "query": "cues take priority over particles shake decorative information",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 11.012
+      },
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 7.451
+      }
+    ]
+  },
+  {
+    "query": "brake marks the car is slowing rear position visible state change",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 21.152
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 12.632
+      }
+    ]
+  },
+  {
+    "query": "presentation preserves tactical information hides readable mechanics",
+    "results": [
+      {
+        "id": "DESIGN#D2.4",
+        "score": 22.536
+      },
+      {
+        "id": "DESIGN#D9.2",
+        "score": 8.696
+      }
+    ]
+  },
+  {
+    "query": "reserved red warning cues dummy only saturated actor frame aqua separate role",
+    "results": [
+      {
+        "id": "DRIVER#DB5",
+        "score": 13.386
+      },
+      {
+        "id": "ENG#7.2",
+        "score": 9.15
+      }
+    ]
+  },
+  {
+    "query": "wreck debris animation visual only obstruction",
+    "results": [
+      {
+        "id": "ENG#8.5",
+        "score": 11.654
+      },
+      {
+        "id": "ENG#10.4~1",
+        "score": 7.268
+      }
+    ]
+  },
+  {
+    "query": "reduced motion 25%",
+    "results": [
+      {
+        "id": "LOG#P1.3/physics-basis",
+        "score": 4.366
+      },
+      {
+        "id": "LOG#P1.3/automated-evidence",
+        "score": 4.229
+      }
+    ]
+  },
+  {
+    "query": "Car pulse stands in for flashing lights; sound carries the horn (Micro Machines)",
+    "results": [
+      {
+        "id": "LOG#P1.2/honking-and-drones",
+        "score": 12.499
+      },
+      {
+        "id": "DRIVER#DB5",
+        "score": 9.485
+      }
+    ]
+  },
+  {
+    "query": "Lunge camera kick at full charge. Kept small so the nose vector stays readable.",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~1",
+        "score": 10.566
+      },
+      {
+        "id": "LOG#P1.6",
+        "score": 7.358
+      }
+    ]
+  },
+  {
+    "query": "Arc with stretched shadow stays as P1.2; light dust only (Juice It or Lose It)",
+    "results": [
+      {
+        "id": "LOG#P1.2/questions-for-the-p1-2-session",
+        "score": 16.578
+      },
+      {
+        "id": "LOG#P1.2",
+        "score": 14.946
+      }
+    ]
+  },
+  {
+    "query": "Shake duration at full assessed impact. Matches the P1 literal 0.25 + 0.2.",
+    "results": [
+      {
+        "id": "BRIEF#P1.7",
+        "score": 8.779
+      },
+      {
+        "id": "ENG#5.8",
+        "score": 8.278
+      }
+    ]
+  },
+  {
+    "query": "Tyre marks as ink strokes on a pale floor (Absolute Drift, art of rally)",
+    "results": [
+      {
+        "id": "LOG#P1.5/pillars-and-blind-spots",
+        "score": 8.574
+      },
+      {
+        "id": "LOG#P1.2/light-and-relief",
+        "score": 6.452
+      }
+    ]
+  },
+  {
+    "query": "Shake amplitude for the lightest scored hit. Matches the P1 literal 3.",
+    "results": [
+      {
+        "id": "DRIVER#DB3a",
+        "score": 7.225
+      },
+      {
+        "id": "BRIEF#P1.11",
+        "score": 4.849
+      }
+    ]
+  }
+]

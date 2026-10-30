@@ -1,0 +1,158 @@
+[
+  {
+    "query": "barks never assert facts the simulation did not establish neutral fallback",
+    "results": [
+      {
+        "id": "DESIGN#D5.4",
+        "score": 20.67
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 11.641
+      }
+    ]
+  },
+  {
+    "query": "defer explanatory copy naming counter until changed return",
+    "results": [
+      {
+        "id": "DESIGN#D5.3",
+        "score": 11.313
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 11.206
+      }
+    ]
+  },
+  {
+    "query": "decorative diagnostic text never carries a decision",
+    "results": [
+      {
+        "id": "DESIGN#D10.3~2",
+        "score": 21.691
+      },
+      {
+        "id": "DESIGN#D6.2",
+        "score": 6.476
+      }
+    ]
+  },
+  {
+    "query": "no automatic repair SERVICE meter",
+    "results": [
+      {
+        "id": "DESIGN#D3.1",
+        "score": 8.546
+      },
+      {
+        "id": "DESIGN#D2.3",
+        "score": 8.537
+      }
+    ]
+  },
+  {
+    "query": "dry register corporate politeness barely contains personality",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 11.697
+      },
+      {
+        "id": "ENG#6.5",
+        "score": 4.718
+      }
+    ]
+  },
+  {
+    "query": "Chinese wording requires informed editorial review",
+    "results": [
+      {
+        "id": "ENG#7.4",
+        "score": 4.6
+      },
+      {
+        "id": "ENG#10.4~1",
+        "score": 2.604
+      }
+    ]
+  },
+  {
+    "query": "{roadName} cleared. Points this body: {points}. Next: {nextRoad}, write-offs required: {nextQuota}.",
+    "results": [
+      {
+        "id": "LOG#P1.5/campaign",
+        "score": 17.765
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 15.791
+      }
+    ]
+  },
+  {
+    "query": "Press B to pick up and place a cone. Movement slows while carrying.",
+    "results": [
+      {
+        "id": "DESIGN#D4.2",
+        "score": 15.623
+      },
+      {
+        "id": "ENG#5.2~1",
+        "score": 15.223
+      }
+    ]
+  },
+  {
+    "query": "Road {road} of {roads}: {roadName}. Write-offs required: {quota}.",
+    "results": [
+      {
+        "id": "LOG#P1.5/campaign",
+        "score": 23.032
+      },
+      {
+        "id": "DESIGN#D1.2",
+        "score": 14.512
+      }
+    ]
+  },
+  {
+    "query": "{difficulty} chassis, health {health}. Please produce an impact.",
+    "results": [
+      {
+        "id": "LOG#P1.4",
+        "score": 16.339
+      },
+      {
+        "id": "LOG#P1.3-observations",
+        "score": 14.445
+      }
+    ]
+  },
+  {
+    "query": "The commitment is ending. Less than one action window remains.",
+    "results": [
+      {
+        "id": "ENG#6.2~2",
+        "score": 14.426
+      },
+      {
+        "id": "DESIGN#D5.1",
+        "score": 6.856
+      }
+    ]
+  },
+  {
+    "query": "Face new directions faster. Deliberate turns take less time.",
+    "results": [
+      {
+        "id": "ENG#5.2~1",
+        "score": 11.029
+      },
+      {
+        "id": "BRIEF#P1.4",
+        "score": 8.47
+      }
+    ]
+  }
+]

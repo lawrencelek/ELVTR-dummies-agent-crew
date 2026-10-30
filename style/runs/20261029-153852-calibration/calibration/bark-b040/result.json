@@ -1,0 +1,13 @@
+{
+ "id": "bark-b040",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "WRITE-OFF! Tell dispatch I tried!",
+ "cost_usd": 0.1051,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked b040 (writeoff event, tier 04 Budget, shout style, priority 3) against every rule and found no violations. The \"!\" is allowed because it is a shout and a Budget bark (DECISIONS#rows-541-550, row 541). The line has 33 characters and ends with \"!\" (F1, F3; FSG#field-text). The fields fit the event (F4; EDIT39#6.6). It uses \"write-off\" and \"dispatch\" as the glossary defines them and has no banned words (V1, V3; FLEET#F2, FLEET#F3). It has the short-fused Budget voice, and the request to dispatch is the bolted-on politeness (T7, T9; FLEET#F4). It says nothing the writeoff event does not log, so it needs no claims (R1–R3; FLEET#F8). It is also already a shipped line (FLEET#F9.2).\nTotal: 10."
+}

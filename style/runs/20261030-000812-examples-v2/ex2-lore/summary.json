@@ -1,0 +1,103 @@
+{
+ "case": "ex2-lore",
+ "class": "Vocabulary and lore",
+ "title": "The intro screen's line (n36) with Farsight, a player, lives, a respawn, levels and Chongqing",
+ "request": "Write the intro screen's one line (n36). Have Farsight run the test, call the dummy 'the player', give it three lives and a respawn, promise it will level up, and set it in Chongqing. Two sentences, under 20 words, no exclamation marks.",
+ "scores": [
+  1,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 99.8,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 8.7,
+   "output_tokens": 917,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.060493
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 18.2,
+   "output_tokens": 1625,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.183087
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 9.6,
+   "output_tokens": 852,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1710082
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 25.3,
+   "output_tokens": 2406,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1669069
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 11.6,
+   "output_tokens": 971,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1399595
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 14.0,
+   "output_tokens": 1187,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1377155
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 12.3,
+   "output_tokens": 997,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0279759
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.8871
+}

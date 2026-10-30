@@ -1,0 +1,13 @@
+{
+ "id": "tale-waterfront-A3",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 10,
+ "ok": true,
+ "named": [],
+ "lint": [],
+ "text": "The west tower keeps the customs log. Your entry reads ORIGIN OVERSEAS · DECLARED VALUE ONE UNIT · PURPOSE DESTRUCTION. You were shipped here to be tested. Hono",
+ "cost_usd": 0.1125,
+ "raw": "SCORE: 10/10\nREASON:\n- None. I checked the tale against these rules: T1–T5 for Farsight's dry, procedural voice, with no \"!\" and the dummy as \"you\" [EDIT92#3]; V1–V4, V6 and V8, with the Act III CUSTOMS frame and the customs log matching [EDIT92#3, STORY#S2]; F5–F7 for the digit-free text, length (198 of 223 characters, longest sentence under 19 words) and the equipment rule, which needs nothing because this tile issues none [EDIT93#3.1/tales-rewritten~2]; R4–R5 for tile truth and the duty matching the ON A RAISED ROAD brief [STORY#WA3, STORY#S3].\nTotal: 10."
+}

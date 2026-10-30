@@ -1,0 +1,90 @@
+{
+ "case": "tale-waterfront-C2",
+ "class": "V8.2 tale",
+ "title": "Waterfront C2: The east beach terrace, redrafted",
+ "request": "Redraft the tale for Waterfront C2 (The east beach terrace). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The terrace was built for tourists, then joggers, then sensors. From its rail you can see the ships in the estuary and the cranes that load them. Drop onto a car below. The ships will wait.\n- Prototype 8.1 (Dummy Corporation): From the rail of the east beach terrace, you can see the ships that carry Certified dummies to clients. Drop onto a car below; the ships will wait.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  4,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "seconds": 65.5,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 4.8,
+   "output_tokens": 102,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.064202
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 15.3,
+   "output_tokens": 1420,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1536245
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 9.2,
+   "output_tokens": 727,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1423975
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 12.5,
+   "output_tokens": 1134,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1473056
+  },
+  {
+   "label": "e2b",
+   "role": "evaluator",
+   "seconds": 8.1,
+   "output_tokens": 691,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1411875
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 15.5,
+   "output_tokens": 1417,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.036652000000000004
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.6854
+}

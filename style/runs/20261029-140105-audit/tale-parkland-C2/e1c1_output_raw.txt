@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone rules: dry corporate comedy, no "!", employment framing, no comment on the harm, and Farsight in the third person (T1–T5). I checked it against the Act II OPENING DAY frame: the board, terraces and opening day (V6). I checked the glossary and the dummy as "you" (V1–V4, V8). I checked the length and sentence caps (F5, F6), and that no equipment is named on a tile that issues none (F7). The duty matches the brief "A VAN" with "A van delivers the catering. Arrange for it to deliver you." (R5). The text names only what the amphitheatre tile has (R4). [EDIT92#3] [STORY#S2] [STORY#PC2] [EDIT39#4.1.1] [FLEET#F3] [EDIT93#3.1/tales-rewritten~2]
+Total: 10.

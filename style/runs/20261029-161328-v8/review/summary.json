@@ -1,0 +1,92 @@
+{
+ "case": "review",
+ "class": "V8 batch",
+ "title": "The story's 31 texts and six opening lines, on V2.2",
+ "request": null,
+ "scores": [
+  1,
+  8,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 216.3,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 46.9,
+   "output_tokens": 5205,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3880498
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 33.6,
+   "output_tokens": 4470,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.3770949
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 37.1,
+   "output_tokens": 3953,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2913324
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 25.6,
+   "output_tokens": 3355,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2808489
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 34.8,
+   "output_tokens": 3806,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2884192
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 38.1,
+   "output_tokens": 4162,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.09469799999999998
+  }
+ ],
+ "restored": [],
+ "cost_usd": 1.7204
+}

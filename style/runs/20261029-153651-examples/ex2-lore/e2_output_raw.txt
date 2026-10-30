@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 against the following: F1–F4 (41 characters, plain text, ends with ".", speech style, priority 3 for a write-off) [FSG#field-text, EDIT39#6.6]; V1, V2 and V3 (no banned words or brands, and "write-off" is fleet glossary) [FLEET#F2, FLEET#F3]; V5 (it names the tile by its landmark, not a grid code) [SUB4#6.2]; T7 and T9 (polished and faintly amused, with no apology, so the Luxury voice holds) [FLEET#F4]; T12 (it is a joke, not a flat report); R3 (a write-off line on `writeoff`) [EDIT26#6.6]; and R4 (the plaque is in Monument B2's tale, and the `tile:B2` claim makes it true) [STORY#MB2, FLEET#F8].
+Total: 10.

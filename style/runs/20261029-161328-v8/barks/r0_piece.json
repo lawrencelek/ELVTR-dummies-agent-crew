@@ -1,0 +1,147 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b013",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "OI! Right in the grille! Kind regards.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b034",
+   "event": "writeoff",
+   "when": {
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "A write-off. On my record. Unthinkable.",
+   "claims": []
+  },
+  {
+   "id": "b041",
+   "event": "writeoff",
+   "when": {
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 3,
+   "text": "Done! Done! You happy now?!",
+   "claims": []
+  },
+  {
+   "id": "b052",
+   "event": "near-miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Too slow! Ha! Regards!",
+   "claims": []
+  },
+  {
+   "id": "b058",
+   "event": "miss",
+   "when": {
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Dash detected. No contact. Noted.",
+   "claims": []
+  },
+  {
+   "id": "b061",
+   "event": "miss",
+   "when": {
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "It lunged. Nothing happened. Same.",
+   "claims": []
+  },
+  {
+   "id": "b062",
+   "event": "miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Missed! Rubbish! Regards!",
+   "claims": []
+  },
+  {
+   "id": "b081",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Move. I have a schedule. And standards.",
+   "claims": [
+    "at:body"
+   ]
+  },
+  {
+   "id": "b083",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 1,
+   "text": "MOVE IT! Thank you! MOVE!",
+   "claims": [
+    "at:body"
+   ]
+  },
+  {
+   "id": "b110",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "bigBattery"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Bigger battery. More dashes. Wonderful.",
+   "claims": [
+    "node:bigBattery"
+   ]
+  },
+  {
+   "id": "c024",
+   "event": "impact",
+   "when": {
+    "district": "campus"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "FARSIGHT Campus. Test centre. How apt.",
+   "claims": [
+    "district:campus"
+   ],
+   "sources": [
+    "EDIT41#7.2",
+    "EDIT41#7.3"
+   ],
+   "source": "content/pipeline.py run 20261021-024324"
+  }
+ ]
+}

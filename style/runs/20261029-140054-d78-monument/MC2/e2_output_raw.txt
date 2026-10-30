@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against their rules. Tier voice holds: the Luxury line sounds superior and never apologises, the Corporate line is procedure, the Consumer line is resigned, and the Budget line is a shout with a polite tag bolted on [FLEET#F4]. "!" appears only in the Budget shout t116 [DECISIONS#rows-541-550]. Each line names the place by its landmark, "the portal tower", and gives no grid code [SUB4#6.2]. That landmark is the C2 tile's own title [STORY#MC2]. Every line stays within what an impact event logs and claims nothing else [FLEET#F8], is 48 characters or fewer and ends correctly [FLEET#F2], has a style and priority that fit the event [EDIT39#6.6], and uses no banned or glossary-breaking words [FLEET#F3]. Only one line ends on a stock tag ("Of course.") [SUB4#6.1].
+Total: 10.

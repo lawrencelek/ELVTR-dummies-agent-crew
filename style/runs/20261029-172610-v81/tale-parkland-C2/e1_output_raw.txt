@@ -1,0 +1,5 @@
+SCORE: 2/10
+REASON:
+- tale · V1 (blocking, −4) "Farsight's board" Farsight is the publisher, so it may be named only in the Credits, never in a tale. [EDIT95#3.1] Fix: replace "Farsight's board" with "Our board", so Dummy Corporation speaks as "we".
+- tale · F6 (blocking, −4) "Farsight's board will watch from these terraces on opening day. The seats face the avenue, so every crossing is a performance. A van delivers the catering. Arrange for it to deliver you." This tale has 4 sentences, and the limit is 2. [EDIT96#3.2] Fix: merge it into two sentences, 30 words: "Our board will watch from these terraces on opening day, where every crossing of the avenue is a performance. A van delivers the catering; arrange for it to deliver you."
+Total: 10 − 4 − 4 = 2.

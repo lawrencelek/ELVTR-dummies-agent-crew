@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t901 "Written off at the monument. How quaint." against every car rule; I found no violation. At 40 characters it fits the 48-character bubble (F1). It is plain speech at priority 3 and ends with "." (F2–F4). Both F1 and F2–F4 rest on [FSG#field-text] and [EDIT39#6.6]. "Written off" fires only on `writeoff`, and the line invents no speed, damage or motive (R1, R3; [DESIGN#D9.3], [FLEET#F2]). "The monument" is B2's own title, and the `tile:B2` and `district:monument` claims back it (R2, R4, V5; [STORY#MB2], [FLEET#F8], [SUB4#6.2]). Its faint amusement and lack of apology hold the Luxury voice, as in the shipped "Is it dancing? How quaint." (T7, T9, T12; [FLEET#F4], [FLEET#F9.4]). It uses no banned term, no other city, no grid code and no "him" or "her" (V1, V2, V8; [FLEET#F2], [FLEET#F3]).
+Total: 10.

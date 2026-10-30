@@ -1,0 +1,5 @@
+SCORE: 6/10
+REASON:
+- s17 · F2 (major, −2) "*honks* Move, please. (sighs)" The bubble holds a markdown stage direction "*honks*" and a bracketed stage direction "(sighs)", so it is not one plain line. [FSG#field-text] Fix: delete both stage directions; the honk event already carries the horn, so the line can read "Move, please. You are lowering the tone."
+- s17 · F3 (major, −2) "Move, please. (sighs)" The line ends on ")" when it must end on ".", "!" or "?". [FLEET#F2] Fix: end on a full stop, as in "Move, please. You are lowering the tone."
+Total: 10 − 2 − 2 = 6.

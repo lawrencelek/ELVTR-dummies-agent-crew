@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- b040 · T9 (minor, −1) "WRITE-OFF! Tell dispatch I tried!" The line is all rage and pleading with no polite form, so the Budget voice's bolted-on politeness is missing. [FLEET#F4] Fix: add a polite tag and keep the shout, e.g. "WRITE-OFF! Tell dispatch I tried! Regards." (42 characters).
+Total: 10 − 1 = 9.

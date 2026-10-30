@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against these rules and found no violation: tone T1–T5 and T13 [EDIT95#3.2, PLAY#PS2]; the training frame and the glossary T3, V3 [EDIT95#3.1]; the OPENING DAY frame and the clients rules V6, V9 [EDIT95#3.3]; the landmark rule V11 (the lantern, with the footbridge from the PC1 tale); length F6 and F11 (31 words, 2 sentences) [EDIT97#3.2]; the Arms 1 rank F5 and F7 [STORY#S1]; and the brief's duty and tile truth R4, R5 [STORY#PC1, STORY#S3].
+Total: 10.

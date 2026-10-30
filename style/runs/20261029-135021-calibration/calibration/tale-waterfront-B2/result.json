@@ -1,0 +1,14 @@
+{
+ "id": "tale-waterfront-B2",
+ "expect": "shipped",
+ "rule": null,
+ "want": "≥ 9",
+ "score": 9,
+ "ok": true,
+ "named": [
+  "F7"
+ ],
+ "text": "Everything in the valley meets here. On the island stands the monument, cast from every chassis you lost. Its plaque reads ZERO ACCIDENTS (EXCLUDING TESTS). Bat",
+ "cost_usd": 0.0267,
+ "raw": "SCORE: 9/10\nREASON:\n- tale · F7 (minor, −1) \"A chain of three certifies the city. And you.\" This tale shape needs the duty in the imperative, but here the duty is a statement of outcome, so the tale gives no instruction. [STORY#MB3] Fix: \"Battery 3 is fitted. Give the city a chain of three; it certifies the city. And you.\"\nTotal: 10 − 1 = 9."
+}

@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "A1", "title": "The reservoir terraces", "tale": "Arms 2 is fitted. Push off one car into the next; that write-off brings Certification closer."}

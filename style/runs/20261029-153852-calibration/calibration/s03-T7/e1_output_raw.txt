@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- s03 · T7 (major, −2) "So sorry. Entirely my fault. I do apologise." A tier 01 Luxury car apologises, and Luxury cars are polished, superior, faintly amused and never apologise. [FLEET#F4] Fix: "Bumper contact on a Luxury trim. How quaint." (44 characters, claims nothing beyond the impact).
+Total: 10 − 2 = 8.

@@ -1,0 +1,55 @@
+{
+ "case": "tale-monument-C3",
+ "class": "V8.2 tale",
+ "title": "Monument C3: The LED gateway, redrafted",
+ "request": "Redraft the tale for Monument C3 (The LED gateway). Two earlier versions are source material: use any of their facts and jokes, copy neither whole.\n- Prototype 7.13 (Farsight's voice; Farsight must not appear): The gateway thanks every car for driving safely. It thanked the last one seconds after that car wrote you off. Your file is updated: ROLE: DESTRUCTIVE TESTING. Let one colleague throw you into the next.\n- Prototype 8.1 (Dummy Corporation): The LED gateway thanks every car for driving safely, even the one that wrote you off. Your file reads ROLE: DESTRUCTIVE TESTING; let one colleague throw you into the next.\nChoose the length the tile needs, 15 to 35 words in at most two sentences: short when one image carries it, longer when the place has a history worth telling. Name the place, keep the duty and any equipment the tile issues, and point the place at the training.",
+ "scores": [
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 0,
+ "accepted": true,
+ "final_version": 0,
+ "seconds": 31.4,
+ "calls": [
+  {
+   "label": "g0",
+   "role": "generator",
+   "seconds": 5.5,
+   "output_tokens": 103,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "cost_usd": 0.0576678
+  },
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 13.3,
+   "output_tokens": 1184,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1350377
+  },
+  {
+   "label": "e1c1",
+   "role": "evaluator",
+   "seconds": 12.6,
+   "output_tokens": 1105,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.029920500000000003
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.2226
+}

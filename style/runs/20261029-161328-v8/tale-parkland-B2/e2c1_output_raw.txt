@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against the brief, tile, equipment and story frame [STORY#PB2], [STORY#S3], [STORY#S1], [EDIT95#3.3], the voice and length caps [EDIT95#3.2], the glossary and client rules [EDIT95#3.1], and the tone register [PLAY#PS0], [PLAY#PS2]. It names Battery 2 by rank on the tile that issues it, puts the chain's end on the final hit, serves clients on OPENING DAY, and has two flat sentences of 19 words.
+Total: 10.

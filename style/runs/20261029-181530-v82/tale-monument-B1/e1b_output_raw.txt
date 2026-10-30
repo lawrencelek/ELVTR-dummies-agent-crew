@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale, which is 2 sentences and 31 words with no "!", no banned words and no placeholder (F5, F6, T2, V1, [EDIT97#3.2]), and found these points: it fits Dummy Corporation's flat, motivating voice and training frame (T1, T3–T5, T13, [EDIT95#3.2], [EDIT95#3.1]); it fits Battery 1 here, where it is issued, with a duty that matches the dash brief (F7, R5, [STORY#S1]); and it names the skybridge, the tile's landmark, and turns it toward the duty without repeating the brief or the act line (V11, R4, F11, [STORY#MB1], [DECISIONS#rows-341-350~2]).
+Total: 10.

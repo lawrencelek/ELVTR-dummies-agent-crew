@@ -1,0 +1,6 @@
+SCORE: 1/10
+REASON:
+- t105 · R4 (blocking, −4) "Contact on the podium bridge." The tale says staff use the skybridge to watch the road, so no car is ever on the bridge and the contact could not happen there. [STORY#MB1] Fix: "Contact by the podium bridge. How quaint."
+- t116 · R2 (blocking, −4) "Not in the portal tower" A car is in the tower only on the high road at the sixth floor, and the line's conditions guarantee no height (no `deck` or `dropZ` claim), so it also fires at street level. [STORY#MC2], [FLEET#F8] Fix: "Not by the portal tower, you plank! Cheers!"
+- t123 · R4 (blocking, −4) "Under the neon shops." The tale puts the shops under the highway, not the cars under the shops, so the line gets the tile's layout wrong. [STORY#MA2] Fix: "Outside the neon shops. Of course it happened."
+Total: 10 − 4 − 4 − 4 = 1 (floor).

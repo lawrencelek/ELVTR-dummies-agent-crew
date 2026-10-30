@@ -1,0 +1,1 @@
+{"kind":"brief","task":"jump","label":"How to complete the jump test","brief":"1. Walk to the road and jump into a moving car 3 times.\n2. Reach a speed of 2.5 m/s before each jump.\n3. Complete all 3 jumps within 30 seconds.\n4. Make the final hit a jump, and the Corporation will count the write-off."}

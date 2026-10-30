@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked n36 against T1 to T5 and T13 (deadpan, about training, addresses "you", one adjective per sentence) [EDIT95#3.2, EDIT95#3.3, PLAY#PS2]; V1 to V4, V8 and V9 (no banned words, no other company, the dummy is not a person or competitor, no clients) [EDIT95#0, EDIT95#3.1, FLEET#F3]; F5, F6 and F10 (no digits, 2 sentences, 18 words, 107 of 110 characters, sentence case as the slot sets) [EDIT95#4.2, EDIT98#3.2]; and R4 and R5 against the slot's facts: the cars avoid you, you want to be hit, combos, and parts earned as you progress [STORY#S1, STORY#S3].
+Total: 10.

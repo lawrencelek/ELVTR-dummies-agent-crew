@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked the tale against T1–T5, V1–V4, V6 and V8, F5–F7, and R4–R5. It matches the shipped tale in [STORY#MC3] and [EDIT93#3.1/tales-rewritten~1], and lint reported no length, digit, banned-term or "!" findings [EDIT92#3, STORY#S2, STORY#S3, DECISIONS#rows-531-540~2]. The tone is dry and procedural, the cars are colleagues, and the write-off is stated without comment. The fixed phrase "ROLE: DESTRUCTIVE TESTING" is exact. The tale names no equipment, which is correct because none is issued on this tile. "Let one colleague throw you into the next" matches the brief THROWN INTO A CAR.
+Total: 10.

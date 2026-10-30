@@ -1,0 +1,10 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against these rules:
+  - **Tone:** dry staff notice, with no "!" and no comment on harm (T1–T5; `EDIT92#3`, `EDIT39#4.1.1`, `STORY#MA1`).
+  - **Vocabulary:** no banned words, and "you" addresses the dummy (V1, V3, V4, V8; `FLEET#F2`, `FLEET#F3`).
+  - **Act frame:** an Act III Waterfront line with nothing from another act (V6; `STORY#S2`).
+  - **Length:** 186 of 223 characters, one paragraph, longest sentence 12 words (F6; `EDIT92#measured`).
+  - **Equipment:** it names Legs 3, the tile's issued part, and "the longest flight" points to the jump duty in JUMP INTO A CAR (F7, R5; `STORY#WB1`, `STORY#S1`).
+  - **Tile truth:** it names only the tunnel and the hill from the tile's own landmark (R4; `STORY#WB1`). Lint found nothing, and this is the shipped tale, so it meets the shipped-text floor in §6.
+Total: 10.

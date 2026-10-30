@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked b071 against every rule for the cars. Lint had no findings, so nothing is deducted for length, banned words, "!", ending, digits or grid codes; "policy 6.3" is Corporate paperwork, which F5 allows. The line is a commit mutter at priority 1, and the event guarantees both the commitment and its claim cause:body, so it is true to the event and invents nothing (R1–R3). Procedure stated as policy is the calm 02 Corporate voice itself, not a flat report, so T7, T9 and T12 hold. [FLEET#F4] [FLEET#F8] [FLEET#F9.5] [EDIT39#6.6] [DESIGN#D9.3]
+Total: 10.

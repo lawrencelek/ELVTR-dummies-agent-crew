@@ -1,0 +1,9 @@
+SCORE: 1/10
+REASON:
+- t901 · V1 (blocking, −4) "Chongqing … Player killed. Respawn." The line uses four banned terms: killed, player, respawn and Chongqing. [FLEET#F2] Fix: Drop all four words. Use the replacement line under T7.
+- t901 · R4 (blocking, −4) "fountain" Monument B2 has no fountain, and its title and tale name only the monument and its plaque. [STORY#MB2] Fix: Name the landmark as the place: "at the monument".
+- t901 · V2 (blocking, −4) "Chongqing" The line names a real city that is not canon, and Shenzhen Smart City is the only city allowed. [FLEET#F1] Fix: Remove the city name. The tile condition already places the line at the monument.
+- t901 · V3 (major, −2) "killed … Respawn." The line uses game words for things the fleet glossary already names: "write-off" for a destroyed body, and "the bay" for a new chassis. [FLEET#F3] Fix: Say "write-off". If the line mentions a new body, say "the bay".
+- t901 · T7 (major, −2) "Player killed. Respawn." The line is a flat system readout, not the polished, superior, faintly amused voice of a Luxury (01) car. [FLEET#F4] Fix: "A write-off at the monument. How quaint." (40 characters)
+- t901 · T12 (minor, −1) "Chongqing fountain. Player killed. Respawn." The line lists a place, an outcome and a system state, with no feeling or joke behind it. [SUB4#6.1] Fix: Give the car's reaction to the write-off on its record, as in the T7 fix.
+Total: 10 − 4 − 4 − 4 − 2 − 2 − 1 = 1 (floor; raw −7).

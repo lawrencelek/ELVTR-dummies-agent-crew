@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked t902 against every bark rule and found no violations: it is 47 characters, plain text and ends with a full stop (F1–F3); speech at priority 2 suits an impact (F4); "Form 9" is Corporate paperwork, which F5 allows; it uses no banned words, no other city and no grid code, and names the tile by its landmark (V1, V2, V5); "Contact" claims only what an impact logs, with no invented speed, damage, delay or fine (R1, R3); the belvedere is Parkland A3's own landmark, so the tile:A3 claim covers it (R2, R4); and "in triplicate" carries the Corporate tier's procedural voice and the weariness under it (T6, T7, T9, T12). [FLEET#F2] [FLEET#F4] [FLEET#F8] [FLEET#F9.1~2] [STORY#PA3] [SUB4#6.2] [FSG#field-text]
+Total: 10.

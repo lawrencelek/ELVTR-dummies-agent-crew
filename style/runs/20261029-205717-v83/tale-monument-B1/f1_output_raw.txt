@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "B1", "title": "The podium bridge", "tale": "Battery 1 is fitted. The skybridge was built for shoppers who never came; staff watch you dash into a colleague."}

@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- s06 · F1 (blocking, −4) "Front contact logged under policy 6.3; incident file opened; KPIs adjusted." The line is 75 characters, over the 48-character bubble limit (style.bark.maxChars), so it won't fit in the bubble. [EDIT39#6.6] Fix: "Front contact. Policy 6.3. KPIs adjusted." (41 characters). This keeps the Corporate tier's procedural voice and the zone:front claim.
+Total: 10 − 4 = 6.

@@ -1,0 +1,1 @@
+{"kind":"barks","lines":[{"id":"t902","event":"impact","when":{"district":"parkland","tile":"A3","tier":"02"},"style":"speech","priority":2,"text":"V02: Jump impact logged at 38 km/h on the belvedere.\nDamage to my panels is 14%.\nRoute delay is 47 seconds; KPIs adjusted.","claims":["district:parkland","tile:A3"]}]}

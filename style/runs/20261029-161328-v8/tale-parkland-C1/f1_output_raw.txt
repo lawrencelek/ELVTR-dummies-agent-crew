@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "parkland", "tile": "C1", "title": "The lantern pavilion", "tale": "The lantern is lit for the Expo's clients. Arms 1 is fitted: push off one car into the next."}

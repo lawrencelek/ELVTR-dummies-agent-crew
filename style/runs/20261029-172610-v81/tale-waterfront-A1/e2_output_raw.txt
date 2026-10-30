@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+I checked the tale against the length caps of 34 words and two sentences, where the words past the 20-word base go to the place (west portal, upper town, bridge) [EDIT96#3.2]. I also checked the deadpan duty voice, "we" and "you" address, no "!" and adjective count [EDIT95#3.2]; the banned words, Farsight's absence and how clients are framed [EDIT95#0, EDIT95#3.1]; and the CUSTOMS frame of crossing the river to clients [EDIT95#3.3]. The landmark and place details match canon, the duty matches A BUS, and no equipment is named [STORY#WA1, STORY#S3, EDIT93#3.1].
+Total: 10.

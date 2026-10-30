@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked every sentence against the guide and found no violations. The voice is dry, procedural and in the employment frame, with cars as colleagues (T1–T5, V3, V8). The INDUCTION frame holds, and the fixed phrase "ROLE: DESTRUCTIVE TESTING" is exact (V6). The tale fits the card (F6). It names no equipment, matching a tile that issues none (F7, R5). The duty "Let one colleague throw you into the next." matches the THROWN INTO A CAR rebound brief (R4, R5). [EDIT92#3] [STORY#S2] [STORY#S3] [STORY#MC3] [EDIT93#3.1/tales-rewritten~1] [EDIT39#4.1.1] [FLEET#F3]
+Total: 10.

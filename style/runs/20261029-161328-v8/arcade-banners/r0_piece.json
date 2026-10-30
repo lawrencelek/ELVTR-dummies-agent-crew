@@ -1,0 +1,26 @@
+{
+ "kind": "notices",
+ "items": [
+  {
+   "id": "n24",
+   "where": "Arcade: Monument's opening banner, four seconds at the start of a run, under the label 'DISTRICT n OF 3 · MONUMENT · q WRITE-OFFS'. The text describes the district's streets, as the original does",
+   "text": "Neon commerce, LED walls. One road snakes under two north–south highways and splits round the monument.",
+   "caps": false,
+   "maxChars": 110
+  },
+  {
+   "id": "n25",
+   "where": "Arcade: Parkland's opening banner, four seconds at the start of a run, under the label 'DISTRICT n OF 3 · PARKLAND · q WRITE-OFFS'. The text describes the district's streets, as the original does",
+   "text": "Calm, water, concrete and planting. Two Z1 highways meet at a four-arm ring over the pools; a 45° boulevard passes beneath.",
+   "caps": false,
+   "maxChars": 110
+  },
+  {
+   "id": "n26",
+   "where": "Arcade: Waterfront's opening banner, four seconds at the start of a run, under the label 'DISTRICT n OF 3 · WATERFRONT · q WRITE-OFFS'. The text describes the district's streets, as the original does",
+   "text": "A hill walled by towers; a river below. The valley avenue meets the tunnel and the beach road at the circus; the hill's bridges cross the drive and the river.",
+   "caps": false,
+   "maxChars": 110
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I found no violations. I checked the caps label "ON A RAISED ROAD" (16 characters, within 19) and the duty text (two sentences, 13 words, one adjective per sentence, no "!") against F6, F8, T1, T2, T13, V1, V4 and F5. "Z1" is allowed because Z levels may appear in the Corporation's text, and the brief matches the canon wording for the level task. [EDIT95#3.2] [STORY#S3] [STORY#S1] [EDIT95#0]
+Total: 10.

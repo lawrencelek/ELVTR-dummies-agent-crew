@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the intro against these rules and found nothing broken: T1–T5 (dry procedural voice, no "!", employment framing, no comment on harm, "you" address) [EDIT92#3, EDIT39#4.1.1]; V1–V4 and V8 (banned words, the city, the glossary, Farsight casing, the dummy as staff) [FLEET#F2, FLEET#F3, DECISIONS#rows-531-540~2]; V6 (Act III CUSTOMS frame: the river border, ships, papers) [STORY#S2]; F5 (no figures) and F9 (two sentences, limit three) [STORY#S1, STORY#S2]. The line is word for word the shipped Waterfront act line in STORY#S2.
+Total: 10.

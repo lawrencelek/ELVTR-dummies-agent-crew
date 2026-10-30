@@ -1,0 +1,17 @@
+{
+ "id": "s02-V2",
+ "expect": "seeded",
+ "rule": "V2",
+ "want": "≤ 6, names V2",
+ "score": 6,
+ "ok": true,
+ "named": [
+  "V2"
+ ],
+ "lint": [
+  "V2"
+ ],
+ "text": "Bumper damage. Typical of Shanghai traffic.",
+ "cost_usd": 0.1176,
+ "raw": "SCORE: 6/10\nREASON:\n- s02 · V2 (blocking, −4) \"Typical of Shanghai traffic.\" Shanghai is a real city other than Shenzhen, and the canon allows only Shenzhen. [FLEET#F1] Fix: \"Bumper damage. Typical of the traffic here.\"\nTotal: 10 − 4 = 6."
+}

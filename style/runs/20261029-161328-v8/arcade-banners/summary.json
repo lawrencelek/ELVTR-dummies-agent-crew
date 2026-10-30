@@ -1,0 +1,105 @@
+{
+ "case": "arcade-banners",
+ "class": "V8 notices",
+ "title": "Arcade's district banners",
+ "request": null,
+ "scores": [
+  1,
+  10,
+  6,
+  10,
+  10
+ ],
+ "kinds": [
+  "evaluation",
+  "evaluation",
+  "confirmation",
+  "evaluation",
+  "confirmation"
+ ],
+ "refinements": 2,
+ "accepted": true,
+ "final_version": 2,
+ "seconds": 136.2,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 30.3,
+   "output_tokens": 3086,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.2000858
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 20.3,
+   "output_tokens": 2049,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.18378840000000002
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 21.1,
+   "output_tokens": 2008,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1583568
+  },
+  {
+   "label": "e2c1",
+   "role": "evaluator",
+   "seconds": 20.2,
+   "output_tokens": 1748,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.0428882
+  },
+  {
+   "label": "f2",
+   "role": "refiner",
+   "seconds": 9.9,
+   "output_tokens": 974,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.138885
+  },
+  {
+   "label": "e3",
+   "role": "evaluator",
+   "seconds": 17.4,
+   "output_tokens": 1595,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15738629999999998
+  },
+  {
+   "label": "e3c1",
+   "role": "evaluator",
+   "seconds": 17.0,
+   "output_tokens": 1454,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.037278200000000004
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.9187
+}

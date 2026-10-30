@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The tunnel runs north under the hill to the next valley. Cars go in. Data comes back. Legs 3 is fitted: the longest flight. Where your data goes after the tunnel is not within your role." The tale is 36 words and 5 sentences, over the limits of 20 words and 2 sentences (lint). [EDIT95#3.2] Fix: "Legs 3 is fitted: the longest flight. Jump into a car at the portal; Certification waits across the river." (19 words, 2 sentences).
+- tale · T1 (major, −2) "Where your data goes after the tunnel is not within your role." The closing line only dismisses the trainee and nothing in the tale motivates it toward its training or Certification, so it fails the inspirational half of the tone. [EDIT95#3.2] Fix: drop the data lines and close on the goal, as in the F6 fix: "Jump into a car at the portal; Certification waits across the river."
+Total: 10 − 4 − 2 = 4.

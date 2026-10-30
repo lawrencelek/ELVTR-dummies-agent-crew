@@ -1,0 +1,279 @@
+{
+  "type": "barks",
+  "title": "Barks: vehicle humour in speech bubbles, one line per logged case",
+  "param_prefix": "proto.barks.",
+  "gap": [
+    "My game is thin on humour (designer's gap statement). The fiction is comic and tragic at once, but play never shows it.",
+    "P2.0 has 11 barks in a small grey tag under the car. Each car speaks at most once per road, so most hits, misses and near misses pass in silence.",
+    "There is no line for a miss, a near miss, a write-off or an upgrade. The bark key (front hit, side hit, near miss, safe passage, write-off, seniority) is not used.",
+    "There is one tag style for every case, so a write-off and a polite stop look the same.",
+    "One P2.0 line breaks the worker voice: 'Move it! I have a delivery window.'"
+  ],
+  "deliverable": [
+    "A bark bank: short lines vehicles say, each bound to one case (a logged event plus 'when' conditions) and using only that event's fields.",
+    "A bubble style per line, chosen from the four the renderer draws, so each case has a recognisable look above the car.",
+    "Priorities: write-off lines outrank all others; hits outrank chatter.",
+    "Seeded variation: two or more lines for frequent cases (front hit, write-off, near miss, miss), so repeats do not read as a loop.",
+    "Timing and detection parameters as proto.barks.* IDs: on-screen seconds, global and per-car cooldowns, maximum bubbles, text size, and the near-miss and miss thresholds the renderer uses to derive those cases.",
+    "Barks react to the dummy and what it did. Admissions are not barked: a car entering the road is not an encounter."
+  ],
+  "queries": [
+    "bark key model number event front hit side hit near miss safe passage write-off seniority mood cooldown",
+    "vehicles speak as workers deadlines rank fear of retraining resentment pride corporate politeness",
+    "Sinofuturist AI workers ridiculous jobs comic and tragic at once FARSIGHT sells a city without accidents",
+    "barks react to recorded events neutral fallback vivid false claim reports truthful",
+    "cars may react to upgrades subject has acquired hips draft lines your freedom remains in progress",
+    "miss stumble near miss distinct cues input denial positive impact write-off",
+    "seniority notches beside model ID tag practised experienced senior write-offs caused",
+    "recurring vehicle jobs certification language district logistics maintenance road",
+    "model tag seniority notches spent appearance mark readable cues feedback never hides a car's cues",
+    "standoff stop line honk horn flash lights patient pass blocked dummy"
+  ],
+  "critic_queries": [
+    "barks never assert facts the simulation did not establish neutral fallback",
+    "defer explanatory copy naming counter until changed return",
+    "corporate politeness barely contains personality dry register",
+    "write-off barks take priority cooldown prevents overlap",
+    "feedback never hides a car's cues where feedback and a cue conflict the cue wins",
+    "mockery game-show cheer generic science fiction commentary interchangeable"
+  ],
+  "k": 3,
+  "max_chunks": 18,
+  "allowed": {
+    "events": [
+      "impact",
+      "writeoff",
+      "touch-spent",
+      "knock",
+      "honk",
+      "commit",
+      "interrupt",
+      "unstick",
+      "near-miss",
+      "miss",
+      "upgrade-seen"
+    ],
+    "event_fields": "real field names per event; see the table below",
+    "values": {
+      "zone": [
+        "front",
+        "frontDiagonal",
+        "side",
+        "rearDiagonal",
+        "rear"
+      ],
+      "carState": [
+        "cruise",
+        "intention",
+        "committed",
+        "expiring",
+        "interrupted",
+        "caution"
+      ],
+      "cause": [
+        "body",
+        "pass",
+        "cone",
+        "yield",
+        "return",
+        "unstick"
+      ],
+      "man": [
+        "shift",
+        "brake",
+        "reverse"
+      ],
+      "how": [
+        "reverse",
+        "replan"
+      ],
+      "at": [
+        "body",
+        "cone"
+      ],
+      "by": [
+        "car",
+        "cone"
+      ],
+      "cls": [
+        "sedan",
+        "van"
+      ],
+      "model": [
+        "SEDAN-01",
+        "VAN-02"
+      ],
+      "node": [
+        "Hips",
+        "Spine",
+        "Carry",
+        "Throw"
+      ],
+      "bait": [
+        true,
+        false
+      ],
+      "lunging": [
+        true,
+        false
+      ],
+      "stopped": [
+        true,
+        false
+      ],
+      "seniority": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "numeric_fields": [
+      "seniority",
+      "gap",
+      "speed",
+      "lost",
+      "assessed",
+      "angle",
+      "closing",
+      "chassis",
+      "writeOffs",
+      "health"
+    ],
+    "styles": [
+      "speech",
+      "shout",
+      "thought",
+      "mutter"
+    ],
+    "priorities": [
+      1,
+      2,
+      3
+    ],
+    "max_chars": 56,
+    "required_cases": [
+      {
+        "event": "impact",
+        "when": {
+          "zone": "front"
+        },
+        "min_lines": 2
+      },
+      {
+        "event": "impact",
+        "when": {
+          "zone": "side"
+        },
+        "min_lines": 1
+      },
+      {
+        "event": "impact",
+        "when": {
+          "bait": true
+        },
+        "min_lines": 1
+      },
+      {
+        "event": "impact",
+        "when": {
+          "stopped": true
+        },
+        "min_lines": 1
+      },
+      {
+        "event": "writeoff",
+        "when": {},
+        "min_lines": 2
+      },
+      {
+        "event": "near-miss",
+        "when": {},
+        "min_lines": 2
+      },
+      {
+        "event": "miss",
+        "when": {},
+        "min_lines": 2
+      },
+      {
+        "event": "commit",
+        "when": {
+          "cause": "body"
+        },
+        "min_lines": 1
+      },
+      {
+        "event": "touch-spent",
+        "when": {},
+        "min_lines": 1
+      },
+      {
+        "event": "honk",
+        "when": {
+          "at": "body"
+        },
+        "min_lines": 1
+      },
+      {
+        "event": "upgrade-seen",
+        "when": {},
+        "min_lines": 1
+      }
+    ],
+    "required_params": [
+      "proto.barks.seconds",
+      "proto.barks.cooldown",
+      "proto.barks.carCooldown",
+      "proto.barks.maxOnScreen",
+      "proto.barks.textSize",
+      "proto.barks.nearMissGap",
+      "proto.barks.nearMissSpeed",
+      "proto.barks.missRadius"
+    ]
+  },
+  "schema": [
+    "{",
+    "  \"params\": [ {\"id\": \"proto.barks.<name>\", \"value\": number, \"unit\": \"s|count|world units|world units/s|px\", \"purpose\": \"one line\", \"sources\": [chunk ids]} ],",
+    "  \"lines\": [ {",
+    "     \"event\": one of allowed.events,",
+    "     \"when\": {field: literal from allowed.values} or {numericField: {\"min\": n, \"max\": n}} or {},",
+    "     \"style\": one of allowed.styles,",
+    "     \"priority\": 1|2|3,",
+    "     \"text\": \"the line, with {field} placeholders\",",
+    "     \"sources\": [chunk ids]",
+    "  } ]",
+    "}",
+    "A line fires only when every 'when' condition matches. Placeholders and 'when' keys use only that event's fields (table below)."
+  ],
+  "consumer": [
+    "Event fields the renderer passes to a bark (all logged; derived cases are logged by the renderer into the trace under 'presentation'):",
+    "- impact: model, cls, seniority, zone, angle, closing, assessed, lost, health, carState, cause, bait, lunging, stopped",
+    "- writeoff: chassis, writeOffs, plus the car of the impact that caused it in the same step: model, cls, seniority, zone",
+    "- touch-spent: model, cls, seniority (a touch on a car already spent: no damage, no points)",
+    "- knock: model, cls, seniority, speed (the dummy is pushed back by a car)",
+    "- honk: model, cls, seniority, at ('body' = horn at the dummy; 'cone' = light flash at a cone)",
+    "- commit: model, cls, seniority, man ('shift' swerve, 'brake' stop, 'reverse'), cause ('body' = avoiding the dummy, 'pass' = passing it after waiting, 'cone', 'yield', 'return', 'unstick')",
+    "- interrupt: model, cls, seniority, by ('car' or 'cone'): a committed swerve is halted for safety",
+    "- unstick: model, cls, seniority, how ('reverse' or 'replan')",
+    "- near-miss (derived): model, cls, seniority, gap (metres between car and dummy at closest), speed, lunging. A car above proto.barks.nearMissSpeed passes within proto.barks.nearMissGap of the dummy without contact.",
+    "- miss (derived): model, cls, seniority, gap. A lunge ends with no contact; the nearest car within proto.barks.missRadius of the lunge end speaks.",
+    "- upgrade-seen (derived): model, cls, seniority, node (Hips, Spine, Carry or Throw). The first car to avoid or honk at a chassis carrying a node bought since the last deploy.",
+    "seniority is the notch count beside the model tag: 0 New, 1 Practised, 2 Experienced, 3 Senior. It rises as the model learns from the player's hits.",
+    "Bubbles sit above the car's model tag with a tail to the car; near the top edge they flip below. Width wraps at about 180 units, two lines at most. Text is proto.barks.textSize px.",
+    "speech: rounded white bubble, secondary-ink outline. thought: cloud outline with a trail of small circles. shout: jagged burst outline in primary ink, pops in. mutter: small dashed outline, lighter text.",
+    "A bubble shows for proto.barks.seconds. Priority 3 (write-off) always speaks and replaces any bubble on that car. Priority 2 (hits) replaces chatter at once and waits proto.barks.carCooldown only after another hit line on the same car. Priority 1 (chatter) waits out proto.barks.cooldown (global) and proto.barks.carCooldown (per car), and only shows while fewer than proto.barks.maxOnScreen bubbles are up.",
+    "Bubbles use white fill and primary or secondary ink only. They never cover the state pip, the spent mark or the seniority notches."
+  ],
+  "voices": {
+    "Vehicles (every line)": "Workers with jobs, deadlines, rank and a fear of retraining. Corporate politeness barely contains resentment and pride (D9.3). A car talks about its own job, record and the event just logged. Never FARSIGHT's slogans, never game-show cheer, never mockery of the player.",
+    "speech": "What the car says out loud: polite, procedural, a little strained.",
+    "thought": "What the car thinks and would not say: the resentment or fear under the politeness.",
+    "shout": "Involuntary: the moment of a hit or write-off. Short.",
+    "mutter": "Under its breath: near misses, waiting, stopping, reversing."
+  },
+  "slots": {
+    "vehicle jobs (published graphics content)": "SEDAN-01 is a depot parcel courier. VAN-02 does lane maintenance. Lines may refer to these jobs.",
+    "humour": "Comic and tragic at once (EDIT26 3.1): AI workers in a ridiculous job. The joke is the gap between procedure and what just happened, stated flatly."
+  }
+}

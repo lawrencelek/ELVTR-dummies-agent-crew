@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · R4 (blocking, −4) "The belvedere climbs in four tiers, and a wedding is booked on the top one" says the belvedere has four tiers, a detail the canon never gives this tile, so the text names something the tile does not have. [STORY#PA3] Fix: Use only the canon's details: "A wedding is booked on the belvedere for opening day, and the couple asked for a view of the traffic. Legs 2 is fitted: jump into a car here, so no guest ever has to." (34 words, 2 sentences).
+Total: 10 − 4 = 6.

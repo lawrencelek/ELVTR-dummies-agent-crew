@@ -1,0 +1,4 @@
+SCORE: 9/10
+REASON:
+- tale · V4 (minor, −1) "FARSIGHT will time you." The tale is a sentence-case string, so the brand must be written in title case; capitals are kept only for labels set wholly in capitals. [DECISIONS#rows-531-540~2] Fix: "Farsight will time you."
+Total: 10 − 1 = 9.

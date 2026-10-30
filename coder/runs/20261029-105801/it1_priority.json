@@ -1,0 +1,60 @@
+[
+ {
+  "id": "R-SHROUD",
+  "title": "Shroud the circus's monument until Waterfront B2 clears",
+  "score": 0.757,
+  "terms": {
+   "value": 0.8,
+   "unblocks": 1.0,
+   "authority": 1.0,
+   "cost": 0.308
+  },
+  "partial": false,
+  "waiting": [
+   "R-UNVEIL",
+   "R-VOYAGE",
+   "R-VOYAGE-CREDITS"
+  ],
+  "files": [
+   "content/params/tuning.parameters.json",
+   "prototypes/p6/game.js",
+   "prototypes/p6/world6.js",
+   "prototypes/p7/story.js"
+  ],
+  "attempts": 0
+ },
+ {
+  "id": "R-BARK-TILE",
+  "title": "Barks name the tile, not the district",
+  "score": 0.489,
+  "terms": {
+   "value": 0.6,
+   "unblocks": 0.0,
+   "authority": 0.75,
+   "cost": 0.667
+  },
+  "partial": false,
+  "waiting": [],
+  "files": [
+   "prototypes/p6/game.js"
+  ],
+  "attempts": 0
+ },
+ {
+  "id": "R-CRATE-FACES",
+  "title": "Put the dummy's face on every crate of the ship",
+  "score": 0.456,
+  "terms": {
+   "value": 0.4,
+   "unblocks": 0.0,
+   "authority": 0.995,
+   "cost": 0.667
+  },
+  "partial": false,
+  "waiting": [],
+  "files": [
+   "prototypes/p6/world6.js"
+  ],
+  "attempts": 0
+ }
+]

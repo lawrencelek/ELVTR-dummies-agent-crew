@@ -1,0 +1,1 @@
+{"kind": "tale", "district": "monument", "tile": "A1", "title": "The welcome wall", "tale": "The welcome wall shows your face. Farsight greets you as new staff; the cars are your colleagues. Any write-off here counts toward coverage. Stand in the road. A colleague will be along."}

@@ -1,0 +1,171 @@
+{
+  "type": "terminal",
+  "title": "Terminal: the FARSIGHT smart-city interface skin",
+  "param_prefix": "proto.term.",
+  "gap": [
+    "My game is thin on graphics: the user interface should feel more like FARSIGHT SMART CITY (designer's gap statement).",
+    "Designer decision for P2.1: stay inside DESIGN D10.1, the friendly corporate terminal. No neon, no dark field, no cyberpunk surface layer.",
+    "The P2.0 frame is one flat aqua gradient, a white glow and the word FARSIGHT. Nothing names the smart city product or shows it at work.",
+    "HUD modules are plain text eyebrows: no icons, no header bands, no bevel. Every panel uses the same hard-coded gloss.",
+    "Tier-4 texture (micro-type, range marks, diagnostic runs, FARSIGHT signage) is absent, so the terminal reads as a debug overlay.",
+    "The title screen still uses developer English: 'Cars avoid you. Fool them into hitting you.'"
+  ],
+  "deliverable": [
+    "A frame backdrop: a vertical gradient and soft glows, drawn in the frame only.",
+    "A header lockup: FARSIGHT wordmark plus the smart-city product name in English and Chinese, a tagline and up to three static badges.",
+    "A panel skin for every glass panel (HUD, report, shop, pause, ending, title): radius, gloss, border, shadow, and an optional aqua header band behind module titles.",
+    "An icon for each HUD module, drawn from vector shapes.",
+    "Texture: a run of real registry IDs and values as micro-type, and range marks on the field bezel.",
+    "A signage band: short static FARSIGHT notices that rotate in the bottom strip.",
+    "Title-screen copy in FARSIGHT's voice."
+  ],
+  "queries": [
+    "frame FARSIGHT brand Frutiger Aero glossy bevels translucent panels aqua highlights rounded corners soft drop shadows",
+    "brand kills you politely report card same aqua rounded corners friendly type one register throughout terminal",
+    "texture micro-type range marks diagnostic runs FARSIGHT signage tier 4 first to be cut",
+    "decorative diagnostic text never carries a decision first to be removed when density competes",
+    "Frutiger Aero Windows Aero Wii system menu mid-2000s corporate tech marketing take leave wallpapers bubbles nature photography",
+    "cyberpunk is tonal not surface Chinese signage surveillance grime at panel joints",
+    "bilingual district test identifiers essential language decorative micro-type editorial review Chinese wording",
+    "FARSIGHT sells a city without accidents Shenzhen smart city surveillance instruments test markings",
+    "reference layout 1280 720 play viewport 800 600 side columns top and bottom strips palette brand aqua",
+    "HUD modules BODY CHARGE FLEET CONTRACT SHIFT RECORD screens",
+    "shell screens main menu pause diagnostic panels high scores personnel record control prompt",
+    "campaign three roads quota write-offs body credit upgrade difficulty fragile standard reinforced health"
+  ],
+  "critic_queries": [
+    "dry register corporate politeness optimistic surface",
+    "texture never changes in response to gameplay state load-bearing promoted or removed",
+    "gloss bloom translucency stay in frame matte play area",
+    "high-contrast mode suppresses texture and gloss",
+    "Chinese wording requires informed editorial review",
+    "cars avoid you fool them into hitting you bait commit"
+  ],
+  "k": 3,
+  "max_chunks": 20,
+  "allowed": {
+    "frame_roles": [
+      "aqua",
+      "aquaDeep",
+      "glass",
+      "floor",
+      "grid",
+      "structure",
+      "fleet",
+      "secondary",
+      "primary",
+      "joints",
+      "dummy"
+    ],
+    "forbidden_roles": {
+      "warning": "Red is reserved for warning cues (DESIGN D10.2)."
+    },
+    "dummy_role_only_in": [
+      "icons.BODY"
+    ],
+    "icon_modules": [
+      "BODY",
+      "CHARGE",
+      "FLEET",
+      "CONTRACT",
+      "SHIFT",
+      "RECORD",
+      "BUILD"
+    ],
+    "shapes": [
+      "rect",
+      "circle",
+      "ring",
+      "line",
+      "quadrant"
+    ],
+    "icon_half_size": 8,
+    "field_rect": [
+      240,
+      60,
+      1040,
+      660
+    ],
+    "canvas": [
+      1280,
+      720
+    ],
+    "product_max_chars": 16,
+    "tagline_max_chars": 44,
+    "badge_max_chars": 20,
+    "max_badges": 3,
+    "sign_max_chars": 72,
+    "sign_lines": [
+      4,
+      10
+    ],
+    "diagnostic_ids": [
+      6,
+      16
+    ],
+    "title_placeholders": {
+      "eyebrow": [],
+      "lines": [
+        "roads",
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "start": [],
+      "difficulty": [
+        "health"
+      ]
+    },
+    "required_params": [
+      "proto.term.panelRadius",
+      "proto.term.glossHeight",
+      "proto.term.borderAlpha",
+      "proto.term.shadowBlur",
+      "proto.term.signSeconds",
+      "proto.term.rangeStep"
+    ]
+  },
+  "schema": [
+    "{",
+    "  \"params\": [ {\"id\": \"proto.term.<name>\", \"value\": number, \"unit\": \"canvas units|s|alpha|ratio\", \"purpose\": \"one line\", \"sources\": [chunk ids]} ],",
+    "  \"backdrop\": {",
+    "     \"stops\": [ {\"at\": 0..1, \"role\": allowed.frame_roles, \"alpha\": 0..1} ],          (2 to 4 stops, top to bottom)",
+    "     \"glows\": [ {\"x\": canvas x, \"y\": canvas y, \"r\": radius, \"role\": allowed.frame_roles, \"alpha\": 0..1} ],",
+    "     \"sources\": [...]",
+    "  },",
+    "  \"header\": {\"product\": \"EN product name\", \"productZh\": \"Chinese\", \"review\": \"pending\", \"tagline\": \"short line\", \"badges\": [\"static label\"], \"sources\": [...]},",
+    "  \"panels\": {\"radius\": ID, \"gloss\": ID, \"border\": role, \"borderAlpha\": ID, \"shadow\": ID, \"band\": true|false, \"bandRole\": role, \"sources\": [...]},",
+    "  \"icons\": {\"BODY\": [shapes], \"CHARGE\": [...], \"FLEET\": [...], \"CONTRACT\": [...], \"SHIFT\": [...], \"RECORD\": [...], \"BUILD\": [...], \"sources\": [...]},",
+    "  \"texture\": {\"diagnostics\": [registry IDs], \"rangeMarks\": ID, \"sources\": [...]},",
+    "  \"signage\": {\"lines\": [ {\"text\": \"EN notice\", \"zh\": \"Chinese or omit\", \"review\": \"pending if zh\"} ], \"seconds\": ID, \"sources\": [...]},",
+    "  \"title\": {\"eyebrow\": \"...\", \"lines\": [\"line 1\", \"line 2\"], \"start\": \"...\", \"difficulty\": {\"Fragile\": \"...\", \"Standard\": \"...\", \"Reinforced\": \"...\"}, \"sources\": [...]}",
+    "}",
+    "Shapes (icons): {\"shape\": rect|circle|ring|line|quadrant, \"x\", \"y\", \"w\", \"h\", \"r\", \"points\": [[x,y],...], \"fill\": role, \"stroke\": role, \"lineWidth\", \"a\": role, \"b\": role}. Icon units: a 16-unit box centred on 0,0.",
+    "Geometry and alpha are plain numbers. Timing, radius, gloss, border alpha, shadow and range spacing are parameter IDs."
+  ],
+  "consumer": [
+    "Canvas 1280 x 720. The play field is 800 x 600 at (240, 60). Side columns hold the HUD glass panels. Top and bottom strips are 60 units.",
+    "backdrop is drawn first over the whole canvas. The play field is drawn on top and is opaque, so anything behind it is never seen.",
+    "Top strip: FARSIGHT wordmark at the left, then the product lockup ('product · productZh'), then the tagline in small type. The district identifier line from interface copy prints under the lockup. Badges are small glass pills at the right.",
+    "panels: every glass panel uses radius, gloss highlight height, border role and alpha, and drop-shadow blur. With band on, each HUD module title sits on a bandRole gloss band with white text; its icon sits at the band's left.",
+    "icons: drawn at 16 units beside each module title. Roles render as the palette colour; aqua, aquaDeep and glass are frame colours.",
+    "texture.diagnostics: micro-type runs in the bottom strip under each HUD column, 8 px, at texture contrast: 'id value unit'. Values are read live from the registry, so they are always true. rangeMarks: calibration ticks on the field bezel every rangeMarks units.",
+    "signage: one notice at a time in a glass band in the bottom strip, under the field, cross-fading every signage.seconds. Static texture: it never reacts to play. The control prompt stays below it.",
+    "title: eyebrow above the DUMMIES logo; two lines under it; start prompt at the bottom; difficulty note beside the difficulty selector. Placeholders: {roads} road count, {q1} {q2} {q3} write-offs per road, {health} that difficulty's body health.",
+    "Frame text never enters the play field. The play field keeps its matte floor and cues; this skin does not touch it."
+  ],
+  "voices": {
+    "FARSIGHT (all copy here)": "The corporate terminal: polite, procedural, optimistic on the surface, dry underneath (D9.2, D10.1). The brand kills you politely and never comments on the contradiction (EDIT26 4.1.1). Signage reads like public notices of a smart city that sells safety."
+  },
+  "slots": {
+    "header.product": "The smart-city product name FARSIGHT sells, as a lockup beside the wordmark.",
+    "header.tagline": "FARSIGHT's promise in a few words.",
+    "header.badges": "Static brand labels, like certification seals on corporate software. Texture: they never change.",
+    "signage.lines": "Public notices on the city's screens. Texture: not instructions to the player, no numbers, no claims about this run.",
+    "title.eyebrow": "Small caps label above the game logo.",
+    "title.lines[0]": "Who the visitor is, what the cars do (avoid it), and its job: cause the accidents FARSIGHT says cannot happen by getting hit.",
+    "title.lines[1]": "The campaign: how many roads, the write-offs each needs, and what a lost body buys.",
+    "title.start": "Prompt to press A or Space to start.",
+    "title.difficulty.<name>": "A few words beside the difficulty selector: what the setting means for the body."
+  }
+}

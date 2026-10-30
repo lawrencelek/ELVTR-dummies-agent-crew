@@ -1,0 +1,6 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I found no violations. The tale is two sentences and 20 words, within the 15 to 20 word limit (F6) [EDIT98#3.2]. It is flat and motivating, with no "!" (T1, T2) [EDIT95#3.2]. It calls the cars colleagues and frames the duty as training (T3) [EDIT95#3.1]. It uses no banned words and no company name other than Dummy Corporation; "company policy" is generic (V1, V4) [EDIT95#0]. It names the LED drum and the high road, and turns them toward the duty (V11, R4) [STORY#MC1]. "Step off the high road onto a car" matches the DROP ONTO A CAR brief, and the tile issues no equipment, so naming none is correct (R5, F7) [STORY#S3, EDIT93#3.1]. It uses no placeholder or number (F5) [STORY#S1], and it keeps to one adjective per sentence (T13) [EDIT95#3.2].
+Total: 10.

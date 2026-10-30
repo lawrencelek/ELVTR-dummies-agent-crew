@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked all four lines against the tier voices in [FLEET#F4] and the worker voice in [FLEET#F2]. The cubes' lean and the Monument tile are canon in [STORY#MA3]. The lines claim nothing the `impact` event's logged fields do not support, per [FLEET#F8]. The "!" in t128 is allowed in a Budget bark under [DECISIONS#rows-541-550] row 541. The lint returned no findings on length, banned words or grid codes ([EDIT39#6.6], [SUB4#6.2]).
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1–T5, V1–V8, F5–F7 and R4–R5 and found no violation: it has no "!" and no figures, keeps to 223 characters with no sentence over 19 words, and keeps Farsight's dry procedural voice and the Induction frame [EDIT92#3, STORY#S2]. Its duty ("one hit, then another before the first is forgotten") matches the COMBO ×{n} chains brief [STORY#S3]. It names only the stacked cubes and no equipment, as fits a tile that issues none [STORY#MA3, STORY#S1].
+Total: 10.

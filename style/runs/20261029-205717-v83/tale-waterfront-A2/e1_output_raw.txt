@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The valley began here: a cliff, an avenue, and a beach of sand brought from three provinces. Place a cone on the beach terrace: one more clean reading before the ceremony." The tale runs 31 words, past the 20-word cap for a tale. [EDIT98#3.2] Fix: "Sand from three provinces made this beach terrace. Place a cone; one more clean reading before the ceremony." (18 words, two sentences, keeps the landmark, the cone duty and the history detail).
+Total: 10 − 4 = 6.

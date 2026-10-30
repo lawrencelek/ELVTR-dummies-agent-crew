@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The pier tower logs everything that crosses the river: containers, ducks and, so far, one dummy. Be thrown into a car, and earn your entry." At 25 words, the tale is over the 20-word limit for tales; lint measured this. [EDIT98#3.2] Fix: "The pier tower logs all that floats: containers, ducks, one dummy. Be thrown into a car to earn your entry." (20 words, two sentences; it keeps the landmark, the duck joke and the duty.)
+Total: 10 − 4 = 6.

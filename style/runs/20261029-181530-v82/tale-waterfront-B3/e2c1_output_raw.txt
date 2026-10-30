@@ -1,0 +1,5 @@
+SCORE: 10/10
+REASON:
+- None.
+Checked: the length is 35 words in two sentences [EDIT97#3.2]. Lint found no "!" and no banned words [EDIT95#0]. "Arms 3" is a part rank in the Corporation's text, which the rules allow [STORY#S1]. The tone is deadpan and motivating [EDIT95#3.2, PLAY#PS2]. The tale names its landmark, the stilt houses, and turns it toward the training [EDIT95#3.1]. It names Arms 3 on the tile that issues it [STORY#WB3, EDIT93#3.1]. The push matches the brief, which is not restated [STORY#S3]. Chassis 0 behind glass is canon for this tile [STORY#WB3].
+Total: 10.

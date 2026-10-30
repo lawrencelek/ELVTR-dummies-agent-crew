@@ -1,0 +1,13 @@
+SCORE: 10/10
+REASON:
+- None.
+
+I found no violations.
+- **Length (F6):** the tale is 18 words in 2 sentences, inside the 15 to 20 word range. [EDIT98#3.2]
+- **Place (V11, R4):** it names the cubes, stacked as each budget came in and leaning further out. It turns that lean into the duty. [STORY#MA3]
+- **Duty and equipment (R5, F7):** "Chain your hits" matches the COMBO ×{n} brief. It names no equipment, and none is issued on this tile. [STORY#MA3, EDIT93#3.1]
+- **Placeholders (F5):** the tale has no placeholder and no typed figure. [STORY#S1]
+- **Tone (T1–T5, T13):** the line is flat and has no "!". The analogy pushes you to build each hit on the last one. It is addressed to "you", without cheer, wink or pity. It has no intensifier and at most one adjective per sentence. [EDIT95#3.2, PLAY#PS0]
+- **Vocabulary (V1–V4, V8, V9):** no banned word, other city or brand, other company name or game term. The dummy is not framed as a person. No client is named. [EDIT95#3.1, FLEET#F2]
+- **Length fit (F11):** it is short for a single image. Restating the duty is required, and the tale echoes neither the brief's label nor the act line. [EDIT97#3.2]
+Total: 10.

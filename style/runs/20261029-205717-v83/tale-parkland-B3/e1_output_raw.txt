@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The obelisk marks the surveyors' first stake. On opening day the police fleet escorts a school party here, so Dummy Corporation tests the escort on you first." The tale runs 27 words, over the 20-word cap for tales. [EDIT98#3.2] Fix: "The obelisk marks the surveyors' first stake. Police escort a school party here on opening day; test them first." (19 words, two sentences; it keeps the landmark, the police duty and one detail).
+Total: 10 − 4 = 6.

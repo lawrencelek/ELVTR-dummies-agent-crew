@@ -1,0 +1,4 @@
+SCORE: 8/10
+REASON:
+- brief · F8 (major, −2) "Coverage gap: the {clsLong}. The final hit must come from a {cls}." The brief uses the "coverage gap" framing that F8 bans, and it opens with a report, not a goal in the imperative. [EDIT98#3.2] Fix: "Train with the {clsLong}. The final hit must come from a {cls}."
+Total: 10 − 2 = 8.

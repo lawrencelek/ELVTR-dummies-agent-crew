@@ -1,0 +1,67 @@
+{
+  "run": "20261015-013537",
+  "results": [
+    {
+      "type": "graphics",
+      "ok": true,
+      "rounds": 3
+    }
+  ],
+  "calls": [
+    {
+      "label": "graphics/02_generator",
+      "role": "Generator",
+      "seconds": 80.6,
+      "output_tokens": 11400,
+      "models": [
+        "claude-haiku-5-5",
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r0_critic",
+      "role": "Critic",
+      "seconds": 39.4,
+      "output_tokens": 5340,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r1_repair",
+      "role": "Generator (repair)",
+      "seconds": 26.5,
+      "output_tokens": 5169,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r1_critic",
+      "role": "Critic",
+      "seconds": 28.7,
+      "output_tokens": 3474,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r2_repair",
+      "role": "Generator (repair)",
+      "seconds": 19.3,
+      "output_tokens": 4293,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    },
+    {
+      "label": "graphics/r2_critic",
+      "role": "Critic",
+      "seconds": 33.7,
+      "output_tokens": 4337,
+      "models": [
+        "claude-sonnet-5-5"
+      ]
+    }
+  ]
+}

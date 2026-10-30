@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the ending against T1–T5 for dry, procedural staff-notice tone, no "!", employment framing, no comment on the harm, and "you" with Farsight in the third person; V1, V2, V4, V6 and V8 for banned words, cities, "Farsight" casing, the Act III river-and-ship frame and "you"/"the model"; and F5, R4 and R5 for figures and finale truth. The text matches the shipped wording in [STORY#S5] and [EDIT92#3.2], and it agrees with the voyage to the ship at B3 in [EDIT94#3.2], under [EDIT92#3], [EDIT39#4.1.1] and [DECISIONS#rows-531-540~2].
+Total: 10.

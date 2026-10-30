@@ -1,0 +1,20 @@
+[
+ {
+  "rule": "V1",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "Farsight",
+  "measured": "Farsight is the publisher: named only in the Credits (GDD Edit 95)",
+  "source": "EDIT95#3.1"
+ },
+ {
+  "rule": "F6",
+  "severity": "blocking",
+  "deduct": 4,
+  "path": "tale",
+  "quote": "The valley began here: a cliff, an avenue, and a beach of sa…",
+  "measured": "38 words > 35 (style.v2.tale.maxWords); 4 sentences > 2 (style.v2.text.maxSentences)",
+  "source": "EDIT96#3.2"
+ }
+]

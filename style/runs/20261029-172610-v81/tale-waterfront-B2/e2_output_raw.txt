@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against T1, T3–T5, T13 [EDIT95#3.2] [PLAY#PS2], V1, V3, V6, V8, V9, V11 [EDIT95#3.1] [EDIT95#3.3], and F5, F6, F7 [EDIT96#3.2] [STORY#S1]. It has 32 words in two sentences, and the words after the 20th name the circus monument. It names Battery 3 on the tile that issues it. Its duty matches the COMBO ×{n} brief, so R5 holds [STORY#S3]. ZERO ACCIDENTS (EXCLUDING TESTS) is exact and true to the tile, so V6 and R4 hold [STORY#WB2] [EDIT94#3.2].
+Total: 10.

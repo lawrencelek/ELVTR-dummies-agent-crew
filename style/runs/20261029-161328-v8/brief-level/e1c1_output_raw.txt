@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "ON A RAISED ROAD" (16 characters, caps) and the brief (2 sentences, 13 words, no "!") against F8, F6, F5, T1–T5, T13, V1, V3, V4 and R5; it matches the canonical brief for the level task, and V1's banned "level" appears only in the schema key, not in the text. [STORY#S3] [EDIT95#3.2] [EDIT95#3.1] [STORY#MC2] [STORY#PB1] [STORY#WA3]
+Total: 10.

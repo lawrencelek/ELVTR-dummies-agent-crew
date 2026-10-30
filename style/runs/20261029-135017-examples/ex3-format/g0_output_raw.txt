@@ -1,0 +1,1 @@
+{"kind":"barks","lines":[{"id":"t902","event":"impact","when":{"district":"parkland","tile":"A3","tier":"02"},"style":"speech","priority":2,"text":"V02: Impact logged at 38 km/h, per procedure.\nDamage to my chassis is assessed at 12%.\nThe delay to my route is 45 seconds.","claims":["district:parkland","tile:A3"]}]}

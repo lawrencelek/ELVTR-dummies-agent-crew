@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- t109 · R4 (blocking, −4) "The LED drum lit the bend." This says the car was on a lit bend when it was hit, but the line fires anywhere on C1 and no condition puts the car on a bend. [STORY#MC1] Fix: "The drum lights every bend. You arrived anyway." (47 characters; it states only the tale's general fact and keeps the Luxury amusement).
+Total: 10 − 4 = 6.

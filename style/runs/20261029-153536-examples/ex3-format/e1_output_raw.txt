@@ -1,0 +1,8 @@
+SCORE: 1/10
+REASON:
+- t902 · F1 (blocking, −4) "V02: Impact logged at 41 km/h.\nBodywork damage is 17%, filed under unforeseen.\nSchedule delay is 94 seconds, KPIs adjusted." The bark is 123 characters, well over the 48-character bubble limit. [EDIT39#6.6] Fix: cut it to one sentence of 48 characters or fewer, e.g. "Belvedere contact. Filed under unforeseen." (42).
+- t902 · F2 (major, −2) "V02:" and "\n" A bubble is one plain line, but this has a speaker tag and two line breaks. [FSG#field-text] Fix: drop the "V02:" tag and both line breaks so the text is a single line.
+- t902 · F5 (major, −2) "41 km/h", "17%", "94 seconds" These are typed gameplay figures, and a bark may only take figures from event placeholders. [STORY#S1] Fix: remove all three figures; if a number is wanted, use Corporate paperwork such as "Incident 4471 opened."
+- t902 · R1 (blocking, −4) "Impact logged at 41 km/h. Bodywork damage is 17% … Schedule delay is 94 seconds" The line invents a speed, a damage share and a delay, and an impact event logs none of them. [FLEET#F8], [DESIGN#D9.3] Fix: react only to the contact itself, e.g. "Belvedere contact. Filed under unforeseen."
+- t902 · R2 (blocking, −4) "V02" The line names model V02, but its conditions do not bind that model and it has no claim for it, so it would fire for every Corporate car on A3. [EDIT39#6.6], [SUB4#5.1] Fix: delete "V02", or add `model: VAN-02-001` to `when` and a matching claim.
+Total: 10 − 4 − 2 − 2 − 4 − 4 = −6, floored to 1.

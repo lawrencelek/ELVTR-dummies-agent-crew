@@ -1,0 +1,5 @@
+SCORE: 4/10
+REASON:
+- tale · F6 (blocking, −4) "The high road runs through this tower at the sixth floor. The tenants say the traffic is good company. Today your duty is on the road itself, at height. The view is not part of the job." The tale has 37 words and 4 sentences; the cap is 20 words and 2 sentences (lint). [EDIT95#3.2] Fix: "Your duty today is the raised road through this tower. Every write-off at height brings Certification closer." (16 words, 2 sentences)
+- tale · T1 (major, −2) "The tenants say the traffic is good company." This line is ironic colour that does not push the trainee toward the duty or Certification, and the tale as a whole does not motivate. [EDIT95#3.2] Fix: cut the tenants line and the view line, and close on a motivating line, as in the F6 replacement: "Every write-off at height brings Certification closer."
+Total: 10 − 4 − 2 = 4.

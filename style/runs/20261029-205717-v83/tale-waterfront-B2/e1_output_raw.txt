@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Everything in the valley meets at the circus, where a monument cast from every chassis written off reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits toward Certification." Lint measured 31 words, and a tale may have 15 to 20 (style.v2.tale.maxWords). [EDIT98#3.2] Fix: cut "Everything in the valley meets", which pads, and keep the place, the fixed phrase, the equipment and the duty: "The circus monument, cast from your written-off chassis, reads ZERO ACCIDENTS (EXCLUDING TESTS). Battery 3 is fitted; chain your hits." (20 words, two sentences).
+Total: 10 − 4 = 6.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label and the duty and found no violations: the label is 19 caps characters, and the duty matches the canon wording, is two sentences and 17 words, uses no "!", banned words or digits, has one adjective per sentence, uses training framing and addresses the trainee as "you" ([STORY#S3], [STORY#MB2], [EDIT95#3.2], [EDIT95#3.1], [FLEET#F2]).
+Total: 10.

@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked the label and the brief against T1–T5, V1–V8, F5 and F8, and R5. Both match the shipped cone row word for word: the label "CONE-BAITED CAR" is 15 characters, within the 19-character limit, and the brief has the Coverage gap form. The text uses no banned words and no figures, keeps the duty framing and does not use "!". [STORY#S3] [EDIT92#3] [STORY#S1] [FLEET#F2]
+Total: 10.

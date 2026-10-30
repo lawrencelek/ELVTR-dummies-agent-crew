@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The plaque reads ZERO ACCIDENTS. New staff ask whether this is a record. It is a target. Stand near it and let a colleague find you. Walking is permitted. Dashing would spoil the data." At 34 words and 6 sentences, the tale is over the limit of 20 words and 2 sentences (style.v2.text.maxWords, style.v2.text.maxSentences). [EDIT95#3.2] Fix: "The plaque reads ZERO ACCIDENTS. It is a target; stand or walk near it, and let a colleague find you." (19 words, 2 sentences; keeps ZERO ACCIDENTS exact and the STRUCK, NOT DASHING duty).
+Total: 10 − 4 = 6.

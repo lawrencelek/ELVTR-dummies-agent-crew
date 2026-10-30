@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "Two screens face each other across the road and advertise to each other all night. The skybridge was added so that someone would watch. You are now someone. Legs 1 is fitted. Jump into a car between the screens." The tale has 39 words and 5 sentences, over the limit of 20 words and 2 sentences (lint fact). [EDIT95#3.2] Fix: "Legs 1 is fitted. Between the screens, jump into a car; every write-off brings Certification closer." (16 words, 2 sentences; it still names Legs 1, the jump duty and the screens, and points to Certification.)
+Total: 10 − 4 = 6.

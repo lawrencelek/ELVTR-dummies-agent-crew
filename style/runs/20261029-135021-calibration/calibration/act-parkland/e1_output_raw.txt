@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. The line matches the shipped Parkland act line in [STORY#S2] word for word. It holds the Act II OPENING DAY frame of the Expo and booked visitors [V6, EDIT92#3]. It reads as a dry, procedural staff notice with no "!" [T1, T2, EDIT92#3]. It runs to three sentences, within the act-line limit [F9, STORY#S2]. It uses no banned words or typed gameplay figures, since "Nine tiles, nine days" restates canon [V1, FLEET#F2; F5, STORY#S1]. LINT reported no findings.
+Total: 10.

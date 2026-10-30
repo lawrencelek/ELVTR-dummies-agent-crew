@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the label "JUMP INTO A CAR" (15 characters, caps) and the goal "Jump into a car. The jump must be the final hit." (11 words, two sentences) against F8, which wants an imperative first, then the final hit, with no coverage-gap framing [EDIT98#3.2, STORY#S3]. I also checked the length cap under F6 [EDIT95#3.2], T2's ban on "!" [EDIT95#3.2], the T1/T3 tone and training frame [EDIT95#3.1], the V1/V4 bans on Farsight and the company name [EDIT95#0], F5 on figures [STORY#S1], and R5 on the jump duty [STORY#MB3]; none is broken.
+Total: 10.

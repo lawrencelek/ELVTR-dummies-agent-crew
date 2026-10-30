@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale's tone, vocabulary, length and truth. It meets the deadpan, inspirational voice (T1, T2, T13) [EDIT95#3.2]. It uses the training frame and the glossary, with no banned words (T3, V1, V3) [EDIT95#3.1]. It names the stacked cubes and turns them toward the duty (V11) [EDIT95#3.1, STORY#MA3]. It has two sentences and 27 words, with no padding or placeholder (F5, F6, F11) [EDIT97#3.2]. Its duty matches the COMBO ×{n} brief, and it names no equipment on a tile that issues none (R4, R5) [STORY#S3, EDIT93#3.1].
+Total: 10.

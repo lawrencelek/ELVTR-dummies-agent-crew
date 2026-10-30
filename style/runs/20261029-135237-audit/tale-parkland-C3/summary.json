@@ -1,0 +1,52 @@
+{
+ "case": "tale-parkland-C3",
+ "class": "audit",
+ "title": "shipped tale parkland C3",
+ "request": null,
+ "scores": [
+  9,
+  10
+ ],
+ "refinements": 1,
+ "accepted": true,
+ "final_version": 1,
+ "best_version": 1,
+ "seconds": 30.9,
+ "calls": [
+  {
+   "label": "e1",
+   "role": "evaluator",
+   "seconds": 14.5,
+   "output_tokens": 1257,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.15054740000000003
+  },
+  {
+   "label": "f1",
+   "role": "refiner",
+   "seconds": 7.0,
+   "output_tokens": 476,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1360284
+  },
+  {
+   "label": "e2",
+   "role": "evaluator",
+   "seconds": 9.3,
+   "output_tokens": 670,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 0.1388155
+  }
+ ],
+ "restored": [],
+ "cost_usd": 0.4254
+}

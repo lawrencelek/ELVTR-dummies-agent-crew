@@ -1,0 +1,145 @@
+[
+  {
+    "query": "feedback never hides a car's cues where feedback and a cue conflict the cue wins",
+    "results": [
+      {
+        "id": "ENG#6.2~1",
+        "score": 13.36
+      },
+      {
+        "id": "EDIT26#6.5",
+        "score": 13.104
+      }
+    ]
+  },
+  {
+    "query": "a scored hit and a physical touch must not use indistinguishable reward feedback",
+    "results": [
+      {
+        "id": "ENG#8.4",
+        "score": 11.938
+      },
+      {
+        "id": "ENG#8.2~2",
+        "score": 9.991
+      }
+    ]
+  },
+  {
+    "query": "the impact burst is at most two times body width",
+    "results": [
+      {
+        "id": "EDIT26#11.4",
+        "score": 8.481
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 8.101
+      }
+    ]
+  },
+  {
+    "query": "the hit-stop stays the simulation value",
+    "results": [
+      {
+        "id": "ENG#5.3~2",
+        "score": 14.391
+      },
+      {
+        "id": "ENG#5.4",
+        "score": 12.299
+      }
+    ]
+  },
+  {
+    "query": "red is reserved for warnings aqua frame only yellow the dummy",
+    "results": [
+      {
+        "id": "DESIGN#D10.1",
+        "score": 23.49
+      },
+      {
+        "id": "EDIT26#4.1~2",
+        "score": 20.096
+      }
+    ]
+  },
+  {
+    "query": "Art of Screenshake: shake scaled to impact, plus dust plumes",
+    "results": [
+      {
+        "id": "EDIT26#5.1",
+        "score": 9.852
+      },
+      {
+        "id": "ENG#8.3",
+        "score": 5.904
+      }
+    ]
+  },
+  {
+    "query": "Art of Screenshake: camera kick and impact effects, downward",
+    "results": [
+      {
+        "id": "LOG#P3/automated-evidence",
+        "score": 8.978
+      },
+      {
+        "id": "LOG#P3/automated-evidence-automated-evidence",
+        "score": 8.597
+      }
+    ]
+  },
+  {
+    "query": "Juice It or Lose It: sound on every action, speed lines",
+    "results": [
+      {
+        "id": "LOG#P1.1-observations",
+        "score": 9.614
+      },
+      {
+        "id": "EDIT26#3.3",
+        "score": 8.756
+      }
+    ]
+  },
+  {
+    "query": "Art of Screenshake: bigger hit, bigger shake, debris",
+    "results": [
+      {
+        "id": "EDIT40#D27",
+        "score": 13.006
+      },
+      {
+        "id": "FLEET#F9.12",
+        "score": 10.217
+      }
+    ]
+  },
+  {
+    "query": "Wreck permanence and heavy shake: a crushed roof",
+    "results": [
+      {
+        "id": "LOG#P3.3",
+        "score": 5.927
+      },
+      {
+        "id": "LOG#P3.3/questions-for-the-p3-3-session",
+        "score": 5.919
+      }
+    ]
+  },
+  {
+    "query": "Landing thud start, Z2. Deeper for more height.",
+    "results": [
+      {
+        "id": "EDIT44#evidence",
+        "score": 10.085
+      },
+      {
+        "id": "DECISIONS#rows-171-180",
+        "score": 8.202
+      }
+    ]
+  }
+]

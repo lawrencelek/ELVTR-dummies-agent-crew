@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked for the 33-word, two-sentence length cap (F6), the gardener, the three pools and the reservoir terraces named and turned toward the training (V11, R4), Arms 2 named on the tile that issues it (F7), the ricochet duty matching its brief (R5), the deadpan tone with no "!" (T1, T2), and the training framing (T3); nothing breaks a rule. [STORY#PA1] [STORY#S3] [EDIT96#3.2] [EDIT95#3.1] [EDIT95#3.2] [EDIT93#3.1]
+Total: 10.

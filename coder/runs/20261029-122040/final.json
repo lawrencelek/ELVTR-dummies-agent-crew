@@ -1,0 +1,18 @@
+{
+ "stop": "every unmet requirement is blocked: R-VOYAGE-CREDITS (decision-open: D77), R-SECOND-MARKET (decision-open: D77), R-BARK-TILE (decision-open: D78), R-TILE-GRADE (no-spec: The GDD names a grade but gives no scale, thresholds, inputs (points, time, chassis spent), where it shows (report, map, slot) or whether a tile can be replayed for a better grade.), R-PARKLAND-B1-DROPGAP (decision-open: D70)",
+ "writes": 0,
+ "seconds": 568,
+ "calls": [
+  {
+   "label": "analyst_1",
+   "role": "Analyst",
+   "seconds": 292.0,
+   "output_tokens": 33799,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+   ],
+   "cost_usd": 1.3717097
+  }
+ ]
+}

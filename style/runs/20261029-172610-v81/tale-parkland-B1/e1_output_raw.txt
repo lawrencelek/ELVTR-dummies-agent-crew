@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The cascade steps the reservoir's water down beside the highway, pool by pool. It was built to drown out the traffic. The traffic got louder. Go up to the highway and test it where it is loudest." The tale has 37 words, over the cap of 35, and 4 sentences, over the cap of 2 (lint). [EDIT96#3.2] Fix: "The cascade steps the reservoir's water down beside the highway, pool by pool, to drown out the traffic. Go up to the highway and land your write-off where it is loudest." (31 words, 2 sentences; it keeps the cascade and highway and matches the ON A RAISED ROAD duty.)
+Total: 10 − 4 = 6.

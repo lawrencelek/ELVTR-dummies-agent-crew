@@ -1,0 +1,4 @@
+SCORE: 6/10
+REASON:
+- tale · F6 (blocking, −4) "The terrace was built for tourists, then joggers, then sensors. From its rail you can see the ships in the estuary and the cranes that load them. Drop onto a car below. The ships will wait." The tale is 36 words (the cap is 35) and 4 sentences (the cap is 2). [EDIT96#3.2] Fix: "From the rail of the east beach terrace, you can see the ships that carry Certified dummies to clients. Drop onto a car below; the ships will wait." (28 words, 2 sentences)
+Total: 10 − 4 = 6.

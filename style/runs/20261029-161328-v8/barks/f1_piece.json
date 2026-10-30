@@ -1,0 +1,142 @@
+{
+ "kind": "barks",
+ "lines": [
+  {
+   "id": "b013",
+   "event": "impact",
+   "when": {
+    "zone": [
+     "front",
+     "frontDiagonal"
+    ],
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 2,
+   "text": "OI! Right in the grille, kind regards.",
+   "claims": [
+    "zone:front"
+   ]
+  },
+  {
+   "id": "b034",
+   "event": "writeoff",
+   "when": {
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 3,
+   "text": "A write-off on my record. Unthinkable.",
+   "claims": []
+  },
+  {
+   "id": "b041",
+   "event": "writeoff",
+   "when": {
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 3,
+   "text": "Done, done! You happy now?!",
+   "claims": []
+  },
+  {
+   "id": "b052",
+   "event": "near-miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Too slow, ha! Have a nice day!",
+   "claims": []
+  },
+  {
+   "id": "b058",
+   "event": "miss",
+   "when": {
+    "tier": "02"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Dash detected, no contact. Noted.",
+   "claims": []
+  },
+  {
+   "id": "b061",
+   "event": "miss",
+   "when": {
+    "tier": "03"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "It lunged and nothing happened. Same.",
+   "claims": []
+  },
+  {
+   "id": "b062",
+   "event": "miss",
+   "when": {
+    "tier": "04"
+   },
+   "style": "mutter",
+   "priority": 1,
+   "text": "Missed, rubbish! Regards!",
+   "claims": []
+  },
+  {
+   "id": "b081",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "tier": "01"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Move. I have a schedule, and standards.",
+   "claims": [
+    "at:body"
+   ]
+  },
+  {
+   "id": "b083",
+   "event": "honk",
+   "when": {
+    "at": "body",
+    "tier": "04"
+   },
+   "style": "shout",
+   "priority": 1,
+   "text": "MOVE IT, thank you! MOVE!",
+   "claims": [
+    "at:body"
+   ]
+  },
+  {
+   "id": "b110",
+   "event": "upgrade-seen",
+   "when": {
+    "node": "bigBattery"
+   },
+   "style": "speech",
+   "priority": 1,
+   "text": "Bigger battery, more dashes. Wonderful.",
+   "claims": [
+    "node:bigBattery"
+   ]
+  },
+  {
+   "id": "c024",
+   "event": "impact",
+   "when": {
+    "district": "campus"
+   },
+   "style": "mutter",
+   "priority": 2,
+   "text": "Hit on campus. That goes on my record.",
+   "claims": [
+    "district:campus"
+   ]
+  }
+ ]
+}

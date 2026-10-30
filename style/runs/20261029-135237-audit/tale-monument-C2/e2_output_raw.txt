@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. I checked the tale against Farsight's tone (T1 to T5: dry, procedural, no "!", employment framing, no comment on the harm), vocabulary (V1 to V4, V6, V8: no banned terms or other city, Act I INDUCTION frame, "staff" and "duty" framing), format (F5 to F7: no digits, within 223 characters, all sentences under 19 words, ends on an imperative duty with no equipment named) and truth (R4, R5: "the portal tower" and "the high road" are on this tile, and "on the road itself, at height" matches the brief ON A RAISED ROAD, Z1 or above). [EDIT92#3] [STORY#S1] [STORY#S2] [STORY#S3] [STORY#MC2] [EDIT93#3.1/tales-rewritten~2] [EDIT39#4.1.1] [FLEET#F2] [FLEET#F3]
+Total: 10.

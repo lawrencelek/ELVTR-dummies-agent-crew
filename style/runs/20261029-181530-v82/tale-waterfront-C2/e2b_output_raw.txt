@@ -1,0 +1,4 @@
+SCORE: 10/10
+REASON:
+- None. Checked: 28 words in two sentences [EDIT97#3.2]; names the east beach terrace with its rail and cranes and shows Certified dummies shipping to clients [STORY#WC2, EDIT95#3.3]; flat company voice with "you" and "our", no "!", no banned word, no placeholder or digit [EDIT95#3.2, EDIT95#3.1]; no equipment and nothing that contradicts the DROP ONTO A CAR brief [STORY#S3, EDIT93#3.1].
+Total: 10.

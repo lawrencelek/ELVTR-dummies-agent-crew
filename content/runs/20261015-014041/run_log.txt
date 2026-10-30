@@ -1,0 +1,26 @@
+[01:40:41] KB: 175 chunks from 6 docs; registry 154 IDs
+[01:40:41] == graphics: Graphics: vehicle identities, dummy markings, district dressing
+[01:40:41] graphics: retrieved 18 chunks for 11 queries: DESIGN#D4.1, DESIGN#D10.1, DESIGN#D10.2, DESIGN#D5.1, DESIGN#D9.2, DESIGN#D10.6, LOG#P1.2/light-and-relief, DESIGN#D9.1, BRIEF#P1.8, DESIGN#D6.2, LOG#P1.2/dummy-damage-states, JUICE#J1, DESIGN#D10.3~1, DESIGN#D6.1, DESIGN#D6.3, LOG#P1.5/pillars-and-blind-spots, DESIGN#D1, ENG#7.2
+[01:40:41] Generator: calling (29,335 chars in)
+[01:42:12] Generator: done in 89.5 s (9,265 chars out)
+[01:42:12] Critic: calling (53,220 chars in)
+[01:43:35] Critic: done in 81.1 s (3,128 chars out)
+[01:43:35] graphics: round 0: validator 8 issues (2 block); critic revise with 11 issues (0 block)
+[01:43:35] Generator (repair): calling (47,614 chars in)
+[01:44:10] Generator (repair): done in 33.1 s (9,272 chars out)
+[01:44:10] Critic: calling (54,938 chars in)
+[01:45:03] Critic: done in 51.4 s (2,038 chars out)
+[01:45:03] graphics: round 1: validator 1 issues (0 block); critic revise with 3 issues (0 block)
+[01:45:03] Generator (repair): calling (46,015 chars in)
+[01:45:30] Generator (repair): done in 26.2 s (9,745 chars out)
+[01:45:30] Critic: calling (56,022 chars in)
+[01:46:26] Critic: done in 54.4 s (1,970 chars out)
+[01:46:26] graphics: round 2: validator 0 issues (0 block); critic revise with 2 issues (0 block)
+[01:46:26] Generator (repair): calling (46,561 chars in)
+[01:46:50] Generator (repair): done in 22.5 s (9,748 chars out)
+[01:46:50] Critic: calling (56,547 chars in)
+[01:47:36] Critic: done in 44.6 s (1,119 chars out)
+[01:47:36] graphics: round 3: validator 1 issues (0 block); critic revise with 1 issues (0 block)
+[01:47:36] graphics: ACCEPTED after 4 critic round(s)
+[01:47:36] graphics: published to prototypes/p1/content/graphics.json and content/out/
+[01:47:36] bundled content.js and rebuilt dummies_p1.html: juice, interface, graphics
