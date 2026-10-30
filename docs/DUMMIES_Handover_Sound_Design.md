@@ -5,8 +5,12 @@
 ## 0 Start the new chat
 
 - **Where:** inside the Project "ELVTR Course - GDD". Its docs and instructions come with it.
-- **First message:** "Read `claude/DUMMIES_Handover_Sound_Design.md` first. Then build the sound designer agent and add the audio."
-- **For code:** use a session with GitHub access. Attach `lawrencelek/ELVTR-dummies-agent-crew` (push).
+- **First message:** "Read `claude/DUMMIES_Handover_Sound_Design.md` first. Then build the sound designer agent and add the audio, in `ELVTR-Multiagent-Submission-6B-audio`."
+- **For code:** use a session with GitHub access.
+- **Target repo:** `lawrencelek/ELVTR-Multiagent-Submission-6B-audio`. All sound work and commits go here.
+  - Create it on GitHub first (public, empty) if it does not exist yet. Attach it (push).
+  - It starts empty. The new chat seeds it from the source repo (§7.1).
+- **Source repo, read only:** `lawrencelek/ELVTR-dummies-agent-crew`, branch `assignment4/content-pipeline`. Attach it (read). Copy from it; commit nothing there.
 - **The audio pack is on your computer** (Windows, `legion7`). No session has seen it yet.
 - **Agreed folder:** `Downloads\DUMMIES_audio\` on that computer:
   - `music\`: the six .ogg tracks, renamed `track1 - <original name>.ogg` to `track6 - <original name>.ogg`.
@@ -14,7 +18,7 @@
   - `licence\`: the pack's licence text, or a note of its download page.
 - **Bring it one of three ways:**
   1. **Link the chat to your computer.** Open the chat in the Claude desktop app and add the pack's folder. The chat reads the file names and copies what the build needs. *Recommended.*
-  2. **Commit it yourself** to `assets/audio/music/` (the .ogg tracks) and `assets/audio/sfx/` (the .wav files). GitHub refuses files over 100 MB and warns over 50 MB.
+  2. **Commit it yourself** to the target repo: `assets/audio/music/` (the .ogg tracks) and `assets/audio/sfx/` (the .wav files). GitHub refuses files over 100 MB and warns over 50 MB.
   3. **Attach a zip** to the first message, if it fits the upload limit.
 - **Also bring the licence.** Attach the pack's licence text or name its download page. Royalty-free packs often still require a credit.
 - **Name the music files.** Say which file is Track 1, 2, 3, 4, 5 and 6, unless the file names already say so.
@@ -26,7 +30,8 @@
 |---|---|---|
 | Project docs: GDD edits to 99, prototype docs, decisions, registry, style guides, write-ups | Yes, searchable | `claude/…` |
 | Project instructions (house style) | Yes | Project settings |
-| Code, builds, tests, runs, screenshots | Yes, by cloning | GitHub (all pushed) |
+| Code, builds, tests, runs, screenshots | Yes, by cloning | Source repo (all pushed) |
+| The target repo | Empty until seeded (§7.1) | `ELVTR-Multiagent-Submission-6B-audio` |
 | The audio pack | No. Bring it (§0) | Your computer |
 | This conversation | No; past-chat search only, if enabled | — |
 
@@ -89,7 +94,7 @@
   - SFX arrive as WAV. Keep the originals; a compressed copy may ship.
 - **Loudness.** Measure every file (`ffmpeg -af ebur128`, or `loudnorm` in measure mode). Record LUFS and peak in the asset manifest. Normalise to one target per bus.
 - **Frequency.** Some events fire often: `knock` and `touch-spent` on every contact frame, near-misses, braking, headlight flashes, combo links. Give each cue a cooldown and cap the voices. Per-frame states sound on the edge only (§6.6).
-- **Registry first.** Every audio statistic gets an ID before it is used (house rule). Registry `edit99-2026-10-29`, 525 entries → `edit100`. Proposed family:
+- **Registry first.** Every audio statistic gets an ID before it is used (house rule). The target repo's copy of the registry moves from `edit99-2026-10-29` (525 entries) to `edit100`. The source repo's copy stays at edit99. Proposed family:
   - `audio.enabled` (flag, default 0; the new build sets 1).
   - `audio.music.volume`, `audio.sfx.volume`, `audio.ui.volume`.
   - `audio.music.crossfadeSeconds`, `audio.music.pauseDuck`.
@@ -97,7 +102,7 @@
   - `audio.music.track.<screen>`, `audio.music.levelRotation`.
   - Values are for the new chat to propose and Lawrence to confirm.
 - **Options.** Options already has a Sound on/off item that is not saved (§6.1). Replace it with MUSIC and SOUND volume, and mute, and save them in the browser (§6.4).
-- **Frozen builds.** Prototype 8.4 and every earlier build stay byte-identical. Audio ships in the next build (Prototype 9, or 8.5), behind `audio.enabled` in the shared code.
+- **Frozen builds.** Prototype 8.4 stays byte-identical, in both repos. Audio ships in Prototype 9 (`prototypes/p9/` in the target repo), behind `audio.enabled` in the shared code.
 - **Licence.** Record each file's source, licence and required credit in the asset manifest.
   - If the pack needs a credit, the Credits card gains a line. Style Guide V2's C1 limits the card to the game, its maker and its publisher, so C1 changes first (user-decided).
 - **Text.** New labels (MUSIC, SOUND) are interface chrome: out of the style guide's scope (row 540). They name no company.
@@ -119,15 +124,15 @@ Same pattern as Assignments 4–6: deterministic evidence, a designer, a reviewe
    - **Spam:** per-frame events have cooldowns.
    - **Loudness and licence:** both recorded.
 5. **Refiner** revises from the REASON. Loop until 10/10 or the round cap. No human step inside.
-6. **Integrator.** Writes:
+6. **Integrator.** Writes, in the target repo:
    - `content/audio/cues.json`, the machine-readable cue map.
    - The audio code, behind `audio.enabled`.
-   - A new build.
+   - Prototype 9: `prototypes/p9/build.py` → `prototypes/p9/dummies_p9.html`, with the audio files it loads.
 7. **Tests, headless.**
    - Stub the AudioContext and log each cue.
    - Walk a scripted tour (like `prototypes/p8/text_audit.js`).
    - Assert: each screen plays its track; each catalogued event fires its cue; nothing plays before the first gesture; every file in `cues.json` exists.
-8. **Documentation (the request's deliverable).** GDD Edit 100, "Sound", with two tables:
+8. **Documentation (the request's deliverable).** GDD Edit 100, "Sound" (`coder/gdd/` in the target repo, and the project), with two tables:
    - **MUSIC:** track (.ogg) → screens and states, loop, transitions, registry IDs.
    - **SFX:** cue → WAV, trigger point (screen or event), bus, volume ID, cooldown ID.
 
@@ -245,13 +250,33 @@ Each of these needs a new event, or a state check in the frame loop.
 
 | Repo | Branch | Role |
 |---|---|---|
-| `lawrencelek/ELVTR-dummies-agent-crew` | `assignment4/content-pipeline` (HEAD `a0e3515`) | Working repo: prototypes, content, registry, decisions, `style/`, `coder/` |
-| `lawrencelek/ELVTR-Multiagent-Submission-6` | `main` (`7b0ea2f`) | Assignment #6: Style Guide Agent, V2-first, with the 8.4 build |
-| `lawrencelek/ELVTR-Multiagent-Submission-5` | `main` = `gh-pages` | Assignment #5; GitHub Pages hosts 7.13. No hosted 8.x yet |
+| `lawrencelek/ELVTR-Multiagent-Submission-6B-audio` | `main` | **Target.** Sound design: the agent, the audio, Prototype 9, GDD Edit 100. Empty until seeded |
+| `lawrencelek/ELVTR-dummies-agent-crew` | `assignment4/content-pipeline` (HEAD `22bc845` or later) | **Source, read only.** Prototypes, content, registry, decisions, `style/`, `coder/` |
+| `lawrencelek/ELVTR-Multiagent-Submission-6` | `main` = `gh-pages` (`3c47a47`) | Assignment #6, done. Pages hosts Prototype 8.4 |
+| `lawrencelek/ELVTR-Multiagent-Submission-5` | `main` = `gh-pages` | Assignment #5, done. Pages hosts Prototype 7.13 |
+
+### 7.1 Seed the target repo
+
+- **Copy a slim tree, not the whole source repo.** The source repo is about 500 MB, 337 MB of it history. The build needs 17 files, about 3 MB.
+- **Copy these, at the same paths,** so `build.py`'s relative paths still work:
+  - `prototypes/p6/`: `sim.js`, `pixel.js`, `lab.js`, `circus_valley.js`, `world6.js`, `content.js`, `game.js`.
+  - `prototypes/p7/story.js`, `prototypes/jump/jump.js`, `prototypes/controls/pads.js`.
+  - `prototypes/p8/`: `shell.html`, `build.py`, `lore.js`, `text_audit.js`.
+  - `content/db/fleet.json`, `content/story/story_v2.json`, `content/params/tuning.parameters.json`.
+- **Also copy, for reference:**
+  - `DECISIONS.md` (new rows start at 591).
+  - `coder/gdd/`: Edits 95–99 and `DUMMIES_GDD_Current_State_Edit99.md`.
+  - `docs/DUMMIES_Handover_Sound_Design.md`.
+- **Optional, only for new text:** the style loop. Copy `style/` and the inputs that `style/publish_submission.sh` lists.
+- **Record the source** in `SOURCE.md`: the repo, the branch and the commit copied.
+- **First check.** Run `python3 prototypes/p8/build.py` in the target repo. It must reproduce `dummies_p8_4.html` byte for byte (md5 `9f5549201d88891f9f0b22c461602909`).
+  - This session tested exactly this slim copy: identical output. `text_audit.js` also ran: 316 strings, Farsight only on the Credits card.
+- **Do not port** `test_p84.js` or `test_p713.js`. They need the source repo's style runs and git history. Write a new test for Prototype 9 (§5, step 7).
+- **Hosting:** as for Submission 6. Push `main` to `gh-pages`, with `.nojekyll` and an `index.html` that opens the build. Audio files then load by URL.
 
 ## 8 Current state
 
-- **Build:** Prototype 8.4 (`prototypes/p8/build.py`; GDD Edit 99).
+- **Build:** Prototype 8.4 (`prototypes/p8/build.py`; GDD Edit 99). The next build, Prototype 9, is the target repo's first.
 - **Registry:** `content/params/tuning.parameters.json`, `edit99-2026-10-29`, 525 entries. Style IDs: `style/style.params.json`.
 - **Decisions:** `DECISIONS.md`, rows 1–590. Open: D67–D85. Newest:
   - D83: text left on the map's tile panel and the objective strip.
@@ -262,21 +287,24 @@ Each of these needs a new event, or a state check in the frame loop.
 
 ## 9 Run and test
 
+In the target repo, after seeding:
+
 ```
-cd prototypes/p8 && python3 build.py                 # rebuild 8.4 (frozen: do not commit a changed 8.4)
-cd prototypes/p8 && node test_p84.js docs/p84        # 41/41; Playwright; screenshots to docs/p84
-node prototypes/p8/text_audit.js prototypes/p8/dummies_p8_4.html out.json   # every string drawn on a 32-step tour
-cd prototypes/p7 && node test_p713.js docs           # 103/103: the shared code still serves 7.13
-python3 style/loop.py --guide v2 --piece draft.json  # the style loop, for any new text
+python3 prototypes/p8/build.py                       # must reproduce dummies_p8_4.html (md5 above); then do not commit a changed 8.4
+python3 prototypes/p9/build.py                       # the new build, with audio
+node prototypes/p8/text_audit.js prototypes/p9/dummies_p9.html out.json   # every string drawn on a 32-step tour; reuse for the audio tour
+which ffmpeg ffprobe                                 # loudness and transcodes
 ```
 
-- **New build:** copy `prototypes/p8/build.py` to the new folder, add the audio, and freeze 8.4 in the test's byte-identical list (as `test_p84.js` froze 8.3).
+- **New build:** copy `prototypes/p8/build.py` to `prototypes/p9/`. Point it at the audio, and write `dummies_p9.html`.
+- **In the source repo only**, if shared code there ever changes: `cd prototypes/p8 && node test_p84.js docs/p84` (41/41) and `cd prototypes/p7 && node test_p713.js docs` (103/103).
 
 ## 10 Conventions
 
 - **House style:** direct start; no chatter; active voice; sentences under 15 words; bullet fragments.
 - **Data:** every statistic names a registry ID. New statistics get an ID first.
 - **Registry writes:** `json.dumps(d, indent=1, ensure_ascii=False) + '\n'`.
+- **Commits** go to the target repo's `main`. The source repo stays as it is.
 - **Frozen builds** never change. Shared code changes are gated by flags in `P7SIM` / `window.DUMMIES_SIM`.
 - **GDD edits:** one per build. Request quoted, readings flagged, rulings recorded; then sections, Build, Measured, Registry, Open.
 - **Commit author:** Claude <noreply@anthropic.com>. **Trailer:**
